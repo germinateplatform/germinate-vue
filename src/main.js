@@ -13,6 +13,7 @@ import { i18n } from '@/plugins/i18n.js'
 import mixin from '@/mixins/mixin.js'
 import api from '@/mixins/api.js'
 import { ClientTable, ServerTable } from 'vue-tables-2'
+require('es6-object-assign/auto')
 
 // todo
 // cssVars()
@@ -40,7 +41,13 @@ Vue.use({
   install: function (Vue) {
     Vue.prototype.$jQuery = require('jquery')
     window.jQuery = Vue.prototype.$jQuery
+    Vue.prototype.$moment = require('moment')
+    window.moment = Vue.prototype.$moment
   }
+})
+
+Vue.filter('toDate', function (value) {
+  return window.moment(value).format(window.moment.localeData().longDateFormat('L'))
 })
 
 // Set base URL

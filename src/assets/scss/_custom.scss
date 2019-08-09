@@ -15,3 +15,7 @@ body {
 .sidebar .nav-link .badge {
   margin-top: 6px;
 }
+
+button.mdi:before {
+  vertical-align: sub;
+}

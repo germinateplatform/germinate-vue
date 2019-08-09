@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-button-group class="marked-items" v-if="itemType && markedIds && markedIds[itemType]">
-      <b-button @click="clear">Delete</b-button>
+      <b-button @click="clear" class="mdi mdi-18px mdi-delete" />
       <b-button><b-badge pill variant="light">{{ markedIds[itemType].length }}</b-badge></b-button>
     </b-button-group>
   </div>
