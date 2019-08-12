@@ -19,3 +19,24 @@ body {
 button.mdi:before {
   vertical-align: sub;
 }
+
+.nav-item i.mdi {
+  vertical-align: sub;
+}
+.nav-item .dropdown-menu .dropdown-item .badge {
+  margin-top: 7px;
+}
+
+.table-sort-up:before {
+  content: '▲';
+  margin-left: 4px;
+}
+
+.table-sort-down:before {
+  content: '▼';
+  margin-left: 4px;
+}
+
+.b-dropdown i.mdi {
+  vertical-align: inherit;
+}

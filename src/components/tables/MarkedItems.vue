@@ -25,7 +25,6 @@ export default {
   methods: {
     clear: function () {
       this.$store.dispatch('ON_MARKED_IDS_CLEAR', this.itemType)
-      this.$emit('items-cleared')
     }
   }
 }
@@ -35,6 +34,7 @@ export default {
 .marked-items .btn {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
   border-bottom: 0;
 }
 </style>

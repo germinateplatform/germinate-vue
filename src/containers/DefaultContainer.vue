@@ -13,10 +13,7 @@
         <b-nav-item class="px-3">Settings</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <b-nav-item class="d-md-down-none">
-          <i class="icon-bell"></i>
-          <b-badge pill variant="danger">5</b-badge>
-        </b-nav-item>
+        <MarkedItemDropdown />
         <b-nav-item class="d-md-down-none">
           <i class="icon-list"></i>
         </b-nav-item>
@@ -37,9 +34,10 @@
         <SidebarMinimizer/>
       </AppSidebar>
       <main class="main">
+        <!-- TODO: Replace this with i18n content or remove it -->
         <Breadcrumb :list="list"/>
         <div class="container-fluid">
-          <router-view></router-view>
+          <router-view :key="$route.path"></router-view>
         </div>
       </main>
       <AppAside fixed>
@@ -58,10 +56,10 @@
 </template>
 
 <script>
-import nav from '@/_nav'
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
 import DefaultAside from './DefaultAside'
 import DefaultHeaderDropdownAccnt from './DefaultHeaderDropdownAccnt'
+import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
 
 export default {
   name: 'DefaultContainer',
@@ -79,11 +77,39 @@ export default {
     SidebarToggler,
     SidebarHeader,
     SidebarNav,
-    SidebarMinimizer
+    SidebarMinimizer,
+    MarkedItemDropdown
   },
   data () {
     return {
-      nav: nav.items
+      nav: [
+        {
+          name: 'Home',
+          url: '/home',
+          icon: 'mdi mdi-18px mdi-home',
+          badge: {
+            variant: 'primary',
+            text: 'NEW'
+          }
+        },
+        {
+          name: 'Data',
+          url: '/data',
+          icon: 'mdi mdi-18px mdi-harddisk',
+          children: [
+            {
+              name: 'Germplasm',
+              url: '/data/germplasm',
+              icon: 'mdi mdi-18px mdi-sprout'
+            },
+            {
+              name: 'Maps',
+              url: '/data/genotypes/maps',
+              icon: 'mdi mdi-18px mdi-sprout'
+            }
+          ]
+        }
+      ]
     }
   },
   computed: {

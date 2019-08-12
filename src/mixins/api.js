@@ -32,6 +32,10 @@ export default {
     apiGetGermplasmTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiGetMapsTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'maps/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

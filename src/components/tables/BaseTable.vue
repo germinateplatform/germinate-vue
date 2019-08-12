@@ -2,7 +2,6 @@
   <v-server-table :url="''" :columns="columns" :options="tableOptions" ref="table" class="table-overflow-fix">
     <!-- Pass on all named slots -->
     <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
-
     <!-- Pass on all scoped slots -->
     <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope"><slot :name="slot" v-bind="scope"/></template>
 
@@ -10,13 +9,20 @@
       <b-col cols=6>
         <TableFilter :columns="columns"
                     :texts="tableOptions.headings"
-                    itemType="germplasm"
+                    :itemType="itemType"
+                    :filterOn="tableOptions.filterOn"
                     ref="tableFilter"
                     v-on:on-filter-changed="onFilterChanged"
                     v-on:on-column-toggle="onToggleColumn" />
       </b-col>
       <b-col cols=6>
-        <MarkedItems class="float-right" itemType="germplasm" v-on:items-cleared="onItemsCleared"/>
+        <b-button-group class="float-right per-page-dropdown">
+          <b-dropdown>
+            <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
+            <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
+          </b-dropdown>
+          <MarkedItems class="float-right" :itemType="itemType" />
+        </b-button-group>
       </b-col>
     </b-row>
 
@@ -24,7 +30,7 @@
       <b-form-checkbox @change="onSelectionHeaderClicked"/>
     </div>
 
-    <b-form-checkbox slot="selected" slot-scope="props" :checked="getValue(props.row)" @change="markItem(props.row[this.tableOptions.idColumn], $event)"/>
+    <b-form-checkbox slot="selected" slot-scope="props" :checked="getValue(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
   </v-server-table>
 </template>
 
@@ -52,6 +58,13 @@ export default {
       default: null
     }
   },
+  computed: {
+    ...mapState([
+      'markedIds',
+      'hiddenColumns',
+      'tablePerPage'
+    ])
+  },
   data: function () {
     var defaults = {
       requestFunction: data => {
@@ -63,44 +76,45 @@ export default {
         })
       },
       responseAdapter: function (data) {
-        return data
+        return data.data
       },
       skin: 'table table-striped table-hover',
       filterByColumn: true,
       perPage: 10,
+      perPageValues: [],
       pagination: {
         chunk: 5
       }
     }
 
     return {
+      perPageValues: [10, 25, 50, 100],
       prevCount: -1,
       filter: null,
       tableOptions: Object.assign({}, defaults, this.options)
     }
-  },
-  computed: {
-    ...mapState([
-      'markedIds',
-      'hiddenColumns'
-    ])
   },
   components: {
     TableFilter,
     MarkedItems
   },
   methods: {
+    onPerPageChanged: function (value) {
+      this.$store.dispatch('ON_TABLE_PER_PAGE_CHANGED', value)
+      this.$refs.table.setLimit(value)
+    },
     onSelectionHeaderClicked: function (value) {
       console.log(value)
     },
-    onItemsCleared: function () {
-      this.$nextTick(() => this.$refs.table.refresh())
-    },
     getValue: function (row) {
-      return this.markedIds.germplasm.indexOf(row[this.tableOptions.idColumn]) !== -1
+      if (this.itemType) {
+        return this.markedIds[this.itemType].indexOf(row[this.tableOptions.idColumn]) !== -1
+      } else {
+        return false
+      }
     },
     isHidden: function (column) {
-      return this.$store.getters.hiddenColumns[this.itemType].indexOf(column) !== -1 ? 'd-none' : ''
+      return this.$store.getters.hiddenColumns[this.tableOptions.tableName].indexOf(column) !== -1 ? 'd-none' : ''
     },
     onFilterChanged: function (filter) {
       this.filter = filter
@@ -118,9 +132,14 @@ export default {
       }
     }
   },
+  created: function () {
+    if (this.tableOptions.perPage !== this.tablePerPage) {
+      this.tableOptions.perPage = this.tablePerPage
+    }
+  },
   mounted: function () {
     this.columns.forEach(c => {
-      if (this.hiddenColumns[this.itemType].indexOf(c) !== -1) {
+      if (this.hiddenColumns[this.tableOptions.tableName].indexOf(c) !== -1) {
         try {
           this.$refs.table.toggleColumn(c)
         } catch (error) {
@@ -139,5 +158,20 @@ export default {
 }
 .table-overflow-fix table {
   margin: 0 -1px;
+}
+th.VueTables__sortable {
+    white-space: nowrap;
+}
+span.VueTables__heading {
+    white-space: initial;
+}
+span.VueTables__sort-icon.float-right.table-sort {
+    float: unset !important;
+}
+.per-page-dropdown .btn {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom: 0;
 }
 </style>

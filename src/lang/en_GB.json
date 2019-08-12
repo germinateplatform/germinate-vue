@@ -1,6 +1,11 @@
 {
+  "comparatorsBetween": "Between",
   "comparatorsEqual": "Equal",
   "comparatorsLike": "Like",
+  "dropdownMarkedItems": "Marked items",
+  "dropdownMarkedGermplasm": "Germplasm",
+  "dropdownMarkedMarkers": "Markers",
+  "dropdownMarkedLocations": "Locations",
   "errorMessageInvalidEmailUsername": "Invalid username or email.",
   "errorMessageEmailUnavailable": "Email service unavailable.",
   "errorMessageUnknownServerError": "An unknown server error occured.",
@@ -59,5 +64,7 @@
   "tableColumnElevation": "Elevation [m]",
   "tableColumnCountryName": "Country",
   "tableColumnColldate": "Collection Date",
-  "tableColumnPdci": "PDCI"
+  "tableColumnPdci": "PDCI",
+  "tooltipClear": "Clear",
+  "tooltipDelete": "Delete"
 }

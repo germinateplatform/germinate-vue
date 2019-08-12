@@ -33,13 +33,13 @@ export default new Router({
     },
     {
       path: '/',
-      redirect: '/dashboard',
-      name: 'Home',
+      redirect: '/home',
+      name: '',
       component: DefaultContainer,
       children: [
         {
-          path: 'dashboard',
-          name: 'Dashboard',
+          path: 'home',
+          name: 'Home',
           component: () => import('@/views/Dashboard'),
           beforeEnter: requireAuth
         },
@@ -64,16 +64,28 @@ export default new Router({
         },
         {
           path: 'data',
-          redirect: '/data/accessions',
+          redirect: '/data/germplasm',
           name: 'Data',
           component: {
             render (c) { return c('router-view') }
           },
           children: [
             {
-              path: 'accessions',
-              name: 'Accessions',
-              component: () => import('@/views/data/Accessions.vue'),
+              path: 'germplasm',
+              name: 'Germplasm',
+              component: () => import('@/views/data/germplasm/Germplasm.vue'),
+              beforeEnter: requireAuth
+            },
+            {
+              path: 'germplasm/:germplasmId',
+              name: 'Passport',
+              component: () => import('@/views/data/germplasm/Passport.vue'),
+              beforeEnter: requireAuth
+            },
+            {
+              path: 'genotypes/maps',
+              name: 'Maps',
+              component: () => import('@/views/data/genotype/Maps.vue'),
               beforeEnter: requireAuth
             }
           ]

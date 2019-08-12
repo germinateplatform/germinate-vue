@@ -4,7 +4,6 @@ import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
-console.log(process.env)
 var name = process.env.VUE_APP_INSTANCE_NAME
 
 if (!name) {
@@ -16,19 +15,22 @@ const store = new Vuex.Store({
     token: null,
     locale: null,
     baseUrl: null,
+    tablePerPage: 10,
     markedIds: {
       germplasm: [],
       markers: [],
       locations: []
     },
     hiddenColumns: {
-      germplasm: []
+      germplasm: [],
+      maps: []
     }
   },
   getters: {
     token: state => state.token,
     locale: state => state.locale,
     baseUrl: state => state.baseUrl,
+    tablePerPage: state => state.tablePerPage,
     markedIds: state => state.markedIds,
     hiddenColumns: state => state.hiddenColumns
   },
@@ -41,6 +43,9 @@ const store = new Vuex.Store({
     },
     ON_BASE_URL_CHANGED_MUTATION: function (state, newBaseUrl) {
       state.baseUrl = newBaseUrl
+    },
+    ON_TABLE_PER_PAGE_CHANGED_MUTATION: function (state, newTablePerPage) {
+      state.tablePerPage = newTablePerPage
     },
     ON_MARKED_IDS_ADD_MUTATION: function (state, { type, ids }) {
       ids.forEach(id => {
@@ -85,6 +90,9 @@ const store = new Vuex.Store({
     },
     ON_BASE_URL_CHANGED: function ({ commit }, baseUrl) {
       commit('ON_BASE_URL_CHANGED_MUTATION', baseUrl)
+    },
+    ON_TABLE_PER_PAGE_CHANGED: function ({ commit }, tablePerPage) {
+      commit('ON_TABLE_PER_PAGE_CHANGED_MUTATION', tablePerPage)
     },
     ON_MARKED_IDS_ADD: function ({ commit }, payload) {
       commit('ON_MARKED_IDS_ADD_MUTATION', payload)

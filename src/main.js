@@ -39,8 +39,6 @@ Vue.use(BootstrapVue)
 
 Vue.use({
   install: function (Vue) {
-    Vue.prototype.$jQuery = require('jquery')
-    window.jQuery = Vue.prototype.$jQuery
     Vue.prototype.$moment = require('moment')
     window.moment = Vue.prototype.$moment
   }

@@ -1,6 +1,11 @@
 {
+  "comparatorsBetween": "Zwischen",
   "comparatorsEqual": "Gleich",
   "comparatorsLike": "Ähnlich wie",
+  "dropdownMarkedItems": "Markierte Elemente",
+  "dropdownMarkedGermplasm": "Keimplasma",
+  "dropdownMarkedMarkers": "Marker",
+  "dropdownMarkedLocations": "Standorte",
   "errorMessageInvalidEmailUsername": "Ungültiger Benutzername oder Emailaddresse.",
   "errorMessageEmailUnavailable": "Emailservice nicht verfügbar.",
   "errorMessageUnknownServerError": "Ein unbekannter Serverfehler ist aufgetreten.",
@@ -58,5 +63,7 @@
   "tableColumnElevation": "Höhe [m]",
   "tableColumnCountryName": "Land",
   "tableColumnColldate": "Sammeldatum",
-  "tableColumnPdci": "PDCI"
+  "tableColumnPdci": "PDCI",
+  "tooltipClear": "Leeren",
+  "tooltipDelete": "Löschen"
 }
