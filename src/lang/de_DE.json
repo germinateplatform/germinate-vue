@@ -36,6 +36,10 @@
   "modalTitleTableFilter": "Filter",
   "operatorsAnd": "Und",
   "operatorsOr": "Oder",
+  "pageMapsDetailsTitle": "Kartendetails für:",
+  "pageMapsDetailsText": "Die folgende Tabelle enthält weitere Informationen über Marker auf Ihrer ausgewählten Karte. Klicken Sie auf den Namen des Markers, um Informationen zu diesem bestimmten Marker zu erhalten.",
+  "pageMapsHistogramTitle": "Histogramm",
+  "pageMapsHistogramText": "Das nachfolgende Diagramm zeigt die Dichte an Markern pro Chromosom. Auswahl im Diagramm per Ziehen fügt die Auswahl den Exportoptionen hinzu.",
   "paginationCount": "Zeige {from} bis {to} von {count} Einträgen|{count} Einträge|Ein Eintrag",
   "paginationFirst": "Erste",
   "paginationLast": "Letzte",
@@ -64,6 +68,10 @@
   "tableColumnCountryName": "Land",
   "tableColumnColldate": "Sammeldatum",
   "tableColumnPdci": "PDCI",
+  "tableColumnMapId": "Id",
+  "tableColumnMapName": "Kartenname",
+  "tableColumnMapDescription": "Kartenbeschreibung",
+  "tableColumnMapMarkerCount": "Markeranzahl",
   "tooltipClear": "Leeren",
   "tooltipDelete": "Löschen"
 }

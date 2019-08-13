@@ -63,7 +63,7 @@ export default {
     return {
       options: {
         requestData: (data, callback) => {
-          return this.apiGetGermplasmTable(data, callback)
+          return this.apiPostGermplasmTable(data, callback)
         },
         idColumn: 'germplasmid',
         tableName: 'germplasm',

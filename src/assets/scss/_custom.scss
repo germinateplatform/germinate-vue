@@ -1,6 +1,7 @@
 // Here you can add other styles
 
 body {
+  line-height: 1;
   background-color: #ffffff;
 }
 
@@ -39,4 +40,9 @@ button.mdi:before {
 
 .b-dropdown i.mdi {
   vertical-align: inherit;
+}
+
+.table tbody i.mdi {
+  display: inline-flex;
+  vertical-align: sub;
 }

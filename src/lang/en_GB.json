@@ -37,6 +37,10 @@
   "modalTitleTableFilter": "Filter",
   "operatorsAnd": "And",
   "operatorsOr": "Or",
+  "pageMapsDetailsTitle": "Map details for:",
+  "pageMapsDetailsText": "The table below contains further information about markers contained on your selected map. Clicking the marker name will take you to further information about that particular marker.",
+  "pageMapsHistogramTitle": "Histogram",
+  "pageMapsHistogramText": "The diagram below shows the density of markers on each chromosome. Selecting in the diagram by dragging will add the selection to the export options.",
   "paginationCount": "Showing {from} to {to} of {count} records|{count} records|One record",
   "paginationFirst": "First",
   "paginationLast": "Last",
@@ -65,6 +69,10 @@
   "tableColumnCountryName": "Country",
   "tableColumnColldate": "Collection Date",
   "tableColumnPdci": "PDCI",
+  "tableColumnMapId": "Id",
+  "tableColumnMapName": "Map name",
+  "tableColumnMapDescription": "Map description",
+  "tableColumnMapMarkerCount": "Marker count",
   "tooltipClear": "Clear",
   "tooltipDelete": "Delete"
 }

@@ -9,7 +9,7 @@
       <b-col cols=6>
         <TableFilter :columns="columns"
                     :texts="tableOptions.headings"
-                    :itemType="itemType"
+                    :tableName="tableOptions.tableName"
                     :filterOn="tableOptions.filterOn"
                     ref="tableFilter"
                     v-on:on-filter-changed="onFilterChanged"
@@ -115,6 +115,9 @@ export default {
     },
     isHidden: function (column) {
       return this.$store.getters.hiddenColumns[this.tableOptions.tableName].indexOf(column) !== -1 ? 'd-none' : ''
+    },
+    refresh: function () {
+      this.$refs.table.refresh()
     },
     onFilterChanged: function (filter) {
       this.filter = filter

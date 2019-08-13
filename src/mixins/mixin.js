@@ -3,6 +3,15 @@ import store from '../store/store'
 
 export default {
   methods: {
+    debounceFunction (func, delay) {
+      let inDebounce
+      return function () {
+        const context = this
+        const args = arguments
+        clearTimeout(inDebounce)
+        inDebounce = setTimeout(() => func.apply(context, args), delay)
+      }
+    },
     getBaseUrl () {
       return store.getters.baseUrl
     },

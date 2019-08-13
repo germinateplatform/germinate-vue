@@ -7,11 +7,11 @@
           <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
         </b-dropdown-form>
       </b-dropdown>
-      <b-button :variant="filter ? 'success' : ''" v-b-modal.table-filter-modal class="mdi mdi-18px mdi-filter" />
+      <b-button :variant="filter ? 'success' : ''" v-b-modal="'table-filter-modal-' + tableName" class="mdi mdi-18px mdi-filter" />
       <b-button v-if="filter" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter"/>
     </b-button-group>
 
-    <b-modal id="table-filter-modal" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false)" @show="init">
+    <b-modal :id="'table-filter-modal-' + tableName" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false)" @show="init">
       <b-form v-on:submit.prevent="setFilter(true)">
         <div v-for="(f, index) in tempFilter" :key="'filter-' + f.column + '-' + index">
           <b-input-group class="mb-3">
@@ -69,7 +69,7 @@ export default {
       type: Object,
       default: null
     },
-    itemType: {
+    tableName: {
       type: String,
       default: null
     },
@@ -142,13 +142,13 @@ export default {
       }
     },
     getValue: function (column) {
-      return this.hiddenColumns[this.itemType].indexOf(column) === -1
+      return this.hiddenColumns[this.tableName].indexOf(column) === -1
     },
     toggleColumn: function (value, column) {
       if (value) {
-        this.$store.dispatch('ON_HIDDEN_COLUMNS_REMOVE', { type: this.itemType, columns: [column] })
+        this.$store.dispatch('ON_HIDDEN_COLUMNS_REMOVE', { type: this.tableName, columns: [column] })
       } else {
-        this.$store.dispatch('ON_HIDDEN_COLUMNS_ADD', { type: this.itemType, columns: [column] })
+        this.$store.dispatch('ON_HIDDEN_COLUMNS_ADD', { type: this.tableName, columns: [column] })
       }
       this.$emit('on-column-toggle', column)
     },

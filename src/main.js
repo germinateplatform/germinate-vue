@@ -41,6 +41,8 @@ Vue.use({
   install: function (Vue) {
     Vue.prototype.$moment = require('moment')
     window.moment = Vue.prototype.$moment
+    Vue.prototype.$plotly = require('plotly.js-dist')
+    window.Plotly = Vue.prototype.$plotly
   }
 })
 

@@ -87,6 +87,12 @@ export default new Router({
               name: 'Maps',
               component: () => import('@/views/data/genotype/Maps.vue'),
               beforeEnter: requireAuth
+            },
+            {
+              path: 'genotypes/maps/:mapId',
+              name: 'MapId',
+              component: () => import('@/views/data/genotype/Maps.vue'),
+              beforeEnter: requireAuth
             }
           ]
         }

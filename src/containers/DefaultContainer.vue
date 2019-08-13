@@ -103,9 +103,16 @@ export default {
               icon: 'mdi mdi-18px mdi-sprout'
             },
             {
-              name: 'Maps',
+              name: 'Genotypic data',
               url: '/data/genotypes/maps',
-              icon: 'mdi mdi-18px mdi-sprout'
+              icon: 'mdi mdi-18px mdi-dna',
+              children: [
+                {
+                  name: 'Maps',
+                  url: '/data/genotypes/maps',
+                  icon: 'mdi mdi-18px mdi-reorder-vertical'
+                }
+              ]
             }
           ]
         }
