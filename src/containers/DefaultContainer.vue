@@ -81,11 +81,11 @@ export default {
         {
           name: 'Home',
           url: '/home',
-          icon: 'mdi mdi-18px mdi-home',
-          badge: {
-            variant: 'primary',
-            text: 'NEW'
-          }
+          icon: 'mdi mdi-18px mdi-home'
+          // badge: {
+          //   variant: 'primary',
+          //   text: 'NEW'
+          // }
         },
         {
           name: 'Data',

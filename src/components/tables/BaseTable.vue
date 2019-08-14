@@ -1,5 +1,5 @@
 <template>
-  <v-server-table :url="''" :columns="columns" :options="tableOptions" ref="table" class="table-overflow-fix">
+  <v-server-table :url="''" :columns="columns" :options="tableOptions" @loaded="updateSelectionHeader()" ref="table" class="table-overflow-fix">
     <!-- Pass on all named slots -->
     <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
     <!-- Pass on all scoped slots -->
@@ -78,6 +78,9 @@ export default {
   watch: {
     locale (newValue, oldValue) {
       this.tableOptions.texts = this.getPaginationTexts()
+    },
+    selectedItems: function (newValue, oldValue) {
+      this.updateSelectionHeader()
     }
   },
   data: function () {
@@ -106,7 +109,7 @@ export default {
     return {
       selectedItems: [],
       allSelected: false,
-      perPageValues: [5, 10, 25, 50, 100],
+      perPageValues: [10, 25, 50, 100],
       prevCount: -1,
       filter: null,
       tableOptions: Object.assign({}, defaults, this.options)
@@ -150,7 +153,13 @@ export default {
       }
     },
     updateSelectionHeader: function () {
-      // TODO: Update the header. Also update the header on page navigation. Also reset selected items on filtering.
+      var pageIds = this.$refs.table.data.map(r => r[this.tableOptions.idColumn])
+      var allSelected = true
+      pageIds.forEach(i => {
+        allSelected = allSelected && this.selectedItems.indexOf(i) !== -1
+      })
+      this.allSelected = allSelected
+      // TODO: Also reset selected items on filtering.
     },
     isHidden: function (column) {
       return this.$store.getters.hiddenColumns[this.tableOptions.tableName].indexOf(column) !== -1 ? 'd-none' : ''

@@ -109,9 +109,8 @@ export default {
     ]),
     // Only get the columns that have a text that isn't empty
     getColumns: function () {
-      var vm = this
-      return this.columns.filter(function (c) {
-        return vm.texts[c] ? (vm.texts[c]() !== '') : false
+      return this.columns.filter(c => {
+        return this.texts[c] ? (this.texts[c]() !== '') : false
       })
     }
   },
@@ -127,8 +126,11 @@ export default {
       }
     },
     addFilter: function () {
+      var validColumns = this.columns.filter(c => {
+        return this.texts[c] ? (this.texts[c]() !== '') : false
+      })
       this.tempFilter.push({
-        column: this.columns[0],
+        column: validColumns[0],
         comparator: 'equals',
         values: ['', ''],
         operator: this.operators[0].value

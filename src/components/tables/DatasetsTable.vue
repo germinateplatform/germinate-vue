@@ -50,7 +50,20 @@ export default {
         sortable: ['datasetid', 'datasetname', 'datasetdescription', 'experimenttype', 'datatype', 'location', 'countryname', 'licensename', 'contact', 'startdate', 'enddate', 'dataobjectcount', 'datapointcount'],
         filterable: [],
         headings: {
-          selected: ''
+          datasetid: () => this.$t('tableColumnDatasetId'),
+          datasetname: () => this.$t('tableColumnDatasetName'),
+          datasetdescription: () => this.$t('tableColumnDatasetDescription'),
+          experimenttype: () => this.$t('tableColumnDatasetExperimentType'),
+          datatype: () => this.$t('tableColumnDatasetDataType'),
+          location: () => this.$t('tableColumnDatasetLocation'),
+          countryname: () => this.$t('tableColumnDatasetCountryName'),
+          licensename: () => this.$t('tableColumnDatasetLicenseName'),
+          contract: () => this.$t('tableColumnDatasetContact'),
+          startdate: () => this.$t('tableColumnDatasetStartDate'),
+          enddate: () => this.$t('tableColumnDatasetEndDate'),
+          dataobjectcount: () => this.$t('tableColumnDatasetObjectCount'),
+          datapointcount: () => this.$t('tableColumnDatasetPointCount'),
+          selected: () => ''
         },
         orderBy: {
           column: 'datasetid'

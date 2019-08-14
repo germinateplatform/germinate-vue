@@ -115,8 +115,7 @@ export default {
 
 <style>
 .table-image,
-.table-pdci,
-.table-country {
+.table-pdci {
   white-space: nowrap;
 }
 .table-image * {
