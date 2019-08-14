@@ -26,11 +26,20 @@
       </b-col>
     </b-row>
 
-    <div slot="h__selected">
-      <b-form-checkbox @change="onSelectionHeaderClicked"/>
+    <!-- <div slot="h__selected">
+      <b-form-checkbox :checked="allMarked" @change="onSelectionHeaderClicked"/>
     </div>
+    <b-form-checkbox slot="selected" slot-scope="props" :checked="isSelected(props.row)" @change="onItemSelected(props.row, $event)"/> -->
 
-    <b-form-checkbox slot="selected" slot-scope="props" :checked="getValue(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
+    <div slot="h__selected">
+      <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
+    </div>
+    <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" />
+
+    <div slot="h__marked">
+      <b-form-checkbox @change="onMarkingHeaderClicked"/>
+    </div>
+    <b-form-checkbox slot="marked" slot-scope="props" :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
   </v-server-table>
 </template>
 
@@ -62,8 +71,14 @@ export default {
     ...mapState([
       'markedIds',
       'hiddenColumns',
-      'tablePerPage'
+      'tablePerPage',
+      'locale'
     ])
+  },
+  watch: {
+    locale (newValue, oldValue) {
+      this.tableOptions.texts = this.getPaginationTexts()
+    }
   },
   data: function () {
     var defaults = {
@@ -79,6 +94,7 @@ export default {
         return data.data
       },
       skin: 'table table-striped table-hover',
+      texts: this.getPaginationTexts(),
       filterByColumn: true,
       perPage: 10,
       perPageValues: [],
@@ -88,7 +104,9 @@ export default {
     }
 
     return {
-      perPageValues: [10, 25, 50, 100],
+      selectedItems: [],
+      allSelected: false,
+      perPageValues: [5, 10, 25, 50, 100],
       prevCount: -1,
       filter: null,
       tableOptions: Object.assign({}, defaults, this.options)
@@ -104,14 +122,35 @@ export default {
       this.$refs.table.setLimit(value)
     },
     onSelectionHeaderClicked: function (value) {
+      if (value) {
+        // Add all ids of the current page that aren't there already
+        this.$refs.table.data.forEach(r => {
+          const id = r[this.tableOptions.idColumn]
+          if (this.selectedItems.indexOf(id) === -1) {
+            this.selectedItems.push(id)
+          }
+        })
+      } else {
+        // Remove all ids of the current page that are there
+        var pageIds = this.$refs.table.data.map(r => r[this.tableOptions.idColumn])
+        this.selectedItems = this.selectedItems.filter(id => pageIds.indexOf(id) === -1)
+      }
+    },
+    onMarkingHeaderClicked: function (value) {
       console.log(value)
     },
-    getValue: function (row) {
+    isSelected: function (row) {
+      return this.selectedItems[row[this.tableOptions.idColumn]] !== undefined
+    },
+    isMarked: function (row) {
       if (this.itemType) {
         return this.markedIds[this.itemType].indexOf(row[this.tableOptions.idColumn]) !== -1
       } else {
         return false
       }
+    },
+    updateSelectionHeader: function () {
+      // TODO: Update the header. Also update the header on page navigation. Also reset selected items on filtering.
     },
     isHidden: function (column) {
       return this.$store.getters.hiddenColumns[this.tableOptions.tableName].indexOf(column) !== -1 ? 'd-none' : ''
@@ -126,6 +165,15 @@ export default {
     },
     onToggleColumn: function (column) {
       this.$refs.table.toggleColumn(column)
+    },
+    onItemSelected: function (item, event) {
+      if (event) {
+        this.selectedItems[item[this.tableOptions.idColumn]] = item
+      } else {
+        delete this.selectedItems[item[this.tableOptions.idColumn]]
+      }
+
+      this.updateSelectionHeader()
     },
     markItem: function (id, event) {
       if (event) {

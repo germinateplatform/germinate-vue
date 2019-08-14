@@ -37,6 +37,10 @@ export default {
           mapname: () => this.$t('tableColumnMapName'),
           mapdescription: () => this.$t('tableColumnMapDescription'),
           markercount: () => this.$t('tableColumnMapMarkerCount')
+        },
+        columnsClasses: {
+          mapid: 'text-right',
+          markercount: 'text-right'
         }
       },
       columns: columns

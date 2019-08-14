@@ -45,6 +45,10 @@ export default {
     apiPostMapdefinitionTable: function (mapId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'map/' + mapId + '/mapdefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostDatasetTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

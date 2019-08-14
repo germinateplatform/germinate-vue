@@ -3,24 +3,17 @@
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile />
       <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="img/brand/logo.svg" width="89" height="25" alt="CoreUI Logo">
-        <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
+        <img class="navbar-brand-full" src="/img/germinate.svg" width="150" height="32" alt="Germinate">
+        <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="Germinate">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true />
-      <b-navbar-nav class="d-md-down-none">
-        <b-nav-item class="px-3" to="/dashboard">Dashboard</b-nav-item>
-        <b-nav-item class="px-3" to="/users" exact>Users</b-nav-item>
+      <!-- <b-navbar-nav class="d-md-down-none">
         <b-nav-item class="px-3">Settings</b-nav-item>
-      </b-navbar-nav>
+      </b-navbar-nav> -->
       <b-navbar-nav class="ml-auto">
+        <LocaleDropdown />
         <MarkedItemDropdown />
-        <b-nav-item class="d-md-down-none">
-          <i class="icon-list"></i>
-        </b-nav-item>
-        <b-nav-item class="d-md-down-none">
-          <i class="icon-location-pin"></i>
-        </b-nav-item>
-        <DefaultHeaderDropdownAccnt/>
+        <UserSettingsDropdown />
       </b-navbar-nav>
       <AsideToggler class="d-none d-lg-block" />
       <!--<AsideToggler class="d-lg-none" mobile />-->
@@ -40,7 +33,7 @@
           <router-view :key="$route.path"></router-view>
         </div>
       </main>
-      <AppAside fixed>
+      <AppAside off-canvas>
         <!--aside-->
         <DefaultAside/>
       </AppAside>
@@ -58,8 +51,9 @@
 <script>
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter, Breadcrumb } from '@coreui/vue'
 import DefaultAside from './DefaultAside'
-import DefaultHeaderDropdownAccnt from './DefaultHeaderDropdownAccnt'
+import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
 import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
+import LocaleDropdown from '@/components/dropdown/LocaleDropdown'
 
 export default {
   name: 'DefaultContainer',
@@ -71,7 +65,8 @@ export default {
     TheFooter,
     Breadcrumb,
     DefaultAside,
-    DefaultHeaderDropdownAccnt,
+    LocaleDropdown,
+    UserSettingsDropdown,
     SidebarForm,
     SidebarFooter,
     SidebarToggler,
@@ -113,6 +108,11 @@ export default {
                   icon: 'mdi mdi-18px mdi-reorder-vertical'
                 }
               ]
+            },
+            {
+              name: 'Datasets',
+              url: '/data/datasets',
+              icon: 'mdi mdi-18px mdi-database'
             }
           ]
         }

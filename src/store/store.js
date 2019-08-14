@@ -24,7 +24,8 @@ const store = new Vuex.Store({
     hiddenColumns: {
       germplasm: [],
       maps: [],
-      markers: []
+      markers: [],
+      datasets: []
     }
   },
   getters: {

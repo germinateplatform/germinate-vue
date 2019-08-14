@@ -26,7 +26,7 @@ export default {
     }
   },
   data: function () {
-    const columns = ['markerid', 'markername', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position', 'selected']
+    const columns = ['markerid', 'markername', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position', 'marked']
     return {
       options: {
         requestData: (data, callback) => {
@@ -38,6 +38,12 @@ export default {
         sortable: ['markerid', 'markername', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position'],
         filterable: [],
         headings: {
+        },
+        columnsClasses: {
+          markerid: 'text-right',
+          chromosome: 'text-right',
+          position: 'text-right',
+          marked: 'text-right'
         }
       },
       columns: columns

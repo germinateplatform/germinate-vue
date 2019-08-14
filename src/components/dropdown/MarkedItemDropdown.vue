@@ -29,7 +29,7 @@ import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'DefaultHeaderDropdownAccnt',
+  name: 'MarkedItemDropdown',
   components: {
     AppHeaderDropdown
   },

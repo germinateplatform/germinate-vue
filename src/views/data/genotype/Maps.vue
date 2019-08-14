@@ -1,6 +1,7 @@
 <template>
   <div ref="container" id="map-container">
-    <h1>Maps</h1>
+    <h1>{{ $t('pageMapsTitle') }}</h1>
+    <p>{{ $t('pageMapsText') }}</p>
     <MapsTable v-on:map-selected="onMapSelected" />
 
     <div v-if="map">

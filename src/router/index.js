@@ -77,6 +77,12 @@ export default new Router({
               beforeEnter: requireAuth
             },
             {
+              path: 'datasets',
+              name: 'Datasets',
+              component: () => import('@/views/data/Datasets.vue'),
+              beforeEnter: requireAuth
+            },
+            {
               path: 'germplasm/:germplasmId',
               name: 'Passport',
               component: () => import('@/views/data/germplasm/Passport.vue'),

@@ -37,6 +37,8 @@
   "modalTitleTableFilter": "Filter",
   "operatorsAnd": "And",
   "operatorsOr": "Or",
+  "pageMapsTitle": "Maps",
+  "pageMapsText": "The following maps were found in this version of Germinate. To view markers contained on a map choose a map from the table below and click on its description.",
   "pageMapsDetailsTitle": "Map details for:",
   "pageMapsDetailsText": "The table below contains further information about markers contained on your selected map. Clicking the marker name will take you to further information about that particular marker.",
   "pageMapsHistogramTitle": "Histogram",

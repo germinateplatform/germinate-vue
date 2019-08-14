@@ -10,7 +10,7 @@
       <!-- Country flags -->
       <div slot="countryname" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countrycode.toLowerCase()" v-if="props.row.countrycode"/> <span> {{ props.row.countryname }}</span></div>
       <!-- Formatted date -->
-      <span slot="colldate" slot-scope="props">{{ props.row.colldate | toDate }}</span>
+      <span slot="colldate" slot-scope="props" v-if="props.row.colldate">{{ props.row.colldate | toDate }}</span>
       <!-- Image preview -->
       <div slot="imagecount" slot-scope="props" class="table-image" v-if="props.row.imagecount && props.row.imagecount > 0">
         <div :id="`table-image-popover-${props.row.germplasmid}`">
@@ -59,7 +59,7 @@ export default {
     }
   },
   data: function () {
-    const columns = ['germplasmid', 'germplasmgid', 'germplasmname', 'germplasmnumber', 'germplasmpuid', 'entitytypename', 'biologicalstatusname', 'synonyms', 'collectornumber', 'genus', 'species', 'subtaxa', 'elevation', 'countryname', 'colldate', 'imagecount', 'pdci', 'selected']
+    const columns = ['germplasmid', 'germplasmgid', 'germplasmname', 'germplasmnumber', 'germplasmpuid', 'entitytypename', 'biologicalstatusname', 'synonyms', 'collectornumber', 'genus', 'species', 'subtaxa', 'elevation', 'countryname', 'colldate', 'imagecount', 'pdci', 'marked']
     return {
       options: {
         requestData: (data, callback) => {
@@ -88,13 +88,15 @@ export default {
           colldate: () => this.$t('tableColumnColldate'),
           pdci: () => this.$t('tableColumnPdci'),
           imagecount: () => '',
-          selected: () => ''
+          marked: () => ''
         },
         columnsClasses: {
+          germplasmid: 'text-right',
+          elevation: 'text-right',
           genus: 'font-italic',
           species: 'font-italic',
           subtaxa: 'font-italic',
-          selected: 'text-right'
+          marked: 'text-right'
         }
       },
       columns: columns

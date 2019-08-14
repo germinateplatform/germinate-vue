@@ -36,6 +36,8 @@
   "modalTitleTableFilter": "Filter",
   "operatorsAnd": "Und",
   "operatorsOr": "Oder",
+  "pageMapsTitle": "Karten",
+  "pageMapsText": "Die folgenden Karten wurden in dieser Version von Germinate gefunden. Klicken Sie auf eine Karte in der Tabelle um die enthaltenen Marker zu sehen.",
   "pageMapsDetailsTitle": "Kartendetails für:",
   "pageMapsDetailsText": "Die folgende Tabelle enthält weitere Informationen über Marker auf Ihrer ausgewählten Karte. Klicken Sie auf den Namen des Markers, um Informationen zu diesem bestimmten Marker zu erhalten.",
   "pageMapsHistogramTitle": "Histogramm",
