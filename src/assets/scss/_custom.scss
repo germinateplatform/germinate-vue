@@ -1,7 +1,6 @@
 // Here you can add other styles
 
 body {
-  line-height: 1;
   background-color: #ffffff;
 }
 
@@ -21,9 +20,6 @@ button.mdi:before {
   vertical-align: sub;
 }
 
-.nav-item i.mdi {
-  vertical-align: sub;
-}
 .nav-item .dropdown-menu .dropdown-item .badge {
   margin-top: 7px;
 }
@@ -44,5 +40,44 @@ button.mdi:before {
 
 .table tbody i.mdi {
   display: inline-flex;
+}
+
+.b-dropdown i.mdi,
+i.mdi {
   vertical-align: sub;
+}
+
+.dropdown-item i.mdi {
+  color: initial;
+}
+
+.table tfoot p {
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}
+
+.table tfoot td {
+  padding-top: 0;
+  padding-right: 0;
+}
+
+.table tfoot li.VuePagination__pagination-item.page-item a {
+  border-top: 0;
+}
+
+.table tfoot li.VuePagination__pagination-item.page-item:first-child a {
+  border-top-left-radius: 0;
+}
+
+.table tfoot li.VuePagination__pagination-item.page-item:last-child a {
+  border-top-right-radius: 0;
+}
+
+@media print {
+  .modal-open {
+    overflow: auto;
+  }
+  .modal-backdrop {
+    display: none !important;
+  }
 }

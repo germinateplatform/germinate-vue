@@ -88,5 +88,6 @@
   "tableColumnMapDescription": "Kartenbeschreibung",
   "tableColumnMapMarkerCount": "Markeranzahl",
   "tooltipClear": "Leeren",
-  "tooltipDelete": "Löschen"
+  "tooltipDelete": "Löschen",
+  "widgetTableMultiSelectInfo": "Nutze die Checkboxes um eine oder mehrere Reihen auszuwählen."
 }

@@ -89,5 +89,6 @@
   "tableColumnMapDescription": "Map description",
   "tableColumnMapMarkerCount": "Marker count",
   "tooltipClear": "Clear",
-  "tooltipDelete": "Delete"
+  "tooltipDelete": "Delete",
+  "widgetTableMultiSelectInfo": "Use the checkboxes to select one or more rows."
 }

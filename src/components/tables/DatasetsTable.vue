@@ -11,18 +11,23 @@
       <span slot="dataobjectcount" slot-scope="props" v-if="props.row.dataobjectcount && props.row.dataobjectcount.value">{{ props.row.dataobjectcount.value }}</span>
       <span slot="datapointcount" slot-scope="props" v-if="props.row.datapointcount && props.row.datapointcount.value">{{ getDataPointCount(props.row) }}</span>
 
-      <a href="#" slot="licensename" slot-scope="props" v-if="props.row.licensename" @click.prevent="onLicenseClicked(props.row)">
-        <span>{{ props.row.licensename }} </span>
+      <div slot="licensename" slot-scope="props" v-if="props.row.licensename">
+        <a href="#" @click.prevent="onLicenseClicked(props.row)" class="text-nowrap">
+          <span>{{ props.row.licensename }} </span>
+        </a>
         <i class="mdi mdi-18px mdi-check" v-if="props.row.acceptedby && props.row.acceptedby == token.id" />
         <i class="mdi mdi-18px mdi-new-box" v-else />
-      </a>
+      </div>
     </BaseTable>
+
+    <LicenseModal :license="license" :isAccepted="dataset.acceptedby !== undefined" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
+import LicenseModal from '@/components/modals/LicenseModal'
 
 export default {
   name: 'DatasetsTable',
@@ -34,7 +39,8 @@ export default {
   },
   computed: {
     ...mapState([
-      'token'
+      'token',
+      'locale'
     ])
   },
   data: function () {
@@ -73,11 +79,14 @@ export default {
           datapointcount: 'text-right'
         }
       },
-      columns: columns
+      columns: columns,
+      dataset: null,
+      license: null
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    LicenseModal
   },
   methods: {
     getDataPointCount: function (dataset) {
@@ -88,12 +97,42 @@ export default {
       result += dataset.datapointcount.value
       return result
     },
+    onLicenseAccepted: function () {
+      this.$refs.licenseModal.hide()
+
+      // TODO: Send server request.
+    },
     onLicenseClicked: function (dataset) {
-      console.log(dataset.licensename)
+      this.dataset = dataset
+
+      if (this.license && this.license.licenseid === this.dataset.licenseid) {
+        // If we already have the correct license, just show it
+        this.$refs.licenseModal.show()
+      } else {
+        // Otherwise, go get it
+        const query = {
+          page: 1,
+          prevCount: -1,
+          filter: [{
+            column: 'licenseid',
+            comparator: 'equals',
+            operator: 'and',
+            values: [dataset.licenseid]
+          }, {
+            column: 'localename',
+            comparator: 'equals',
+            operator: 'and',
+            values: [this.locale]
+          }]
+        }
+        this.apiPostLicenseTable(query, result => {
+          if (result && result.data && result.data.length > 0) {
+            this.license = result.data[0]
+            this.$refs.licenseModal.show()
+          }
+        })
+      }
     }
   }
 }
 </script>
-
-<style>
-</style>

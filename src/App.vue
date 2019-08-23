@@ -1,10 +1,32 @@
 <template>
-  <router-view></router-view>
+  <div>
+    <router-view :class="printContent ? 'd-print-none' : ''"></router-view>
+    <div ref="printer-view" class="d-none d-print-block" v-html="printContent" v-if="printContent"></div>
+  </div>
 </template>
 
 <script>
+import { EventBus } from '@/plugins/event-bus.js'
+
 export default {
-  name: 'app'
+  name: 'app',
+  data: function () {
+    return {
+      printContent: null
+    }
+  },
+  mounted: function () {
+    EventBus.$on('on-print', newContent => {
+      this.printContent = newContent
+
+      this.$nextTick(() => {
+        window.print()
+        this.$nextTick(() => {
+          this.printContent = null
+        })
+      })
+    })
+  }
 }
 </script>
 

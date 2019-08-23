@@ -2,9 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import auth from '@/auth'
 
-// Containers
-const DefaultContainer = () => import('@/containers/DefaultContainer')
-
 // Users
 const Users = () => import('@/views/users/Users')
 const User = () => import('@/views/users/User')
@@ -14,7 +11,7 @@ Vue.use(Router)
 function requireAuth (to, from, next) {
   if (!auth.loggedIn()) {
     next({
-      path: '/login'
+      path: '/g8/login'
     })
   } else {
     next()
@@ -27,15 +24,23 @@ export default new Router({
   scrollBehavior: () => ({ y: 0 }),
   routes: [
     {
-      path: '/login',
-      name: 'Login',
-      component: () => import(/* webpackChunkName: "login" */ '@/views/pages/Login.vue')
+      path: '/g8',
+      redirect: '/g8/login',
+      name: '',
+      component: () => import('@/containers/DefaultPublic'),
+      children: [
+        {
+          path: 'login',
+          name: 'Login',
+          component: () => import(/* webpackChunkName: "login" */ '@/views/pages/Login.vue')
+        }
+      ]
     },
     {
       path: '/',
       redirect: '/home',
       name: '',
-      component: DefaultContainer,
+      component: () => import('@/containers/DefaultContainer'),
       children: [
         {
           path: 'home',

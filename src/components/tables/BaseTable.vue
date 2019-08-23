@@ -40,6 +40,10 @@
       <b-form-checkbox @change="onMarkingHeaderClicked"/>
     </div>
     <b-form-checkbox slot="marked" slot-scope="props" :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
+
+    <div slot="afterTable" v-if="columns.indexOf('selected') !== -1">
+      <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
+    </div>
   </v-server-table>
 </template>
 

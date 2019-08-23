@@ -46,7 +46,7 @@ export default {
         console.log(result)
         // If it's successful, delete token, then redirect
         vm.$store.dispatch('ON_TOKEN_CHANGED', null)
-        vm.$router.push('/login')
+        vm.$router.push('/g8/login')
       }, {
         codes: [],
         callback: function () {

@@ -49,7 +49,7 @@ export default {
         case 403:
           message = this.$t('httpErrorFourOThree')
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
-          this.$router.push('/login')
+          this.$router.push('/g8/login')
           return
         case 404:
           message = this.$t('httpErrorFourOFour')
@@ -134,7 +134,7 @@ export default {
           if (!error) {
             if (err.response.status === 403) {
               vm.$store.dispatch('ON_TOKEN_CHANGED', null)
-              vm.$router.push('/login')
+              vm.$router.push('/g8/login')
             } else if (process.env.NODE_ENV === 'development') {
               console.error(err)
             }
