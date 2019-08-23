@@ -2,13 +2,14 @@
   <b-modal id="license-modal" ref="licenseModal" title="License" size="lg" modal-class="d-print-none">
     <div v-if="license">
       <div v-html="license.licensecontent" class="license-content d-print-block"></div>
+      <a :href="htmlData" target="_blank" style="display: none;" :download="htmlFilename" ref="htmlDownloadLink" />
     </div>
     <div slot="modal-footer">
       <b-button-group>
         <b-dropdown>
           <template slot="button-content"><i class="mdi mdi-18px mdi-download"/> Save</template>
           <b-dropdown-item @click="onPrint"><i class="mdi mdi-18px mdi-printer" /> Print</b-dropdown-item>
-          <b-dropdown-item><i class="mdi mdi-18px mdi-file-xml" /> HTML</b-dropdown-item>
+          <b-dropdown-item @click="onDownload"><i class="mdi mdi-18px mdi-file-xml" /> HTML</b-dropdown-item>
         </b-dropdown>
         <b-button v-if="isAccepted" @click="hide"><i class="mdi mdi-18px mdi-cancel" /> Close</b-button>
         <template v-else>
@@ -29,9 +30,19 @@ export default {
       type: Object,
       default: null
     },
+    dataset: {
+      type: Object,
+      default: null
+    },
     isAccepted: {
       type: Boolean,
       default: false
+    }
+  },
+  data: function () {
+    return {
+      htmlData: null,
+      htmlFilename: null
     }
   },
   methods: {
@@ -46,6 +57,19 @@ export default {
     },
     onPrint: function () {
       EventBus.$emit('on-print', this.license.licensecontent)
+    },
+    onDownload: function () {
+      this.htmlData = 'data:application/octet-stream;base64,' + btoa(unescape(encodeURIComponent(this.license.licensecontent)))
+      var filename = this.license.licensename.replace(' ', '-') + '.html'
+      if (this.dataset) {
+        filename = this.dataset.datasetid + '-' + filename
+      }
+
+      this.htmlFilename = filename
+
+      setTimeout(() => {
+        this.$refs.htmlDownloadLink.click()
+      }, 0)
     }
   }
 }

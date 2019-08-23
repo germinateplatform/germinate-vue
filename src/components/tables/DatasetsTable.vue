@@ -20,7 +20,7 @@
       </div>
     </BaseTable>
 
-    <LicenseModal :license="license" :isAccepted="dataset.acceptedby !== undefined" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
+    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedby !== undefined" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
   </div>
 </template>
 
