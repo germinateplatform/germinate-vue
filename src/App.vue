@@ -6,7 +6,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { EventBus } from '@/plugins/event-bus.js'
+import { loadLanguageAsync } from '@/plugins/i18n'
 
 export default {
   name: 'app',
@@ -15,7 +17,13 @@ export default {
       printContent: null
     }
   },
+  computed: {
+    ...mapState([
+      'locale'
+    ])
+  },
   mounted: function () {
+    loadLanguageAsync(this.locale)
     EventBus.$on('on-print', newContent => {
       this.printContent = newContent
 

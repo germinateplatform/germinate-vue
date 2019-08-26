@@ -30,6 +30,7 @@
     "css-vars-ponyfill": "^2.0.2",
     "es6-object-assign": "^1.1.0",
     "flag-icon-css": "^3.3.0",
+    "i18n-iso-countries": "^4.3.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "plotly.js-dist": "^1.49.1",

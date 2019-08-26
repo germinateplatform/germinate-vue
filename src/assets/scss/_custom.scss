@@ -43,8 +43,22 @@ button.mdi:before {
 }
 
 .b-dropdown i.mdi,
-i.mdi {
+.nav-item i.mdi,
+i.mdi-36px {
   vertical-align: sub;
+}
+
+.mdi-heading {
+  display: flex;
+  align-items: center;
+}
+
+.mdi-heading span {
+  margin: 0 0.5rem;
+}
+
+.mdi-heading * {
+  vertical-align: unset !important;
 }
 
 .dropdown-item i.mdi {
@@ -71,6 +85,11 @@ i.mdi {
 
 .table tfoot li.VuePagination__pagination-item.page-item:last-child a {
   border-top-right-radius: 0;
+}
+
+i.flag-icon {
+  font-size: 1.3rem;
+  vertical-align: sub;
 }
 
 @media print {

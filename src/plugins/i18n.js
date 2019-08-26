@@ -1,16 +1,39 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-
-import en from '@/lang/en_GB.json'
-import de from '@/lang/de_DE.json'
+import axios from 'axios'
 
 Vue.use(VueI18n)
 
 export const i18n = new VueI18n({
-  locale: 'en_GB',
+  locale: null,
   fallbackLocale: 'en_GB',
-  messages: {
-    en_GB: en,
-    de_DE: de
-  }
+  messages: null
 })
+
+const loadedLanguages = []
+
+function setI18nLanguage (lang) {
+  i18n.locale = lang
+  axios.defaults.headers.common['Accept-Language'] = lang
+  document.querySelector('html').setAttribute('lang', lang)
+  return lang
+}
+
+export function loadLanguageAsync (lang) {
+  // If the same language
+  if (i18n.locale === lang) {
+    return Promise.resolve(setI18nLanguage(lang))
+  }
+
+  // If the language was already loaded
+  if (loadedLanguages.includes(lang)) {
+    return Promise.resolve(setI18nLanguage(lang))
+  }
+
+  // If the language hasn't been loaded yet
+  return axios.get(`clientlocale/${lang}`).then(messages => {
+    i18n.setLocaleMessage(lang, messages.data)
+    loadedLanguages.push(lang)
+    return setI18nLanguage(lang)
+  })
+}

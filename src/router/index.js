@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import auth from '@/auth'
+import store from '@/store/store'
+import { loadLanguageAsync } from '@/plugins/i18n'
 
 // Users
 const Users = () => import('@/views/users/Users')
@@ -10,15 +12,17 @@ Vue.use(Router)
 
 function requireAuth (to, from, next) {
   if (!auth.loggedIn()) {
-    next({
-      path: '/g8/login'
-    })
+    // Remember the original target
+    if (!store.getters.originalTarget) {
+      store.dispatch('ON_ORIGINAL_TARGET_CHANGED', to)
+    }
+    next({ path: '/g8/login' })
   } else {
     next()
   }
 }
 
-export default new Router({
+const router = new Router({
   mode: 'hash', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'open active',
   scrollBehavior: () => ({ y: 0 }),
@@ -111,3 +115,9 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  loadLanguageAsync(store.getters.locale).then(() => next())
+})
+
+export default router

@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'Login',
   data: function () {
@@ -55,6 +57,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState([
+      'originalTarget'
+    ])
+  },
   methods: {
     login: function () {
       var vm = this
@@ -63,7 +70,13 @@ export default {
         vm.error = false
         // If it's successful, finally store them
         vm.$store.dispatch('ON_TOKEN_CHANGED', result)
-        vm.$router.push('/')
+        if (vm.originalTarget) {
+          var path = vm.originalTarget.path
+          vm.$store.dispatch('ON_ORIGINAL_TARGET_CHANGED', null)
+          vm.$router.push(path)
+        } else {
+          vm.$router.push('/')
+        }
       }, {
         codes: [],
         callback: function (error) {

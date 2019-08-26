@@ -13,6 +13,7 @@
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
 import { mapState } from 'vuex'
+import { loadLanguageAsync } from '@/plugins/i18n'
 
 export default {
   name: 'LocaleDropdown',
@@ -39,8 +40,10 @@ export default {
   },
   methods: {
     onLocaleChanged: function (language) {
-      this.$i18n.locale = language.locale
-      this.$store.dispatch('ON_LOCALE_CHANGED', language.locale)
+      loadLanguageAsync(language.locale).then(() => {
+        this.$i18n.locale = language.locale
+        this.$store.dispatch('ON_LOCALE_CHANGED', language.locale)
+      })
     }
   },
   mounted: function () {

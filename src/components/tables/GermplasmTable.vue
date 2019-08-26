@@ -127,7 +127,4 @@ export default {
 .table-country > * {
   vertical-align: middle;
 }
-.table-country > i {
-  font-size: 1.3rem;
-}
 </style>

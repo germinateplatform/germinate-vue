@@ -1,5 +1,4 @@
 import axios from 'axios'
-import store from '../store/store'
 
 export default {
   methods: {
@@ -11,9 +10,6 @@ export default {
         clearTimeout(inDebounce)
         inDebounce = setTimeout(() => func.apply(context, args), delay)
       }
-    },
-    getBaseUrl () {
-      return store.getters.baseUrl
     },
     getPaginationTexts () {
       return {
@@ -99,7 +95,7 @@ export default {
       }
 
       const promise = axios({
-        url: this.getBaseUrl() + url,
+        url: url,
         method: method,
         data: requestData,
         params: requestParams,
@@ -176,7 +172,7 @@ export default {
       }
 
       return axios({
-        url: this.getBaseUrl() + url,
+        url: url,
         method: method,
         data: requestData,
         params: requestParams,

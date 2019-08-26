@@ -28,15 +28,18 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'germplasm', data: queryData, success: onSuccess, error: onError })
     },
+    apiGetGermplasmMcpd: function (germplasmId, onSuccess, onError) {
+      return this.authAjax({ url: `germplasm/${germplasmId}/mcpd`, success: onSuccess, error: onError })
+    },
     apiPostGermplasmTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiGetMap: function (mapId, onSuccess, onError) {
-      return this.authAjax({ url: 'map/' + mapId, success: onSuccess, error: onError })
+      return this.authAjax({ url: `map/${mapId}`, success: onSuccess, error: onError })
     },
     apiGetMapExport: function (mapId, onSuccess, onError) {
-      return this.authAjax({ url: 'map/' + mapId + '/export', dataType: 'blob', success: onSuccess, error: onError })
+      return this.authAjax({ url: `map/${mapId}/export`, dataType: 'blob', success: onSuccess, error: onError })
     },
     apiPostMapsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -44,7 +47,7 @@ export default {
     },
     apiPostMapdefinitionTable: function (mapId, queryData, onSuccess, onError) {
       queryData.page -= 1
-      return this.authAjax({ url: 'map/' + mapId + '/mapdefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+      return this.authAjax({ url: `map/${mapId}/mapdefinition/table`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1

@@ -3,7 +3,7 @@ import store from './store/store'
 export default {
   loggedIn () {
     var token = store.getters.token
-    return token && this.tokenStillValid()
+    return token !== null && this.tokenStillValid()
   },
   tokenStillValid () {
     var token = store.getters.token

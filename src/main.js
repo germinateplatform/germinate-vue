@@ -14,6 +14,7 @@ import mixin from '@/mixins/mixin.js'
 import api from '@/mixins/api.js'
 import { ClientTable, ServerTable } from 'vue-tables-2'
 require('es6-object-assign/auto')
+let axiosDefaults = require('axios/lib/defaults')
 
 // todo
 // cssVars()
@@ -56,6 +57,8 @@ var baseUrl = 'http://localhost:8080/germinate/v3.6.0/api/'
 if (process.env.VUE_APP_BASE_URL) {
   baseUrl = process.env.VUE_APP_BASE_URL
 }
+
+axiosDefaults.baseURL = baseUrl
 
 store.commit('ON_BASE_URL_CHANGED_MUTATION', baseUrl)
 
