@@ -56,6 +56,18 @@ export default {
     apiPostLicenseTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'license/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiGetOverviewStats: function (onSuccess, onError) {
+      return this.authAjax({ url: 'stats/overview', success: onSuccess, error: onError })
+    },
+    apiGetSettings: function (onSuccess, onError) {
+      return this.authAjax({ url: 'settings', success: onSuccess, error: onError })
+    },
+    apiGetSettingsFile: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'settings/file', data: queryData, success: onSuccess, error: onError })
+    },
+    apiGetImageSrc: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'image/src', data: queryData, dataType: 'arraybuffer', success: onSuccess, error: onError })
     }
   }
 }

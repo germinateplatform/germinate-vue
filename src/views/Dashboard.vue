@@ -1,53 +1,103 @@
 <template>
   <div class="animated fadeIn">
-    <b-row>
-      <b-col sm="6" lg="3">
-        <b-card no-body class="bg-primary">
-          <b-card-body class="pb-0">
-            <h4 class="mb-0">9.823</h4>
-            <p>Members online</p>
-          </b-card-body>
-        </b-card>
-      </b-col>
-      <b-col sm="6" lg="3">
-        <b-card no-body class="bg-info">
-          <b-card-body class="pb-0">
-            <h4 class="mb-0">9.823</h4>
-            <p>Members online</p>
-          </b-card-body>
-        </b-card>
-      </b-col>
-      <b-col sm="6" lg="3">
-        <b-card no-body class="bg-warning">
-          <b-card-body class="pb-0">
-            <h4 class="mb-0">9.823</h4>
-            <p>Members online</p>
-          </b-card-body>
-        </b-card>
-      </b-col>
-      <b-col sm="6" lg="3">
-        <b-card no-body class="bg-danger">
-          <b-card-body class="pb-0">
-            <h4 class="mb-0">9.823</h4>
-            <p>Members online</p>
-          </b-card-body>
-        </b-card>
+    <b-row class="dashboard-stats" v-if="stats">
+      <b-col cols=12 sm=6 xl=3 v-for="(category, index) in statCategories" :key="'dashboard-stats-' + category.key">
+        <router-link :to="category.link">
+          <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
+            <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
+              <b-row>
+                <b-col cols=6 class="align-self-center">
+                  <h2 class="mb-0">{{ stats[category.key] }}</h2>
+                  <p>{{ category.text }}</p>
+                </b-col>
+                <b-col cols=6 class="text-right">
+                  <i :class="`mdi mdi-48px ${category.icon}`" />
+                </b-col>
+              </b-row>
+            </b-card-body>
+            <b-card-footer :style="`color: ${getColor(index)}`">
+              <i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> View</span>
+            </b-card-footer>
+          </b-card>
+        </router-link>
       </b-col>
     </b-row>
+    <ImageCarousel />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import ImageCarousel from '@/components/util/ImageCarousel'
 
 export default {
   name: 'dashboard',
+  computed: {
+    ...mapState([
+      'settings'
+    ])
+  },
+  components: {
+    ImageCarousel
+  },
   data: function () {
     return {
-      selected: 'Month'
+      stats: null,
+      images: null,
+      statCategories: [
+        {
+          key: 'germplasm',
+          text: 'Germplasm',
+          icon: 'mdi-sprout',
+          link: '/data/germplasm'
+        },
+        {
+          key: 'markers',
+          text: 'Markers',
+          icon: 'mdi-dna',
+          link: '/data/genotypes/maps'
+        },
+        {
+          key: 'traits',
+          text: 'Traits',
+          icon: 'mdi-tag-text-outline',
+          link: '/data/traits'
+        },
+        {
+          key: 'locations',
+          text: 'Locations',
+          icon: 'mdi-map-marker',
+          link: '/geo/locations'
+        }
+      ]
     }
+  },
+  methods: {
+    getColor: function (index) {
+      if (!this.settings || !this.settings.colorsTemplate) {
+        return '#00acef'
+      } else {
+        const colors = this.settings.colorsTemplate
+        return colors[index % colors.length]
+      }
+    }
+  },
+  mounted: function () {
+    this.apiGetOverviewStats(result => {
+      this.stats = result
+    })
   }
 }
 </script>
 
-<style>
+<style scoped>
+.dashboard-stats p {
+  margin-bottom: 0;
+}
+.dashboard-stats *:hover {
+  text-decoration: none;
+}
+.dashboard-stats .card-footer i.mdi {
+  vertical-align: sub;
+}
 </style>

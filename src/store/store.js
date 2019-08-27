@@ -17,6 +17,7 @@ const store = new Vuex.Store({
     baseUrl: null,
     tablePerPage: 10,
     originalTarget: null,
+    settings: null,
     markedIds: {
       germplasm: [],
       markers: [],
@@ -36,7 +37,8 @@ const store = new Vuex.Store({
     tablePerPage: state => state.tablePerPage,
     markedIds: state => state.markedIds,
     hiddenColumns: state => state.hiddenColumns,
-    originalTarget: state => state.originalTarget
+    originalTarget: state => state.originalTarget,
+    settings: state => state.settings
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
@@ -86,6 +88,9 @@ const store = new Vuex.Store({
     },
     ON_ORIGINAL_TARGET_CHANGED_MUTATION: function (state, newOriginalTarget) {
       state.originalTarget = newOriginalTarget
+    },
+    ON_SETTINGS_CHANGED_MUTATION: function (state, newSettings) {
+      state.settings = newSettings
     }
   },
   actions: {
@@ -118,6 +123,9 @@ const store = new Vuex.Store({
     },
     ON_ORIGINAL_TARGET_CHANGED: function ({ commit }, originalTarget) {
       commit('ON_ORIGINAL_TARGET_CHANGED_MUTATION', originalTarget)
+    },
+    ON_SETTINGS_CHANGED: function ({ commit }, settings) {
+      commit('ON_SETTINGS_CHANGED_MUTATION', settings)
     }
   },
   plugins: [

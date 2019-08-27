@@ -22,6 +22,11 @@ export default {
       'locale'
     ])
   },
+  created: async function () {
+    await this.apiGetSettings(result => {
+      this.$store.dispatch('ON_SETTINGS_CHANGED', result)
+    })
+  },
   mounted: function () {
     loadLanguageAsync(this.locale)
     EventBus.$on('on-print', newContent => {
