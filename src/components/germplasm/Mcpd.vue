@@ -25,15 +25,12 @@ var countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
 export default {
-  data: function () {
-    return {
-      germplasm: null
-    }
-  },
   props: {
-    germplasmId: {
-      type: String,
-      default: null
+    germplasm: {
+      type: Object,
+      default: function () {
+        return null
+      }
     }
   },
   methods: {
@@ -43,11 +40,6 @@ export default {
     getCountry: function (code3) {
       return countries.getName(code3, 'en')
     }
-  },
-  mounted: function () {
-    this.apiGetGermplasmMcpd(this.germplasmId, result => {
-      this.germplasm = result
-    })
   }
 }
 </script>

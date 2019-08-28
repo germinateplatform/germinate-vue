@@ -2,12 +2,20 @@ import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import axios from 'axios'
 
+import enGB from '@/plugins/i18n/en_GB.json'
+import deDE from '@/plugins/i18n/de_DE.json'
+
 Vue.use(VueI18n)
+
+var messages = {
+  en_GB: enGB,
+  de_DE: deDE
+}
 
 export const i18n = new VueI18n({
   locale: null,
   fallbackLocale: 'en_GB',
-  messages: null
+  messages: messages
 })
 
 const loadedLanguages = []
@@ -31,8 +39,16 @@ export function loadLanguageAsync (lang) {
   }
 
   // If the language hasn't been loaded yet
-  return axios.get(`clientlocale/${lang}`).then(messages => {
-    i18n.setLocaleMessage(lang, messages.data)
+  return axios.get(`clientlocale/${lang}`).then(m => {
+    // If we get a response from the server, use it
+    Object.assign(messages[lang], m.data)
+    console.log(messages[lang])
+    i18n.setLocaleMessage(lang, messages[lang])
+    loadedLanguages.push(lang)
+    return setI18nLanguage(lang)
+  }).catch(() => {
+    // If we can't get it from the server, use the fallback we've got locally
+    i18n.setLocaleMessage(lang, messages[lang])
     loadedLanguages.push(lang)
     return setI18nLanguage(lang)
   })

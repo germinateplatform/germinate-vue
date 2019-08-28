@@ -13,6 +13,12 @@ import { i18n } from '@/plugins/i18n.js'
 import mixin from '@/mixins/mixin.js'
 import api from '@/mixins/api.js'
 import { ClientTable, ServerTable } from 'vue-tables-2'
+// LEAFLET
+import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet'
+import { Icon } from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
+
 require('es6-object-assign/auto')
 let axiosDefaults = require('axios/lib/defaults')
 
@@ -37,6 +43,18 @@ Vue.mixin(api)
 Vue.use(ClientTable, tableOptions, false, 'bootstrap4', 'footerPagination')
 Vue.use(ServerTable, tableOptions, false, 'bootstrap4', 'footerPagination')
 Vue.use(BootstrapVue)
+Vue.component('l-map', LMap)
+Vue.component('l-tile-layer', LTileLayer)
+Vue.component('l-marker', LMarker)
+Vue.component('l-popup', LPopup)
+Vue.component('l-marker-cluster', Vue2LeafletMarkerCluster)
+
+delete Icon.Default.prototype._getIconUrl
+Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+})
 
 Vue.use({
   install: function (Vue) {

@@ -53,12 +53,12 @@ i.mdi-36px {
   align-items: center;
 }
 
-.mdi-heading span {
-  margin: 0 0.5rem;
+.mdi-heading small {
+  display: contents;
 }
 
-.mdi-heading * {
-  vertical-align: unset !important;
+.mdi-heading span {
+  margin: 0 0.5rem;
 }
 
 .dropdown-item i.mdi {

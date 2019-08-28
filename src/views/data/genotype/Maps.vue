@@ -33,7 +33,8 @@ export default {
   },
   computed: {
     ...mapState([
-      'baseUrl'
+      'baseUrl',
+      'settings'
     ])
   },
   components: {
@@ -65,7 +66,8 @@ export default {
 
           this.$plotly.d3.select(this.$refs.mapChart)
             .datum(data)
-            .call(plotlyMapChart())
+            .call(plotlyMapChart()
+              .colors(this.settings.colorsCharts))
         }
         reader.readAsText(result)
       })
