@@ -1,12 +1,13 @@
 <template>
   <div v-if="germplasm">
-    <h1>Passport</h1>
+    <h1>{{ $t('pagePassportTitle') }}</h1>
     <hr />
     <h2 class="mdi-heading">
       <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()"/>
       <span> {{ getTitle() }}</span>
       <small v-if="germplasm.entitytype">{{ germplasm.entitytype }}</small>
     </h2>
+    <p v-html="$t('pagePassportText')" />
     <b-row>
       <b-col cols=12 lg=6>
         <Mcpd :germplasm="germplasm"/>
@@ -81,6 +82,8 @@ export default {
     this.apiGetGermplasmMcpd(this.germplasmId, result => {
       this.germplasm = result
     })
+
+    this.$store.dispatch('ON_HELP_KEY_CHANGED', 'helpPassport')
   }
 }
 </script>

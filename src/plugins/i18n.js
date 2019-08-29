@@ -42,7 +42,6 @@ export function loadLanguageAsync (lang) {
   return axios.get(`clientlocale/${lang}`).then(m => {
     // If we get a response from the server, use it
     Object.assign(messages[lang], m.data)
-    console.log(messages[lang])
     i18n.setLocaleMessage(lang, messages[lang])
     loadedLanguages.push(lang)
     return setI18nLanguage(lang)

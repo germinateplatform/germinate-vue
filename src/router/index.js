@@ -110,6 +110,12 @@ const router = new Router({
               beforeEnter: requireAuth
             }
           ]
+        },
+        {
+          path: 'groups',
+          name: 'Groups',
+          component: () => import('@/views/Groups.vue'),
+          beforeEnter: requireAuth
         }
       ]
     }
@@ -117,6 +123,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  store.dispatch('ON_HELP_KEY_CHANGED', null)
   loadLanguageAsync(store.getters.locale).then(() => next())
 })
 

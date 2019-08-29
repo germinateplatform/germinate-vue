@@ -1,5 +1,9 @@
 <template>
-  <GermplasmTable :filterOn="filterOn" />
+  <div>
+    <h1>{{ $t('pageGermplasmTitle') }}</h1>
+    <p v-html="$t('pageGermplasmText')" />
+    <GermplasmTable :filterOn="filterOn" />
+  </div>
 </template>
 
 <script>
@@ -18,6 +22,9 @@ export default {
   },
   components: {
     GermplasmTable
+  },
+  mounted: function () {
+    this.$store.dispatch('ON_HELP_KEY_CHANGED', 'helpGermplasm')
   }
 }
 </script>

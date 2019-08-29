@@ -42,7 +42,7 @@ export default {
     }
   },
   watch: {
-    locations: (newValue, oldValue) => {
+    locations: function (newValue, oldValue) {
       this.updateCenter()
     }
   },
@@ -63,10 +63,7 @@ export default {
         // If there are multiple locations, fit them into view
         var latLngBounds = L.latLngBounds()
 
-        this.locations.forEach(l => {
-          var location = L.latLng(l.latitude, l.longitude)
-          latLngBounds.extend(location)
-        })
+        this.locations.forEach(l => latLngBounds.extend([l.latitude, l.longitude]))
 
         this.$refs.map.fitBounds(latLngBounds.pad(0.1))
       }

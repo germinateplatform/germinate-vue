@@ -92,6 +92,20 @@ i.flag-icon {
   vertical-align: sub;
 }
 
+.input-group-text {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.app-header {
+  height: auto;
+  min-height: 55px;
+}
+
+.tooltip {
+  top: 0;
+}
+
 @media print {
   .modal-open {
     overflow: auto;

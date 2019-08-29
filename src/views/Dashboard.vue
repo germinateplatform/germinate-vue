@@ -16,7 +16,7 @@
               </b-row>
             </b-card-body>
             <b-card-footer :style="`color: ${getColor(index)}`">
-              <i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> View</span>
+              <i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ $t('actionView') }}</span>
             </b-card-footer>
           </b-card>
         </router-link>
@@ -47,25 +47,25 @@ export default {
       statCategories: [
         {
           key: 'germplasm',
-          text: 'Germplasm',
+          text: this.$t('dashboardBannerGermplasm'),
           icon: 'mdi-sprout',
           link: '/data/germplasm'
         },
         {
           key: 'markers',
-          text: 'Markers',
+          text: this.$t('dashboardBannerMarkers'),
           icon: 'mdi-dna',
           link: '/data/genotypes/maps'
         },
         {
           key: 'traits',
-          text: 'Traits',
+          text: this.$t('dashboardBannerTraits'),
           icon: 'mdi-tag-text-outline',
           link: '/data/traits'
         },
         {
           key: 'locations',
-          text: 'Locations',
+          text: this.$t('dashboardBannerLocations'),
           icon: 'mdi-map-marker',
           link: '/geo/locations'
         }

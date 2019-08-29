@@ -68,6 +68,10 @@ export default {
     },
     apiGetImageSrc: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'image/src', data: queryData, dataType: 'arraybuffer', success: onSuccess, error: onError })
+    },
+    apiPostGroupTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

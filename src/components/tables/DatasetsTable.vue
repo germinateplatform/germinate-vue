@@ -75,6 +75,7 @@ export default {
           column: 'datasetid'
         },
         columnsClasses: {
+          selected: 'bg-info',
           dataobjectcount: 'text-right',
           datapointcount: 'text-right'
         }
