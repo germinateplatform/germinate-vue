@@ -1,17 +1,21 @@
 <template>
   <div class="app">
     <AppHeader fixed>
-      <b-link class="navbar-brand" to="/">
+      <b-link class="navbar-brand d-none d-lg-inline-flex" to="#">
         <img class="navbar-brand-full" src="/img/germinate.svg" width="150" height="32" alt="Germinate">
-        <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="Germinate">
+        <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="32" height="32" alt="Germinate">
       </b-link>
       <b-navbar-nav class="ml-auto">
         <LocaleDropdown />
       </b-navbar-nav>
     </AppHeader>
     <div class="app-body">
-      <main class="main">
-        <div class="container-fluid">
+      <main class="main ml-0">
+        <div class="container-fluid mt-4">
+          <div class="d-lg-none">
+            <img class="mx-auto" src="/img/germinate.svg" width="300" height="64" alt="Germinate" style="display: block;">
+            <hr />
+          </div>
           <router-view :key="$route.path"></router-view>
         </div>
       </main>

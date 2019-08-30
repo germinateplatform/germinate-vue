@@ -1,6 +1,7 @@
 <template>
   <div ref="container" id="map-container">
     <h1>{{ $t('pageMapsTitle') }}</h1>
+    <hr />
     <p>{{ $t('pageMapsText') }}</p>
     <MapsTable v-on:map-selected="onMapSelected" />
 
@@ -49,6 +50,7 @@ export default {
       if (this.mapId) {
         this.apiGetMap(mapId, result => {
           if (result && result.data && result.data.length > 0) {
+            window.history.replaceState({}, null, `#/data/genotypes/maps/${this.mapId}`)
             this.map = result.data[0]
             this.drawChart()
           }
@@ -73,7 +75,6 @@ export default {
       })
     },
     handleResize: function () {
-      console.log('resize')
       this.$plotly.relayout(this.$refs.mapChart, {
         'xaxis.autorange': true,
         'yaxis.autorange': true
@@ -81,7 +82,7 @@ export default {
     }
   },
   mounted: function () {
-    this.onMapSelected(this.$route.params.mapId)
+    this.onMapSelected(parseInt(this.$route.params.mapId))
   }
 }
 </script>

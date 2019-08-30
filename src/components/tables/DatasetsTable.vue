@@ -44,7 +44,51 @@ export default {
     ])
   },
   data: function () {
-    const columns = ['selected', 'datasetid', 'datasetname', 'datasetdescription', 'experimenttype', 'datatype', 'location', 'countryname', 'licensename', 'contact', 'startdate', 'enddate', 'dataobjectcount', 'datapointcount']
+    const columns = [
+      {
+        name: 'selected',
+        type: undefined
+      }, {
+        name: 'datasetid',
+        type: Number
+      }, {
+        name: 'datasetname',
+        type: String
+      }, {
+        name: 'datasetdescription',
+        type: String
+      }, {
+        name: 'experimenttype',
+        type: String
+      }, {
+        name: 'datatype',
+        type: String
+      }, {
+        name: 'location',
+        type: String
+      }, {
+        name: 'countryname',
+        type: String
+      }, {
+        name: 'licensename',
+        type: String
+      }, {
+        name: 'contact',
+        type: String
+      }, {
+        name: 'startdate',
+        type: Date
+      }, {
+        name: 'enddate',
+        type: Date
+      }, {
+        name: 'dataobjectcount',
+        type: Number
+      }, {
+        name: 'datapointcount',
+        type: Number
+      }
+    ]
     return {
       options: {
         requestData: (data, callback) => {

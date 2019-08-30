@@ -26,7 +26,33 @@ export default {
     }
   },
   data: function () {
-    const columns = ['markerid', 'markername', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position', 'marked']
+    const columns = [
+      {
+        name: 'markerid',
+        type: Number
+      }, {
+        name: 'markername',
+        type: String
+      }, {
+        name: 'synonyms',
+        type: String
+      }, {
+        name: 'mapFeatureType',
+        type: String
+      }, {
+        name: 'mapName',
+        type: String
+      }, {
+        name: 'chromosome',
+        type: String
+      }, {
+        name: 'position',
+        type: Number
+      }, {
+        name: 'marked',
+        type: null
+      }
+    ]
     return {
       options: {
         requestData: (data, callback) => {

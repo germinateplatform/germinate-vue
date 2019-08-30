@@ -89,15 +89,39 @@ export default {
   },
   data () {
     return {
-      nav: [
+      nav: []
+    }
+  },
+  computed: {
+    ...mapState([
+      'helpKey',
+      'locale'
+    ]),
+    name () {
+      return this.$route.name
+    },
+    list () {
+      return this.$route.matched.filter((route) => route.name || route.meta.label)
+    }
+  },
+  watch: {
+    locale: function (newValue, oldValue) {
+      this.updateNav()
+    }
+  },
+  methods: {
+    getHelpDisabled: function () {
+      return this.helpKey === undefined || this.helpKey === null
+    },
+    showHelp: function () {
+      this.$refs.helpModal.show()
+    },
+    updateNav: function () {
+      this.nav = [
         {
           name: this.$t('menuHome'),
           url: '/home',
           icon: 'mdi mdi-18px mdi-home'
-          // badge: {
-          //   variant: 'primary',
-          //   text: 'NEW'
-          // }
         },
         {
           name: this.$t('menuData'),
@@ -136,24 +160,8 @@ export default {
       ]
     }
   },
-  computed: {
-    ...mapState([
-      'helpKey'
-    ]),
-    name () {
-      return this.$route.name
-    },
-    list () {
-      return this.$route.matched.filter((route) => route.name || route.meta.label)
-    }
-  },
-  methods: {
-    getHelpDisabled: function () {
-      return this.helpKey === undefined || this.helpKey === null
-    },
-    showHelp: function () {
-      this.$refs.helpModal.show()
-    }
+  mounted: function () {
+    this.updateNav()
   }
 }
 </script>

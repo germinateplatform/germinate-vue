@@ -116,6 +116,12 @@ const router = new Router({
           name: 'Groups',
           component: () => import('@/views/Groups.vue'),
           beforeEnter: requireAuth
+        },
+        {
+          path: 'groups/:groupId',
+          name: 'GroupId',
+          component: () => import('@/views/Groups.vue'),
+          beforeEnter: requireAuth
         }
       ]
     }

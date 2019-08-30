@@ -4,7 +4,7 @@
       <b-dropdown left v-if="columns && columns.length > 0">
         <template slot="button-content"><i class="mdi mdi-18px mdi-view-column"/></template>
         <b-dropdown-form>
-          <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
+          <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.name" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
         </b-dropdown-form>
       </b-dropdown>
       <b-button :variant="filter ? 'success' : ''" v-b-modal="'table-filter-modal-' + tableName" class="mdi mdi-18px mdi-filter" />
@@ -13,28 +13,41 @@
 
     <b-modal :id="'table-filter-modal-' + tableName" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false)" @show="init">
       <b-form v-on:submit.prevent="setFilter(true)">
-        <div v-for="(f, index) in tempFilter" :key="'filter-' + f.column + '-' + index">
+        <div v-for="(f, index) in tempFilter" :key="'filter-' + f.column.name + '-' + index">
           <b-input-group class="mb-3">
             <b-input-group-prepend>
               <!-- Column selector -->
-              <b-dropdown :text="texts[f.column]()" class="overflow-dropdown">
+              <b-dropdown :text="texts[f.column.name]()" class="overflow-dropdown">
                 <b-dropdown-item v-for="column in getColumns"
-                                :key="'filter-column-' + column"
-                                @click="f.column = column">
-                  {{ texts[column]() }}
+                                :key="'filter-column-' + column.name"
+                                @click="switchColumn(f, column)">
+                  {{ texts[column.name]() }}
                 </b-dropdown-item>
               </b-dropdown>
               <!-- comparator selector -->
               <b-dropdown :text="comparators[f.comparator].text" class="overflow-dropdown">
                 <b-dropdown-item v-for="(value, name) in comparators"
                                 :key="'filter-comparator-' + name"
-                                @click="f.comparator = name">
+                                @click="switchComparator(f, name)">
                   {{ value.text }}
                 </b-dropdown-item>
               </b-dropdown>
             </b-input-group-prepend>
-            <b-form-input v-model="f.values[0]" />
-            <b-form-input v-model="f.values[1]" v-if="comparators[f.comparator].values === 2" />
+            <template v-if="isType(f, String)">
+              <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()"/>
+              <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+            </template>
+            <template v-if="isType(f, Number)">
+              <b-form-input v-model="f.values[0]" type="number" @focus.native="$event.target.select()"/>
+              <b-form-input v-model="f.values[1]" type="number" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+            </template>
+            <template v-else-if="isType(f, Date)">
+              <b-form-input v-model="f.values[0]" type="date" @focus.native="$event.target.select()"/>
+              <b-form-input v-model="f.values[1]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+            </template>
+            <template v-else-if="isType(f, 'entity')">
+              <span>ENTITY</span>
+            </template>
             <b-input-group-append>
               <b-button variant="danger" class="mdi mdi-18px mdi-delete" :disabled="index === 0" @click="tempFilter.splice(index, 1)"/>
             </b-input-group-append>
@@ -96,6 +109,26 @@ export default {
         between: {
           text: this.$t('comparatorsBetween'),
           values: 2
+        },
+        greaterThan: {
+          text: this.$t('comparatorsGreaterThan'),
+          values: 1
+        },
+        greaterOrEquals: {
+          text: this.$t('comparatorsGreaterThanOrEquals'),
+          values: 1
+        },
+        lessThan: {
+          text: this.$t('comparatorsLessThan'),
+          values: 1
+        },
+        lessOrEquals: {
+          text: this.$t('comparatorsLessThanOrEquals'),
+          values: 1
+        },
+        inSet: {
+          text: this.$t('comparatorsInSet'),
+          values: 1
         }
       },
       filter: null,
@@ -110,16 +143,38 @@ export default {
     // Only get the columns that have a text that isn't empty
     getColumns: function () {
       return this.columns.filter(c => {
-        return this.texts[c] ? (this.texts[c]() !== '') : false
+        return this.texts[c.name] ? (this.texts[c.name]() !== '') : false
       })
     }
   },
   methods: {
+    switchColumn: function (f, column) {
+      f.column = column
+      f.values = [null, null]
+    },
+    switchComparator: function (f, name) {
+      f.comparator = name
+      f.values = [null, null]
+    },
+    isType: function (filter, type) {
+      return filter.column.type === type
+    },
     setFilter: function (hideModal) {
       this.filter = this.tempFilter.filter(f => {
         return f.values.length > 0 && f.values[0]
       })
-      this.$emit('on-filter-changed', this.filter)
+      var targetFilter = []
+
+      this.filter.forEach(f => {
+        targetFilter.push({
+          column: f.column.name,
+          operator: f.operator,
+          comparator: f.comparator,
+          values: f.values
+        })
+      })
+
+      this.$emit('on-filter-changed', targetFilter)
 
       if (hideModal) {
         this.$refs.tableFilterModal.hide()
@@ -127,7 +182,7 @@ export default {
     },
     addFilter: function () {
       var validColumns = this.columns.filter(c => {
-        return this.texts[c] ? (this.texts[c]() !== '') : false
+        return this.texts[c.name] ? (this.texts[c.name]() !== '') : false
       })
       this.tempFilter.push({
         column: validColumns[0],
@@ -137,22 +192,22 @@ export default {
       })
     },
     getText: function (column) {
-      if (this.texts && this.texts[column]) {
-        return this.texts[column]()
+      if (this.texts && this.texts[column.name]) {
+        return this.texts[column.name]()
       } else {
         return column
       }
     },
     getValue: function (column) {
-      return this.hiddenColumns[this.tableName].indexOf(column) === -1
+      return this.hiddenColumns[this.tableName].indexOf(column.name) === -1
     },
     toggleColumn: function (value, column) {
       if (value) {
-        this.$store.dispatch('ON_HIDDEN_COLUMNS_REMOVE', { type: this.tableName, columns: [column] })
+        this.$store.dispatch('ON_HIDDEN_COLUMNS_REMOVE', { type: this.tableName, columns: [column.name] })
       } else {
-        this.$store.dispatch('ON_HIDDEN_COLUMNS_ADD', { type: this.tableName, columns: [column] })
+        this.$store.dispatch('ON_HIDDEN_COLUMNS_ADD', { type: this.tableName, columns: [column.name] })
       }
-      this.$emit('on-column-toggle', column)
+      this.$emit('on-column-toggle', column.name)
     },
     clearFilter: function () {
       this.filter = null

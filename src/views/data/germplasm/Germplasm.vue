@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageGermplasmTitle') }}</h1>
+    <hr />
     <p v-html="$t('pageGermplasmText')" />
     <GermplasmTable :filterOn="filterOn" />
   </div>
@@ -13,9 +14,12 @@ export default {
   data: function () {
     return {
       filterOn: [{
-        column: 'entitytypename',
+        column: {
+          name: 'entitytypename',
+          type: 'entity'
+        },
         comparator: 'equals',
-        operator: 'or',
+        operator: 'and',
         values: ['Accession']
       }]
     }

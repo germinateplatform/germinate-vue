@@ -7,6 +7,8 @@
       <router-link slot="germplasmgid" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmid">{{ props.row.germplasmgid }}</router-link>
       <router-link slot="germplasmnumber" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmid">{{ props.row.germplasmnumber }}</router-link>
 
+      <span slot="elevation" slot-scope="props" v-if="props.row.elevation">{{ props.row.elevation.toFixed(2) }}</span>
+
       <!-- Country flags -->
       <div slot="countryname" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countrycode.toLowerCase()" v-if="props.row.countrycode"/> <span> {{ props.row.countryname }}</span></div>
       <!-- Formatted date -->
@@ -59,7 +61,58 @@ export default {
     }
   },
   data: function () {
-    const columns = ['germplasmid', 'germplasmgid', 'germplasmname', 'germplasmnumber', 'germplasmpuid', 'entitytypename', 'biologicalstatusname', 'synonyms', 'collectornumber', 'genus', 'species', 'subtaxa', 'elevation', 'countryname', 'colldate', 'imagecount', 'pdci', 'marked']
+    const columns = [{
+      name: 'germplasmid',
+      type: Number
+    }, {
+      name: 'germplasmname',
+      type: String
+    }, {
+      name: 'germplasmnumber',
+      type: String
+    }, {
+      name: 'germplasmpuid',
+      type: String
+    }, {
+      name: 'entitytypename',
+      type: 'entity'
+    }, {
+      name: 'biologicalstatusname',
+      type: String
+    }, {
+      name: 'synonyms',
+      type: 'json'
+    }, {
+      name: 'collectornumber',
+      type: String
+    }, {
+      name: 'genus',
+      type: String
+    }, {
+      name: 'species',
+      type: String
+    }, {
+      name: 'subtaxa',
+      type: String
+    }, {
+      name: 'elevation',
+      type: Number
+    }, {
+      name: 'countryname',
+      type: String
+    }, {
+      name: 'colldate',
+      type: Date
+    }, {
+      name: 'imagecount',
+      type: Number
+    }, {
+      name: 'pdci',
+      type: Number
+    }, {
+      name: 'marked',
+      type: undefined
+    }]
     return {
       options: {
         requestData: (data, callback) => {

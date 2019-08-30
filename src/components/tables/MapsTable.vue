@@ -1,8 +1,8 @@
 <template>
   <div>
     <BaseTable :options="options" :columns="columns">
-      <router-link slot="mapid" slot-scope="props" :to="'/data/genotypes/maps/' + props.row.mapid" event="" @click.native.prevent="$emit('map-selected', props.row.mapid)">{{ props.row.mapid }}</router-link>
-      <router-link slot="mapname" slot-scope="props" :to="'/data/genotypes/maps/' + props.row.mapid" event="" @click.native.prevent="$emit('map-selected', props.row.mapid)">{{ props.row.mapname }}</router-link>
+      <router-link slot="mapid" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapid}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapid)">{{ props.row.mapid }}</router-link>
+      <router-link slot="mapname" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapid}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapid)">{{ props.row.mapname }}</router-link>
       <div slot="mapdescription" slot-scope="props" v-if="isLink(props.row)"> <span v-html="props.row.mapdescription" />&nbsp;<i class="mdi mdi-open-in-new" /></div>
       <span v-else>{{ props.row.mapdescription }}</span>
     </BaseTable>
@@ -21,7 +21,21 @@ export default {
     }
   },
   data: function () {
-    const columns = ['mapid', 'mapname', 'mapdescription', 'markercount']
+    const columns = [
+      {
+        name: 'mapid',
+        type: Number
+      }, {
+        name: 'mapname',
+        type: String
+      }, {
+        name: 'mapdescription',
+        type: String
+      }, {
+        name: 'markercount',
+        type: Number
+      }
+    ]
     return {
       options: {
         requestData: (data, callback) => {

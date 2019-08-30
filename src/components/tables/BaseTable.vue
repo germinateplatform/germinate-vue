@@ -1,5 +1,5 @@
 <template>
-  <v-server-table :url="''" :columns="columns" :options="tableOptions" @loaded="updateSelectionHeader()" ref="table" class="table-overflow-fix">
+  <v-server-table :url="''" :columns="columns.map(c => c.name)" :options="tableOptions" @loaded="updateSelectionHeader()" ref="table" class="table-overflow-fix">
     <!-- Pass on all named slots -->
     <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
     <!-- Pass on all scoped slots -->
@@ -8,12 +8,12 @@
     <b-row slot="beforeTable">
       <b-col cols=6>
         <TableFilter :columns="columns"
-                    :texts="tableOptions.headings"
-                    :tableName="tableOptions.tableName"
-                    :filterOn="tableOptions.filterOn"
-                    ref="tableFilter"
-                    v-on:on-filter-changed="onFilterChanged"
-                    v-on:on-column-toggle="onToggleColumn" />
+                     :texts="tableOptions.headings"
+                     :tableName="tableOptions.tableName"
+                     :filterOn="tableOptions.filterOn"
+                     ref="tableFilter"
+                     v-on:on-filter-changed="onFilterChanged"
+                     v-on:on-column-toggle="onToggleColumn" />
       </b-col>
       <b-col cols=6>
         <b-button-group class="float-right per-page-dropdown">
@@ -41,7 +41,7 @@
     </div>
     <b-form-checkbox slot="marked" slot-scope="props" :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
 
-    <div slot="afterTable" v-if="columns.indexOf('selected') !== -1">
+    <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1">
       <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
     </div>
   </v-server-table>
@@ -203,9 +203,9 @@ export default {
   },
   mounted: function () {
     this.columns.forEach(c => {
-      if (this.hiddenColumns[this.tableOptions.tableName].indexOf(c) !== -1) {
+      if (this.hiddenColumns[this.tableOptions.tableName].indexOf(c.name) !== -1) {
         try {
-          this.$refs.table.toggleColumn(c)
+          this.$refs.table.toggleColumn(c.name)
         } catch (error) {
           console.log(error)
           // Do nothing here

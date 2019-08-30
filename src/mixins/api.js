@@ -72,6 +72,9 @@ export default {
     apiPostGroupTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiGetGroup: function (groupId, onSuccess, onError) {
+      return this.authAjax({ url: `group/${groupId}`, success: onSuccess, error: onError })
     }
   }
 }
