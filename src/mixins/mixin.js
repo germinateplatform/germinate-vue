@@ -80,30 +80,14 @@ export default {
         appendToast: true
       })
     },
-    authAjax ({ url = null, method = 'GET', data = null, dataType = 'json', success = null, error = null }) {
+    authForm ({ url = null, formData, success = null, error = { codes: [], callback: this.handleError } }) {
       var vm = this
-      var requestData = null
-      var requestParams = null
 
-      // Stringify the data object for non-GET requests
-      if (data !== null || data !== undefined) {
-        if (method === 'GET') {
-          requestParams = data
-        } else {
-          requestData = data
-        }
-      }
-
-      const promise = axios({
-        url: url,
-        method: method,
-        data: requestData,
-        params: requestParams,
+      const promise = axios.post(url, formData, {
         crossDomain: true,
-        responseType: dataType,
         withCredentials: true,
         headers: {
-          'content-type': 'application/json; charset=utf-8',
+          'Content-Type': 'multipart/form-data',
           'Authorization': 'Bearer ' + this.getToken()
         }
       })
@@ -134,8 +118,98 @@ export default {
             } else if (process.env.NODE_ENV === 'development') {
               console.error(err)
             }
-          } else {
-            error(err)
+          } else if (error && error.callback) {
+            if (error.codes.length === 0 || error.codes.includes(error.status)) {
+              error.callback(err.response)
+            } else {
+              vm.handleError(err.response)
+            }
+          } else if (process.env.NODE_ENV === 'development') {
+            console.error(error)
+          }
+        } else if (err.request) {
+          // The request was made but no response was received `err.request` is an instance of XMLHttpRequest in the browser
+          if (err.request.textStatus === 'timeout') {
+            vm.$bvToast.toast('Request to the server timed out.', {
+              title: 'Error',
+              variant: 'danger',
+              autoHideDelay: 5000,
+              appendToast: true
+            })
+          }
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          if (process.env.NODE_ENV === 'development') {
+            console.error(err)
+          }
+        }
+      })
+
+      return promise
+    },
+    authAjax ({ url = null, method = 'GET', data = null, formData = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = null, error = { codes: [], callback: this.handleError } }) {
+      var vm = this
+      var requestData = null
+      var requestParams = null
+
+      // Stringify the data object for non-GET requests
+      if (data !== null || data !== undefined) {
+        if (method === 'GET') {
+          requestParams = data
+        } else {
+          requestData = data
+        }
+      }
+
+      const promise = axios({
+        url: url,
+        method: method,
+        data: requestData,
+        formData: formData,
+        params: requestParams,
+        crossDomain: true,
+        responseType: dataType,
+        withCredentials: true,
+        headers: {
+          'Content-Type': contentType,
+          'Authorization': 'Bearer ' + this.getToken()
+        }
+      })
+
+      promise.then(function (result) {
+        var t = vm.$store.getters.token
+
+        // Check if the token is still valid. Renew it if so.
+        if (t && ((new Date().getTime() - new Date(t.createdOn).getTime()) <= t.lifetime)) {
+          t.createdOn = new Date().getTime()
+          vm.$store.dispatch('ON_TOKEN_CHANGED', t)
+        }
+
+        if (success) {
+          success(result.data)
+        }
+      })
+
+      promise.catch(function (err) {
+        if (err.response) {
+          // The request was made and the server responded with a status code that falls out of the range of 2xx
+          // Log the user out if the result is forbidden and no error method has been provided
+          // Otherwise, we assume that the calling method takes care of the error
+          if (!error) {
+            if (err.response.status === 403) {
+              vm.$store.dispatch('ON_TOKEN_CHANGED', null)
+              vm.$router.push('/g8/login')
+            } else if (process.env.NODE_ENV === 'development') {
+              console.error(err)
+            }
+          } else if (error && error.callback) {
+            if (error.codes.length === 0 || error.codes.includes(error.status)) {
+              error.callback(err.response)
+            } else {
+              vm.handleError(err.response)
+            }
+          } else if (process.env.NODE_ENV === 'development') {
+            console.error(error)
           }
         } else if (err.request) {
           // The request was made but no response was received `err.request` is an instance of XMLHttpRequest in the browser

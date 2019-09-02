@@ -20,7 +20,7 @@
         </div>
       </main>
     </div>
-    <TheFooter>
+    <TheFooter style="margin-left: 0;">
       <!--footer-->
       <div class="ml-auto">
         <a href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>

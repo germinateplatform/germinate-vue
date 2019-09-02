@@ -1,60 +1,100 @@
 <template>
-  <AppHeaderDropdown right>
-    <template slot="header">
-      <i class="mdi mdi-18px mdi-account" />
-    </template>\
-    <template slot="dropdown">
-      <b-dropdown-header tag="div" class="text-center"><strong>User settings</strong></b-dropdown-header>
-      <b-dropdown-item><i class="mdi mdi-18px mdi-settings text-primary" /> Settings</b-dropdown-item>
-      <b-dropdown-item @click="signOut"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> Logout</b-dropdown-item>
-      <template v-if="token.isAdmin">
-        <b-dropdown-header tag="div" class="text-center"><strong>Admin settings</strong></b-dropdown-header>
-        <b-dropdown-item><i class="mdi mdi-18px mdi-shield-account text-warning" /> Admin settings</b-dropdown-item>
-        <b-dropdown-item><i class="mdi mdi-18px mdi-account-key text-warning" /> User permissions</b-dropdown-item>
+  <div>
+    <AppHeaderDropdown right>
+      <template slot="header">
+        <i class="mdi mdi-18px mdi-account" />
+      </template>\
+      <template slot="dropdown">
+        <b-dropdown-header tag="div" class="text-center"><strong>User settings</strong></b-dropdown-header>
+        <b-dropdown-item><i class="mdi mdi-18px mdi-settings text-primary" /> Settings</b-dropdown-item>
+        <template v-if="settings.authMode !== 'NONE'">
+          <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> Logout</b-dropdown-item>
+          <b-dropdown-item @click="$refs.signInModal.show()" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> Login</b-dropdown-item>
+        </template>
+        <template v-if="settings.authMode !== 'NONE' && token && token.userType === 'Administrator'">
+          <b-dropdown-header tag="div" class="text-center"><strong>Admin settings</strong></b-dropdown-header>
+          <b-dropdown-item><i class="mdi mdi-18px mdi-shield-account text-warning" /> Admin settings</b-dropdown-item>
+          <b-dropdown-item><i class="mdi mdi-18px mdi-account-key text-warning" /> User permissions</b-dropdown-item>
+          <b-dropdown-item to="/import/data-upload"><i class="mdi mdi-18px mdi-upload text-warning" /> Data uploader</b-dropdown-item>
+        </template>
       </template>
-    </template>
-  </AppHeaderDropdown>
+    </AppHeaderDropdown>
+    <b-modal ref="signInModal" title="Sign in" hide-footer>
+      <SignInForm v-on:login="signIn" />
+      <p class="text-danger" v-if="response">{{ response }}</p>
+    </b-modal>
+  </div>
 </template>
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
 import { mapState } from 'vuex'
+import { EventBus } from '@/plugins/event-bus.js'
+import SignInForm from '@/components/util/SignInForm'
 
 export default {
   name: 'UserSettingsDropdown',
   components: {
-    AppHeaderDropdown
+    AppHeaderDropdown,
+    SignInForm
   },
   data: () => {
-    return {}
+    return {
+      response: null
+    }
   },
   computed: {
     ...mapState([
-      'token'
+      'token',
+      'settings'
     ])
   },
   methods: {
+    signIn: function (user) {
+      this.apiPostToken(user, result => {
+        // If it's successful, finally store them
+        this.$store.dispatch('ON_TOKEN_CHANGED', result)
+        this.$refs.signInModal.hide()
+      }, {
+        codes: [],
+        callback: error => {
+          console.log(error)
+          if (error.status === 403 || error.status === 400) {
+            this.response = this.$t('errorMessageInvalidUsernamePassword')
+          } else {
+            this.response = this.$t('errorMessageServerUnavailable')
+          }
+          // If they're wrong, remove
+          this.$store.dispatch('ON_TOKEN_CHANGED', null)
+        }
+      })
+    },
     signOut: function () {
-      var vm = this
-
       var user = {
         email: this.token.username,
         password: this.token.token
       }
 
-      this.apiDeleteToken(user, function (result) {
-        console.log(result)
+      this.apiDeleteToken(user, result => {
         // If it's successful, delete token, then redirect
-        vm.$store.dispatch('ON_TOKEN_CHANGED', null)
-        vm.$router.push('/g8/login')
+        this.$store.dispatch('ON_TOKEN_CHANGED', null)
+
+        if (this.settings.authMode === 'FULL') {
+          this.$router.push('/g8/login')
+        } else {
+          this.$router.push('/home')
+        }
       }, {
         codes: [],
         callback: function () {
           // If they're wrong, remove
-          vm.$store.dispatch('ON_TOKEN_CHANGED', null)
+          this.$store.dispatch('ON_TOKEN_CHANGED', null)
         }
       })
     }
+  },
+  mounted: function () {
+    EventBus.$on('on-show-login-form', () => this.$refs.signInModal.show())
   }
 }
 </script>

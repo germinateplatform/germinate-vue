@@ -2,9 +2,9 @@
   <div class="app">
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile />
-      <b-link class="navbar-brand d-none d-lg-inline-flex" to="#">
+      <b-link class="navbar-brand d-none d-lg-inline-flex" to="/">
         <img class="navbar-brand-full" src="/img/germinate.svg" width="150" height="32" alt="Germinate">
-        <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="32" height="32" alt="Germinate">
+        <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true />
       <!-- <b-navbar-nav class="d-md-down-none">
@@ -156,6 +156,11 @@ export default {
           name: this.$t('menuGroups'),
           url: '/groups',
           icon: 'mdi mdi-18px mdi-group'
+        },
+        {
+          name: this.$t('menuAbout'),
+          url: '/about',
+          icon: 'mdi mdi-18px mdi-information'
         }
       ]
     }

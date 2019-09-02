@@ -75,6 +75,21 @@ export default {
     },
     apiGetGroup: function (groupId, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}`, success: onSuccess, error: onError })
+    },
+    apiPatchGroup: function (group, onSuccess, onError) {
+      return this.authAjax({ url: `group/${group.id}`, data: group, method: 'PATCH', success: onSuccess, error: onError })
+    },
+    apiDeleteGroup: function (groupId, onSuccess, onError) {
+      return this.authAjax({ url: `group/${groupId}`, method: 'DELETE', success: onSuccess, error: onError })
+    },
+    apiGetGroupTypes: function (onSuccess, onError) {
+      return this.authAjax({ url: `grouptype?limit=${Number.MAX_SAFE_INTEGER}`, success: onSuccess, error: onError })
+    },
+    apiPostDataUpload: function (formData, onSuccess, onError) {
+      return this.authForm({ url: 'import/template/mcpd', formData: formData, success: onSuccess, error: onError })
+    },
+    apiGetDataUploadStatus: function (uuid, onSuccess, onError) {
+      return this.authAjax({ url: `import/template/${uuid}/status`, success: onSuccess, error: onError })
     }
   }
 }

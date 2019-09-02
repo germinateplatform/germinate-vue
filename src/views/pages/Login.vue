@@ -6,26 +6,7 @@
           <b-card-group>
             <b-card no-body class="p-4">
               <b-card-body>
-                <b-form>
-                  <h1>Login</h1>
-                  <p class="text-muted">Sign In to your account</p>
-                  <b-input-group class="mb-3">
-                    <b-input-group-prepend is-text><i class="mdi mdi-18px mdi-account" /></b-input-group-prepend>
-                    <b-form-input type="text" class="form-control" :placeholder="$t('formLabelUsername')" autocomplete="username email" required autofocus v-model="user.username" />
-                  </b-input-group>
-                  <b-input-group class="mb-4">
-                    <b-input-group-prepend is-text><i class="mdi mdi-18px mdi-lock-outline" /></b-input-group-prepend>
-                    <b-form-input type="password" class="form-control" :placeholder="$t('formLabelPassword')" autocomplete="current-password" required v-model="user.password" />
-                  </b-input-group>
-                  <b-row>
-                    <b-col cols="6">
-                      <b-button variant="primary" class="px-4" @click="login">Login</b-button>
-                    </b-col>
-                    <b-col cols="6" class="text-right">
-                      <b-button variant="link" class="px-0">Forgot password?</b-button>
-                    </b-col>
-                  </b-row>
-                </b-form>
+                <SignInForm v-on:login="login" />
               </b-card-body>
             </b-card>
             <b-card no-body class="text-white bg-primary py-5">
@@ -46,27 +27,23 @@
 
 <script>
 import { mapState } from 'vuex'
+import SignInForm from '@/components/util/SignInForm'
 
 export default {
   name: 'Login',
-  data: function () {
-    return {
-      user: {
-        username: null,
-        password: null
-      }
-    }
-  },
   computed: {
     ...mapState([
       'originalTarget'
     ])
   },
+  components: {
+    SignInForm
+  },
   methods: {
-    login: function () {
+    login: function (user) {
       var vm = this
 
-      this.apiPostToken(this.user, function (result) {
+      this.apiPostToken(user, function (result) {
         vm.error = false
         // If it's successful, finally store them
         vm.$store.dispatch('ON_TOKEN_CHANGED', result)

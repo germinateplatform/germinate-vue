@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import auth from '@/auth'
 import store from '@/store/store'
 import { loadLanguageAsync } from '@/plugins/i18n'
+import { EventBus } from '@/plugins/event-bus.js'
 
 // Users
 const Users = () => import('@/views/users/Users')
@@ -11,15 +12,32 @@ const User = () => import('@/views/users/User')
 Vue.use(Router)
 
 function requireAuth (to, from, next) {
-  if (!auth.loggedIn()) {
-    // Remember the original target
-    if (!store.getters.originalTarget) {
-      store.dispatch('ON_ORIGINAL_TARGET_CHANGED', to)
+  console.log(from)
+  var authMode = store.getters.settings.authMode
+  var token = store.getters.token
+  // If we're in full auth mode, check credentials for each call
+  if (authMode === 'FULL') {
+    if (!auth.loggedIn()) {
+      // Remember the original target
+      if (!store.getters.originalTarget) {
+        store.dispatch('ON_ORIGINAL_TARGET_CHANGED', to)
+      }
+      next({ path: '/g8/login' })
+      return
+    } else if (to.meta && to.meta.requiresAdmin && token.userType !== 'Administrator') {
+      next({ path: '/403' })
+      return
     }
-    next({ path: '/g8/login' })
-  } else {
-    next()
+  } else if (authMode === 'SELECTIVE' && to.meta && to.meta.requiresAdmin && (!token || token.userType !== 'Administrator')) {
+    if (from.name) {
+      EventBus.$emit('on-show-login-form')
+    } else {
+      next({ path: '/home' })
+    }
+    return
   }
+
+  next()
 }
 
 const router = new Router({
@@ -51,6 +69,23 @@ const router = new Router({
           name: 'Home',
           component: () => import('@/views/Dashboard'),
           beforeEnter: requireAuth
+        },
+        {
+          path: 'admin',
+          redirect: '/admin/settings',
+          name: 'Admin settings',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'settings',
+              name: 'Settings',
+              meta: { requiresAdmin: true },
+              component: () => import('@/views/admin/Settings.vue'),
+              beforeEnter: requireAuth
+            }
+          ]
         },
         {
           path: 'users',
@@ -112,6 +147,22 @@ const router = new Router({
           ]
         },
         {
+          path: 'import',
+          redirect: '/import/data-upload',
+          name: 'Import',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'data-upload',
+              name: 'Data upload',
+              component: () => import('@/views/data/DataUploader.vue'),
+              beforeEnter: requireAuth
+            }
+          ]
+        },
+        {
           path: 'groups',
           name: 'Groups',
           component: () => import('@/views/Groups.vue'),
@@ -122,6 +173,11 @@ const router = new Router({
           name: 'GroupId',
           component: () => import('@/views/Groups.vue'),
           beforeEnter: requireAuth
+        },
+        {
+          path: 'about',
+          name: 'About',
+          component: () => import('@/views/About.vue')
         }
       ]
     }
