@@ -1,6 +1,11 @@
 <template>
   <div>
-    <BaseTable :options="options" :columns="columns" itemType="markers" ref="mapDefinitionTable">
+    <BaseTable :options="options"
+               :columns="columns"
+               itemType="markers"
+               ref="mapDefinitionTable"
+               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+      <span slot="synonyms" slot-scope="props" v-if="props.row.synonyms">{{ props.row.synonyms.join(', ') }}</span>
     </BaseTable>
   </div>
 </template>
@@ -15,23 +20,18 @@ export default {
       type: Array,
       default: null
     },
-    mapId: {
-      type: Number,
-      default: null
-    }
-  },
-  watch: {
-    mapId (newValue, oldValue) {
-      this.$refs.mapDefinitionTable.refresh()
+    getData: {
+      type: Function,
+      default: () => {}
     }
   },
   data: function () {
     const columns = [
       {
-        name: 'markerid',
+        name: 'markerId',
         type: Number
       }, {
-        name: 'markername',
+        name: 'markerName',
         type: String
       }, {
         name: 'synonyms',
@@ -56,17 +56,17 @@ export default {
     return {
       options: {
         requestData: (data, callback) => {
-          return this.apiPostMapdefinitionTable(this.mapId, data, callback)
+          return this.getData(data, callback)
         },
-        idColumn: 'markerid',
+        idColumn: 'markerId',
         tableName: 'markers',
         filterOn: this.filterOn,
-        sortable: ['markerid', 'markername', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position'],
+        sortable: ['markerId', 'markerName', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position'],
         filterable: [],
         headings: {
         },
         columnsClasses: {
-          markerid: 'text-right',
+          markerId: 'text-right',
           chromosome: 'text-right',
           position: 'text-right',
           marked: 'text-right'
@@ -77,6 +77,11 @@ export default {
   },
   components: {
     BaseTable
+  },
+  methods: {
+    refresh: function () {
+      this.$refs.mapDefinitionTable.refresh()
+    }
   }
 }
 </script>

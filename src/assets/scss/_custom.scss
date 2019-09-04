@@ -44,6 +44,7 @@ button.mdi:before {
 
 .b-dropdown i.mdi,
 .nav-item i.mdi,
+.modal-footer .btn i.mdi,
 i.mdi-36px,
 i.mdi.fix-alignment {
   vertical-align: sub;
@@ -111,7 +112,31 @@ i.flag-icon {
   font-size: 0.8rem;
 }
 
+/* Leaflet customization */
+.marker-cluster, .prunecluster {
+	color: white;
+}
 
+.marker-cluster-small, .prunecluster-small {
+	background-color: rgba(124, 179, 218, 0.6);
+}
+.marker-cluster-small div, .prunecluster-small div {
+	background-color: rgba(124, 179, 218, 0.8);
+}
+
+.marker-cluster-medium, .prunecluster-medium {
+	background-color: rgba(62, 139, 193, 0.6);
+}
+.marker-cluster-medium div, .prunecluster-medium div {
+	background-color: rgba(62, 139, 193, 0.8);
+}
+
+.marker-cluster-large, .prunecluster-large {
+	background-color: rgba(15, 112, 182, 0.6);
+}
+.marker-cluster-large div, .prunecluster-large div {
+	background-color: rgba(15, 112, 182, 0.8);
+}
 
 @media (min-width: 576px) {
   .carousel-caption h3 {

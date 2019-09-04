@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import { EventBus } from '@/plugins/event-bus.js'
 import { loadLanguageAsync } from '@/plugins/i18n'
 
@@ -16,11 +15,6 @@ export default {
     return {
       printContent: null
     }
-  },
-  computed: {
-    ...mapState([
-      'locale'
-    ])
   },
   created: async function () {
     await this.apiGetSettings(result => {

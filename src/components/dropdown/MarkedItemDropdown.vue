@@ -26,7 +26,6 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
-import { mapState } from 'vuex'
 
 export default {
   name: 'MarkedItemDropdown',
@@ -35,11 +34,6 @@ export default {
   },
   data: () => {
     return { itemsCount: 42 }
-  },
-  computed: {
-    ...mapState([
-      'markedIds'
-    ])
   },
   methods: {
     onClear: function (event, itemType) {

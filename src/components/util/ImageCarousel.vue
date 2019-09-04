@@ -15,18 +15,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   data: function () {
     return {
       images: null
     }
-  },
-  computed: {
-    ...mapState([
-      'locale'
-    ])
   },
   methods: {
     getImage: function (index) {

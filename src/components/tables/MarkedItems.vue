@@ -8,19 +8,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   props: {
     itemType: {
       type: String,
       default: null
     }
-  },
-  computed: {
-    ...mapState([
-      'markedIds'
-    ])
   },
   methods: {
     clear: function () {

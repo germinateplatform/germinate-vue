@@ -26,16 +26,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import SignInForm from '@/components/util/SignInForm'
 
 export default {
   name: 'Login',
-  computed: {
-    ...mapState([
-      'originalTarget'
-    ])
-  },
   components: {
     SignInForm
   },

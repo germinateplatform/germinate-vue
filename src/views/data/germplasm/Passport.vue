@@ -25,7 +25,6 @@
 <script>
 import Mcpd from '@/components/germplasm/Mcpd'
 import LocationMap from '@/components/map/LocationMap'
-import { mapState } from 'vuex'
 
 export default {
   data: function () {
@@ -34,11 +33,6 @@ export default {
       germplasmId: null
     }
   },
-  computed: {
-    ...mapState([
-      'markedIds'
-    ])
-  },
   components: {
     LocationMap,
     Mcpd
@@ -46,14 +40,13 @@ export default {
   methods: {
     getLocation: function () {
       return {
-        locationid: -1,
-        latitude: this.germplasm.declatitude,
-        longitude: this.germplasm.declongitude,
-        collsite: this.germplasm.collsite,
-        country: {
-          countryid: -1,
-          code3: this.germplasm.origcty
-        }
+        locationId: -1,
+        locationLatitude: this.germplasm.declatitude,
+        locationLongitude: this.germplasm.declongitude,
+        locationName: this.germplasm.collsite,
+        countryName: null,
+        countryCode2: null,
+        countryCode3: this.germplasm.origcty
       }
     },
     getTitle: function () {

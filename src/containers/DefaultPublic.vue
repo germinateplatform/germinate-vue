@@ -2,8 +2,8 @@
   <div class="app">
     <AppHeader fixed>
       <b-link class="navbar-brand d-none d-lg-inline-flex" to="#">
-        <img class="navbar-brand-full" src="/img/germinate.svg" width="150" height="32" alt="Germinate">
-        <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="32" height="32" alt="Germinate">
+        <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
+        <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
       </b-link>
       <b-navbar-nav class="ml-auto">
         <LocaleDropdown />

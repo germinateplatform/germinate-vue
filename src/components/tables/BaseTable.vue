@@ -31,10 +31,10 @@
     </div>
     <b-form-checkbox slot="selected" slot-scope="props" :checked="isSelected(props.row)" @change="onItemSelected(props.row, $event)"/> -->
 
-    <div slot="h__selected">
+    <div slot="h__selected" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds">
       <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
     </div>
-    <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" />
+    <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds"/>
 
     <div slot="h__marked">
       <b-form-checkbox @change="onMarkingHeaderClicked"/>
@@ -42,13 +42,20 @@
     <b-form-checkbox slot="marked" slot-scope="props" :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
 
     <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1">
-      <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
+      <b-button-group v-if="tableActions">
+        <b-button v-for="action in tableActions" :key="`base-table-action-${action.id}`" :variant="action.variant" @click="action.callback(selectedItems)" v-b-tooltip.hover :title="action.text">
+          <i :class="action.icon" v-if="action.icon" :title="action.text" />
+          <span v-else>{{ action.text }}</span>
+        </b-button>
+      </b-button-group>
+      <div>
+        <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
+      </div>
     </div>
   </v-server-table>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import TableFilter from '@/components/tables/TableFilter'
 import MarkedItems from '@/components/tables/MarkedItems'
 
@@ -69,15 +76,20 @@ export default {
     itemType: {
       type: String,
       default: null
+    },
+    getIds: {
+      type: Function,
+      default: null
+    },
+    tableActions: {
+      type: Array,
+      default: () => null
     }
   },
   computed: {
-    ...mapState([
-      'markedIds',
-      'hiddenColumns',
-      'tablePerPage',
-      'locale'
-    ])
+    allSelected: function () {
+      return this.selectedItems.length === this.prevCount
+    }
   },
   watch: {
     locale (newValue, oldValue) {
@@ -85,19 +97,41 @@ export default {
     },
     selectedItems: function (newValue, oldValue) {
       this.updateSelectionHeader()
+    },
+    token: function (newValue, oldValue) {
+      this.refresh()
     }
   },
   data: function () {
+    var isInitialLoad = true
+
     var defaults = {
       requestFunction: data => {
-        var vm = this
-        data.prevCount = this.prevCount
-        data.filter = this.filter
-        return this.tableOptions.requestData(data, function (result) {
-          vm.prevCount = result.count
-        })
+        // On its initial load, if a filter was specified, but none requested, ignore it.
+        // This happens if the TableFilter hasn't been loaded yet when the table has.
+        if (isInitialLoad && this.tableOptions.filterOn && !data.filter) {
+          isInitialLoad = false
+          return new Promise((resolve, reject) => {
+            resolve({
+              data: {
+                data: [],
+                count: 0
+              }
+            })
+          })
+        } else {
+          // Request the data as normal otherwise
+          var vm = this
+          data.prevCount = this.prevCount
+          data.filter = this.filter
+          this.currentRequestData = data
+          return this.tableOptions.requestData(data, function (result) {
+            vm.prevCount = result.count
+          })
+        }
       },
-      responseAdapter: function (data) {
+      responseAdapter: data => {
+        this.$emit('data-changed', this.currentRequestData, data.data)
         return data.data
       },
       skin: 'table table-striped table-hover',
@@ -107,16 +141,25 @@ export default {
       perPageValues: [],
       pagination: {
         chunk: 5
+      },
+      rowClassCallback: row => this.getRowClass(row)
+    }
+
+    var tableOptions = Object.assign({}, defaults, this.options)
+    if (this.options.rowClassCallback) {
+      tableOptions.rowClassCallback = row => {
+        return this.options.rowClassCallback(row) + ' ' + this.getRowClass(row)
       }
     }
 
     return {
       selectedItems: [],
-      allSelected: false,
+      // allSelected: false,
       perPageValues: [10, 25, 50, 100],
       prevCount: -1,
+      currentRequestData: null,
       filter: null,
-      tableOptions: Object.assign({}, defaults, this.options)
+      tableOptions: tableOptions
     }
   },
   components: {
@@ -124,23 +167,24 @@ export default {
     MarkedItems
   },
   methods: {
+    getRowClass: function (row) {
+      if (this.selectedItems.indexOf(row[this.tableOptions.idColumn]) !== -1) {
+        return 'table-info'
+      } else {
+        return ''
+      }
+    },
     onPerPageChanged: function (value) {
       this.$store.dispatch('ON_TABLE_PER_PAGE_CHANGED', value)
       this.$refs.table.setLimit(value)
     },
     onSelectionHeaderClicked: function (value) {
       if (value) {
-        // Add all ids of the current page that aren't there already
-        this.$refs.table.data.forEach(r => {
-          const id = r[this.tableOptions.idColumn]
-          if (this.selectedItems.indexOf(id) === -1) {
-            this.selectedItems.push(id)
-          }
+        this.getIds(this.currentRequestData, result => {
+          this.selectedItems = result.data
         })
       } else {
-        // Remove all ids of the current page that are there
-        var pageIds = this.$refs.table.data.map(r => r[this.tableOptions.idColumn])
-        this.selectedItems = this.selectedItems.filter(id => pageIds.indexOf(id) === -1)
+        this.selectedItems = []
       }
     },
     onMarkingHeaderClicked: function (value) {
@@ -157,18 +201,19 @@ export default {
       }
     },
     updateSelectionHeader: function () {
-      var pageIds = this.$refs.table.data.map(r => r[this.tableOptions.idColumn])
-      var allSelected = true
-      pageIds.forEach(i => {
-        allSelected = allSelected && this.selectedItems.indexOf(i) !== -1
-      })
-      this.allSelected = allSelected
+      // var pageIds = this.$refs.table.data.map(r => r[this.tableOptions.idColumn])
+      // var allSelected = true
+      // pageIds.forEach(i => {
+      //   allSelected = allSelected && this.selectedItems.indexOf(i) !== -1
+      // })
+      // this.allSelected = allSelected
       // TODO: Also reset selected items on filtering.
     },
     isHidden: function (column) {
       return this.$store.getters.hiddenColumns[this.tableOptions.tableName].indexOf(column) !== -1 ? 'd-none' : ''
     },
     refresh: function () {
+      this.prevCount = -1
       this.$refs.table.refresh()
     },
     onFilterChanged: function (filter) {

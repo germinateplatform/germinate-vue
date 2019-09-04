@@ -1,31 +1,36 @@
 <template>
   <div>
-    <BaseTable :options="options" :columns="columns">
+    <BaseTable :options="options"
+               :columns="columns"
+               :getIds="getIds"
+               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <!-- Formatted date -->
-      <span slot="startdate" slot-scope="props" v-if="props.row.startdate">{{ props.row.startdate | toDate }}</span>
-      <span slot="enddate" slot-scope="props" v-if="props.row.enddate">{{ props.row.enddate | toDate }}</span>
+      <span slot="startDate" slot-scope="props" v-if="props.row.startDate">{{ props.row.startDate | toDate }}</span>
+      <span slot="endDate" slot-scope="props" v-if="props.row.endDate">{{ props.row.endDate | toDate }}</span>
 
       <!-- Country flags -->
-      <div slot="countryname" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countrycode.toLowerCase()" v-if="props.row.countrycode"/> <span> {{ props.row.countryname }}</span></div>
+      <div slot="countryName" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryName }}</span></div>
 
-      <span slot="dataobjectcount" slot-scope="props" v-if="props.row.dataobjectcount && props.row.dataobjectcount.value">{{ props.row.dataobjectcount.value }}</span>
-      <span slot="datapointcount" slot-scope="props" v-if="props.row.datapointcount && props.row.datapointcount.value">{{ getDataPointCount(props.row) }}</span>
+      <span slot="experimentType" slot-scope="props"><i :class="`mdi mdi-18px ${experimentTypes[props.row.experimentType].icon} fix-alignment`" :style="`color: ${experimentTypes[props.row.experimentType].color()};`" /> {{ experimentTypes[props.row.experimentType].text() }}</span>
+      <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount && props.row.dataObjectCount.value">{{ props.row.dataObjectCount.value }}</span>
+      <span slot="dataPointCount" slot-scope="props" v-if="props.row.dataPointCount && props.row.dataPointCount.value">{{ getDataPointCount(props.row) }}</span>
 
-      <div slot="licensename" slot-scope="props" v-if="props.row.licensename">
+      <div slot="licenseName" slot-scope="props" v-if="props.row.licenseName">
         <a href="#" @click.prevent="onLicenseClicked(props.row)" class="text-nowrap">
-          <span>{{ props.row.licensename }} </span>
+          <span>{{ props.row.licenseName }} </span>
         </a>
-        <i class="mdi mdi-18px mdi-check" v-if="props.row.acceptedby && props.row.acceptedby == token.id" />
-        <i class="mdi mdi-18px mdi-new-box" v-else />
+        <i class="mdi mdi-18px mdi-check fix-alignment" v-if="props.row.acceptedBy && parseInt(props.row.acceptedBy) == token.id" />
+        <i class="mdi mdi-18px mdi-new-box fix-alignment" v-else />
       </div>
+      <i slot="datasetState" slot-scope="props" :class="`mdi mdi-18px ${datasetStates[props.row.datasetState].icon}`" :title="datasetStates[props.row.datasetState].text()" />
+      <i slot="isExternal" slot-scope="props" :class="`mdi mdi-18px ${getInternalExternalClass(props.row)}`" v-if="props.row.isExternal !== undefined" :title="props.row.isExternal" />
     </BaseTable>
 
-    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedby !== undefined" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
+    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy !== undefined" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 
@@ -35,98 +40,132 @@ export default {
     filterOn: {
       type: Array,
       default: null
+    },
+    getData: {
+      type: Function,
+      default: () => {}
+    },
+    getIds: {
+      type: Function,
+      default: () => []
+    },
+    selectable: {
+      type: Boolean,
+      default: false
     }
   },
-  computed: {
-    ...mapState([
-      'token',
-      'locale'
-    ])
-  },
   data: function () {
-    const columns = [
+    var columns = [
       {
-        name: 'selected',
-        type: undefined
-      }, {
-        name: 'datasetid',
+        name: 'datasetId',
         type: Number
       }, {
-        name: 'datasetname',
+        name: 'datasetName',
         type: String
       }, {
-        name: 'datasetdescription',
+        name: 'datasetDescription',
         type: String
       }, {
-        name: 'experimenttype',
+        name: 'experimentType',
         type: String
       }, {
-        name: 'datatype',
+        name: 'dataType',
         type: String
       }, {
         name: 'location',
         type: String
       }, {
-        name: 'countryname',
+        name: 'countryName',
         type: String
       }, {
-        name: 'licensename',
+        name: 'licenseName',
         type: String
       }, {
         name: 'contact',
         type: String
       }, {
-        name: 'startdate',
+        name: 'startDate',
         type: Date
       }, {
-        name: 'enddate',
+        name: 'endDate',
         type: Date
       }, {
-        name: 'dataobjectcount',
+        name: 'dataObjectCount',
         type: Number
       }, {
-        name: 'datapointcount',
+        name: 'dataPointCount',
         type: Number
+      }, {
+        name: 'isExternal',
+        type: Boolean
+      }, {
+        name: 'datasetState',
+        type: undefined
       }
     ]
+
+    if (this.selectable === true) {
+      columns.unshift({
+        name: 'selected',
+        type: undefined
+      })
+    }
+
     return {
       options: {
         requestData: (data, callback) => {
-          return this.apiPostDatasetTable(data, callback)
+          return this.getData(data, callback)
         },
-        idColumn: 'datasetid',
+        idColumn: 'datasetId',
         tableName: 'datasets',
         filterOn: this.filterOn,
-        sortable: ['datasetid', 'datasetname', 'datasetdescription', 'experimenttype', 'datatype', 'location', 'countryname', 'licensename', 'contact', 'startdate', 'enddate', 'dataobjectcount', 'datapointcount'],
+        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentType', 'dataType', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
         filterable: [],
         headings: {
-          datasetid: () => this.$t('tableColumnDatasetId'),
-          datasetname: () => this.$t('tableColumnDatasetName'),
-          datasetdescription: () => this.$t('tableColumnDatasetDescription'),
-          experimenttype: () => this.$t('tableColumnDatasetExperimentType'),
-          datatype: () => this.$t('tableColumnDatasetDataType'),
+          datasetId: () => this.$t('tableColumnDatasetId'),
+          datasetName: () => this.$t('tableColumnDatasetName'),
+          datasetDescription: () => this.$t('tableColumnDatasetDescription'),
+          experimentType: () => this.$t('tableColumnDatasetExperimentType'),
+          dataType: () => this.$t('tableColumnDatasetDataType'),
           location: () => this.$t('tableColumnDatasetLocation'),
-          countryname: () => this.$t('tableColumnDatasetCountryName'),
-          licensename: () => this.$t('tableColumnDatasetLicenseName'),
+          countryName: () => this.$t('tableColumnDatasetCountryName'),
+          licenseName: () => this.$t('tableColumnDatasetLicenseName'),
           contract: () => this.$t('tableColumnDatasetContact'),
-          startdate: () => this.$t('tableColumnDatasetStartDate'),
-          enddate: () => this.$t('tableColumnDatasetEndDate'),
-          dataobjectcount: () => this.$t('tableColumnDatasetObjectCount'),
-          datapointcount: () => this.$t('tableColumnDatasetPointCount'),
-          selected: () => ''
+          startDate: () => this.$t('tableColumnDatasetStartDate'),
+          endDate: () => this.$t('tableColumnDatasetEndDate'),
+          dataObjectCount: () => this.$t('tableColumnDatasetObjectCount'),
+          dataPointCount: () => this.$t('tableColumnDatasetPointCount'),
+          datasetState: () => '',
+          isExternal: () => 'External',
+          selected: ''
         },
         orderBy: {
-          column: 'datasetid'
+          column: 'datasetId'
         },
         columnsClasses: {
           selected: 'bg-info',
-          dataobjectcount: 'text-right',
-          datapointcount: 'text-right'
-        }
+          dataObjectCount: 'text-right',
+          dataPointCount: 'text-right'
+        },
+        rowClassCallback: row => this.getRowClass(row)
       },
       columns: columns,
       dataset: null,
-      license: null
+      license: null,
+      datasetStates: {
+        public: {
+          icon: 'mdi-lock-open-outline',
+          text: () => this.$t('datasetStatePublic')
+        },
+        private: {
+          icon: 'mdi-lock',
+          text: () => this.$t('datasetStatePrivate')
+        },
+        hidden: {
+          icon: 'mdi-eye-off text-primary',
+          text: () => this.$t('datasetStateHidden')
+        }
+      }
     }
   },
   components: {
@@ -134,12 +173,22 @@ export default {
     LicenseModal
   },
   methods: {
+    getRowClass: function (dataset) {
+      if (!dataset.licenseName) {
+        return ''
+      } else {
+        return (dataset.acceptedBy !== undefined && parseInt(dataset.acceptedBy) === this.token.id) ? '' : 'table-danger'
+      }
+    },
+    getInternalExternalClass: function (dataset) {
+      return dataset.isExternal ? 'mdi-link-box-variant-outline' : 'mdi-file-document-box-outline'
+    },
     getDataPointCount: function (dataset) {
       var result = ''
-      if (dataset.experimenttype === 'genotype' || dataset.experimenttype === 'allelefreq') {
+      if (dataset.experimentType === 'genotype' || dataset.experimentType === 'allelefreq') {
         result = '≤'
       }
-      result += dataset.datapointcount.value
+      result += dataset.dataPointCount.value
       return result
     },
     onLicenseAccepted: function () {
@@ -150,7 +199,7 @@ export default {
     onLicenseClicked: function (dataset) {
       this.dataset = dataset
 
-      if (this.license && this.license.licenseid === this.dataset.licenseid) {
+      if (this.license && this.license.licenseId === this.dataset.licenseId) {
         // If we already have the correct license, just show it
         this.$refs.licenseModal.show()
       } else {
@@ -159,12 +208,12 @@ export default {
           page: 1,
           prevCount: -1,
           filter: [{
-            column: 'licenseid',
+            column: 'licenseId',
             comparator: 'equals',
             operator: 'and',
-            values: [dataset.licenseid]
+            values: [dataset.licenseId]
           }, {
-            column: 'localename',
+            column: 'localeName',
             comparator: 'equals',
             operator: 'and',
             values: [this.locale]

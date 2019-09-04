@@ -3,7 +3,7 @@
     <h1>{{ $t('pageGermplasmTitle') }}</h1>
     <hr />
     <p v-html="$t('pageGermplasmText')" />
-    <GermplasmTable :filterOn="filterOn" />
+    <GermplasmTable :filterOn="filterOn" :getData="getData"/>
   </div>
 </template>
 
@@ -15,8 +15,8 @@ export default {
     return {
       filterOn: [{
         column: {
-          name: 'entitytypename',
-          type: 'entity'
+          name: 'entityTypeName',
+          type: 'entityType'
         },
         comparator: 'equals',
         operator: 'and',
@@ -26,6 +26,11 @@ export default {
   },
   components: {
     GermplasmTable
+  },
+  methods: {
+    getData: function (data, callback) {
+      return this.apiPostGermplasmTable(data, callback)
+    }
   },
   mounted: function () {
     this.$store.dispatch('ON_HELP_KEY_CHANGED', 'helpGermplasm')

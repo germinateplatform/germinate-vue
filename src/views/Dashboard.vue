@@ -27,16 +27,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import ImageCarousel from '@/components/util/ImageCarousel'
 
 export default {
   name: 'dashboard',
-  computed: {
-    ...mapState([
-      'settings'
-    ])
-  },
   components: {
     ImageCarousel
   },
@@ -74,10 +68,10 @@ export default {
   },
   methods: {
     getColor: function (index) {
-      if (!this.settings || !this.settings.colorsTemplate) {
+      if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
         return '#00acef'
       } else {
-        const colors = this.settings.colorsTemplate
+        const colors = this.serverSettings.colorsTemplate
         return colors[index % colors.length]
       }
     }

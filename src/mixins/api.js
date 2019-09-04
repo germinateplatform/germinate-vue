@@ -1,4 +1,6 @@
 
+const MAX_JAVA_INTEGER = 2147483647
+
 export default {
   methods: {
     // TOKEN
@@ -35,6 +37,42 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGermplasmGroupTable: function (groupId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `group/${groupId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGermplasmGroupTableIds: function (groupId, queryData, onSuccess, onError) {
+      queryData.page = 0
+      queryData.limit = MAX_JAVA_INTEGER
+      return this.authAjax({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostMarkerGroupTable: function (groupId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `group/${groupId}/marker`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostMarkerGroupTableIds: function (groupId, queryData, onSuccess, onError) {
+      queryData.page = 0
+      queryData.limit = MAX_JAVA_INTEGER
+      return this.authAjax({ url: `group/${groupId}/marker/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostLocationTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostLocationTableIds: function (queryData, onSuccess, onError) {
+      queryData.page = 0
+      queryData.limit = MAX_JAVA_INTEGER
+      return this.authAjax({ url: 'location/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostLocationGroupTable: function (groupId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `group/${groupId}/location`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostLocationGroupTableIds: function (groupId, queryData, onSuccess, onError) {
+      queryData.page = 0
+      queryData.limit = MAX_JAVA_INTEGER
+      return this.authAjax({ url: `group/${groupId}/location/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiGetMap: function (mapId, onSuccess, onError) {
       return this.authAjax({ url: `map/${mapId}`, success: onSuccess, error: onError })
     },
@@ -52,6 +90,11 @@ export default {
     apiPostDatasetTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostDatasetTableIds: function (queryData, onSuccess, onError) {
+      queryData.page = 0
+      queryData.limit = MAX_JAVA_INTEGER
+      return this.authAjax({ url: 'dataset/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostLicenseTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -82,8 +125,11 @@ export default {
     apiDeleteGroup: function (groupId, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}`, method: 'DELETE', success: onSuccess, error: onError })
     },
+    apiPatchGroupMembers: function (groupId, groupType, groupModification, onSuccess, onError) {
+      return this.authAjax({ url: `group/${groupId}/${groupType}`, method: 'PATCH', data: groupModification, success: onSuccess, error: onError })
+    },
     apiGetGroupTypes: function (onSuccess, onError) {
-      return this.authAjax({ url: `grouptype?limit=${Number.MAX_SAFE_INTEGER}`, success: onSuccess, error: onError })
+      return this.authAjax({ url: `grouptype?limit=${MAX_JAVA_INTEGER}`, success: onSuccess, error: onError })
     },
     apiPostDataUpload: function (formData, onSuccess, onError) {
       return this.authForm({ url: 'import/template/mcpd', formData: formData, success: onSuccess, error: onError })

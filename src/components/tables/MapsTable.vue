@@ -1,10 +1,12 @@
 <template>
   <div>
-    <BaseTable :options="options" :columns="columns">
-      <router-link slot="mapid" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapid}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapid)">{{ props.row.mapid }}</router-link>
-      <router-link slot="mapname" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapid}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapid)">{{ props.row.mapname }}</router-link>
-      <div slot="mapdescription" slot-scope="props" v-if="isLink(props.row)"> <span v-html="props.row.mapdescription" />&nbsp;<i class="mdi mdi-open-in-new" /></div>
-      <span v-else>{{ props.row.mapdescription }}</span>
+    <BaseTable :options="options"
+               :columns="columns"
+               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+      <router-link slot="mapId" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapId}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapId)">{{ props.row.mapId }}</router-link>
+      <router-link slot="mapName" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapId}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapId)">{{ props.row.mapName }}</router-link>
+      <div slot="mapDescription" slot-scope="props" v-if="isLink(props.row)"> <span v-html="props.row.mapDescription" />&nbsp;<i class="mdi mdi-open-in-new" /></div>
+      <span v-else>{{ props.row.mapDescription }}</span>
     </BaseTable>
   </div>
 </template>
@@ -23,16 +25,16 @@ export default {
   data: function () {
     const columns = [
       {
-        name: 'mapid',
+        name: 'mapId',
         type: Number
       }, {
-        name: 'mapname',
+        name: 'mapName',
         type: String
       }, {
-        name: 'mapdescription',
+        name: 'mapDescription',
         type: String
       }, {
-        name: 'markercount',
+        name: 'markerCount',
         type: Number
       }
     ]
@@ -41,20 +43,20 @@ export default {
         requestData: (data, callback) => {
           return this.apiPostMapsTable(data, callback)
         },
-        idColumn: 'mapid',
+        idColumn: 'mapId',
         tableName: 'maps',
         filterOn: this.filterOn,
         sortable: columns,
         filterable: [],
         headings: {
-          mapid: () => this.$t('tableColumnMapId'),
-          mapname: () => this.$t('tableColumnMapName'),
-          mapdescription: () => this.$t('tableColumnMapDescription'),
-          markercount: () => this.$t('tableColumnMapMarkerCount')
+          mapId: () => this.$t('tableColumnMapId'),
+          mapName: () => this.$t('tableColumnMapName'),
+          mapDescription: () => this.$t('tableColumnMapDescription'),
+          markerCount: () => this.$t('tableColumnMapMarkerCount')
         },
         columnsClasses: {
-          mapid: 'text-right',
-          markercount: 'text-right'
+          mapId: 'text-right',
+          markerCount: 'text-right'
         }
       },
       columns: columns
@@ -65,12 +67,12 @@ export default {
   },
   methods: {
     isLink: function (map) {
-      if (!map.mapdescription || map.mapdescription.length < 1) {
+      if (!map.mapDescription || map.mapDescription.length < 1) {
         return false
       } else {
-        return map.mapdescription.indexOf('https://') !== -1 ||
-               map.mapdescription.indexOf('http://') !== -1 ||
-               map.mapdescription.indexOf('ftp://') !== -1
+        return map.mapDescription.indexOf('https://') !== -1 ||
+               map.mapDescription.indexOf('http://') !== -1 ||
+               map.mapDescription.indexOf('ftp://') !== -1
       }
     }
   }

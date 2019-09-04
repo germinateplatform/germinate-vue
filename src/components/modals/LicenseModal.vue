@@ -1,7 +1,7 @@
 <template>
   <b-modal id="license-modal" ref="licenseModal" title="License" size="lg" modal-class="d-print-none">
     <div v-if="license">
-      <div v-html="license.licensecontent" class="license-content d-print-block"></div>
+      <div v-html="license.licenseContent" class="license-content d-print-block"></div>
       <a :href="htmlData" target="_blank" style="display: none;" :download="htmlFilename" ref="htmlDownloadLink" />
     </div>
     <div slot="modal-footer">
@@ -56,13 +56,13 @@ export default {
       this.$emit('license-accepted')
     },
     onPrint: function () {
-      EventBus.$emit('on-print', this.license.licensecontent)
+      EventBus.$emit('on-print', this.license.licenseContent)
     },
     onDownload: function () {
-      this.htmlData = 'data:application/octet-stream;base64,' + btoa(unescape(encodeURIComponent(this.license.licensecontent)))
-      var filename = this.license.licensename.replace(' ', '-') + '.html'
+      this.htmlData = 'data:application/octet-stream;base64,' + btoa(unescape(encodeURIComponent(this.license.licenseContent)))
+      var filename = this.license.licenseName.replace(' ', '-') + '.html'
       if (this.dataset) {
-        filename = this.dataset.datasetid + '-' + filename
+        filename = this.dataset.datasetId + '-' + filename
       }
 
       this.htmlFilename = filename

@@ -13,7 +13,7 @@ Vue.use(Router)
 
 function requireAuth (to, from, next) {
   console.log(from)
-  var authMode = store.getters.settings.authMode
+  var authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'NONE'
   var token = store.getters.token
   // If we're in full auth mode, check credentials for each call
   if (authMode === 'FULL') {
@@ -143,6 +143,12 @@ const router = new Router({
               name: 'MapId',
               component: () => import('@/views/data/genotype/Maps.vue'),
               beforeEnter: requireAuth
+            },
+            {
+              path: 'environment/locations',
+              name: 'Locations',
+              component: () => import('@/views/data/environment/Locations.vue'),
+              beforeEnter: requireAuth
             }
           ]
         },
@@ -161,6 +167,12 @@ const router = new Router({
               beforeEnter: requireAuth
             }
           ]
+        },
+        {
+          path: 'export/:experimentType',
+          name: 'Export',
+          component: () => import('@/views/DatasetSelector.vue'),
+          beforeEnter: requireAuth
         },
         {
           path: 'groups',

@@ -28,8 +28,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   data: function () {
     return {
@@ -74,11 +72,6 @@ export default {
         MCPD_INVALID_ENTITY_PARENT_ACCENUMB: () => this.$t('importStatusMcpdInvalidEntityParentAccenumb')
       }
     }
-  },
-  computed: {
-    ...mapState([
-      'token'
-    ])
   },
   methods: {
     getIconAndVariant: function (status) {

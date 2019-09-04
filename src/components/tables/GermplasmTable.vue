@@ -1,38 +1,47 @@
 <template>
   <div>
-    <BaseTable :options="options" :columns="columns" itemType="germplasm">
+    <BaseTable :options="options"
+               :columns="columns"
+               :getIds="getIds"
+               :tableActions="tableActions"
+               itemType="germplasm"
+               ref="germplasmTable"
+               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <!-- LINKS -->
-      <router-link slot="germplasmid" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmid">{{ props.row.germplasmid }}</router-link>
-      <router-link slot="germplasmname" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmid">{{ props.row.germplasmname }}</router-link>
-      <router-link slot="germplasmgid" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmid">{{ props.row.germplasmgid }}</router-link>
-      <router-link slot="germplasmnumber" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmid">{{ props.row.germplasmnumber }}</router-link>
+      <router-link slot="germplasmId" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmId }}</router-link>
+      <router-link slot="germplasmName" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmName }}</router-link>
+      <router-link slot="germplasmGid" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmGid }}</router-link>
+      <router-link slot="germplasmNumber" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmNumber }}</router-link>
 
+      <span slot="entityTypeName" slot-scope="props" class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityTypeName].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityTypeName].color()};`" /> {{ entityTypes[props.row.entityTypeName].text() }}</span>
+
+      <span slot="synonyms" slot-scope="props" v-if="props.row.synonyms">{{ props.row.synonyms.join(', ') }}</span>
       <span slot="elevation" slot-scope="props" v-if="props.row.elevation">{{ props.row.elevation.toFixed(2) }}</span>
 
       <!-- Country flags -->
-      <div slot="countryname" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countrycode.toLowerCase()" v-if="props.row.countrycode"/> <span> {{ props.row.countryname }}</span></div>
+      <div slot="countryName" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryName }}</span></div>
       <!-- Formatted date -->
-      <span slot="colldate" slot-scope="props" v-if="props.row.colldate">{{ props.row.colldate | toDate }}</span>
+      <span slot="collDate" slot-scope="props" v-if="props.row.collDate">{{ props.row.collDate | toDate }}</span>
       <!-- Image preview -->
-      <div slot="imagecount" slot-scope="props" class="table-image" v-if="props.row.imagecount && props.row.imagecount > 0">
-        <div :id="`table-image-popover-${props.row.germplasmid}`">
-          <i class="mdi mdi-18px mdi-camera"/> <span> {{ props.row.imagecount }}</span>
+      <div slot="imageCount" slot-scope="props" class="table-image" v-if="props.row.imageCount && props.row.imageCount > 0">
+        <div :id="`table-image-popover-${props.row.germplasmId}`">
+          <i class="mdi mdi-18px mdi-camera"/> <span> {{ props.row.imageCount }}</span>
         </div>
         <b-popover
-          :target="`table-image-popover-${props.row.germplasmid}`"
+          :target="`table-image-popover-${props.row.germplasmId}`"
           placement="top"
           triggers="hover focus">
-          <b>{{ props.row.firstimagepath }}</b>
+          <b>{{ props.row.firstImagePath }}</b>
         </b-popover>
       </div>
       <!-- Biological status popover -->
-      <div slot="biologicalstatusname" slot-scope="props" v-if="props.row.biologicalstatusname">
-        <span :id="`table-biostat-popover-${props.row.germplasmid}`">{{ props.row.biologicalstatusname.split(" (")[0] }}</span>
+      <div slot="biologicalStatusName" slot-scope="props" v-if="props.row.biologicalStatusName">
+        <span :id="`table-biostat-popover-${props.row.germplasmId}`">{{ props.row.biologicalStatusName.split(" (")[0] }}</span>
         <b-popover
-          :target="`table-biostat-popover-${props.row.germplasmid}`"
+          :target="`table-biostat-popover-${props.row.germplasmId}`"
           placement="top"
           triggers="hover focus">
-          {{ props.row.biologicalstatusname }}
+          {{ props.row.biologicalStatusName }}
         </b-popover>
       </div>
       <!-- PDCI -->
@@ -58,32 +67,48 @@ export default {
     filterOn: {
       type: Array,
       default: null
+    },
+    getData: {
+      type: Function,
+      default: () => {}
+    },
+    getIds: {
+      type: Function,
+      default: () => []
+    },
+    selectable: {
+      type: Boolean,
+      default: false
+    },
+    tableActions: {
+      type: Array,
+      default: () => null
     }
   },
   data: function () {
-    const columns = [{
-      name: 'germplasmid',
+    var columns = [{
+      name: 'germplasmId',
       type: Number
     }, {
-      name: 'germplasmname',
+      name: 'germplasmName',
       type: String
     }, {
-      name: 'germplasmnumber',
+      name: 'germplasmNumber',
       type: String
     }, {
-      name: 'germplasmpuid',
+      name: 'germplasmPuid',
       type: String
     }, {
-      name: 'entitytypename',
-      type: 'entity'
+      name: 'entityTypeName',
+      type: 'entityType'
     }, {
-      name: 'biologicalstatusname',
+      name: 'biologicalStatusName',
       type: String
     }, {
       name: 'synonyms',
       type: 'json'
     }, {
-      name: 'collectornumber',
+      name: 'collectorNumber',
       type: String
     }, {
       name: 'genus',
@@ -98,13 +123,13 @@ export default {
       name: 'elevation',
       type: Number
     }, {
-      name: 'countryname',
+      name: 'countryName',
       type: String
     }, {
-      name: 'colldate',
+      name: 'collDate',
       type: Date
     }, {
-      name: 'imagecount',
+      name: 'imageCount',
       type: Number
     }, {
       name: 'pdci',
@@ -113,38 +138,47 @@ export default {
       name: 'marked',
       type: undefined
     }]
+
+    if (this.selectable === true) {
+      columns.unshift({
+        name: 'selected',
+        type: undefined
+      })
+    }
+
     return {
       options: {
         requestData: (data, callback) => {
-          return this.apiPostGermplasmTable(data, callback)
+          return this.getData(data, callback)
         },
-        idColumn: 'germplasmid',
+        idColumn: 'germplasmId',
         tableName: 'germplasm',
         filterOn: this.filterOn,
-        sortable: ['germplasmid', 'germplasmgid', 'germplasmname', 'germplasmnumber', 'germplasmpuid', 'entitytypename', 'biologicalstatusname', 'synonyms', 'collectornumber', 'genus', 'species', 'subtaxa', 'elevation', 'countryname', 'colldate', 'pdci'],
+        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'elevation', 'countryName', 'collDate', 'pdci'],
         filterable: [],
         headings: {
-          germplasmid: () => this.$t('tableColumnGermplasmId'),
-          germplasmgid: () => this.$t('tableColumnGermplasmGeneralIdentifier'),
-          germplasmname: () => this.$t('tableColumnGermplasmName'),
-          germplasmnumber: () => this.$t('tableColumnGermplasmNumber'),
-          germplasmpuid: () => this.$t('tableColumnGermplasmPuid'),
-          entitytypename: () => this.$t('tableColumnEntityType'),
-          biologicalstatusname: () => this.$t('tableColumnBiologicalStatus'),
+          selected: '',
+          germplasmId: () => this.$t('tableColumnGermplasmId'),
+          germplasmGid: () => this.$t('tableColumnGermplasmGeneralIdentifier'),
+          germplasmName: () => this.$t('tableColumnGermplasmName'),
+          germplasmNumber: () => this.$t('tableColumnGermplasmNumber'),
+          germplasmPuid: () => this.$t('tableColumnGermplasmPuid'),
+          entityTypeName: () => this.$t('tableColumnEntityType'),
+          biologicalStatusName: () => this.$t('tableColumnBiologicalStatus'),
           synonyms: () => this.$t('tableColumnSynonyms'),
-          collectornumber: () => this.$t('tableColumnCollectorNumber'),
+          collectorNumber: () => this.$t('tableColumnCollectorNumber'),
           genus: () => this.$t('tableColumnGenus'),
           species: () => this.$t('tableColumnSpecies'),
           subtaxa: () => this.$t('tableColumnSubtaxa'),
           elevation: () => this.$t('tableColumnElevation'),
-          countryname: () => this.$t('tableColumnCountryName'),
-          colldate: () => this.$t('tableColumnColldate'),
+          countryName: () => this.$t('tableColumnCountryName'),
+          collDate: () => this.$t('tableColumnColldate'),
           pdci: () => this.$t('tableColumnPdci'),
-          imagecount: () => '',
+          imageCount: () => '',
           marked: () => ''
         },
         columnsClasses: {
-          germplasmid: 'text-right',
+          germplasmId: 'text-right',
           elevation: 'text-right',
           genus: 'font-italic',
           species: 'font-italic',
@@ -161,6 +195,9 @@ export default {
   methods: {
     getPdci: function (value, total) {
       return total - (value / 10 * total)
+    },
+    refresh: function () {
+      this.$refs.germplasmTable.refresh()
     }
   }
 }
@@ -176,8 +213,5 @@ export default {
 }
 .pdci-table > svg {
   vertical-align: sub;
-}
-.table-country > * {
-  vertical-align: middle;
 }
 </style>

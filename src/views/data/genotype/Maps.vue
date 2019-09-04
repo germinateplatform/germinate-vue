@@ -8,7 +8,7 @@
     <div v-if="map">
       <h2>{{ $t('pageMapsDetailsTitle') }} <small>{{ map.name }}</small></h2>
       <p>{{ $t('pageMapsDetailsText') }}</p>
-      <MapDefinitionTable :mapId="mapId" />
+      <MapDefinitionTable :getData="getMapDefinitionData" ref="mapDefinitionTable" />
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import MapsTable from '@/components/tables/MapsTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import ResizeObserver from '@/components/ResizeObserver'
@@ -32,18 +31,15 @@ export default {
       map: null
     }
   },
-  computed: {
-    ...mapState([
-      'baseUrl',
-      'settings'
-    ])
-  },
   components: {
     MapsTable,
     MapDefinitionTable,
     ResizeObserver
   },
   methods: {
+    getMapDefinitionData: function (data, callback) {
+      return this.apiPostMapdefinitionTable(this.mapId, data, callback)
+    },
     onMapSelected: function (mapId) {
       this.mapId = mapId
 
@@ -53,6 +49,7 @@ export default {
             window.history.replaceState({}, null, `#/data/genotypes/maps/${this.mapId}`)
             this.map = result.data[0]
             this.drawChart()
+            this.$refs.mapDefinitionTable.refresh()
           }
         })
       }
@@ -69,7 +66,7 @@ export default {
           this.$plotly.d3.select(this.$refs.mapChart)
             .datum(data)
             .call(plotlyMapChart()
-              .colors(this.settings.colorsCharts))
+              .colors(this.serverSettings.colorsCharts))
         }
         reader.readAsText(result)
       })

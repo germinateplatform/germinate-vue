@@ -1,16 +1,19 @@
 <template>
   <div>
-    <BaseTable :options="options" :columns="columns" ref="table">
-      <router-link slot="groupid" slot-scope="props" :to="`/groups/${props.row.groupid}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupid)">{{ props.row.groupid }}</router-link>
-      <router-link slot="groupname" slot-scope="props" :to="`/groups/${props.row.groupid}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupid)">{{ props.row.groupname }}</router-link>
-      <router-link slot="groupdescription" slot-scope="props" :to="`/groups/${props.row.groupid}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupid)">{{ props.row.groupdescription }}</router-link>
+    <BaseTable :options="options"
+               :columns="columns"
+               ref="table"
+               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+      <router-link slot="groupId" slot-scope="props" :to="`/groups/${props.row.groupId}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupId)">{{ props.row.groupId }}</router-link>
+      <router-link slot="groupName" slot-scope="props" :to="`/groups/${props.row.groupId}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupId)">{{ props.row.groupName }}</router-link>
+      <router-link slot="groupDescription" slot-scope="props" :to="`/groups/${props.row.groupId}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupId)">{{ props.row.groupDescription }}</router-link>
 
-      <span slot="createdon" slot-scope="props" v-if="props.row.createdon">{{ props.row.createdon | toDate }}</span>
-      <span slot="updatedon" slot-scope="props" v-if="props.row.updatedon">{{ props.row.updatedon | toDate }}</span>
-      <span slot="grouptype" slot-scope="props"><i :class="`mdi mdi-18px ${groupType[props.row.grouptype].icon} fix-alignment`" :style="`color: ${groupType[props.row.grouptype].color};`" /> {{ groupType[props.row.grouptype].text() }}</span>
+      <span slot="createdOn" slot-scope="props" v-if="props.row.createdOn">{{ props.row.createdOn | toDate }}</span>
+      <span slot="updatedOn" slot-scope="props" v-if="props.row.updatedOn">{{ props.row.updatedOn | toDate }}</span>
+      <span slot="groupType" slot-scope="props"><i :class="`mdi mdi-18px ${groupTypes[props.row.groupType].icon} fix-alignment`" :style="`color: ${groupTypes[props.row.groupType].color()};`" /> {{ groupTypes[props.row.groupType].text() }}</span>
 
       <!-- Only show if authentication enabled -->
-      <b-button-group slot="actions" slot-scope="props" v-if="token.id === props.row.userid">
+      <b-button-group slot="actions" slot-scope="props" v-if="token && token.id === props.row.userId">
         <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('on-group-edit-clicked', props.row)"><i class="mdi mdi-18px mdi-rename-box" /></b-button>
         <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('on-group-delete-clicked', props.row)"><i class="mdi mdi-18px mdi-delete" /></b-button>
       </b-button-group>
@@ -19,7 +22,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
 
 export default {
@@ -30,35 +32,28 @@ export default {
       default: null
     }
   },
-  computed: {
-    ...mapState([
-      'token',
-      'locale',
-      'settings'
-    ])
-  },
   data: function () {
     const columns = [
       {
-        name: 'groupid',
+        name: 'groupId',
         type: Number
       }, {
-        name: 'groupname',
+        name: 'groupName',
         type: String
       }, {
-        name: 'groupdescription',
+        name: 'groupDescription',
         type: String
       }, {
-        name: 'grouptype',
+        name: 'groupType',
         type: String
       }, {
-        name: 'userid',
+        name: 'userId',
         type: String
       }, {
-        name: 'createdon',
+        name: 'createdOn',
         type: Date
       }, {
-        name: 'updatedon',
+        name: 'updatedOn',
         type: Date
       }, {
         name: 'count',
@@ -73,46 +68,29 @@ export default {
         requestData: (data, callback) => {
           return this.apiPostGroupTable(data, callback)
         },
-        idColumn: 'groupid',
+        idColumn: 'groupId',
         tableName: 'groups',
         filterOn: this.filterOn,
-        sortable: ['groupid', 'groupname', 'groupdescription', 'grouptype', 'userid', 'createdon', 'updatedon', 'count'],
+        sortable: ['groupId', 'groupName', 'groupDescription', 'groupType', 'userId', 'createdOn', 'updatedOn', 'count'],
         filterable: [],
         headings: {
-          groupid: () => this.$t('tableColumnGroupId'),
-          groupmname: () => this.$t('tableColumnGroupName'),
-          groupdescription: () => this.$t('tableColumnGroupDescription'),
-          grouptype: () => this.$t('tableColumnGroupType'),
-          userid: () => this.$t('tableColumnGroupUserId'),
-          createdon: () => this.$t('tableColumnGroupCreatedOn'),
-          updatedon: () => this.$t('tableColumnGroupUpdatedOn'),
+          groupId: () => this.$t('tableColumnGroupId'),
+          groupName: () => this.$t('tableColumnGroupName'),
+          groupDescription: () => this.$t('tableColumnGroupDescription'),
+          groupType: () => this.$t('tableColumnGroupType'),
+          userId: () => this.$t('tableColumnGroupUserId'),
+          createdOn: () => this.$t('tableColumnGroupCreatedOn'),
+          updatedOn: () => this.$t('tableColumnGroupUpdatedOn'),
           count: () => this.$t('tableColumnGroupCount'),
           actions: ''
         },
-        // orderBy: {
-        //   column: 'datasetid'
-        // },
         columnsClasses: {
-          groupid: 'text-right',
+          groupId: 'text-right',
           count: 'text-right',
           actions: 'text-right'
         }
       },
-      columns: columns,
-      groupType: {
-        germinatebase: {
-          icon: 'mdi-sprout',
-          text: () => this.$t('groupTypeGerminatebase')
-        },
-        markers: {
-          icon: 'mdi-dna',
-          text: () => this.$t('groupTypeMarker')
-        },
-        locations: {
-          icon: 'mdi-map-marker',
-          text: () => this.$t('groupTypeLocation')
-        }
-      }
+      columns: columns
     }
   },
   components: {
@@ -122,11 +100,6 @@ export default {
     refresh: function () {
       this.$refs.table.refresh()
     }
-  },
-  created: function () {
-    this.groupType.germinatebase.color = this.settings.colorsTemplate[0]
-    this.groupType.locations.color = this.settings.colorsTemplate[1]
-    this.groupType.markers.color = this.settings.colorsTemplate[2]
   }
 }
 </script>

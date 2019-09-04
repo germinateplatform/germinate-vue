@@ -7,11 +7,11 @@
       <template slot="dropdown">
         <b-dropdown-header tag="div" class="text-center"><strong>User settings</strong></b-dropdown-header>
         <b-dropdown-item><i class="mdi mdi-18px mdi-settings text-primary" /> Settings</b-dropdown-item>
-        <template v-if="settings.authMode !== 'NONE'">
+        <template v-if="serverSettings.authMode !== 'NONE'">
           <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> Logout</b-dropdown-item>
           <b-dropdown-item @click="$refs.signInModal.show()" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> Login</b-dropdown-item>
         </template>
-        <template v-if="settings.authMode !== 'NONE' && token && token.userType === 'Administrator'">
+        <template v-if="serverSettings.authMode !== 'NONE' && token && token.userType === 'Administrator'">
           <b-dropdown-header tag="div" class="text-center"><strong>Admin settings</strong></b-dropdown-header>
           <b-dropdown-item><i class="mdi mdi-18px mdi-shield-account text-warning" /> Admin settings</b-dropdown-item>
           <b-dropdown-item><i class="mdi mdi-18px mdi-account-key text-warning" /> User permissions</b-dropdown-item>
@@ -28,7 +28,6 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
-import { mapState } from 'vuex'
 import { EventBus } from '@/plugins/event-bus.js'
 import SignInForm from '@/components/util/SignInForm'
 
@@ -43,12 +42,6 @@ export default {
       response: null
     }
   },
-  computed: {
-    ...mapState([
-      'token',
-      'settings'
-    ])
-  },
   methods: {
     signIn: function (user) {
       this.apiPostToken(user, result => {
@@ -58,7 +51,6 @@ export default {
       }, {
         codes: [],
         callback: error => {
-          console.log(error)
           if (error.status === 403 || error.status === 400) {
             this.response = this.$t('errorMessageInvalidUsernamePassword')
           } else {
@@ -75,11 +67,12 @@ export default {
         password: this.token.token
       }
 
+      var vm = this
       this.apiDeleteToken(user, result => {
         // If it's successful, delete token, then redirect
         this.$store.dispatch('ON_TOKEN_CHANGED', null)
 
-        if (this.settings.authMode === 'FULL') {
+        if (this.serverSettings.authMode === 'FULL') {
           this.$router.push('/g8/login')
         } else {
           this.$router.push('/home')
@@ -88,7 +81,7 @@ export default {
         codes: [],
         callback: function () {
           // If they're wrong, remove
-          this.$store.dispatch('ON_TOKEN_CHANGED', null)
+          vm.$store.dispatch('ON_TOKEN_CHANGED', null)
         }
       })
     }

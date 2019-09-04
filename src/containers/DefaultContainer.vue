@@ -3,7 +3,7 @@
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile />
       <b-link class="navbar-brand d-none d-lg-inline-flex" to="/">
-        <img class="navbar-brand-full" src="/img/germinate.svg" width="150" height="32" alt="Germinate">
+        <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true />
@@ -66,7 +66,6 @@ import DefaultAside from './DefaultAside'
 import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
 import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
 import LocaleDropdown from '@/components/dropdown/LocaleDropdown'
-import { mapState } from 'vuex'
 
 export default {
   name: 'DefaultContainer',
@@ -93,10 +92,6 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'helpKey',
-      'locale'
-    ]),
     name () {
       return this.$route.name
     },
@@ -149,6 +144,18 @@ export default {
               name: this.$t('menuDatasets'),
               url: '/data/datasets',
               icon: 'mdi mdi-18px mdi-database'
+            },
+            {
+              name: this.$t('menuEnvironment'),
+              url: '/data/environment',
+              icon: 'mdi mdi-18px mdi-nature-people',
+              children: [
+                {
+                  name: this.$t('menuLocations'),
+                  url: '/data/environment/locations',
+                  icon: 'mdi mdi-map'
+                }
+              ]
             }
           ]
         },

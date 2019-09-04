@@ -12,7 +12,6 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
-import { mapState } from 'vuex'
 import { loadLanguageAsync } from '@/plugins/i18n'
 
 export default {
@@ -32,11 +31,6 @@ export default {
         name: 'Deutsch - Deutschland'
       }]
     }
-  },
-  computed: {
-    ...mapState([
-      'locale'
-    ])
   },
   methods: {
     onLocaleChanged: function (language) {

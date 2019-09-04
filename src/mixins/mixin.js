@@ -1,15 +1,118 @@
 import axios from 'axios'
+import { mapState } from 'vuex'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
-  methods: {
-    debounceFunction (func, delay) {
-      let inDebounce
-      return function () {
-        const context = this
-        const args = arguments
-        clearTimeout(inDebounce)
-        inDebounce = setTimeout(() => func.apply(context, args), delay)
+  computed: {
+    ...mapState([
+      'helpKey',
+      'hiddenColumns',
+      'locale',
+      'markedIds',
+      'originalTarget',
+      'serverSettings',
+      'tablePerPage',
+      'token'
+    ])
+  },
+  data: function () {
+    return {
+      MAX_JAVA_INTEGER: 2147483647,
+      entityTypes: {
+        'Accession': {
+          icon: 'mdi-sprout',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('entityTypeAccession')
+        },
+        'Plant/Plot': {
+          icon: 'mdi-grid',
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('entityTypePlantPlot')
+        },
+        'Sample': {
+          icon: 'mdi-leaf',
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('entityTypeSample')
+        }
+      },
+      groupTypes: {
+        germinatebase: {
+          icon: 'mdi-sprout',
+          apiName: 'germplasm',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('groupTypeGerminatebase')
+        },
+        markers: {
+          icon: 'mdi-dna',
+          apiName: 'marker',
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('groupTypeMarker')
+        },
+        locations: {
+          icon: 'mdi-map-marker',
+          apiName: 'locations',
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('groupTypeLocation')
+        }
+      },
+      locationTypes: {
+        trialsite: {
+          icon: 'mdi-shovel',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('locationTypeTrialsite')
+        },
+        collectingsites: {
+          icon: 'mdi-basket-fill',
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('locationTypeCollectingsite')
+        },
+        datasets: {
+          icon: 'mdi-database',
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('locationTypeDataset')
+        }
+      },
+      experimentTypes: {
+        allelefreq: {
+          icon: 'mdi-pulse',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('datasetTypeAllelefreq')
+        },
+        climate: {
+          icon: 'mdi-weather-snowy-rainy',
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('datasetTypeClimate')
+        },
+        compound: {
+          icon: 'mdi-flask',
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('datasetTypeCompound')
+        },
+        genotype: {
+          icon: 'mdi-dna',
+          color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('datasetTypeGenotype')
+        },
+        trials: {
+          icon: 'mdi-shovel',
+          color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('datasetTypeTrials')
+        },
+        unknown: {
+          icon: 'mdi-help-box',
+          color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('datasetTypeUnknown')
+        }
       }
+    }
+  },
+  methods: {
+    uuidv4: function () {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0
+        var v = c === 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16)
+      })
     },
     getPaginationTexts () {
       return {
@@ -45,7 +148,12 @@ export default {
         case 403:
           message = this.$t('httpErrorFourOThree')
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
-          this.$router.push('/g8/login')
+          var authMode = this.$store.getters.serverSettings.authMode
+          if (authMode === 'FULL') {
+            this.$router.push('/g8/login')
+          } else if (authMode === 'SELECTIVE') {
+            EventBus.$emit('on-show-login-form')
+          }
           return
         case 404:
           message = this.$t('httpErrorFourOFour')
@@ -114,7 +222,12 @@ export default {
           if (!error) {
             if (err.response.status === 403) {
               vm.$store.dispatch('ON_TOKEN_CHANGED', null)
-              vm.$router.push('/g8/login')
+              var authMode = vm.$store.getters.serverSettings.authMode
+              if (authMode === 'FULL') {
+                vm.$router.push('/g8/login')
+              } else if (authMode === 'SELECTIVE') {
+                EventBus.$emit('on-show-login-form')
+              }
             } else if (process.env.NODE_ENV === 'development') {
               console.error(err)
             }
@@ -198,7 +311,12 @@ export default {
           if (!error) {
             if (err.response.status === 403) {
               vm.$store.dispatch('ON_TOKEN_CHANGED', null)
-              vm.$router.push('/g8/login')
+              var authMode = vm.$store.getters.serverSettings.authMode
+              if (authMode === 'FULL') {
+                vm.$router.push('/g8/login')
+              } else if (authMode === 'SELECTIVE') {
+                EventBus.$emit('on-show-login-form')
+              }
             } else if (process.env.NODE_ENV === 'development') {
               console.error(err)
             }
