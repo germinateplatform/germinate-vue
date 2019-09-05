@@ -37,6 +37,11 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGermplasmTableIds: function (queryData, onSuccess, onError) {
+      queryData.page = 0
+      queryData.limit = MAX_JAVA_INTEGER
+      return this.authAjax({ url: 'germplasm/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostGermplasmGroupTable: function (groupId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: `group/${groupId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })

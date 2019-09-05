@@ -64,6 +64,13 @@ export default {
         sortable: ['markerId', 'markerName', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position'],
         filterable: [],
         headings: {
+          markerId: () => this.$t('tableColumnMarkerId'),
+          markerName: () => this.$t('tableColumnMarkerName'),
+          synonyms: () => this.$t('tableColumnMarkerSynonyms'),
+          mapFeatureType: () => this.$t('tableColumnMapFeatureType'),
+          mapName: () => this.$t('tableColumnMapName'),
+          chromosome: () => this.$t('tableColumnMapChromosome'),
+          position: () => this.$t('tableColumnMapPosition')
         },
         columnsClasses: {
           markerId: 'text-right',

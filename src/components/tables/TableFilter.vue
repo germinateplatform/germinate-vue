@@ -53,7 +53,7 @@
               <template v-else-if="isType(f, 'locationType')">
                 <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" />
               </template>
-              <template v-else-if="isType(f, 'entity')">
+              <template v-else-if="isType(f, 'entityType')">
                 <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" />
               </template>
               <b-input-group-append>

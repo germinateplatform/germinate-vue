@@ -20,6 +20,7 @@ import 'leaflet/dist/leaflet.css'
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
 
 require('es6-object-assign/auto')
+require('es6-set/implement')
 let axiosDefaults = require('axios/lib/defaults')
 
 // todo

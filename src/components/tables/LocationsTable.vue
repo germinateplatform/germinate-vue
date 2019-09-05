@@ -115,9 +115,19 @@ export default {
           locationId: 'text-right',
           locationLatitude: 'text-right',
           locationLongitude: 'text-right',
-          locationElevation: 'text-right',
-          marked: 'text-right'
-        }
+          locationElevation: 'text-right'
+        },
+        additionalMarkingOptions: [{
+          key: 'mark-at-location',
+          text: () => 'Mark germplasm at location',
+          icon: 'mdi-map-marker-plus',
+          callback: () => ''
+        }, {
+          key: 'unmark-at-location',
+          text: () => 'Unmark germplasm at location',
+          icon: 'mdi-map-marker-minus',
+          callback: () => ''
+        }]
       },
       columns: columns
     }

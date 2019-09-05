@@ -5,10 +5,8 @@
       :center="center"
       v-if="locations && locations.length > 0"
       ref="map"
+      :maxZoom="maxZoom"
       :zoom="zoom">
-      <l-tile-layer
-        url="//{s}.tile.osm.org/{z}/{x}/{y}.png"
-        attribution="&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors" />
       <l-marker-cluster v-if="mapType === 'cluster'">
         <l-marker v-for="location in locations" :key="'location-map-' + location.locationId" :lat-lng="[location.locationLatitude, location.locationLongitude]" :ref="`marker-${location.locationId}`">
           <l-popup>
@@ -26,6 +24,7 @@
 <script>
 import L from 'leaflet'
 require('leaflet.heat')
+require('leaflet.sync')
 var countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
@@ -33,6 +32,7 @@ export default {
   data: function () {
     return {
       zoom: 3,
+      maxZoom: 12,
       center: [22.5937, 2.1094],
       heat: null
     }
@@ -112,7 +112,30 @@ export default {
     }
   },
   mounted: function () {
-    this.$nextTick(() => this.updateCenter())
+    this.$nextTick(() => {
+      var openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        id: 'OpenStreetMap',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: ['a', 'b', 'c']
+      })
+
+      this.$refs.map.mapObject.addLayer(openstreetmap)
+
+      var satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        id: 'Esri WorldImagery',
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+      })
+
+      var baseMaps = {
+        'OpenStreetMap': openstreetmap,
+        'Esri WorldImagery': satellite
+      }
+
+      L.control.layers(baseMaps).addTo(this.$refs.map.mapObject)
+
+      this.updateCenter()
+      this.$emit('map-loaded', this.$refs.map.mapObject)
+    })
   }
 }
 </script>

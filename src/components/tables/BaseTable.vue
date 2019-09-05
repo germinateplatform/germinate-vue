@@ -36,8 +36,21 @@
     </div>
     <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds"/>
 
-    <div slot="h__marked">
-      <b-form-checkbox @change="onMarkingHeaderClicked"/>
+    <div slot="h__marked" class="test">
+      <b-dropdown size="sm" dropleft variant="outline-primary" boundary="viewport">
+        <template slot="button-content">
+          <i class="mdi mdi-18px mdi-check-box-multiple-outline" />
+        </template>
+        <b-dropdown-item @click="markAllItems(true)"><i class="mdi mdi-18px mdi-checkbox-multiple-marked" />Mark all</b-dropdown-item>
+        <b-dropdown-item @click="markAllItems(false)"><i class="mdi mdi-18px mdi-checkbox-multiple-blank-outline" />Unmark all</b-dropdown-item>
+        <b-dropdown-item v-if="token"><i class="mdi mdi-18px mdi-group" />Create group</b-dropdown-item>
+        <template v-if="tableOptions.additionalMarkingOptions">
+          <b-dropdown-divider />
+          <b-dropdown-item v-for="item in tableOptions.additionalMarkingOptions" :key="item.key" @click="item.callback">
+            <i :class="`mdi mdi-18px ${item.icon}`" />{{ item.text() }}
+          </b-dropdown-item>
+        </template>
+      </b-dropdown>
     </div>
     <b-form-checkbox slot="marked" slot-scope="props" :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
 
@@ -58,6 +71,7 @@
 <script>
 import TableFilter from '@/components/tables/TableFilter'
 import MarkedItems from '@/components/tables/MarkedItems'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   props: {
@@ -151,6 +165,13 @@ export default {
         return this.options.rowClassCallback(row) + ' ' + this.getRowClass(row)
       }
     }
+    if (this.options.columnsClasses) {
+      var markingColumn = this.columns.filter(c => c.name === 'marked')
+
+      if (markingColumn && markingColumn.length === 1) {
+        tableOptions.columnsClasses.marked = this.options.columnsClasses.marked + ' text-right py-0 align-middle'
+      }
+    }
 
     return {
       selectedItems: [],
@@ -180,15 +201,25 @@ export default {
     },
     onSelectionHeaderClicked: function (value) {
       if (value) {
+        EventBus.$emit('show-loading', true)
         this.getIds(this.currentRequestData, result => {
           this.selectedItems = result.data
+          EventBus.$emit('show-loading', false)
         })
       } else {
         this.selectedItems = []
       }
     },
-    onMarkingHeaderClicked: function (value) {
-      console.log(value)
+    markAllItems: function (mark) {
+      EventBus.$emit('show-loading', true)
+      this.getIds(this.currentRequestData, result => {
+        if (mark) {
+          this.$store.dispatch('ON_MARKED_IDS_ADD', { type: this.itemType, ids: result.data })
+        } else {
+          this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: result.data })
+        }
+        EventBus.$emit('show-loading', false)
+      })
     },
     isSelected: function (row) {
       return this.selectedItems[row[this.tableOptions.idColumn]] !== undefined

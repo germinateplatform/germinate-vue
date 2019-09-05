@@ -106,7 +106,7 @@ export default {
       type: String
     }, {
       name: 'synonyms',
-      type: 'json'
+      type: String
     }, {
       name: 'collectorNumber',
       type: String
@@ -182,9 +182,29 @@ export default {
           elevation: 'text-right',
           genus: 'font-italic',
           species: 'font-italic',
-          subtaxa: 'font-italic',
-          marked: 'text-right'
-        }
+          subtaxa: 'font-italic'
+        },
+        additionalMarkingOptions: [{
+          key: 'mark-parents',
+          text: () => 'Mark entity parents',
+          icon: 'mdi-chevron-up-box',
+          callback: () => ''
+        }, {
+          key: 'unmark-parents',
+          text: () => 'Unark entity parents',
+          icon: 'mdi-chevron-up-box-outline',
+          callback: () => ''
+        }, {
+          key: 'mark-children',
+          text: () => 'Mark entity children',
+          icon: 'mdi-chevron-down-box',
+          callback: () => ''
+        }, {
+          key: 'unmark-children',
+          text: () => 'Unark entity children',
+          icon: 'mdi-chevron-down-box-outline',
+          callback: () => ''
+        }]
       },
       columns: columns
     }

@@ -3,7 +3,7 @@
     <h1>{{ $t('pageGermplasmTitle') }}</h1>
     <hr />
     <p v-html="$t('pageGermplasmText')" />
-    <GermplasmTable :filterOn="filterOn" :getData="getData"/>
+    <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" />
   </div>
 </template>
 
@@ -30,6 +30,9 @@ export default {
   methods: {
     getData: function (data, callback) {
       return this.apiPostGermplasmTable(data, callback)
+    },
+    getIds: function (data, callback) {
+      return this.apiPostGermplasmTableIds(data, callback)
     }
   },
   mounted: function () {
