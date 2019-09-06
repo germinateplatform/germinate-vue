@@ -9,6 +9,11 @@
 <script>
 import DatasetsTable from '@/components/tables/DatasetsTable'
 export default {
+  data: function () {
+    return {
+      filterOn: null
+    }
+  },
   components: {
     DatasetsTable
   },
@@ -20,7 +25,7 @@ export default {
       return this.apiPostDatasetTableIds(data, callback)
     },
     getFilter: function (isExternal) {
-      return [{
+      var filter = [{
         column: {
           name: 'isExternal',
           type: Boolean
@@ -29,6 +34,18 @@ export default {
         operator: 'and',
         values: [isExternal]
       }]
+
+      if (this.filterOn && this.filterOn.length > 0) {
+        filter = filter.concat(this.filterOn)
+      }
+
+      return filter
+    }
+  },
+  created: function () {
+    if (this.tableFiltering && this.tableFiltering.length > 0) {
+      this.filterOn = this.tableFiltering
+      this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', null)
     }
   }
 }

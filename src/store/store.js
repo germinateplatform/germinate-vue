@@ -31,7 +31,8 @@ const store = new Vuex.Store({
       datasets: [],
       groups: [],
       locations: []
-    }
+    },
+    tableFiltering: null
   },
   getters: {
     token: state => state.token,
@@ -42,7 +43,8 @@ const store = new Vuex.Store({
     markedIds: state => state.markedIds,
     hiddenColumns: state => state.hiddenColumns,
     originalTarget: state => state.originalTarget,
-    serverSettings: state => state.serverSettings
+    serverSettings: state => state.serverSettings,
+    tableFiltering: state => state.tableFiltering
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
@@ -98,6 +100,9 @@ const store = new Vuex.Store({
     },
     ON_HELP_KEY_CHANGED_MUTATION: function (state, newHelpKey) {
       state.helpKey = newHelpKey
+    },
+    ON_TABLE_FILTERING_CHANGED_MUTATION: function (state, newTableFiltering) {
+      state.tableFiltering = newTableFiltering
     }
   },
   actions: {
@@ -136,6 +141,9 @@ const store = new Vuex.Store({
     },
     ON_HELP_KEY_CHANGED: function ({ commit }, helpKey) {
       commit('ON_HELP_KEY_CHANGED_MUTATION', helpKey)
+    },
+    ON_TABLE_FILTERING_CHANGED: function ({ commit }, tableFiltering) {
+      commit('ON_TABLE_FILTERING_CHANGED_MUTATION', tableFiltering)
     }
   },
   plugins: [

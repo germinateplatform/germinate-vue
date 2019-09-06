@@ -7,14 +7,16 @@
                itemType="locations"
                ref="locationTable"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
-      <router-link slot="locationId" slot-scope="props" :to="'/geo/location/' + props.row.locationId">{{ props.row.locationId }}</router-link>
-      <router-link slot="locationName" slot-scope="props" :to="'/geo/location/' + props.row.markerId">{{ props.row.locationName }}</router-link>
+      <template slot="locationName" slot-scope="props">
+        <router-link to="/data/datasets" @click.native="navigateToDatasets(props.row)" event="" v-if="props.row.locationType === 'datasets'">{{ props.row.locationName }}</router-link>
+        <span v-else>{{ props.row.locationName }}</span>
+      </template>
 
       <span slot="locationLatitude" slot-scope="props" v-if="props.row.locationLatitude">{{ props.row.locationLatitude.toFixed(2) }}</span>
       <span slot="locationLongitude" slot-scope="props" v-if="props.row.locationLongitude">{{ props.row.locationLongitude.toFixed(2) }}</span>
       <span slot="locationElevation" slot-scope="props" v-if="props.row.locationElevation">{{ props.row.locationElevation.toFixed(2) }}</span>
 
-      <div slot="countryName" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countryCode2.toLowerCase()" v-if="props.row.countryCode2"/> <span> {{ props.row.countryName }}</span></div>
+      <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode2.toLowerCase()" v-if="props.row.countryCode2"/> <span> {{ props.row.countryCode2 }}</span></span>
 
       <span slot="locationType" slot-scope="props"><i :class="`mdi mdi-18px ${locationTypes[props.row.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[props.row.locationType].color()};`" /> {{ locationTypes[props.row.locationType].text() }}</span>
     </BaseTable>
@@ -119,12 +121,12 @@ export default {
         },
         additionalMarkingOptions: [{
           key: 'mark-at-location',
-          text: () => 'Mark germplasm at location',
+          text: () => 'Mark germplasm at locations',
           icon: 'mdi-map-marker-plus',
           callback: () => ''
         }, {
           key: 'unmark-at-location',
-          text: () => 'Unmark germplasm at location',
+          text: () => 'Unmark germplasm at locations',
           icon: 'mdi-map-marker-minus',
           callback: () => ''
         }]
@@ -136,6 +138,18 @@ export default {
     BaseTable
   },
   methods: {
+    navigateToDatasets: function (location) {
+      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
+        column: {
+          name: 'location',
+          type: String
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [location.locationName]
+      }])
+      this.$router.push({ path: '/data/datasets' })
+    },
     refresh: function () {
       this.$refs.locationTable.refresh()
     }

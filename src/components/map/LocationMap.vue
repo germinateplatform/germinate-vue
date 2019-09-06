@@ -7,17 +7,13 @@
       ref="map"
       :maxZoom="maxZoom"
       :zoom="zoom">
-      <l-marker-cluster v-if="mapType === 'cluster'">
-        <l-marker v-for="location in locations" :key="'location-map-' + location.locationId" :lat-lng="[location.locationLatitude, location.locationLongitude]" :ref="`marker-${location.locationId}`">
-          <l-popup>
-            <dl class="row">
-              <dt class="col-3 text-right">Location</dt><dd class="col-9">{{ location.locationName }}</dd>
-              <dt class="col-3 text-right">Country</dt><dd class="col-9"><i :class="'flag-icon flag-icon-' + getFlag(location)" /> {{ getCountry(location) }}</dd>
-            </dl>
-          </l-popup>
-        </l-marker>
-      </l-marker-cluster>
     </l-map>
+    <div v-if="location" ref="popupContent">
+      <dl class="row">
+        <dt class="col-3 text-right">Location</dt><dd class="col-9">{{ location.locationName }}</dd>
+        <dt class="col-3 text-right">Country</dt><dd class="col-9"><i :class="'flag-icon flag-icon-' + getFlag(location)" /> {{ getCountry(location) }}</dd>
+      </dl>
+    </div>
   </div>
 </template>
 
@@ -34,7 +30,8 @@ export default {
       zoom: 3,
       maxZoom: 12,
       center: [22.5937, 2.1094],
-      heat: null
+      heat: null,
+      location: null
     }
   },
   props: {
@@ -86,7 +83,20 @@ export default {
         this.$refs.map.fitBounds(latLngBounds.pad(0.1))
       }
 
-      if (this.mapType === 'heatmap') {
+      var map = this.$refs.map.mapObject
+      if (this.mapType === 'cluster') {
+        var markers = L.markerClusterGroup()
+        this.locations.forEach(l => {
+          var marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
+          marker.on('click', e => {
+            var popup = e.target.getPopup()
+            this.location = l
+            this.$nextTick(() => popup.setContent(this.$refs.popupContent))
+          })
+          markers.addLayer(marker)
+        })
+        map.addLayer(markers)
+      } else if (this.mapType === 'heatmap') {
         var ls
         if (this.heat) {
           ls = this.locations.map(l => [l.locationLatitude, l.locationLongitude, 1])
@@ -119,7 +129,9 @@ export default {
         subdomains: ['a', 'b', 'c']
       })
 
-      this.$refs.map.mapObject.addLayer(openstreetmap)
+      var map = this.$refs.map.mapObject
+
+      map.addLayer(openstreetmap)
 
       var satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         id: 'Esri WorldImagery',
@@ -131,10 +143,11 @@ export default {
         'Esri WorldImagery': satellite
       }
 
-      L.control.layers(baseMaps).addTo(this.$refs.map.mapObject)
+      L.control.layers(baseMaps).addTo(map)
 
       this.updateCenter()
-      this.$emit('map-loaded', this.$refs.map.mapObject)
+
+      this.$emit('map-loaded', map)
     })
   }
 }

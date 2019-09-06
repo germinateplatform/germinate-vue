@@ -1,77 +1,91 @@
 <template>
   <div>
-    <b-button-group class="table-filter">
-      <b-dropdown left v-if="columns && columns.length > 0">
-        <template slot="button-content"><i class="mdi mdi-18px mdi-view-column"/></template>
-        <b-dropdown-form>
-          <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.name" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
-        </b-dropdown-form>
-      </b-dropdown>
-      <b-button :variant="filter ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" />
-      <b-button v-if="filter" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter"/>
-    </b-button-group>
+    <div>
+      <div v-if="tempFilter" class="mb-2">
+        <span v-for="(filter, index) in tempFilter" :key="filter.column.name">
+          <b-badge variant="info" class="mr-2" >
+            {{ "'" + texts[filter.column.name]() + "' " + comparators[filter.comparator].text() + " '" + filter.values.join(", ") + "'" }}
+          </b-badge>
+          <b-badge v-if="index < tempFilter.length - 1" class="mr-2">
+            {{ operators.filter(o => o.value === filter.operator)[0].text }}
+          </b-badge>
+        </span>
+      </div>
+    </div>
+    <div>
+      <b-button-group class="table-filter">
+        <b-dropdown left v-if="columns && columns.length > 0">
+          <template slot="button-content"><i class="mdi mdi-18px mdi-view-column"/></template>
+          <b-dropdown-form>
+            <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.name" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
+          </b-dropdown-form>
+        </b-dropdown>
+        <b-button :variant="filter ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" />
+        <b-button v-if="filter" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter"/>
+      </b-button-group>
 
-    <b-modal :id="'table-filter-modal-' + id" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false)" @show="init">
-      <b-form v-on:submit.prevent="setFilter(true)">
-        <div v-for="(f, index) in tempFilter" :key="'filter-' + f.column.name + '-' + index">
-          <b-form-group :disabled="f.canBeChanged === false">
-            <b-input-group class="mb-3">
-              <b-input-group-prepend>
-                <!-- Column selector -->
-                <b-dropdown :text="texts[f.column.name]()" class="overflow-dropdown">
-                  <b-dropdown-item v-for="column in getColumns"
-                                  :key="'filter-column-' + column.name"
-                                  @click="switchColumn(f, column)">
-                    {{ texts[column.name]() }}
-                  </b-dropdown-item>
-                </b-dropdown>
-                <!-- comparator selector -->
-                <b-dropdown :text="comparators[f.comparator].text" class="overflow-dropdown">
-                  <b-dropdown-item v-for="(value, name) in comparators"
-                                  :disabled="isDisabled(f.column.type, name)"
-                                  :key="'filter-comparator-' + name"
-                                  @click="switchComparator(f, name)">
-                    {{ value.text }}
-                  </b-dropdown-item>
-                </b-dropdown>
-              </b-input-group-prepend>
-              <template v-if="isType(f, String)">
-                <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()"/>
-                <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
-              </template>
-              <template v-else-if="isType(f, Number)">
-                <b-form-input v-model="f.values[0]" type="number" @focus.native="$event.target.select()"/>
-                <b-form-input v-model="f.values[1]" type="number" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
-              </template>
-              <template v-else-if="isType(f, Date)">
-                <b-form-input v-model="f.values[0]" type="date" @focus.native="$event.target.select()"/>
-                <b-form-input v-model="f.values[1]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
-              </template>
-              <template v-else-if="isType(f, Boolean)">
-                <b-form-select :options="[{value: 0, text: 'False'}, {value: 1, text: 'True'}]" v-model="f.values[0]" />
-              </template>
-              <template v-else-if="isType(f, 'locationType')">
-                <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" />
-              </template>
-              <template v-else-if="isType(f, 'entityType')">
-                <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" />
-              </template>
-              <b-input-group-append>
-                <b-button variant="danger" class="mdi mdi-18px mdi-delete" :disabled="index === 0" @click="tempFilter.splice(index, 1)"/>
-              </b-input-group-append>
-            </b-input-group>
-            <b-form-radio-group
-              :options="operators"
-              button-variant="outline-secondary"
-              v-model="f.operator"
-              buttons
-              v-if="index !== tempFilter.length - 1"
-            ></b-form-radio-group>
-          </b-form-group>
-        </div>
-        <b-button class="mdi mdi-18px mdi-plus" @click="addFilter"><span> {{ $t('genericAdd') }}</span></b-button>
-      </b-form>
-    </b-modal>
+      <b-modal :id="'table-filter-modal-' + id" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false)" @show="init">
+        <b-form v-on:submit.prevent="setFilter(true)">
+          <div v-for="(f, index) in tempFilter" :key="'filter-' + f.column.name + '-' + index">
+            <b-form-group :disabled="f.canBeChanged === false">
+              <b-input-group class="mb-3">
+                <b-input-group-prepend>
+                  <!-- Column selector -->
+                  <b-dropdown :text="texts[f.column.name]()" class="overflow-dropdown">
+                    <b-dropdown-item v-for="column in getColumns"
+                                    :key="'filter-column-' + column.name"
+                                    @click="switchColumn(f, column)">
+                      {{ texts[column.name]() }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                  <!-- comparator selector -->
+                  <b-dropdown :text="comparators[f.comparator].text()" class="overflow-dropdown">
+                    <b-dropdown-item v-for="(value, name) in comparators"
+                                    :disabled="isDisabled(f.column.type, name)"
+                                    :key="'filter-comparator-' + name"
+                                    @click="switchComparator(f, name)">
+                      {{ value.text() }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </b-input-group-prepend>
+                <template v-if="isType(f, String)">
+                  <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()"/>
+                  <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+                </template>
+                <template v-else-if="isType(f, Number)">
+                  <b-form-input v-model="f.values[0]" type="number" @focus.native="$event.target.select()"/>
+                  <b-form-input v-model="f.values[1]" type="number" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+                </template>
+                <template v-else-if="isType(f, Date)">
+                  <b-form-input v-model="f.values[0]" type="date" @focus.native="$event.target.select()"/>
+                  <b-form-input v-model="f.values[1]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+                </template>
+                <template v-else-if="isType(f, Boolean)">
+                  <b-form-select :options="[{value: 0, text: 'False'}, {value: 1, text: 'True'}]" v-model="f.values[0]" />
+                </template>
+                <template v-else-if="isType(f, 'locationType')">
+                  <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" />
+                </template>
+                <template v-else-if="isType(f, 'entityType')">
+                  <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" />
+                </template>
+                <b-input-group-append>
+                  <b-button variant="danger" class="mdi mdi-18px mdi-delete" :disabled="index === 0" @click="tempFilter.splice(index, 1)"/>
+                </b-input-group-append>
+              </b-input-group>
+              <b-form-radio-group
+                :options="operators"
+                button-variant="outline-secondary"
+                v-model="f.operator"
+                buttons
+                v-if="index !== tempFilter.length - 1"
+              ></b-form-radio-group>
+            </b-form-group>
+          </div>
+          <b-button class="mdi mdi-18px mdi-plus" @click="addFilter"><span> {{ $t('genericAdd') }}</span></b-button>
+        </b-form>
+      </b-modal>
+    </div>
   </div>
 </template>
 
@@ -110,41 +124,42 @@ export default {
         entityType: ['equals']
       },
       comparators: {
-        equals: {
-          text: this.$t('comparatorsEqual'),
+        like: {
+          text: () => this.$t('comparatorsLike'),
           values: 1
         },
-        like: {
-          text: this.$t('comparatorsLike'),
+        equals: {
+          text: () => this.$t('comparatorsEqual'),
           values: 1
         },
         between: {
-          text: this.$t('comparatorsBetween'),
+          text: () => this.$t('comparatorsBetween'),
           values: 2
         },
         greaterThan: {
-          text: this.$t('comparatorsGreaterThan'),
+          text: () => this.$t('comparatorsGreaterThan'),
           values: 1
         },
         greaterOrEquals: {
-          text: this.$t('comparatorsGreaterThanOrEquals'),
+          text: () => this.$t('comparatorsGreaterThanOrEquals'),
           values: 1
         },
         lessThan: {
-          text: this.$t('comparatorsLessThan'),
+          text: () => this.$t('comparatorsLessThan'),
           values: 1
         },
         lessOrEquals: {
-          text: this.$t('comparatorsLessThanOrEquals'),
+          text: () => this.$t('comparatorsLessThanOrEquals'),
           values: 1
         },
         inSet: {
-          text: this.$t('comparatorsInSet'),
+          text: () => this.$t('comparatorsInSet'),
           values: 1
         }
       },
       filter: null,
       tempFilter: [],
+      targetFilter: [],
       operators: operators
     }
   },
@@ -200,10 +215,10 @@ export default {
       this.filter = this.tempFilter.filter(f => {
         return f.values.length > 0 && f.values[0] !== undefined
       })
-      var targetFilter = []
+      this.targetFilter = []
 
       this.filter.forEach(f => {
-        targetFilter.push({
+        this.targetFilter.push({
           column: f.column.name,
           operator: f.operator,
           comparator: f.comparator,
@@ -211,7 +226,7 @@ export default {
         })
       })
 
-      this.$emit('on-filter-changed', targetFilter)
+      this.$emit('on-filter-changed', this.targetFilter)
 
       if (hideModal) {
         this.$refs.tableFilterModal.hide()

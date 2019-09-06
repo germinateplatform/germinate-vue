@@ -42,12 +42,14 @@ export default {
       if (this.synced === false && this.clusteredMap && this.heatmappedMap) {
         this.synced = true
         this.clusteredMap.sync(this.heatmappedMap)
+        this.heatmappedMap.sync(this.clusteredMap)
       }
     },
     heatmappedMap: function (oldValue, newValue) {
       if (this.synced === false && this.clusteredMap && this.heatmappedMap) {
         this.synced = true
         this.heatmappedMap.sync(this.clusteredMap)
+        this.clusteredMap.sync(this.heatmappedMap)
       }
     }
   },

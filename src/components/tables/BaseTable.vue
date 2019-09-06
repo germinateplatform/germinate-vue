@@ -6,7 +6,7 @@
     <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope"><slot :name="slot" v-bind="scope"/></template>
 
     <b-row slot="beforeTable">
-      <b-col cols=6>
+      <b-col cols=9 sm=6>
         <TableFilter :columns="columns"
                      :texts="tableOptions.headings"
                      :tableName="tableOptions.tableName"
@@ -15,7 +15,7 @@
                      v-on:on-filter-changed="onFilterChanged"
                      v-on:on-column-toggle="onToggleColumn" />
       </b-col>
-      <b-col cols=6>
+      <b-col cols=3 sm=6>
         <b-button-group class="float-right per-page-dropdown">
           <b-dropdown>
             <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
@@ -52,7 +52,10 @@
         </template>
       </b-dropdown>
     </div>
-    <b-form-checkbox slot="marked" slot-scope="props" :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
+
+    <div slot="marked" slot-scope="props" @contextmenu.prevent="onContextClicked(props.row)">
+      <b-form-checkbox  :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
+    </div>
 
     <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1">
       <b-button-group v-if="tableActions">
@@ -188,6 +191,9 @@ export default {
     MarkedItems
   },
   methods: {
+    onContextClicked: function (row) {
+      console.log(row)
+    },
     getRowClass: function (row) {
       if (this.selectedItems.indexOf(row[this.tableOptions.idColumn]) !== -1) {
         return 'table-info'

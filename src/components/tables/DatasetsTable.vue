@@ -4,12 +4,16 @@
                :columns="columns"
                :getIds="getIds"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+      <template slot="datasetName" slot-scope="props">
+        <a target="_blank" :href="props.row.hyperlink" v-if="props.row.hyperlink && props.row.isExternal">{{ props.row.datasetName }} <i class="mdi mdi-18px mdi-open-in-new fix-alignment" /></a>
+        <span v-else>{{ props.row.datasetName }}</span>
+      </template>
       <!-- Formatted date -->
       <span slot="startDate" slot-scope="props" v-if="props.row.startDate">{{ props.row.startDate | toDate }}</span>
       <span slot="endDate" slot-scope="props" v-if="props.row.endDate">{{ props.row.endDate | toDate }}</span>
 
       <!-- Country flags -->
-      <div slot="countryName" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryName }}</span></div>
+      <span slot="countryName" slot-scope="props" class="table-country text-nowrap" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryCode }}</span></span>
 
       <span slot="experimentType" slot-scope="props"><i :class="`mdi mdi-18px ${experimentTypes[props.row.experimentType].icon} fix-alignment`" :style="`color: ${experimentTypes[props.row.experimentType].color()};`" /> {{ experimentTypes[props.row.experimentType].text() }}</span>
       <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount && props.row.dataObjectCount.value">{{ props.row.dataObjectCount.value }}</span>
@@ -66,6 +70,9 @@ export default {
         name: 'datasetDescription',
         type: String
       }, {
+        name: 'experimentName',
+        type: String
+      }, {
         name: 'experimentType',
         type: String
       }, {
@@ -119,7 +126,7 @@ export default {
         idColumn: 'datasetId',
         tableName: 'datasets',
         filterOn: this.filterOn,
-        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentType', 'dataType', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
+        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentName', 'experimentType', 'dataType', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
         filterable: [],
         headings: {
           datasetId: () => this.$t('tableColumnDatasetId'),

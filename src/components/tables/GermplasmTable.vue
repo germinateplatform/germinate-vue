@@ -19,7 +19,7 @@
       <span slot="elevation" slot-scope="props" v-if="props.row.elevation">{{ props.row.elevation.toFixed(2) }}</span>
 
       <!-- Country flags -->
-      <div slot="countryName" slot-scope="props" class="table-country"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryName }}</span></div>
+      <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryCode }}</span></span>
       <!-- Formatted date -->
       <span slot="collDate" slot-scope="props" v-if="props.row.collDate">{{ props.row.collDate | toDate }}</span>
       <!-- Image preview -->

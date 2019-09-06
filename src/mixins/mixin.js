@@ -11,6 +11,7 @@ export default {
       'markedIds',
       'originalTarget',
       'serverSettings',
+      'tableFiltering',
       'tablePerPage',
       'token'
     ])
