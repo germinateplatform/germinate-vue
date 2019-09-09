@@ -51,6 +51,15 @@ export default {
       queryData.limit = MAX_JAVA_INTEGER
       return this.authAjax({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostMarkerTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'marker/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostMarkerTableIds: function (queryData, onSuccess, onError) {
+      queryData.page = 0
+      queryData.limit = MAX_JAVA_INTEGER
+      return this.authAjax({ url: 'marker/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostMarkerGroupTable: function (groupId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: `group/${groupId}/marker`, method: 'POST', data: queryData, success: onSuccess, error: onError })

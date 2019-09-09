@@ -36,10 +36,31 @@ export default {
       return result
     },
     getData: function (data, callback) {
+      this.adjustData(data)
       return this.apiPostDatasetTable(data, callback)
     },
     getIds: function (data, callback) {
+      this.adjustData(data)
       return this.apiPostDatasetTableIds(data, callback)
+    },
+    adjustData: function (data) {
+      var additional = [{
+        column: 'experimentType',
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.experimentType]
+      }, {
+        column: 'isExternal',
+        comparator: 'equals',
+        operator: 'and',
+        values: [0]
+      }]
+
+      if (!data.filter) {
+        data.filter = additional
+      } else {
+        data.filter = additional.concat(data.filter)
+      }
     }
   },
   created: function () {
@@ -47,25 +68,6 @@ export default {
 
     if (this.experimentTypes[experimentType]) {
       this.experimentType = experimentType
-
-      this.filterOn = [{
-        column: {
-          name: 'experimentType',
-          type: String
-        },
-        canBeChanged: false,
-        comparator: 'equals',
-        operator: 'and',
-        values: [this.experimentType]
-      }, {
-        column: {
-          name: 'isExternal',
-          type: Boolean
-        },
-        comparator: 'equals',
-        operator: 'and',
-        values: [0]
-      }]
     }
   }
 }

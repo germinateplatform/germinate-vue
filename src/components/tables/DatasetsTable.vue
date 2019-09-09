@@ -132,6 +132,7 @@ export default {
           datasetId: () => this.$t('tableColumnDatasetId'),
           datasetName: () => this.$t('tableColumnDatasetName'),
           datasetDescription: () => this.$t('tableColumnDatasetDescription'),
+          experimentName: () => this.$t('tableColumnExperimentName'),
           experimentType: () => this.$t('tableColumnDatasetExperimentType'),
           dataType: () => this.$t('tableColumnDatasetDataType'),
           location: () => this.$t('tableColumnDatasetLocation'),

@@ -44,7 +44,7 @@ export default {
     },
     selectable: {
       type: Boolean,
-      default: true
+      default: false
     },
     tableActions: {
       type: Array,
@@ -119,18 +119,7 @@ export default {
           locationLatitude: 'text-right',
           locationLongitude: 'text-right',
           locationElevation: 'text-right'
-        },
-        additionalMarkingOptions: [{
-          key: 'mark-at-location',
-          text: () => 'Mark germplasm at locations',
-          icon: 'mdi-map-marker-plus',
-          callback: () => ''
-        }, {
-          key: 'unmark-at-location',
-          text: () => 'Unmark germplasm at locations',
-          icon: 'mdi-map-marker-minus',
-          callback: () => ''
-        }]
+        }
       },
       columns: columns
     }

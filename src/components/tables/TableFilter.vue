@@ -262,9 +262,32 @@ export default {
       this.$emit('on-column-toggle', column.name)
     },
     clearFilter: function () {
-      this.filter = null
-      this.tempFilter = []
-      this.$emit('on-filter-changed', this.filter)
+      this.filter = this.filter.filter(f => {
+        if (f.canBeChanged !== undefined) {
+          return !f.canBeChanged
+        } else {
+          return false
+        }
+      })
+      this.tempFilter = this.tempFilter.filter(f => {
+        if (f.canBeChanged !== undefined) {
+          return !f.canBeChanged
+        } else {
+          return false
+        }
+      })
+
+      this.targetFilter = []
+
+      this.filter.forEach(f => {
+        this.targetFilter.push({
+          column: f.column.name,
+          operator: f.operator,
+          comparator: f.comparator,
+          values: f.values
+        })
+      })
+      this.$emit('on-filter-changed', this.targetFilter)
     },
     init: function () {
       if (this.tempFilter.length < 1) {

@@ -170,6 +170,18 @@ const router = new Router({
           beforeEnter: requireAuth
         },
         {
+          path: 'marked-items',
+          name: 'marked-items',
+          component: () => import('@/views/MarkedItemsView.vue'),
+          beforeEnter: requireAuth
+        },
+        {
+          path: 'marked-items/:itemType',
+          name: 'marked-items-type',
+          component: () => import('@/views/MarkedItemsView.vue'),
+          beforeEnter: requireAuth
+        },
+        {
           path: 'about',
           redirect: '/about/germinate',
           name: '',

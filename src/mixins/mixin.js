@@ -46,13 +46,30 @@ export default {
         },
         markers: {
           icon: 'mdi-dna',
-          apiName: 'marker',
+          apiName: 'markers',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeMarker')
         },
         locations: {
           icon: 'mdi-map-marker',
           apiName: 'locations',
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('groupTypeLocation')
+        }
+      },
+      markedItemTypes: {
+        germplasm: {
+          icon: 'mdi-sprout',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('groupTypeGerminatebase')
+        },
+        markers: {
+          icon: 'mdi-dna',
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('groupTypeMarker')
+        },
+        locations: {
+          icon: 'mdi-map-marker',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeLocation')
         }

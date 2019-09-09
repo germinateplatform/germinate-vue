@@ -35,7 +35,7 @@ export default {
     },
     selectable: {
       type: Boolean,
-      default: true
+      default: false
     },
     tableActions: {
       type: Array,
