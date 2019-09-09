@@ -5,10 +5,6 @@ import store from '@/store/store'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import { EventBus } from '@/plugins/event-bus.js'
 
-// Users
-const Users = () => import('@/views/users/Users')
-const User = () => import('@/views/users/User')
-
 Vue.use(Router)
 
 function requireAuth (to, from, next) {
@@ -48,7 +44,7 @@ const router = new Router({
     {
       path: '/g8',
       redirect: '/g8/login',
-      name: '',
+      name: 'login',
       component: () => import('@/containers/DefaultPublic'),
       children: [
         {
@@ -66,21 +62,21 @@ const router = new Router({
       children: [
         {
           path: 'home',
-          name: 'Home',
+          name: 'home',
           component: () => import('@/views/Dashboard'),
           beforeEnter: requireAuth
         },
         {
           path: 'admin',
           redirect: '/admin/settings',
-          name: 'Admin settings',
+          name: '',
           component: {
             render (c) { return c('router-view') }
           },
           children: [
             {
               path: 'settings',
-              name: 'Settings',
+              name: 'admin-settings',
               meta: { requiresAdmin: true },
               component: () => import('@/views/admin/Settings.vue'),
               beforeEnter: requireAuth
@@ -88,65 +84,46 @@ const router = new Router({
           ]
         },
         {
-          path: 'users',
-          meta: { label: 'Users' },
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: '',
-              component: Users
-            },
-            {
-              path: ':id',
-              meta: { label: 'User Details' },
-              name: 'User',
-              component: User
-            }
-          ]
-        },
-        {
           path: 'data',
           redirect: '/data/germplasm',
-          name: 'Data',
+          name: '',
           component: {
             render (c) { return c('router-view') }
           },
           children: [
             {
               path: 'germplasm',
-              name: 'Germplasm',
+              name: 'germplasm',
               component: () => import('@/views/data/germplasm/Germplasm.vue'),
               beforeEnter: requireAuth
             },
             {
-              path: 'datasets',
-              name: 'Datasets',
-              component: () => import('@/views/data/Datasets.vue'),
-              beforeEnter: requireAuth
-            },
-            {
               path: 'germplasm/:germplasmId',
-              name: 'Passport',
+              name: 'passport',
               component: () => import('@/views/data/germplasm/Passport.vue'),
               beforeEnter: requireAuth
             },
             {
+              path: 'datasets',
+              name: 'datasets',
+              component: () => import('@/views/data/Datasets.vue'),
+              beforeEnter: requireAuth
+            },
+            {
               path: 'genotypes/maps',
-              name: 'Maps',
+              name: 'maps',
               component: () => import('@/views/data/genotype/Maps.vue'),
               beforeEnter: requireAuth
             },
             {
               path: 'genotypes/maps/:mapId',
-              name: 'MapId',
+              name: 'map-details',
               component: () => import('@/views/data/genotype/Maps.vue'),
               beforeEnter: requireAuth
             },
             {
               path: 'environment/locations',
-              name: 'Locations',
+              name: 'locations',
               component: () => import('@/views/data/environment/Locations.vue'),
               beforeEnter: requireAuth
             }
@@ -155,14 +132,14 @@ const router = new Router({
         {
           path: 'import',
           redirect: '/import/data-upload',
-          name: 'Import',
+          name: '',
           component: {
             render (c) { return c('router-view') }
           },
           children: [
             {
               path: 'data-upload',
-              name: 'Data upload',
+              name: 'import-upload',
               component: () => import('@/views/data/DataUploader.vue'),
               beforeEnter: requireAuth
             }
@@ -170,26 +147,42 @@ const router = new Router({
         },
         {
           path: 'export/:experimentType',
-          name: 'Export',
+          name: 'export',
           component: () => import('@/views/DatasetSelector.vue'),
           beforeEnter: requireAuth
         },
         {
           path: 'groups',
-          name: 'Groups',
+          name: 'groups',
           component: () => import('@/views/Groups.vue'),
           beforeEnter: requireAuth
         },
         {
           path: 'groups/:groupId',
-          name: 'GroupId',
+          name: 'group-details',
           component: () => import('@/views/Groups.vue'),
           beforeEnter: requireAuth
         },
         {
+          path: 'image-gallery',
+          name: 'image-gallery',
+          component: () => import('@/views/ImageGallery.vue'),
+          beforeEnter: requireAuth
+        },
+        {
           path: 'about',
-          name: 'About',
-          component: () => import('@/views/About.vue')
+          redirect: '/about/germinate',
+          name: '',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'germinate',
+              name: 'about-germinate',
+              component: () => import('@/views/about/AboutGerminate.vue')
+            }
+          ]
         }
       ]
     }

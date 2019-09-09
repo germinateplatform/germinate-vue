@@ -45,6 +45,7 @@ button.mdi:before {
 .b-dropdown i.mdi,
 .nav-item i.mdi,
 .modal-footer .btn i.mdi,
+.v-context i.mdi,
 i.mdi-36px,
 i.mdi.fix-alignment {
   vertical-align: sub;
@@ -156,5 +157,16 @@ i.flag-icon {
   }
   .modal-backdrop {
     display: none !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .app-header .navbar-brand {
+      position: absolute;
+      left: 0;
+      margin-left: 54px;
+  }
+  .app-header .navbar-brand {
+    justify-content: left;
   }
 }

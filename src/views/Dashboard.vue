@@ -8,7 +8,7 @@
               <b-row>
                 <b-col cols=6 class="align-self-center">
                   <h2 class="mb-0">{{ stats[category.key] }}</h2>
-                  <p>{{ category.text }}</p>
+                  <p>{{ category.text() }}</p>
                 </b-col>
                 <b-col cols=6 class="text-right">
                   <i :class="`mdi mdi-48px ${category.icon}`" />
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import ImageCarousel from '@/components/util/ImageCarousel'
+import ImageCarousel from '@/components/images/ImageCarousel'
 
 export default {
   name: 'dashboard',
@@ -41,25 +41,25 @@ export default {
       statCategories: [
         {
           key: 'germplasm',
-          text: this.$t('dashboardBannerGermplasm'),
+          text: () => this.$t('dashboardBannerGermplasm'),
           icon: 'mdi-sprout',
           link: '/data/germplasm'
         },
         {
           key: 'markers',
-          text: this.$t('dashboardBannerMarkers'),
+          text: () => this.$t('dashboardBannerMarkers'),
           icon: 'mdi-dna',
           link: '/data/genotypes/maps'
         },
         {
           key: 'traits',
-          text: this.$t('dashboardBannerTraits'),
+          text: () => this.$t('dashboardBannerTraits'),
           icon: 'mdi-tag-text-outline',
           link: '/data/traits'
         },
         {
           key: 'locations',
-          text: this.$t('dashboardBannerLocations'),
+          text: () => this.$t('dashboardBannerLocations'),
           icon: 'mdi-map-marker',
           link: '/geo/locations'
         }

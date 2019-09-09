@@ -2,7 +2,7 @@
   <div class="app">
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile />
-      <b-link class="navbar-brand d-none d-lg-inline-flex" to="/">
+      <b-link class="navbar-brand" to="/">
         <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
       </b-link>
@@ -34,10 +34,6 @@
         <!-- TODO: Replace this with i18n content or remove it -->
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid mt-4">
-          <div class="d-lg-none">
-            <img class="mx-auto" src="/img/germinate.svg" width="300" height="64" alt="Germinate" style="display: block;">
-            <hr />
-          </div>
           <router-view :key="$route.path"></router-view>
         </div>
       </main>
@@ -165,9 +161,21 @@ export default {
           icon: 'mdi mdi-18px mdi-group'
         },
         {
+          name: this.$t('menuImageGallery'),
+          url: '/image-gallery',
+          icon: 'mdi mdi-18px mdi-image-multiple'
+        },
+        {
           name: this.$t('menuAbout'),
           url: '/about',
-          icon: 'mdi mdi-18px mdi-information'
+          icon: 'mdi mdi-18px mdi-information',
+          children: [
+            {
+              name: this.$t('menuAboutGerminate'),
+              url: '/about/germinate',
+              icon: 'mdi mdi-map'
+            }
+          ]
         }
       ]
     }

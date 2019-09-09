@@ -22,19 +22,19 @@ export default {
     }
   },
   methods: {
-    getImage: function (index) {
-      this.apiGetImageSrc({
-        name: this.images.en_GB[index].name,
-        type: 'template'
-      }, result => {
-        for (var locale in this.images) {
-          var arrayBufferView = new Uint8Array(result)
-          var blob = new Blob([ arrayBufferView ], { type: 'image/jpeg' })
-          var urlCreator = window.URL || window.webkitURL
-          var imageUrl = urlCreator.createObjectURL(blob)
-          this.images[locale][index].src = imageUrl
-        }
-      })
+    setImagePath: function (index) {
+      var params = {
+        name: this.images[this.locale][index].name,
+        token: this.token ? this.token.imageToken : null,
+        type: 'template',
+        size: 'large'
+      }
+
+      var paramString = this.toUrlString(params)
+
+      for (var locale in this.images) {
+        this.images[locale][index].src = this.baseUrl + 'image/src?' + paramString
+      }
     }
   },
   mounted: function () {
@@ -48,7 +48,7 @@ export default {
       }
       this.images = result
 
-      this.images.en_GB.forEach((image, index) => this.getImage(index))
+      this.images.en_GB.forEach((image, index) => this.setImagePath(index))
     })
   }
 }

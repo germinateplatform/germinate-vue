@@ -31,7 +31,7 @@
           :target="`table-image-popover-${props.row.germplasmId}`"
           placement="top"
           triggers="hover focus">
-          <b>{{ props.row.firstImagePath }}</b>
+          <b-img fluid :src="getSrc(props.row)" />
         </b-popover>
       </div>
       <!-- Biological status popover -->
@@ -120,6 +120,9 @@ export default {
       name: 'subtaxa',
       type: String
     }, {
+      name: 'location',
+      type: String
+    }, {
       name: 'elevation',
       type: Number
     }, {
@@ -154,7 +157,7 @@ export default {
         idColumn: 'germplasmId',
         tableName: 'germplasm',
         filterOn: this.filterOn,
-        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'elevation', 'countryName', 'collDate', 'pdci'],
+        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'location', 'elevation', 'countryName', 'collDate', 'pdci'],
         filterable: [],
         headings: {
           selected: '',
@@ -170,6 +173,7 @@ export default {
           genus: () => this.$t('tableColumnGenus'),
           species: () => this.$t('tableColumnSpecies'),
           subtaxa: () => this.$t('tableColumnSubtaxa'),
+          location: () => this.$t('tableColumnGermplasmLocation'),
           elevation: () => this.$t('tableColumnElevation'),
           countryName: () => this.$t('tableColumnCountryName'),
           collDate: () => this.$t('tableColumnColldate'),
@@ -188,22 +192,22 @@ export default {
           key: 'mark-parents',
           text: () => 'Mark entity parents',
           icon: 'mdi-chevron-up-box',
-          callback: () => ''
+          callback: (item) => this.markParents(item)
         }, {
           key: 'unmark-parents',
           text: () => 'Unark entity parents',
           icon: 'mdi-chevron-up-box-outline',
-          callback: () => ''
+          callback: (item) => this.unmarkParents(item)
         }, {
           key: 'mark-children',
           text: () => 'Mark entity children',
           icon: 'mdi-chevron-down-box',
-          callback: () => ''
+          callback: (item) => this.markChildren(item)
         }, {
           key: 'unmark-children',
           text: () => 'Unark entity children',
           icon: 'mdi-chevron-down-box-outline',
-          callback: () => ''
+          callback: (item) => this.unmarkChildren(item)
         }]
       },
       columns: columns
@@ -213,6 +217,82 @@ export default {
     BaseTable
   },
   methods: {
+    markParents: function (item) {
+      if (item) {
+        var parentId = item.entityParentId
+        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [parentId] })
+      } else {
+        var requestData = this.$refs.germplasmTable.getCurrentRequestData()
+        // First request all ids for the current table items
+        this.getIds(requestData, result => {
+          // Then post them to the server again to convert them to their entity parents
+          this.apiPostEntityIds(result.data, 'up', result => {
+            this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
+          })
+        })
+      }
+    },
+    markChildren: function (item) {
+      if (item) {
+        var id = item.germplasmId
+        this.apiPostEntityIds([id], 'down', result => {
+          this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
+        })
+      } else {
+        var requestData = this.$refs.germplasmTable.getCurrentRequestData()
+        // First request all ids for the current table items
+        this.getIds(requestData, result => {
+          // Then post them to the server again to convert them to their entity parents
+          this.apiPostEntityIds(result.data, 'down', result => {
+            this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
+          })
+        })
+      }
+    },
+    unmarkParents: function (item) {
+      if (item) {
+        var parentId = item.entityParentId
+        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [parentId] })
+      } else {
+        var requestData = this.$refs.germplasmTable.getCurrentRequestData()
+        // First request all ids for the current table items
+        this.getIds(requestData, result => {
+          // Then post them to the server again to convert them to their entity parents
+          this.apiPostEntityIds(result.data, 'up', result => {
+            this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
+          })
+        })
+      }
+    },
+    unmarkChildren: function (item) {
+      if (item) {
+        var id = item.germplasmId
+        this.apiPostEntityIds([id], 'down', result => {
+          this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
+        })
+      } else {
+        var requestData = this.$refs.germplasmTable.getCurrentRequestData()
+        // First request all ids for the current table items
+        this.getIds(requestData, result => {
+          // Then post them to the server again to convert them to their entity parents
+          this.apiPostEntityIds(result.data, 'down', result => {
+            this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
+          })
+        })
+      }
+    },
+    getSrc: function (germplasm) {
+      var params = {
+        name: germplasm.firstImagePath,
+        type: 'database',
+        size: 'small',
+        token: this.token ? this.token.imageToken : ''
+      }
+
+      var paramString = this.toUrlString(params)
+
+      return this.baseUrl + 'image/src?' + paramString
+    },
     getPdci: function (value, total) {
       return total - (value / 10 * total)
     },

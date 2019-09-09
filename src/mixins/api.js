@@ -114,9 +114,6 @@ export default {
     apiGetSettingsFile: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'settings/file', data: queryData, success: onSuccess, error: onError })
     },
-    apiGetImageSrc: function (queryData, onSuccess, onError) {
-      return this.authAjax({ url: 'image/src', data: queryData, dataType: 'arraybuffer', success: onSuccess, error: onError })
-    },
     apiPostGroupTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -141,6 +138,13 @@ export default {
     },
     apiGetDataUploadStatus: function (uuid, onSuccess, onError) {
       return this.authAjax({ url: `import/template/${uuid}/status`, success: onSuccess, error: onError })
+    },
+    apiPostImages: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'image/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostEntityIds: function (ids, direction, onSuccess, onError) {
+      return this.authAjax({ url: `germplasm/entity?direction=${direction}`, method: 'POST', data: ids, success: onSuccess, error: onError })
     }
   }
 }

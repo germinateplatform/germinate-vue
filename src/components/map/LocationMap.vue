@@ -10,8 +10,17 @@
     </l-map>
     <div v-if="location" ref="popupContent">
       <dl class="row">
-        <dt class="col-3 text-right">Location</dt><dd class="col-9">{{ location.locationName }}</dd>
+        <dt class="col-3 text-right">Location</dt>
+        <dd class="col-9">
+          <router-link to="/data/datasets" v-if="location.locationType === 'datasets'" @click.native="navigateToDatasets(location)" event="">{{ location.locationName }}</router-link>
+          <router-link to="/data/germplasm" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
+          <span v-else>{{ location.locationName }}</span>
+        </dd>
+        <dt class="col-3 text-right">Type</dt><dd class="col-9"><i :class="`mdi mdi-18px ${locationTypes[location.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[location.locationType].color()};`" /> {{ this.locationTypes[location.locationType].text() }}</dd>
         <dt class="col-3 text-right">Country</dt><dd class="col-9"><i :class="'flag-icon flag-icon-' + getFlag(location)" /> {{ getCountry(location) }}</dd>
+        <dt class="col-3 text-right">Latitude</dt><dd class="col-9">{{ location.locationLatitude.toFixed(2) }}</dd>
+        <dt class="col-3 text-right">Longitude</dt><dd class="col-9">{{ location.locationLongitude.toFixed(2) }}</dd>
+        <template v-if="location.locationElevation"><dt class="col-3 text-right">Elevation</dt><dd class="col-9">{{ location.locationElevation.toFixed(2) }}</dd></template>
       </dl>
     </div>
   </div>
@@ -31,7 +40,8 @@ export default {
       maxZoom: 12,
       center: [22.5937, 2.1094],
       heat: null,
-      location: null
+      location: null,
+      markerClusterer: null
     }
   },
   props: {
@@ -50,6 +60,30 @@ export default {
     }
   },
   methods: {
+    navigateToGermplasm: function (location) {
+      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
+        column: {
+          name: 'location',
+          type: String
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [location.locationName]
+      }])
+      this.$router.push({ path: '/data/germplasm' })
+    },
+    navigateToDatasets: function (location) {
+      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
+        column: {
+          name: 'location',
+          type: String
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [location.locationName]
+      }])
+      this.$router.push({ path: '/data/datasets' })
+    },
     getFlag: function (country) {
       if (country.countryCode2) {
         return country.countryCode2.toLowerCase()
@@ -69,11 +103,20 @@ export default {
       }
     },
     updateCenter: function () {
+      var map = this.$refs.map.mapObject
       if (this.locations.length === 1) {
         // If there's just one location, center it and open the popup
-        this.center = [this.locations[0].locationLatitude, this.locations[0].locationLongitude]
-        var ref = 'marker-' + this.locations[0].locationId
-        this.$refs[ref][0].mapObject.openPopup()
+        this.location = this.locations[0]
+        this.center = [this.location.locationLatitude, this.location.locationLongitude]
+
+        var marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
+        marker.on('click', e => {
+          var popup = e.target.getPopup()
+          this.location = this.location
+          this.$nextTick(() => popup.setContent(this.$refs.popupContent))
+        })
+        marker.addTo(map)
+        marker.fire('click')
       } else {
         // If there are multiple locations, fit them into view
         var latLngBounds = L.latLngBounds()
@@ -83,9 +126,15 @@ export default {
         this.$refs.map.fitBounds(latLngBounds.pad(0.1))
       }
 
-      var map = this.$refs.map.mapObject
       if (this.mapType === 'cluster') {
-        var markers = L.markerClusterGroup()
+        if (this.markerClusterer) {
+          // If it exists, clear all layers
+          this.markerClusterer.clearLayers()
+        } else {
+          // If it doesn't create it
+          this.markerClusterer = L.markerClusterGroup()
+          map.addLayer(this.markerClusterer)
+        }
         this.locations.forEach(l => {
           var marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
           marker.on('click', e => {
@@ -93,16 +142,15 @@ export default {
             this.location = l
             this.$nextTick(() => popup.setContent(this.$refs.popupContent))
           })
-          markers.addLayer(marker)
+          this.markerClusterer.addLayer(marker)
         })
-        map.addLayer(markers)
       } else if (this.mapType === 'heatmap') {
-        var ls
+        var ls = this.locations.map(l => [l.locationLatitude, l.locationLongitude, 1])
         if (this.heat) {
-          ls = this.locations.map(l => [l.locationLatitude, l.locationLongitude, 1])
+          // If it exists, just set it
           this.heat.setLatLngs(ls)
         } else {
-          ls = this.locations.map(l => [l.locationLatitude, l.locationLongitude, 1])
+          // Otherwise, create it
           this.heat = L.heatLayer(ls, {
             minOpacity: 0.4,
             max: 1,
@@ -146,6 +194,15 @@ export default {
       L.control.layers(baseMaps).addTo(map)
 
       this.updateCenter()
+
+      // Disable zoom until focus gained, disable when blur
+      map.scrollWheelZoom.disable()
+      map.on('focus', function () {
+        map.scrollWheelZoom.enable()
+      })
+      map.on('blur', function () {
+        map.scrollWheelZoom.disable()
+      })
 
       this.$emit('map-loaded', map)
     })

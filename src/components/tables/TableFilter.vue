@@ -4,7 +4,7 @@
       <div v-if="tempFilter" class="mb-2">
         <span v-for="(filter, index) in tempFilter" :key="filter.column.name">
           <b-badge variant="info" class="mr-2" >
-            {{ "'" + texts[filter.column.name]() + "' " + comparators[filter.comparator].text() + " '" + filter.values.join(", ") + "'" }}
+            {{ "'" + texts[filter.column.name]() + "' " + comparators[filter.comparator].text() + " '" + filter.values.filter(f => f !== null).join(", ") + "'" }}
           </b-badge>
           <b-badge v-if="index < tempFilter.length - 1" class="mr-2">
             {{ operators.filter(o => o.value === filter.operator)[0].text }}

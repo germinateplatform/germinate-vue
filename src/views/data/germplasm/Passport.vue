@@ -18,6 +18,11 @@
         <LocationMap :locations="[getLocation()]" />
       </b-col>
     </b-row>
+    <h2 class="mdi-heading">
+      <i class="mdi mdi-36px text-primary mdi-image-multiple"/>
+      <span>Images</span>
+    </h2>
+    <ImageGallery :getImages="getImages" />
     <hr />
   </div>
 </template>
@@ -25,6 +30,7 @@
 <script>
 import Mcpd from '@/components/germplasm/Mcpd'
 import LocationMap from '@/components/map/LocationMap'
+import ImageGallery from '@/components/images/ImageGallery'
 
 export default {
   data: function () {
@@ -34,16 +40,32 @@ export default {
     }
   },
   components: {
+    ImageGallery,
     LocationMap,
     Mcpd
   },
   methods: {
+    getImages: function (data, onSuccess, onError) {
+      data.filter = [{
+        column: 'imageForeignId',
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.germplasmId]
+      }, {
+        column: 'imageRefTable',
+        comparator: 'equals',
+        operator: 'and',
+        values: ['germinatebase']
+      }]
+      this.apiPostImages(data, onSuccess, onError)
+    },
     getLocation: function () {
       return {
         locationId: -1,
         locationLatitude: this.germplasm.declatitude,
         locationLongitude: this.germplasm.declongitude,
         locationName: this.germplasm.collsite,
+        locationType: 'collectingsites',
         countryName: null,
         countryCode2: null,
         countryCode3: this.germplasm.origcty

@@ -9,6 +9,7 @@
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <template slot="locationName" slot-scope="props">
         <router-link to="/data/datasets" @click.native="navigateToDatasets(props.row)" event="" v-if="props.row.locationType === 'datasets'">{{ props.row.locationName }}</router-link>
+        <router-link to="/data/germplasm" @click.native="navigateToGermplasm(props.row)" event="" v-else-if="props.row.locationType === 'collectingsites'">{{ props.row.locationName }}</router-link>
         <span v-else>{{ props.row.locationName }}</span>
       </template>
 
@@ -138,6 +139,18 @@ export default {
     BaseTable
   },
   methods: {
+    navigateToGermplasm: function (location) {
+      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
+        column: {
+          name: 'location',
+          type: String
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [location.locationName]
+      }])
+      this.$router.push({ path: '/data/germplasm' })
+    },
     navigateToDatasets: function (location) {
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {

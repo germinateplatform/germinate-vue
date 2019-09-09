@@ -35,6 +35,12 @@ export default {
       return this.apiPostGermplasmTableIds(data, callback)
     }
   },
+  created: function () {
+    if (this.tableFiltering && this.tableFiltering.length > 0) {
+      this.filterOn = this.filterOn.concat(this.tableFiltering)
+      this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', null)
+    }
+  },
   mounted: function () {
     this.$store.dispatch('ON_HELP_KEY_CHANGED', 'helpGermplasm')
   }

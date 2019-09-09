@@ -5,6 +5,7 @@ import { EventBus } from '@/plugins/event-bus.js'
 export default {
   computed: {
     ...mapState([
+      'baseUrl',
       'helpKey',
       'hiddenColumns',
       'locale',
@@ -54,6 +55,23 @@ export default {
           apiName: 'locations',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeLocation')
+        }
+      },
+      imageTypes: {
+        germinatebase: {
+          icon: 'mdi-sprout',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('imageTypeGerminatebase')
+        },
+        compounds: {
+          icon: 'mdi-flask',
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('imageTypeCompounds')
+        },
+        phenotypes: {
+          icon: 'mdi-tag-text-outline',
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('imageTypePhenotypes')
         }
       },
       locationTypes: {
@@ -108,6 +126,11 @@ export default {
     }
   },
   methods: {
+    toUrlString: function (params) {
+      return Object.keys(params).map(function (key) {
+        return params[key] ? (key + '=' + encodeURIComponent(params[key])) : ''
+      }).join('&')
+    },
     uuidv4: function () {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0

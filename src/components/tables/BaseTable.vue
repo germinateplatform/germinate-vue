@@ -1,79 +1,85 @@
 <template>
-  <v-server-table :url="''" :columns="columns.map(c => c.name)" :options="tableOptions" @loaded="updateSelectionHeader()" ref="table" class="table-overflow-fix">
-    <!-- Pass on all named slots -->
-    <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
-    <!-- Pass on all scoped slots -->
-    <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope"><slot :name="slot" v-bind="scope"/></template>
+  <div>
+    <v-server-table :url="''" :columns="columns.map(c => c.name)" :options="tableOptions" @loaded="updateSelectionHeader()" ref="table" class="table-overflow-fix">
+      <!-- Pass on all named slots -->
+      <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
+      <!-- Pass on all scoped slots -->
+      <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope"><slot :name="slot" v-bind="scope"/></template>
 
-    <b-row slot="beforeTable">
-      <b-col cols=9 sm=6>
-        <TableFilter :columns="columns"
-                     :texts="tableOptions.headings"
-                     :tableName="tableOptions.tableName"
-                     :filterOn="tableOptions.filterOn"
-                     ref="tableFilter"
-                     v-on:on-filter-changed="onFilterChanged"
-                     v-on:on-column-toggle="onToggleColumn" />
-      </b-col>
-      <b-col cols=3 sm=6>
-        <b-button-group class="float-right per-page-dropdown">
-          <b-dropdown>
-            <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
-            <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
-          </b-dropdown>
-          <MarkedItems class="float-right" :itemType="itemType" />
-        </b-button-group>
-      </b-col>
-    </b-row>
+      <b-row slot="beforeTable" class="align-items-end">
+        <b-col cols=9 sm=6>
+          <TableFilter :columns="columns"
+                      :texts="tableOptions.headings"
+                      :tableName="tableOptions.tableName"
+                      :filterOn="tableOptions.filterOn"
+                      ref="tableFilter"
+                      v-on:on-filter-changed="onFilterChanged"
+                      v-on:on-column-toggle="onToggleColumn" />
+        </b-col>
+        <b-col cols=3 sm=6>
+          <b-button-group class="float-right per-page-dropdown">
+            <b-dropdown>
+              <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
+              <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
+            </b-dropdown>
+            <MarkedItems class="float-right" :itemType="itemType" />
+          </b-button-group>
+        </b-col>
+      </b-row>
 
-    <!-- <div slot="h__selected">
-      <b-form-checkbox :checked="allMarked" @change="onSelectionHeaderClicked"/>
-    </div>
-    <b-form-checkbox slot="selected" slot-scope="props" :checked="isSelected(props.row)" @change="onItemSelected(props.row, $event)"/> -->
-
-    <div slot="h__selected" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds">
-      <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
-    </div>
-    <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds"/>
-
-    <div slot="h__marked" class="test">
-      <b-dropdown size="sm" dropleft variant="outline-primary" boundary="viewport">
-        <template slot="button-content">
-          <i class="mdi mdi-18px mdi-check-box-multiple-outline" />
-        </template>
-        <b-dropdown-item @click="markAllItems(true)"><i class="mdi mdi-18px mdi-checkbox-multiple-marked" />Mark all</b-dropdown-item>
-        <b-dropdown-item @click="markAllItems(false)"><i class="mdi mdi-18px mdi-checkbox-multiple-blank-outline" />Unmark all</b-dropdown-item>
-        <b-dropdown-item v-if="token"><i class="mdi mdi-18px mdi-group" />Create group</b-dropdown-item>
-        <template v-if="tableOptions.additionalMarkingOptions">
-          <b-dropdown-divider />
-          <b-dropdown-item v-for="item in tableOptions.additionalMarkingOptions" :key="item.key" @click="item.callback">
-            <i :class="`mdi mdi-18px ${item.icon}`" />{{ item.text() }}
-          </b-dropdown-item>
-        </template>
-      </b-dropdown>
-    </div>
-
-    <div slot="marked" slot-scope="props" @contextmenu.prevent="onContextClicked(props.row)">
-      <b-form-checkbox  :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
-    </div>
-
-    <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1">
-      <b-button-group v-if="tableActions">
-        <b-button v-for="action in tableActions" :key="`base-table-action-${action.id}`" :variant="action.variant" @click="action.callback(selectedItems)" v-b-tooltip.hover :title="action.text">
-          <i :class="action.icon" v-if="action.icon" :title="action.text" />
-          <span v-else>{{ action.text }}</span>
-        </b-button>
-      </b-button-group>
-      <div>
-        <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
+      <div slot="h__selected" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds">
+        <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
       </div>
-    </div>
-  </v-server-table>
+      <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds"/>
+
+      <div slot="h__marked">
+        <b-dropdown size="sm" dropleft variant="outline-primary" boundary="viewport">
+          <template slot="button-content">
+            <i class="mdi mdi-18px mdi-check-box-multiple-outline" />
+          </template>
+          <b-dropdown-item @click="markAllItems(true)"><i class="mdi mdi-18px mdi-checkbox-multiple-marked" />Mark all</b-dropdown-item>
+          <b-dropdown-item @click="markAllItems(false)"><i class="mdi mdi-18px mdi-checkbox-multiple-blank-outline" />Unmark all</b-dropdown-item>
+          <b-dropdown-item v-if="token"><i class="mdi mdi-18px mdi-group" />Create group</b-dropdown-item>
+          <template v-if="tableOptions.additionalMarkingOptions">
+            <b-dropdown-divider />
+            <b-dropdown-item v-for="item in tableOptions.additionalMarkingOptions" :key="item.key" @click="item.callback(null)">
+              <i :class="`mdi mdi-18px ${item.icon}`" />{{ item.text() }}
+            </b-dropdown-item>
+          </template>
+        </b-dropdown>
+      </div>
+
+      <div slot="marked" slot-scope="props" @contextmenu.prevent="contextMenu($event, props.row)">
+        <b-form-checkbox  :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
+      </div>
+
+      <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1">
+        <b-button-group v-if="tableActions">
+          <b-button v-for="action in tableActions" :key="`base-table-action-${action.id}`" :variant="action.variant" @click="action.callback(selectedItems)" v-b-tooltip.hover :title="action.text">
+            <i :class="action.icon" v-if="action.icon" :title="action.text" />
+            <span v-else>{{ action.text }}</span>
+          </b-button>
+        </b-button-group>
+        <div>
+          <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
+        </div>
+      </div>
+    </v-server-table>
+
+    <vue-context ref="menu" v-if="tableOptions.additionalMarkingOptions">
+      <template slot-scope="child">
+        <li v-for="item in tableOptions.additionalMarkingOptions" :key="item.key">
+          <a href="#" @click="item.callback(child.data)"><i :class="`mdi mdi-18px ${item.icon}`" /> {{ item.text() }}</a>
+        </li>
+      </template>
+    </vue-context>
+  </div>
 </template>
 
 <script>
 import TableFilter from '@/components/tables/TableFilter'
 import MarkedItems from '@/components/tables/MarkedItems'
+import { VueContext } from 'vue-context'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -188,9 +194,15 @@ export default {
   },
   components: {
     TableFilter,
-    MarkedItems
+    MarkedItems,
+    VueContext
   },
   methods: {
+    contextMenu: function (event, row) {
+      if (this.tableOptions.additionalMarkingOptions) {
+        this.$refs.menu.open(event, row)
+      }
+    },
     onContextClicked: function (row) {
       console.log(row)
     },
@@ -215,6 +227,9 @@ export default {
       } else {
         this.selectedItems = []
       }
+    },
+    getCurrentRequestData: function () {
+      return this.currentRequestData
     },
     markAllItems: function (mark) {
       EventBus.$emit('show-loading', true)
