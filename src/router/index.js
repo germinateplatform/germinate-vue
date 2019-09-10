@@ -110,22 +110,58 @@ const router = new Router({
               beforeEnter: requireAuth
             },
             {
-              path: 'genotypes/maps',
-              name: 'maps',
-              component: () => import('@/views/data/genotype/Maps.vue'),
-              beforeEnter: requireAuth
+              path: 'trials',
+              redirect: '/data/trials/traits',
+              name: '',
+              component: {
+                render (c) { return c('router-view') }
+              },
+              children: [
+                {
+                  path: 'traits',
+                  name: 'traits',
+                  component: () => import('@/views/data/trials/Traits.vue'),
+                  beforeEnter: requireAuth
+                }
+              ]
             },
             {
-              path: 'genotypes/maps/:mapId',
-              name: 'map-details',
-              component: () => import('@/views/data/genotype/Maps.vue'),
-              beforeEnter: requireAuth
+              path: 'genotypes',
+              redirect: '/data/genotypes/maps',
+              name: '',
+              component: {
+                render (c) { return c('router-view') }
+              },
+              children: [
+                {
+                  path: 'maps',
+                  name: 'maps',
+                  component: () => import('@/views/data/genotype/Maps.vue'),
+                  beforeEnter: requireAuth
+                },
+                {
+                  path: 'maps/:mapId',
+                  name: 'map-details',
+                  component: () => import('@/views/data/genotype/Maps.vue'),
+                  beforeEnter: requireAuth
+                }
+              ]
             },
             {
-              path: 'environment/locations',
-              name: 'locations',
-              component: () => import('@/views/data/environment/Locations.vue'),
-              beforeEnter: requireAuth
+              path: 'environment',
+              redirect: '/data/environment/locations',
+              name: '',
+              component: {
+                render (c) { return c('router-view') }
+              },
+              children: [
+                {
+                  path: 'locations',
+                  name: 'locations',
+                  component: () => import('@/views/data/environment/Locations.vue'),
+                  beforeEnter: requireAuth
+                }
+              ]
             }
           ]
         },

@@ -30,6 +30,7 @@
 import L from 'leaflet'
 require('leaflet.heat')
 require('leaflet.sync')
+require('leaflet.markercluster')
 var countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 

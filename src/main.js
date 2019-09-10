@@ -17,7 +17,6 @@ import { ClientTable, ServerTable } from 'vue-tables-2'
 import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet'
 import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
 
 require('es6-object-assign/auto')
 require('es6-set/implement')
@@ -48,7 +47,6 @@ Vue.component('l-map', LMap)
 Vue.component('l-tile-layer', LTileLayer)
 Vue.component('l-marker', LMarker)
 Vue.component('l-popup', LPopup)
-Vue.component('l-marker-cluster', Vue2LeafletMarkerCluster)
 
 delete Icon.Default.prototype._getIconUrl
 Icon.Default.mergeOptions({

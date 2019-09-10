@@ -46,13 +46,13 @@ export default {
         },
         markers: {
           icon: 'mdi-dna',
-          apiName: 'markers',
+          apiName: 'marker',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeMarker')
         },
         locations: {
           icon: 'mdi-map-marker',
-          apiName: 'locations',
+          apiName: 'location',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeLocation')
         }
@@ -143,6 +143,46 @@ export default {
     }
   },
   methods: {
+    downloadBlob: function (object) {
+      if (!object || !object.blob) {
+        return
+      }
+
+      var url = window.URL.createObjectURL(object.blob)
+
+      var downloadLink = document.createElement('a')
+      downloadLink.href = url
+      downloadLink.download = object.filename + '.tsv'
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      document.body.removeChild(downloadLink)
+    },
+    downloadSvgsFromContainer: function (container, filename) {
+      // get svg source.
+      var serializer = new XMLSerializer()
+      var svgs = container.querySelectorAll('svg:not(.icon):not(:last-child)')
+      var source = '<?xml version="1.0" standalone="no"?>\r\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'
+
+      svgs.forEach(s => {
+        // serializer.serializeToString(s)
+        var children = s.children
+        for (var i = 0; i < children.length; i++) {
+          source += serializer.serializeToString(children[i]) + '\r\n'
+        }
+      })
+
+      source += '</svg>'
+
+      // convert svg source to URI data scheme.
+      var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source)
+
+      var downloadLink = document.createElement('a')
+      downloadLink.href = url
+      downloadLink.download = filename + '.svg'
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      document.body.removeChild(downloadLink)
+    },
     toUrlString: function (params) {
       return Object.keys(params).map(function (key) {
         return params[key] ? (key + '=' + encodeURIComponent(params[key])) : ''

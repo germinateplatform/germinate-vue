@@ -11,7 +11,7 @@
 
       <GermplasmTable v-show="itemType === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" />
       <MarkerTable    v-show="itemType === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"/>
-      <LocationsTable v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"/>
+      <LocationTable  v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"/>
     </div>
     <h2 v-else>Unknown item type</h2>
   </div>
@@ -19,7 +19,7 @@
 
 <script>
 import GermplasmTable from '@/components/tables/GermplasmTable'
-import LocationsTable from '@/components/tables/LocationsTable'
+import LocationTable from '@/components/tables/LocationTable'
 import MarkerTable from '@/components/tables/MarkerTable'
 
 export default {
@@ -42,7 +42,7 @@ export default {
   },
   components: {
     GermplasmTable,
-    LocationsTable,
+    LocationTable,
     MarkerTable
   },
   methods: {

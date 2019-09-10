@@ -2,7 +2,7 @@
   <div>
     <div v-if="experimentType">
       <h1>{{ experimentTypes[experimentType].text() }}</h1>
-      <DatasetsTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3"/>
+      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3"/>
       <b-button variant="success"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Continue</b-button>
     </div>
     <div v-else>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import DatasetsTable from '@/components/tables/DatasetsTable'
+import DatasetTable from '@/components/tables/DatasetTable'
 export default {
   data: function () {
     return {
@@ -27,7 +27,7 @@ export default {
     }
   },
   components: {
-    DatasetsTable
+    DatasetTable
   },
   methods: {
     getExperimentTypes: function () {

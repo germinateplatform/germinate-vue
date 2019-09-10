@@ -55,7 +55,13 @@
 
       <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1">
         <b-button-group v-if="tableActions">
-          <b-button v-for="action in tableActions" :key="`base-table-action-${action.id}`" :variant="action.variant" @click="action.callback(selectedItems)" v-b-tooltip.hover :title="action.text">
+          <b-button v-for="action in tableActions"
+                    :key="`base-table-action-${action.id}`"
+                    :variant="action.variant"
+                    :disabled="action.disabled()"
+                    @click="action.callback(selectedItems)"
+                    v-b-tooltip.hover
+                    :title="action.text">
             <i :class="action.icon" v-if="action.icon" :title="action.text" />
             <span v-else>{{ action.text }}</span>
           </b-button>

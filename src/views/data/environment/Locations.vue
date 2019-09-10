@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Locations</h1>
-    <LocationsTable :getData="getData"
+    <LocationTable :getData="getData"
                     :getIds="getIds"
                     v-on:data-changed="onDataChanged" />
 
@@ -25,7 +25,7 @@
 <script>
 import _ from 'lodash'
 import LocationMap from '@/components/map/LocationMap'
-import LocationsTable from '@/components/tables/LocationsTable'
+import LocationTable from '@/components/tables/LocationTable'
 
 export default {
   data: function () {
@@ -55,7 +55,7 @@ export default {
   },
   components: {
     LocationMap,
-    LocationsTable
+    LocationTable
   },
   methods: {
     getData: function (data, callback) {

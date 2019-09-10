@@ -12,13 +12,16 @@
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
-      <div id="map-chart" ref="mapChart" />
+      <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile">
+        <div slot="chart" id="map-chart" ref="mapChart" />
+      </BaseChart>
       <ResizeObserver v-on:notify-width="handleResize" />
     </div>
   </div>
 </template>
 
 <script>
+import BaseChart from '@/components/charts/BaseChart'
 import MapsTable from '@/components/tables/MapsTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import ResizeObserver from '@/components/ResizeObserver'
@@ -28,15 +31,23 @@ export default {
   data: function () {
     return {
       mapId: null,
-      map: null
+      map: null,
+      sourceFile: null
     }
   },
   components: {
+    BaseChart,
     MapsTable,
     MapDefinitionTable,
     ResizeObserver
   },
   methods: {
+    getSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: 'map-' + this.mapId
+      }
+    },
     getMapDefinitionData: function (data, callback) {
       return this.apiPostMapdefinitionTable(this.mapId, data, callback)
     },
@@ -49,13 +60,14 @@ export default {
             window.history.replaceState({}, null, `#/data/genotypes/maps/${this.mapId}`)
             this.map = result.data[0]
             this.drawChart()
-            this.$refs.mapDefinitionTable.refresh()
+            this.$nextTick(() => this.$refs.mapDefinitionTable.refresh())
           }
         })
       }
     },
     drawChart: function () {
       this.apiGetMapExport(this.mapId, result => {
+        this.sourceFile = result
         var reader = new FileReader()
         reader.onload = () => {
           var dirtyTsv = reader.result

@@ -39,7 +39,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 
 export default {
-  name: 'DatasetsTable',
+  name: 'DatasetTable',
   props: {
     filterOn: {
       type: Array,

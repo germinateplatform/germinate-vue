@@ -33,7 +33,7 @@
       <main class="main">
         <!-- TODO: Replace this with i18n content or remove it -->
         <!-- <Breadcrumb :list="list"/> -->
-        <div class="container-fluid mt-4">
+        <div class="container-fluid my-4">
           <router-view :key="$route.path"></router-view>
         </div>
       </main>
@@ -133,6 +133,18 @@ export default {
                   name: this.$t('menuGenotypicMaps'),
                   url: '/data/genotypes/maps',
                   icon: 'mdi mdi-18px mdi-reorder-vertical'
+                }
+              ]
+            },
+            {
+              name: this.$t('menuTrialsData'),
+              url: '/data/trials/traits',
+              icon: 'mdi mdi-18px mdi-tag-multiple',
+              children: [
+                {
+                  name: this.$t('menuTrialsTraits'),
+                  url: '/data/trials/traits',
+                  icon: 'mdi mdi-18px mdi-tag-text-outline'
                 }
               ]
             },

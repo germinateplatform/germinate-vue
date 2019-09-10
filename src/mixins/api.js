@@ -69,6 +69,10 @@ export default {
       queryData.limit = MAX_JAVA_INTEGER
       return this.authAjax({ url: `group/${groupId}/marker/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostTraitTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'trait/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostLocationTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

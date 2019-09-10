@@ -1,13 +1,13 @@
 <template>
   <div>
     <h1>Datasets</h1>
-    <DatasetsTable :getData="getData" :getIds="getIds" :filterOn="getFilter(0)"/>
-    <DatasetsTable :getData="getData" :getIds="getIds" :filterOn="getFilter(1)"/>
+    <DatasetTable :getData="getData" :getIds="getIds" :filterOn="getFilter(0)"/>
+    <DatasetTable :getData="getData" :getIds="getIds" :filterOn="getFilter(1)"/>
   </div>
 </template>
 
 <script>
-import DatasetsTable from '@/components/tables/DatasetsTable'
+import DatasetTable from '@/components/tables/DatasetTable'
 export default {
   data: function () {
     return {
@@ -15,7 +15,7 @@ export default {
     }
   },
   components: {
-    DatasetsTable
+    DatasetTable
   },
   methods: {
     getData: function (data, callback) {

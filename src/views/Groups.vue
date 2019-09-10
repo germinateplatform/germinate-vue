@@ -2,7 +2,7 @@
   <div>
     <h1>{{ $t('pageGroupsTitle') }}</h1>
     <hr />
-    <GroupsTable ref="groupsTable"
+    <GroupTable ref="groupsTable"
                  v-on:group-selected="onGroupSelected"
                  v-on:on-group-edit-clicked="onGroupEditClicked"
                  v-on:on-group-delete-clicked="onGroupDeleteClicked" />
@@ -39,7 +39,7 @@
                    :getIds="getMarkerIds"
                    :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
                    :tableActions="userCanEdit ? tableActions : null"/>
-      <LocationsTable v-else-if="group.groupType === 'locations'"
+      <LocationTable v-else-if="group.groupType === 'locations'"
                      ref="groupmembersTable"
                      :getData="getLocationData"
                      :getIds="getLocationIds"
@@ -56,8 +56,8 @@
 
 <script>
 import GermplasmTable from '@/components/tables/GermplasmTable'
-import GroupsTable from '@/components/tables/GroupsTable'
-import LocationsTable from '@/components/tables/LocationsTable'
+import GroupTable from '@/components/tables/GroupTable'
+import LocationTable from '@/components/tables/LocationTable'
 import MarkerTable from '@/components/tables/MarkerTable'
 import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
 
@@ -71,10 +71,15 @@ export default {
       tableActions: [
         {
           id: 0,
-          text: this.$t('buttonDelete'),
-          variant: 'outline-danger',
+          text: this.$t('buttonDeleteSelected'),
+          variant: null,
+          disabled: () => false,
           icon: 'mdi mdi-18px mdi-delete',
           callback: (selectedIds) => {
+            if (!selectedIds || selectedIds.length < 1) {
+              return
+            }
+
             const data = {
               ids: selectedIds,
               isAddition: false
@@ -88,9 +93,46 @@ export default {
         {
           id: 1,
           text: this.$t('buttonUpload'),
-          variant: 'outline-success',
+          variant: null,
+          disabled: () => false,
           icon: 'mdi mdi-18px mdi-upload',
           callback: (selectedIds) => console.log('upload')
+        },
+        {
+          id: 2,
+          text: this.$t('buttonAddMarkedItems'),
+          variant: null,
+          disabled: () => this.markedIds[this.groupTypes[this.group.groupType].apiName].length < 1,
+          icon: 'mdi mdi-18px mdi-expand-all',
+          callback: (selectedIds) => {
+            var type = this.groupTypes[this.group.groupType].apiName
+            const data = {
+              ids: this.markedIds[type],
+              isAddition: true
+            }
+            this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
+              this.$refs.groupmembersTable.refresh()
+              this.$refs.groupsTable.refresh()
+            })
+          }
+        },
+        {
+          id: 3,
+          text: this.$t('buttonRemoveMarkedItems'),
+          variant: null,
+          disabled: () => this.markedIds[this.groupTypes[this.group.groupType].apiName].length < 1,
+          icon: 'mdi mdi-18px mdi-collapse-all',
+          callback: (selectedIds) => {
+            var type = this.groupTypes[this.group.groupType].apiName
+            const data = {
+              ids: this.markedIds[type],
+              isAddition: false
+            }
+            this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
+              this.$refs.groupmembersTable.refresh()
+              this.$refs.groupsTable.refresh()
+            })
+          }
         }
       ]
     }
@@ -108,9 +150,9 @@ export default {
   },
   components: {
     GermplasmTable,
-    GroupsTable,
+    GroupTable,
     GroupEditAddModal,
-    LocationsTable,
+    LocationTable,
     MarkerTable
   },
   methods: {

@@ -25,7 +25,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 
 export default {
-  name: 'DatasetsTable',
+  name: 'GroupTable',
   props: {
     filterOn: {
       type: Array,
