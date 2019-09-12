@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Traits</h1>
+    <h1>{{ $t('pageTraitsTitle') }}</h1>
     <TraitTable :getData="getData" />
   </div>
 </template>

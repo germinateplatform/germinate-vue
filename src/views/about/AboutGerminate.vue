@@ -1,5 +1,5 @@
 <template>
-  <div class="animated fadeIn">
+  <div>
     <div class="row hutton-header mb-3">
       <div id="hutton-banner-hunger" class="col"></div>
       <div id="hutton-banner-education" class="col"></div>

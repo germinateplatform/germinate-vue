@@ -139,7 +139,7 @@ export default {
   },
   computed: {
     userCanEdit: function () {
-      return this.token && this.group && (this.group.userId === this.token.id)
+      return this.token !== null && this.group !== null && (this.group.userId === this.token.id)
     }
   },
   watch: {

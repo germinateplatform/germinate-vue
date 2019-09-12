@@ -53,7 +53,9 @@ export default {
       this.$refs.licenseModal.hide()
     },
     accept: function () {
-      this.$emit('license-accepted')
+      this.apiGetAcceptLicense(this.license.licenseId, result => {
+        this.$emit('license-accepted')
+      })
     },
     onPrint: function () {
       EventBus.$emit('on-print', this.license.licenseContent)

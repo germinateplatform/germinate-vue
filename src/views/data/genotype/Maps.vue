@@ -3,7 +3,7 @@
     <h1>{{ $t('pageMapsTitle') }}</h1>
     <hr />
     <p>{{ $t('pageMapsText') }}</p>
-    <MapsTable v-on:map-selected="onMapSelected" />
+    <MapTable v-on:map-selected="onMapSelected" />
 
     <div v-if="map">
       <h2>{{ $t('pageMapsDetailsTitle') }} <small>{{ map.name }}</small></h2>
@@ -15,16 +15,14 @@
       <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile">
         <div slot="chart" id="map-chart" ref="mapChart" />
       </BaseChart>
-      <ResizeObserver v-on:notify-width="handleResize" />
     </div>
   </div>
 </template>
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
-import MapsTable from '@/components/tables/MapsTable'
+import MapTable from '@/components/tables/MapTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
-import ResizeObserver from '@/components/ResizeObserver'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
 
 export default {
@@ -37,9 +35,8 @@ export default {
   },
   components: {
     BaseChart,
-    MapsTable,
-    MapDefinitionTable,
-    ResizeObserver
+    MapTable,
+    MapDefinitionTable
   },
   methods: {
     getSourceFile: function () {
@@ -81,12 +78,6 @@ export default {
               .colors(this.serverSettings.colorsCharts))
         }
         reader.readAsText(result)
-      })
-    },
-    handleResize: function () {
-      this.$plotly.relayout(this.$refs.mapChart, {
-        'xaxis.autorange': true,
-        'yaxis.autorange': true
       })
     }
   },

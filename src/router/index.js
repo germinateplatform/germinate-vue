@@ -162,6 +162,25 @@ const router = new Router({
                   beforeEnter: requireAuth
                 }
               ]
+            },
+            {
+              path: 'export/:experimentType',
+              name: 'export',
+              component: () => import('@/views/DatasetSelector.vue'),
+              beforeEnter: requireAuth
+            },
+            {
+              path: 'export/trials/:datasetIds',
+              name: 'export-trials',
+              component: () => import('@/views/data/export/TrialsExport.vue'),
+              beforeenter: requireAuth,
+              props (route) {
+                const datasetIds = route.params.datasetIds || ''
+
+                return {
+                  datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
+                }
+              }
             }
           ]
         },
@@ -180,12 +199,6 @@ const router = new Router({
               beforeEnter: requireAuth
             }
           ]
-        },
-        {
-          path: 'export/:experimentType',
-          name: 'export',
-          component: () => import('@/views/DatasetSelector.vue'),
-          beforeEnter: requireAuth
         },
         {
           path: 'groups',

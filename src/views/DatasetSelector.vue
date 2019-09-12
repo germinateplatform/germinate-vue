@@ -2,8 +2,8 @@
   <div>
     <div v-if="experimentType">
       <h1>{{ experimentTypes[experimentType].text() }}</h1>
-      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3"/>
-      <b-button variant="success"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Continue</b-button>
+      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3" ref="datasetTable"/>
+      <b-button variant="success" @click="checkLicenses"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Continue</b-button>
     </div>
     <div v-else>
       <h1>Invalid experiment type</h1>
@@ -30,6 +30,58 @@ export default {
     DatasetTable
   },
   methods: {
+    checkLicenses: function () {
+      var selectedIds = this.$refs.datasetTable.getSelected()
+
+      const query = {
+        page: 1,
+        prevCount: -1,
+        limit: this.MAX_JAVA_INTEGER,
+        filter: [{
+          column: 'datasetId',
+          comparator: 'inSet',
+          operator: 'and',
+          values: selectedIds
+        }, {
+          column: 'localeName',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.locale]
+        }]
+      }
+      this.apiPostLicenseTable(query, result => {
+        if (result && result.data && result.data.length > 0) {
+          console.log(result, this.token)
+          var toAccept = result.data.filter(l => {
+            var result = true
+
+            if (l.acceptedBy !== undefined && l.acceptedBy !== null && l.acceptedBy.length > 0) {
+              if (this.token && l.acceptedBy.indexOf(this.token.id) !== -1) {
+                result = false
+              } else if (!this.token && l.acceptedBy.indexOf(-1000) !== -1) {
+                result = false
+              }
+            }
+
+            return result
+          })
+
+          if (toAccept.length > 0) {
+            this.$bvToast.toast('Please accept all licenses in the table. Click on a license to read and accept it.', {
+              title: 'License error',
+              variant: 'danger',
+              autoHideDelay: 10000,
+              appendToast: true
+            })
+          } else {
+            // Navigate to the export page
+            this.$router.push({ name: 'export-trials', params: { datasetIds: selectedIds.join(',') } })
+          }
+        } else {
+          // TODO
+        }
+      })
+    },
     getExperimentTypes: function () {
       var result = Object.assign({}, this.experimentTypes)
       delete result.unknown

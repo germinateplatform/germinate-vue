@@ -33,7 +33,7 @@
       <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds"/>
 
       <div slot="h__marked">
-        <b-dropdown size="sm" dropleft variant="outline-primary" boundary="viewport">
+        <b-dropdown size="sm" dropleft variant="outline-primary" boundary="window">
           <template slot="button-content">
             <i class="mdi mdi-18px mdi-check-box-multiple-outline" />
           </template>
@@ -257,6 +257,9 @@ export default {
       } else {
         return false
       }
+    },
+    getSelected: function () {
+      return this.selectedItems
     },
     updateSelectionHeader: function () {
       // var pageIds = this.$refs.table.data.map(r => r[this.tableOptions.idColumn])

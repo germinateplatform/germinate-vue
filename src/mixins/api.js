@@ -97,6 +97,13 @@ export default {
     apiGetMapExport: function (mapId, onSuccess, onError) {
       return this.authAjax({ url: `map/${mapId}/export`, dataType: 'blob', success: onSuccess, error: onError })
     },
+    apiPostCollaboratorsTable: function (datasetId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `dataset/${datasetId}/collaborator`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostDatasetExport: function (experimentType, queryData, onSuccess, onError) {
+      return this.authAjax({ url: `dataset/export/${experimentType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostMapsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'map/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -117,6 +124,9 @@ export default {
     apiPostLicenseTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'license/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiGetAcceptLicense: function (licenseId, onSuccess, onError) {
+      return this.authAjax({ url: `license/${licenseId}/accept`, success: onSuccess, error: onError })
     },
     apiGetOverviewStats: function (onSuccess, onError) {
       return this.authAjax({ url: 'stats/overview', success: onSuccess, error: onError })

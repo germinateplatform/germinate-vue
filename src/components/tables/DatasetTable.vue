@@ -3,6 +3,7 @@
     <BaseTable :options="options"
                :columns="columns"
                :getIds="getIds"
+               ref="datasetTable"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <template slot="datasetName" slot-scope="props">
         <a target="_blank" :href="props.row.hyperlink" v-if="props.row.hyperlink && props.row.isExternal">{{ props.row.datasetName }} <i class="mdi mdi-18px mdi-open-in-new fix-alignment" /></a>
@@ -23,20 +24,31 @@
         <a href="#" @click.prevent="onLicenseClicked(props.row)" class="text-nowrap">
           <span>{{ props.row.licenseName }} </span>
         </a>
-        <i class="mdi mdi-18px mdi-check fix-alignment" v-if="props.row.acceptedBy && parseInt(props.row.acceptedBy) == token.id" />
-        <i class="mdi mdi-18px mdi-new-box fix-alignment" v-else />
+        <i class="mdi mdi-18px mdi-check fix-alignment text-success" v-if="isAccepted(props.row)" />
+        <i class="mdi mdi-18px mdi-new-box fix-alignment text-danger" v-else />
       </div>
       <i slot="datasetState" slot-scope="props" :class="`mdi mdi-18px ${datasetStates[props.row.datasetState].icon}`" :title="datasetStates[props.row.datasetState].text()" />
       <i slot="isExternal" slot-scope="props" :class="`mdi mdi-18px ${getInternalExternalClass(props.row)}`" v-if="props.row.isExternal !== undefined" :title="props.row.isExternal" />
+
+      <a href="#" class="text-decoration-none" slot="collaborators" slot-scope="props" v-if="props.row.collaborators !== 0" @click.prevent="showCollaborators(props.row)">
+        <i class="mdi mdi-18px mdi-account-multiple" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')" />
+      </a>
+      <a href="#" class="text-decoration-none" slot="attributes" slot-scope="props" v-if="props.row.attributes !== 0 || props.row.dublinCore" @click.prevent="showAttributes(props.row)">
+        <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
+      </a>
     </BaseTable>
 
-    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy !== undefined" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
+    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
+    <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
+    <AttributeModal :dataset="dataset" v-if="dataset && (dataset.dublinCore !== undefined || dataset.attributes !== 0)" ref="attributeModal" />
   </div>
 </template>
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
+import CollaboratorModal from '@/components/modals/CollaboratorModal'
+import AttributeModal from '@/components/modals/AttributeModal'
 
 export default {
   name: 'DatasetTable',
@@ -108,6 +120,12 @@ export default {
       }, {
         name: 'datasetState',
         type: undefined
+      }, {
+        name: 'collaborators',
+        type: undefined
+      }, {
+        name: 'attributes',
+        type: undefined
       }
     ]
 
@@ -144,6 +162,8 @@ export default {
           dataObjectCount: () => this.$t('tableColumnDatasetObjectCount'),
           dataPointCount: () => this.$t('tableColumnDatasetPointCount'),
           datasetState: () => '',
+          collaborators: () => '',
+          attributes: () => '',
           isExternal: () => 'External',
           selected: ''
         },
@@ -177,15 +197,32 @@ export default {
     }
   },
   components: {
+    AttributeModal,
     BaseTable,
+    CollaboratorModal,
     LicenseModal
   },
   methods: {
+    isAccepted: function (dataset) {
+      if (this.token) {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
+      } else {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
+      }
+    },
+    showCollaborators: function (dataset) {
+      this.dataset = dataset
+      this.$nextTick(() => this.$refs.collaboratorModal.show())
+    },
+    showAttributes: function (dataset) {
+      this.dataset = dataset
+      this.$nextTick(() => this.$refs.attributeModal.show())
+    },
     getRowClass: function (dataset) {
       if (!dataset.licenseName) {
         return ''
       } else {
-        return (dataset.acceptedBy !== undefined && parseInt(dataset.acceptedBy) === this.token.id) ? '' : 'table-danger'
+        return this.isAccepted(dataset) ? '' : 'table-danger'
       }
     },
     getInternalExternalClass: function (dataset) {
@@ -199,10 +236,12 @@ export default {
       result += dataset.dataPointCount.value
       return result
     },
+    getSelected: function () {
+      return this.$refs.datasetTable.getSelected()
+    },
     onLicenseAccepted: function () {
       this.$refs.licenseModal.hide()
-
-      // TODO: Send server request.
+      this.$refs.datasetTable.refresh()
     },
     onLicenseClicked: function (dataset) {
       this.dataset = dataset
@@ -220,6 +259,11 @@ export default {
             comparator: 'equals',
             operator: 'and',
             values: [dataset.licenseId]
+          }, {
+            column: 'datasetId',
+            comparator: 'equals',
+            operator: 'and',
+            values: [this.dataset.datasetId]
           }, {
             column: 'localeName',
             comparator: 'equals',

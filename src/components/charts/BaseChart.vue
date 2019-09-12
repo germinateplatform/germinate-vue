@@ -11,6 +11,7 @@
       </b-dropdown>
     </div>
     <slot name="chart" ref="chart" />
+    <ResizeObserver v-on:notify-width="handleResize" />
 
     <b-modal ref="chartModal" :title="$t('modalTitleChartFilename')" @ok="download">
       <b-form v-on:submit.prevent="download">
@@ -21,6 +22,7 @@
 </template>
 
 <script>
+import ResizeObserver from '@/components/ResizeObserver'
 export default {
   data: function () {
     return {
@@ -46,7 +48,16 @@ export default {
       default: () => null
     }
   },
+  components: {
+    ResizeObserver
+  },
   methods: {
+    handleResize: function () {
+      this.$plotly.relayout(this.$slots.chart[0].elm, {
+        'xaxis.autorange': true,
+        'yaxis.autorange': true
+      })
+    },
     downloadSource: function () {
       this.downloadBlob(this.sourceFile())
     },

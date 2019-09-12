@@ -61,9 +61,9 @@ export default {
           return this.getData(data, callback)
         },
         idColumn: 'traitId',
-        tableName: 'markers',
+        tableName: 'traits',
         filterOn: this.filterOn,
-        sortable: ['traitId', 'traitName', 'traitNameShort', 'traitDescription', 'unitName', 'unitDescription', 'synonyms', 'count'],
+        sortable: ['traitId', 'traitName', 'traitNameShort', 'traitDescription', 'unitName', 'unitDescription', 'unitAbbreviation', 'synonyms', 'count'],
         filterable: [],
         headings: {
           selected: '',
@@ -73,6 +73,7 @@ export default {
           traitDescription: () => this.$t('tableColumnTraitDescription'),
           unitName: () => this.$t('tableColumnTraitUnitName'),
           unitDescription: () => this.$t('tableColumnTraitUnitDescription'),
+          unitAbbreviation: () => this.$t('tableColumnTraitUnitAbbreviation'),
           synonyms: () => this.$t('tableColumnTraitSynonyms'),
           count: () => this.$t('tableColumnTraitDataPoints')
         },

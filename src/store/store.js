@@ -30,7 +30,9 @@ const store = new Vuex.Store({
       markers: [],
       datasets: [],
       groups: [],
-      locations: []
+      locations: [],
+      traits: [],
+      collaborators: []
     },
     tableFiltering: null
   },

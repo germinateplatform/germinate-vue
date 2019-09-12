@@ -15,7 +15,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 
 export default {
-  name: 'MapsTable',
+  name: 'MapTable',
   props: {
     filterOn: {
       type: Array,

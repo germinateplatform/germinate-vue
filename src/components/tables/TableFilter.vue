@@ -20,8 +20,8 @@
             <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.name" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
           </b-dropdown-form>
         </b-dropdown>
-        <b-button :variant="filter ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" />
-        <b-button v-if="filter" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter"/>
+        <b-button :variant="(filter && filter.length > 0) ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" />
+        <b-button v-if="filter && filter.length > 0" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter"/>
       </b-button-group>
 
       <b-modal :id="'table-filter-modal-' + id" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false)" @show="init">
