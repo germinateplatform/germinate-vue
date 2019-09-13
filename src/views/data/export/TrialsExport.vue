@@ -3,6 +3,9 @@
     <h1>{{ $t('pageTrialsExportTitle') }}</h1>
     <template v-if="datasets">
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
+      <ul>
+        <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
+      </ul>
       <b-row class="trials-tabs" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
@@ -21,14 +24,16 @@
           </a>
         </b-col>
       </b-row>
-      <MatrixChart ref="matrixChart" v-if="currentTab === 'matrix'" />
+      <!-- <MatrixChart ref="matrixChart" v-if="currentTab === 'matrix'" /> -->
+      <TraitGermplasmSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
 </template>
 
 <script>
-import MatrixChart from '@/components/charts/MatrixChart'
+// import MatrixChart from '@/components/charts/MatrixChart'
+import TraitGermplasmSelection from '@/components/export/TraitGermplasmSelection'
 
 export default {
   props: [ 'datasetIds' ],
@@ -60,21 +65,21 @@ export default {
     }
   },
   components: {
-    MatrixChart
+    TraitGermplasmSelection
   },
   methods: {
     tabSelected: function (tab) {
       this.currentTab = tab
 
       if (this.currentTab === 'matrix') {
-        this.apiPostDatasetExport('trial', {
-          xIds: [5, 6, 7],
-          yIds: [1, 2, 3],
-          yGroupIds: [117],
-          datasetIds: [4]
-        }, result => {
-          this.$nextTick(() => this.$refs.matrixChart.redraw(result))
-        })
+        // this.apiPostDatasetExport('trial', {
+        //   xIds: [5, 6, 7],
+        //   yIds: [1, 2, 3],
+        //   yGroupIds: [117],
+        //   datasetIds: [4]
+        // }, result => {
+        //   this.$nextTick(() => this.$refs.matrixChart.redraw(result))
+        // })
       }
     },
     getColor: function (index) {

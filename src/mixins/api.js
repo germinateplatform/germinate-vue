@@ -104,6 +104,12 @@ export default {
     apiPostDatasetExport: function (experimentType, queryData, onSuccess, onError) {
       return this.authAjax({ url: `dataset/export/${experimentType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostDatasetTraits: function (datasetIds, onSuccess, onError) {
+      const queryData = {
+        datasetIds: datasetIds
+      }
+      return this.authAjax({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostMapsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'map/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

@@ -145,6 +145,11 @@ export default {
                   name: this.$t('menuTrialsTraits'),
                   url: '/data/trials/traits',
                   icon: 'mdi mdi-18px mdi-tag-text-outline'
+                },
+                {
+                  name: this.$t('menuTrialsDataExport'),
+                  url: '/data/export/trials',
+                  icon: 'mdi mdi-18px mdi-shovel'
                 }
               ]
             },

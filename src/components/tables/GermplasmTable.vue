@@ -30,6 +30,7 @@
         <b-popover
           :target="`table-image-popover-${props.row.germplasmId}`"
           placement="top"
+          boundary="window"
           triggers="hover focus">
           <b-img fluid :src="getSrc(props.row)" />
         </b-popover>
@@ -40,6 +41,7 @@
         <b-popover
           :target="`table-biostat-popover-${props.row.germplasmId}`"
           placement="top"
+          boundary="window"
           triggers="hover focus">
           {{ props.row.biologicalStatusName }}
         </b-popover>
