@@ -59,7 +59,7 @@ export default {
       })
     },
     downloadSource: function () {
-      this.downloadBlob(this.sourceFile())
+      this.downloadBlob(this.sourceFile(), 'tsv')
     },
     getFilename: function (imageType) {
       this.imageType = imageType

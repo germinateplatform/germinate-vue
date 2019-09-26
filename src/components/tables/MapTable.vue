@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               :filterOn="filterOn"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <router-link slot="mapId" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapId}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapId)">{{ props.row.mapId }}</router-link>
       <router-link slot="mapName" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapId}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapId)">{{ props.row.mapName }}</router-link>
@@ -45,7 +46,6 @@ export default {
         },
         idColumn: 'mapId',
         tableName: 'maps',
-        filterOn: this.filterOn,
         sortable: columns,
         filterable: [],
         headings: {

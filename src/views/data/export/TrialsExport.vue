@@ -24,16 +24,18 @@
           </a>
         </b-col>
       </b-row>
-      <!-- <MatrixChart ref="matrixChart" v-if="currentTab === 'matrix'" /> -->
+      <TraitOverviewStats :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
       <TraitGermplasmSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
+      <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
 </template>
 
 <script>
-// import MatrixChart from '@/components/charts/MatrixChart'
 import TraitGermplasmSelection from '@/components/export/TraitGermplasmSelection'
+import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import TraitOverviewStats from '@/components/export/TraitOverviewStats'
 
 export default {
   props: [ 'datasetIds' ],
@@ -45,7 +47,7 @@ export default {
         key: 'overview',
         text: () => 'Data overview',
         icon: 'mdi-eye',
-        onSelection: () => ''
+        onSelection: () => this.tabSelected('overview')
       }, {
         key: 'matrix',
         text: () => 'Data matrix',
@@ -55,31 +57,33 @@ export default {
         key: 'table',
         text: () => 'Data table',
         icon: 'mdi-table-search',
-        onSelection: () => ''
+        onSelection: () => this.tabSelected('table')
       }, {
         key: 'export',
         text: () => 'Data export',
         icon: 'mdi-file-download-outline',
-        onSelection: () => ''
+        onSelection: () => this.tabSelected('export')
       }]
     }
   },
   components: {
-    TraitGermplasmSelection
+    TraitGermplasmSelection,
+    TrialsDataTable,
+    TraitOverviewStats
   },
   methods: {
+    getTrialsData: function (data, callback) {
+      data.datasetIds = this.datasetIds
+      return this.apiPostTrialsDataTable(data, callback)
+    },
+    getTrialsDataIds: function (data, callback) {
+      data.datasetIds = this.datasetIds
+      return this.apiPostTrialsDataTableIds(data, callback)
+    },
     tabSelected: function (tab) {
       this.currentTab = tab
 
       if (this.currentTab === 'matrix') {
-        // this.apiPostDatasetExport('trial', {
-        //   xIds: [5, 6, 7],
-        //   yIds: [1, 2, 3],
-        //   yGroupIds: [117],
-        //   datasetIds: [4]
-        // }, result => {
-        //   this.$nextTick(() => this.$refs.matrixChart.redraw(result))
-        // })
       }
     },
     getColor: function (index) {

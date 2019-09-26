@@ -3,7 +3,23 @@
     <h1>{{ $t('pageGermplasmTitle') }}</h1>
     <hr />
     <p v-html="$t('pageGermplasmText')" />
-    <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" />
+
+    <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
+    <b-button-group>
+      <b-button @click="selectedEntityType = null" :pressed="selectedEntityType === null" variant="outline-primary">
+        <i class="mdi mdi-18px fix-alignment mdi-check-all" /><span> {{$t('buttonAll')}}</span>
+      </b-button>
+      <b-button v-for="entityType in getEntityTypeOptions()"
+               :key="entityType.id"
+               :pressed="isPressed(entityType)"
+               :disabled="entityType.disabled"
+               :variant="entityType.disabled ? 'outline-secondary' : 'outline-primary'"
+               @click="selectedEntityType = entityType">
+        <i :class="`mdi mdi-18px fix-alignment ${entityType.icon}`" /><span> {{ entityType.text() }}</span>
+      </b-button>
+    </b-button-group>
+
+    <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" :downloadTable="downloadTable" ref="germplasmTable" />
   </div>
 </template>
 
@@ -13,26 +29,59 @@ import GermplasmTable from '@/components/tables/GermplasmTable'
 export default {
   data: function () {
     return {
-      filterOn: [{
-        column: {
-          name: 'entityTypeName',
-          type: 'entityType'
-        },
-        comparator: 'equals',
-        operator: 'and',
-        values: ['Accession']
-      }]
+      selectedEntityType: null,
+      filterOn: []
     }
   },
   components: {
     GermplasmTable
   },
+  watch: {
+    selectedEntityType: function (newValue, oldValue) {
+      if (!newValue) {
+        this.filterOn = []
+      } else {
+        this.filterOn = [{
+          column: {
+            name: 'entityTypeName',
+            type: 'entityType'
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue.id]
+        }]
+      }
+    }
+  },
   methods: {
+    isPressed: function (entityType) {
+      if (this.selectedEntityType) {
+        return this.selectedEntityType.id === entityType.id
+      } else {
+        return false
+      }
+    },
+    downloadTable: function (data, callback) {
+      return this.apiPostTableExport(data, 'germplasm', callback)
+    },
     getData: function (data, callback) {
       return this.apiPostGermplasmTable(data, callback)
     },
     getIds: function (data, callback) {
       return this.apiPostGermplasmTableIds(data, callback)
+    },
+    getEntityTypeOptions: function () {
+      return Object.keys(this.entityTypes).map(e => {
+        var stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
+        var enabled = stats && stats.length > 0 && stats[0].count > 0
+
+        return {
+          id: e,
+          icon: this.entityTypes[e].icon,
+          disabled: !enabled,
+          text: () => this.entityTypes[e].text()
+        }
+      })
     }
   },
   created: function () {

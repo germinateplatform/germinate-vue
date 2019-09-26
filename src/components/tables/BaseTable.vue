@@ -11,7 +11,7 @@
           <TableFilter :columns="columns"
                       :texts="tableOptions.headings"
                       :tableName="tableOptions.tableName"
-                      :filterOn="tableOptions.filterOn"
+                      :filterOn="filterOn"
                       ref="tableFilter"
                       v-on:on-filter-changed="onFilterChanged"
                       v-on:on-column-toggle="onToggleColumn" />
@@ -53,22 +53,29 @@
         <b-form-checkbox  :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
       </div>
 
-      <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1">
-        <b-button-group v-if="tableActions">
-          <b-button v-for="action in tableActions"
-                    :key="`base-table-action-${action.id}`"
-                    :variant="action.variant"
-                    :disabled="action.disabled()"
-                    @click="action.callback(selectedItems)"
-                    v-b-tooltip.hover
-                    :title="action.text">
-            <i :class="action.icon" v-if="action.icon" :title="action.text" />
-            <span v-else>{{ action.text }}</span>
-          </b-button>
-        </b-button-group>
-        <div>
-          <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
-        </div>
+      <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1 || downloadTable !== null">
+
+        <template v-if="downloadTable !== null">
+          <b-button @click="onDownloadTableClicked"><i class="mdi mdi-18px fix-alignment mdi-download" /></b-button>
+        </template>
+
+        <template v-if="columns.map(c => c.name).indexOf('selected') !== -1">
+          <b-button-group v-if="tableActions">
+            <b-button v-for="action in tableActions"
+                      :key="`base-table-action-${action.id}`"
+                      :variant="action.variant"
+                      :disabled="action.disabled()"
+                      @click="action.callback(selectedItems)"
+                      v-b-tooltip.hover
+                      :title="action.text">
+              <i :class="action.icon" v-if="action.icon" :title="action.text" />
+              <span v-else>{{ action.text }}</span>
+            </b-button>
+          </b-button-group>
+          <div>
+            <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
+          </div>
+        </template>
       </div>
     </v-server-table>
 
@@ -96,6 +103,10 @@ export default {
         return []
       }
     },
+    filterOn: {
+      type: Array,
+      default: null
+    },
     options: {
       type: Object,
       default: function () {
@@ -104,6 +115,10 @@ export default {
     },
     itemType: {
       type: String,
+      default: null
+    },
+    downloadTable: {
+      type: Function,
       default: null
     },
     getIds: {
@@ -138,7 +153,7 @@ export default {
       requestFunction: data => {
         // On its initial load, if a filter was specified, but none requested, ignore it.
         // This happens if the TableFilter hasn't been loaded yet when the table has.
-        if (isInitialLoad && this.tableOptions.filterOn && !data.filter) {
+        if (isInitialLoad && this.filterOn && !data.filter) {
           isInitialLoad = false
           return new Promise((resolve, reject) => {
             resolve({
@@ -182,9 +197,12 @@ export default {
     }
     if (this.options.columnsClasses) {
       var markingColumn = this.columns.filter(c => c.name === 'marked')
-
       if (markingColumn && markingColumn.length === 1) {
         tableOptions.columnsClasses.marked = this.options.columnsClasses.marked + ' text-right py-0 align-middle'
+      }
+      var selectionColumn = this.columns.filter(c => c.name === 'selected')
+      if (selectionColumn && selectionColumn.length === 1) {
+        tableOptions.columnsClasses.selected = this.options.columnsClasses.selected + ' align-middle'
       }
     }
 
@@ -204,6 +222,16 @@ export default {
     VueContext
   },
   methods: {
+    onDownloadTableClicked: function () {
+      if (this.downloadTable !== null) {
+        this.downloadTable(this.currentRequestData, result => {
+          this.downloadBlob({
+            blob: result,
+            filename: 'germplasm-table'
+          }, 'txt')
+        })
+      }
+    },
     contextMenu: function (event, row) {
       if (this.tableOptions.additionalMarkingOptions) {
         this.$refs.menu.open(event, row)

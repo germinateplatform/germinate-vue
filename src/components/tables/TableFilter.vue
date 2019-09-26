@@ -69,6 +69,9 @@
                 <template v-else-if="isType(f, 'entityType')">
                   <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" />
                 </template>
+                <template v-else-if="isType(f, 'dataType')">
+                  <b-form-select :options="getDataTypeOptions()" v-model="f.values[0]" />
+                </template>
                 <b-input-group-append>
                   <b-button variant="danger" class="mdi mdi-18px mdi-delete" :disabled="index === 0" @click="tempFilter.splice(index, 1)"/>
                 </b-input-group-append>
@@ -120,6 +123,7 @@ export default {
       id: this.uuidv4(),
       validComparatorsForType: {
         Boolean: ['equals'],
+        dataType: ['equals'],
         locationType: ['equals'],
         entityType: ['equals']
       },
@@ -163,6 +167,11 @@ export default {
       operators: operators
     }
   },
+  watch: {
+    filterOn: function (newValue, oldValue) {
+      this.resetFilter()
+    }
+  },
   computed: {
     // Only get the columns that have a text that isn't empty
     getColumns: function () {
@@ -172,6 +181,14 @@ export default {
     }
   },
   methods: {
+    getDataTypeOptions: function () {
+      return Object.keys(this.dataTypes).map(l => {
+        return {
+          value: l,
+          text: this.dataTypes[l].text()
+        }
+      })
+    },
     getLocationTypeOptions: function () {
       return Object.keys(this.locationTypes).map(l => {
         return {
@@ -182,8 +199,11 @@ export default {
     },
     getEntityTypeOptions: function () {
       return Object.keys(this.entityTypes).map(e => {
+        var stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
+        var enabled = stats && stats.length > 0 && stats[0].count > 0
         return {
           value: e,
+          disabled: !enabled,
           text: this.entityTypes[e].text()
         }
       })
@@ -218,13 +238,21 @@ export default {
       this.targetFilter = []
 
       this.filter.forEach(f => {
-        this.targetFilter.push({
+        var newFilter = {
           column: f.column.name,
           operator: f.operator,
           comparator: f.comparator,
           values: f.values
-        })
+        }
+
+        if (f.column.type === 'dataType') {
+          newFilter.values = newFilter.values.filter(v => v !== null).map(v => this.dataTypes[v].databaseValue)
+        }
+
+        this.targetFilter.push(newFilter)
       })
+
+      console.log(this.targetFilter)
 
       this.$emit('on-filter-changed', this.targetFilter)
 
@@ -293,14 +321,20 @@ export default {
       if (this.tempFilter.length < 1) {
         this.addFilter()
       }
+    },
+    resetFilter: function () {
+      this.tempFilter = []
+      if (this.filterOn) {
+        this.filterOn.forEach(f => {
+          this.tempFilter.push(f)
+        })
+      }
+      this.setFilter(false)
     }
   },
   mounted: function () {
     if (this.filterOn) {
-      this.filterOn.forEach(f => {
-        this.tempFilter.push(f)
-      })
-      this.setFilter(false)
+      this.resetFilter()
     }
   }
 }

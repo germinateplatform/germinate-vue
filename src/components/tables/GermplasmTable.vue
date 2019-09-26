@@ -3,6 +3,8 @@
     <BaseTable :options="options"
                :columns="columns"
                :getIds="getIds"
+               :downloadTable="downloadTable"
+               :filterOn="filterOn"
                :tableActions="tableActions"
                itemType="germplasm"
                ref="germplasmTable"
@@ -56,6 +58,10 @@
         </svg>
         <span> {{ props.row.pdci.toFixed(2) }}</span>
       </div>
+
+      <div slot="h__germplasmPuid">
+        <span>{{ options.headings.germplasmPuid() }} </span> <i class="mdi mdi-help-circle text-secondary" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
+      </div>
     </BaseTable>
   </div>
 </template>
@@ -78,6 +84,10 @@ export default {
     getIds: {
       type: Function,
       default: () => []
+    },
+    downloadTable: {
+      type: Function,
+      default: null
     },
     selectable: {
       type: Boolean,
@@ -159,7 +169,6 @@ export default {
         },
         idColumn: 'germplasmId',
         tableName: 'germplasm',
-        filterOn: this.filterOn,
         sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'location', 'elevation', 'countryName', 'collDate', 'pdci'],
         filterable: [],
         headings: {

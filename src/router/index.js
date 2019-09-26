@@ -8,7 +8,6 @@ import { EventBus } from '@/plugins/event-bus.js'
 Vue.use(Router)
 
 function requireAuth (to, from, next) {
-  console.log(from)
   var authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'NONE'
   var token = store.getters.token
   // If we're in full auth mode, check credentials for each call

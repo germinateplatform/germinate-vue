@@ -3,6 +3,7 @@
     <BaseTable :options="options"
                :columns="columns"
                :getIds="getIds"
+               :filterOn="filterOn"
                ref="datasetTable"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <template slot="datasetName" slot-scope="props">
@@ -143,7 +144,6 @@ export default {
         },
         idColumn: 'datasetId',
         tableName: 'datasets',
-        filterOn: this.filterOn,
         sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentName', 'experimentType', 'dataType', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
         filterable: [],
         headings: {

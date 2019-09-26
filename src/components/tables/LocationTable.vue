@@ -3,6 +3,7 @@
     <BaseTable :options="options"
                :columns="columns"
                :getIds="getIds"
+               :filterOn="filterOn"
                :tableActions="tableActions"
                itemType="locations"
                ref="locationTable"
@@ -98,7 +99,6 @@ export default {
         },
         idColumn: 'locationId',
         tableName: 'locations',
-        filterOn: this.filterOn,
         sortable: ['locationId', 'locationName', 'locationRegion', 'locationState', 'locationType', 'locationLatitude', 'locationLongitud', 'locationElevation', 'countryName'],
         filterable: [],
         headings: {

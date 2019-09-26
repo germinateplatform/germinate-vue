@@ -23,6 +23,9 @@ export default {
     }
   },
   created: async function () {
+    this.apiGetEntityTypeStats(result => {
+      this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
+    })
     await this.apiGetSettings(result => {
       this.$store.dispatch('ON_SETTINGS_CHANGED', result)
     })

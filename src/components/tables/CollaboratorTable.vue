@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               :filterOn="filterOn"
                ref="collaboratorTable"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <a slot="collaboratorEmail" slot-scope="props" :href="`mailto:${props.row.collaboratorEmail}`" v-if="props.row.collaboratorEmail">{{ props.row.collaboratorEmail }}</a>
@@ -56,7 +57,6 @@ export default {
         },
         idColumn: 'collaboratorId',
         tableName: 'collaborators',
-        filterOn: this.filterOn,
         sortable: ['collaboratorId', 'collaboratorFirstName', 'collaboratorLastName', 'collaboratorEmail', 'institutionName', 'institutionAddress', 'countryName'],
         filterable: [],
         headings: {

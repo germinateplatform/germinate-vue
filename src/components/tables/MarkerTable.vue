@@ -3,6 +3,7 @@
     <BaseTable :options="options"
                :columns="columns"
                :getIds="getIds"
+               :filterOn="filterOn"
                :tableActions="tableActions"
                itemType="markers"
                ref="markerTable"
@@ -74,7 +75,6 @@ export default {
         },
         idColumn: 'markerId',
         tableName: 'markers',
-        filterOn: this.filterOn,
         sortable: ['markerId', 'markerName', 'markerType', 'markerSynonyms'],
         filterable: [],
         headings: {

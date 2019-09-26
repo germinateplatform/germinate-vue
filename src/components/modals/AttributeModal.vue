@@ -1,7 +1,14 @@
 <template>
   <b-modal :ref="`attributeModal-${id}`" ok-only :ok-title="$t('buttonClose')" size="lg" title="Attributes">
     <div>
+      <template v-if="dataset">
+        <h2>{{ $t('modalTitleDatasetAttributes') }}</h2>
+        <p>{{ $t('modalTextDatasetAttributes') }}</p>
+        <DatasetAttributeTable :getData="getAttributeData" />
+      </template>
       <template v-if="dataset && dataset.dublinCore">
+        <h2>{{ $t('modalTitleDatasetDublinCore') }}</h2>
+        <p>{{ $t('modalTextDatasetDublinCore') }}</p>
         <dl class="row">
           <template v-if="dataset.dublinCore.title">
             <dt class="col-sm-3 text-right">{{ $t('dublinCoreTitle') }}</dt><dd class="col-sm-9" v-html="dataset.dublinCore.title.join(', ')" />
@@ -55,6 +62,8 @@
 </template>
 
 <script>
+import DatasetAttributeTable from '@/components/tables/DatasetAttributeTable'
+
 export default {
   props: {
     dataset: {
@@ -67,7 +76,13 @@ export default {
       id: this.uuidv4()
     }
   },
+  components: {
+    DatasetAttributeTable
+  },
   methods: {
+    getAttributeData: function (data, callback) {
+      return this.apiPostDatasetAttributeTable(this.dataset.datasetId, data, callback)
+    },
     show: function () {
       this.$refs['attributeModal-' + this.id].show()
     }

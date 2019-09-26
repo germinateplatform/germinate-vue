@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               :filterOn="filterOn"
                ref="traitTable"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <!-- LINKS -->
@@ -62,7 +63,6 @@ export default {
         },
         idColumn: 'traitId',
         tableName: 'traits',
-        filterOn: this.filterOn,
         sortable: ['traitId', 'traitName', 'traitNameShort', 'traitDescription', 'unitName', 'unitDescription', 'unitAbbreviation', 'synonyms', 'count'],
         filterable: [],
         headings: {

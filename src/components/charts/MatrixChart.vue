@@ -25,8 +25,10 @@ export default {
         filename: 'trials-' + this.datasetIds.join('-')
       }
     },
-    redraw: function (result) {
+    redraw: function (result, colorBy) {
       this.sourceFile = result
+
+      this.$plotly.purge(this.$refs.matrixChart)
 
       var reader = new FileReader()
       reader.onload = () => {
@@ -36,7 +38,8 @@ export default {
         this.$plotly.d3.select(this.$refs.matrixChart)
           .datum(data)
           .call(plotlyScatterMatrix()
-            .columnsToIgnore(['name', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'treatments_description', 'year'])
+            .colorBy(colorBy)
+            .columnsToIgnore(['name', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'treatments_description', 'year'])
             .colors(this.serverSettings.colorsCharts))
       }
       reader.readAsText(result)

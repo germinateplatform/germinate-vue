@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               :filterOn="filterOn"
                itemType="markers"
                ref="mapDefinitionTable"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
@@ -59,8 +60,7 @@ export default {
           return this.getData(data, callback)
         },
         idColumn: 'markerId',
-        tableName: 'markers',
-        filterOn: this.filterOn,
+        tableName: 'mapDefinitions',
         sortable: ['markerId', 'markerName', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position'],
         filterable: [],
         headings: {

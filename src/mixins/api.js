@@ -38,17 +38,13 @@ export default {
       return this.authAjax({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGermplasmTableIds: function (queryData, onSuccess, onError) {
-      queryData.page = 0
-      queryData.limit = MAX_JAVA_INTEGER
       return this.authAjax({ url: 'germplasm/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostGermplasmGroupTable: function (groupId, queryData, onSuccess, onError) {
+    apiPostGroupGermplasmTable: function (groupId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: `group/${groupId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostGermplasmGroupTableIds: function (groupId, queryData, onSuccess, onError) {
-      queryData.page = 0
-      queryData.limit = MAX_JAVA_INTEGER
+    apiPostGroupGermplasmTableIds: function (groupId, queryData, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostMarkerTable: function (queryData, onSuccess, onError) {
@@ -56,17 +52,13 @@ export default {
       return this.authAjax({ url: 'marker/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostMarkerTableIds: function (queryData, onSuccess, onError) {
-      queryData.page = 0
-      queryData.limit = MAX_JAVA_INTEGER
       return this.authAjax({ url: 'marker/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostMarkerGroupTable: function (groupId, queryData, onSuccess, onError) {
+    apiPostGroupMarkerTable: function (groupId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: `group/${groupId}/marker`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostMarkerGroupTableIds: function (groupId, queryData, onSuccess, onError) {
-      queryData.page = 0
-      queryData.limit = MAX_JAVA_INTEGER
+    apiPostGroupMarkerTableIds: function (groupId, queryData, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}/marker/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTraitTable: function (queryData, onSuccess, onError) {
@@ -78,17 +70,13 @@ export default {
       return this.authAjax({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostLocationTableIds: function (queryData, onSuccess, onError) {
-      queryData.page = 0
-      queryData.limit = MAX_JAVA_INTEGER
       return this.authAjax({ url: 'location/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostLocationGroupTable: function (groupId, queryData, onSuccess, onError) {
+    apiPostGroupLocationTable: function (groupId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: `group/${groupId}/location`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostLocationGroupTableIds: function (groupId, queryData, onSuccess, onError) {
-      queryData.page = 0
-      queryData.limit = MAX_JAVA_INTEGER
+    apiPostGroupLocationTableIds: function (groupId, queryData, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}/location/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiGetMap: function (mapId, onSuccess, onError) {
@@ -110,6 +98,19 @@ export default {
       }
       return this.authAjax({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostTrialDatasetGroups: function (datasetIds, onSuccess, onError) {
+      const queryData = {
+        datasetIds: datasetIds
+      }
+      return this.authAjax({ url: 'dataset/group/trial', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostTrialsDataTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'dataset/data/trial', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostTrialsDataTableIds: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'dataset/data/trial/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostMapsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'map/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -123,9 +124,16 @@ export default {
       return this.authAjax({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetTableIds: function (queryData, onSuccess, onError) {
-      queryData.page = 0
-      queryData.limit = MAX_JAVA_INTEGER
       return this.authAjax({ url: 'dataset/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostTableExport: function (queryData, tableType, onSuccess, onError) {
+      return this.authAjax({ url: `${tableType}/table/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostDatasetAsyncExport: function (uuids, onSuccess, onError) {
+      var queryData = {
+        uuids: uuids
+      }
+      return this.authAjax({ url: 'dataset/export/async', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostLicenseTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -137,6 +145,9 @@ export default {
     apiGetOverviewStats: function (onSuccess, onError) {
       return this.authAjax({ url: 'stats/overview', success: onSuccess, error: onError })
     },
+    apiGetEntityTypeStats: function (onSuccess, onError) {
+      return this.authAjax({ url: 'stats/entitytype', success: onSuccess, error: onError })
+    },
     apiGetSettings: function (onSuccess, onError) {
       return this.authAjax({ url: 'settings', success: onSuccess, error: onError })
     },
@@ -146,6 +157,28 @@ export default {
     apiPostGroupTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostTrialsStats: function (datasetIds, onSuccess, onError) {
+      var queryData = {
+        datasetIds: datasetIds
+      }
+      return this.authAjax({ url: 'dataset/stats/trial', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGermplasmGroupTable: function (germplasmId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `germplasm/${germplasmId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGermplasmDatasetTable: function (germplasmId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `germplasm/${germplasmId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGermplasmAttributeTable: function (germplasmId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `germplasm/${germplasmId}/attribute`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostDatasetAttributeTable: function (datasetId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `dataset/${datasetId}/attribute`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiGetGroup: function (groupId, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}`, success: onSuccess, error: onError })
@@ -174,6 +207,14 @@ export default {
     },
     apiPostEntityIds: function (ids, direction, onSuccess, onError) {
       return this.authAjax({ url: `germplasm/entity?direction=${direction}`, method: 'POST', data: ids, success: onSuccess, error: onError })
+    },
+    apiPostPedigreeTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'pedigree/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostEntityTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'entity/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

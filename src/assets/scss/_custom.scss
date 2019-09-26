@@ -40,6 +40,15 @@ body {
   text-overflow: ellipsis;
 }
 
+.select-with-options > select {
+  border-bottom-left-radius: 0;
+}
+.select-with-options > .btn-group .btn {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
+}
+
 button.mdi:before {
   vertical-align: sub;
 }
@@ -73,6 +82,13 @@ button.mdi:before {
 i.mdi-36px,
 i.mdi.fix-alignment {
   vertical-align: sub;
+}
+
+.table thead th * {
+  vertical-align: bottom;
+}
+.table thead th .custom-checkbox * {
+  vertical-align: text-top;
 }
 
 .mdi-heading {

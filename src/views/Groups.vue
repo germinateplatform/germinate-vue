@@ -157,22 +157,22 @@ export default {
   },
   methods: {
     getGermplasmData: function (data, callback) {
-      return this.apiPostGermplasmGroupTable(this.group.groupId, data, callback)
+      return this.apiPostGroupGermplasmTable(this.group.groupId, data, callback)
     },
     getGermplasmIds: function (data, callback) {
-      return this.apiPostGermplasmGroupTableIds(this.group.groupId, data, callback)
+      return this.apiPostGroupGermplasmTableIds(this.group.groupId, data, callback)
     },
     getMarkerData: function (data, callback) {
-      return this.apiPostMarkerGroupTable(this.group.groupId, data, callback)
+      return this.apiPostGroupMarkerTable(this.group.groupId, data, callback)
     },
     getMarkerIds: function (data, callback) {
-      return this.apiPostMarkerGroupTableIds(this.group.groupId, data, callback)
+      return this.apiPostGroupMarkerTableIds(this.group.groupId, data, callback)
     },
     getLocationData: function (data, callback) {
-      return this.apiPostLocationGroupTable(this.group.groupId, data, callback)
+      return this.apiPostGroupLocationTable(this.group.groupId, data, callback)
     },
     getLocationIds: function (data, callback) {
-      return this.apiPostLocationGroupTableIds(this.group.groupId, data, callback)
+      return this.apiPostGroupLocationTableIds(this.group.groupId, data, callback)
     },
     onEditGroup: function () {
       var group = {

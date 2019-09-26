@@ -19,7 +19,7 @@
         <MarkedItemDropdown />
         <UserSettingsDropdown />
       </b-navbar-nav>
-      <AsideToggler class="d-none d-lg-block" />
+      <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" />
       <!--<AsideToggler class="d-lg-none" mobile />-->
     </AppHeader>
     <div class="app-body">
@@ -62,6 +62,7 @@ import DefaultAside from './DefaultAside'
 import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
 import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
 import LocaleDropdown from '@/components/dropdown/LocaleDropdown'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   name: 'DefaultContainer',
@@ -195,10 +196,27 @@ export default {
           ]
         }
       ]
+    },
+    toggleAside: function () {
+      if (!document.body.classList.contains('aside-menu-lg-show')) {
+        this.$refs.asideToggler.toggle()
+      }
     }
+  },
+  destroyed: function () {
+    EventBus.$off('toggle-aside', this.toggleAside)
   },
   mounted: function () {
     this.updateNav()
+    EventBus.$on('toggle-aside', this.toggleAside)
+
+    this.$nextTick(() => {
+      EventBus.$emit('toggle-aside')
+
+      this.$nextTick(() => {
+        EventBus.$emit('toggle-aside')
+      })
+    })
   }
 }
 </script>

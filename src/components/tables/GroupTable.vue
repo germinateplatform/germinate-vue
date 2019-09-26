@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               :filterOn="filterOn"
                ref="table"
                v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
       <router-link slot="groupId" slot-scope="props" :to="`/groups/${props.row.groupId}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupId)">{{ props.row.groupId }}</router-link>
@@ -27,6 +28,10 @@ import BaseTable from '@/components/tables/BaseTable'
 export default {
   name: 'GroupTable',
   props: {
+    getData: {
+      type: Function,
+      default: () => {}
+    },
     filterOn: {
       type: Array,
       default: null
@@ -66,11 +71,10 @@ export default {
     return {
       options: {
         requestData: (data, callback) => {
-          return this.apiPostGroupTable(data, callback)
+          return this.getData(data, callback)
         },
         idColumn: 'groupId',
         tableName: 'groups',
-        filterOn: this.filterOn,
         sortable: ['groupId', 'groupName', 'groupDescription', 'groupType', 'userId', 'createdOn', 'updatedOn', 'count'],
         filterable: [],
         headings: {

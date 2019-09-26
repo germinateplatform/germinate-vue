@@ -19,6 +19,7 @@ const store = new Vuex.Store({
     originalTarget: null,
     serverSettings: null,
     helpKey: null,
+    entityTypeStats: null,
     markedIds: {
       germplasm: [],
       markers: [],
@@ -26,14 +27,21 @@ const store = new Vuex.Store({
     },
     hiddenColumns: {
       germplasm: [],
+      germplasmAttributes: [],
       maps: [],
       markers: [],
+      mapDefinitions: [],
       datasets: [],
+      datasetAttributes: [],
+      entities: [],
       groups: [],
       locations: [],
+      pedigrees: [],
       traits: [],
+      trialsData: [],
       collaborators: []
     },
+    asyncJobUuids: ['502c5422-e4ec-48e1-b695-a4e6fc1fcb69', '9a804946-1a21-4488-95b3-e3928724ae77'], // TODO: REMOVE!!!
     tableFiltering: null
   },
   getters: {
@@ -43,10 +51,12 @@ const store = new Vuex.Store({
     tablePerPage: state => state.tablePerPage,
     helpKey: state => state.helpKey,
     markedIds: state => state.markedIds,
+    entityTypeStats: state => state.entityTypeStats,
     hiddenColumns: state => state.hiddenColumns,
     originalTarget: state => state.originalTarget,
     serverSettings: state => state.serverSettings,
-    tableFiltering: state => state.tableFiltering
+    tableFiltering: state => state.tableFiltering,
+    asyncJobUuids: state => state.asyncJobUuids
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
@@ -105,6 +115,21 @@ const store = new Vuex.Store({
     },
     ON_TABLE_FILTERING_CHANGED_MUTATION: function (state, newTableFiltering) {
       state.tableFiltering = newTableFiltering
+    },
+    ON_ENTITY_TYPE_STATS_CHANGED_MUTATION: function (state, newEntityTypeStats) {
+      state.entityTypeStats = newEntityTypeStats
+    },
+    ON_ASYNC_JOB_UUID_ADD_MUTATION: function (state, uuid) {
+      if (state.asyncJobUuids.indexOf(uuid) === -1) {
+        state.asyncJobUuids.push(uuid)
+      }
+    },
+    ON_ASYNC_JOB_UUID_REMOVE_MUTATION: function (state, uuid) {
+      var index = state.asyncJobUuids.indexOf(uuid)
+
+      if (index !== -1) {
+        state.asyncJobUuids.splice(index, 1)
+      }
     }
   },
   actions: {
@@ -146,6 +171,15 @@ const store = new Vuex.Store({
     },
     ON_TABLE_FILTERING_CHANGED: function ({ commit }, tableFiltering) {
       commit('ON_TABLE_FILTERING_CHANGED_MUTATION', tableFiltering)
+    },
+    ON_ENTITY_TYPE_STATS_CHANGED: function ({ commit }, entityTypeStats) {
+      commit('ON_ENTITY_TYPE_STATS_CHANGED_MUTATION', entityTypeStats)
+    },
+    ON_ASYNC_JOB_UUID_ADD: function ({ commit }, uuid) {
+      commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', uuid)
+    },
+    ON_ASYNC_JOB_UUID_REMOVE: function ({ commit }, uuid) {
+      commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', uuid)
     }
   },
   plugins: [

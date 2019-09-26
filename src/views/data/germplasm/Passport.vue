@@ -1,6 +1,7 @@
 <template>
   <div v-if="germplasm">
     <h1>{{ $t('pagePassportTitle') }}</h1>
+
     <hr />
     <h2 class="mdi-heading">
       <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()"/>
@@ -8,43 +9,117 @@
       <small v-if="germplasm.entitytype">{{ germplasm.entitytype }}</small>
     </h2>
     <p v-html="$t('pagePassportText')" />
+
+    <template v-if="germplasmTableData && germplasmTableData.pdci">
+      <hr />
+      <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-chart-donut text-primary" /> <span> {{ $t('pagePassportPdciTitle') }} </span><small><a href="#" @click.prevent="showPdciModal"><i class="mdi mdi-18px mdi-help-circle"/></a></small></h2>
+      <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasmTableData.pdci.toFixed(2) }) }}</strong></p>
+    </template>
     <b-row>
       <b-col cols=12 lg=6>
+        <hr />
         <Mcpd :germplasm="germplasm"/>
       </b-col>
     </b-row>
-    <b-row v-if="germplasm.declatitude && germplasm.declongitude">
-      <b-col cols=12>
-        <LocationMap :locations="[getLocation()]" />
-      </b-col>
-    </b-row>
-    <h2 class="mdi-heading">
-      <i class="mdi mdi-36px text-primary mdi-image-multiple"/>
-      <span>Images</span>
-    </h2>
-    <ImageGallery :getImages="getImages" />
+
     <hr />
+    <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-sitemap text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
+    <p v-html="$t('pagePassportPedigreeText')" />
+    <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
+
+    <hr />
+    <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-file-tree text-primary" /> <span> {{ $t('pagePassportEntityTitle') }}</span></h2>
+    <p v-html="$t('pagePassportEntityText')" />
+    <ul class="no-bullet-list">
+      <li><i class="mdi mdi-18px fix-alignment mdi-circle-medium" />{{ entityTypes['Accession'].text() }}</li>
+      <ul>
+        <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Plant/Plot'].text() }}</li>
+        <ul>
+          <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Sample'].text() }}</li>
+        </ul>
+      </ul>
+    </ul>
+    <EntityTable :getData="getEntityData" :filterOn="entityFilter" />
+
+    <template v-if="germplasm.declatitude && germplasm.declongitude">
+      <hr />
+      <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-map-marker text-primary" /> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
+      <p v-html="$t('pagePassportLocationText')" />
+      <LocationMap :locations="[getLocation()]" />
+    </template>
+
+    <hr />
+    <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
+    <p v-html="$t('pagePassportImageText')" />
+    <ImageGallery :getImages="getImages" />
+
+    <hr />
+    <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
+    <p v-html="$t('pagePassportGroupText')" />
+    <GroupTable :getData="getGroupData" />
+
+    <hr />
+    <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
+    <p v-html="$t('pagePassportDatasetText')" />
+    <DatasetTable :getData="getDatasetData" />
+
+    <hr />
+    <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-playlist-plus"/><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
+    <p v-html="$t('pagePassportAttributeText')" />
+    <GermplasmAttributeTable :getData="getGermplasmAttributeData" />
   </div>
 </template>
 
 <script>
+import DatasetTable from '@/components/tables/DatasetTable'
+import EntityTable from '@/components/tables/EntityTable'
+import GermplasmAttributeTable from '@/components/tables/GermplasmAttributeTable'
+import GroupTable from '@/components/tables/GroupTable'
 import Mcpd from '@/components/germplasm/Mcpd'
 import LocationMap from '@/components/map/LocationMap'
 import ImageGallery from '@/components/images/ImageGallery'
+import PedigreeTable from '@/components/tables/PedigreeTable'
 
 export default {
   data: function () {
     return {
       germplasm: null,
-      germplasmId: null
+      germplasmId: null,
+      germplasmTableData: null,
+      pedigreeFilter: null,
+      entityFilter: null
     }
   },
   components: {
+    DatasetTable,
+    EntityTable,
+    GermplasmAttributeTable,
+    GroupTable,
     ImageGallery,
     LocationMap,
-    Mcpd
+    Mcpd,
+    PedigreeTable
   },
   methods: {
+    showPdciModal: function () {
+      // TODO
+      console.log('SHOW PDCI')
+    },
+    getGermplasmAttributeData: function (data, callback) {
+      return this.apiPostGermplasmAttributeTable(this.germplasmId, data, callback)
+    },
+    getDatasetData: function (data, callback) {
+      return this.apiPostGermplasmDatasetTable(this.germplasmId, data, callback)
+    },
+    getGroupData: function (data, callback) {
+      return this.apiPostGermplasmGroupTable(this.germplasmId, data, callback)
+    },
+    getEntityData: function (data, callback) {
+      return this.apiPostEntityTable(data, callback)
+    },
+    getPedigreeData: function (data, callback) {
+      return this.apiPostPedigreeTable(data, callback)
+    },
     getImages: function (data, onSuccess, onError) {
       data.filter = [{
         column: 'imageForeignId',
@@ -91,11 +166,68 @@ export default {
       }
     }
   },
-  mounted: function () {
+  created: function () {
     this.germplasmId = parseInt(this.$route.params.germplasmId)
 
+    this.pedigreeFilter = [{
+      column: {
+        name: 'parentId',
+        type: Number
+      },
+      comparator: 'equals',
+      operator: 'or',
+      values: [this.germplasmId],
+      canBeChanged: false
+    }, {
+      column: {
+        name: 'childId',
+        type: Number
+      },
+      comparator: 'equals',
+      operator: 'or',
+      values: [this.germplasmId],
+      canBeChanged: false
+    }]
+
+    this.entityFilter = [{
+      column: {
+        name: 'entityParentId',
+        type: Number
+      },
+      comparator: 'equals',
+      operator: 'or',
+      values: [this.germplasmId],
+      canBeChanged: false
+    }, {
+      column: {
+        name: 'entityChildId',
+        type: Number
+      },
+      comparator: 'equals',
+      operator: 'or',
+      values: [this.germplasmId],
+      canBeChanged: false
+    }]
+  },
+  mounted: function () {
     this.apiGetGermplasmMcpd(this.germplasmId, result => {
       this.germplasm = result
+    })
+
+    var request = {
+      page: 1,
+      limit: 1,
+      filter: [{
+        column: 'germplasmId',
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.germplasmId]
+      }]
+    }
+    this.apiPostGermplasmTable(request, result => {
+      if (result && result.data && result.data.length > 0) {
+        this.germplasmTableData = result.data[0]
+      }
     })
 
     this.$store.dispatch('ON_HELP_KEY_CHANGED', 'helpPassport')
@@ -106,5 +238,12 @@ export default {
 <style scoped>
 .passport-checkbox:hover {
   cursor: pointer;
+}
+.no-bullet-list {
+  padding-inline-start: 0;
+}
+.no-bullet-list,
+.no-bullet-list ul {
+  list-style-type: none;
 }
 </style>

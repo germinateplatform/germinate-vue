@@ -5,7 +5,9 @@ import { EventBus } from '@/plugins/event-bus.js'
 export default {
   computed: {
     ...mapState([
+      'asyncJobUuids',
       'baseUrl',
+      'entityTypeStats',
       'helpKey',
       'hiddenColumns',
       'locale',
@@ -20,6 +22,26 @@ export default {
   data: function () {
     return {
       MAX_JAVA_INTEGER: 2147483647,
+      dataTypes: {
+        'char_': {
+          text: () => this.$t('dataTypeChar'),
+          icon: 'mdi-alphabetical',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          databaseValue: 'char'
+        },
+        'int_': {
+          text: () => this.$t('dataTypeInt'),
+          icon: 'mdi-number',
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          databaseValue: 'int'
+        },
+        'float_': {
+          text: () => this.$t('dataTypeFloat'),
+          icon: 'mdi-decimal',
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          databaseValue: 'float'
+        }
+      },
       entityTypes: {
         'Accession': {
           icon: 'mdi-sprout',
@@ -143,7 +165,7 @@ export default {
     }
   },
   methods: {
-    downloadBlob: function (object) {
+    downloadBlob: function (object, extension) {
       if (!object || !object.blob) {
         return
       }
@@ -152,7 +174,7 @@ export default {
 
       var downloadLink = document.createElement('a')
       downloadLink.href = url
-      downloadLink.download = object.filename + '.tsv'
+      downloadLink.download = object.filename + '.' + extension
       document.body.appendChild(downloadLink)
       downloadLink.click()
       document.body.removeChild(downloadLink)
