@@ -12,7 +12,7 @@
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
-      <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile">
+      <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename">
         <div slot="chart" id="map-chart" ref="mapChart" />
       </BaseChart>
     </div>
@@ -42,8 +42,11 @@ export default {
     getSourceFile: function () {
       return {
         blob: this.sourceFile,
-        filename: 'map-' + this.mapId
+        filename: this.getFilename()
       }
+    },
+    getFilename: function () {
+      return 'map-' + this.mapId
     },
     getMapDefinitionData: function (data, callback) {
       return this.apiPostMapdefinitionTable(this.mapId, data, callback)
@@ -68,8 +71,8 @@ export default {
         var reader = new FileReader()
         reader.onload = () => {
           var dirtyTsv = reader.result
-          var firstEOL = dirtyTsv.indexOf('\n')
-          var tsv = 'markerName\tchromosome\tposition\n' + dirtyTsv.substring(firstEOL + 1)
+          var firstEOL = dirtyTsv.indexOf('\r\n')
+          var tsv = 'markerName\tchromosome\tposition\r\n' + dirtyTsv.substring(firstEOL + 2)
           var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
 
           this.$plotly.d3.select(this.$refs.mapChart)

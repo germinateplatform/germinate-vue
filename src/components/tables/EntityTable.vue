@@ -11,8 +11,8 @@
       <router-link slot="entityChildId" slot-scope="props" :to="'/data/germplasm/' + props.row.entityChildId">{{ props.row.entityChildId }}</router-link>
       <router-link slot="entityChildGid" slot-scope="props" :to="'/data/germplasm/' + props.row.entityChildId">{{ props.row.entityChildGid }}</router-link>
       <router-link slot="entityChildName" slot-scope="props" :to="'/data/germplasm/' + props.row.entityChildId">{{ props.row.entityChildName }}</router-link>
-      <span slot="entityParentType" slot-scope="props" class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityParentType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityParentType].color()};`" /> {{ entityTypes[props.row.entityParentType].text() }}</span>
-      <span slot="entityChildType" slot-scope="props" class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityChildType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityChildType].color()};`" /> {{ entityTypes[props.row.entityChildType].text() }}</span>
+      <span slot="entityParentType" slot-scope="props" class="text-nowrap" v-if="props.row.entityParentType"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityParentType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityParentType].color()};`" /> {{ entityTypes[props.row.entityParentType].text() }}</span>
+      <span slot="entityChildType" slot-scope="props" class="text-nowrap" v-if="props.row.entityChildType"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityChildType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityChildType].color()};`" /> {{ entityTypes[props.row.entityChildType].text() }}</span>
     </BaseTable>
   </div>
 </template>

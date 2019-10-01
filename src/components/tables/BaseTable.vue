@@ -227,8 +227,9 @@ export default {
         this.downloadTable(this.currentRequestData, result => {
           this.downloadBlob({
             blob: result,
-            filename: 'germplasm-table'
-          }, 'txt')
+            filename: 'germplasm-table',
+            extension: 'txt'
+          })
         })
       }
     },

@@ -1,11 +1,12 @@
 <template>
-  <div>
-    <h1>TEST</h1>
-    <div ref="chart" />
-  </div>
+  <BaseChart :width="() => 1280" :height="() => getHeight()" :sourceFile="getSourceFile" :filename="getFilename">
+    <div slot="chart" ref="chart" />
+  </BaseChart>
 </template>
 
 <script>
+import BaseChart from '@/components/charts/BaseChart'
+
 export default {
   props: {
     datasetIds: {
@@ -13,12 +14,28 @@ export default {
       default: () => null
     }
   },
+  components: {
+    BaseChart
+  },
   data: function () {
     return {
       plotData: null
     }
   },
   methods: {
+    getSourceFile: function () {
+      return {
+        blob: new Blob([JSON.stringify(this.plotData)], { type: 'application/json' }),
+        filename: this.getFilename(),
+        extension: 'json'
+      }
+    },
+    getFilename: function () {
+      return 'trait-boxplots-' + this.datasetIds.join('-')
+    },
+    getHeight: function () {
+      return 100 + this.plotData.traits.length * 30 * this.plotData.datasets.length
+    },
     chart: function () {
       var y = []
 
@@ -38,7 +55,7 @@ export default {
           var traitId = this.plotData.traits[t].traitId
           var traitData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.traitId === traitId)[0]
 
-          if (traitData) {
+          if (traitData && traitData.min !== traitData.max) {
             // This trait/dataset combination is available, add all the information
             x.push(traitData.min)
             x.push(traitData.q1)
@@ -69,15 +86,13 @@ export default {
         })
       }
 
-      console.log(traces)
-
       var div = this.$refs.chart
 
       var layout = {
         xaxis: {
           zeroline: false
         },
-        height: this.plotData.traits.length * 30 * this.plotData.datasets.length,
+        height: this.getHeight(),
         margin: { autoexpand: true },
         autosize: true,
         boxmode: 'group',

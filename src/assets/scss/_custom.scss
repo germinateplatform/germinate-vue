@@ -153,6 +153,11 @@ i.flag-icon {
   font-size: 0.8rem;
 }
 
+.text-center .plotly .svg-container {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 /* Leaflet customization */
 .marker-cluster, .prunecluster {
 	color: white;

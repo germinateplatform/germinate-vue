@@ -5,12 +5,18 @@
       <p>{{ $t('pageTrialsExportSelectTraitText') }}</p>
       <b-form-select multiple v-model="selectedTraits" :options="traitOptions" :select-size=7 />
       <p class="text-danger" v-if="selectedTraits.length > 7">{{ $t('pageTrialsExportSelectTraitLimit') }}</p>
+      <p class="text-info" v-if="selectedTraits.length < 2">{{ $t('pageTrialsExportSelectTraitMinimum') }}</p>
     </b-col>
     <b-col cols=12 md=6 v-if="groups && groups.length > 0">
       <h2>{{ $t('pageTrialsExportSelectGroupTitle') }}</h2>
       <p>{{ $t('pageTrialsExportSelectGroupText') }}</p>
       <div class="select-with-options">
-        <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'"/>
+        <div id="trait-selection">
+          <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" />
+        </div>
+        <b-tooltip target="trait-selection" triggers="hover">
+          {{ specialGroupSelection !== 'selection' ? $t('pageTrialsExportSelectGroupTooltip') : null }}
+        </b-tooltip>
         <b-button-group v-if="specialGroupSelection && specialGroupSelection.length > 0 && specialGroupOptions && specialGroupOptions.length > 0">
           <b-form-radio-group
             v-model="specialGroupSelection"
@@ -29,13 +35,16 @@
       <b-form-select :options="colorByOptions" v-model="colorBySelection" @change="onColorByChanged" />
 
       <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
-      <MatrixChart ref="matrixChart" :datasetIds="datasetIds" />
+      <p>{{ $t('pageTrialsExportChartText') }}</p>
+      <MatrixChart ref="chart" :datasetIds="datasetIds" v-if="selectedTraits.length > 2" />
+      <ScatterChart ref="chart" :datasetIds="datasetIds" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" v-else />
     </b-col>
   </b-row>
 </template>
 
 <script>
 import MatrixChart from '@/components/charts/MatrixChart'
+import ScatterChart from '@/components/charts/ScatterChart'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -54,13 +63,13 @@ export default {
       selectedGroups: [],
       groupOptions: [],
       specialGroupOptions: [{
-        html: '<i class="mdi mdi-18px mdi-arrow-up-box fix-alignment"></i> Group selection',
+        html: '<i class="mdi mdi-18px mdi-arrow-up-box fix-alignment"></i> ' + this.$t('pageTrialsExportSelectGroupModeSelect'),
         value: 'selection'
       }, {
-        html: '<i class="mdi mdi-18px mdi-select-all fix-alignment"></i> All germplasm',
+        html: '<i class="mdi mdi-18px mdi-select-all fix-alignment"></i> ' + this.$t('pageTrialsExportSelectGroupModeAll'),
         value: 'all'
       }],
-      specialGroupSelection: 'selection',
+      specialGroupSelection: 'all',
       colorByOptions: [{
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
@@ -89,7 +98,7 @@ export default {
   },
   computed: {
     plotButtonDisabled: function () {
-      var disabled = this.selectedTraits.length < 1
+      var disabled = this.selectedTraits.length < 2
       if (this.specialGroupSelection === 'selection') {
         disabled = disabled || this.selectedGroups.length < 1
       }
@@ -98,7 +107,8 @@ export default {
     }
   },
   components: {
-    MatrixChart
+    MatrixChart,
+    ScatterChart
   },
   methods: {
     plot: function () {
@@ -128,13 +138,13 @@ export default {
       this.plotData = null
       this.apiPostDatasetExport('trial', query, result => {
         this.plotData = result
-        this.$nextTick(() => this.$refs.matrixChart.redraw(result, this.colorBySelection))
+        this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection))
         EventBus.$emit('show-loading', false)
       })
     },
     onColorByChanged: function () {
       if (this.plotData) {
-        this.$refs.matrixChart.redraw(this.plotData, this.colorBySelection)
+        this.$refs.chart.redraw(this.plotData, this.colorBySelection)
       }
     },
     updateTraits: function () {
@@ -152,6 +162,8 @@ export default {
             value: t,
             text: traitName
           })
+
+          t.displayName = traitName
         })
       })
     },

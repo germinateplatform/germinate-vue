@@ -165,10 +165,12 @@ export default {
     }
   },
   methods: {
-    downloadBlob: function (object, extension) {
+    downloadBlob: function (object) {
       if (!object || !object.blob) {
         return
       }
+
+      var extension = object.extension
 
       var url = window.URL.createObjectURL(object.blob)
 
@@ -290,6 +292,8 @@ export default {
         autoHideDelay: 5000,
         appendToast: true
       })
+
+      EventBus.$emit('show-loading', false)
     },
     authForm ({ url = null, formData, success = null, error = { codes: [], callback: this.handleError } }) {
       var vm = this

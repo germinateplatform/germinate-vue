@@ -24,7 +24,11 @@
           </a>
         </b-col>
       </b-row>
-      <TraitOverviewStats :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
+      <div v-show="currentTab === 'overview'">
+        <h2>{{ $t('pageTrialsExportTraitBoxplotTitle') }}</h2>
+        <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
+        <TraitBoxplotChart :datasetIds="datasetIds" />
+      </div>
       <TraitGermplasmSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
       <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
     </template>
@@ -35,7 +39,7 @@
 <script>
 import TraitGermplasmSelection from '@/components/export/TraitGermplasmSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
-import TraitOverviewStats from '@/components/export/TraitOverviewStats'
+import TraitBoxplotChart from '@/components/charts/TraitBoxplotChart'
 
 export default {
   props: [ 'datasetIds' ],
@@ -69,7 +73,7 @@ export default {
   components: {
     TraitGermplasmSelection,
     TrialsDataTable,
-    TraitOverviewStats
+    TraitBoxplotChart
   },
   methods: {
     getTrialsData: function (data, callback) {

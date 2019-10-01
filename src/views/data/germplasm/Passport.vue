@@ -1,72 +1,77 @@
 <template>
-  <div v-if="germplasm">
-    <h1>{{ $t('pagePassportTitle') }}</h1>
+  <div>
+    <div v-if="germplasm">
+      <h1>{{ $t('pagePassportTitle') }}</h1>
 
-    <hr />
-    <h2 class="mdi-heading">
-      <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()"/>
-      <span> {{ getTitle() }}</span>
-      <small v-if="germplasm.entitytype">{{ germplasm.entitytype }}</small>
-    </h2>
-    <p v-html="$t('pagePassportText')" />
-
-    <template v-if="germplasmTableData && germplasmTableData.pdci">
       <hr />
-      <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-chart-donut text-primary" /> <span> {{ $t('pagePassportPdciTitle') }} </span><small><a href="#" @click.prevent="showPdciModal"><i class="mdi mdi-18px mdi-help-circle"/></a></small></h2>
-      <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasmTableData.pdci.toFixed(2) }) }}</strong></p>
-    </template>
-    <b-row>
-      <b-col cols=12 lg=6>
+      <h2 class="mdi-heading">
+        <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()"/>
+        <span> {{ getTitle() }}</span>
+        <small v-if="germplasm.entitytype">{{ germplasm.entitytype }}</small>
+      </h2>
+      <p v-html="$t('pagePassportText')" />
+
+      <template v-if="germplasmTableData && germplasmTableData.pdci">
         <hr />
-        <Mcpd :germplasm="germplasm"/>
-      </b-col>
-    </b-row>
+        <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-chart-donut text-primary" /> <span> {{ $t('pagePassportPdciTitle') }} </span><small><a href="#" @click.prevent="showPdciModal"><i class="mdi mdi-18px mdi-help-circle"/></a></small></h2>
+        <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasmTableData.pdci.toFixed(2) }) }}</strong></p>
+      </template>
+      <b-row>
+        <b-col cols=12 lg=6>
+          <hr />
+          <Mcpd :germplasm="germplasm"/>
+        </b-col>
+      </b-row>
 
-    <hr />
-    <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-sitemap text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
-    <p v-html="$t('pagePassportPedigreeText')" />
-    <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
+      <hr />
+      <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-sitemap text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
+      <p v-html="$t('pagePassportPedigreeText')" />
+      <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
 
-    <hr />
-    <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-file-tree text-primary" /> <span> {{ $t('pagePassportEntityTitle') }}</span></h2>
-    <p v-html="$t('pagePassportEntityText')" />
-    <ul class="no-bullet-list">
-      <li><i class="mdi mdi-18px fix-alignment mdi-circle-medium" />{{ entityTypes['Accession'].text() }}</li>
-      <ul>
-        <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Plant/Plot'].text() }}</li>
+      <hr />
+      <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-file-tree text-primary" /> <span> {{ $t('pagePassportEntityTitle') }}</span></h2>
+      <p v-html="$t('pagePassportEntityText')" />
+      <ul class="no-bullet-list">
+        <li><i class="mdi mdi-18px fix-alignment mdi-circle-medium" />{{ entityTypes['Accession'].text() }}</li>
         <ul>
-          <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Sample'].text() }}</li>
+          <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Plant/Plot'].text() }}</li>
+          <ul>
+            <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Sample'].text() }}</li>
+          </ul>
         </ul>
       </ul>
-    </ul>
-    <EntityTable :getData="getEntityData" :filterOn="entityFilter" />
+      <EntityTable :getData="getEntityData" :filterOn="entityFilter" />
 
-    <template v-if="germplasm.declatitude && germplasm.declongitude">
+      <template v-if="germplasm.declatitude && germplasm.declongitude">
+        <hr />
+        <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-map-marker text-primary" /> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
+        <p v-html="$t('pagePassportLocationText')" />
+        <LocationMap :locations="[getLocation()]" />
+      </template>
+
       <hr />
-      <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-map-marker text-primary" /> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
-      <p v-html="$t('pagePassportLocationText')" />
-      <LocationMap :locations="[getLocation()]" />
-    </template>
+      <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
+      <p v-html="$t('pagePassportImageText')" />
+      <ImageGallery :getImages="getImages" />
 
-    <hr />
-    <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
-    <p v-html="$t('pagePassportImageText')" />
-    <ImageGallery :getImages="getImages" />
+      <hr />
+      <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
+      <p v-html="$t('pagePassportGroupText')" />
+      <GroupTable :getData="getGroupData" />
 
-    <hr />
-    <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
-    <p v-html="$t('pagePassportGroupText')" />
-    <GroupTable :getData="getGroupData" />
+      <hr />
+      <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
+      <p v-html="$t('pagePassportDatasetText')" />
+      <DatasetTable :getData="getDatasetData" />
 
-    <hr />
-    <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
-    <p v-html="$t('pagePassportDatasetText')" />
-    <DatasetTable :getData="getDatasetData" />
-
-    <hr />
-    <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-playlist-plus"/><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
-    <p v-html="$t('pagePassportAttributeText')" />
-    <GermplasmAttributeTable :getData="getGermplasmAttributeData" />
+      <hr />
+      <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-playlist-plus"/><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
+      <p v-html="$t('pagePassportAttributeText')" />
+      <GermplasmAttributeTable :getData="getGermplasmAttributeData" />
+    </div>
+    <div class="text-center" v-else>
+      <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+    </div>
   </div>
 </template>
 
@@ -84,10 +89,15 @@ export default {
   data: function () {
     return {
       germplasm: null,
-      germplasmId: null,
       germplasmTableData: null,
       pedigreeFilter: null,
       entityFilter: null
+    }
+  },
+  props: {
+    germplasmId: {
+      type: Number,
+      default: null
     }
   },
   components: {
@@ -167,7 +177,11 @@ export default {
     }
   },
   created: function () {
-    this.germplasmId = parseInt(this.$route.params.germplasmId)
+    var urlParam = this.$route.params.germplasmId
+
+    if (urlParam) {
+      this.germplasmId = parseInt(urlParam)
+    }
 
     this.pedigreeFilter = [{
       column: {

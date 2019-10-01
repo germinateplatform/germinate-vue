@@ -109,7 +109,6 @@ export default {
         result.forEach(r => {
           r.metadata = JSON.parse(r.metadata)// TODO: remove
         })
-        console.log(result)
         this.asyncJobs = result
       })
     }

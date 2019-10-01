@@ -6,7 +6,7 @@
           <i class="mdi mdi-18px mdi-dots-vertical"/>
         </template>
         <b-dropdown-item @click="getFilename('png')"><i class="mdi mdi-18px mdi-file-image"/> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
-        <b-dropdown-item @click="getFilename('svg')"><i class="mdi mdi-18px mdi-file-xml"/> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
+        <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><i class="mdi mdi-18px mdi-file-xml"/> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
         <b-dropdown-item @click="downloadSource()"><i class="mdi mdi-18px mdi-file-document"/> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
       </b-dropdown>
     </div>
@@ -39,6 +39,10 @@ export default {
       type: Function,
       default: () => 600
     },
+    supportsSvgDownload: {
+      type: Boolean,
+      default: true
+    },
     filename: {
       type: Function,
       default: null
@@ -59,7 +63,13 @@ export default {
       })
     },
     downloadSource: function () {
-      this.downloadBlob(this.sourceFile(), 'tsv')
+      var request = this.sourceFile()
+
+      if (!request.extension) {
+        request.extension = 'tsv'
+      }
+
+      this.downloadBlob(request)
     },
     getFilename: function (imageType) {
       this.imageType = imageType
