@@ -28,6 +28,7 @@ const store = new Vuex.Store({
     hiddenColumns: {
       germplasm: [],
       germplasmAttributes: [],
+      images: [],
       maps: [],
       markers: [],
       mapDefinitions: [],

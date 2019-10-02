@@ -316,5 +316,7 @@
   "widgetChartColoringByDataset": "Dataset",
   "widgetChartColoringByYear": "Year",
   "widgetChartColoringByTreatment": "Treatment",
-  "widgetChartColoringByTrialSite": "Trial site"
+  "widgetChartColoringByTrialSite": "Trial site",
+  "widgetChartMarkSelectedItems": "Mark selected items",
+  "widgetChartUnmarkSelectedItems": "Unmark selected items"
 }

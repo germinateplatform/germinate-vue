@@ -129,7 +129,9 @@ export function plotlyScatterMatrix() {
 				} else {
 					if (onPointsSelected) {
 						var mapped = eventData.points.map(function (p) {
-							return p.id.split('-')[0];
+							return parseInt(p.id.split('-')[0]);
+						}).filter((value, index, self) => {
+							return self.indexOf(value) === index
 						});
 
 						onPointsSelected(mapped);
@@ -140,7 +142,7 @@ export function plotlyScatterMatrix() {
 			if (onPointClicked) {
 				this.on('plotly_click', function (data) {
 					if (data.points.length > 0) {
-						onPointClicked(data.points[0]);
+						onPointClicked(parseInt(data.points[0].id.split('-')[0]));
 					}
 				});
 			}

@@ -3,9 +3,10 @@
     <h1>{{ $t('pageGroupsTitle') }}</h1>
     <hr />
     <GroupTable ref="groupsTable"
-                 v-on:group-selected="onGroupSelected"
-                 v-on:on-group-edit-clicked="onGroupEditClicked"
-                 v-on:on-group-delete-clicked="onGroupDeleteClicked" />
+                :getData="getGroupData"
+                v-on:group-selected="onGroupSelected"
+                v-on:on-group-edit-clicked="onGroupEditClicked"
+                v-on:on-group-delete-clicked="onGroupDeleteClicked" />
 
     <div v-if="group">
       <h2>{{ group.groupName }} <small>{{ groupTypes[group.groupType].text() }}</small></h2>
@@ -156,6 +157,9 @@ export default {
     MarkerTable
   },
   methods: {
+    getGroupData: function (data, callback) {
+      return this.apiPostGroupTable(data, callback)
+    },
     getGermplasmData: function (data, callback) {
       return this.apiPostGroupGermplasmTable(this.group.groupId, data, callback)
     },

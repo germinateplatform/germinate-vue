@@ -36,7 +36,7 @@
 
       <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
       <p>{{ $t('pageTrialsExportChartText') }}</p>
-      <MatrixChart ref="chart" :datasetIds="datasetIds" v-if="selectedTraits.length > 2" />
+      <MatrixChart ref="chart" :datasetIds="datasetIds" v-if="currentTraitCount > 2" />
       <ScatterChart ref="chart" :datasetIds="datasetIds" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" v-else />
     </b-col>
   </b-row>
@@ -118,6 +118,7 @@ export default {
         xIds: null,
         yGroupIds: null,
         yIds: null,
+        currentTraitCount: null,
         datasetIds: this.datasetIds
       }
 
@@ -138,6 +139,7 @@ export default {
       this.plotData = null
       this.apiPostDatasetExport('trial', query, result => {
         this.plotData = result
+        this.currentTraitCount = this.selectedTraits.length
         this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection))
         EventBus.$emit('show-loading', false)
       })

@@ -1,9 +1,10 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false">
+    <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" :additionalMenuItems="additionalMenuItems" :additionalButtons="additionalButtons">
       <div slot="chart" id="matrix-chart" ref="matrixChart" />
+      <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
     </BaseChart>
-    <b-modal size="xl" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null">
+    <b-modal size="xl" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null" ok-only hide-header :ok-title="$t('buttonClose')">
       <Passport :germplasmId="germplasmId" />
     </b-modal>
   </div>
@@ -18,7 +19,26 @@ export default {
   data: function () {
     return {
       sourceFile: null,
-      germplasmId: null
+      germplasmId: null,
+      selectedIds: [],
+      additionalMenuItems: [{
+        icon: 'mdi-checkbox-marked',
+        disabled: () => !this.selectedIds || this.selectedIds.length < 1,
+        text: () => this.$t('widgetChartMarkSelectedItems'),
+        callback: () => this.toggleItems(true)
+      }, {
+        icon: 'mdi-checkbox-blank-outline',
+        disabled: () => !this.selectedIds || this.selectedIds.length < 1,
+        text: () => this.$t('widgetChartUnmarkSelectedItems'),
+        callback: () => this.toggleItems(false)
+      }],
+      additionalButtons: [{
+        html: () => '<i class="mdi mdi-18px mdi-delete" />',
+        callback: () => this.clearMarkedList()
+      }, {
+        html: () => `<span class="badge badge-pill badge-info">${this.markedIds.germplasm.length}</span>`,
+        callback: () => this.redirectToList()
+      }]
     }
   },
   props: {
@@ -32,6 +52,19 @@ export default {
     Passport
   },
   methods: {
+    clearMarkedList: function () {
+      this.$store.dispatch('ON_MARKED_IDS_CLEAR', 'germplasm')
+    },
+    redirectToList: function () {
+      this.$router.push('/marked-items/germplasm')
+    },
+    toggleItems: function (add) {
+      if (add === true) {
+        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: this.selectedIds })
+      } else {
+        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: this.selectedIds })
+      }
+    },
     getSourceFile: function () {
       return {
         blob: this.sourceFile,
@@ -59,9 +92,12 @@ export default {
             .colorBy(colorBy)
             .columnsToIgnore(['name', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'treatments_description', 'year'])
             .onPointClicked(p => {
-              this.germplasmId = parseInt(p.id.split('-')[0])
+              this.germplasmId = p
 
               this.$nextTick(() => this.$refs.passportModal.show())
+            })
+            .onPointsSelected(ps => {
+              this.selectedIds = ps
             })
             .colors(this.serverSettings.colorsCharts))
       }
@@ -71,6 +107,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.selection-count {
+  position: absolute;
+  padding: 6px;
+  margin-top: -10px;
+  left: -10px;
+}
 </style>

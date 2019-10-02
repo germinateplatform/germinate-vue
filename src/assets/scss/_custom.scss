@@ -16,6 +16,10 @@ body {
   margin-top: 6px;
 }
 
+.app-header .dropdown-item {
+  min-width: 250px;
+}
+
 // Indentation of sidebar menu items
 .sidebar
   .ps
@@ -105,7 +109,7 @@ i.mdi.fix-alignment {
 }
 
 .dropdown-item i.mdi {
-  color: initial;
+  color: inherit;
 }
 
 .table tfoot p {

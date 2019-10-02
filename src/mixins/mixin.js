@@ -208,7 +208,9 @@ export default {
       document.body.removeChild(downloadLink)
     },
     toUrlString: function (params) {
-      return Object.keys(params).map(function (key) {
+      return Object.keys(params).filter(function (key) {
+        return params[key] !== undefined && params[key] !== null
+      }).map(function (key) {
         return params[key] ? (key + '=' + encodeURIComponent(params[key])) : ''
       }).join('&')
     },

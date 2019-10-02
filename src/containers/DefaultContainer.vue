@@ -25,8 +25,8 @@
     <div class="app-body">
       <AppSidebar fixed>
         <SidebarHeader/>
-        <SidebarForm/>
         <SidebarNav :navItems="nav"></SidebarNav>
+        <b-img class="brand-logo" fluid :src="getImageSrc('logo.svg')"></b-img>
         <SidebarFooter/>
         <SidebarMinimizer/>
       </AppSidebar>
@@ -34,6 +34,15 @@
         <!-- TODO: Replace this with i18n content or remove it -->
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid my-4">
+          <b-media no-body class="mb-3">
+            <b-media-aside vertical-align="center">
+              <b-img width="48" height="48" :src="getImageSrc('crop.svg')"></b-img>
+            </b-media-aside>
+            <b-media-body class="ml-3 mt-0 align-self-center">
+              <h5 class="mt-0">Germinate Demo Database</h5>
+            </b-media-body>
+          </b-media>
+          <hr />
           <router-view :key="$route.path"></router-view>
         </div>
       </main>
@@ -57,7 +66,7 @@
 </template>
 
 <script>
-import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarForm, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter } from '@coreui/vue'
+import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter } from '@coreui/vue'
 import DefaultAside from './DefaultAside'
 import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
 import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
@@ -75,7 +84,6 @@ export default {
     DefaultAside,
     LocaleDropdown,
     UserSettingsDropdown,
-    SidebarForm,
     SidebarFooter,
     SidebarToggler,
     SidebarHeader,
@@ -102,6 +110,14 @@ export default {
     }
   },
   methods: {
+    getImageSrc: function (img) {
+      var params = {
+        token: this.token ? this.token.imageToken : null
+      }
+      var paramString = this.toUrlString(params)
+
+      return this.baseUrl + 'image/src-svg/' + img + '?' + paramString
+    },
     getHelpDisabled: function () {
       return this.helpKey === undefined || this.helpKey === null
     },
@@ -221,5 +237,11 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+.brand-logo {
+  width: 100%;
+}
+.sidebar-minimized .brand-logo {
+  display: none;
+}
 </style>

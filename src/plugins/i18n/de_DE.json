@@ -315,5 +315,7 @@
   "widgetChartColoringByDataset": "Datensatz",
   "widgetChartColoringByYear": "Jahr",
   "widgetChartColoringByTreatment": "Behandlung",
-  "widgetChartColoringByTrialSite": "Versuchsstandort"
+  "widgetChartColoringByTrialSite": "Versuchsstandort",
+  "widgetChartMarkSelectedItems": "Ausgewählte Elemente markieren",
+  "widgetChartUnmarkSelectedItems": "Ausgewählte Markierung entfernen"
 }

@@ -1,14 +1,33 @@
 <template>
   <div>
     <div class="text-right">
-      <b-dropdown no-caret>
-        <template v-slot:button-content>
-          <i class="mdi mdi-18px mdi-dots-vertical"/>
+      <b-button-group>
+        <b-dropdown no-caret>
+          <template v-slot:button-content>
+            <i class="mdi mdi-18px mdi-dots-vertical"/>
+            <slot name="buttonContent" />
+          </template>
+          <b-dropdown-item @click="getFilename('png')"><i class="mdi mdi-18px mdi-file-image"/> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
+          <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><i class="mdi mdi-18px mdi-file-xml"/> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
+          <b-dropdown-item @click="downloadSource()"><i class="mdi mdi-18px mdi-file-document"/> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
+          <template v-if="additionalMenuItems && additionalMenuItems.length > 0">
+            <b-dropdown-divider />
+            <b-dropdown-item v-for="(item, index) in additionalMenuItems"
+                            :key="`additional-option-${index}`"
+                            :disabled="item.disabled()"
+                            @click="item.callback">
+              <i :class="`mdi mdi-18px ${item.icon}`" /> <span> {{ item.text() }}</span>
+            </b-dropdown-item>
+          </template>
+        </b-dropdown>
+        <template v-if="additionalButtons && additionalButtons.length > 0">
+          <b-button v-for="(button, index) in additionalButtons"
+                    :key="`additional-button-${index}`"
+                    @click="button.callback">
+            <span v-html="button.html()" />
+          </b-button>
         </template>
-        <b-dropdown-item @click="getFilename('png')"><i class="mdi mdi-18px mdi-file-image"/> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
-        <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><i class="mdi mdi-18px mdi-file-xml"/> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
-        <b-dropdown-item @click="downloadSource()"><i class="mdi mdi-18px mdi-file-document"/> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
-      </b-dropdown>
+      </b-button-group>
     </div>
     <slot name="chart" ref="chart" />
     <ResizeObserver v-on:notify-width="handleResize" />
@@ -50,6 +69,14 @@ export default {
     sourceFile: {
       type: Function,
       default: () => null
+    },
+    additionalMenuItems: {
+      type: Array,
+      default: null
+    },
+    additionalButtons: {
+      type: Array,
+      default: null
     }
   },
   components: {
