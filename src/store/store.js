@@ -42,7 +42,7 @@ const store = new Vuex.Store({
       trialsData: [],
       collaborators: []
     },
-    asyncJobUuids: ['502c5422-e4ec-48e1-b695-a4e6fc1fcb69', '9a804946-1a21-4488-95b3-e3928724ae77'], // TODO: REMOVE!!!
+    asyncJobUuids: ['502c5422-e4ec-48e1-b695-a4e6fc1fcb69', '9a804946-1a21-4488-95b3-e3928724ae77', 'dfb0e6db-9da0-4137-aa17-561b33cb4882'], // TODO: REMOVE!!!
     tableFiltering: null
   },
   getters: {

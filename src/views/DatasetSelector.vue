@@ -3,7 +3,7 @@
     <div v-if="experimentType">
       <h1>{{ experimentTypes[experimentType].text() }}</h1>
       <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3" ref="datasetTable"/>
-      <b-button variant="success" @click="checkLicenses"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Continue</b-button>
+      <b-button variant="primary" @click="checkLicenses"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Continue</b-button>
     </div>
     <div v-else>
       <h1>Invalid experiment type</h1>
@@ -51,7 +51,6 @@ export default {
       }
       this.apiPostLicenseTable(query, result => {
         if (result && result.data && result.data.length > 0) {
-          console.log(result, this.token)
           var toAccept = result.data.filter(l => {
             var result = true
 
@@ -75,12 +74,22 @@ export default {
             })
           } else {
             // Navigate to the export page
-            this.$router.push({ name: 'export-trials', params: { datasetIds: selectedIds.join(',') } })
+            this.navigateToExportPage(selectedIds)
           }
         } else {
-          // TODO
+          this.navigateToExportPage(selectedIds)
         }
       })
+    },
+    navigateToExportPage: function (selectedIds) {
+      switch (this.experimentType) {
+        case 'trials':
+          this.$router.push({ name: 'export-trials', params: { datasetIds: selectedIds.join(',') } })
+          break
+        case 'genotype':
+          this.$router.push({ name: 'export-genotypes', params: { datasetIds: selectedIds.join(',') } })
+          break
+      }
     },
     getExperimentTypes: function () {
       var result = Object.assign({}, this.experimentTypes)

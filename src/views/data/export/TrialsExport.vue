@@ -29,7 +29,7 @@
         <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
         <TraitBoxplotChart :datasetIds="datasetIds" />
       </div>
-      <TraitGermplasmSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
+      <TraitExportSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
       <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import TraitGermplasmSelection from '@/components/export/TraitGermplasmSelection'
+import TraitExportSelection from '@/components/export/TraitExportSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import TraitBoxplotChart from '@/components/charts/TraitBoxplotChart'
 
@@ -71,7 +71,7 @@ export default {
     }
   },
   components: {
-    TraitGermplasmSelection,
+    TraitExportSelection,
     TrialsDataTable,
     TraitBoxplotChart
   },

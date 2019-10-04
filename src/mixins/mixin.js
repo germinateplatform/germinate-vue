@@ -132,31 +132,37 @@ export default {
       },
       experimentTypes: {
         allelefreq: {
+          id: 4,
           icon: 'mdi-pulse',
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeAllelefreq')
         },
         climate: {
+          id: 5,
           icon: 'mdi-weather-snowy-rainy',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeClimate')
         },
         compound: {
+          id: 6,
           icon: 'mdi-flask',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeCompound')
         },
         genotype: {
+          id: 1,
           icon: 'mdi-dna',
           color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeGenotype')
         },
         trials: {
+          id: 3,
           icon: 'mdi-shovel',
           color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeTrials')
         },
         unknown: {
+          id: -1,
           icon: 'mdi-help-box',
           color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeUnknown')

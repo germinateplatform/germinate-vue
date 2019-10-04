@@ -6,7 +6,8 @@
       </div>
     </a>
     <b-card-body class="card-image-details">
-      {{ image.imageDescription }}
+      <div>{{ image.imageDescription }}</div>
+      <div class="text-muted" v-if="image.createdOn"><i class="mdi mdi-18px fix-alignment mdi-calendar-clock" /> {{ image.createdOn | toDate }}</div>
     </b-card-body>
     <b-button :style="`color: white; background-color: ${imageTypes[image.imageRefTable].color()}; border: 1px solid ${imageTypes[image.imageRefTable].color()};`">
       <i :class="`mdi mdi-18px ${imageTypes[image.imageRefTable].icon} fix-alignment`" /> {{ image.referenceName }}

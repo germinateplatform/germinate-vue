@@ -92,17 +92,17 @@ export default {
     apiPostDatasetExport: function (experimentType, queryData, onSuccess, onError) {
       return this.authAjax({ url: `dataset/export/${experimentType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGenotypeDatasetExport: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostDatasetTraits: function (datasetIds, onSuccess, onError) {
       const queryData = {
         datasetIds: datasetIds
       }
       return this.authAjax({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostTrialDatasetGroups: function (datasetIds, onSuccess, onError) {
-      const queryData = {
-        datasetIds: datasetIds
-      }
-      return this.authAjax({ url: 'dataset/group/trial', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    apiPostDatasetGroups: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTrialsDataTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -114,6 +114,10 @@ export default {
     apiPostMapsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'map/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostDatasetMapTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'dataset/map', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostMapdefinitionTable: function (mapId, queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -134,6 +138,9 @@ export default {
         uuids: uuids
       }
       return this.authAjax({ url: 'dataset/export/async', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiDeleteDatasetAsyncExport: function (uuid, onSuccess, onError) {
+      return this.authAjax({ url: `dataset/export/async/${uuid}`, method: 'DELETE', success: onSuccess, error: onError })
     },
     apiPostLicenseTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1

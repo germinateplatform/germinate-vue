@@ -8,23 +8,7 @@
       <p class="text-info" v-if="selectedTraits.length < 2">{{ $t('pageTrialsExportSelectTraitMinimum') }}</p>
     </b-col>
     <b-col cols=12 md=6 v-if="groups && groups.length > 0">
-      <h2>{{ $t('pageTrialsExportSelectGroupTitle') }}</h2>
-      <p>{{ $t('pageTrialsExportSelectGroupText') }}</p>
-      <div class="select-with-options">
-        <div id="trait-selection">
-          <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" />
-        </div>
-        <b-tooltip target="trait-selection" triggers="hover">
-          {{ specialGroupSelection !== 'selection' ? $t('pageTrialsExportSelectGroupTooltip') : null }}
-        </b-tooltip>
-        <b-button-group v-if="specialGroupSelection && specialGroupSelection.length > 0 && specialGroupOptions && specialGroupOptions.length > 0">
-          <b-form-radio-group
-            v-model="specialGroupSelection"
-            :options="specialGroupOptions"
-            button-variant="outline-info"
-            buttons />
-        </b-button-group>
-      </div>
+      <ExportGroupSelection title="pageTrialsExportSelectGroupTitle" text="pageTrialsExportSelectGroupText" tooltip="pageExportSelectGroupTooltip" itemType="germplasm" :groups="groups" ref="germplasmGroups"/>
     </b-col>
     <b-col cols=12>
       <b-btn variant="primary" @click="plot" :disabled="plotButtonDisabled"><i class="mdi mdi-18px mdi-arrow-right-bold fix-alignment" /> Plot</b-btn>
@@ -45,6 +29,7 @@
 <script>
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
+import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -60,16 +45,6 @@ export default {
       selectedTraits: [],
       traitOptions: [],
       groups: [],
-      selectedGroups: [],
-      groupOptions: [],
-      specialGroupOptions: [{
-        html: '<i class="mdi mdi-18px mdi-arrow-up-box fix-alignment"></i> ' + this.$t('pageTrialsExportSelectGroupModeSelect'),
-        value: 'selection'
-      }, {
-        html: '<i class="mdi mdi-18px mdi-select-all fix-alignment"></i> ' + this.$t('pageTrialsExportSelectGroupModeAll'),
-        value: 'all'
-      }],
-      specialGroupSelection: 'all',
       colorByOptions: [{
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
@@ -107,6 +82,7 @@ export default {
     }
   },
   components: {
+    ExportGroupSelection,
     MatrixChart,
     ScatterChart
   },
@@ -122,13 +98,15 @@ export default {
         datasetIds: this.datasetIds
       }
 
-      var markedSelected = this.selectedGroups.filter(g => g.isMarkedItem === true)
-      if (this.specialGroupSelection !== 'all' && markedSelected.length > 0) {
+      var settings = this.$refs.germplasmGroups.getSettings()
+
+      var markedSelected = settings.selectedGroups.filter(g => g.isMarkedItem === true)
+      if (settings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
         query.yIds = this.markedIds.germplasm
       }
 
-      var groups = this.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
-      if (this.specialGroupSelection !== 'all' && groups.length > 0) {
+      var groups = settings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
+      if (settings.specialGroupSelection !== 'all' && groups.length > 0) {
         query.yGroupIds = groups
       }
 
@@ -170,28 +148,13 @@ export default {
       })
     },
     updateGroups: function () {
-      this.apiPostTrialDatasetGroups(this.datasetIds, result => {
+      const request = {
+        datasetIds: this.datasetIds,
+        groupType: 'germinatebase',
+        experimentType: 'trials'
+      }
+      this.apiPostDatasetGroups(request, result => {
         this.groups = result
-        this.groups.unshift({
-          groupId: -1,
-          groupName: 'Marked items',
-          isMarkedItem: true,
-          count: this.markedIds.germplasm.length
-        })
-        this.groupOptions = []
-        this.groups.forEach(g => {
-          var groupName = g.groupName
-
-          if (g.count !== undefined) {
-            groupName += ` (${g.count})`
-          }
-
-          this.groupOptions.push({
-            value: g,
-            disabled: g.count === undefined || g.count < 1,
-            text: groupName
-          })
-        })
       })
     }
   },

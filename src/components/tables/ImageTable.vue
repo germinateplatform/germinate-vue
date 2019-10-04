@@ -4,8 +4,11 @@
                :columns="columns"
                :filterOn="filterOn"
                ref="table"
-               v-on:data-changed="(request, data) => update()">
+               @loaded="update">
       <span slot="imageRefTable" slot-scope="props"><i :class="`mdi mdi-18px ${imageTypes[props.row.imageRefTable].icon} fix-alignment`" :style="`color: ${imageTypes[props.row.imageRefTable].color()};`" /> {{ imageTypes[props.row.imageRefTable].text() }}</span>
+
+      <!-- Formatted date -->
+      <span slot="createdOn" slot-scope="props" v-if="props.row.createdOn">{{ props.row.createdOn | toDate }}</span>
 
       <a slot="image" slot-scope="props" :href="getSrc(props.row, 'large')" class="baguettebox" @click.prevent>
         <img :src="getSrc(props.row, 'small')" class="table-image" />
@@ -115,6 +118,8 @@ export default {
 
 <style scoped>
 .table-image {
-  max-height: 100px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
 </style>

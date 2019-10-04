@@ -172,7 +172,20 @@ const router = new Router({
               path: 'export/trials/:datasetIds',
               name: 'export-trials',
               component: () => import('@/views/data/export/TrialsExport.vue'),
-              beforeenter: requireAuth,
+              beforeEnter: requireAuth,
+              props (route) {
+                const datasetIds = route.params.datasetIds || ''
+
+                return {
+                  datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
+                }
+              }
+            },
+            {
+              path: 'export/genotypes/:datasetIds',
+              name: 'export-genotypes',
+              component: () => import('@/views/data/export/GenotypeExport.vue'),
+              beforeEnter: requireAuth,
               props (route) {
                 const datasetIds = route.params.datasetIds || ''
 

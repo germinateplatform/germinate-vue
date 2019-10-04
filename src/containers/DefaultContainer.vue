@@ -19,7 +19,10 @@
         <MarkedItemDropdown />
         <UserSettingsDropdown />
       </b-navbar-nav>
-      <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" />
+      <div>
+        <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" />
+        <b-badge pill variant="info" class="async-badge" v-if="asyncJobUuids && asyncJobUuids.length > 0">{{ asyncJobUuids.length }}</b-badge>
+      </div>
       <!--<AsideToggler class="d-lg-none" mobile />-->
     </AppHeader>
     <div class="app-body">
@@ -34,21 +37,17 @@
         <!-- TODO: Replace this with i18n content or remove it -->
         <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid my-4">
-          <b-media no-body class="mb-3">
-            <b-media-aside vertical-align="center">
-              <b-img width="48" height="48" :src="getImageSrc('crop.svg')"></b-img>
-            </b-media-aside>
-            <b-media-body class="ml-3 mt-0 align-self-center">
-              <h5 class="mt-0">Germinate Demo Database</h5>
-            </b-media-body>
-          </b-media>
+          <div class="mb-3 d-flex align-items-center">
+            <b-img width="48" height="48" :src="getImageSrc('crop.svg')"></b-img>
+            <h5 class="mt-0 ml-3">{{ $t('germinateTitle') }}</h5>
+          </div>
           <hr />
           <router-view :key="$route.path"></router-view>
         </div>
       </main>
       <AppAside off-canvas>
         <!--aside-->
-        <DefaultAside/>
+        <DefaultAside ref="aside" />
       </AppAside>
     </div>
     <TheFooter>
@@ -214,8 +213,9 @@ export default {
       ]
     },
     toggleAside: function () {
-      if (!document.body.classList.contains('aside-menu-lg-show')) {
+      if (!document.body.classList.contains('aside-menu-show')) {
         this.$refs.asideToggler.toggle()
+        this.$refs.aside.updateAsyncJobs()
       }
     }
   },
@@ -225,14 +225,6 @@ export default {
   mounted: function () {
     this.updateNav()
     EventBus.$on('toggle-aside', this.toggleAside)
-
-    this.$nextTick(() => {
-      EventBus.$emit('toggle-aside')
-
-      this.$nextTick(() => {
-        EventBus.$emit('toggle-aside')
-      })
-    })
   }
 }
 </script>
@@ -243,5 +235,10 @@ export default {
 }
 .sidebar-minimized .brand-logo {
   display: none;
+}
+.async-badge {
+  position: absolute;
+  margin-top: -13px;
+  pointer-events: none;
 }
 </style>
