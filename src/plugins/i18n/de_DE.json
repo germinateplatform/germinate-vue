@@ -1,5 +1,10 @@
 {
   "actionView": "Anzeigen",
+  "asyncJobStatusRunning": "Im Vorgang",
+  "asyncJobStatusFailed": "Fehlgeschlagen",
+  "asyncJobStatusCompleted": "Vollständig",
+  "asyncJobStatusWaiting": "Wartet",
+  "asyncJobStatusCancelled": "Abgebrochen",
   "buttonEdit": "Bearbeiten",
   "buttonDelete": "Löschen",
   "buttonDeleteSelected": "Ausgewählte löschen",
@@ -66,6 +71,8 @@
   "errorMessageInvalidUsernamePassword": "Ungültiger Benutzername oder Passwort",
   "errorMessageActivationInvalidKey": "Ungültiger Aktivierungsschlüssel. Dies kann daran liegen, dass dieses Benutzerkonto schon aktiviert wurde.",
   "errorMessageNoActivationKey": "Kein Aktivierungsschlüssel vorhanden.",
+  "pageGenotypesExportEnableFlapjackTitle": "Flapjack Projekt erstellen?",
+  "pageGenotypesExportEnableFlapjackText": "Durch diese auswahl generiert Germinate eine <a href='https://ics.hutton.ac.uk/flapjack'>Flapjack</a> Projektdatei zusätzlich zu den einfachen Textdateien.",
   "formLabelUsername": "Benutzername",
   "formLabelPassword": "Passwort",
   "formLabelGroupType": "Gruppentyp",
@@ -126,6 +133,7 @@
   "menuHome": "Home",
   "menuGermplasm": "Keimplasma",
   "menuGenotypicData": "Genotypische Daten",
+  "menuGenotypicDataExport": "Genotypischer Export",
   "menuGenotypicMaps": "Karten",
   "menuGroups": "Gruppen",
   "menuDatasets": "Datensätze",
@@ -133,7 +141,7 @@
   "menuLocations": "Standorte",
   "menuImageGallery": "Bildergallerie",
   "menuTrialsData": "Merkmalsdaten",
-  "menuTrialsDataExport": "Merkmalsdaten Export",
+  "menuTrialsDataExport": "Merkmals Export",
   "menuTrialsTraits": "Merkmale",
   "modalTitleTableFilter": "Filter",
   "modalTitleEditGroup": "Gruppe hinzufügen/bearbeiten",
@@ -325,5 +333,6 @@
   "widgetChartColoringByTreatment": "Behandlung",
   "widgetChartColoringByTrialSite": "Versuchsstandort",
   "widgetChartMarkSelectedItems": "Ausgewählte Elemente markieren",
-  "widgetChartUnmarkSelectedItems": "Ausgewählte Markierung entfernen"
+  "widgetChartUnmarkSelectedItems": "Ausgewählte Markierung entfernen",
+  "widgetAsyncJobPanelTitle": "Datenexportjobs"
 }

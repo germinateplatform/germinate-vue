@@ -8,7 +8,7 @@
         <ExportGroupSelection title="pageGenotypesExportSelectMarkerGroupTitle" text="pageGenotypesExportSelectMarkerGroupText" tooltip="pageExportSelectGroupTooltip" :groups="markerGroups" itemType="markers" ref="markerGroups"/>
       </b-col>
     </b-row>
-    <b-row>
+    <b-row class="mt-3">
       <b-col cols=12 md=6>
         <h2>{{ $t('pageGenotypesExportSelectMapTitle') }}</h2>
         <b-form-group
@@ -16,6 +16,13 @@
             label-for="map-selection">
           <b-form-select id="map-selection" v-model="map" :options="maps" />
         </b-form-group>
+      </b-col>
+      <b-col cols=12 md=6>
+        <h2>{{$t('pageGenotypesExportEnableFlapjackTitle') }}</h2>
+        <p v-html="$t('pageGenotypesExportEnableFlapjackText')" />
+        <b-form-checkbox v-model="generateFlapjackProject" switch>
+          {{ generateFlapjackProject === true ? $t('genericYes') : $t('genericNo') }}
+        </b-form-checkbox>
       </b-col>
     </b-row>
     <b-button variant="primary" @click="exportData"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Export</b-button>
@@ -38,7 +45,8 @@ export default {
       markerGroups: [],
       germplasmGroups: [],
       maps: [],
-      map: null
+      map: null,
+      generateFlapjackProject: false
     }
   },
   watch: {
@@ -60,7 +68,8 @@ export default {
         yGroupIds: null,
         yIds: null,
         datasetIds: this.datasetIds,
-        mapId: this.map
+        mapId: this.map,
+        generateFlapjackProject: this.generateFlapjackProject
       }
 
       var germplasmSettings = this.$refs.germplasmGroups.getSettings()

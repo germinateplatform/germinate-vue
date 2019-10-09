@@ -176,7 +176,11 @@ export default {
     // Only get the columns that have a text that isn't empty
     getColumns: function () {
       return this.columns.filter(c => {
-        return this.texts[c.name] ? (this.texts[c.name]() !== '') : false
+        if (c.type === undefined) {
+          return false
+        } else {
+          return this.texts[c.name] ? (this.texts[c.name]() !== '') : false
+        }
       })
     }
   },
@@ -251,8 +255,6 @@ export default {
 
         this.targetFilter.push(newFilter)
       })
-
-      console.log(this.targetFilter)
 
       this.$emit('on-filter-changed', this.targetFilter)
 

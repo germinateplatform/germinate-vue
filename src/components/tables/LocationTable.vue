@@ -43,9 +43,17 @@ export default {
       type: Function,
       default: () => []
     },
+    orderBy: {
+      type: String,
+      default: null
+    },
     selectable: {
       type: Boolean,
       default: false
+    },
+    tableMode: {
+      type: String,
+      default: 'base'
     },
     tableActions: {
       type: Array,
@@ -81,9 +89,16 @@ export default {
       name: 'countryName',
       type: String
     }, {
+      name: 'distance',
+      type: undefined
+    }, {
       name: 'marked',
       type: undefined
     }]
+
+    if (this.tableMode !== 'distance') {
+      columns = columns.filter(c => c.name !== 'distance')
+    }
 
     if (this.selectable === true) {
       columns.unshift({
@@ -92,35 +107,45 @@ export default {
       })
     }
 
-    return {
-      options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
-        idColumn: 'locationId',
-        tableName: 'locations',
-        sortable: ['locationId', 'locationName', 'locationRegion', 'locationState', 'locationType', 'locationLatitude', 'locationLongitud', 'locationElevation', 'countryName'],
-        filterable: [],
-        headings: {
-          selected: '',
-          locationId: () => this.$t('tableColumnLocationId'),
-          locationName: () => this.$t('tableColumnLocationName'),
-          locationRegion: () => this.$t('tableColumnLocationRegion'),
-          locationState: () => this.$t('tableColumnLocationState'),
-          locationType: () => this.$t('tableColumnLocationType'),
-          locationLatitude: () => this.$t('tableColumnLocationLatitude'),
-          locationLongitude: () => this.$t('tableColumnLocationLongitude'),
-          locationElevation: () => this.$t('tableColumnLocationElevation'),
-          countryName: () => this.$t('tableColumnLocationCountryName'),
-          marked: ''
-        },
-        columnsClasses: {
-          locationId: 'text-right',
-          locationLatitude: 'text-right',
-          locationLongitude: 'text-right',
-          locationElevation: 'text-right'
-        }
+    var options = {
+      requestData: (data, callback) => {
+        return this.getData(data, callback)
       },
+      idColumn: 'locationId',
+      tableName: 'locations',
+      sortable: ['locationId', 'locationName', 'locationRegion', 'locationState', 'locationType', 'locationLatitude', 'locationLongitud', 'locationElevation', 'countryName'],
+      filterable: [],
+      headings: {
+        selected: '',
+        locationId: () => this.$t('tableColumnLocationId'),
+        locationName: () => this.$t('tableColumnLocationName'),
+        locationRegion: () => this.$t('tableColumnLocationRegion'),
+        locationState: () => this.$t('tableColumnLocationState'),
+        locationType: () => this.$t('tableColumnLocationType'),
+        locationLatitude: () => this.$t('tableColumnLocationLatitude'),
+        locationLongitude: () => this.$t('tableColumnLocationLongitude'),
+        locationElevation: () => this.$t('tableColumnLocationElevation'),
+        countryName: () => this.$t('tableColumnLocationCountryName'),
+        distance: () => 'Distance',
+        marked: ''
+      },
+      columnsClasses: {
+        locationId: 'text-right',
+        locationLatitude: 'text-right',
+        locationLongitude: 'text-right',
+        locationElevation: 'text-right',
+        distance: 'text-right'
+      }
+    }
+
+    if (this.orderBy !== null) {
+      options.orderBy = {
+        column: this.orderBy
+      }
+    }
+
+    return {
+      options: options,
       columns: columns
     }
   },

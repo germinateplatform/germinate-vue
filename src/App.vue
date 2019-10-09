@@ -57,6 +57,11 @@ export default {
     loadLanguageAsync(this.locale)
     EventBus.$on('on-print', this.print)
     EventBus.$on('show-loading', this.toggleLoading)
+
+    let file = document.createElement('link')
+    file.rel = 'stylesheet'
+    file.href = this.baseUrl + 'settings/css'
+    document.head.appendChild(file)
   }
 }
 </script>

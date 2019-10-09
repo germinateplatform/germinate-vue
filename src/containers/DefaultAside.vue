@@ -9,7 +9,7 @@
     </b-tabs>
     <b-list-group class="list-group-accent">
       <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
-        Data export jobs
+        {{ $t('widgetAsyncJobPanelTitle') }}
       </b-list-group-item>
       <b-list-group-item v-for="job in asyncJobs"
                           :key="job.id"
@@ -21,8 +21,13 @@
           <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ job.updatedOn | toDate }}</small>
         </span>
         <span :class="`text-${status[job.status].color}`">
-          <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`"></i><small> {{ status[job.status].text() }}</small>
+          <b-spinner variant="info" small v-if="job.status === 'running'" />
+          <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`" v-else />
+          <small> {{ status[job.status].text() }}</small>
         </span>
+        <div v-if="job.status === 'completed'">
+          <i class="mdi fix-alignment mdi-download" /> <a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs"> Download</a>
+        </div>
       </b-list-group-item>
     </b-list-group>
   </div>
@@ -38,22 +43,27 @@ export default {
         running: {
           color: 'info',
           icon: 'progress-wrench',
-          text: () => 'Running'// TODO
+          text: () => this.$t('asyncJobStatusRunning')
         },
         failed: {
           color: 'danger',
           icon: 'alert',
-          text: () => 'Failed'// TODO
+          text: () => this.$t('asyncJobStatusFailed')
         },
         completed: {
           color: 'success',
           icon: 'check-circle',
-          text: () => 'Completed'// TODO
+          text: () => this.$t('asyncJobStatusCompleted')
         },
         waiting: {
           color: 'info',
           icon: 'pause-circle',
-          text: () => 'Waiting'// TODO
+          text: () => this.$t('asyncJobStatusWaiting')
+        },
+        cancelled: {
+          color: 'warning',
+          icon: 'mdi-cancel',
+          text: () => this.$t('asyncJobStatusCancelled')
         }
       }
     }
@@ -86,15 +96,29 @@ export default {
         return 'UNKNOWN DATASET TYPE'
       }
     },
-    updateAsyncJobs: function () {
-      this.apiPostDatasetAsyncExport(this.asyncJobUuids, result => {
-        result.forEach(r => {
-          if (r.metadata) {
-            r.metadata = JSON.parse(r.metadata)// TODO: remove
-          }
+    updateInternal: function () {
+      this.$nextTick(() => {
+        this.apiPostDatasetAsyncExport(this.asyncJobUuids, result => {
+          this.asyncJobs = result
+
+          this.$store.dispatch('ON_ASYNC_JOB_UUID', this.asyncJobs.map(a => a.uuid))
         })
-        this.asyncJobs = result
       })
+    },
+    updateAsyncJobs: function (setTimer) {
+      if (setTimer === true) {
+        // Check it first
+        this.updateInternal()
+        // Then after 10 seconds, start another check
+        setTimeout(() => {
+          // Only repeat if the aside is still open
+          if (document.body.classList.contains('aside-menu-show')) {
+            this.updateAsyncJobs(true)
+          }
+        }, 10000)
+      } else {
+        this.updateInternal()
+      }
     }
   },
   mounted: function () {

@@ -159,6 +159,12 @@ const router = new Router({
                   name: 'locations',
                   component: () => import('@/views/data/environment/Locations.vue'),
                   beforeEnter: requireAuth
+                },
+                {
+                  path: 'geographic-search',
+                  name: 'geographic-search',
+                  component: () => import('@/views/data/environment/GeographicSearch.vue'),
+                  beforeEnter: requireAuth
                 }
               ]
             },

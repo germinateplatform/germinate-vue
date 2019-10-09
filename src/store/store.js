@@ -10,41 +10,43 @@ if (!name) {
   name = 'germinate'
 }
 
-const store = new Vuex.Store({
-  state: {
-    token: null,
-    locale: 'en_GB',
-    baseUrl: null,
-    tablePerPage: 10,
-    originalTarget: null,
-    serverSettings: null,
-    helpKey: null,
-    entityTypeStats: null,
-    markedIds: {
-      germplasm: [],
-      markers: [],
-      locations: []
-    },
-    hiddenColumns: {
-      germplasm: [],
-      germplasmAttributes: [],
-      images: [],
-      maps: [],
-      markers: [],
-      mapDefinitions: [],
-      datasets: [],
-      datasetAttributes: [],
-      entities: [],
-      groups: [],
-      locations: [],
-      pedigrees: [],
-      traits: [],
-      trialsData: [],
-      collaborators: []
-    },
-    asyncJobUuids: ['502c5422-e4ec-48e1-b695-a4e6fc1fcb69', '9a804946-1a21-4488-95b3-e3928724ae77', 'dfb0e6db-9da0-4137-aa17-561b33cb4882'], // TODO: REMOVE!!!
-    tableFiltering: null
+const initialState = {
+  token: null,
+  locale: 'en_GB',
+  baseUrl: null,
+  tablePerPage: 10,
+  originalTarget: null,
+  serverSettings: null,
+  helpKey: null,
+  entityTypeStats: null,
+  markedIds: {
+    germplasm: [],
+    markers: [],
+    locations: []
   },
+  hiddenColumns: {
+    germplasm: [],
+    germplasmAttributes: [],
+    images: [],
+    maps: [],
+    markers: [],
+    mapDefinitions: [],
+    datasets: [],
+    datasetAttributes: [],
+    entities: [],
+    groups: [],
+    locations: [],
+    pedigrees: [],
+    traits: [],
+    trialsData: [],
+    collaborators: []
+  },
+  asyncJobUuids: [],
+  tableFiltering: null
+}
+
+const store = new Vuex.Store({
+  state: JSON.parse(JSON.stringify(initialState)),
   getters: {
     token: state => state.token,
     locale: state => state.locale,
@@ -120,16 +122,25 @@ const store = new Vuex.Store({
     ON_ENTITY_TYPE_STATS_CHANGED_MUTATION: function (state, newEntityTypeStats) {
       state.entityTypeStats = newEntityTypeStats
     },
+    ON_ASYNC_JOB_UUID_MUTATION: function (state, newAsyncJobUuids) {
+      if (!state.token) {
+        state.asyncJobUuids = newAsyncJobUuids
+      }
+    },
     ON_ASYNC_JOB_UUID_ADD_MUTATION: function (state, uuid) {
-      if (state.asyncJobUuids.indexOf(uuid) === -1) {
-        state.asyncJobUuids.push(uuid)
+      if (!state.token) {
+        if (state.asyncJobUuids.indexOf(uuid) === -1) {
+          state.asyncJobUuids.push(uuid)
+        }
       }
     },
     ON_ASYNC_JOB_UUID_REMOVE_MUTATION: function (state, uuid) {
-      var index = state.asyncJobUuids.indexOf(uuid)
+      if (!state.token) {
+        var index = state.asyncJobUuids.indexOf(uuid)
 
-      if (index !== -1) {
-        state.asyncJobUuids.splice(index, 1)
+        if (index !== -1) {
+          state.asyncJobUuids.splice(index, 1)
+        }
       }
     }
   },
@@ -175,6 +186,9 @@ const store = new Vuex.Store({
     },
     ON_ENTITY_TYPE_STATS_CHANGED: function ({ commit }, entityTypeStats) {
       commit('ON_ENTITY_TYPE_STATS_CHANGED_MUTATION', entityTypeStats)
+    },
+    ON_ASYNC_JOB_UUID: function ({ commit }, asyncJobUuids) {
+      commit('ON_ASYNC_JOB_UUID_MUTATION', asyncJobUuids)
     },
     ON_ASYNC_JOB_UUID_ADD: function ({ commit }, uuid) {
       commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', uuid)

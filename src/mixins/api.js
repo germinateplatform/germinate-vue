@@ -69,7 +69,26 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostLocationDistanceTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'location/distance/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostLocationPolygonTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      if (queryData.orderBy === 'distance') {
+        delete queryData.orderBy
+        delete queryData.ascending
+      }
+      return this.authAjax({ url: 'location/polygon/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostLocationPolygonTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
+      return this.authAjax({ url: 'location/polygon/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostLocationTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
       return this.authAjax({ url: 'location/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGroupLocationTable: function (groupId, queryData, onSuccess, onError) {

@@ -57,8 +57,26 @@ button.mdi:before {
   vertical-align: sub;
 }
 
+.tab-content {
+  margin-top: 0;
+  background: unset;
+  border: 0px;
+}
+
+.map-tabs .tab-content .tab-pane {
+  padding: 0;
+}
+
 .nav-item .dropdown-menu .dropdown-item .badge {
   margin-top: 7px;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0;
+  border-radius: 4px;
+}
+.leaflet-popup-content {
+  min-width: 300px !important;
 }
 
 .table-sort-up:before {

@@ -1,5 +1,10 @@
 {
   "actionView": "View",
+  "asyncJobStatusRunning": "Running",
+  "asyncJobStatusFailed": "Failed",
+  "asyncJobStatusCompleted": "Completed",
+  "asyncJobStatusWaiting": "Waiting",
+  "asyncJobStatusCancelled": "Cancelled",
   "buttonEdit": "Edit",
   "buttonDelete": "Delete",
   "buttonDeleteSelected": "Delete selected",
@@ -127,6 +132,7 @@
   "menuHome": "Home",
   "menuGermplasm": "Germplasm",
   "menuGenotypicData": "Genotypic data",
+  "menuGenotypicDataExport": "Genotypic export",
   "menuGenotypicMaps": "Maps",
   "menuGroups": "Groups",
   "menuDatasets": "Datasets",
@@ -134,7 +140,7 @@
   "menuLocations": "Locations",
   "menuImageGallery": "Image gallery",
   "menuTrialsData": "Trials data",
-  "menuTrialsDataExport": "Trials data export",
+  "menuTrialsDataExport": "Trials export",
   "menuTrialsTraits": "Traits",
   "modalTitleTableFilter": "Filter",
   "modalTitleEditGroup": "Add/edit group",
@@ -155,6 +161,8 @@
   "pageGenotypesExportSelectMarkerGroupText": "The exported files will contain the markers from the selected groups only.",
   "pageGenotypesExportSelectMapTitle": "Select map",
   "pageGenotypesExportSelectMapText": "Only markers on the map will be exported.",
+  "pageGenotypesExportEnableFlapjackTitle": "Generate Flapjack project?",
+  "pageGenotypesExportEnableFlapjackText": "By enabling this, Germinate will generate a <a href='https://ics.hutton.ac.uk/flapjack'>Flapjack</a> project file in addition to the flat text files.",
   "pageGermplasmTitle": "Germplasm",
   "pageGermplasmText": "<p>Select an germplasm name below to view further information for that germplasm. This database contains data such as geographical collection site data, breeders data and general passport data available although this may not be available for all germplasm.</p><p>Column sorting applies across the entire dataset and can be enabled by clicking on a column title. You can also jump through the data by using the forward and back arrows at the bottom of the table. The table can be filtered down by using the column filtering system.</p><p>Tools to export data can be found at the foot of the germplasm table.</p>",
   "pageGroupsTitle": "Groups",
@@ -326,5 +334,6 @@
   "widgetChartColoringByTreatment": "Treatment",
   "widgetChartColoringByTrialSite": "Trial site",
   "widgetChartMarkSelectedItems": "Mark selected items",
-  "widgetChartUnmarkSelectedItems": "Unmark selected items"
+  "widgetChartUnmarkSelectedItems": "Unmark selected items",
+  "widgetAsyncJobPanelTitle": "Data export jobs"
 }

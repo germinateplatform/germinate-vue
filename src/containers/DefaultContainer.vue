@@ -7,9 +7,6 @@
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true />
-      <!-- <b-navbar-nav class="d-md-down-none">
-        <b-nav-item class="px-3">Settings</b-nav-item>
-      </b-navbar-nav> -->
       <b-navbar-nav class="ml-auto">
         <b-nav-form>
           <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
@@ -20,10 +17,9 @@
         <UserSettingsDropdown />
       </b-navbar-nav>
       <div>
-        <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" />
+        <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" @click.native="updateAside" />
         <b-badge pill variant="info" class="async-badge" v-if="asyncJobUuids && asyncJobUuids.length > 0">{{ asyncJobUuids.length }}</b-badge>
       </div>
-      <!--<AsideToggler class="d-lg-none" mobile />-->
     </AppHeader>
     <div class="app-body">
       <AppSidebar fixed>
@@ -34,8 +30,6 @@
         <SidebarMinimizer/>
       </AppSidebar>
       <main class="main">
-        <!-- TODO: Replace this with i18n content or remove it -->
-        <!-- <Breadcrumb :list="list"/> -->
         <div class="container-fluid my-4">
           <div class="mb-3 d-flex align-items-center">
             <b-img width="48" height="48" :src="getImageSrc('crop.svg')"></b-img>
@@ -46,12 +40,10 @@
         </div>
       </main>
       <AppAside off-canvas>
-        <!--aside-->
         <DefaultAside ref="aside" />
       </AppAside>
     </div>
     <TheFooter>
-      <!--footer-->
       <div class="ml-auto">
         <a href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>
         <span class="ml-1">&copy; {{ new Date().getFullYear() }} The James Hutton Institute.</span>
@@ -149,6 +141,11 @@ export default {
                   name: this.$t('menuGenotypicMaps'),
                   url: '/data/genotypes/maps',
                   icon: 'mdi mdi-18px mdi-reorder-vertical'
+                },
+                {
+                  name: this.$t('menuGenotypicDataExport'),
+                  url: '/data/export/genotype',
+                  icon: 'mdi mdi-18px mdi-dna'
                 }
               ]
             },
@@ -215,8 +212,12 @@ export default {
     toggleAside: function () {
       if (!document.body.classList.contains('aside-menu-show')) {
         this.$refs.asideToggler.toggle()
-        this.$refs.aside.updateAsyncJobs()
       }
+
+      this.updateAside()
+    },
+    updateAside: function () {
+      this.$nextTick(() => this.$refs.aside.updateAsyncJobs(true))
     }
   },
   destroyed: function () {
