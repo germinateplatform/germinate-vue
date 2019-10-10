@@ -7,7 +7,7 @@
                :tableActions="tableActions"
                itemType="markers"
                ref="markerTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
       <!-- LINKS -->
       <router-link slot="markerId" slot-scope="props" :to="'/data/genotype/marker/' + props.row.markerId">{{ props.row.markerId }}</router-link>
       <router-link slot="markerName" slot-scope="props" :to="'/data/genotype/marker/' + props.row.markerId">{{ props.row.markerName }}</router-link>

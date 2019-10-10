@@ -219,6 +219,18 @@ const router = new Router({
           ]
         },
         {
+          path: 'search',
+          name: 'search',
+          component: () => import('@/views/Search.vue'),
+          beforeEnter: requireAuth
+        },
+        {
+          path: 'search/:searchTerm',
+          name: 'search-query',
+          component: () => import('@/views/Search.vue'),
+          beforeEnter: requireAuth
+        },
+        {
           path: 'groups',
           name: 'groups',
           component: () => import('@/views/Groups.vue'),

@@ -8,7 +8,7 @@
                :tableActions="tableActions"
                itemType="germplasm"
                ref="germplasmTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
       <!-- LINKS -->
       <router-link slot="germplasmId" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmId }}</router-link>
       <router-link slot="germplasmName" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmName }}</router-link>
@@ -89,9 +89,17 @@ export default {
       type: Function,
       default: null
     },
+    orderBy: {
+      type: String,
+      default: null
+    },
     selectable: {
       type: Boolean,
       default: false
+    },
+    tableMode: {
+      type: String,
+      default: 'base'
     },
     tableActions: {
       type: Array,
@@ -151,9 +159,16 @@ export default {
       name: 'pdci',
       type: Number
     }, {
+      name: 'distance',
+      type: undefined
+    }, {
       name: 'marked',
       type: undefined
     }]
+
+    if (this.tableMode !== 'distance') {
+      columns = columns.filter(c => c.name !== 'distance')
+    }
 
     if (this.selectable === true) {
       columns.unshift({
@@ -162,66 +177,75 @@ export default {
       })
     }
 
-    return {
-      options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
-        idColumn: 'germplasmId',
-        tableName: 'germplasm',
-        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'location', 'elevation', 'countryName', 'collDate', 'pdci'],
-        filterable: [],
-        headings: {
-          selected: '',
-          germplasmId: () => this.$t('tableColumnGermplasmId'),
-          germplasmGid: () => this.$t('tableColumnGermplasmGeneralIdentifier'),
-          germplasmName: () => this.$t('tableColumnGermplasmName'),
-          germplasmNumber: () => this.$t('tableColumnGermplasmNumber'),
-          germplasmPuid: () => this.$t('tableColumnGermplasmPuid'),
-          entityTypeName: () => this.$t('tableColumnEntityType'),
-          biologicalStatusName: () => this.$t('tableColumnBiologicalStatus'),
-          synonyms: () => this.$t('tableColumnSynonyms'),
-          collectorNumber: () => this.$t('tableColumnCollectorNumber'),
-          genus: () => this.$t('tableColumnGenus'),
-          species: () => this.$t('tableColumnSpecies'),
-          subtaxa: () => this.$t('tableColumnSubtaxa'),
-          location: () => this.$t('tableColumnGermplasmLocation'),
-          elevation: () => this.$t('tableColumnElevation'),
-          countryName: () => this.$t('tableColumnCountryName'),
-          collDate: () => this.$t('tableColumnColldate'),
-          pdci: () => this.$t('tableColumnPdci'),
-          imageCount: () => '',
-          marked: () => ''
-        },
-        columnsClasses: {
-          germplasmId: 'text-right',
-          elevation: 'text-right',
-          genus: 'font-italic',
-          species: 'font-italic',
-          subtaxa: 'font-italic'
-        },
-        additionalMarkingOptions: [{
-          key: 'mark-parents',
-          text: () => 'Mark entity parents',
-          icon: 'mdi-chevron-up-box',
-          callback: (item) => this.markParents(item)
-        }, {
-          key: 'unmark-parents',
-          text: () => 'Unark entity parents',
-          icon: 'mdi-chevron-up-box-outline',
-          callback: (item) => this.unmarkParents(item)
-        }, {
-          key: 'mark-children',
-          text: () => 'Mark entity children',
-          icon: 'mdi-chevron-down-box',
-          callback: (item) => this.markChildren(item)
-        }, {
-          key: 'unmark-children',
-          text: () => 'Unark entity children',
-          icon: 'mdi-chevron-down-box-outline',
-          callback: (item) => this.unmarkChildren(item)
-        }]
+    var options = {
+      requestData: (data, callback) => {
+        return this.getData(data, callback)
       },
+      idColumn: 'germplasmId',
+      tableName: 'germplasm',
+      sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'location', 'elevation', 'countryName', 'collDate', 'pdci'],
+      filterable: [],
+      headings: {
+        selected: '',
+        germplasmId: () => this.$t('tableColumnGermplasmId'),
+        germplasmGid: () => this.$t('tableColumnGermplasmGeneralIdentifier'),
+        germplasmName: () => this.$t('tableColumnGermplasmName'),
+        germplasmNumber: () => this.$t('tableColumnGermplasmNumber'),
+        germplasmPuid: () => this.$t('tableColumnGermplasmPuid'),
+        entityTypeName: () => this.$t('tableColumnEntityType'),
+        biologicalStatusName: () => this.$t('tableColumnBiologicalStatus'),
+        synonyms: () => this.$t('tableColumnSynonyms'),
+        collectorNumber: () => this.$t('tableColumnCollectorNumber'),
+        genus: () => this.$t('tableColumnGenus'),
+        species: () => this.$t('tableColumnSpecies'),
+        subtaxa: () => this.$t('tableColumnSubtaxa'),
+        location: () => this.$t('tableColumnGermplasmLocation'),
+        elevation: () => this.$t('tableColumnElevation'),
+        countryName: () => this.$t('tableColumnCountryName'),
+        collDate: () => this.$t('tableColumnColldate'),
+        pdci: () => this.$t('tableColumnPdci'),
+        imageCount: () => '',
+        distance: () => this.$t('tableColumnGermplasmDistance'),
+        marked: () => ''
+      },
+      columnsClasses: {
+        germplasmId: 'text-right',
+        elevation: 'text-right',
+        genus: 'font-italic',
+        species: 'font-italic',
+        subtaxa: 'font-italic'
+      },
+      additionalMarkingOptions: [{
+        key: 'mark-parents',
+        text: () => 'Mark entity parents',
+        icon: 'mdi-chevron-up-box',
+        callback: (item) => this.markParents(item)
+      }, {
+        key: 'unmark-parents',
+        text: () => 'Unark entity parents',
+        icon: 'mdi-chevron-up-box-outline',
+        callback: (item) => this.unmarkParents(item)
+      }, {
+        key: 'mark-children',
+        text: () => 'Mark entity children',
+        icon: 'mdi-chevron-down-box',
+        callback: (item) => this.markChildren(item)
+      }, {
+        key: 'unmark-children',
+        text: () => 'Unark entity children',
+        icon: 'mdi-chevron-down-box-outline',
+        callback: (item) => this.unmarkChildren(item)
+      }]
+    }
+
+    if (this.orderBy !== null) {
+      options.orderBy = {
+        column: this.orderBy
+      }
+    }
+
+    return {
+      options: options,
       columns: columns
     }
   },

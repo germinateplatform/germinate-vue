@@ -39,7 +39,7 @@
           </template>
           <b-dropdown-item @click="markAllItems(true)"><i class="mdi mdi-18px mdi-checkbox-multiple-marked" />Mark all</b-dropdown-item>
           <b-dropdown-item @click="markAllItems(false)"><i class="mdi mdi-18px mdi-checkbox-multiple-blank-outline" />Unmark all</b-dropdown-item>
-          <b-dropdown-item v-if="token"><i class="mdi mdi-18px mdi-group" />Create group</b-dropdown-item>
+          <b-dropdown-item @click="createGroup" v-if="token" :disabled="!markedIds[itemType] || markedIds[itemType].length < 1"><i class="mdi mdi-18px mdi-group" />Create group</b-dropdown-item>
           <template v-if="tableOptions.additionalMarkingOptions">
             <b-dropdown-divider />
             <b-dropdown-item v-for="item in tableOptions.additionalMarkingOptions" :key="item.key" @click="item.callback(null)">
@@ -219,6 +219,9 @@ export default {
     VueContext
   },
   methods: {
+    createGroup: function () {
+      // TODO
+    },
     onDownloadTableClicked: function () {
       if (this.downloadTable !== null) {
         this.downloadTable(this.currentRequestData, result => {
@@ -234,9 +237,6 @@ export default {
       if (this.tableOptions.additionalMarkingOptions) {
         this.$refs.menu.open(event, row)
       }
-    },
-    onContextClicked: function (row) {
-      console.log(row)
     },
     getRowClass: function (row) {
       if (this.selectedItems.indexOf(row[this.tableOptions.idColumn]) !== -1) {

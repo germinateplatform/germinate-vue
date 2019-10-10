@@ -4,7 +4,7 @@
                :columns="columns"
                :filterOn="filterOn"
                ref="traitTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
       <!-- LINKS -->
       <span slot="synonyms" slot-scope="props" v-if="props.row.synonyms">{{ props.row.synonyms.join(', ') }}</span>
     </BaseTable>

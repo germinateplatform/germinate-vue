@@ -38,6 +38,8 @@ export default {
       return this.authAjax({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGermplasmTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
       return this.authAjax({ url: 'germplasm/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGroupGermplasmTable: function (groupId, queryData, onSuccess, onError) {
@@ -45,6 +47,8 @@ export default {
       return this.authAjax({ url: `group/${groupId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGroupGermplasmTableIds: function (groupId, queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
       return this.authAjax({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostMarkerTable: function (queryData, onSuccess, onError) {
@@ -52,6 +56,8 @@ export default {
       return this.authAjax({ url: 'marker/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostMarkerTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
       return this.authAjax({ url: 'marker/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGroupMarkerTable: function (groupId, queryData, onSuccess, onError) {
@@ -59,6 +65,8 @@ export default {
       return this.authAjax({ url: `group/${groupId}/marker`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGroupMarkerTableIds: function (groupId, queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
       return this.authAjax({ url: `group/${groupId}/marker/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTraitTable: function (queryData, onSuccess, onError) {
@@ -73,6 +81,20 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'location/distance/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostLocationDistanceTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
+      return this.authAjax({ url: 'location/distance/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGermplasmDistanceTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'germplasm/distance/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGermplasmDistanceTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
+      return this.authAjax({ url: 'germplasm/distance/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostLocationPolygonTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       if (queryData.orderBy === 'distance') {
@@ -81,10 +103,23 @@ export default {
       }
       return this.authAjax({ url: 'location/polygon/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGermplasmPolygonTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      if (queryData.orderBy === 'distance') {
+        delete queryData.orderBy
+        delete queryData.ascending
+      }
+      return this.authAjax({ url: 'germplasm/polygon/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostLocationPolygonTableIds: function (queryData, onSuccess, onError) {
       delete queryData.orderBy
       delete queryData.ascending
       return this.authAjax({ url: 'location/polygon/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGermplasmPolygonTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
+      return this.authAjax({ url: 'germplasm/polygon/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostLocationTableIds: function (queryData, onSuccess, onError) {
       delete queryData.orderBy
@@ -96,6 +131,8 @@ export default {
       return this.authAjax({ url: `group/${groupId}/location`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGroupLocationTableIds: function (groupId, queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
       return this.authAjax({ url: `group/${groupId}/location/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiGetMap: function (mapId, onSuccess, onError) {
@@ -128,6 +165,8 @@ export default {
       return this.authAjax({ url: 'dataset/data/trial', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTrialsDataTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
       return this.authAjax({ url: 'dataset/data/trial/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostMapsTable: function (queryData, onSuccess, onError) {
@@ -147,6 +186,8 @@ export default {
       return this.authAjax({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
       return this.authAjax({ url: 'dataset/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTableExport: function (queryData, tableType, onSuccess, onError) {

@@ -5,7 +5,7 @@
                :getIds="getIds"
                :filterOn="filterOn"
                ref="datasetTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
       <template slot="datasetName" slot-scope="props">
         <a target="_blank" :href="props.row.hyperlink" v-if="props.row.hyperlink && props.row.isExternal">{{ props.row.datasetName }} <i class="mdi mdi-18px mdi-open-in-new fix-alignment" /></a>
         <span v-else>{{ props.row.datasetName }}</span>

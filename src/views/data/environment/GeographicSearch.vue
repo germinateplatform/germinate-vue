@@ -1,28 +1,44 @@
 <template>
   <div>
-    <h1>Geographic search</h1>
+    <h1>{{ $t('pageGeographicSearchTitle') }}</h1>
     <b-card no-body class="map-tabs">
       <b-tabs card
               active-nav-item-class="text-primary"
               v-model="tabIndex">
         <b-tab active @click="updatePointMap">
           <template v-slot:title>
-            <i class="mdi mdi-18px mdi-crosshairs-gps" /> Point search
+            <i class="mdi mdi-18px mdi-crosshairs-gps" /> {{ $t('pageGeographicSearchPointSearchTitle') }}
           </template>
           <PointSearchMap ref="pointMap" v-on:map-loaded="updatePolygonMap" />
           <b-card-body v-if="point">
-            <h2>Locations ordered by distance</h2>
-            <LocationTable tableMode="distance" :getData="getLocationData" :getIds="getLocationIds" ref="pointTable" orderBy="distance" />
+            <Collapse :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body>
+              <template v-slot:default="slotProps">
+                <LocationTable tableMode="distance" :getData="getLocationData" :getIds="getLocationIds" ref="locationPointTable" orderBy="distance" v-on:data-changed="slotProps.update"/>
+              </template>
+            </Collapse>
+            <Collapse :title="$t('pageGeographicSearchPointGermplasmResultTitle')" :visible="false" class="mb-0" no-body>
+              <template v-slot:default="slotProps">
+                <GermplasmTable tableMode="distance" :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPointTable" orderBy="distance"  v-on:data-changed="slotProps.update"/>
+              </template>
+            </Collapse>
           </b-card-body>
         </b-tab>
         <b-tab @click="updatePolygonMap">
           <template v-slot:title>
-            <i class="mdi mdi-18px mdi-vector-polygon" /> Polygon search
+            <i class="mdi mdi-18px mdi-vector-polygon" /> {{ $t('pageGeographicSearchPolygonSearchTitle') }}
           </template>
           <LocationMap selectionMode="polygon" :locations="polygonLocations" ref="polygonMap" />
           <b-card-body v-if="polygons && polygons.length > 0">
-            <h2>Locations within the polygons</h2>
-            <LocationTable :getData="getLocationData" :getIds="getLocationIds" ref="polygonTable" />
+            <Collapse :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body>
+              <template v-slot:default="slotProps">
+                <LocationTable :getData="getLocationData" :getIds="getLocationIds" ref="locationPolygonTable"  v-on:data-changed="slotProps.update"/>
+              </template>
+            </Collapse>
+            <Collapse :title="$t('pageGeographicSearchPolygonGermplasmResultTitle')" :visible="false" class="mb-0" no-body>
+              <template v-slot:default="slotProps">
+                <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPolygonTable" v-on:data-changed="slotProps.update"/>
+              </template>
+            </Collapse>
           </b-card-body>
         </b-tab>
         <template v-slot:tabs-end>
@@ -34,6 +50,8 @@
 </template>
 
 <script>
+import Collapse from '@/components/util/Collapse'
+import GermplasmTable from '@/components/tables/GermplasmTable'
 import LocationTable from '@/components/tables/LocationTable'
 import PointSearchMap from '@/components/map/PointSearchMap'
 import LocationMap from '@/components/map/LocationMap'
@@ -48,11 +66,23 @@ export default {
     }
   },
   components: {
+    Collapse,
+    GermplasmTable,
     LocationTable,
     PointSearchMap,
     LocationMap
   },
   methods: {
+    getGermplasmData: function (data, callback) {
+      if (this.tabIndex === 0) {
+        data.latitude = this.point.lat
+        data.longitude = this.point.lng
+        return this.apiPostGermplasmDistanceTable(data, callback)
+      } else {
+        data.polygons = this.polygons
+        return this.apiPostGermplasmPolygonTable(data, callback)
+      }
+    },
     getLocationData: function (data, callback) {
       if (this.tabIndex === 0) {
         data.latitude = this.point.lat
@@ -71,9 +101,16 @@ export default {
         return this.apiPostLocationPolygonTable(data, callback)
       }
     },
+    getGermplasmIds: function (data, callback) {
+      if (this.tabIndex === 0) {
+        return this.apiPostGermplasmDistanceTableIds(data, callback)
+      } else {
+        return this.apiPostGermplasmPolygonTableIds(data, callback)
+      }
+    },
     getLocationIds: function (data, callback) {
       if (this.tabIndex === 0) {
-        return this.apiPostLocationTableIds(data, callback)
+        return this.apiPostLocationDistanceTableIds(data, callback)
       } else {
         return this.apiPostLocationPolygonTableIds(data, callback)
       }
@@ -83,7 +120,10 @@ export default {
         this.point = this.$refs.pointMap.markAndGetCenter()
 
         if (this.point !== null) {
-          this.$nextTick(() => this.$refs.pointTable.refresh())
+          this.$nextTick(() => {
+            this.$refs.locationPointTable.refresh()
+            this.$refs.germplasmPointTable.refresh()
+          })
         } else {
           this.$bvToast.toast('Please select a point by clicking on the map.', {
             title: 'No point selected',
@@ -96,7 +136,10 @@ export default {
         this.polygons = this.$refs.polygonMap.getPolygons()
 
         if (this.polygons !== null && this.polygons.length > 0) {
-          this.$nextTick(() => this.$refs.polygonTable.refresh())
+          this.$nextTick(() => {
+            this.$refs.locationPolygonTable.refresh()
+            this.$refs.germplasmPolygonTable.refresh()
+          })
         } else {
           this.$bvToast.toast('Please create a polygon by clicking on the map.', {
             title: 'No polygon defined',

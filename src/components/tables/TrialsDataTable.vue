@@ -6,7 +6,7 @@
                :filterOn="filterOn"
                itemType="germplasm"
                ref="trialsDataTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
       <router-link slot="germplasmId" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmId }}</router-link>
       <router-link slot="germplasmName" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmName }}</router-link>
       <router-link slot="germplasmGid" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmGid }}</router-link>

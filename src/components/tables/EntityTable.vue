@@ -4,7 +4,7 @@
                :columns="columns"
                :filterOn="filterOn"
                ref="entityTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
       <router-link slot="entityParentId" slot-scope="props" :to="'/data/germplasm/' + props.row.entityParentId">{{ props.row.entityParentId }}</router-link>
       <router-link slot="entityParentGid" slot-scope="props" :to="'/data/germplasm/' + props.row.entityParentId">{{ props.row.entityParentGid }}</router-link>
       <router-link slot="entityParentName" slot-scope="props" :to="'/data/germplasm/' + props.row.entityParentId">{{ props.row.entityParentName }}</router-link>

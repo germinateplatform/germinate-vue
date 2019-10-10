@@ -7,7 +7,7 @@
                :tableActions="tableActions"
                itemType="locations"
                ref="locationTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
       <template slot="locationName" slot-scope="props">
         <router-link to="/data/datasets" @click.native="navigateToDatasets(props.row)" event="" v-if="props.row.locationType === 'datasets'">{{ props.row.locationName }}</router-link>
         <router-link to="/data/germplasm" @click.native="navigateToGermplasm(props.row)" event="" v-else-if="props.row.locationType === 'collectingsites'">{{ props.row.locationName }}</router-link>
@@ -126,7 +126,7 @@ export default {
         locationLongitude: () => this.$t('tableColumnLocationLongitude'),
         locationElevation: () => this.$t('tableColumnLocationElevation'),
         countryName: () => this.$t('tableColumnLocationCountryName'),
-        distance: () => 'Distance',
+        distance: () => this.$t('tableColumnLocationDistance'),
         marked: ''
       },
       columnsClasses: {

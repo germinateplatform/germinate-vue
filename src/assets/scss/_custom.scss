@@ -113,6 +113,11 @@ i.mdi.fix-alignment {
   vertical-align: text-top;
 }
 
+.input-group input,
+.input-group select {
+  height: auto;
+}
+
 .mdi-heading {
   display: flex;
   align-items: center;

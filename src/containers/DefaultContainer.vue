@@ -180,6 +180,11 @@ export default {
                   name: this.$t('menuLocations'),
                   url: '/data/environment/locations',
                   icon: 'mdi mdi-map'
+                },
+                {
+                  name: this.$t('menuGeographicSearch'),
+                  url: '/data/environment/geographic-search',
+                  icon: 'mdi mdi-map-search'
                 }
               ]
             }

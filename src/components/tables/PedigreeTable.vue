@@ -4,7 +4,7 @@
                :columns="columns"
                :filterOn="filterOn"
                ref="pedigreeTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
     </BaseTable>
   </div>
 </template>

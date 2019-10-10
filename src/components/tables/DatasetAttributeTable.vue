@@ -4,7 +4,7 @@
                :columns="columns"
                :filterOn="filterOn"
                ref="datasetAttributeTable"
-               v-on:data-changed="(request, data) => $emit('data-changed', request, data)">
+               v-on="$listeners">
       <span slot="attributeType" slot-scope="props" v-if="props.row.attributeType">
         <i :class="'mdi mdi-18px fix-alignment ' + dataTypes[props.row.attributeType].icon" :style="`color: ${dataTypes[props.row.attributeType].color()};`"/>
         <span> {{ dataTypes[props.row.attributeType].text() }}</span>

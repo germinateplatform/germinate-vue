@@ -354,9 +354,4 @@ export default {
     overflow-y: auto;
     overflow-x: hidden;
 }
-
-.input-group input,
-.input-group select {
-  height: auto;
-}
 </style>

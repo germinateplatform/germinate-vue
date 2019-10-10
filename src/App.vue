@@ -58,6 +58,7 @@ export default {
     EventBus.$on('on-print', this.print)
     EventBus.$on('show-loading', this.toggleLoading)
 
+    // Load the custom .css file provided specifically for this project
     let file = document.createElement('link')
     file.rel = 'stylesheet'
     file.href = this.baseUrl + 'settings/css'
