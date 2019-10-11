@@ -335,6 +335,7 @@
   "tableColumnAttributeDatasetDescription": "Dataset description",
   "tooltipClear": "Clear",
   "tooltipDelete": "Delete",
+  "tooltipTableFilterInvalid": "Incompatible data types (query ignores this filter)",
   "widgetHelpTitle": "Help",
   "widgetTableMultiSelectInfo": "Use the checkboxes to select one or more rows.",
   "widgetSelectedDatasetsTitle": "Selected datasets",

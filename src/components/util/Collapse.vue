@@ -2,9 +2,9 @@
   <b-card no-body>
     <b-card-header header-tag="header" class="p-2 collapse-header" role="tab" @click="toggle">
       <div class="d-flex flex-row">
-        <strong>{{ title }}</strong>
+        <strong><i :class="`mdi mdi-18px ${icon} fix-alignment text-primary`" v-if="icon"/> {{ title }}</strong>
         <span class="ml-auto">
-          <b-badge pill variant="info" v-if="!loading && count">{{ count }}</b-badge>
+          <b-badge :variant="count > 0 ? 'info' : null" v-if="!loading && count !== undefined">{{ count }}</b-badge>
           <b-progress :value="100" height="20px" class="collapse-loading" variant="primary" striped animated v-if="loading" />
         </span>
       </div>
@@ -26,6 +26,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    icon: {
+      type: String,
+      default: null
     },
     visible: {
       type: Boolean,

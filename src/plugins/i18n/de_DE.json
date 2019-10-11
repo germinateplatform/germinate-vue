@@ -334,6 +334,7 @@
   "tableTooltipDatasetAttributes": "Attribute",
   "tooltipClear": "Leeren",
   "tooltipDelete": "Löschen",
+  "tooltipTableFilterInvalid": "Inkompatible Datentypen (Anfrage ignoriert diesen Filter)",
   "widgetHelpTitle": "Hilfe",
   "widgetTableMultiSelectInfo": "Nutze die Checkboxes um eine oder mehrere Reihen auszuwählen.",
   "widgetSelectedDatasetsTitle": "Ausgewählte Datensätze",

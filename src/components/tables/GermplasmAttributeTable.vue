@@ -2,7 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                ref="germplasmAttributeTable"
                v-on="$listeners">
       <span slot="attributeType" slot-scope="props" v-if="props.row.attributeType">
@@ -19,6 +19,10 @@ import BaseTable from '@/components/tables/BaseTable'
 export default {
   name: 'GermplasmAttributeTable',
   props: {
+    downloadTable: {
+      type: Function,
+      default: null
+    },
     filterOn: {
       type: Array,
       default: null
@@ -31,13 +35,13 @@ export default {
   data: function () {
     var columns = [{
       name: 'germplasmId',
-      type: Number
+      type: undefined
     }, {
       name: 'germplasmGid',
-      type: String
+      type: undefined
     }, {
       name: 'germplasmName',
-      type: String
+      type: undefined
     }, {
       name: 'attributeName',
       type: String

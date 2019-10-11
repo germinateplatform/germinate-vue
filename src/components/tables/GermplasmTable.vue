@@ -2,10 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :getIds="getIds"
-               :downloadTable="downloadTable"
-               :filterOn="filterOn"
-               :tableActions="tableActions"
+               v-bind="$props"
                itemType="germplasm"
                ref="germplasmTable"
                v-on="$listeners">
@@ -18,14 +15,14 @@
       <span slot="entityTypeName" slot-scope="props" class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityTypeName].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityTypeName].color()};`" /> {{ entityTypes[props.row.entityTypeName].text() }}</span>
 
       <span slot="synonyms" slot-scope="props" v-if="props.row.synonyms">{{ props.row.synonyms.join(', ') }}</span>
-      <span slot="elevation" slot-scope="props" v-if="props.row.elevation">{{ props.row.elevation.toFixed(2) }}</span>
+      <span slot="elevation" slot-scope="props" v-if="props.row.elevation !== undefined">{{ props.row.elevation.toFixed(2) }}</span>
 
       <!-- Country flags -->
       <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryCode }}</span></span>
       <!-- Formatted date -->
       <span slot="collDate" slot-scope="props" v-if="props.row.collDate">{{ props.row.collDate | toDate }}</span>
       <!-- Image preview -->
-      <div slot="imageCount" slot-scope="props" class="table-image" v-if="props.row.imageCount && props.row.imageCount > 0">
+      <div slot="imageCount" slot-scope="props" class="table-image" v-if="props.row.imageCount !== undefined && props.row.imageCount > 0">
         <div :id="`table-image-popover-${props.row.germplasmId}`">
           <i class="mdi mdi-18px mdi-camera"/> <span> {{ props.row.imageCount }}</span>
         </div>
@@ -107,64 +104,66 @@ export default {
     }
   },
   data: function () {
-    var columns = [{
-      name: 'germplasmId',
-      type: Number
-    }, {
-      name: 'germplasmName',
-      type: String
-    }, {
-      name: 'germplasmNumber',
-      type: String
-    }, {
-      name: 'germplasmPuid',
-      type: String
-    }, {
-      name: 'entityTypeName',
-      type: 'entityType'
-    }, {
-      name: 'biologicalStatusName',
-      type: String
-    }, {
-      name: 'synonyms',
-      type: String
-    }, {
-      name: 'collectorNumber',
-      type: String
-    }, {
-      name: 'genus',
-      type: String
-    }, {
-      name: 'species',
-      type: String
-    }, {
-      name: 'subtaxa',
-      type: String
-    }, {
-      name: 'location',
-      type: String
-    }, {
-      name: 'elevation',
-      type: Number
-    }, {
-      name: 'countryName',
-      type: String
-    }, {
-      name: 'collDate',
-      type: Date
-    }, {
-      name: 'imageCount',
-      type: Number
-    }, {
-      name: 'pdci',
-      type: Number
-    }, {
-      name: 'distance',
-      type: undefined
-    }, {
-      name: 'marked',
-      type: undefined
-    }]
+    var columns = [
+      {
+        name: 'germplasmId',
+        type: Number
+      }, {
+        name: 'germplasmName',
+        type: String
+      }, {
+        name: 'germplasmNumber',
+        type: String
+      }, {
+        name: 'germplasmPuid',
+        type: String
+      }, {
+        name: 'entityTypeName',
+        type: 'entityType'
+      }, {
+        name: 'biologicalStatusName',
+        type: String
+      }, {
+        name: 'synonyms',
+        type: String
+      }, {
+        name: 'collectorNumber',
+        type: String
+      }, {
+        name: 'genus',
+        type: String
+      }, {
+        name: 'species',
+        type: String
+      }, {
+        name: 'subtaxa',
+        type: String
+      }, {
+        name: 'location',
+        type: String
+      }, {
+        name: 'elevation',
+        type: Number
+      }, {
+        name: 'countryName',
+        type: String
+      }, {
+        name: 'collDate',
+        type: Date
+      }, {
+        name: 'imageCount',
+        type: Number
+      }, {
+        name: 'pdci',
+        type: Number
+      }, {
+        name: 'distance',
+        type: undefined
+      }, {
+        name: 'marked',
+        type: undefined
+      }
+    ]
 
     if (this.tableMode !== 'distance') {
       columns = columns.filter(c => c.name !== 'distance')

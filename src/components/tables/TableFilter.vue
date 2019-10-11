@@ -3,7 +3,7 @@
     <div>
       <div v-if="tempFilter" class="mb-2">
         <span v-for="(filter, index) in tempFilter" :key="filter.column.name">
-          <b-badge variant="info" class="mr-2" >
+          <b-badge :variant="isValidFilter(filter) ? 'info' : 'danger'" class="mr-2" v-b-tooltip="isValidFilter(filter) ? null : $t('tooltipTableFilterInvalid')" >
             {{ "'" + texts[filter.column.name]() + "' " + comparators[filter.comparator].text() + " '" + filter.values.filter(f => f !== null).join(", ") + "'" }}
           </b-badge>
           <b-badge v-if="index < tempFilter.length - 1" class="mr-2">
@@ -24,8 +24,8 @@
         <b-button v-if="filter && filter.length > 0" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter"/>
       </b-button-group>
 
-      <b-modal :id="'table-filter-modal-' + id" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false)" @show="init">
-        <b-form v-on:submit.prevent="setFilter(true)">
+      <b-modal :id="'table-filter-modal-' + id" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false, true)" @show="init">
+        <b-form v-on:submit.prevent="setFilter(true, true)">
           <div v-for="(f, index) in tempFilter" :key="'filter-' + f.column.name + '-' + index">
             <b-form-group :disabled="f.canBeChanged === false">
               <b-input-group class="mb-3">
@@ -169,22 +169,30 @@ export default {
   },
   watch: {
     filterOn: function (newValue, oldValue) {
-      this.resetFilter()
+      this.resetFilter(false)
     }
   },
   computed: {
     // Only get the columns that have a text that isn't empty
     getColumns: function () {
       return this.columns.filter(c => {
-        if (c.type === undefined) {
-          return false
-        } else {
-          return this.texts[c.name] ? (this.texts[c.name]() !== '') : false
-        }
+        var show = this.texts[c.name] ? (this.texts[c.name]() !== '') : false
+        show = show && c.type !== undefined
+        show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
+        return show
       })
     }
   },
   methods: {
+    isValidFilter: function (filter) {
+      if (filter.column.type === Number) {
+        return filter.values.filter(v => isNaN(v)).length === 0
+      } else if (filter.column.type === Date) {
+        return filter.values.filter(v => isNaN(new Date(v).getTime())).length === 0
+      } else {
+        return true
+      }
+    },
     getDataTypeOptions: function () {
       return Object.keys(this.dataTypes).map(l => {
         return {
@@ -235,7 +243,7 @@ export default {
     isType: function (filter, type) {
       return filter.column.type === type
     },
-    setFilter: function (hideModal) {
+    setFilter: function (hideModal, trigger) {
       this.filter = this.tempFilter.filter(f => {
         return f.values.length > 0 && f.values[0] !== undefined
       })
@@ -249,23 +257,32 @@ export default {
           values: f.values
         }
 
-        if (f.column.type === 'dataType') {
-          newFilter.values = newFilter.values.filter(v => v !== null).map(v => this.dataTypes[v].databaseValue)
+        if (f.column.type === 'datatype') {
+          newFilter.values = newFilter.values.filter(v => v !== null).map(v => {
+            if (this.dataTypes[v].databaseValue) {
+              return this.dataTypes[v].databaseValue
+            } else {
+              return v
+            }
+          })
         }
 
-        this.targetFilter.push(newFilter)
+        if (this.isValidFilter(f)) {
+          this.targetFilter.push(newFilter)
+        }
       })
 
-      this.$emit('on-filter-changed', this.targetFilter)
+      this.$emit('on-filter-changed', {
+        filter: this.targetFilter,
+        triggerUpdate: trigger
+      })
 
       if (hideModal) {
         this.$refs.tableFilterModal.hide()
       }
     },
     addFilter: function () {
-      var validColumns = this.columns.filter(c => {
-        return this.texts[c.name] ? (this.texts[c.name]() !== '') : false
-      })
+      var validColumns = this.getColumns
       this.tempFilter.push({
         column: validColumns[0],
         comparator: 'equals',
@@ -317,26 +334,30 @@ export default {
           values: f.values
         })
       })
-      this.$emit('on-filter-changed', this.targetFilter)
+      this.$emit('on-filter-changed', {
+        filter: this.targetFilter,
+        triggerUpdate: true
+      })
     },
     init: function () {
       if (this.tempFilter.length < 1) {
         this.addFilter()
       }
     },
-    resetFilter: function () {
+    resetFilter: function (trigger) {
       this.tempFilter = []
       if (this.filterOn) {
         this.filterOn.forEach(f => {
           this.tempFilter.push(f)
         })
       }
-      this.setFilter(false)
+
+      this.setFilter(false, trigger)
     }
   },
   mounted: function () {
     if (this.filterOn) {
-      this.resetFilter()
+      this.resetFilter(true)
     }
   }
 }

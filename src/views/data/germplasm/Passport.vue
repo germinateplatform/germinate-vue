@@ -91,7 +91,8 @@ export default {
       germplasm: null,
       germplasmTableData: null,
       pedigreeFilter: null,
-      entityFilter: null
+      entityFilter: null,
+      currentGermplasmId: null
     }
   },
   props: {
@@ -116,13 +117,13 @@ export default {
       console.log('SHOW PDCI')
     },
     getGermplasmAttributeData: function (data, callback) {
-      return this.apiPostGermplasmAttributeTable(this.germplasmId, data, callback)
+      return this.apiPostGermplasmAttributeTable(this.currentGermplasmId, data, callback)
     },
     getDatasetData: function (data, callback) {
-      return this.apiPostGermplasmDatasetTable(this.germplasmId, data, callback)
+      return this.apiPostGermplasmDatasetTable(this.currentGermplasmId, data, callback)
     },
     getGroupData: function (data, callback) {
-      return this.apiPostGermplasmGroupTable(this.germplasmId, data, callback)
+      return this.apiPostGermplasmGroupTable(this.currentGermplasmId, data, callback)
     },
     getEntityData: function (data, callback) {
       return this.apiPostEntityTable(data, callback)
@@ -135,7 +136,7 @@ export default {
         column: 'imageForeignId',
         comparator: 'equals',
         operator: 'and',
-        values: [this.germplasmId]
+        values: [this.currentGermplasmId]
       }, {
         column: 'imageRefTable',
         comparator: 'equals',
@@ -164,15 +165,15 @@ export default {
       return parts.filter(p => p !== null).join(' / ')
     },
     getMarkedStyle: function () {
-      const isMarked = this.markedIds.germplasm.indexOf(this.germplasmId) !== -1
+      const isMarked = this.markedIds.germplasm.indexOf(this.currentGermplasmId) !== -1
       return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
     },
     onToggleMarked: function () {
-      const isMarked = this.markedIds.germplasm.indexOf(this.germplasmId) !== -1
+      const isMarked = this.markedIds.germplasm.indexOf(this.currentGermplasmId) !== -1
       if (isMarked) {
-        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [this.germplasmId] })
+        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [this.currentGermplasmId] })
       } else {
-        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [this.germplasmId] })
+        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [this.currentGermplasmId] })
       }
     }
   },
@@ -180,7 +181,9 @@ export default {
     var urlParam = this.$route.params.germplasmId
 
     if (urlParam) {
-      this.germplasmId = parseInt(urlParam)
+      this.currentGermplasmId = parseInt(urlParam)
+    } else {
+      this.currentGermplasmId = this.germplasmId
     }
 
     this.pedigreeFilter = [{
@@ -190,7 +193,7 @@ export default {
       },
       comparator: 'equals',
       operator: 'or',
-      values: [this.germplasmId],
+      values: [this.currentGermplasmId],
       canBeChanged: false
     }, {
       column: {
@@ -199,7 +202,7 @@ export default {
       },
       comparator: 'equals',
       operator: 'or',
-      values: [this.germplasmId],
+      values: [this.currentGermplasmId],
       canBeChanged: false
     }]
 
@@ -210,7 +213,7 @@ export default {
       },
       comparator: 'equals',
       operator: 'or',
-      values: [this.germplasmId],
+      values: [this.currentGermplasmId],
       canBeChanged: false
     }, {
       column: {
@@ -219,12 +222,12 @@ export default {
       },
       comparator: 'equals',
       operator: 'or',
-      values: [this.germplasmId],
+      values: [this.currentGermplasmId],
       canBeChanged: false
     }]
   },
   mounted: function () {
-    this.apiGetGermplasmMcpd(this.germplasmId, result => {
+    this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
       this.germplasm = result
     })
 
@@ -235,7 +238,7 @@ export default {
         column: 'germplasmId',
         comparator: 'equals',
         operator: 'and',
-        values: [this.germplasmId]
+        values: [this.currentGermplasmId]
       }]
     }
     this.apiPostGermplasmTable(request, result => {

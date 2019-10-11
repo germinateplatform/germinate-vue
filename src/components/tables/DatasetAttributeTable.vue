@@ -2,7 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                ref="datasetAttributeTable"
                v-on="$listeners">
       <span slot="attributeType" slot-scope="props" v-if="props.row.attributeType">
@@ -19,6 +19,10 @@ import BaseTable from '@/components/tables/BaseTable'
 export default {
   name: 'datasetAttributeTable',
   props: {
+    downloadTable: {
+      type: Function,
+      default: null
+    },
     filterOn: {
       type: Array,
       default: null
@@ -31,13 +35,13 @@ export default {
   data: function () {
     var columns = [{
       name: 'datasetId',
-      type: Number
+      type: undefined
     }, {
       name: 'datasetName',
-      type: String
+      type: undefined
     }, {
       name: 'datasetDescription',
-      type: String
+      type: undefined
     }, {
       name: 'attributeName',
       type: String

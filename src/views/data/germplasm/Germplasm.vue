@@ -6,7 +6,7 @@
 
     <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
     <b-button-group>
-      <b-button @click="selectedEntityType = null" :pressed="selectedEntityType === null" variant="outline-primary">
+      <b-button @click="setEntityType(null)" :pressed="selectedEntityType === null" variant="outline-primary">
         <i class="mdi mdi-18px fix-alignment mdi-check-all" /><span> {{$t('buttonAll')}}</span>
       </b-button>
       <b-button v-for="entityType in getEntityTypeOptions()"
@@ -14,7 +14,7 @@
                :pressed="isPressed(entityType)"
                :disabled="entityType.disabled"
                :variant="entityType.disabled ? 'outline-secondary' : 'outline-primary'"
-               @click="selectedEntityType = entityType">
+               @click="setEntityType(entityType)">
         <i :class="`mdi mdi-18px fix-alignment ${entityType.icon}`" /><span> {{ entityType.text() }}</span>
       </b-button>
     </b-button-group>
@@ -54,6 +54,10 @@ export default {
     }
   },
   methods: {
+    setEntityType: function (entityType) {
+      this.selectedEntityType = entityType
+      this.$nextTick(() => this.$refs.germplasmTable.refresh())
+    },
     isPressed: function (entityType) {
       if (this.selectedEntityType) {
         return this.selectedEntityType.id === entityType.id

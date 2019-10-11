@@ -227,7 +227,7 @@ export default {
         this.downloadTable(this.currentRequestData, result => {
           this.downloadBlob({
             blob: result,
-            filename: 'germplasm-table',
+            filename: this.tableOptions.tableName + '-table',
             extension: 'txt'
           })
         })
@@ -295,9 +295,12 @@ export default {
       this.$refs.table.refresh()
     },
     onFilterChanged: function (filter) {
-      this.filter = filter
+      this.filter = filter.filter
       this.prevCount = -1
-      this.$refs.table.refresh()
+
+      if (filter.triggerUpdate) {
+        this.$refs.table.refresh()
+      }
     },
     onToggleColumn: function (column) {
       this.$refs.table.toggleColumn(column)

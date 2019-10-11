@@ -2,8 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :getIds="getIds"
-               :filterOn="filterOn"
+               v-bind="$props"
                ref="datasetTable"
                v-on="$listeners">
       <template slot="datasetName" slot-scope="props">
@@ -18,8 +17,8 @@
       <span slot="countryName" slot-scope="props" class="table-country text-nowrap" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryCode }}</span></span>
 
       <span slot="experimentType" slot-scope="props"><i :class="`mdi mdi-18px ${experimentTypes[props.row.experimentType].icon} fix-alignment`" :style="`color: ${experimentTypes[props.row.experimentType].color()};`" /> {{ experimentTypes[props.row.experimentType].text() }}</span>
-      <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount && props.row.dataObjectCount.value">{{ props.row.dataObjectCount.value }}</span>
-      <span slot="dataPointCount" slot-scope="props" v-if="props.row.dataPointCount && props.row.dataPointCount.value">{{ getDataPointCount(props.row) }}</span>
+      <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount !== undefined && props.row.dataObjectCount.value">{{ props.row.dataObjectCount.value }}</span>
+      <span slot="dataPointCount" slot-scope="props" v-if="props.row.dataPointCount !== undefined && props.row.dataPointCount.value">{{ getDataPointCount(props.row) }}</span>
 
       <div slot="licenseName" slot-scope="props" v-if="props.row.licenseName">
         <a href="#" @click.prevent="onLicenseClicked(props.row)" class="text-nowrap">
@@ -34,7 +33,7 @@
       <a href="#" class="text-decoration-none" slot="collaborators" slot-scope="props" v-if="props.row.collaborators !== 0" @click.prevent="showCollaborators(props.row)">
         <i class="mdi mdi-18px mdi-account-multiple" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')" />
       </a>
-      <a href="#" class="text-decoration-none" slot="attributes" slot-scope="props" v-if="props.row.attributes !== 0 || props.row.dublinCore" @click.prevent="showAttributes(props.row)">
+      <a href="#" class="text-decoration-none" slot="attributes" slot-scope="props" v-if="(props.row.attributes !== 0 || props.row.dublinCore) && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="showAttributes(props.row)">
         <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
       </a>
     </BaseTable>
@@ -56,6 +55,10 @@ export default {
   props: {
     filterOn: {
       type: Array,
+      default: null
+    },
+    downloadTable: {
+      type: Function,
       default: null
     },
     getData: {
@@ -89,7 +92,7 @@ export default {
         name: 'experimentType',
         type: String
       }, {
-        name: 'dataType',
+        name: 'datatype',
         type: String
       }, {
         name: 'location',
@@ -144,7 +147,7 @@ export default {
         },
         idColumn: 'datasetId',
         tableName: 'datasets',
-        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentName', 'experimentType', 'dataType', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
+        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentName', 'experimentType', 'datatype', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
         filterable: [],
         headings: {
           datasetId: () => this.$t('tableColumnDatasetId'),
@@ -152,11 +155,11 @@ export default {
           datasetDescription: () => this.$t('tableColumnDatasetDescription'),
           experimentName: () => this.$t('tableColumnExperimentName'),
           experimentType: () => this.$t('tableColumnDatasetExperimentType'),
-          dataType: () => this.$t('tableColumnDatasetDataType'),
+          datatype: () => this.$t('tableColumnDatasetDataType'),
           location: () => this.$t('tableColumnDatasetLocation'),
           countryName: () => this.$t('tableColumnDatasetCountryName'),
           licenseName: () => this.$t('tableColumnDatasetLicenseName'),
-          contract: () => this.$t('tableColumnDatasetContact'),
+          contact: () => this.$t('tableColumnDatasetContact'),
           startDate: () => this.$t('tableColumnDatasetStartDate'),
           endDate: () => this.$t('tableColumnDatasetEndDate'),
           dataObjectCount: () => this.$t('tableColumnDatasetObjectCount'),
@@ -239,9 +242,12 @@ export default {
     getSelected: function () {
       return this.$refs.datasetTable.getSelected()
     },
+    refresh: function () {
+      this.$refs.datasetTable.refresh()
+    },
     onLicenseAccepted: function () {
       this.$refs.licenseModal.hide()
-      this.$refs.datasetTable.refresh()
+      this.refresh()
     },
     onLicenseClicked: function (dataset) {
       this.dataset = dataset

@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>Datasets</h1>
-    <DatasetTable :getData="getData" :getIds="getIds" :filterOn="getFilter(0)"/>
-    <DatasetTable :getData="getData" :getIds="getIds" :filterOn="getFilter(1)"/>
+    <DatasetTable :getData="getData" :filterOn="getFilter(0)"/>
+    <DatasetTable :getData="getData" :filterOn="getFilter(1)"/>
   </div>
 </template>
 
@@ -20,9 +20,6 @@ export default {
   methods: {
     getData: function (data, callback) {
       return this.apiPostDatasetTable(data, callback)
-    },
-    getIds: function (data, callback) {
-      return this.apiPostDatasetTableIds(data, callback)
     },
     getFilter: function (isExternal) {
       var filter = [{

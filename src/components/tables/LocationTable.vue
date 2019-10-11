@@ -14,9 +14,9 @@
         <span v-else>{{ props.row.locationName }}</span>
       </template>
 
-      <span slot="locationLatitude" slot-scope="props" v-if="props.row.locationLatitude">{{ props.row.locationLatitude.toFixed(2) }}</span>
-      <span slot="locationLongitude" slot-scope="props" v-if="props.row.locationLongitude">{{ props.row.locationLongitude.toFixed(2) }}</span>
-      <span slot="locationElevation" slot-scope="props" v-if="props.row.locationElevation">{{ props.row.locationElevation.toFixed(2) }}</span>
+      <span slot="locationLatitude" slot-scope="props" v-if="props.row.locationLatitude !== undefined">{{ props.row.locationLatitude.toFixed(2) }}</span>
+      <span slot="locationLongitude" slot-scope="props" v-if="props.row.locationLongitude !== undefined">{{ props.row.locationLongitude.toFixed(2) }}</span>
+      <span slot="locationElevation" slot-scope="props" v-if="props.row.locationElevation !== undefined">{{ props.row.locationElevation.toFixed(2) }}</span>
 
       <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode2.toLowerCase()" v-if="props.row.countryCode2"/> <span> {{ props.row.countryCode2 }}</span></span>
 

@@ -193,6 +193,14 @@ export default {
     apiPostTableExport: function (queryData, tableType, onSuccess, onError) {
       return this.authAjax({ url: `${tableType}/table/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGermplasmAttributeTableExport: function (germplasmId, queryData, onSuccess, onError) {
+      var url = germplasmId !== null ? `germplasm/${germplasmId}/attribute/export` : 'germplasm/attribute/export'
+      return this.authAjax({ url: url, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostDatasetAttributeTableExport: function (datasetId, queryData, onSuccess, onError) {
+      var url = datasetId !== null ? `dataset/${datasetId}/attribute/export` : 'dataset/attribute/export'
+      return this.authAjax({ url: url, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostDatasetAsyncExport: function (uuids, onSuccess, onError) {
       var queryData = {
         uuids: uuids
@@ -241,11 +249,13 @@ export default {
     },
     apiPostGermplasmAttributeTable: function (germplasmId, queryData, onSuccess, onError) {
       queryData.page -= 1
-      return this.authAjax({ url: `germplasm/${germplasmId}/attribute`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+      var url = germplasmId !== null ? `germplasm/${germplasmId}/attribute` : 'germplasm/attribute'
+      return this.authAjax({ url: url, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetAttributeTable: function (datasetId, queryData, onSuccess, onError) {
       queryData.page -= 1
-      return this.authAjax({ url: `dataset/${datasetId}/attribute`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+      var url = datasetId !== null ? `dataset/${datasetId}/attribute` : 'dataset/attribute'
+      return this.authAjax({ url: url, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiGetGroup: function (groupId, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}`, success: onSuccess, error: onError })
