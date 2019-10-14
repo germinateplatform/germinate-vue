@@ -2,27 +2,33 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                ref="pedigreeTable"
                v-on="$listeners">
+      <router-link slot="parentId" slot-scope="props" :to="'/data/germplasm/' + props.row.parentId">{{ props.row.parentId }}</router-link>
+      <router-link slot="parentGid" slot-scope="props" :to="'/data/germplasm/' + props.row.parentId">{{ props.row.parentGid }}</router-link>
+      <router-link slot="parentName" slot-scope="props" :to="'/data/germplasm/' + props.row.parentId">{{ props.row.parentName }}</router-link>
+      <router-link slot="childId" slot-scope="props" :to="'/data/germplasm/' + props.row.childId">{{ props.row.childId }}</router-link>
+      <router-link slot="childGid" slot-scope="props" :to="'/data/germplasm/' + props.row.childId">{{ props.row.childGid }}</router-link>
+      <router-link slot="childName" slot-scope="props" :to="'/data/germplasm/' + props.row.childId">{{ props.row.childName }}</router-link>
+
+      <!-- HEADERS -->
+      <div slot="h__relationshipType">
+        <span>{{ options.headings.relationshipType() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipPedigreeRelationshipType')"/>
+      </div>
     </BaseTable>
   </div>
 </template>
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'PedigreeTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    }
+    ...defaultProps.BASE,
+    ...defaultProps.DOWNLOAD
   },
   data: function () {
     var columns = [{
@@ -59,9 +65,6 @@ export default {
 
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'parentId',
         tableName: 'pedigrees',
         sortable: ['parentId', 'parentGid', 'parentName', 'childId', 'childGid', 'childName', 'relationshipType', 'relationshipDescription', 'pedigreeDescription', 'pedigreeAuthor'],

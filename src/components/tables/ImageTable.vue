@@ -2,7 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                ref="table"
                @loaded="update">
       <span slot="imageRefTable" slot-scope="props"><i :class="`mdi mdi-18px ${imageTypes[props.row.imageRefTable].icon} fix-alignment`" :style="`color: ${imageTypes[props.row.imageRefTable].color()};`" /> {{ imageTypes[props.row.imageRefTable].text() }}</span>
@@ -20,18 +20,12 @@
 <script>
 import baguetteBox from 'baguettebox.js'
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'ImageTable',
   props: {
-    getData: {
-      type: Function,
-      default: () => {}
-    },
-    filterOn: {
-      type: Array,
-      default: null
-    }
+    ...defaultProps.BASE
   },
   data: function () {
     const columns = [
@@ -60,9 +54,6 @@ export default {
     ]
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'imageId',
         tableName: 'images',
         sortable: ['imageId', 'imageDescription', 'imagePath', 'imageRefTable', 'referenceName', 'createdOn'],

@@ -57,7 +57,7 @@
       </div>
 
       <div slot="h__germplasmPuid">
-        <span>{{ options.headings.germplasmPuid() }} </span> <i class="mdi mdi-help-circle text-secondary" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
+        <span>{{ options.headings.germplasmPuid() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
       </div>
     </BaseTable>
   </div>
@@ -67,25 +67,12 @@
 import { EventBus } from '@/plugins/event-bus.js'
 import BaseTable from '@/components/tables/BaseTable'
 
+import defaultProps from '@/const/table-props.js'
+
 export default {
   name: 'GermplasmTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    },
-    getIds: {
-      type: Function,
-      default: () => []
-    },
-    downloadTable: {
-      type: Function,
-      default: null
-    },
+    ...defaultProps.FULL,
     orderBy: {
       type: String,
       default: null
@@ -97,10 +84,6 @@ export default {
     tableMode: {
       type: String,
       default: 'base'
-    },
-    tableActions: {
-      type: Array,
-      default: () => null
     }
   },
   data: function () {
@@ -177,9 +160,6 @@ export default {
     }
 
     var options = {
-      requestData: (data, callback) => {
-        return this.getData(data, callback)
-      },
       idColumn: 'germplasmId',
       tableName: 'germplasm',
       sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'location', 'elevation', 'countryName', 'collDate', 'pdci'],

@@ -162,12 +162,21 @@ export default {
     },
     apiPostTrialsDataTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
-      return this.authAjax({ url: 'dataset/data/trial', method: 'POST', data: queryData, success: onSuccess, error: onError })
+      return this.authAjax({ url: 'dataset/data/trial/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTrialsDataTableIds: function (queryData, onSuccess, onError) {
       delete queryData.orderBy
       delete queryData.ascending
-      return this.authAjax({ url: 'dataset/data/trial/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+      return this.authAjax({ url: 'dataset/data/trial/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostCompoundDataTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'dataset/data/compound/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostCompoundDataTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
+      return this.authAjax({ url: 'dataset/data/compound/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostMapsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -177,9 +186,14 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'dataset/map', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostMapdefinitionTable: function (mapId, queryData, onSuccess, onError) {
+    apiPostMapdefinitionTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
-      return this.authAjax({ url: `map/${mapId}/mapdefinition/table`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+      return this.authAjax({ url: 'map/mapdefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostMapdefinitionTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
+      return this.authAjax({ url: 'map/mapdefinition/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1

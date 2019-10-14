@@ -2,7 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                v-on="$listeners">
       <router-link slot="mapId" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapId}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapId)">{{ props.row.mapId }}</router-link>
       <router-link slot="mapName" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapId}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapId)">{{ props.row.mapName }}</router-link>
@@ -14,14 +14,12 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'MapTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    }
+    ...defaultProps.FULL
   },
   data: function () {
     const columns = [
@@ -41,9 +39,6 @@ export default {
     ]
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.apiPostMapsTable(data, callback)
-        },
         idColumn: 'mapId',
         tableName: 'maps',
         sortable: columns,

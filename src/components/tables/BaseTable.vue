@@ -121,9 +121,23 @@ export default {
       type: Function,
       default: null
     },
+    getData: {
+      type: Function,
+      default: () => {
+        return {
+          data: [],
+          count: 0
+        }
+      }
+    },
     getIds: {
       type: Function,
-      default: null
+      default: () => {
+        return {
+          data: [],
+          count: 0
+        }
+      }
     },
     tableActions: {
       type: Array,
@@ -156,7 +170,8 @@ export default {
             resolve({
               data: {
                 data: [],
-                count: 0
+                count: 0,
+                isInitialLoad: true
               }
             })
           })
@@ -166,7 +181,7 @@ export default {
           data.prevCount = this.prevCount
           data.filter = this.filter
           this.currentRequestData = data
-          return this.tableOptions.requestData(data, function (result) {
+          return this.getData(data, function (result) {
             vm.prevCount = result.count
           })
         }
@@ -205,7 +220,6 @@ export default {
 
     return {
       selectedItems: [],
-      // allSelected: false,
       perPageValues: [10, 25, 50, 100],
       prevCount: -1,
       currentRequestData: null,
@@ -224,12 +238,14 @@ export default {
     },
     onDownloadTableClicked: function () {
       if (this.downloadTable !== null) {
+        EventBus.$emit('show-loading', true)
         this.downloadTable(this.currentRequestData, result => {
           this.downloadBlob({
             blob: result,
             filename: this.tableOptions.tableName + '-table',
             extension: 'txt'
           })
+          EventBus.$emit('show-loading', false)
         })
       }
     },

@@ -4,14 +4,12 @@
                :columns="columns"
                v-bind="$props"
                itemType="germplasm"
-               ref="trialsDataTable"
+               ref="compoundDataTable"
                v-on="$listeners">
       <router-link slot="germplasmId" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmId }}</router-link>
       <router-link slot="germplasmName" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmName }}</router-link>
       <router-link slot="germplasmGid" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmGid }}</router-link>
       <span slot="entityType" slot-scope="props" class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityType].color()};`" /> {{ entityTypes[props.row.entityType].text() }}</span>
-      <!-- Country flags -->
-      <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode2.toLowerCase()" v-if="props.row.countryCode2"/> <span> {{ props.row.countryCode2 }}</span></span>
       <!-- Formatted date -->
       <span slot="recordingDate" slot-scope="props" v-if="props.row.recordingDate">{{ props.row.recordingDate | toDate }}</span>
     </BaseTable>
@@ -23,7 +21,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 
 export default {
-  name: 'TrialsDataTable',
+  name: 'CompoundDataTable',
   props: {
     ...defaultProps.FULL
   },
@@ -45,13 +43,7 @@ export default {
         name: 'datasetName',
         type: String
       }, {
-        name: 'locationName',
-        type: String
-      }, {
-        name: 'countryName',
-        type: String
-      }, {
-        name: 'traitName',
+        name: 'compoundName',
         type: String
       }, {
         name: 'unitName',
@@ -60,7 +52,7 @@ export default {
         name: 'recordingDate',
         type: Date
       }, {
-        name: 'traitValue',
+        name: 'compoundValue',
         type: String
       }, {
         name: 'marked',
@@ -71,7 +63,7 @@ export default {
       options: {
         idColumn: 'germplasmId',
         tableName: 'trialsData',
-        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'entityType', 'datasetName', 'locationName', 'countryName', 'traitName', 'unitName', 'recordingDate', 'traitValue'],
+        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'entityType', 'datasetName', 'compoundName', 'unitName', 'recordingDate', 'compoundValue'],
         filterable: [],
         headings: {
           germplasmId: () => this.$t('tableColumnGermplasmId'),
@@ -81,10 +73,10 @@ export default {
           datasetName: () => this.$t('tableColumnDatasetName'),
           locationName: () => this.$t('tableColumnLocationName'),
           countryName: () => this.$t('tableColumnCountryName'),
-          traitName: () => this.$t('tableColumnTraitName'),
-          unitName: () => this.$t('tableColumnTraitUnitName'),
-          recordingDate: () => this.$t('tableColumnTrialsDataRecordingDate'),
-          traitValue: () => this.$t('tableColumnTrialsDataTraitValue')
+          compoundName: () => this.$t('tableColumnCompoundName'),
+          unitName: () => this.$t('tableColumnCompoundUnitName'),
+          recordingDate: () => this.$t('tableColumnCompoundDataRecordingDate'),
+          compoundValue: () => this.$t('tableColumnCompoundDataCompoundValue')
         },
         columnsClasses: {
           germplasmId: 'text-right',
@@ -99,7 +91,7 @@ export default {
   },
   methods: {
     refresh: function () {
-      this.$refs.trialsDataTable.refresh()
+      this.$refs.compoundDataTable.refresh()
     }
   }
 }

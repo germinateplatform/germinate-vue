@@ -2,7 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                ref="traitTable"
                v-on="$listeners">
       <!-- LINKS -->
@@ -13,18 +13,12 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'TraitTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    }
+    ...defaultProps.BASE
   },
   data: function () {
     var columns = [{
@@ -58,9 +52,6 @@ export default {
 
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'traitId',
         tableName: 'traits',
         sortable: ['traitId', 'traitName', 'traitNameShort', 'traitDescription', 'unitName', 'unitDescription', 'unitAbbreviation', 'synonyms', 'count'],

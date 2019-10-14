@@ -8,8 +8,13 @@
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true />
       <b-navbar-nav class="ml-auto">
-        <b-nav-form>
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
+        <b-nav-form @submit.prevent="search">
+          <b-input-group class="mr-sm-2">
+            <b-form-input size="sm" v-model="searchTerm" :placeholder="$t('inputPlaceholderSearch')"></b-form-input>
+            <b-input-group-append>
+              <b-button variant="light" @click="search"><i class="mdi mdi-18px mdi-magnify" /></b-button>
+            </b-input-group-append>
+          </b-input-group>
         </b-nav-form>
         <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()"><i class="mdi mdi-18px mdi-help-circle-outline" /></b-nav-item>
         <LocaleDropdown />
@@ -84,7 +89,8 @@ export default {
   },
   data () {
     return {
-      nav: []
+      nav: [],
+      searchTerm: null
     }
   },
   computed: {
@@ -101,6 +107,9 @@ export default {
     }
   },
   methods: {
+    search: function () {
+      this.$router.push({ name: 'search', params: { searchTerm: this.searchTerm } })
+    },
     getImageSrc: function (img) {
       var params = {
         token: this.token ? this.token.imageToken : null

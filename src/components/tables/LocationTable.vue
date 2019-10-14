@@ -2,9 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :getIds="getIds"
-               :filterOn="filterOn"
-               :tableActions="tableActions"
+               v-bind="$props"
                itemType="locations"
                ref="locationTable"
                v-on="$listeners">
@@ -27,22 +25,12 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'LocationTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    },
-    getIds: {
-      type: Function,
-      default: () => []
-    },
+    ...defaultProps.FULL,
     orderBy: {
       type: String,
       default: null
@@ -54,10 +42,6 @@ export default {
     tableMode: {
       type: String,
       default: 'base'
-    },
-    tableActions: {
-      type: Array,
-      default: () => null
     }
   },
   data: function () {
@@ -78,13 +62,13 @@ export default {
       type: 'locationType'
     }, {
       name: 'locationLatitude',
-      type: String
+      type: Number
     }, {
       name: 'locationLongitude',
-      type: String
+      type: Number
     }, {
       name: 'locationElevation',
-      type: String
+      type: Number
     }, {
       name: 'countryName',
       type: String
@@ -108,9 +92,6 @@ export default {
     }
 
     var options = {
-      requestData: (data, callback) => {
-        return this.getData(data, callback)
-      },
       idColumn: 'locationId',
       tableName: 'locations',
       sortable: ['locationId', 'locationName', 'locationRegion', 'locationState', 'locationType', 'locationLatitude', 'locationLongitud', 'locationElevation', 'countryName'],

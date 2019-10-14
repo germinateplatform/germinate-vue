@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1>Search</h1>
+    <h1>{{ $t('pageSearchTitle') }}</h1>
     <b-form @submit.prevent="search">
       <b-row>
         <b-col xs=12 sm=6>
           <b-form-group
-            label="Select the type of data to search for"
+            :label="$t('formLabelSearchType')"
             label-for="search-type">
             <b-input-group>
               <b-form-select id="search-type" :options="searchTypes" v-model="searchType" />
@@ -14,7 +14,7 @@
         </b-col>
         <b-col xs=12 sm=6>
           <b-form-group
-            label="Enter a search term"
+            :label="$t('formLabelSearchTerm')"
             label-for="search-term">
             <b-input-group>
               <b-input-group-prepend>
@@ -26,13 +26,13 @@
                   </b-dropdown-item>
                 </b-dropdown>
               </b-input-group-prepend>
-              <b-form-input autofocus id="search-term" v-model="searchTerm" trim @focus="$event.target.select()" />
+              <b-form-input autofocus id="search-term" v-model="tempSearchTerm" trim @focus="$event.target.select()" />
               <b-input-group-append>
                 <b-button variant="primary" type="submit"><i class="mdi mdi-18px mdi-magnify" /></b-button>
               </b-input-group-append>
 
               <b-tooltip target="search-term" triggers="hover" v-if="comparator === 'like'">
-                Use "%" as a wildcard character, e.g. "%KINGDOM%".
+                {{ $t('tooltipSearchWildcard') }}
               </b-tooltip>
             </b-input-group>
           </b-form-group>
@@ -40,27 +40,59 @@
       </b-row>
     </b-form>
     <template v-if="showResults">
-      <Collapse title="Germplasm data" :visible="false" class="mb-3" no-body>
+      <h2>{{ $t('pageSearchResultTitle') }} <small>"{{ searchTerm }}"</small></h2>
+
+      <Collapse icon="mdi-sprout" :title="$t('pageSearchResultSectionGermplasm')" :visible="false" class="mb-2" no-body ref="collapseGermplasm" v-if="isSearchType('germplasm')">
         <template v-slot:default="slotProps">
-          <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" :filterOn="getGermplasmFilter()" ref="germplasmTable" v-on:data-changed="slotProps.update"/>
+          <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" :filterOn="getFilter('TABLE_COLUMNS_GERMPLASM_SEARCHABLE')" ref="tableGermplasm" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
-      <Collapse title="Germplasm attribute data" :visible="false" class="mb-3" no-body>
+      <Collapse icon="mdi-playlist-plus" :title="$t('pageSearchResultSectionGermplasmAttributes')" :visible="false" class="mb-2" no-body ref="collapseGermplasmAttributes"  v-if="isSearchType('germplasmAttributes')">
         <template v-slot:default="slotProps">
-          <GermplasmAttributeTable :getData="getGermplasmAttributeData" :downloadTable="downloadGermplasmAttributes" :filterOn="getGermplasmAttributeFilter()" ref="germplasmAttributeTable" v-on:data-changed="slotProps.update"/>
+          <GermplasmAttributeTable :getData="getGermplasmAttributeData" :downloadTable="downloadGermplasmAttributes" :filterOn="getFilter('TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE')" ref="tableGermplasmAttributes" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
-      <Collapse title="Datasets" :visible="false" class="mb-3" no-body>
+      <Collapse icon="mdi-shovel" :title="$t('pageSearchResultSectionTrialsData')" :visible="false" class="mb-2" no-body ref="collapseTrials"  v-if="isSearchType('trials')">
         <template v-slot:default="slotProps">
-          <DatasetTable :getData="getDatasetData" :downloadTable="downloadDatasets" :filterOn="getDatasetFilter()" ref="datasetTable" v-on:data-changed="slotProps.update"/>
+          <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsData" :filterOn="getFilter('TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE')" ref="tableTrials" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
-      <Collapse title="Dataset attributes" :visible="false" class="mb-3" no-body>
+      <Collapse icon="mdi-flask" :title="$t('pageSearchResultSectionCompoundData')" :visible="false" class="mb-2" no-body ref="collapseCompoundData" v-if="isSearchType('compounds')">
         <template v-slot:default="slotProps">
-          <DatasetAttributeTable :getData="getDatasetAttributeData" :downloadTable="downloadDatasetAttributes" :filterOn="getDatasetAttributeFilter()" ref="datasetAttributeTable" v-on:data-changed="slotProps.update"/>
+          <CompoundDataTable :getData="getCompoundData" :downloadTable="downloadCompoundData" :filterOn="getFilter('TABLE_COLUMNS_COMPOUND_DATA_SEARCHABLE')" ref="tableCompoundData" v-on:data-changed="slotProps.update"/>
+        </template>
+      </Collapse>
+
+      <Collapse icon="mdi-dna" :title="$t('pageSearchResultSectionMapDefinitionData')" :visible="false" class="mb-2" no-body ref="collapseMapDefinitionData"  v-if="isSearchType('mapdefinitions')">
+        <template v-slot:default="slotProps">
+          <MapDefinitionTable :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" :downloadTable="downloadMapDefinitionData" :filterOn="getFilter('TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE')" ref="tableMapDefinitionData" v-on:data-changed="slotProps.update"/>
+        </template>
+      </Collapse>
+
+      <Collapse icon="mdi-database" :title="$t('pageSearchResultSectionDatasets')" :visible="false" class="mb-2" no-body ref="collapseDatasets"  v-if="isSearchType('datasets')">
+        <template v-slot:default="slotProps">
+          <DatasetTable :getData="getDatasetData" :downloadTable="downloadDatasets" :filterOn="getFilter('TABLE_COLUMNS_DATASET_SEARCHABLE')" ref="tableDatasets" v-on:data-changed="slotProps.update"/>
+        </template>
+      </Collapse>
+
+      <Collapse icon="mdi-playlist-plus" :title="$t('pageSearchResultSectionDatasetAttributes')" :visible="false" class="mb-2" no-body ref="collapseDatasetAttributes"  v-if="isSearchType('datasetAttributes')">
+        <template v-slot:default="slotProps">
+          <DatasetAttributeTable :getData="getDatasetAttributeData" :downloadTable="downloadDatasetAttributes" :filterOn="getFilter('TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE')" ref="tableDatasetAttributes" v-on:data-changed="slotProps.update"/>
+        </template>
+      </Collapse>
+
+      <Collapse icon="mdi-sitemap" :title="$t('pageSearchResultSectionPedigreeData')" :visible="false" class="mb-2" no-body ref="collapsePedigree" v-if="isSearchType('pedigrees')">
+        <template v-slot:default="slotProps">
+          <PedigreeTable :getData="getPedigreeData" :downloadTable="downloadPedigrees" :filterOn="getFilter('TABLE_COLUMNS_PEDIGREE_SEARCHABLE')" ref="tablePedigree" v-on:data-changed="slotProps.update"/>
+        </template>
+      </Collapse>
+
+      <Collapse icon="mdi-map" :title="$t('pageSearchResultSectionLocationData')" :visible="false" class="mb-2" no-body ref="collapseLocationData" v-if="isSearchType('locations')">
+        <template v-slot:default="slotProps">
+          <LocationTable :getData="getLocationData" :getIds="getLocationIds" :downloadTable="downloadLocations" :filterOn="getFilter('TABLE_COLUMNS_LOCATION_SEARCHABLE')" ref="tableLocations" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
     </template>
@@ -69,16 +101,23 @@
 
 <script>
 import Collapse from '@/components/util/Collapse'
+import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import DatasetAttributeTable from '@/components/tables/DatasetAttributeTable'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import GermplasmAttributeTable from '@/components/tables/GermplasmAttributeTable'
-import ColumnsMixin from '@/mixins/database-columns.js'
+import LocationTable from '@/components/tables/LocationTable'
+import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
+import PedigreeTable from '@/components/tables/PedigreeTable'
+import TrialsDataTable from '@/components/tables/TrialsDataTable'
+
+import ColumnsMixin from '@/const/database-columns.js'
 
 export default {
   data: function () {
     return {
       searchTerm: null,
+      tempSearchTerm: null,
       showResults: false,
       germplasmFilterColumns: ['germplasmId', 'germplasmName'],
       comparator: 'equals',
@@ -95,95 +134,147 @@ export default {
       },
       searchType: 'all',
       searchTypes: [
-        { value: 'all', text: 'All data' },
-        { value: 'germplasm', text: 'Germplasm data' }
+        { value: 'all', text: this.$t('pageSearchResultSectionAll') },
+        { value: 'germplasm', text: this.$t('pageSearchResultSectionGermplasm') },
+        { value: 'germplasmAttributes', text: this.$t('pageSearchResultSectionGermplasmAttributes') },
+        { value: 'trials', text: this.$t('pageSearchResultSectionTrialsData') },
+        { value: 'compounds', text: this.$t('pageSearchResultSectionCompoundData') },
+        { value: 'mapdefinitions', text: this.$t('pageSearchResultSectionMapDefinitionData') },
+        { value: 'datasets', text: this.$t('pageSearchResultSectionDatasets') },
+        { value: 'datasetAttributes', text: this.$t('pageSearchResultSectionDatasetAttributes') },
+        { value: 'pedigrees', text: this.$t('pageSearchResultSectionPedigreeData') },
+        { value: 'locations', text: this.$t('pageSearchResultSectionLocationData') }
       ]
     }
   },
   components: {
     Collapse,
+    CompoundDataTable,
     DatasetTable,
     DatasetAttributeTable,
     GermplasmTable,
-    GermplasmAttributeTable
+    GermplasmAttributeTable,
+    LocationTable,
+    MapDefinitionTable,
+    PedigreeTable,
+    TrialsDataTable
   },
   methods: {
+    isSearchType: function (requested) {
+      return this.searchType === 'all' || this.searchType === requested
+    },
+    // FILTER
+    getFilter: function (columnConst) {
+      return ColumnsMixin[columnConst].map(c => {
+        return {
+          column: c,
+          comparator: this.comparator,
+          operator: 'or',
+          values: [this.searchTerm]
+        }
+      })
+    },
+    // TRIALS
+    getTrialsData: function (data, callback) {
+      return this.apiPostTrialsDataTable(data, callback)
+    },
+    getTrialsDataIds: function (data, callback) {
+      return this.apiPostTrialsDataTableIds(data, callback)
+    },
+    downloadTrialsData: function (data, callback) {
+      return this.apiPostTableExport(data, 'dataset/data/trial', callback)
+    },
+    // COMPOUNDS
+    getCompoundData: function (data, callback) {
+      return this.apiPostCompoundDataTable(data, callback)
+    },
+    getCompoundDataIds: function (data, callback) {
+      return this.apiPostCompoundDataTableIds(data, callback)
+    },
+    downloadCompoundData: function (data, callback) {
+      return this.apiPostTableExport(data, 'dataset/data/compound', callback)
+    },
+    // GERMPLASM
     getGermplasmData: function (data, callback) {
       return this.apiPostGermplasmTable(data, callback)
     },
     getGermplasmIds: function (data, callback) {
       return this.apiPostGermplasmTableIds(data, callback)
     },
-    getGermplasmFilter: function () {
-      return ColumnsMixin.TABLE_COLUMNS_GERMPLASM_SEARCHABLE.map(c => {
-        return {
-          column: c,
-          comparator: this.comparator,
-          operator: 'or',
-          values: [this.searchTerm]
-        }
-      })
-    },
     downloadGermplasm: function (data, callback) {
       return this.apiPostTableExport(data, 'germplasm', callback)
     },
+    // MAPDEFINITIONS
+    getMapDefinitionData: function (data, callback) {
+      return this.apiPostMapdefinitionTable(data, callback)
+    },
+    getMapDefinitionIds: function (data, callback) {
+      return this.apiPostMapdefinitionTableIds(data, callback)
+    },
+    downloadMapDefinitionData: function (data, callback) {
+      return this.apiPostTableExport(data, 'map/mapdefinition', callback)
+    },
+    // LOCATIONS
+    getLocationData: function (data, callback) {
+      return this.apiPostLocationTable(data, callback)
+    },
+    getLocationIds: function (data, callback) {
+      return this.apiPostLocationTableIds(data, callback)
+    },
+    downloadLocations: function (data, callback) {
+      return this.apiPostTableExport(data, 'location', callback)
+    },
+    // GERMPLASM ATTRIBUTES
     getGermplasmAttributeData: function (data, callback) {
       return this.apiPostGermplasmAttributeTable(null, data, callback)
-    },
-    getGermplasmAttributeFilter: function () {
-      return ColumnsMixin.TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE.map(c => {
-        return {
-          column: c,
-          comparator: this.comparator,
-          operator: 'or',
-          values: [this.searchTerm]
-        }
-      })
     },
     downloadGermplasmAttributes: function (data, callback) {
       return this.apiPostGermplasmAttributeTableExport(null, data, callback)
     },
+    // PEDIGREES
+    getPedigreeData: function (data, callback) {
+      return this.apiPostPedigreeTable(data, callback)
+    },
+    downloadPedigrees: function (data, callback) {
+      return this.apiPostTableExport(data, 'pedigree', callback)
+    },
+    // DATASET ATTRIBUTES
     getDatasetAttributeData: function (data, callback) {
       return this.apiPostDatasetAttributeTable(null, data, callback)
-    },
-    getDatasetAttributeFilter: function () {
-      return ColumnsMixin.TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE.map(c => {
-        return {
-          column: c,
-          comparator: this.comparator,
-          operator: 'or',
-          values: [this.searchTerm]
-        }
-      })
     },
     downloadDatasetAttributes: function (data, callback) {
       return this.apiPostDatasetAttributeTableExport(null, data, callback)
     },
+    // DATASETS
     getDatasetData: function (data, callback) {
       return this.apiPostDatasetTable(data, callback)
-    },
-    getDatasetFilter: function () {
-      return ColumnsMixin.TABLE_COLUMNS_DATASET_SEARCHABLE.map(c => {
-        return {
-          column: c,
-          comparator: this.comparator,
-          operator: 'or',
-          values: [this.searchTerm]
-        }
-      })
     },
     downloadDatasets: function (data, callback) {
       return this.apiPostTableExport(data, 'dataset', callback)
     },
+    // SEARCH
     search: function () {
-      console.log(this.searchTerm)
-      this.showResults = true
-      Object.keys(this.$refs).forEach(t => this.$refs[t].refresh())
-      window.history.replaceState({}, null, `#/search/${this.searchTerm}`)
+      this.searchTerm = this.tempSearchTerm
+
+      this.$nextTick(() => {
+        // Trigger result section to show up
+        this.showResults = true
+        // Refresh all tables
+        Object.keys(this.$refs)
+          .filter(r => r.startsWith('table'))
+          .forEach(t => this.$refs[t].refresh())
+        // Set loading status for all collapse elements
+        Object.keys(this.$refs)
+          .filter(r => r.startsWith('collapse'))
+          .forEach(t => this.$refs[t].setLoading(true))
+        // Change window URL to reflect new search term
+        window.history.replaceState({}, null, `#/search/${encodeURI(this.searchTerm)}`)
+      })
     }
   },
   mounted: function () {
     this.searchTerm = this.$route.params.searchTerm
+    this.tempSearchTerm = this.searchTerm
   }
 }
 </script>

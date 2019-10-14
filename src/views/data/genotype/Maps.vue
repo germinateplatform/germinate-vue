@@ -3,12 +3,12 @@
     <h1>{{ $t('pageMapsTitle') }}</h1>
     <hr />
     <p>{{ $t('pageMapsText') }}</p>
-    <MapTable v-on:map-selected="onMapSelected" />
+    <MapTable :getData="getMapData" v-on:map-selected="onMapSelected" />
 
     <div v-if="map">
       <h2>{{ $t('pageMapsDetailsTitle') }} <small>{{ map.name }}</small></h2>
       <p>{{ $t('pageMapsDetailsText') }}</p>
-      <MapDefinitionTable :getData="getMapDefinitionData" ref="mapDefinitionTable" />
+      <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" ref="mapDefinitionTable" />
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
@@ -39,6 +39,20 @@ export default {
     MapDefinitionTable
   },
   methods: {
+    getFilter: function () {
+      return [{
+        column: {
+          name: 'mapId',
+          type: Number
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.mapId]
+      }]
+    },
+    getMapData: function (data, callback) {
+      return this.apiPostMapsTable(data, callback)
+    },
     getSourceFile: function () {
       return {
         blob: this.sourceFile,
@@ -49,7 +63,10 @@ export default {
       return 'map-' + this.mapId
     },
     getMapDefinitionData: function (data, callback) {
-      return this.apiPostMapdefinitionTable(this.mapId, data, callback)
+      return this.apiPostMapdefinitionTable(data, callback)
+    },
+    getMapDefinitionIds: function (data, callback) {
+      return this.apiPostMapdefinitionTableIds(data, callback)
     },
     onMapSelected: function (mapId) {
       this.mapId = mapId

@@ -4,7 +4,7 @@
       <div class="d-flex flex-row">
         <strong><i :class="`mdi mdi-18px ${icon} fix-alignment text-primary`" v-if="icon"/> {{ title }}</strong>
         <span class="ml-auto">
-          <b-badge :variant="count > 0 ? 'info' : null" v-if="!loading && count !== undefined">{{ count }}</b-badge>
+          <b-badge :variant="count > 0 ? 'primary' : null" v-if="!loading && count !== undefined">{{ count }}</b-badge>
           <b-progress :value="100" height="20px" class="collapse-loading" variant="primary" striped animated v-if="loading" />
         </span>
       </div>
@@ -53,9 +53,11 @@ export default {
       this.contentVisible = !this.contentVisible
       this.check()
     },
+    setLoading: function (loading) {
+      this.loading = loading
+    },
     update: function (request, data) {
-      console.log(data)
-      if (data) {
+      if (data && data.isInitialLoad !== true) {
         this.count = data.count
         this.loading = false
       } else {

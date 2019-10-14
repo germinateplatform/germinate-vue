@@ -3,7 +3,7 @@
     <BaseTable :options="options"
                :columns="columns"
                :filterOn="filterOn"
-               ref="table"
+               v-bind="$props"
                v-on="$listeners">
       <router-link slot="groupId" slot-scope="props" :to="`/groups/${props.row.groupId}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupId)">{{ props.row.groupId }}</router-link>
       <router-link slot="groupName" slot-scope="props" :to="`/groups/${props.row.groupId}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupId)">{{ props.row.groupName }}</router-link>
@@ -24,18 +24,12 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'GroupTable',
   props: {
-    getData: {
-      type: Function,
-      default: () => {}
-    },
-    filterOn: {
-      type: Array,
-      default: null
-    }
+    ...defaultProps.BASE
   },
   data: function () {
     const columns = [
@@ -70,9 +64,6 @@ export default {
     ]
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'groupId',
         tableName: 'groups',
         sortable: ['groupId', 'groupName', 'groupDescription', 'groupType', 'userId', 'createdOn', 'updatedOn', 'count'],

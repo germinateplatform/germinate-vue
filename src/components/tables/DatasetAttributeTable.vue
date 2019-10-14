@@ -15,22 +15,13 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'datasetAttributeTable',
   props: {
-    downloadTable: {
-      type: Function,
-      default: null
-    },
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    }
+    ...defaultProps.BASE,
+    ...defaultProps.DOWNLOAD
   },
   data: function () {
     var columns = [{
@@ -58,9 +49,6 @@ export default {
 
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'datasetId',
         tableName: 'datasetAttributes',
         sortable: ['datasetId', 'datasetName', 'datasetDescription', 'attributeName', 'attributeDescription', 'attributeType', 'attributeValue'],

@@ -36,6 +36,9 @@
       <a href="#" class="text-decoration-none" slot="attributes" slot-scope="props" v-if="(props.row.attributes !== 0 || props.row.dublinCore) && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="showAttributes(props.row)">
         <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
       </a>
+      <a href="#" class="text-decoration-none" slot="download" slot-scope="props" v-if="(props.row.experimentType !== 'climate') && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="downloadDataset(props.row)">
+        <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
+      </a>
     </BaseTable>
 
     <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
@@ -49,26 +52,13 @@ import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 import CollaboratorModal from '@/components/modals/CollaboratorModal'
 import AttributeModal from '@/components/modals/AttributeModal'
+import defaultProps from '@/const/table-props.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   name: 'DatasetTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    downloadTable: {
-      type: Function,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    },
-    getIds: {
-      type: Function,
-      default: () => []
-    },
+    ...defaultProps.FULL,
     selectable: {
       type: Boolean,
       default: false
@@ -130,6 +120,9 @@ export default {
       }, {
         name: 'attributes',
         type: undefined
+      }, {
+        name: 'download',
+        type: undefined
       }
     ]
 
@@ -142,9 +135,6 @@ export default {
 
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'datasetId',
         tableName: 'datasets',
         sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentName', 'experimentType', 'datatype', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
@@ -164,9 +154,10 @@ export default {
           endDate: () => this.$t('tableColumnDatasetEndDate'),
           dataObjectCount: () => this.$t('tableColumnDatasetObjectCount'),
           dataPointCount: () => this.$t('tableColumnDatasetPointCount'),
-          datasetState: () => '',
-          collaborators: () => '',
-          attributes: () => '',
+          datasetState: '',
+          collaborators: '',
+          attributes: '',
+          download: '',
           isExternal: () => 'External',
           selected: ''
         },
@@ -206,6 +197,80 @@ export default {
     LicenseModal
   },
   methods: {
+    downloadDataset: function (dataset) {
+      switch (dataset.experimentType) {
+        case 'trials':
+          var trialQuery = {
+            xGroupIds: null,
+            xIds: null,
+            yGroupIds: null,
+            yIds: null,
+            currentTraitCount: null,
+            datasetIds: [dataset.datasetId]
+          }
+          EventBus.$emit('show-loading', true)
+          this.apiPostDatasetExport('trial', trialQuery, result => {
+            var trialRequest = {
+              blob: result,
+              filename: 'trial-dataset-' + dataset.datasetId,
+              extension: 'txt'
+            }
+
+            this.downloadBlob(trialRequest)
+            EventBus.$emit('show-loading', false)
+          })
+          break
+        case 'compound':
+          var compoundQuery = {
+            xGroupIds: null,
+            xIds: null,
+            yGroupIds: null,
+            yIds: null,
+            currentCompoundCount: null,
+            datasetIds: [dataset.datasetId]
+          }
+          EventBus.$emit('show-loading', true)
+          this.apiPostDatasetExport('compound', compoundQuery, result => {
+            var compoundRequest = {
+              blob: result,
+              filename: 'compound-dataset-' + dataset.datasetId,
+              extension: 'txt'
+            }
+
+            this.downloadBlob(compoundRequest)
+            EventBus.$emit('show-loading', false)
+          })
+          break
+        case 'genotype':
+          this.$bvModal.msgBoxConfirm(this.$t('pageGenotypesExportEnableFlapjackTitle'), {
+            okVariant: 'success',
+            okTitle: this.$t('genericYes'),
+            cancelTitle: this.$t('genericNo'),
+            cancelVariant: 'danger'
+          })
+            .then(value => {
+              var genotypeQuery = {
+                datasetIds: [dataset.datasetId],
+                generateFlapjackProject: value
+              }
+              EventBus.$emit('show-loading', true)
+              this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
+                this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
+
+                EventBus.$emit('toggle-aside')
+
+                EventBus.$emit('show-loading', false)
+              })
+            })
+          break
+        case 'allelefreq':
+          // TODO: Implement!
+          break
+        default:
+          // TODO: Notification
+          break
+      }
+    },
     isAccepted: function (dataset) {
       if (this.token) {
         return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1

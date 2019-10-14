@@ -2,7 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                ref="entityTable"
                v-on="$listeners">
       <router-link slot="entityParentId" slot-scope="props" :to="'/data/germplasm/' + props.row.entityParentId">{{ props.row.entityParentId }}</router-link>
@@ -19,18 +19,12 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'EntityTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    }
+    ...defaultProps.BASE
   },
   data: function () {
     var columns = [{
@@ -61,9 +55,6 @@ export default {
 
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'entityParentId',
         tableName: 'entities',
         sortable: ['entityParentId', 'entityParentGid', 'entityParentName', 'entityParentType', 'entityChildId', 'entityChildGid', 'entityChildName', 'entityChildType'],

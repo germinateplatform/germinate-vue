@@ -93,7 +93,7 @@ export default {
       var request = this.sourceFile()
 
       if (!request.extension) {
-        request.extension = 'tsv'
+        request.extension = 'txt'
       }
 
       this.downloadBlob(request)

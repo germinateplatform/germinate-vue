@@ -2,9 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :getIds="getIds"
-               :filterOn="filterOn"
-               :tableActions="tableActions"
+               v-bind="$props"
                itemType="markers"
                ref="markerTable"
                v-on="$listeners">
@@ -18,29 +16,15 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'MarkerTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    },
-    getIds: {
-      type: Function,
-      default: () => []
-    },
+    ...defaultProps.FULL,
     selectable: {
       type: Boolean,
       default: false
-    },
-    tableActions: {
-      type: Array,
-      default: () => null
     }
   },
   data: function () {
@@ -70,9 +54,6 @@ export default {
 
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'markerId',
         tableName: 'markers',
         sortable: ['markerId', 'markerName', 'markerType', 'markerSynonyms'],

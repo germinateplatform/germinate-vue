@@ -2,7 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                ref="collaboratorTable"
                v-on="$listeners">
       <a slot="collaboratorEmail" slot-scope="props" :href="`mailto:${props.row.collaboratorEmail}`" v-if="props.row.collaboratorEmail">{{ props.row.collaboratorEmail }}</a>
@@ -13,18 +13,12 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'CollaboratorTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    }
+    ...defaultProps.BASE
   },
   data: function () {
     var columns = [{
@@ -52,9 +46,6 @@ export default {
 
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'collaboratorId',
         tableName: 'collaborators',
         sortable: ['collaboratorId', 'collaboratorFirstName', 'collaboratorLastName', 'collaboratorEmail', 'institutionName', 'institutionAddress', 'countryName'],

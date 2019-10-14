@@ -2,7 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
-               :filterOn="filterOn"
+               v-bind="$props"
                itemType="markers"
                ref="mapDefinitionTable"
                v-on="$listeners">
@@ -13,18 +13,12 @@
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import defaultProps from '@/const/table-props.js'
 
 export default {
   name: 'MapDefinitionTable',
   props: {
-    filterOn: {
-      type: Array,
-      default: null
-    },
-    getData: {
-      type: Function,
-      default: () => {}
-    }
+    ...defaultProps.FULL
   },
   data: function () {
     const columns = [
@@ -41,6 +35,9 @@ export default {
         name: 'mapFeatureType',
         type: String
       }, {
+        name: 'mapId',
+        type: Number
+      }, {
         name: 'mapName',
         type: String
       }, {
@@ -56,24 +53,23 @@ export default {
     ]
     return {
       options: {
-        requestData: (data, callback) => {
-          return this.getData(data, callback)
-        },
         idColumn: 'markerId',
         tableName: 'mapDefinitions',
-        sortable: ['markerId', 'markerName', 'synonyms', 'mapFeatureType', 'mapName', 'chromosome', 'position'],
+        sortable: ['markerId', 'markerName', 'synonyms', 'mapFeatureType', 'mapId', 'mapName', 'chromosome', 'position'],
         filterable: [],
         headings: {
           markerId: () => this.$t('tableColumnMarkerId'),
           markerName: () => this.$t('tableColumnMarkerName'),
           synonyms: () => this.$t('tableColumnMarkerSynonyms'),
           mapFeatureType: () => this.$t('tableColumnMapFeatureType'),
+          mapId: () => this.$t('tableColumnMarkerMapId'),
           mapName: () => this.$t('tableColumnMapName'),
           chromosome: () => this.$t('tableColumnMapChromosome'),
           position: () => this.$t('tableColumnMapPosition')
         },
         columnsClasses: {
           markerId: 'text-right',
+          mapId: 'text-right',
           chromosome: 'text-right',
           position: 'text-right',
           marked: 'text-right'

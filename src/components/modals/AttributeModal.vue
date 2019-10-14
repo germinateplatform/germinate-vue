@@ -4,9 +4,9 @@
       <template v-if="dataset">
         <h2>{{ $t('modalTitleDatasetAttributes') }}</h2>
         <p>{{ $t('modalTextDatasetAttributes') }}</p>
-        <DatasetAttributeTable :getData="getAttributeData" />
+        <DatasetAttributeTable :getData="getAttributeData" :downloadTable="downloadAttributes" />
       </template>
-      <template v-if="dataset && dataset.dublinCore">
+      <div v-if="dataset && dataset.dublinCore" class="mt-3">
         <h2>{{ $t('modalTitleDatasetDublinCore') }}</h2>
         <p>{{ $t('modalTextDatasetDublinCore') }}</p>
         <dl class="row">
@@ -56,7 +56,8 @@
             <dt class="col-sm-3 text-right">{{ $t('dublinCoreRights') }}</dt><dd class="col-sm-9" v-html="dataset.dublinCore.rights.join(', ')" />
           </template>
         </dl>
-      </template>
+        <a  class="btn btn-secondary" :href="getHref()" :download="`dataset-${dataset.datasetId}-dublin-core.json`" ><i class="mdi mdi-18px mdi-download" /></a>
+      </div>
     </div>
   </b-modal>
 </template>
@@ -80,8 +81,14 @@ export default {
     DatasetAttributeTable
   },
   methods: {
+    getHref: function () {
+      return 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.dataset.dublinCore))
+    },
     getAttributeData: function (data, callback) {
       return this.apiPostDatasetAttributeTable(this.dataset.datasetId, data, callback)
+    },
+    downloadAttributes: function (data, callback) {
+      return this.apiPostDatasetAttributeTableExport(this.dataset.datasetId, data, callback)
     },
     show: function () {
       this.$refs['attributeModal-' + this.id].show()
