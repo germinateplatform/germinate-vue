@@ -5,6 +5,10 @@
                v-bind="$props"
                ref="datasetTable"
                v-on="$listeners">
+      <template slot="datasetId" slot-scope="props">
+        <router-link :to="{ name: experimentTypes[props.row.experimentType].pageName, params: { datasetIds: props.row.datasetId.toString() } }" v-if="!props.row.isExternal && isPageAvailable(props.row.experimentType) && (!props.row.licenseName || isAccepted(props.row))">{{ props.row.datasetId }}</router-link>
+        <span v-else>{{ props.row.datasetId }}</span>
+      </template>
       <template slot="datasetName" slot-scope="props">
         <a target="_blank" :href="props.row.hyperlink" v-if="props.row.hyperlink && props.row.isExternal">{{ props.row.datasetName }} <i class="mdi mdi-18px mdi-open-in-new fix-alignment" /></a>
         <span v-else>{{ props.row.datasetName }}</span>

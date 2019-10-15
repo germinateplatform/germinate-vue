@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageGenotypesExportTitle') }}</h1>
-    <template v-if="datasets">
+    <template v-if="datasets && datasets.length > 0">
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
@@ -47,7 +47,18 @@ export default {
     }
 
     this.apiPostDatasetTable(request, result => {
-      this.datasets = result.data
+      this.datasets = result.data.filter(d => {
+        return (!d.licenseName || this.isAccepted(d))
+      })
+
+      if (this.datasets.length < 1) {
+        this.redirectBack()
+      }
+    }, {
+      codes: [404],
+      callback: () => {
+        this.redirectBack()
+      }
     })
   }
 }

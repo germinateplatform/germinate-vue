@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageTrialsExportTitle') }}</h1>
-    <template v-if="datasets">
+    <template v-if="datasets && datasets.length > 0">
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
@@ -97,6 +97,25 @@ export default {
         const colors = this.serverSettings.colorsTemplate
         return colors[index % colors.length]
       }
+    },
+    redirectBack: function () {
+      this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', [{
+        column: {
+          name: 'datasetId',
+          type: Number
+        },
+        comparator: 'inSet',
+        operator: 'and',
+        values: this.datasetIds
+      }])
+      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'trials' } }))
+    },
+    isAccepted: function (dataset) {
+      if (this.token) {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
+      } else {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
+      }
     }
   },
   mounted: function () {
@@ -122,7 +141,18 @@ export default {
     }
 
     this.apiPostDatasetTable(request, result => {
-      this.datasets = result.data
+      this.datasets = result.data.filter(d => {
+        return (!d.licenseName || this.isAccepted(d))
+      })
+
+      if (this.datasets.length < 1) {
+        this.redirectBack()
+      }
+    }, {
+      codes: [404],
+      callback: () => {
+        this.redirectBack()
+      }
     })
   }
 }

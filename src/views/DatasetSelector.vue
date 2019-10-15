@@ -121,6 +121,11 @@ export default {
     }
   },
   created: function () {
+    if (this.tableFiltering && this.tableFiltering.length > 0) {
+      this.filterOn = this.tableFiltering
+      this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', null)
+    }
+
     var experimentType = this.$route.params.experimentType
 
     if (this.experimentTypes[experimentType]) {

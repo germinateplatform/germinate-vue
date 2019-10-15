@@ -134,30 +134,35 @@ export default {
         allelefreq: {
           id: 4,
           icon: 'mdi-pulse',
+          pageName: 'export-allelefreq',
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeAllelefreq')
         },
         climate: {
           id: 5,
           icon: 'mdi-weather-snowy-rainy',
+          pageName: 'export-climate',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeClimate')
         },
         compound: {
           id: 6,
           icon: 'mdi-flask',
+          pageName: 'export-compound',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeCompound')
         },
         genotype: {
           id: 1,
           icon: 'mdi-dna',
+          pageName: 'export-genotypes',
           color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeGenotype')
         },
         trials: {
           id: 3,
           icon: 'mdi-shovel',
+          pageName: 'export-trials',
           color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeTrials')
         },
@@ -171,6 +176,13 @@ export default {
     }
   },
   methods: {
+    isPageAvailable: function (name) {
+      if (this.serverSettings != null && this.serverSettings.hiddenPages != null) {
+        return this.serverSettings.hiddenPages.indexOf(name) === -1
+      } else {
+        return true
+      }
+    },
     downloadBlob: function (object) {
       if (!object || !object.blob) {
         return
@@ -349,7 +361,7 @@ export default {
               console.error(err)
             }
           } else if (error && error.callback) {
-            if (error.codes.length === 0 || error.codes.includes(error.status)) {
+            if (error.codes.length !== 0 && error.codes.includes(err.response.status)) {
               error.callback(err.response)
             } else {
               vm.handleError(err.response)
@@ -438,7 +450,7 @@ export default {
               console.error(err)
             }
           } else if (error && error.callback) {
-            if (error.codes.length === 0 || error.codes.includes(error.status)) {
+            if (error.codes.length !== 0 && error.codes.includes(err.response.status)) {
               error.callback(err.response)
             } else {
               vm.handleError(err.response)
@@ -500,7 +512,7 @@ export default {
           if (err.response) {
             // The request was made and the server responded with a status code that falls out of the range of 2xx
             if (error && error.callback) {
-              if (error.codes.length === 0 || error.codes.includes(err.status)) {
+              if (error.codes.length !== 0 && error.codes.includes(err.response.status)) {
                 error.callback(err.response)
               } else {
                 vm.handleError(err.response)
