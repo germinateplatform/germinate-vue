@@ -86,10 +86,13 @@
         </li>
       </template>
     </vue-context>
+
+    <GroupEditAddModal v-if="token && markedIds[itemType] && markedIds[itemType].length > 0" :groupToEdit="newGroup" :groupTypeSelect="groupTypeSelect" ref="groupAddModal" v-on:ok="putGroup"/>
   </div>
 </template>
 
 <script>
+import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
 import TableFilter from '@/components/tables/TableFilter'
 import MarkedItems from '@/components/tables/MarkedItems'
 import { VueContext } from 'vue-context'
@@ -224,17 +227,67 @@ export default {
       prevCount: -1,
       currentRequestData: null,
       filter: null,
-      tableOptions: tableOptions
+      tableOptions: tableOptions,
+      newGroup: null,
+      groupTypeSelect: null
     }
   },
   components: {
+    GroupEditAddModal,
     TableFilter,
     MarkedItems,
     VueContext
   },
   methods: {
+    putGroup: function () {
+      var group = {
+        name: this.newGroup.groupName,
+        description: this.newGroup.groupDescription,
+        grouptypeId: this.newGroup.groupTypeId,
+        visibility: true,
+        createdBy: this.newGroup.userId
+      }
+
+      this.apiPutGroup(group, result => {
+        const data = {
+          ids: this.markedIds[this.itemType],
+          isAddition: true
+        }
+        this.apiPatchGroupMembers(result, this.itemType, data, result => {
+          this.$bvToast.toast(this.$t('toastGroupCreateWithMembers', { count: result }), {
+            title: this.$t('genericSuccess'),
+            variant: 'success',
+            autoHideDelay: 5000,
+            appendToast: true
+          })
+        })
+      })
+    },
     createGroup: function () {
       // TODO
+      this.newGroup = {
+        groupId: null,
+        groupName: null,
+        groupDescription: null,
+        userId: this.token.id
+      }
+      this.apiGetGroupTypes(result => {
+        this.groupTypeSelect = result.data.map(g => {
+          return {
+            value: g.id,
+            text: this.groupTypes[g.targetTable].text()
+          }
+        })
+        console.log(Object.keys(this.groupTypes).map(i => this.groupTypes[i]))
+        const groupTypeLocal = Object.keys(this.groupTypes).filter(i => this.groupTypes[i].itemType === this.itemType)[0]
+        const groupType = result.data.filter(g => g.targetTable === groupTypeLocal)[0]
+        this.newGroup.groupTypeId = groupType.id
+        this.newGroup.groupType = groupType.targetTable
+
+        this.$nextTick(() => {
+          this.$refs.groupAddModal.show()
+        })
+      })
     },
     onDownloadTableClicked: function () {
       if (this.downloadTable !== null) {

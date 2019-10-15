@@ -40,7 +40,7 @@
       <a href="#" class="text-decoration-none" slot="attributes" slot-scope="props" v-if="(props.row.attributes !== 0 || props.row.dublinCore) && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="showAttributes(props.row)">
         <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
       </a>
-      <a href="#" class="text-decoration-none" slot="download" slot-scope="props" v-if="(props.row.experimentType !== 'climate') && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="downloadDataset(props.row)">
+      <a href="#" class="text-decoration-none" slot="download" slot-scope="props" v-if="!props.row.isExternal && (props.row.experimentType !== 'climate') && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="downloadDataset(props.row)">
         <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
       </a>
     </BaseTable>

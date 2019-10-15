@@ -63,18 +63,21 @@ export default {
         germinatebase: {
           icon: 'mdi-sprout',
           apiName: 'germplasm',
+          itemType: 'germplasm',
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeGerminatebase')
         },
         markers: {
           icon: 'mdi-dna',
           apiName: 'marker',
+          itemType: 'markers',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeMarker')
         },
         locations: {
           icon: 'mdi-map-marker',
           apiName: 'location',
+          itemType: 'locations',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeLocation')
         }
@@ -361,7 +364,7 @@ export default {
               console.error(err)
             }
           } else if (error && error.callback) {
-            if (error.codes.length !== 0 && error.codes.includes(err.response.status)) {
+            if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
               error.callback(err.response)
             } else {
               vm.handleError(err.response)
@@ -450,7 +453,7 @@ export default {
               console.error(err)
             }
           } else if (error && error.callback) {
-            if (error.codes.length !== 0 && error.codes.includes(err.response.status)) {
+            if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
               error.callback(err.response)
             } else {
               vm.handleError(err.response)
@@ -512,7 +515,7 @@ export default {
           if (err.response) {
             // The request was made and the server responded with a status code that falls out of the range of 2xx
             if (error && error.callback) {
-              if (error.codes.length !== 0 && error.codes.includes(err.response.status)) {
+              if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
                 error.callback(err.response)
               } else {
                 vm.handleError(err.response)

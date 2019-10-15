@@ -245,7 +245,7 @@ const router = new Router({
         {
           path: 'images',
           name: 'images',
-          component: () => import('@/views/ImageGallery.vue'),
+          component: () => import('@/views/Images.vue'),
           beforeEnter: requireAuth
         },
         {

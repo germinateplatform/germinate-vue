@@ -19,9 +19,9 @@
         </template>
       </template>
     </AppHeaderDropdown>
-    <b-modal ref="signInModal" title="Sign in" hide-footer>
-      <SignInForm v-on:login="signIn" />
-      <p class="text-danger" v-if="response">{{ response }}</p>
+    <b-modal ref="signInModal" :title="$t('widgetSignInTitle')" hide-footer>
+      <SignInForm v-on:login="signIn" :enabled="enabled" />
+      <p class="text-danger mt-3" v-if="response">{{ response }}</p>
     </b-modal>
   </div>
 </template>
@@ -39,18 +39,22 @@ export default {
   },
   data: () => {
     return {
-      response: null
+      response: null,
+      enabled: true
     }
   },
   methods: {
     signIn: function (user) {
+      this.enabled = false
       this.apiPostToken(user, result => {
         // If it's successful, finally store them
+        this.enabled = true
         this.$store.dispatch('ON_TOKEN_CHANGED', result)
         this.$refs.signInModal.hide()
       }, {
         codes: [],
         callback: error => {
+          this.enabled = true
           if (error.status === 403 || error.status === 400) {
             this.response = this.$t('errorMessageInvalidUsernamePassword')
           } else {

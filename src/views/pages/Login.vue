@@ -6,7 +6,9 @@
           <b-card-group>
             <b-card no-body class="p-4">
               <b-card-body>
-                <SignInForm v-on:login="login" />
+                <h2>{{ $t('widgetSignInTitle') }}</h2>
+                <SignInForm v-on:login="login" :enabled="enabled"/>
+                <p class="text-danger mt-3" v-if="response">{{ response }}</p>
               </b-card-body>
             </b-card>
             <b-card no-body class="text-white bg-primary py-5">
@@ -30,35 +32,42 @@ import SignInForm from '@/components/util/SignInForm'
 
 export default {
   name: 'Login',
+  data: function () {
+    return {
+      response: null,
+      enabled: true
+    }
+  },
   components: {
     SignInForm
   },
   methods: {
     login: function (user) {
-      var vm = this
-
-      this.apiPostToken(user, function (result) {
-        vm.error = false
+      this.enabled = false
+      this.apiPostToken(user, result => {
+        this.error = false
+        this.enabled = true
         // If it's successful, finally store them
-        vm.$store.dispatch('ON_TOKEN_CHANGED', result)
-        if (vm.originalTarget) {
-          var path = vm.originalTarget.path
-          vm.$store.dispatch('ON_ORIGINAL_TARGET_CHANGED', null)
-          vm.$router.push(path)
+        this.$store.dispatch('ON_TOKEN_CHANGED', result)
+        if (this.originalTarget) {
+          var path = this.originalTarget.path
+          this.$store.dispatch('ON_ORIGINAL_TARGET_CHANGED', null)
+          this.$router.push(path)
         } else {
-          vm.$router.push('/')
+          this.$router.push('/')
         }
       }, {
         codes: [],
         callback: function (error) {
-          vm.error = true
+          this.error = true
           if (error.status === 403 || error.status === 400) {
-            vm.response = vm.$t('errorMessageInvalidUsernamePassword')
+            this.response = this.$t('errorMessageInvalidUsernamePassword')
           } else {
-            vm.response = vm.$t('errorMessageServerUnavailable')
+            this.response = this.$t('errorMessageServerUnavailable')
           }
+          this.enabled = true
           // If they're wrong, remove
-          vm.$store.dispatch('ON_TOKEN_CHANGED', null)
+          this.$store.dispatch('ON_TOKEN_CHANGED', null)
         }
       })
     }
@@ -68,6 +77,6 @@ export default {
 
 <style scoped>
 .page-login {
-  min-height: calc(100vh - 105px);
+  min-height: calc(100vh - 255px);
 }
 </style>

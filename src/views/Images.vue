@@ -1,5 +1,7 @@
 <template>
   <div>
+    <h1>{{ $t('pageImagesTitle') }}</h1>
+    <p>{{ $t('pageImagesText') }}</p>
     <ImageGallery :getImages="getImages" />
     <ImageTable :getData="getData" />
   </div>

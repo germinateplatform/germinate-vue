@@ -70,7 +70,8 @@ export default {
   },
   methods: {
     deleteJob: function (job) {
-      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
+      this.$bvModal.msgBoxConfirm(this.$t('modalTextDeleteAsyncJob'), {
+        title: this.$t('modalTitleSure'),
         okVariant: 'danger',
         okTitle: this.$t('genericYes'),
         cancelTitle: this.$t('genericNo')

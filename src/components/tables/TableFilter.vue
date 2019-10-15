@@ -61,7 +61,7 @@
                   <b-form-input v-model="f.values[1]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                 </template>
                 <template v-else-if="isType(f, Boolean)">
-                  <b-form-select :options="[{value: 0, text: 'False'}, {value: 1, text: 'True'}]" v-model="f.values[0]" />
+                  <b-form-select :options="[{value: 0, text: $t('genericFalse')}, {value: 1, text: $t('genericTrue')}]" v-model="f.values[0]" />
                 </template>
                 <template v-else-if="isType(f, 'locationType')">
                   <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" />

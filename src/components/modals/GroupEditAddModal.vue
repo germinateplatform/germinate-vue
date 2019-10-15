@@ -4,20 +4,20 @@
     :title="$t('modalTitleEditGroup')"
     :ok-title="$t('buttonSubmit')"
     :cancel-title="$t('buttonCancel')"
-    @ok="$emit('ok')"
+    @ok="okPressed"
     v-if="groupToEdit">
     <b-form @submit.stop.prevent>
       <b-form-group
         :label="$t('formLabelGroupType')"
         label-for="groupType"
         :description="groupToEdit.id === null ? $t('formDescriptionGroupType') : $t('formDescriptionGroupTypeDisabled')">
-        <b-form-select id="groupType" :options="groupTypeSelect" v-model="groupToEdit.groupTypeId" :disabled="groupToEdit.id !== null" required/>
+        <b-form-select id="groupType" :options="groupTypeSelect" v-model="groupToEdit.groupTypeId" :disabled="groupToEdit.id !== null" required autofocus/>
       </b-form-group>
       <b-form-group
         :label="$t('formLabelGroupName')"
         label-for="groupName"
         :description="$t('formDescriptionGroupName')">
-        <b-form-input id="groupName" v-model="groupToEdit.groupName" required/>
+        <b-form-input id="groupName" v-model="groupToEdit.groupName" required autofocus/>
       </b-form-group>
       <b-form-group
         :label="$t('formLabelGroupDescription')"
@@ -42,6 +42,10 @@ export default {
     }
   },
   methods: {
+    okPressed: function () {
+      // TODO: Verify that required fields are set
+      this.$emit('ok')
+    },
     show: function () {
       this.$refs.groupAddEditModal.show()
     },

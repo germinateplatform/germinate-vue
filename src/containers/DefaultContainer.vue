@@ -206,7 +206,7 @@ export default {
           icon: 'mdi mdi-18px mdi-group'
         },
         {
-          name: this.$t('menuImageGallery'),
+          name: this.$t('menuImages'),
           identifiers: ['images'],
           url: '/images',
           icon: 'mdi mdi-18px mdi-image-multiple'

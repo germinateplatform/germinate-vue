@@ -283,6 +283,9 @@ export default {
     apiPatchGroup: function (group, onSuccess, onError) {
       return this.authAjax({ url: `group/${group.id}`, data: group, method: 'PATCH', success: onSuccess, error: onError })
     },
+    apiPutGroup: function (group, onSuccess, onError) {
+      return this.authAjax({ url: 'group', data: group, method: 'PUT', success: onSuccess, error: onError })
+    },
     apiDeleteGroup: function (groupId, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}`, method: 'DELETE', success: onSuccess, error: onError })
     },
