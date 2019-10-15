@@ -19,8 +19,9 @@ export default {
   components: {
     AppHeaderDropdown
   },
-  data: () => {
+  data: function () {
     return {
+      // Default set of languages. Server can provide additional ones
       languages: [{
         locale: 'en_GB',
         flag: 'gb',
@@ -38,18 +39,30 @@ export default {
         this.$i18n.locale = language.locale
         this.$store.dispatch('ON_LOCALE_CHANGED', language.locale)
       })
+    },
+    init: function () {
+      if (this.locale) {
+        this.$i18n.locale = this.languages.map(l => {
+          return l.locale
+        }).filter(l => {
+          return this.locale === l
+        })
+      }
     }
   },
   mounted: function () {
-    var vm = this
+    // Ask the server which locales are available
+    this.apiGetLocales(result => {
+      // If there is a result, use it
+      if (result) {
+        this.languages = result
+      }
 
-    if (this.locale) {
-      this.$i18n.locale = this.languages.map(function (l) {
-        return l.locale
-      }).filter(function (l) {
-        return vm.locale === l
-      })
-    }
+      this.init()
+    }, () => {
+      // If there's an error, work with what we've got
+      this.init()
+    })
   }
 }
 </script>

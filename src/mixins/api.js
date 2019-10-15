@@ -148,6 +148,9 @@ export default {
     apiPostDatasetExport: function (experimentType, queryData, onSuccess, onError) {
       return this.authAjax({ url: `dataset/export/${experimentType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiGetDatasetSourceFile: function (datasetId, onSuccess, onError) {
+      return this.authAjax({ url: `dataset/${datasetId}/download-source?random=${this.uuidv4()}`, dataType: 'blob', success: onSuccess, error: onError })
+    },
     apiPostGenotypeDatasetExport: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
@@ -239,6 +242,9 @@ export default {
     },
     apiGetSettings: function (onSuccess, onError) {
       return this.authAjax({ url: 'settings', success: onSuccess, error: onError })
+    },
+    apiGetLocales: function (onSuccess, onError) {
+      return this.authAjax({ url: `clientlocale?random=${this.uuidv4()}`, success: onSuccess, error: onError })
     },
     apiGetSettingsFile: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'settings/file', data: queryData, success: onSuccess, error: onError })

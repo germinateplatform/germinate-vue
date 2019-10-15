@@ -27,8 +27,8 @@
         <i class="mdi mdi-18px mdi-check fix-alignment text-success" v-if="isAccepted(props.row)" />
         <i class="mdi mdi-18px mdi-new-box fix-alignment text-danger" v-else />
       </div>
-      <i slot="datasetState" slot-scope="props" :class="`mdi mdi-18px ${datasetStates[props.row.datasetState].icon}`" :title="datasetStates[props.row.datasetState].text()" />
-      <i slot="isExternal" slot-scope="props" :class="`mdi mdi-18px ${getInternalExternalClass(props.row)}`" v-if="props.row.isExternal !== undefined" :title="props.row.isExternal" />
+      <i slot="datasetState" slot-scope="props" :class="`mdi mdi-18px ${datasetStates[props.row.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[props.row.datasetState].text()" />
+      <i slot="isExternal" slot-scope="props" :class="`mdi mdi-18px ${getInternalExternalClass(props.row)}`" v-if="props.row.isExternal !== undefined" v-b-tooltip.hover :title="props.row.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
 
       <a href="#" class="text-decoration-none" slot="collaborators" slot-scope="props" v-if="props.row.collaborators !== 0" @click.prevent="showCollaborators(props.row)">
         <i class="mdi mdi-18px mdi-account-multiple" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')" />
@@ -264,7 +264,14 @@ export default {
             })
           break
         case 'allelefreq':
-          // TODO: Implement!
+          this.apiGetDatasetSourceFile(dataset.datasetId, result => {
+            this.downloadBlob({
+              filename: `allelefreq-${dataset.datasetId}`,
+              extension: 'txt',
+              blob: result
+            })
+          })
+
           break
         default:
           // TODO: Notification

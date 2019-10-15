@@ -65,7 +65,11 @@ Vue.use({
 })
 
 Vue.filter('toDate', function (value) {
-  return window.moment(value).format(window.moment.localeData().longDateFormat('L'))
+  if (value.indexOf('-') !== -1) {
+    return window.moment(value).format(window.moment.localeData().longDateFormat('L'))
+  } else {
+    return window.moment(value, 'MMM D, YYYY').format(window.moment.localeData().longDateFormat('L'))
+  }
 })
 
 // Set base URL

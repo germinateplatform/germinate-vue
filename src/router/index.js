@@ -243,8 +243,8 @@ const router = new Router({
           beforeEnter: requireAuth
         },
         {
-          path: 'image-gallery',
-          name: 'image-gallery',
+          path: 'images',
+          name: 'images',
           component: () => import('@/views/ImageGallery.vue'),
           beforeEnter: requireAuth
         },
@@ -274,6 +274,11 @@ const router = new Router({
               component: () => import('@/views/about/AboutGerminate.vue')
             }
           ]
+        },
+        {
+          path: '404',
+          name: '404',
+          component: () => import('@/views/pages/Page404.vue')
         }
       ]
     }
@@ -281,6 +286,16 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  var serverSettings = store.getters.serverSettings
+
+  // If the requested page isn't available because it has been hidden, redirect to 404
+  if (serverSettings && serverSettings.hiddenPages) {
+    if (serverSettings.hiddenPages.indexOf(to.name) !== -1) {
+      next({ name: '404' })
+      return
+    }
+  }
+
   store.dispatch('ON_HELP_KEY_CHANGED', null)
   loadLanguageAsync(store.getters.locale).then(() => next())
 })

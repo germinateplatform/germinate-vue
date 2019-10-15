@@ -182,7 +182,9 @@ export default {
 
       var downloadLink = document.createElement('a')
       downloadLink.href = url
-      downloadLink.download = object.filename + '.' + extension
+      if (object.filename && extension) {
+        downloadLink.download = object.filename + '.' + extension
+      }
       document.body.appendChild(downloadLink)
       downloadLink.click()
       document.body.removeChild(downloadLink)

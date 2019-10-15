@@ -11,7 +11,12 @@
     </AppHeader>
     <div class="app-body">
       <main class="main ml-0">
-        <div class="container-fluid mt-4">
+        <div class="container-fluid mb-4">
+          <div class="mb-3 d-flex align-items-center my-4">
+            <b-img width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`"></b-img>
+            <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
+          </div>
+          <hr />
           <router-view :key="$route.path"></router-view>
         </div>
       </main>

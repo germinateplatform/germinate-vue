@@ -30,15 +30,15 @@
       <AppSidebar fixed>
         <SidebarHeader/>
         <SidebarNav :navItems="nav"></SidebarNav>
-        <b-img class="brand-logo" fluid :src="getImageSrc('logo.svg')"></b-img>
+        <b-img class="brand-logo" fluid :src="`${baseUrl}image/src-svg/logo.svg`"></b-img>
         <SidebarFooter/>
         <SidebarMinimizer/>
       </AppSidebar>
       <main class="main">
-        <div class="container-fluid my-4">
-          <div class="mb-3 d-flex align-items-center">
-            <b-img width="48" height="48" :src="getImageSrc('crop.svg')"></b-img>
-            <h5 class="mt-0 ml-3">{{ $t('germinateTitle') }}</h5>
+        <div class="container-fluid mb-4">
+          <div class="mb-3 d-flex align-items-center my-4">
+            <b-img width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`"></b-img>
+            <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
           </div>
           <hr />
           <router-view :key="$route.path"></router-view>
@@ -110,14 +110,6 @@ export default {
     search: function () {
       this.$router.push({ name: 'search', params: { searchTerm: this.searchTerm } })
     },
-    getImageSrc: function (img) {
-      var params = {
-        token: this.token ? this.token.imageToken : null
-      }
-      var paramString = this.toUrlString(params)
-
-      return this.baseUrl + 'image/src-svg/' + img + '?' + paramString
-    },
     getHelpDisabled: function () {
       return this.helpKey === undefined || this.helpKey === null
     },
@@ -125,7 +117,7 @@ export default {
       this.$refs.helpModal.show()
     },
     updateNav: function () {
-      this.nav = [
+      var tempNav = [
         {
           name: this.$t('menuHome'),
           url: '/home',
@@ -138,6 +130,7 @@ export default {
           children: [
             {
               name: this.$t('menuGermplasm'),
+              identifiers: ['germplasm'],
               url: '/data/germplasm',
               icon: 'mdi mdi-18px mdi-sprout'
             },
@@ -148,11 +141,13 @@ export default {
               children: [
                 {
                   name: this.$t('menuGenotypicMaps'),
+                  identifiers: ['maps', 'map-details'],
                   url: '/data/genotypes/maps',
                   icon: 'mdi mdi-18px mdi-reorder-vertical'
                 },
                 {
                   name: this.$t('menuGenotypicDataExport'),
+                  identifiers: ['export-genotypes'],
                   url: '/data/export/genotype',
                   icon: 'mdi mdi-18px mdi-dna'
                 }
@@ -165,11 +160,13 @@ export default {
               children: [
                 {
                   name: this.$t('menuTrialsTraits'),
+                  identifiers: ['traits'],
                   url: '/data/trials/traits',
                   icon: 'mdi mdi-18px mdi-tag-text-outline'
                 },
                 {
                   name: this.$t('menuTrialsDataExport'),
+                  identifiers: ['export-trials'],
                   url: '/data/export/trials',
                   icon: 'mdi mdi-18px mdi-shovel'
                 }
@@ -177,6 +174,7 @@ export default {
             },
             {
               name: this.$t('menuDatasets'),
+              identifiers: ['datasets'],
               url: '/data/datasets',
               icon: 'mdi mdi-18px mdi-database'
             },
@@ -187,11 +185,13 @@ export default {
               children: [
                 {
                   name: this.$t('menuLocations'),
+                  identifiers: ['locations'],
                   url: '/data/environment/locations',
                   icon: 'mdi mdi-map'
                 },
                 {
                   name: this.$t('menuGeographicSearch'),
+                  identifiers: ['geographic-search'],
                   url: '/data/environment/geographic-search',
                   icon: 'mdi mdi-map-search'
                 }
@@ -201,12 +201,14 @@ export default {
         },
         {
           name: this.$t('menuGroups'),
+          identifiers: ['groups', 'group-details'],
           url: '/groups',
           icon: 'mdi mdi-18px mdi-group'
         },
         {
           name: this.$t('menuImageGallery'),
-          url: '/image-gallery',
+          identifiers: ['images'],
+          url: '/images',
           icon: 'mdi mdi-18px mdi-image-multiple'
         },
         {
@@ -216,12 +218,35 @@ export default {
           children: [
             {
               name: this.$t('menuAboutGerminate'),
+              identifiers: ['about-germinate'],
               url: '/about/germinate',
               icon: 'mdi mdi-map'
             }
           ]
         }
       ]
+
+      // If the server asks to hide certain pages, remove them from the menu
+      if (this.serverSettings && this.serverSettings.hiddenPages && this.serverSettings.hiddenPages.length > 0) {
+        var hiddenPages = this.serverSettings.hiddenPages
+        this.nav = tempNav.filter(function f (o) {
+          if (o.identifiers) {
+            // If the item itself contains the hidden name as an identifier, remove it
+            if (o.identifiers.filter(value => hiddenPages.indexOf(value) !== -1).length > 0) {
+              return false
+            }
+          }
+
+          // Else, recursively check the children and only keep this one, if there's at least one visible child
+          if (o.children && o.children.length > 0) {
+            return (o.children = o.children.filter(f)).length
+          }
+
+          return true
+        })
+      } else {
+        this.nav = tempNav
+      }
     },
     toggleAside: function () {
       if (!document.body.classList.contains('aside-menu-show')) {
