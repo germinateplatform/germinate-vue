@@ -150,6 +150,12 @@ export default {
                   identifiers: ['export-genotypes'],
                   url: '/data/export/genotype',
                   icon: 'mdi mdi-18px mdi-dna'
+                },
+                {
+                  name: this.$t('menuAlleleFrequencyDataExport'),
+                  identifiers: ['export-allelefrequency'],
+                  url: '/data/export/allelefreq',
+                  icon: 'mdi mdi-18px mdi-pulse'
                 }
               ]
             },

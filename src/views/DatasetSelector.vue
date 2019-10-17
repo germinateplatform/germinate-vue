@@ -2,8 +2,8 @@
   <div>
     <div v-if="experimentType">
       <h1>{{ experimentTypes[experimentType].text() }}</h1>
-      <DatasetTable :getData="getData" :filterOn="filterOn" :selectable="true" class="mb-3" ref="datasetTable"/>
-      <b-button variant="primary" @click="checkLicenses"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Continue</b-button>
+      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3" ref="datasetTable"/>
+      <b-button variant="primary" @click="checkLicenses" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Continue</b-button>
     </div>
     <div v-else>
       <h1>Invalid experiment type</h1>
@@ -89,6 +89,9 @@ export default {
         case 'genotype':
           this.$router.push({ name: 'export-genotypes', params: { datasetIds: selectedIds.join(',') } })
           break
+        case 'allelefreq':
+          this.$router.push({ name: 'export-allelefrequency', params: { datasetIds: selectedIds.join(',') } })
+          break
       }
     },
     getExperimentTypes: function () {
@@ -99,6 +102,9 @@ export default {
     getData: function (data, callback) {
       this.adjustData(data)
       return this.apiPostDatasetTable(data, callback)
+    },
+    getIds: function (data, callback) {
+      return this.apiPostDatasetTableIds(data, callback)
     },
     adjustData: function (data) {
       var additional = [{

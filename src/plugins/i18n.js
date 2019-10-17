@@ -41,6 +41,15 @@ export function loadLanguageAsync (lang) {
   // If the language hasn't been loaded yet
   return axios.get(`clientlocale/${lang}`).then(m => {
     // If we get a response from the server, use it
+    if (m.data) {
+      // Delete the content of the about Germinate page, we don't want people to change it.
+      delete m.data.pageAboutGerminateTitle
+      delete m.data.pageAboutGerminateText
+      delete m.data.pageAboutGerminateCardHomepageText
+      delete m.data.pageAboutGerminateCardGithubText
+      delete m.data.pageAboutGerminateCardPublicationText
+      delete m.data.pageAboutGerminateCardDocumentationText
+    }
     Object.assign(messages[lang], m.data)
     i18n.setLocaleMessage(lang, messages[lang])
     loadedLanguages.push(lang)

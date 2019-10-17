@@ -137,7 +137,7 @@ export default {
         allelefreq: {
           id: 4,
           icon: 'mdi-pulse',
-          pageName: 'export-allelefreq',
+          pageName: 'export-allelefrequency',
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeAllelefreq')
         },
@@ -179,6 +179,32 @@ export default {
     }
   },
   methods: {
+    createColorGradient: function (one, two, steps) {
+      var oneRgb = this.hexToRgb(one)
+      var twoRgb = this.hexToRgb(two)
+
+      var result = []
+      for (var i = 0; i < steps; i++) {
+        var iNorm = i / (steps - 1)
+        result.push(this.rgbToHex(
+          oneRgb.r + iNorm * (twoRgb.r - oneRgb.r),
+          oneRgb.g + iNorm * (twoRgb.g - oneRgb.g),
+          oneRgb.b + iNorm * (twoRgb.b - oneRgb.b)
+        ))
+      }
+      return result
+    },
+    hexToRgb: function (hex) {
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null
+    },
+    rgbToHex: function (r, g, b) {
+      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+    },
     isPageAvailable: function (name) {
       if (this.serverSettings != null && this.serverSettings.hiddenPages != null) {
         return this.serverSettings.hiddenPages.indexOf(name) === -1
@@ -265,6 +291,7 @@ export default {
      * @param {*} error The error response object
      */
     handleError (error) {
+      EventBus.$emit('show-loading', false)
       var variant = 'danger'
       var title = this.$t('genericError')
       var message = error.statusText
@@ -317,8 +344,6 @@ export default {
         autoHideDelay: 5000,
         appendToast: true
       })
-
-      EventBus.$emit('show-loading', false)
     },
     authForm ({ url = null, formData, success = null, error = { codes: [], callback: this.handleError } }) {
       var vm = this
@@ -431,6 +456,18 @@ export default {
         }
 
         if (success) {
+          if (dataType === 'blob' && result.headers && result.headers['content-disposition']) {
+            const filename = result.headers['content-disposition']
+              .split(';')
+              .map(p => p.trim())
+              .filter(p => p.indexOf('filename') === 0)
+              .map(p => p.replace('filename=', ''))
+
+            if (filename && filename.length > 0) {
+              result.data.filename = filename[0]
+            }
+          }
+
           success(result.data)
         }
       })

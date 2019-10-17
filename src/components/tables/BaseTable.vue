@@ -149,7 +149,7 @@ export default {
   },
   computed: {
     allSelected: function () {
-      return this.selectedItems.length === this.prevCount
+      return this.selectedItems.length > 0 && this.selectedItems.length === this.prevCount
     }
   },
   watch: {
@@ -278,7 +278,6 @@ export default {
             text: this.groupTypes[g.targetTable].text()
           }
         })
-        console.log(Object.keys(this.groupTypes).map(i => this.groupTypes[i]))
         const groupTypeLocal = Object.keys(this.groupTypes).filter(i => this.groupTypes[i].itemType === this.itemType)[0]
         const groupType = result.data.filter(g => g.targetTable === groupTypeLocal)[0]
         this.newGroup.groupTypeId = groupType.id

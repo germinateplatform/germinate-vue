@@ -10,6 +10,9 @@ Vue.use(Router)
 function requireAuth (to, from, next) {
   var authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'NONE'
   var token = store.getters.token
+
+  EventBus.$emit('show-loading', false)
+
   // If we're in full auth mode, check credentials for each call
   if (authMode === 'FULL') {
     if (!auth.loggedIn()) {
@@ -199,6 +202,19 @@ const router = new Router({
                   datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
                 }
               }
+            },
+            {
+              path: 'export/allelefreq/:datasetIds',
+              name: 'export-allelefrequency',
+              component: () => import('@/views/data/export/AlleleFrequencyExport.vue'),
+              beforeEnter: requireAuth,
+              props (route) {
+                const datasetIds = route.params.datasetIds || ''
+
+                return {
+                  datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
+                }
+              }
             }
           ]
         },
@@ -271,6 +287,7 @@ const router = new Router({
             {
               path: 'germinate',
               name: 'about-germinate',
+              meta: { canBeHidden: false },
               component: () => import('@/views/about/AboutGerminate.vue')
             }
           ]
@@ -288,8 +305,10 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   var serverSettings = store.getters.serverSettings
 
+  // Check if this page can be hidden
+  const canBeHidden = !to.meta || to.meta.canBeHidden !== false
   // If the requested page isn't available because it has been hidden, redirect to 404
-  if (serverSettings && serverSettings.hiddenPages) {
+  if (serverSettings && serverSettings.hiddenPages && canBeHidden) {
     if (serverSettings.hiddenPages.indexOf(to.name) !== -1) {
       next({ name: '404' })
       return

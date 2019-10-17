@@ -1,10 +1,10 @@
 <template>
   <div>
     <b-row>
-      <b-col cols=12 md=6 v-if="germplasmGroups && germplasmGroups.length > 0">
+      <b-col cols=12 md=6 >
         <ExportGroupSelection title="pageGenotypesExportSelectGermplasmGroupTitle" text="pageGenotypesExportSelectGermplasmGroupText" tooltip="pageExportSelectGroupTooltip" :groups="germplasmGroups" itemType="germplasm" ref="germplasmGroups"/>
       </b-col>
-      <b-col cols=12 md=6 v-if="markerGroups && markerGroups.length > 0">
+      <b-col cols=12 md=6 >
         <ExportGroupSelection title="pageGenotypesExportSelectMarkerGroupTitle" text="pageGenotypesExportSelectMarkerGroupText" tooltip="pageExportSelectGroupTooltip" :groups="markerGroups" itemType="markers" ref="markerGroups"/>
       </b-col>
     </b-row>
@@ -25,7 +25,7 @@
         </b-form-checkbox>
       </b-col>
     </b-row>
-    <b-button variant="primary" @click="exportData"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Export</b-button>
+    <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ experimentType === 'allelefreq' ? 'Bin data' : 'Export' }}</b-button>
   </div>
 </template>
 
@@ -38,12 +38,16 @@ export default {
     datasetIds: {
       type: Array,
       default: () => null
+    },
+    experimentType: {
+      type: String,
+      default: null
     }
   },
   data: function () {
     return {
-      markerGroups: [],
-      germplasmGroups: [],
+      markerGroups: null,
+      germplasmGroups: null,
       maps: [],
       map: null,
       generateFlapjackProject: false
@@ -60,7 +64,7 @@ export default {
     ExportGroupSelection
   },
   methods: {
-    exportData: function () {
+    exportData: function (binningConfig) {
       EventBus.$emit('show-loading', true)
       var query = {
         xGroupIds: null,
@@ -82,7 +86,7 @@ export default {
         query.yGroupIds = germplasmGroups
       }
 
-      var markerSettings = this.$refs.germplasmGroups.getSettings()
+      var markerSettings = this.$refs.markerGroups.getSettings()
       var markedSelected = markerSettings.selectedGroups.filter(g => g.isMarkedItem === true)
       if (markerSettings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
         query.xIds = this.markedIds.germplasm
@@ -92,19 +96,38 @@ export default {
         query.xGroupIds = markerGroups
       }
 
-      this.apiPostGenotypeDatasetExport(query, result => {
-        this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
+      if (this.experimentType === 'genotype') {
+        this.apiPostGenotypeDatasetExport(query, result => {
+          this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
 
-        EventBus.$emit('toggle-aside')
+          EventBus.$emit('toggle-aside')
 
-        EventBus.$emit('show-loading', false)
-      })
+          EventBus.$emit('show-loading', false)
+        })
+      } else if (this.experimentType === 'allelefreq') {
+        if (binningConfig) {
+          query.config = binningConfig
+          this.apiPostAlleleFrequencyDatasetExport(query, result => {
+            this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
+
+            EventBus.$emit('toggle-aside')
+
+            EventBus.$emit('show-loading', false)
+          })
+        } else {
+          this.apiPostDatasetExport('allelefreq/histogram', query, result => {
+            this.$emit('on-file-loaded', result)
+
+            EventBus.$emit('show-loading', false)
+          })
+        }
+      }
     },
     updateMarkerGroups: function () {
       const request = {
         datasetIds: this.datasetIds,
         groupType: 'markers',
-        experimentType: 'genotype'
+        experimentType: this.experimentType
       }
       this.apiPostDatasetGroups(request, result => {
         this.markerGroups = result
@@ -114,7 +137,7 @@ export default {
       const request = {
         datasetIds: this.datasetIds,
         groupType: 'germinatebase',
-        experimentType: 'genotype'
+        experimentType: this.experimentType
       }
       this.apiPostDatasetGroups(request, result => {
         this.germplasmGroups = result

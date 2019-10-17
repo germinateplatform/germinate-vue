@@ -85,8 +85,8 @@ export default {
   methods: {
     handleResize: function () {
       this.$plotly.relayout(this.$slots.chart[0].elm, {
-        'xaxis.autorange': true,
-        'yaxis.autorange': true
+        // 'xaxis.autorange': true,
+        // 'yaxis.autorange': true
       })
     },
     downloadSource: function () {

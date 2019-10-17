@@ -16,17 +16,17 @@
     <div class="text-center py-3">
       <b-img src="/img/germinate-square.svg" fluid class="about-header-logo"/>
     </div>
-    <h1 class="text-center">Germinate <small>- The generic plant genetic resources database</small></h1>
+    <div class="text-center" v-html="$t('pageAboutGerminateTitle')" />
     <b-row class="about-banners" v-if="banners">
       <b-col cols=12 sm=6 xl=3 v-for="(banner, index) in banners" :key="'about-banners-' + banner.key">
         <a target="_blank" :href="banner.link">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
-                <b-col cols=6 class="align-self-center">
+                <b-col cols=8 class="align-self-center">
                   <h5 class="mb-0">{{ banner.text() }}</h5>
                 </b-col>
-                <b-col cols=6 class="text-right">
+                <b-col cols=4 class="text-right">
                   <i :class="`mdi mdi-48px ${banner.icon}`" />
                 </b-col>
               </b-row>
@@ -35,6 +35,7 @@
         </a>
       </b-col>
     </b-row>
+    <div v-html="$t('pageAboutGerminateText')" />
     <b-row>
       <b-col cols=6 sm=4 class="about-logo">
         <b-img src="/img/germinate-square.svg" fluid />
@@ -56,25 +57,25 @@ export default {
       banners: [
         {
           key: 'homepage',
-          text: () => 'Visit the Germinate homepage',
+          text: () => this.$t('pageAboutGerminateCardHomepageText'),
           icon: 'mdi-web',
           link: 'https://ics.hutton.ac.uk/get-germinate'
         },
         {
           key: 'github',
-          text: () => 'View Germinate\'s source code on GitHub',
+          text: () => this.$t('pageAboutGerminateCardGithubText'),
           icon: 'mdi-github-circle',
           link: 'https://github.com/germinateplatform/germinate'
         },
         {
           key: 'publication',
-          text: () => 'View or cite the Germinate publication',
+          text: () => this.$t('pageAboutGerminateCardPublicationText'),
           icon: 'mdi-file-document',
           link: 'https://dl.sciencesocieties.org/publications/cs/articles/57/3/1259'
         },
         {
           key: 'documentation',
-          text: () => 'Read the Germinate documentation',
+          text: () => this.$t('pageAboutGerminateCardDocumentationText'),
           icon: 'mdi-glasses',
           link: 'https://github.com/germinateplatform/germinate/wiki'
         }
@@ -120,7 +121,7 @@ export default {
 .hutton-header {
   margin-left: -30px;
   margin-right: -30px;
-  margin-top: -24px;
+  margin-top: -17px;
 }
 .hutton-header.row .col {
   min-height: 100px;

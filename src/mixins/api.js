@@ -154,6 +154,9 @@ export default {
     apiPostGenotypeDatasetExport: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostAlleleFrequencyDatasetExport: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'dataset/export/allelefreq', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostDatasetTraits: function (datasetIds, onSuccess, onError) {
       const queryData = {
         datasetIds: datasetIds
