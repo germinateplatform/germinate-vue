@@ -74,6 +74,8 @@
   "errorMessageInvalidUsernamePassword": "Invalid username or password",
   "errorMessageActivationInvalidKey": "Invalid activation key. This can happen if the account has already been activated.",
   "errorMessageNoActivationKey": "No activation key provided.",
+  "formatDate": "DD/MM/YYYY",
+  "formatDateTime": "DD/MM/YYYY h:mm",
   "formLabelUsername": "Username",
   "formLabelPassword": "Password",
   "formLabelGroupType": "Group type",
@@ -395,6 +397,7 @@
   "widgetChartMarkSelectedItems": "Mark selected items",
   "widgetChartUnmarkSelectedItems": "Unmark selected items",
   "widgetAsyncJobPanelTitle": "Data export jobs",
+  "widgetAsyncJobPanelDatasets": "Datasets: {datasetIds}",
   "widgetSignInTitle": "Sign in",
   "widgetSignInText": "Sign in to your account"
 }

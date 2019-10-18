@@ -74,8 +74,8 @@
   "errorMessageInvalidUsernamePassword": "Ungültiger Benutzername oder Passwort",
   "errorMessageActivationInvalidKey": "Ungültiger Aktivierungsschlüssel. Dies kann daran liegen, dass dieses Benutzerkonto schon aktiviert wurde.",
   "errorMessageNoActivationKey": "Kein Aktivierungsschlüssel vorhanden.",
-  "pageGenotypesExportEnableFlapjackTitle": "Flapjack Projekt erstellen?",
-  "pageGenotypesExportEnableFlapjackText": "Durch diese auswahl generiert Germinate eine <a href='https://ics.hutton.ac.uk/flapjack'>Flapjack</a> Projektdatei zusätzlich zu den einfachen Textdateien.",
+  "formatDate": "DD.MM.YYYY",
+  "formatDateTime": "DD.MM.YYYY h:mm",
   "formLabelUsername": "Benutzername",
   "formLabelPassword": "Passwort",
   "formLabelGroupType": "Gruppentyp",
@@ -181,6 +181,8 @@
   "pageGenotypesExportSelectMarkerGroupText": "Die exportierten Dateien beinhalten nur Marker aus den ausgewählten Gruppen.",
   "pageGenotypesExportSelectMapTitle": "Karte auswählen",
   "pageGenotypesExportSelectMapText": "Nur Marker auf der Karte werden exportiert.",
+  "pageGenotypesExportEnableFlapjackTitle": "Flapjack Projekt erstellen?",
+  "pageGenotypesExportEnableFlapjackText": "Durch diese auswahl generiert Germinate eine <a href='https://ics.hutton.ac.uk/flapjack'>Flapjack</a> Projektdatei zusätzlich zu den einfachen Textdateien.",
   "pageGermplasmTitle": "Keimplasma",
   "pageGermplasmText": "<p>Wähle ein Keimplasma aus um weitere Informationen über dieses Keimplasma zu erhalten. Germinate beinhaltet Daten wie geographische Sammelstätten, Züchterinformationen und generelle Ausweisdaten. Diese Daten sind nicht notwendigerweise für jedes Keimplasma vorhanden.</p><p>Sortieren nach Spalten wird auf den gesamten Datensatz angewandt und wird durch Klicken auf Spaltenkopfzeilen aktiviert. Zwischen den Seiten kann durch Nutzung der Pfeiltasten am Fuße der Tabelle gesprungen werden. Die Tabelle kann durch nutzung des Spaltenfiltersystems eingegrenzt werden.</p><p>Werkzeuge zum exportieren der Daten befinden sich unterhalb der Tabelle.</p>",
   "pageGroupsTitle": "Gruppen",
@@ -393,6 +395,7 @@
   "widgetChartMarkSelectedItems": "Ausgewählte Elemente markieren",
   "widgetChartUnmarkSelectedItems": "Ausgewählte Markierung entfernen",
   "widgetAsyncJobPanelTitle": "Datenexportjobs",
+  "widgetAsyncJobPanelDatasets": "Datensätze: {datasetIds}",
   "widgetSignInTitle": "Anmelden",
   "widgetSignInText": "In Benutzerkonto anmelden"
 }

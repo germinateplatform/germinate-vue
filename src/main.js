@@ -64,12 +64,24 @@ Vue.use({
   }
 })
 
-Vue.filter('toDate', function (value) {
+Vue.filter('toDate', value => {
+  var moment
   if (value.indexOf('-') !== -1) {
-    return window.moment(value).format(window.moment.localeData().longDateFormat('L'))
+    moment = window.moment(value)
   } else {
-    return window.moment(value, 'MMM D, YYYY').format(window.moment.localeData().longDateFormat('L'))
+    moment = window.moment(value, 'MMM D, YYYY')
   }
+  return moment.format(i18n.t('formatDate'))
+})
+
+Vue.filter('toDateTime', value => {
+  var moment
+  if (value.indexOf('-') !== -1) {
+    moment = window.moment(value)
+  } else {
+    moment = window.moment(value, 'MMM D, YYYY')
+  }
+  return moment.format(i18n.t('formatDateTime'))
 })
 
 // Set base URL

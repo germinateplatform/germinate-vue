@@ -19,6 +19,7 @@ const initialState = {
   serverSettings: null,
   helpKey: null,
   entityTypeStats: null,
+  sidebarState: 'sidebar-lg-show',
   markedIds: {
     germplasm: [],
     markers: [],
@@ -127,6 +128,9 @@ const store = new Vuex.Store({
     ON_ASYNC_JOB_COUNT_CHANGED_MUTATION: function (state, newAsyncJobCount) {
       state.asyncJobCount = newAsyncJobCount
     },
+    ON_SIDEBAR_STATE_CHANGED_MUTATION: function (state, newSidebarState) {
+      state.sidebarState = newSidebarState
+    },
     ON_ASYNC_JOB_UUID_MUTATION: function (state, newAsyncJobUuids) {
       if (!state.token) {
         state.asyncJobUuids = newAsyncJobUuids
@@ -191,6 +195,9 @@ const store = new Vuex.Store({
     },
     ON_ENTITY_TYPE_STATS_CHANGED: function ({ commit }, entityTypeStats) {
       commit('ON_ENTITY_TYPE_STATS_CHANGED_MUTATION', entityTypeStats)
+    },
+    ON_SIDEBAR_STATE_CHANGED: function ({ commit }, sidebarState) {
+      commit('ON_SIDEBAR_STATE_CHANGED_MUTATION', sidebarState)
     },
     ON_ASYNC_JOB_COUNT_CHANGED: function ({ commit }, asyncJobCount) {
       commit('ON_ASYNC_JOB_COUNT_CHANGED_MUTATION', asyncJobCount)

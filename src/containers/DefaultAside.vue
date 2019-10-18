@@ -16,15 +16,15 @@
                           :class="`list-group-item-accent-${status[job.status].color} list-group-item-divider`">
         <a href="#" class="text-muted" @click.prevent="deleteJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
         <div><strong>{{ getExperimentType(job.experimentTypeId) }}</strong></div>
-        <div v-if="job.datasetIds" class="text-muted">Datasets: {{ job.datasetIds }}</div>
-        <span class="text-muted mr-3">
-          <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ job.updatedOn | toDate }}</small>
-        </span>
-        <span :class="`text-${status[job.status].color}`">
+        <div v-if="job.datasetIds" class="text-muted">{{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</div>
+        <div class="text-muted">
+          <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ job.updatedOn | toDateTime }}</small>
+        </div>
+        <div :class="`text-${status[job.status].color}`">
           <b-spinner variant="info" small v-if="job.status === 'running'" />
           <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`" v-else />
           <small> {{ status[job.status].text() }}</small>
-        </span>
+        </div>
         <div v-if="job.status === 'completed'">
           <i class="mdi fix-alignment mdi-download" />&nbsp;<a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs">Download</a>
         </div>

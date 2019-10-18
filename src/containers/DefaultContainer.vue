@@ -1,12 +1,12 @@
 <template>
   <div class="app">
     <AppHeader fixed>
-      <SidebarToggler class="d-lg-none" display="md" mobile />
+      <SidebarToggler class="d-lg-none" display="md" mobile @click.native="toggleSidebar" />
       <b-link class="navbar-brand" to="/">
         <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
       </b-link>
-      <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true />
+      <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
       <b-navbar-nav class="ml-auto">
         <b-nav-form @submit.prevent="search">
           <b-input-group class="mr-sm-2">
@@ -31,7 +31,7 @@
         <SidebarHeader/>
         <SidebarNav :navItems="nav" ref="sidebarNav"/>
         <SidebarFooter/>
-        <SidebarMinimizer/>
+        <SidebarMinimizer @click.native="toggleSidebar"/>
       </AppSidebar>
       <main class="main">
         <div class="container-fluid mb-4">
@@ -253,6 +253,15 @@ export default {
         this.nav = tempNav
       }
     },
+    toggleSidebar: function () {
+      this.$nextTick(() => {
+        const isMinimized = document.body.classList.contains('sidebar-minimized')
+        const isVisible = document.body.classList.contains('sidebar-lg-show')
+        const state = isVisible ? 'sidebar-lg-show' : (isMinimized ? 'sidebar-minimized brand-minimized' : '')
+
+        this.$store.dispatch('ON_SIDEBAR_STATE_CHANGED', state)
+      })
+    },
     toggleAside: function () {
       if (!document.body.classList.contains('aside-menu-show')) {
         this.$refs.asideToggler.toggle()
@@ -271,11 +280,20 @@ export default {
     this.updateNav()
     EventBus.$on('toggle-aside', this.toggleAside)
 
+    if (this.sidebarState && this.sidebarState.length > 0) {
+      this.$nextTick(() => document.body.classList.add(...this.sidebarState.split(' ')))
+    } else {
+      this.$nextTick(() => {
+        document.body.classList.remove('sidebar-lg-show', 'sidebar-minimized', 'brand-minimized')
+      })
+    }
+
     // Since we can't add the logos to the nav sidebar in any way that CoreUI provided, we have to insert it manually.
     var sb = this.$refs.sidebarNav.$el.querySelector('section')
     var img = document.createElement('img')
     img.src = this.baseUrl + 'image/src-svg/logo.svg'
     img.classList.add('brand-logo')
+    img.classList.add('p-3')
     sb.appendChild(img)
   }
 }

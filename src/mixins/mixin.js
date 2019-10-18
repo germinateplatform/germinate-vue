@@ -15,6 +15,7 @@ export default {
       'markedIds',
       'originalTarget',
       'serverSettings',
+      'sidebarState',
       'tableFiltering',
       'tablePerPage',
       'token'

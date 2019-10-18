@@ -14,8 +14,8 @@
       <dt class="col-sm-3 text-right">Species authority</dt><dd class="col-sm-9">{{ germplasm.spauthor }}</dd>
       <dt class="col-sm-3 text-right">Subtaxon</dt><dd class="col-sm-9">{{ germplasm.subtaxa }}</dd>
       <dt class="col-sm-3 text-right">Subtaxon authority</dt><dd class="col-sm-9">{{ germplasm.subtauthor }}</dd>
-      <dt class="col-sm-3 text-right">Country of origin</dt><dd class="col-sm-9" v-if="germplasm.origcty"><i :class="'flag-icon flag-icon-' + getFlag(germplasm.origcty.toUpperCase())" v-if="germplasm.origcty"/> {{ getCountry(germplasm.origcty.toUpperCase()) }}</dd>
-      <dt class="col-sm-3 text-right">Collecting date of sample</dt><dd class="col-sm-9">{{ germplasm.colldate | toDate }}</dd>
+      <dt class="col-sm-3 text-right">Country of origin</dt><dd class="col-sm-9"><template v-if="germplasm.origcty"><i :class="'flag-icon flag-icon-' + getFlag(germplasm.origcty.toUpperCase())" v-if="germplasm.origcty"/> {{ getCountry(germplasm.origcty.toUpperCase()) }}</template></dd>
+      <dt class="col-sm-3 text-right">Collecting date of sample</dt><dd class="col-sm-9"><template v-if="germplasm.colldate">{{ germplasm.colldate | toDate }}</template></dd>
     </dl>
   </div>
 </template>

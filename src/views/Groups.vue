@@ -85,7 +85,7 @@ export default {
               ids: selectedIds,
               isAddition: false
             }
-            this.apiPatchGroupMembers(this.group.groupId, this.groupTypes[this.group.groupType].apiName, data, result => {
+            this.apiPatchGroupMembers(this.group.groupId, this.groupTypes[this.group.groupType].itemType, data, result => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
             })
@@ -103,7 +103,7 @@ export default {
           id: 2,
           text: this.$t('buttonAddMarkedItems'),
           variant: null,
-          disabled: () => this.markedIds[this.groupTypes[this.group.groupType].apiName].length < 1,
+          disabled: () => this.markedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
           icon: 'mdi mdi-18px mdi-expand-all',
           callback: (selectedIds) => {
             var type = this.groupTypes[this.group.groupType].apiName
@@ -121,7 +121,7 @@ export default {
           id: 3,
           text: this.$t('buttonRemoveMarkedItems'),
           variant: null,
-          disabled: () => this.markedIds[this.groupTypes[this.group.groupType].apiName].length < 1,
+          disabled: () => this.markedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
           icon: 'mdi mdi-18px mdi-collapse-all',
           callback: (selectedIds) => {
             var type = this.groupTypes[this.group.groupType].apiName
