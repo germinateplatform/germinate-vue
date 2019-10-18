@@ -23,14 +23,13 @@
       </b-navbar-nav>
       <div>
         <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" @click.native="updateAside" />
-        <b-badge pill variant="info" class="async-badge" v-if="asyncJobUuids && asyncJobUuids.length > 0">{{ asyncJobUuids.length }}</b-badge>
+        <b-badge pill variant="info" class="async-badge" v-if="asyncJobCount !== null && asyncJobCount > 0">{{ asyncJobCount }}</b-badge>
       </div>
     </AppHeader>
     <div class="app-body">
       <AppSidebar fixed>
         <SidebarHeader/>
-        <SidebarNav :navItems="nav"></SidebarNav>
-        <b-img class="brand-logo" fluid :src="`${baseUrl}image/src-svg/logo.svg`"></b-img>
+        <SidebarNav :navItems="nav" ref="sidebarNav"/>
         <SidebarFooter/>
         <SidebarMinimizer/>
       </AppSidebar>
@@ -271,6 +270,13 @@ export default {
   mounted: function () {
     this.updateNav()
     EventBus.$on('toggle-aside', this.toggleAside)
+
+    // Since we can't add the logos to the nav sidebar in any way that CoreUI provided, we have to insert it manually.
+    var sb = this.$refs.sidebarNav.$el.querySelector('section')
+    var img = document.createElement('img')
+    img.src = this.baseUrl + 'image/src-svg/logo.svg'
+    img.classList.add('brand-logo')
+    sb.appendChild(img)
   }
 }
 </script>

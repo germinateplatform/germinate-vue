@@ -16,7 +16,7 @@
                           :class="`list-group-item-accent-${status[job.status].color} list-group-item-divider`">
         <a href="#" class="text-muted" @click.prevent="deleteJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
         <div><strong>{{ getExperimentType(job.experimentTypeId) }}</strong></div>
-        <div v-if="job.metadata">Dataset: {{ job.metadata.datasetIds }}</div>
+        <div v-if="job.datasetIds" class="text-muted">Datasets: {{ job.datasetIds }}</div>
         <span class="text-muted mr-3">
           <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ job.updatedOn | toDate }}</small>
         </span>
@@ -26,7 +26,7 @@
           <small> {{ status[job.status].text() }}</small>
         </span>
         <div v-if="job.status === 'completed'">
-          <i class="mdi fix-alignment mdi-download" /> <a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs"> Download</a>
+          <i class="mdi fix-alignment mdi-download" />&nbsp;<a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs">Download</a>
         </div>
       </b-list-group-item>
     </b-list-group>
@@ -102,6 +102,7 @@ export default {
         this.apiPostDatasetAsyncExport(this.asyncJobUuids, result => {
           this.asyncJobs = result
 
+          this.$store.dispatch('ON_ASYNC_JOB_COUNT_CHANGED', result.length)
           this.$store.dispatch('ON_ASYNC_JOB_UUID', this.asyncJobs.map(a => a.uuid))
         })
       })

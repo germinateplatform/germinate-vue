@@ -42,6 +42,7 @@ const initialState = {
     collaborators: []
   },
   asyncJobUuids: [],
+  asyncJobCount: 0,
   tableFiltering: null
 }
 
@@ -59,7 +60,8 @@ const store = new Vuex.Store({
     originalTarget: state => state.originalTarget,
     serverSettings: state => state.serverSettings,
     tableFiltering: state => state.tableFiltering,
-    asyncJobUuids: state => state.asyncJobUuids
+    asyncJobUuids: state => state.asyncJobUuids,
+    asyncJobCount: state => state.asyncJobCount
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
@@ -121,6 +123,9 @@ const store = new Vuex.Store({
     },
     ON_ENTITY_TYPE_STATS_CHANGED_MUTATION: function (state, newEntityTypeStats) {
       state.entityTypeStats = newEntityTypeStats
+    },
+    ON_ASYNC_JOB_COUNT_CHANGED_MUTATION: function (state, newAsyncJobCount) {
+      state.asyncJobCount = newAsyncJobCount
     },
     ON_ASYNC_JOB_UUID_MUTATION: function (state, newAsyncJobUuids) {
       if (!state.token) {
@@ -186,6 +191,9 @@ const store = new Vuex.Store({
     },
     ON_ENTITY_TYPE_STATS_CHANGED: function ({ commit }, entityTypeStats) {
       commit('ON_ENTITY_TYPE_STATS_CHANGED_MUTATION', entityTypeStats)
+    },
+    ON_ASYNC_JOB_COUNT_CHANGED: function ({ commit }, asyncJobCount) {
+      commit('ON_ASYNC_JOB_COUNT_CHANGED_MUTATION', asyncJobCount)
     },
     ON_ASYNC_JOB_UUID: function ({ commit }, asyncJobUuids) {
       commit('ON_ASYNC_JOB_UUID_MUTATION', asyncJobUuids)

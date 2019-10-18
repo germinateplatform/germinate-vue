@@ -5,6 +5,7 @@ import { EventBus } from '@/plugins/event-bus.js'
 export default {
   computed: {
     ...mapState([
+      'asyncJobCount',
       'asyncJobUuids',
       'baseUrl',
       'entityTypeStats',

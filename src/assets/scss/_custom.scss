@@ -39,6 +39,11 @@ body {
   padding-left: 2.0rem;
 }
 
+.sidebar .nav-dropdown a.nav-link {
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
 .sidebar .nav-dropdown a.router-link-exact-active.open.active.nav-link {
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -183,6 +188,10 @@ i.flag-icon {
 .text-center .plotly .svg-container {
   margin-left: auto !important;
   margin-right: auto !important;
+}
+
+.sidebar .nav {
+  min-height: unset;
 }
 
 /* Leaflet customization */
