@@ -1,6 +1,13 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" :additionalMenuItems="additionalMenuItems" :additionalButtons="additionalButtons">
+    <BaseChart :width="() => 1280"
+               :height="() => 1280"
+               :sourceFile="getSourceFile"
+               :filename="getFilename"
+               :supportsSvgDownload="false"
+               :additionalMenuItems="additionalMenuItems"
+               :additionalButtons="additionalButtons"
+               :loading="loading">
       <div slot="chart" id="matrix-chart" ref="matrixChart" />
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
     </BaseChart>
@@ -20,6 +27,7 @@ export default {
     return {
       sourceFile: null,
       germplasmId: null,
+      loading: false,
       selectedIds: [],
       additionalMenuItems: [{
         icon: 'mdi-checkbox-marked',
@@ -34,6 +42,7 @@ export default {
       }],
       additionalButtons: [{
         html: () => '<i class="mdi mdi-18px mdi-delete" />',
+        disabled: () => this.markedIds.germplasm.length < 1,
         callback: () => this.clearMarkedList()
       }, {
         html: () => `<span class="badge badge-pill badge-info">${this.markedIds.germplasm.length}</span>`,
@@ -75,6 +84,7 @@ export default {
       return 'trials-' + this.datasetIds.join('-')
     },
     redraw: function (result, colorBy) {
+      this.loading = true
       this.sourceFile = result
 
       this.$plotly.purge(this.$refs.matrixChart)
@@ -85,6 +95,8 @@ export default {
         var firstEOL = dirtyTsv.indexOf('\r\n')
         var tsv = dirtyTsv.substring(firstEOL + 2)
         var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
+
+        this.loading = false
 
         this.$plotly.d3.select(this.$refs.matrixChart)
           .datum(data)

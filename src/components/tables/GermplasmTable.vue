@@ -95,6 +95,9 @@ export default {
         name: 'germplasmName',
         type: String
       }, {
+        name: 'germplasmGid',
+        type: String
+      }, {
         name: 'germplasmNumber',
         type: String
       }, {

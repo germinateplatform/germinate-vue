@@ -1,15 +1,18 @@
 <template>
   <div>
     <div class="text-right">
+      <!-- Chart options -->
       <b-button-group>
         <b-dropdown no-caret>
           <template v-slot:button-content>
             <i class="mdi mdi-18px mdi-dots-vertical"/>
             <slot name="buttonContent" />
           </template>
+          <!-- Download options -->
           <b-dropdown-item @click="getFilename('png')"><i class="mdi mdi-18px mdi-file-image"/> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
           <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><i class="mdi mdi-18px mdi-file-xml"/> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
           <b-dropdown-item @click="downloadSource()"><i class="mdi mdi-18px mdi-file-document"/> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
+          <!-- Additional options -->
           <template v-if="additionalMenuItems && additionalMenuItems.length > 0">
             <b-dropdown-divider />
             <b-dropdown-item v-for="(item, index) in additionalMenuItems"
@@ -20,18 +23,29 @@
             </b-dropdown-item>
           </template>
         </b-dropdown>
+        <!-- Additional buttons -->
         <template v-if="additionalButtons && additionalButtons.length > 0">
           <b-button v-for="(button, index) in additionalButtons"
                     :key="`additional-button-${index}`"
+                    :disabled="button.disabled ? button.disabled() : false"
                     @click="button.callback">
             <span v-html="button.html()" />
           </b-button>
         </template>
       </b-button-group>
+
+      <!-- Loading indicator -->
+      <div class="text-center" v-if="loading">
+        <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+      </div>
     </div>
+
+    <!-- This is where the chart goes -->
     <slot name="chart" ref="chart" />
+    <!-- Resize listener that takes care of resizing according to page width -->
     <ResizeObserver v-on:notify-width="handleResize" />
 
+    <!-- Modal to ask for filenames -->
     <b-modal ref="chartModal" :title="$t('modalTitleChartFilename')" @ok="download">
       <b-form v-on:submit.prevent="download">
         <b-form-input v-model="userFilename" autofocus />
@@ -77,6 +91,10 @@ export default {
     additionalButtons: {
       type: Array,
       default: null
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -84,10 +102,12 @@ export default {
   },
   methods: {
     handleResize: function () {
-      this.$plotly.relayout(this.$slots.chart[0].elm, {
-        // 'xaxis.autorange': true,
-        // 'yaxis.autorange': true
-      })
+      if (this.$slots.chart[0].elm) {
+        this.$plotly.relayout(this.$slots.chart[0].elm, {
+          // 'xaxis.autorange': true,
+          // 'yaxis.autorange': true
+        })
+      }
     },
     downloadSource: function () {
       var request = this.sourceFile()

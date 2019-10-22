@@ -34,6 +34,7 @@ export default {
       }],
       additionalButtons: [{
         html: () => '<i class="mdi mdi-18px mdi-delete" />',
+        disabled: () => this.markedIds.germplasm.length < 1,
         callback: () => this.clearMarkedList()
       }, {
         html: () => `<span class="badge badge-pill badge-info">${this.markedIds.germplasm.length}</span>`,

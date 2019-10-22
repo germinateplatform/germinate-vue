@@ -1,5 +1,5 @@
 <template>
-  <BaseChart :width="() => 1280" :height="() => getHeight()" :sourceFile="getSourceFile" :filename="getFilename">
+  <BaseChart :width="() => 1280" :height="() => getHeight()" :sourceFile="getSourceFile" :filename="getFilename" :loading="loading">
     <div slot="chart" ref="chart" />
   </BaseChart>
 </template>
@@ -19,7 +19,8 @@ export default {
   },
   data: function () {
     return {
-      plotData: null
+      plotData: null,
+      loading: false
     }
   },
   methods: {
@@ -112,9 +113,11 @@ export default {
     }
   },
   mounted: function () {
+    this.loading = true
     this.apiPostTrialsStats(this.datasetIds, result => {
       this.plotData = result
       this.chart()
+      this.loading = false
     })
   }
 }
