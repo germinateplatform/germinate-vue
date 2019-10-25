@@ -2,6 +2,7 @@
   <b-card no-body>
     <b-card-header header-tag="header" class="p-2 collapse-header" role="tab" @click="toggle">
       <div class="d-flex flex-row">
+        <i :class="`collapse-expand-status mdi mdi-18px fix-alignment mdi-chevron-right ${getStyle()}`" />&nbsp;
         <strong><i :class="`mdi mdi-18px ${icon} fix-alignment text-primary`" v-if="icon"/> {{ title }}</strong>
         <span class="ml-auto">
           <b-badge :variant="count > 0 ? 'primary' : null" v-if="!loading && count !== undefined">{{ count }}</b-badge>
@@ -49,6 +50,9 @@ export default {
     }
   },
   methods: {
+    getStyle: function () {
+      return this.contentVisible ? 'mdi-rotate-90' : ''
+    },
     toggle: function () {
       this.contentVisible = !this.contentVisible
       this.check()
@@ -83,5 +87,8 @@ export default {
 }
 .collapse-header:hover {
   cursor: pointer;
+}
+.collapse-expand-status::before {
+  transition: 0.1s ease-in-out;
 }
 </style>

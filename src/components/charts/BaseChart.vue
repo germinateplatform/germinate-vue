@@ -9,7 +9,7 @@
             <slot name="buttonContent" />
           </template>
           <!-- Download options -->
-          <b-dropdown-item @click="getFilename('png')"><i class="mdi mdi-18px mdi-file-image"/> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
+          <b-dropdown-item @click="getFilename('png')" v-if="supportsPngDownload"><i class="mdi mdi-18px mdi-file-image"/> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
           <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><i class="mdi mdi-18px mdi-file-xml"/> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
           <b-dropdown-item @click="downloadSource()"><i class="mdi mdi-18px mdi-file-document"/> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
           <!-- Additional options -->
@@ -76,6 +76,10 @@ export default {
       type: Boolean,
       default: true
     },
+    supportsPngDownload: {
+      type: Boolean,
+      default: true
+    },
     filename: {
       type: Function,
       default: null
@@ -95,6 +99,10 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    chartType: {
+      type: String,
+      default: 'plotly'
     }
   },
   components: {
@@ -102,11 +110,15 @@ export default {
   },
   methods: {
     handleResize: function () {
-      if (this.$slots.chart[0].elm) {
-        this.$plotly.relayout(this.$slots.chart[0].elm, {
-          // 'xaxis.autorange': true,
-          // 'yaxis.autorange': true
-        })
+      if (this.chartType === 'plotly') {
+        if (this.$slots.chart[0].elm) {
+          this.$plotly.relayout(this.$slots.chart[0].elm, {
+            // 'xaxis.autorange': true,
+            // 'yaxis.autorange': true
+          })
+        }
+      } else {
+        this.$emit('resize')
       }
     },
     downloadSource: function () {
@@ -129,7 +141,7 @@ export default {
       this.$refs.chartModal.hide()
 
       if (this.imageType === 'svg') {
-        this.downloadSvgsFromContainer(this.$slots.chart[0].elm, this.userFilename)
+        this.downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename)
       } else if (this.imageType === 'png') {
         this.$plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename })
       }

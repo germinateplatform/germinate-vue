@@ -237,7 +237,7 @@ export default {
         var prevGroupType = this.group ? this.group.groupType : null
         this.apiPostGroupTable(queryParams, result => {
           if (result && result.data && result.data.length > 0) {
-            window.history.replaceState({}, null, `#/groups/${this.groupId}`)
+            window.history.replaceState({}, null, this.$router.resolve({ name: 'group-details', params: { groupId: this.groupId } }).href)
             this.group = result.data[0]
 
             // This refresh is necessary, since we're not switching group type. The table showing the resulting group

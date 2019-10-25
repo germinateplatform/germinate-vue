@@ -128,8 +128,8 @@ export default {
         entityType: ['equals']
       },
       comparators: {
-        like: {
-          text: () => this.$t('comparatorsLike'),
+        contains: {
+          text: () => this.$t('comparatorsContains'),
           values: 1
         },
         equals: {

@@ -32,11 +32,11 @@ export default {
   watch: {
     itemType: function (newValue, oldValue) {
       if (newValue === this.markedItemTypes.germplasm) {
-        window.history.replaceState({}, null, '#/marked-items/germplasm')
+        window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'germplasm' } }).href)
       } else if (newValue === this.markedItemTypes.markers) {
-        window.history.replaceState({}, null, '#/marked-items/markers')
+        window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'markers' } }).href)
       } else if (newValue === this.markedItemTypes.locations) {
-        window.history.replaceState({}, null, '#/marked-items/locations')
+        window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'locations' } }).href)
       }
     }
   },

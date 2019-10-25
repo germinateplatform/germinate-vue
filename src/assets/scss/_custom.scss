@@ -76,6 +76,10 @@ button.mdi:before {
   margin-top: 7px;
 }
 
+.app-body {
+  overflow: unset;
+}
+
 .leaflet-popup-content-wrapper {
   border-radius: 0;
   border-radius: 4px;

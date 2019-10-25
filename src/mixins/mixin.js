@@ -232,10 +232,10 @@ export default {
       downloadLink.click()
       document.body.removeChild(downloadLink)
     },
-    downloadSvgsFromContainer: function (container, filename) {
+    downloadSvgsFromContainer: function (container, isPlotly, filename) {
       // get svg source.
       var serializer = new XMLSerializer()
-      var svgs = container.querySelectorAll('svg:not(.icon):not(:last-child)')
+      var svgs = isPlotly ? container.querySelectorAll('svg:not(.icon):not(:last-child)') : container.querySelectorAll('svg')
       var source = '<?xml version="1.0" standalone="no"?>\r\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'
 
       svgs.forEach(s => {

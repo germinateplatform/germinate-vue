@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-passport text-primary" /> <span> MCPD Data </span> <small><i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover.bottom title="Multi-Crop Passport Descriptors"/></small></h2>
+    <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-passport text-primary" /> <span> {{ $t('pagePassportMcpdTitle') }} </span> <small><i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover.bottom title="Multi-Crop Passport Descriptors"/></small></h2>
     <dl class="row" v-if="germplasm">
       <dt class="col-sm-3 text-right">GID</dt><dd class="col-sm-9">{{ germplasm.accenumb }}</dd>
       <dt class="col-sm-3 text-right">Accession name</dt><dd class="col-sm-9">{{ germplasm.accename }}</dd>

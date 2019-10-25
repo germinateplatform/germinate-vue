@@ -256,6 +256,10 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostInstitutionTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'institution/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostTrialsStats: function (datasetIds, onSuccess, onError) {
       var queryData = {
         datasetIds: datasetIds
@@ -314,6 +318,9 @@ export default {
     apiPostPedigreeTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'pedigree/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostPedigreeExport: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'pedigree/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
     },
     apiPostEntityTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1

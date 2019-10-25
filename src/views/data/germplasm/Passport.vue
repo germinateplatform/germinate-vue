@@ -1,5 +1,5 @@
 <template>
-  <div v-if="germplasm">
+  <div v-if="germplasm" class="passport">
     <template v-if="germplasm.entityparentid">
       <b-tabs active-nav-item-class="text-primary" v-model="tabIndex">
         <b-tab active @click="updateChildMap">
@@ -66,5 +66,7 @@ export default {
 </script>
 
 <style>
-
+.passport .tab-content .tab-pane {
+  padding: 0;
+}
 </style>

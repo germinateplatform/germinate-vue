@@ -61,6 +61,10 @@ Vue.use({
     window.moment = Vue.prototype.$moment
     Vue.prototype.$plotly = require('plotly.js-dist')
     window.Plotly = Vue.prototype.$plotly
+    Vue.prototype.$d3 = require('d3')
+    window.d3 = Vue.prototype.$d3
+    Vue.prototype.$dagreD3 = require('dagre-d3')
+    window.dagreD3 = Vue.prototype.$dagreD3
   }
 })
 

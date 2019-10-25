@@ -289,6 +289,16 @@ const router = new Router({
               name: 'about-germinate',
               meta: { canBeHidden: false },
               component: () => import('@/views/about/AboutGerminate.vue')
+            },
+            {
+              path: 'export-formats',
+              name: 'about-export-formats',
+              component: () => import('@/views/about/ExportFormats.vue')
+            },
+            {
+              path: 'export-formats/:format',
+              name: 'about-export-formats-specific',
+              component: () => import('@/views/about/ExportFormats.vue')
             }
           ]
         },

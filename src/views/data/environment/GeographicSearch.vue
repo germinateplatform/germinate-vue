@@ -11,12 +11,12 @@
           </template>
           <PointSearchMap ref="pointMap" v-on:map-loaded="updatePolygonMap" />
           <b-card-body v-if="point">
-            <Collapse :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
+            <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:default="slotProps">
                 <LocationTable tableMode="distance" :getData="getLocationData" :getIds="getLocationIds" ref="locationPointTable" orderBy="distance" v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
-            <Collapse :title="$t('pageGeographicSearchPointGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
+            <Collapse icon="mdi-sprout" :title="$t('pageGeographicSearchPointGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
               <template v-slot:default="slotProps">
                 <GermplasmTable tableMode="distance" :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPointTable" orderBy="distance"  v-on:data-changed="slotProps.update"/>
               </template>
@@ -29,12 +29,12 @@
           </template>
           <LocationMap selectionMode="polygon" :locations="polygonLocations" ref="polygonMap" />
           <b-card-body v-if="polygons && polygons.length > 0">
-            <Collapse :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body class="my-2">
+            <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:default="slotProps">
                 <LocationTable :getData="getLocationData" :getIds="getLocationIds" ref="locationPolygonTable"  v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
-            <Collapse :title="$t('pageGeographicSearchPolygonGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
+            <Collapse icon="mdi-sprout" :title="$t('pageGeographicSearchPolygonGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
               <template v-slot:default="slotProps">
                 <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPolygonTable" v-on:data-changed="slotProps.update"/>
               </template>

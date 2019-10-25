@@ -226,6 +226,12 @@ export default {
               identifiers: ['about-germinate'],
               url: '/about/germinate',
               icon: 'mdi mdi-map'
+            },
+            {
+              name: this.$t('menuAboutExportFormat'),
+              identifiers: ['about-export-formats'],
+              url: '/about/export-formats',
+              icon: 'mdi mdi-file-export'
             }
           ]
         }

@@ -26,7 +26,7 @@ const initialState = {
     locations: []
   },
   hiddenColumns: {
-    germplasm: [],
+    germplasm: ['institutionId', 'institutionName'],
     germplasmAttributes: [],
     images: [],
     maps: [],

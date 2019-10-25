@@ -116,6 +116,12 @@ export default {
         name: 'collectorNumber',
         type: String
       }, {
+        name: 'institutionId',
+        type: Number
+      }, {
+        name: 'institutionName',
+        type: String
+      }, {
         name: 'genus',
         type: String
       }, {
@@ -165,7 +171,7 @@ export default {
     var options = {
       idColumn: 'germplasmId',
       tableName: 'germplasm',
-      sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'location', 'elevation', 'countryName', 'collDate', 'pdci'],
+      sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'institutionId', 'institutionName', 'location', 'elevation', 'countryName', 'collDate', 'pdci'],
       filterable: [],
       headings: {
         selected: '',
@@ -181,6 +187,8 @@ export default {
         genus: () => this.$t('tableColumnGenus'),
         species: () => this.$t('tableColumnSpecies'),
         subtaxa: () => this.$t('tableColumnSubtaxa'),
+        institutionId: () => this.$t('tableColumnInstitutionId'),
+        institutionName: () => this.$t('tableColumnInstitutionName'),
         location: () => this.$t('tableColumnGermplasmLocation'),
         elevation: () => this.$t('tableColumnElevation'),
         countryName: () => this.$t('tableColumnCountryName'),
@@ -192,6 +200,7 @@ export default {
       },
       columnsClasses: {
         germplasmId: 'text-right',
+        institutionId: 'text-right',
         elevation: 'text-right',
         genus: 'font-italic',
         species: 'font-italic',

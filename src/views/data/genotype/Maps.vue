@@ -74,7 +74,7 @@ export default {
       if (this.mapId) {
         this.apiGetMap(mapId, result => {
           if (result && result.data && result.data.length > 0) {
-            window.history.replaceState({}, null, `#/data/genotypes/maps/${this.mapId}`)
+            window.history.replaceState({}, null, this.$router.resolve({ name: 'map-details', params: { mapId: this.mapId } }).href)
             this.map = result.data[0]
             this.drawChart()
             this.$nextTick(() => this.$refs.mapDefinitionTable.refresh())

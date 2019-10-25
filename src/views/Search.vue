@@ -31,7 +31,7 @@
                 <b-button variant="primary" type="submit"><i class="mdi mdi-18px mdi-magnify" /></b-button>
               </b-input-group-append>
 
-              <b-tooltip target="search-term" triggers="hover" v-if="comparator === 'like'">
+              <b-tooltip target="search-term" triggers="hover" v-if="comparator === 'contains'">
                 {{ $t('tooltipSearchWildcard') }}
               </b-tooltip>
             </b-input-group>
@@ -41,6 +41,7 @@
     </b-form>
     <template v-if="showResults">
       <h2>{{ $t('pageSearchResultTitle') }} <small>"{{ searchTerm }}"</small></h2>
+      <p class="text-muted">Click on a section to expand it and see the results for that category.</p>
 
       <Collapse icon="mdi-sprout" :title="$t('pageSearchResultSectionGermplasm')" :visible="false" class="mb-2" no-body ref="collapseGermplasm" v-if="isSearchType('germplasm')">
         <template v-slot:default="slotProps">
@@ -125,8 +126,8 @@ export default {
         equals: {
           text: () => this.$t('comparatorsEqual')
         },
-        like: {
-          text: () => this.$t('comparatorsLike')
+        contains: {
+          text: () => this.$t('comparatorsContains')
         },
         inSet: {
           text: () => this.$t('comparatorsInSet')
@@ -268,7 +269,7 @@ export default {
           .filter(r => r.startsWith('collapse'))
           .forEach(t => this.$refs[t].setLoading(true))
         // Change window URL to reflect new search term
-        window.history.replaceState({}, null, `#/search/${encodeURI(this.searchTerm)}`)
+        window.history.replaceState({}, null, this.$router.resolve({ name: 'search-query', params: { searchTerm: this.searchTerm } }).href)
       })
     }
   },
