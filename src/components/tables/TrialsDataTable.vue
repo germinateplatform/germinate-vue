@@ -51,6 +51,9 @@ export default {
         name: 'countryName',
         type: String
       }, {
+        name: 'traitId',
+        type: Number
+      }, {
         name: 'traitName',
         type: String
       }, {
@@ -71,7 +74,7 @@ export default {
       options: {
         idColumn: 'germplasmId',
         tableName: 'trialsData',
-        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'entityType', 'datasetName', 'locationName', 'countryName', 'traitName', 'unitName', 'recordingDate', 'traitValue'],
+        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'entityType', 'datasetName', 'locationName', 'countryName', 'traitId', 'traitName', 'unitName', 'recordingDate', 'traitValue'],
         filterable: [],
         headings: {
           germplasmId: () => this.$t('tableColumnGermplasmId'),
@@ -81,6 +84,7 @@ export default {
           datasetName: () => this.$t('tableColumnDatasetName'),
           locationName: () => this.$t('tableColumnLocationName'),
           countryName: () => this.$t('tableColumnCountryName'),
+          traitId: () => this.$t('tableColumnTraitId'),
           traitName: () => this.$t('tableColumnTraitName'),
           unitName: () => this.$t('tableColumnTraitUnitName'),
           recordingDate: () => this.$t('tableColumnTrialsDataRecordingDate'),

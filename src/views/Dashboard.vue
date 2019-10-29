@@ -2,12 +2,12 @@
   <div class="animated fadeIn">
     <b-row class="dashboard-stats" v-if="stats">
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in statCategories" :key="'dashboard-stats-' + category.key">
-        <router-link :to="category.link">
+        <router-link :to="category.link" :title="`${category.text()}: ${stats[category.key]}`">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
                 <b-col cols=6 class="align-self-center">
-                  <h2 class="mb-0">{{ stats[category.key] }}</h2>
+                  <h2 class="mb-0">{{ getNumberWithSuffix(stats[category.key], 1) }}</h2>
                   <p>{{ category.text() }}</p>
                 </b-col>
                 <b-col cols=6 class="text-right">

@@ -2,26 +2,18 @@
   <b-row>
     <b-col cols=12 md=6 v-if="traits && traits.length > 0">
       <h2>{{ $t('pageTrialsExportSelectTraitTitle') }}</h2>
-      <p>{{ $t('pageTrialsExportSelectTraitText') }}</p>
+      <p>{{ exportType === 'export' ? $t('pageTrialsExportSelectTraitExportText') : $t('pageTrialsExportSelectTraitChartText') }}</p>
       <b-form-select multiple v-model="selectedTraits" :options="traitOptions" :select-size=7 />
-      <p class="text-danger" v-if="selectedTraits.length > 7">{{ $t('pageTrialsExportSelectTraitLimit') }}</p>
-      <p class="text-info" v-if="selectedTraits.length < 2">{{ $t('pageTrialsExportSelectTraitMinimum') }}</p>
+      <template v-if="exportType === 'chart'">
+        <p class="text-danger" v-if="selectedTraits.length > 7">{{ $t('pageTrialsExportSelectTraitLimit') }}</p>
+        <p class="text-info" v-if="selectedTraits.length < 2">{{ $t('pageTrialsExportSelectTraitMinimum') }}</p>
+      </template>
     </b-col>
-    <b-col cols=12 md=6 v-if="groups && groups.length > 0">
-      <ExportGroupSelection title="pageTrialsExportSelectGroupTitle" text="pageTrialsExportSelectGroupText" tooltip="pageExportSelectGroupTooltip" itemType="germplasm" :groups="groups" ref="germplasmGroups"/>
+    <b-col cols=12 md=6>
+      <ExportGroupSelection title="pageTrialsExportSelectGroupTitle" :text="exportType === 'export' ? 'pageTrialsExportSelectGroupExportText' : 'pageTrialsExportSelectGroupChartText'" tooltip="pageExportSelectGroupTooltip" itemType="germplasm" :groups="groups" ref="germplasmGroups"/>
     </b-col>
     <b-col cols=12>
-      <b-btn variant="primary" @click="plot" :disabled="plotButtonDisabled"><i class="mdi mdi-18px mdi-arrow-right-bold fix-alignment" /> Plot</b-btn>
-    </b-col>
-    <b-col cols=12 v-if="plotData">
-      <h3 class="mt-3">{{ $t('pageTrialsExportColorByTitle') }}</h3>
-      <p>{{ $t('pageTrialsExportColorByText') }}</p>
-      <b-form-select :options="colorByOptions" v-model="colorBySelection" @change="onColorByChanged" />
-
-      <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
-      <p>{{ $t('pageTrialsExportChartText') }}</p>
-      <MatrixChart ref="chart" :datasetIds="datasetIds" v-if="currentTraitCount > 2" />
-      <ScatterChart ref="chart" :datasetIds="datasetIds" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" v-else />
+      <b-btn variant="primary" @click="buttonPressed" :disabled="buttonDisabled()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ exportType === 'export' ? $t('buttonExport') : $t('buttonPlot') }}</b-btn>
     </b-col>
   </b-row>
 </template>
@@ -37,6 +29,10 @@ export default {
     datasetIds: {
       type: Array,
       default: () => null
+    },
+    exportType: {
+      type: String,
+      default: 'chart'
     }
   },
   data: function () {
@@ -44,25 +40,7 @@ export default {
       traits: [],
       selectedTraits: [],
       traitOptions: [],
-      groups: [],
-      colorByOptions: [{
-        text: this.$t('widgetChartColoringNoColoring'),
-        value: null
-      }, {
-        text: this.$t('widgetChartColoringByDataset'),
-        value: 'dataset_name'
-      }, {
-        text: this.$t('widgetChartColoringByYear'),
-        value: 'year'
-      }, {
-        text: this.$t('widgetChartColoringByTreatment'),
-        value: 'treatments_description'
-      }, {
-        text: this.$t('widgetChartColoringByTrialSite'),
-        value: 'trial_site'
-      }],
-      colorBySelection: null,
-      plotData: null
+      groups: null
     }
   },
   watch: {
@@ -71,23 +49,34 @@ export default {
       this.updateGroups()
     }
   },
-  computed: {
-    plotButtonDisabled: function () {
-      var disabled = this.selectedTraits.length < 2
-      if (this.specialGroupSelection === 'selection') {
-        disabled = disabled || this.selectedGroups.length < 1
-      }
-      disabled = disabled || this.selectedTraits.length > 7
-      return disabled
-    }
-  },
   components: {
     ExportGroupSelection,
     MatrixChart,
     ScatterChart
   },
   methods: {
-    plot: function () {
+    buttonDisabled: function () {
+      if (this.$refs.germplasmGroups) {
+        var settings = this.$refs.germplasmGroups.getSettings()
+        if (this.exportType === 'export') {
+          var exportDisabled = this.selectedTraits.length < 1
+          if (settings.specialGroupSelection === 'selection') {
+            exportDisabled = exportDisabled || settings.selectedGroups.length < 1
+          }
+          return exportDisabled
+        } else {
+          var chartDisabled = this.selectedTraits.length < 2
+          if (settings.specialGroupSelection === 'selection') {
+            chartDisabled = chartDisabled || settings.selectedGroups.length < 1
+          }
+          chartDisabled = chartDisabled || this.selectedTraits.length > 7
+          return chartDisabled
+        }
+      } else {
+        return true
+      }
+    },
+    buttonPressed: function () {
       EventBus.$emit('show-loading', true)
       var query = {
         xGroupIds: null,
@@ -114,18 +103,7 @@ export default {
         query.xIds = this.selectedTraits.map(t => t.traitId)
       }
 
-      this.plotData = null
-      this.apiPostDatasetExport('trial', query, result => {
-        this.plotData = result
-        this.currentTraitCount = this.selectedTraits.length
-        this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection))
-        EventBus.$emit('show-loading', false)
-      })
-    },
-    onColorByChanged: function () {
-      if (this.plotData) {
-        this.$refs.chart.redraw(this.plotData, this.colorBySelection)
-      }
+      this.$emit('button-clicked', query, this.selectedTraits)
     },
     updateTraits: function () {
       this.apiPostDatasetTraits(this.datasetIds, result => {

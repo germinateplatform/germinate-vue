@@ -2,8 +2,22 @@
   <div>
     <h1>{{ $t('pageGroupsTitle') }}</h1>
     <hr />
+
+    <!-- These buttons are for switching between different group types. They make switching very convenient. -->
+    <b-button-group>
+      <b-button v-for="groupType in getGroupTypeOptions()"
+               :key="groupType.id"
+               :pressed="isPressed(groupType)"
+               :disabled="groupType.disabled"
+               :variant="groupType.disabled ? 'outline-secondary' : 'outline-primary'"
+               @click="setGroupType(groupType)">
+        <i :class="`mdi mdi-18px fix-alignment ${groupType.icon}`" /><span> {{ groupType.text() }}</span>
+      </b-button>
+    </b-button-group>
+
     <GroupTable ref="groupsTable"
                 :getData="getGroupData"
+                :filterOn="filterOn"
                 v-on:group-selected="onGroupSelected"
                 v-on:on-group-edit-clicked="onGroupEditClicked"
                 v-on:on-group-delete-clicked="onGroupDeleteClicked" />
@@ -69,6 +83,8 @@ export default {
       groupToEdit: null,
       groupId: null,
       groupTypeSelect: [],
+      filterOn: [],
+      selectedGroupType: null,
       tableActions: [
         {
           id: 0,
@@ -144,9 +160,24 @@ export default {
     }
   },
   watch: {
-    token: function (oldValue, newValue) {
+    token: function (newValue, oldValue) {
       this.group = null
       this.groupId = null
+    },
+    selectedGroupType: function (newValue, oldValue) {
+      if (!newValue) {
+        this.filterOn = []
+      } else {
+        this.filterOn = [{
+          column: {
+            name: 'groupType',
+            type: 'groupType'
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue.id]
+        }]
+      }
     }
   },
   components: {
@@ -157,6 +188,30 @@ export default {
     MarkerTable
   },
   methods: {
+    setGroupType: function (groupType) {
+      if (this.selectedGroupType && groupType && this.selectedGroupType.id === groupType.id) {
+        this.selectedGroupType = null
+      } else {
+        this.selectedGroupType = groupType
+      }
+      this.$nextTick(() => this.$refs.groupsTable.refresh())
+    },
+    isPressed: function (groupType) {
+      if (this.selectedGroupType) {
+        return this.selectedGroupType.id === groupType.id
+      } else {
+        return false
+      }
+    },
+    getGroupTypeOptions: function () {
+      return Object.keys(this.groupTypes).map(e => {
+        return {
+          id: e,
+          icon: this.groupTypes[e].icon,
+          text: () => this.groupTypes[e].text()
+        }
+      })
+    },
     getGroupData: function (data, callback) {
       return this.apiPostGroupTable(data, callback)
     },

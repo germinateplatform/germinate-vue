@@ -29,15 +29,17 @@
         <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
         <TraitBoxplotChart :datasetIds="datasetIds" />
       </div>
-      <TraitExportSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
+      <TraitExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
       <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
+      <TraitExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
 </template>
 
 <script>
-import TraitExportSelection from '@/components/export/TraitExportSelection'
+import TraitExportChartSelection from '@/components/export/TraitExportChartSelection'
+import TraitExportDownloadSelection from '@/components/export/TraitExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import TraitBoxplotChart from '@/components/charts/TraitBoxplotChart'
 
@@ -49,7 +51,7 @@ export default {
       currentTab: null,
       tabs: [{
         key: 'overview',
-        text: () => 'Data overview',
+        text: () => 'Data statistics',
         icon: 'mdi-eye',
         onSelection: () => this.tabSelected('overview')
       }, {
@@ -71,7 +73,8 @@ export default {
     }
   },
   components: {
-    TraitExportSelection,
+    TraitExportDownloadSelection,
+    TraitExportChartSelection,
     TrialsDataTable,
     TraitBoxplotChart
   },
@@ -86,9 +89,6 @@ export default {
     },
     tabSelected: function (tab) {
       this.currentTab = tab
-
-      if (this.currentTab === 'matrix') {
-      }
     },
     getColor: function (index) {
       if (!this.serverSettings || !this.serverSettings.colorsTemplate) {

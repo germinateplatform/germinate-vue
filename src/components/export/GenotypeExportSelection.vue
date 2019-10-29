@@ -26,7 +26,7 @@
         <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
       </b-col>
     </b-row>
-    <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ experimentType === 'allelefreq' ? 'Bin data' : 'Export' }}</b-button>
+    <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ experimentType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
   </div>
 </template>
 

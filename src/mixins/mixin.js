@@ -181,6 +181,15 @@ export default {
     }
   },
   methods: {
+    getNumberWithSuffix: function (value, decimals = 2) {
+      const k = 1000
+      const dm = decimals < 0 ? 0 : decimals
+      const sizes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
+
+      const i = Math.floor(Math.log(value) / Math.log(k))
+
+      return parseFloat((value / Math.pow(k, i)).toFixed(dm)) + sizes[i]
+    },
     createColorGradient: function (one, two, steps) {
       var oneRgb = this.hexToRgb(one)
       var twoRgb = this.hexToRgb(two)

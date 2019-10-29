@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="germplasm">
-      <b-navbar sticky class="scrollspy-sticky" type="dark" variant="primary" v-b-scrollspy="scrollSpyConfig" ref="scrollSpy">
+      <b-navbar sticky class="scrollspy-sticky" type="dark" variant="primary" v-b-scrollspy="scrollSpyConfig" ref="scrollSpy" v-if="!isPopup">
         <b-navbar-nav>
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
@@ -126,6 +126,10 @@ export default {
     germplasmId: {
       type: Number,
       default: null
+    },
+    isPopup: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -146,9 +150,8 @@ export default {
       const href = evt.target.getAttribute('href')
       const el = href ? document.querySelector(href) : null
       if (el) {
-        console.log(el)
         el.scrollIntoView(true)
-        window.scrollBy(0, -65 - this.$refs.scrollSpy.offsetHeight)
+        window.scrollBy(0, -55 - this.$refs.scrollSpy.offsetHeight)
       }
     },
     showPdciModal: function () {
@@ -312,7 +315,7 @@ export default {
   position: sticky;
   top: 55px;
   align-self: flex-start;
-  z-index: 9999;
+  z-index: 500;
 }
 .scrollspy-sticky > .navbar-nav {
   flex-wrap: wrap;

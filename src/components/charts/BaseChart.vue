@@ -3,7 +3,7 @@
     <div class="text-right">
       <!-- Chart options -->
       <b-button-group>
-        <b-dropdown no-caret>
+        <b-dropdown no-caret right>
           <template v-slot:button-content>
             <i class="mdi mdi-18px mdi-dots-vertical"/>
             <slot name="buttonContent" />

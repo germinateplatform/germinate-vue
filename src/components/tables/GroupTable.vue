@@ -3,6 +3,7 @@
     <BaseTable :options="options"
                :columns="columns"
                :filterOn="filterOn"
+               ref="table"
                v-bind="$props"
                v-on="$listeners">
       <router-link slot="groupId" slot-scope="props" :to="`/groups/${props.row.groupId}`" event="" @click.native.prevent="$emit('group-selected', props.row.groupId)">{{ props.row.groupId }}</router-link>
@@ -44,7 +45,7 @@ export default {
         type: String
       }, {
         name: 'groupType',
-        type: String
+        type: 'groupType'
       }, {
         name: 'userId',
         type: String

@@ -12,6 +12,14 @@ export default {
     datasetIds: {
       type: Array,
       default: () => null
+    },
+    traitIds: {
+      type: Array,
+      default: () => null
+    },
+    chartMode: {
+      type: String,
+      default: 'traitByDataset'
     }
   },
   components: {
@@ -32,22 +40,86 @@ export default {
       }
     },
     getFilename: function () {
-      return 'trait-boxplots-' + this.datasetIds.join('-')
+      if (this.chartMode === 'traitByDataset') {
+        return 'trait-boxplots-' + this.datasetIds.join('-')
+      } else if (this.chartMode === 'datasetByTrait') {
+        return 'trait-boxplots-' + this.traitIds.join('-')
+      } else {
+        return 'trait-boxplots'
+      }
     },
     getHeight: function () {
-      return 100 + this.plotData.traits.length * 30 * this.plotData.datasets.length
+      return 200 + this.plotData.traits.length * 30 * this.plotData.datasets.length
+    },
+    redraw: function () {
+      this.loading = true
+
+      const query = {
+        datasetIds: this.datasetIds,
+        traitIds: this.traitIds
+      }
+
+      this.apiPostTrialsStats(query, result => {
+        this.plotData = result
+        this.chart()
+        this.loading = false
+      })
     },
     chart: function () {
+      var div = this.$refs.chart
+
+      this.$plotly.purge(div)
+
       var y = []
 
-      for (var trait in this.plotData.traits) {
-        for (var i = 0; i < 6; i++) {
-          y.push(this.plotData.traits[trait].traitName)
+      const isInverted = this.chartMode === 'datasetByTrait'
+
+      if (isInverted) {
+        for (var dataset in this.plotData.datasets) {
+          for (var i = 0; i < 6; i++) {
+            y.push(this.plotData.datasets[dataset].datasetName)
+          }
+        }
+      } else {
+        for (var trait in this.plotData.traits) {
+          for (var j = 0; j < 6; j++) {
+            y.push(this.plotData.traits[trait].traitName)
+          }
         }
       }
 
       var traces = []
 
+      if (isInverted) {
+        traces = this.getInvertedData(y)
+      } else {
+        traces = this.getData(y)
+      }
+
+      var layout = {
+        xaxis: {
+          zeroline: false
+        },
+        height: this.getHeight(),
+        margin: { autoexpand: true },
+        autosize: true,
+        boxmode: 'group',
+        yaxis: {
+          automargin: true
+        }
+      }
+
+      var config = {
+        modeBarButtonsToRemove: ['toImage'],
+        displayModeBar: true,
+        responsive: true,
+        displaylogo: false
+      }
+
+      this.$plotly.newPlot(div, traces, layout, config)
+    },
+    getData: function (y) {
+      var traces = []
       for (var dataset in this.plotData.datasets) {
         var datasetId = this.plotData.datasets[dataset].datasetId
         var x = []
@@ -79,46 +151,60 @@ export default {
           x: x,
           y: y,
           name: this.plotData.datasets[dataset].datasetName,
-          marker: { color: this.serverSettings.colorsTemplate[dataset] },
+          marker: { color: this.serverSettings.colorsCharts[dataset] },
           type: 'box',
           boxmean: false,
           boxpoints: false,
           orientation: 'h'
         })
       }
+      return traces
+    },
+    getInvertedData: function (y) {
+      var traces = []
+      for (var trait in this.plotData.traits) {
+        var traitId = this.plotData.traits[trait].traitId
+        var x = []
 
-      var div = this.$refs.chart
+        for (var d in this.plotData.datasets) {
+          var datasetId = this.plotData.datasets[d].datasetId
+          var datasetData = this.plotData.stats.filter(s => s.traitId === traitId && s.datasetId === datasetId)[0]
 
-      var layout = {
-        xaxis: {
-          zeroline: false
-        },
-        height: this.getHeight(),
-        margin: { autoexpand: true },
-        autosize: true,
-        boxmode: 'group',
-        yaxis: {
-          automargin: true
+          if (datasetData && datasetData.min !== datasetData.max) {
+            // This trait/dataset combination is available, add all the information
+            x.push(datasetData.min)
+            x.push(datasetData.q1)
+            x.push(datasetData.median)
+            x.push(datasetData.median)
+            x.push(datasetData.q3)
+            x.push(datasetData.max)
+          } else {
+            // This trait isn't available in this dataset, fill everything with NaN to not show anything
+            x.push(NaN)
+            x.push(NaN)
+            x.push(NaN)
+            x.push(NaN)
+            x.push(NaN)
+            x.push(NaN)
+          }
         }
-      }
 
-      var config = {
-        modeBarButtonsToRemove: ['toImage'],
-        displayModeBar: true,
-        responsive: true,
-        displaylogo: false
+        traces.push({
+          x: x,
+          y: y,
+          name: this.plotData.traits[trait].traitName,
+          marker: { color: this.serverSettings.colorsCharts[trait] },
+          type: 'box',
+          boxmean: false,
+          boxpoints: false,
+          orientation: 'h'
+        })
       }
-
-      this.$plotly.newPlot(div, traces, layout, config)
+      return traces
     }
   },
   mounted: function () {
-    this.loading = true
-    this.apiPostTrialsStats(this.datasetIds, result => {
-      this.plotData = result
-      this.chart()
-      this.loading = false
-    })
+    this.redraw()
   }
 }
 </script>

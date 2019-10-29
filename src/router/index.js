@@ -124,6 +124,12 @@ const router = new Router({
                   name: 'traits',
                   component: () => import('@/views/data/trials/Traits.vue'),
                   beforeEnter: requireAuth
+                },
+                {
+                  path: 'traits/:traitId',
+                  name: 'trait-details',
+                  component: () => import('@/views/data/trials/TraitDetails.vue'),
+                  beforeEnter: requireAuth
                 }
               ]
             },

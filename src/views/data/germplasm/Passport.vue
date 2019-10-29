@@ -6,17 +6,17 @@
           <template v-slot:title>
             <i class="mdi mdi-18px mdi-arrow-down-bold-box-outline" /> {{ germplasm.accenumb }}
           </template>
-          <SpecificPassport :germplasmId="germplasm.id" ref="child"/>
+          <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" ref="child"/>
         </b-tab>
         <b-tab @click="updateParentMap">
           <template v-slot:title>
             <i class="mdi mdi-18px mdi-arrow-up-bold-box-outline" /> {{ germplasm.entityparentaccenumb }}
           </template>
-          <SpecificPassport :germplasmId="germplasm.entityparentid" v-if="germplasm.entityparentid" ref="parent"/>
+          <SpecificPassport :germplasmId="germplasm.entityparentid" :isPopup="isPopup" v-if="germplasm.entityparentid" ref="parent"/>
         </b-tab>
       </b-tabs>
     </template>
-    <SpecificPassport :germplasmId="germplasm.id" v-else/>
+    <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" v-else/>
   </div>
 </template>
 
@@ -35,6 +35,10 @@ export default {
     germplasmId: {
       type: Number,
       default: null
+    },
+    isPopup: {
+      type: Boolean,
+      default: false
     }
   },
   components: {

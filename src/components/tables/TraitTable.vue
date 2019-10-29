@@ -6,6 +6,10 @@
                ref="traitTable"
                v-on="$listeners">
       <!-- LINKS -->
+      <router-link slot="traitId" slot-scope="props" :to="{ name: 'trait-details', params: { traitId: props.row.traitId } }">{{ props.row.traitId }}</router-link>
+      <router-link slot="traitName" slot-scope="props" :to="{ name: 'trait-details', params: { traitId: props.row.traitId } }">{{ props.row.traitName }}</router-link>
+      <router-link slot="traitNameShort" slot-scope="props" :to="{ name: 'trait-details', params: { traitId: props.row.traitId } }">{{ props.row.traitNameShort }}</router-link>
+      <router-link slot="traitDescription" slot-scope="props" :to="{ name: 'trait-details', params: { traitId: props.row.traitId } }">{{ props.row.traitDescription }}</router-link>
       <span slot="synonyms" slot-scope="props" v-if="props.row.synonyms">{{ props.row.synonyms.join(', ') }}</span>
     </BaseTable>
   </div>

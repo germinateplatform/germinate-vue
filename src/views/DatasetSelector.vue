@@ -66,8 +66,8 @@ export default {
           })
 
           if (toAccept.length > 0) {
-            this.$bvToast.toast('Please accept all licenses in the table. Click on a license to read and accept it.', {
-              title: 'License error',
+            this.$bvToast.toast(this.$t('toastTextAcceptLicense'), {
+              title: this.$t('toastTitleAcceptLicense'),
               variant: 'danger',
               autoHideDelay: 10000,
               appendToast: true

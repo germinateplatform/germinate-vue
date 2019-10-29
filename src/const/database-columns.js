@@ -172,6 +172,9 @@ export default {
       name: 'countryName',
       type: String
     }, {
+      name: 'traitId',
+      type: Number
+    }, {
       name: 'traitName',
       type: String
     }, {

@@ -5,6 +5,13 @@
                v-bind="$props"
                ref="datasetTable"
                v-on="$listeners">
+      <div slot="h__dataObjectCount">
+        <span>{{ options.headings.dataObjectCount() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipDatasetDataObjects')"/>
+      </div>
+      <div slot="h__dataPointCount">
+        <span>{{ options.headings.dataPointCount() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipDatasetDataPoints')"/>
+      </div>
+
       <template slot="datasetId" slot-scope="props">
         <router-link :to="{ name: experimentTypes[props.row.experimentType].pageName, params: { datasetIds: props.row.datasetId.toString() } }" v-if="!props.row.isExternal && isPageAvailable(props.row.experimentType) && (!props.row.licenseName || isAccepted(props.row))">{{ props.row.datasetId }}</router-link>
         <span v-else>{{ props.row.datasetId }}</span>
@@ -162,7 +169,7 @@ export default {
           collaborators: '',
           attributes: '',
           download: '',
-          isExternal: () => 'External',
+          isExternal: () => this.$t('tableColumnDatasetExternal'),
           selected: ''
         },
         orderBy: {
@@ -171,7 +178,11 @@ export default {
         columnsClasses: {
           selected: 'bg-info',
           dataObjectCount: 'text-right',
-          dataPointCount: 'text-right'
+          dataPointCount: 'text-right',
+          datasetState: 'px-1',
+          collaborators: 'px-1',
+          download: 'px-1',
+          isExternal: 'px-1'
         },
         rowClassCallback: row => this.getRowClass(row)
       },
@@ -253,18 +264,20 @@ export default {
             cancelVariant: 'danger'
           })
             .then(value => {
-              var genotypeQuery = {
-                datasetIds: [dataset.datasetId],
-                generateFlapjackProject: value
+              if (value !== null) {
+                var genotypeQuery = {
+                  datasetIds: [dataset.datasetId],
+                  generateFlapjackProject: value
+                }
+                EventBus.$emit('show-loading', true)
+                this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
+                  this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
+
+                  EventBus.$emit('toggle-aside')
+
+                  EventBus.$emit('show-loading', false)
+                })
               }
-              EventBus.$emit('show-loading', true)
-              this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
-                this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
-
-                EventBus.$emit('toggle-aside')
-
-                EventBus.$emit('show-loading', false)
-              })
             })
           break
         case 'allelefreq':
@@ -323,6 +336,8 @@ export default {
     },
     onLicenseAccepted: function () {
       this.$refs.licenseModal.hide()
+      // Pass it on to the parent in case it wants to know
+      this.$emit('license-accepted')
       this.refresh()
     },
     onLicenseClicked: function (dataset) {

@@ -72,6 +72,9 @@
                 <template v-else-if="isType(f, 'dataType')">
                   <b-form-select :options="getDataTypeOptions()" v-model="f.values[0]" />
                 </template>
+                <template v-else-if="isType(f, 'groupType')">
+                  <b-form-select :options="getGroupTypeOptions()" v-model="f.values[0]" />
+                </template>
                 <b-input-group-append>
                   <b-button variant="danger" class="mdi mdi-18px mdi-delete" :disabled="index === 0" @click="tempFilter.splice(index, 1)"/>
                 </b-input-group-append>
@@ -192,6 +195,14 @@ export default {
       } else {
         return true
       }
+    },
+    getGroupTypeOptions: function () {
+      return Object.keys(this.groupTypes).map(l => {
+        return {
+          value: l,
+          text: this.groupTypes[l].text()
+        }
+      })
     },
     getDataTypeOptions: function () {
       return Object.keys(this.dataTypes).map(l => {

@@ -178,12 +178,6 @@ export default {
               ]
             },
             {
-              name: this.$t('menuDatasets'),
-              identifiers: ['datasets'],
-              url: '/data/datasets',
-              icon: 'mdi mdi-18px mdi-database'
-            },
-            {
               name: this.$t('menuEnvironment'),
               url: '/data/environment',
               icon: 'mdi mdi-18px mdi-nature-people',
@@ -201,6 +195,12 @@ export default {
                   icon: 'mdi mdi-map-search'
                 }
               ]
+            },
+            {
+              name: this.$t('menuDatasets'),
+              identifiers: ['datasets'],
+              url: '/data/datasets',
+              icon: 'mdi mdi-18px mdi-database'
             }
           ]
         },

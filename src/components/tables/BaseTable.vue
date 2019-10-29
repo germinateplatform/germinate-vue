@@ -18,7 +18,7 @@
         </b-col>
         <b-col cols=3 sm=6>
           <b-button-group class="float-right per-page-dropdown">
-            <b-dropdown>
+            <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')">
               <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
               <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
             </b-dropdown>

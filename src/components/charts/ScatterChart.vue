@@ -5,7 +5,7 @@
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
     </BaseChart>
     <b-modal size="xl" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null" ok-only hide-header :ok-title="$t('buttonClose')">
-      <Passport :germplasmId="germplasmId" />
+      <Passport :germplasmId="germplasmId" :isPopup="true" />
     </b-modal>
   </div>
 </template>

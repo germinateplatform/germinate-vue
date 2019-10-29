@@ -148,6 +148,9 @@ export default {
     apiPostDatasetExport: function (experimentType, queryData, onSuccess, onError) {
       return this.authAjax({ url: `dataset/export/${experimentType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostDatasetAttributeExport: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'dataset/attribute/export', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiGetDatasetSourceFile: function (datasetId, onSuccess, onError) {
       return this.authAjax({ url: `dataset/${datasetId}/download-source?random=${this.uuidv4()}`, dataType: 'blob', success: onSuccess, error: onError })
     },
@@ -165,6 +168,10 @@ export default {
     },
     apiPostDatasetGroups: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostTraitDataTable: function (traitId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `trait/${traitId}/data`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTrialsDataTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -260,10 +267,7 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'institution/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostTrialsStats: function (datasetIds, onSuccess, onError) {
-      var queryData = {
-        datasetIds: datasetIds
-      }
+    apiPostTrialsStats: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/stats/trial', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGermplasmGroupTable: function (germplasmId, queryData, onSuccess, onError) {
