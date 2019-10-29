@@ -5,6 +5,7 @@
       <b-link class="navbar-brand" to="/">
         <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
+        &nbsp;<span class="navbar-brand-full navbar-brand-text"> Germinate</span>
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
       <b-navbar-nav class="ml-auto">

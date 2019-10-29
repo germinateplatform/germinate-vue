@@ -224,15 +224,37 @@ i.flag-icon {
 	background-color: rgba(15, 112, 182, 0.8);
 }
 
+.navbar-brand-text {
+  display: none;
+}
+
+.app-header .navbar-nav {
+  max-width: 50%;
+  flex-wrap: wrap;
+}
+
+.app-body {
+  margin-top: 96px;
+}
+
 @media (min-width: 576px) {
   .carousel-caption h3 {
     font-size: 1rem;
+  }
+  .app-header .navbar-nav {
+    max-width: 75%;
+  }
+  .app-body {
+    margin-top: 55px;
   }
 }
 
 @media (min-width: 768px) {
   .carousel-caption h3 {
     font-size: 1.53125rem;
+  }
+  .navbar-brand-text {
+    display: inline-block;
   }
 }
 
