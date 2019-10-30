@@ -5,11 +5,11 @@
 
       <h2>{{ $t('pageTraitDetailsDataTitle') }}</h2>
       <p>{{ $t('pageTraitDetailsDataText') }}</p>
-      <TrialsDataTable :getData="getData" :filterOn="tableFilter" ref="traitDetailsTable" />
+      <TrialsDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="traitDetailsTable" />
 
       <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageTraitDetailsStatsText') }}</p>
-      <TraitBoxplotChart chartMode="datasetByTrait" :traitIds="[traitId]" ref="traitDetailsChart" />
+      <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" itemType="traits" ref="traitDetailsChart" />
 
       <div v-show="showAdditionalDatasets">
         <DatasetsWithUnacceptedLicense experimentType="trials" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
@@ -21,7 +21,7 @@
 
 <script>
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
-import TraitBoxplotChart from '@/components/charts/TraitBoxplotChart'
+import BoxplotChart from '@/components/charts/BoxplotChart'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 
 export default {
@@ -35,7 +35,7 @@ export default {
   },
   components: {
     DatasetsWithUnacceptedLicense,
-    TraitBoxplotChart,
+    BoxplotChart,
     TrialsDataTable
   },
   methods: {
@@ -43,7 +43,10 @@ export default {
       this.showAdditionalDatasets = data && data.count > 0
     },
     getData: function (data, callback) {
-      return this.apiPostTraitDataTable(this.traitId, data, callback)
+      return this.apiPostTrialsDataTable(data, callback)
+    },
+    getIds: function (data, callback) {
+      return this.apiPostTrialsDataTableIds(data, callback)
     },
     update: function () {
       this.$refs.traitDetailsTable.refresh()

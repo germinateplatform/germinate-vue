@@ -43,6 +43,9 @@ export default {
         name: 'datasetName',
         type: String
       }, {
+        name: 'compoundId',
+        type: Number
+      }, {
         name: 'compoundName',
         type: String
       }, {
@@ -62,8 +65,8 @@ export default {
     return {
       options: {
         idColumn: 'germplasmId',
-        tableName: 'trialsData',
-        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'entityType', 'datasetName', 'compoundName', 'unitName', 'recordingDate', 'compoundValue'],
+        tableName: 'compoundData',
+        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'entityType', 'datasetName', 'compoundId', 'compoundName', 'unitName', 'recordingDate', 'compoundValue'],
         filterable: [],
         headings: {
           germplasmId: () => this.$t('tableColumnGermplasmId'),
@@ -73,6 +76,7 @@ export default {
           datasetName: () => this.$t('tableColumnDatasetName'),
           locationName: () => this.$t('tableColumnLocationName'),
           countryName: () => this.$t('tableColumnCountryName'),
+          compoundId: () => this.$t('tableColumnCompoundId'),
           compoundName: () => this.$t('tableColumnCompoundName'),
           unitName: () => this.$t('tableColumnCompoundUnitName'),
           recordingDate: () => this.$t('tableColumnCompoundDataRecordingDate'),
@@ -80,6 +84,7 @@ export default {
         },
         columnsClasses: {
           germplasmId: 'text-right',
+          compoundId: 'text-right',
           marked: 'text-right'
         }
       },

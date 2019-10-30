@@ -54,6 +54,10 @@ export default {
     y: {
       type: String,
       default: ''
+    },
+    experimentType: {
+      type: String,
+      default: 'trials'
     }
   },
   components: {
@@ -81,7 +85,7 @@ export default {
       }
     },
     getFilename: function () {
-      return 'trials-' + this.datasetIds.join('-')
+      return this.experimentType + '-' + this.datasetIds.join('-')
     },
     redraw: function (result, colorBy) {
       this.sourceFile = result
@@ -92,7 +96,7 @@ export default {
       reader.onload = () => {
         var dirtyTsv = reader.result
         var firstEOL = dirtyTsv.indexOf('\r\n')
-        var tsv = dirtyTsv.substring(firstEOL + 2)
+        var tsv = this.experimentType === 'compound' ? dirtyTsv : dirtyTsv.substring(firstEOL + 2)
         var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
 
         this.$plotly.d3.select(this.$refs.scatterChart)

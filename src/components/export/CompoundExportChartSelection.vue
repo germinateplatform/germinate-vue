@@ -1,16 +1,16 @@
 <template>
   <div>
-    <TraitExportSelection :datasetIds="datasetIds" exportType="chart" v-on:button-clicked="plot" />
+    <CompoundExportSelection :datasetIds="datasetIds" exportType="chart" v-on:button-clicked="plot" />
     <b-row>
       <b-col cols=12 v-if="plotData">
-        <h3 class="mt-3">{{ $t('pageTrialsExportColorByTitle') }}</h3>
-        <p>{{ $t('pageTrialsExportColorByText') }}</p>
+        <h3 class="mt-3">{{ $t('pageCompoundExportColorByTitle') }}</h3>
+        <p>{{ $t('pageCompoundExportColorByText') }}</p>
         <b-form-select :options="colorByOptions" v-model="colorBySelection" @change="onColorByChanged" />
 
-        <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
-        <p>{{ $t('pageTrialsExportChartText') }}</p>
-        <MatrixChart ref="chart" :datasetIds="datasetIds" v-if="selectedTraits.length > 2" experimentType="trials" />
-        <ScatterChart ref="chart" :datasetIds="datasetIds" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" experimentType="trials" v-else />
+        <h3 class="mt-3">{{ $t('pageCompoundExportChartTitle') }}</h3>
+        <p>{{ $t('pageCompoundExportChartText') }}</p>
+        <MatrixChart ref="chart" :datasetIds="datasetIds" v-if="selectedCompounds.length > 2" experimentType="compound" />
+        <ScatterChart ref="chart" :datasetIds="datasetIds" :x="selectedCompounds[0].displayName" :y="selectedCompounds[1].displayName" experimentType="compound" v-else />
       </b-col>
     </b-row>
   </div>
@@ -19,7 +19,7 @@
 <script>
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
-import TraitExportSelection from '@/components/export/TraitExportSelection'
+import CompoundExportSelection from '@/components/export/CompoundExportSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -40,29 +40,23 @@ export default {
       }, {
         text: this.$t('widgetChartColoringByYear'),
         value: 'year'
-      }, {
-        text: this.$t('widgetChartColoringByTreatment'),
-        value: 'treatments_description'
-      }, {
-        text: this.$t('widgetChartColoringByTrialSite'),
-        value: 'trial_site'
       }],
       colorBySelection: null,
       plotData: null,
-      selectedTraits: null
+      selectedCompounds: null
     }
   },
   components: {
-    TraitExportSelection,
+    CompoundExportSelection,
     MatrixChart,
     ScatterChart
   },
   methods: {
-    plot: function (query, selectedTraits) {
+    plot: function (query, selectedCompounds) {
       this.plotData = null
       EventBus.$emit('show-loading', true)
-      this.apiPostDatasetExport('trial', query, result => {
-        this.selectedTraits = selectedTraits
+      this.apiPostDatasetExport('compound', query, result => {
+        this.selectedCompounds = selectedCompounds
         this.plotData = result
         this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection))
         EventBus.$emit('show-loading', false)

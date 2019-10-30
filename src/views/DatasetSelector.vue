@@ -10,7 +10,7 @@
       <p>Are you looking for any of these?</p>
       <ul>
         <li v-for="(experimentType, name) in getExperimentTypes()" :key="`experiment-type-${name}`">
-          <router-link :to="`/export/${name}`">{{ experimentType.text() }}</router-link>
+          <router-link :to="{ name: 'export', params: { experimentType: name } }">{{ experimentType.text() }}</router-link>
         </li>
       </ul>
     </div>
@@ -92,6 +92,8 @@ export default {
         case 'allelefreq':
           this.$router.push({ name: 'export-allelefrequency', params: { datasetIds: selectedIds.join(',') } })
           break
+        case 'compound':
+          this.$router.push({ name: 'export-compounds', params: { datasetIds: selectedIds.join(',') } })
       }
     },
     getExperimentTypes: function () {

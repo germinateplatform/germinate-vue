@@ -54,6 +54,10 @@ export default {
     datasetIds: {
       type: Array,
       default: () => []
+    },
+    experimentType: {
+      type: String,
+      default: 'trials'
     }
   },
   components: {
@@ -93,7 +97,7 @@ export default {
       reader.onload = () => {
         var dirtyTsv = reader.result
         var firstEOL = dirtyTsv.indexOf('\r\n')
-        var tsv = dirtyTsv.substring(firstEOL + 2)
+        var tsv = this.experimentType === 'compound' ? dirtyTsv : dirtyTsv.substring(firstEOL + 2)
         var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
 
         this.loading = false

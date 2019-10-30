@@ -134,6 +134,28 @@ const router = new Router({
               ]
             },
             {
+              path: 'compounds',
+              redirect: '/data/compounds/compounds',
+              name: '',
+              component: {
+                render (c) { return c('router-view') }
+              },
+              children: [
+                {
+                  path: 'compounds',
+                  name: 'compounds',
+                  component: () => import('@/views/data/compound/Compounds.vue'),
+                  beforeEnter: requireAuth
+                },
+                {
+                  path: 'compounds/:compoundId',
+                  name: 'compound-details',
+                  component: () => import('@/views/data/compound/CompoundDetails.vue'),
+                  beforeEnter: requireAuth
+                }
+              ]
+            },
+            {
               path: 'genotypes',
               redirect: '/data/genotypes/maps',
               name: '',
@@ -187,6 +209,19 @@ const router = new Router({
               path: 'export/trials/:datasetIds',
               name: 'export-trials',
               component: () => import('@/views/data/export/TrialsExport.vue'),
+              beforeEnter: requireAuth,
+              props (route) {
+                const datasetIds = route.params.datasetIds || ''
+
+                return {
+                  datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
+                }
+              }
+            },
+            {
+              path: 'export/compounds/:datasetIds',
+              name: 'export-compounds',
+              component: () => import('@/views/data/export/CompoundExport.vue'),
               beforeEnter: requireAuth,
               props (route) {
                 const datasetIds = route.params.datasetIds || ''

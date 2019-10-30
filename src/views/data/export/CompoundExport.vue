@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1>{{ $t('pageTrialsExportTitle') }}</h1>
+    <h1>{{ $t('pageCompoundExportTitle') }}</h1>
     <template v-if="datasets && datasets.length > 0">
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
       </ul>
-      <b-row class="trials-tabs" v-if="tabs">
-        <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
+      <b-row class="compound-tabs" v-if="tabs">
+        <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'compound-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
             <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
               <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
@@ -25,22 +25,22 @@
         </b-col>
       </b-row>
       <div v-show="currentTab === 'overview'">
-        <h2>{{ $t('pageTrialsExportTraitBoxplotTitle') }}</h2>
-        <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
-        <BoxplotChart :datasetIds="datasetIds" itemType="traits" />
+        <h2>{{ $t('pageCompoundExportCompoundBoxplotTitle') }}</h2>
+        <p>{{ $t('pageCompoundExportCompoundBoxplotText') }}</p>
+        <BoxplotChart :datasetIds="datasetIds" itemType="compounds" />
       </div>
-      <TraitExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
-      <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
-      <TraitExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" />
+      <CompoundExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
+      <CompoundDataTable :getData="getCompoundData" :getIds="getCompoundDataIds" v-show="currentTab === 'table'" />
+      <CompoundExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
 </template>
 
 <script>
-import TraitExportChartSelection from '@/components/export/TraitExportChartSelection'
-import TraitExportDownloadSelection from '@/components/export/TraitExportDownloadSelection'
-import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import CompoundDataTable from '@/components/tables/CompoundDataTable'
+import CompoundExportChartSelection from '@/components/export/CompoundExportChartSelection'
+import CompoundExportDownloadSelection from '@/components/export/CompoundExportDownloadSelection'
 import BoxplotChart from '@/components/charts/BoxplotChart'
 
 export default {
@@ -73,19 +73,19 @@ export default {
     }
   },
   components: {
-    TraitExportDownloadSelection,
-    TraitExportChartSelection,
-    TrialsDataTable,
+    CompoundDataTable,
+    CompoundExportChartSelection,
+    CompoundExportDownloadSelection,
     BoxplotChart
   },
   methods: {
-    getTrialsData: function (data, callback) {
+    getCompoundData: function (data, callback) {
       data.datasetIds = this.datasetIds
-      return this.apiPostTrialsDataTable(data, callback)
+      return this.apiPostCompoundDataTable(data, callback)
     },
-    getTrialsDataIds: function (data, callback) {
+    getCompoundDataIds: function (data, callback) {
       data.datasetIds = this.datasetIds
-      return this.apiPostTrialsDataTableIds(data, callback)
+      return this.apiPostCompoundDataTableIds(data, callback)
     },
     tabSelected: function (tab) {
       this.currentTab = tab
@@ -108,7 +108,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'trials' } }))
+      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'compounds' } }))
     },
     isAccepted: function (dataset) {
       if (this.token) {
@@ -126,7 +126,7 @@ export default {
         column: 'experimentType',
         comparator: 'equals',
         operator: 'and',
-        values: ['trials']
+        values: ['compound']
       }, {
         column: 'isExternal',
         comparator: 'equals',
@@ -159,10 +159,10 @@ export default {
 </script>
 
 <style>
-.trials-tabs *:hover {
+.compound-tabs *:hover {
   text-decoration: none;
 }
-.trials-tabs .card-footer i.mdi {
+.compound-tabs .card-footer i.mdi {
   vertical-align: sub;
 }
 </style>

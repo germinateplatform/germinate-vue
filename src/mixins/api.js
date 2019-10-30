@@ -73,6 +73,10 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'trait/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostCompoundTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'compound/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostLocationTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -166,12 +170,14 @@ export default {
       }
       return this.authAjax({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostDatasetCompounds: function (datasetIds, onSuccess, onError) {
+      const queryData = {
+        datasetIds: datasetIds
+      }
+      return this.authAjax({ url: 'dataset/compound', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostDatasetGroups: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostTraitDataTable: function (traitId, queryData, onSuccess, onError) {
-      queryData.page -= 1
-      return this.authAjax({ url: `trait/${traitId}/data`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTrialsDataTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -267,8 +273,8 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'institution/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostTrialsStats: function (queryData, onSuccess, onError) {
-      return this.authAjax({ url: 'dataset/stats/trial', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    apiPostTraitCompoundStats: function (statsType, queryData, onSuccess, onError) {
+      return this.authAjax({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGermplasmGroupTable: function (germplasmId, queryData, onSuccess, onError) {
       queryData.page -= 1

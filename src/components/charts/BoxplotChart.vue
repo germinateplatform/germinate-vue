@@ -13,13 +13,17 @@ export default {
       type: Array,
       default: () => null
     },
-    traitIds: {
+    xIds: {
       type: Array,
       default: () => null
     },
     chartMode: {
       type: String,
-      default: 'traitByDataset'
+      default: 'itemByDataset'
+    },
+    itemType: {
+      type: String,
+      default: 'traits'
     }
   },
   components: {
@@ -28,7 +32,21 @@ export default {
   data: function () {
     return {
       plotData: null,
-      loading: false
+      loading: false,
+      itemTypes: {
+        traits: {
+          itemKey: 'traits',
+          idKey: 'traitId',
+          apiKey: 'trial',
+          nameKey: 'traitName'
+        },
+        compounds: {
+          itemKey: 'compounds',
+          idKey: 'compoundId',
+          apiKey: 'compound',
+          nameKey: 'compoundName'
+        }
+      }
     }
   },
   methods: {
@@ -40,26 +58,26 @@ export default {
       }
     },
     getFilename: function () {
-      if (this.chartMode === 'traitByDataset') {
-        return 'trait-boxplots-' + this.datasetIds.join('-')
-      } else if (this.chartMode === 'datasetByTrait') {
-        return 'trait-boxplots-' + this.traitIds.join('-')
+      if (this.chartMode === 'itemByDataset') {
+        return this.itemTypes[this.itemType].itemKey + '-boxplots-' + this.datasetIds.join('-')
+      } else if (this.chartMode === 'datasetByItem') {
+        return this.itemTypes[this.itemType].itemKey + '-boxplots-' + this.xIds.join('-')
       } else {
-        return 'trait-boxplots'
+        return this.itemTypes[this.itemType].itemKey + '-boxplots'
       }
     },
     getHeight: function () {
-      return 200 + this.plotData.traits.length * 30 * this.plotData.datasets.length
+      return 200 + this.plotData[this.itemTypes[this.itemType].itemKey].length * 30 * this.plotData.datasets.length
     },
     redraw: function () {
       this.loading = true
 
       const query = {
         datasetIds: this.datasetIds,
-        traitIds: this.traitIds
+        xIds: this.xIds
       }
 
-      this.apiPostTrialsStats(query, result => {
+      this.apiPostTraitCompoundStats(this.itemTypes[this.itemType].apiKey, query, result => {
         this.plotData = result
         this.chart()
         this.loading = false
@@ -72,7 +90,7 @@ export default {
 
       var y = []
 
-      const isInverted = this.chartMode === 'datasetByTrait'
+      const isInverted = this.chartMode === 'datasetByItem'
 
       if (isInverted) {
         for (var dataset in this.plotData.datasets) {
@@ -81,9 +99,9 @@ export default {
           }
         }
       } else {
-        for (var trait in this.plotData.traits) {
+        for (var item in this.plotData[this.itemTypes[this.itemType].itemKey]) {
           for (var j = 0; j < 6; j++) {
-            y.push(this.plotData.traits[trait].traitName)
+            y.push(this.plotData[this.itemTypes[this.itemType].itemKey][item][this.itemTypes[this.itemType].nameKey])
           }
         }
       }
@@ -124,18 +142,18 @@ export default {
         var datasetId = this.plotData.datasets[dataset].datasetId
         var x = []
 
-        for (var t in this.plotData.traits) {
-          var traitId = this.plotData.traits[t].traitId
-          var traitData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.traitId === traitId)[0]
+        for (var item in this.plotData[this.itemTypes[this.itemType].itemKey]) {
+          var itemId = this.plotData[this.itemTypes[this.itemType].itemKey][item][this.itemTypes[this.itemType].idKey]
+          var itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
 
-          if (traitData && traitData.min !== traitData.max) {
+          if (itemData && itemData.min !== itemData.max) {
             // This trait/dataset combination is available, add all the information
-            x.push(traitData.min)
-            x.push(traitData.q1)
-            x.push(traitData.median)
-            x.push(traitData.median)
-            x.push(traitData.q3)
-            x.push(traitData.max)
+            x.push(itemData.min)
+            x.push(itemData.q1)
+            x.push(itemData.median)
+            x.push(itemData.median)
+            x.push(itemData.q3)
+            x.push(itemData.max)
           } else {
             // This trait isn't available in this dataset, fill everything with NaN to not show anything
             x.push(NaN)
@@ -162,13 +180,13 @@ export default {
     },
     getInvertedData: function (y) {
       var traces = []
-      for (var trait in this.plotData.traits) {
-        var traitId = this.plotData.traits[trait].traitId
+      for (var item in this.plotData[this.itemTypes[this.itemType].itemKey]) {
+        var itemId = this.plotData[this.itemTypes[this.itemType].itemKey][item][this.itemTypes[this.itemType].idKey]
         var x = []
 
         for (var d in this.plotData.datasets) {
           var datasetId = this.plotData.datasets[d].datasetId
-          var datasetData = this.plotData.stats.filter(s => s.traitId === traitId && s.datasetId === datasetId)[0]
+          var datasetData = this.plotData.stats.filter(s => s.xId === itemId && s.datasetId === datasetId)[0]
 
           if (datasetData && datasetData.min !== datasetData.max) {
             // This trait/dataset combination is available, add all the information
@@ -192,8 +210,8 @@ export default {
         traces.push({
           x: x,
           y: y,
-          name: this.plotData.traits[trait].traitName,
-          marker: { color: this.serverSettings.colorsCharts[trait] },
+          name: this.plotData[this.itemTypes[this.itemType].itemKey][item][this.itemTypes[this.itemType].nameKey],
+          marker: { color: this.serverSettings.colorsCharts[item] },
           type: 'box',
           boxmean: false,
           boxpoints: false,
