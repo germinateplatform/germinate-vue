@@ -93,6 +93,9 @@
     <div class="text-center" v-else>
       <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
     </div>
+    <b-modal :title="$t('pagePassportPdciTitle')" ok-only ref="pdciModal">
+      <div v-html="$t('pagePassportPdciModal')" />
+    </b-modal>
   </div>
 </template>
 
@@ -155,8 +158,7 @@ export default {
       }
     },
     showPdciModal: function () {
-      // TODO
-      console.log('SHOW PDCI')
+      this.$refs.pdciModal.show()
     },
     getGermplasmAttributeData: function (data, callback) {
       return this.apiPostGermplasmAttributeTable(this.currentGermplasmId, data, callback)

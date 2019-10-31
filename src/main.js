@@ -18,6 +18,9 @@ import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet'
 import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
+import Autocomplete from '@trevoreyre/autocomplete-vue'
+import '@trevoreyre/autocomplete-vue/dist/style.css'
+
 require('es6-object-assign/auto')
 require('es6-set/implement')
 let axiosDefaults = require('axios/lib/defaults')
@@ -43,6 +46,7 @@ Vue.mixin(api)
 Vue.use(ClientTable, tableOptions, false, 'bootstrap4', 'footerPagination')
 Vue.use(ServerTable, tableOptions, false, 'bootstrap4', 'footerPagination')
 Vue.use(BootstrapVue)
+Vue.use(Autocomplete)
 Vue.component('l-map', LMap)
 Vue.component('l-tile-layer', LTileLayer)
 Vue.component('l-marker', LMarker)

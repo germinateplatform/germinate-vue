@@ -15,11 +15,14 @@
       <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename">
         <div slot="chart" id="map-chart" ref="mapChart" />
       </BaseChart>
+
+      <Autocomplete :search="getMarkers" placeholder="Type in marker name (At least 3 chars)" :get-result-value="extractMarkerName" @submit="setMarker" />
     </div>
   </div>
 </template>
 
 <script>
+import Autocomplete from '@trevoreyre/autocomplete-vue'
 import BaseChart from '@/components/charts/BaseChart'
 import MapTable from '@/components/tables/MapTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
@@ -34,11 +37,42 @@ export default {
     }
   },
   components: {
+    Autocomplete,
     BaseChart,
     MapTable,
     MapDefinitionTable
   },
   methods: {
+    setMarker: function (result) {
+      console.log(result)
+    },
+    extractMarkerName: function (result) {
+      return result.markerName
+    },
+    getMarkers: function (input) {
+      if (input.length < 3) {
+        return []
+      } else {
+        return new Promise(resolve => {
+          const query = {
+            filter: [{
+              column: 'markerName',
+              comparator: 'contains',
+              operator: 'and',
+              values: [input]
+            }],
+            page: 1,
+            ascending: 1,
+            orderBy: 'markerName',
+            limit: this.MAX_JAVA_INTEGER
+          }
+
+          this.apiPostMarkerTable(query, result => {
+            resolve(result.data)
+          })
+        })
+      }
+    },
     getFilter: function () {
       return [{
         column: {
@@ -83,7 +117,10 @@ export default {
       }
     },
     drawChart: function () {
-      this.apiGetMapExport(this.mapId, result => {
+      var request = {
+        format: 'flapjack'
+      }
+      this.apiPostMapExport(this.mapId, request, result => {
         this.sourceFile = result
         var reader = new FileReader()
         reader.onload = () => {

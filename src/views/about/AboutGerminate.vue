@@ -36,14 +36,37 @@
       </b-col>
     </b-row>
     <div v-html="$t('pageAboutGerminateText')" />
-    <b-row>
-      <b-col cols=6 sm=4 class="about-logo">
+    <h2>Team<small> - The people behind Germinate</small></h2>
+    <b-row class="team-members">
+      <b-col cols=12 sm=6 xl=3 v-for="(member, i) in team" :key="'about-team-' + i" class="text-center pb-5">
+        <div class="px-5 pt-5 pb-3">
+          <b-img :src="`/img/${member.img}`" rounded="circle" fluid />
+        </div>
+        <h2>{{ member.name }}</h2>
+        <h5 class="text-primary text-uppercase">{{ member.job }}</h5>
+        <p class="text-muted">{{ member.about }}</p>
+        <a v-for="(link, j) in member.links" target="_blank" :title="link.title" :href="link.href" :key="`about-team-${i}-${j}`" class="px-1"><i :class="`mdi mdi-24px ${link.icon}`" /></a>
+      </b-col>
+    </b-row>
+    <h2>Funders<small> - Organisations supporting Germinate - past and present</small></h2>
+    <b-row class="funders">
+      <b-col cols=12 sm=6 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
+        <div class="px-5 pt-5 pb-3 img-container d-flex justify-content-center">
+          <a :href="funder.href" :title="funder.name" target="_blank" class="align-self-center" v-if="funder.href">
+            <b-img :src="`/img/${funder.logo}`" fluid />
+          </a>
+          <b-img :src="`/img/${funder.logo}`" fluid v-else />
+        </div>
+      </b-col>
+    </b-row>
+    <b-row class="about-footer bg-dark py-5 px-3">
+      <b-col cols=12 sm=6 xl=4 class="about-logo">
         <b-img src="/img/germinate-square.svg" fluid />
       </b-col>
-      <b-col cols=6 sm=4 class="about-logo">
+      <b-col cols=12 sm=6 xl=4 class="about-logo">
         <b-img src="/img/hutton.svg" fluid />
       </b-col>
-      <b-col cols=6 sm=4 class="about-logo">
+      <b-col cols=12 sm=6 xl=4 class="about-logo">
         <b-img src="/img/ics-sdg.svg" fluid />
       </b-col>
     </b-row>
@@ -79,6 +102,80 @@ export default {
           icon: 'mdi-glasses',
           link: 'https://github.com/germinateplatform/germinate/wiki'
         }
+      ],
+      team: [
+        {
+          name: 'Sebastian Raubach',
+          job: 'Lead developer',
+          img: 'team/sebastian-raubach.jpg',
+          about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus nisl ut felis sodales, sit amet tincidunt sem aliquet. In sit amet elementum lectus. Aliquam vel orci ut mi tempus.',
+          links: [{
+            icon: 'mdi-twitter',
+            title: 'Twitter',
+            href: 'https://twitter.com/BazRaubach'
+          }, {
+            icon: 'mdi-earth',
+            title: 'Website',
+            href: 'http://www.hutton.ac.uk/staff/sebastian-raubach'
+          }]
+        },
+        {
+          name: 'Paul Shaw',
+          job: 'Project Manager',
+          img: 'team/paul-shaw.jpg',
+          about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus nisl ut felis sodales, sit amet tincidunt sem aliquet. In sit amet elementum lectus. Aliquam vel orci ut mi tempus.',
+          links: [{
+            icon: 'mdi-twitter',
+            title: 'Twitter',
+            href: 'https://twitter.com/cardinalb'
+          }, {
+            icon: 'mdi-earth',
+            title: 'Website',
+            href: 'http://www.hutton.ac.uk/staff/paul-shaw'
+          }]
+        }
+      ],
+      funders: [
+        {
+          name: 'The James Hutton Institute',
+          href: 'http://www.hutton.ac.uk/',
+          logo: 'funders/hutton.svg'
+        },
+        {
+          name: 'CIMMYT',
+          href: 'https://www.cimmyt.org/',
+          logo: 'funders/cimmyt.svg'
+        },
+        {
+          name: 'Crop Trust',
+          href: 'https://www.croptrust.org/',
+          logo: 'funders/crop-trust.svg'
+        },
+        {
+          name: 'The Crop Wild Relatives Project',
+          href: 'https://www.cwrdiversity.org/',
+          logo: 'funders/cwr.svg'
+        },
+        {
+          name: 'University of Dundee',
+          href: 'https://www.dundee.ac.uk/',
+          logo: 'funders/uod.svg'
+        },
+        {
+          name: 'Biotechnology and Biological Sciences Research Council',
+          href: 'https://bbsrc.ukri.org/',
+          logo: 'funders/bbsrc.svg'
+        },
+        {
+          name: 'Rural & Environment Science & Analytical Services',
+          href: null,
+          logo: 'funders/resas.svg'
+        },
+        {
+          name: 'The Scottish Government',
+          href: 'https://www.gov.scot/',
+          logo: 'funders/scottish-government.svg'
+        }
       ]
     }
   },
@@ -97,7 +194,7 @@ export default {
 
 <style scoped>
 .about-header-logo {
-  max-width: 200px;
+  max-height: 200px;
 }
 .about-banners p {
   margin-bottom: 0;
@@ -118,10 +215,33 @@ export default {
   height: 150px;
   width: auto;
 }
+.about-footer {
+  margin-left: -30px;
+  margin-right: -30px;
+  margin-bottom: -25px;
+}
+.about-footer img {
+  max-height: 100px;
+}
+.funders img {
+  width: 100%;
+  height: auto;
+}
 .hutton-header {
   margin-left: -30px;
   margin-right: -30px;
   margin-top: -17px;
+}
+.team-members img {
+  max-height: 300px;
+  width: auto;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);
+}
+.funders .img-container {
+  height: 200px;
+}
+.funders img {
+  max-height: 150px;
 }
 .hutton-header.row .col {
   min-height: 100px;

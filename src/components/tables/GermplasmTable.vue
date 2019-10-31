@@ -59,6 +59,9 @@
       <div slot="h__germplasmPuid">
         <span>{{ options.headings.germplasmPuid() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
       </div>
+      <div slot="h__pdci">
+        <span>{{ options.headings.pdci() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPdci')"/>
+      </div>
     </BaseTable>
   </div>
 </template>

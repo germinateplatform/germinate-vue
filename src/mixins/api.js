@@ -142,8 +142,8 @@ export default {
     apiGetMap: function (mapId, onSuccess, onError) {
       return this.authAjax({ url: `map/${mapId}`, success: onSuccess, error: onError })
     },
-    apiGetMapExport: function (mapId, onSuccess, onError) {
-      return this.authAjax({ url: `map/${mapId}/export`, dataType: 'blob', success: onSuccess, error: onError })
+    apiPostMapExport: function (mapId, queryData, onSuccess, onError) {
+      return this.authAjax({ url: `map/${mapId}/export`, method: 'POST', data: queryData, dataType: 'blob', success: onSuccess, error: onError })
     },
     apiPostCollaboratorsTable: function (datasetId, queryData, onSuccess, onError) {
       queryData.page -= 1
