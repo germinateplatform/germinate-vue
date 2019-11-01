@@ -142,6 +142,9 @@ export default {
     apiGetMap: function (mapId, onSuccess, onError) {
       return this.authAjax({ url: `map/${mapId}`, success: onSuccess, error: onError })
     },
+    apiGetMapChromosomes: function (mapId, onSuccess, onError) {
+      return this.authAjax({ url: `map/${mapId}/chromosome`, success: onSuccess, error: onError })
+    },
     apiPostMapExport: function (mapId, queryData, onSuccess, onError) {
       return this.authAjax({ url: `map/${mapId}/export`, method: 'POST', data: queryData, dataType: 'blob', success: onSuccess, error: onError })
     },

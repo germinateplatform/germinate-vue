@@ -5,7 +5,7 @@
       <b-link class="navbar-brand" to="/">
         <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
-        &nbsp;<span class="navbar-brand-full navbar-brand-text"> Germinate</span>
+        <img class="navbar-brand-full navbar-brand-text" src="img/germinate-text.svg" height="22" alt="Germinate">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
       <b-navbar-nav class="ml-auto">
@@ -339,5 +339,11 @@ export default {
 }
 .app-footer.bg-dark {
   border-top: 1px solid #24292d;
+}
+.app-header .navbar-brand {
+  width: 200px;
+}
+.app-header .navbar-brand-text {
+  margin-left: 10px;
 }
 </style>

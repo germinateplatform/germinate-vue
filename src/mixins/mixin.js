@@ -24,6 +24,43 @@ export default {
   data: function () {
     return {
       MAX_JAVA_INTEGER: 2147483647,
+      exportFormats: {
+        flapjack: {
+          name: 'Flapjack',
+          logo: 'tools/flapjack.png',
+          text: () => this.$t('pageExportFormatsFlapjackText'),
+          tags: ['genotype', 'phenotype'],
+          link: 'https://ics.hutton.ac.uk/flapjack'
+        },
+        helium: {
+          name: 'Helium',
+          logo: 'tools/helium.png',
+          text: () => this.$t('pageExportFormatsHeliumText'),
+          tags: ['pedigree', 'phenotype'],
+          link: 'https://ics.hutton.ac.uk/helium'
+        },
+        curlywhirly: {
+          name: 'CurlyWhirly',
+          logo: 'tools/curlywhirly.png',
+          text: () => this.$t('pageExportFormatsCurlyWhirlyText'),
+          tags: ['pca'],
+          link: 'https://ics.hutton.ac.uk/curlywhirly'
+        },
+        excel: {
+          name: 'Excel',
+          logo: 'tools/excel.svg',
+          text: () => this.$t('pageExportFormatsExcelText'),
+          tags: ['genotype', 'phenotype'],
+          link: 'https://products.office.com/excel'
+        },
+        strudel: {
+          name: 'Strudel',
+          logo: 'tools/strudel.png',
+          text: () => this.$t('pageExportFormatsStrudelText'),
+          tags: ['genotype'],
+          link: 'https://ics.hutton.ac.uk/strudel'
+        }
+      },
       dataTypes: {
         'char_': {
           text: () => this.$t('dataTypeChar'),

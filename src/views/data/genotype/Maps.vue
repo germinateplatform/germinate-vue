@@ -16,62 +16,75 @@
         <div slot="chart" id="map-chart" ref="mapChart" />
       </BaseChart>
 
-      <Autocomplete :search="getMarkers" placeholder="Type in marker name (At least 3 chars)" :get-result-value="extractMarkerName" @submit="setMarker" />
+      <h2>{{ $t('pageMapExportDownloadTitle') }}</h2>
+      <b-form-group
+        :label="$t('formLabelMapExportDownloadText')"
+        label-for="export-options-enabled">
+        <b-form-checkbox id="export-options-enabled" v-model="useAdvancedExportOptions" switch >
+          {{ useAdvancedExportOptions ? $t('genericYes') : $t('genericNo') }}
+        </b-form-checkbox>
+      </b-form-group>
+      <MapExportSelection :mapId="mapId" v-show="useAdvancedExportOptions" ref="exportOptions" />
+
+      <h4>{{ $t('pageMapExportDownloadFormatTitle') }}</h4>
+      <b-list-group class="d-inline-block">
+        <b-list-group-item button @click="exportMap('flapjack')"><img :src="`/img/${exportFormats.flapjack.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadFlapjackFormat') }}</b-list-group-item>
+        <b-list-group-item button @click="exportMap('strudel')"><img :src="`/img/${exportFormats.strudel.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadStrudelFormat') }}</b-list-group-item>
+      </b-list-group>
+
+      <p><span class="text-muted" v-html="$t('pageExportFormatsGenotypeText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
     </div>
   </div>
 </template>
 
 <script>
-import Autocomplete from '@trevoreyre/autocomplete-vue'
 import BaseChart from '@/components/charts/BaseChart'
 import MapTable from '@/components/tables/MapTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
+import MapExportSelection from '@/components/export/MapExportSelection'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
     return {
       mapId: null,
       map: null,
-      sourceFile: null
+      sourceFile: null,
+      useAdvancedExportOptions: false
     }
   },
   components: {
-    Autocomplete,
     BaseChart,
     MapTable,
-    MapDefinitionTable
+    MapDefinitionTable,
+    MapExportSelection
   },
   methods: {
-    setMarker: function (result) {
-      console.log(result)
-    },
-    extractMarkerName: function (result) {
-      return result.markerName
-    },
-    getMarkers: function (input) {
-      if (input.length < 3) {
-        return []
-      } else {
-        return new Promise(resolve => {
-          const query = {
-            filter: [{
-              column: 'markerName',
-              comparator: 'contains',
-              operator: 'and',
-              values: [input]
-            }],
-            page: 1,
-            ascending: 1,
-            orderBy: 'markerName',
-            limit: this.MAX_JAVA_INTEGER
-          }
-
-          this.apiPostMarkerTable(query, result => {
-            resolve(result.data)
-          })
-        })
+    exportMap: function (format) {
+      var options = {
+        format: format
       }
+      if (this.useAdvancedExportOptions) {
+        var customOptions = this.$refs.exportOptions.getExportOptions()
+
+        if (!customOptions || !customOptions.method) {
+          // TODO: Notification
+          return
+        } else {
+          options = Object.assign({}, options, customOptions)
+        }
+      }
+
+      EventBus.$emit('show-loading', true)
+      this.apiPostMapExport(this.mapId, options, result => {
+        this.downloadBlob({
+          blob: result,
+          filename: 'map-' + this.mapId,
+          extension: format === 'flapjack' ? 'map' : 'strudel'
+        })
+        EventBus.$emit('show-loading', false)
+      })
     },
     getFilter: function () {
       return [{
@@ -132,7 +145,18 @@ export default {
           this.$plotly.d3.select(this.$refs.mapChart)
             .datum(data)
             .call(plotlyMapChart()
-              .colors(this.serverSettings.colorsCharts))
+              .colors(this.serverSettings.colorsCharts)
+              .onPointsSelected((chromosome, start, end) => {
+                this.useAdvancedExportOptions = true
+
+                this.$nextTick(() => {
+                  this.$refs.exportOptions.addRegion({
+                    chromosome: chromosome,
+                    start: Math.floor(start),
+                    end: Math.ceil(end)
+                  })
+                })
+              }))
         }
         reader.readAsText(result)
       })

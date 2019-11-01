@@ -79,6 +79,10 @@ export function plotlyMapChart() {
 				datum.yaxis = 'y' + axisIndex;
 				data.push(datum);
 
+				layout['yaxis' + axisIndex] = {
+					title: 'Chr' + c
+				}
+
 				layout.grid.subplots.push(['xy' + axisIndex]);
 			});
 
