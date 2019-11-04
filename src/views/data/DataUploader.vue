@@ -10,10 +10,8 @@
       drop-placeholder="Drop file here..." />
     <div class="mt-3">Selected file: {{ file ? file.name : '' }}</div>
 
-    <b-button variant="success" v-if="file" @click="onSubmit" :disabled="running">
-      <b-spinner variant="light" type="grow" small v-if="running" />
-      Upload
-    </b-button>
+    <b-button variant="success" v-if="file" @click="onSubmit"><i class="mdi mdi-18px fix-alignment mdi-upload" /> Upload</b-button>
+    <p class="text-muted" v-if="status">{{ status }}</p>
 
     <template v-if="response && response.length">
       <hr />
@@ -28,15 +26,17 @@
 </template>
 
 <script>
+import { EventBus } from '@/plugins/event-bus.js'
+
 export default {
   data: function () {
     return {
       file: null,
-      running: false,
       uuid: null,
       response: [],
       timer: '',
       error: null,
+      status: null,
       columns: ['icon', 'status', 'rowIndex', 'message'],
       options: {
         skin: 'table table-striped table-hover',
@@ -57,9 +57,11 @@ export default {
       },
       statusOptions: {
         OK: () => this.$t('importStatusOk'),
-        GENERIC_IO_ERROR: () => this.$t('importStatusGeneticIOError'),
+        GENERIC_DUPLICATE_COLUMN: () => this.$t('importStatusGenericDuplicateColumn'),
+        GENERIC_IO_ERROR: () => this.$t('importStatusGenericIOError'),
         GENERIC_MISSING_EXCEL_SHEET: () => this.$t('importStatusGenericMissingExcelSheet'),
         GENERIC_MISSING_COLUMN: () => this.$t('importStatusGenericMissingColumn'),
+        GENERIC_MISSING_DB_ITEM_UPDATE: () => this.$t('importStatusMissingDbItemUpdate'),
         MCPD_DUPLICATE_ACCENUMB: () => this.$t('importStatusMcpdDuplicateAccenumb'),
         MCPD_INVALID_COUNTRY_CODE: () => this.$t('importStatusMcpdInvalidCountryCode'),
         MCPD_INVALID_DATE: () => this.$t('importStatusMcpdInvalidDate'),
@@ -84,14 +86,16 @@ export default {
     checkStatus: function () {
       this.apiGetDataUploadStatus(this.uuid, result => {
         if (result) {
-          this.running = false
+          EventBus.$emit('show-loading', false)
           clearInterval(this.timer)
 
           this.response = result
+          this.status = null
         }
       }, error => {
-        this.running = false
+        EventBus.$emit('show-loading', false)
         clearInterval(this.timer)
+        this.status = null
         this.error = error
       })
     },
@@ -99,9 +103,11 @@ export default {
       let formData = new FormData()
       formData.append('fileToUpload', this.file)
 
-      this.running = true
+      this.status = 'Uploading file...'
+      EventBus.$emit('show-loading', true)
       this.apiPostDataUpload(formData, result => {
         this.uuid = result
+        this.status = 'Checking file, don\'t leave this page...'
         this.timer = setInterval(this.checkStatus, 1000)
       })
     }
