@@ -179,25 +179,6 @@ export default {
               ]
             },
             {
-              name: this.$t('menuCompoundsData'),
-              url: '/data/compounds/compounds',
-              icon: 'mdi mdi-18px mdi-flask',
-              children: [
-                {
-                  name: this.$t('menuCompoundsCompounds'),
-                  identifiers: ['compounds'],
-                  url: '/data/compounds/compounds',
-                  icon: 'mdi mdi-18px mdi-atom'
-                },
-                {
-                  name: this.$t('menuCompoundDataExport'),
-                  identifiers: ['export-compounds'],
-                  url: '/data/export/compound',
-                  icon: 'mdi mdi-18px mdi-flask'
-                }
-              ]
-            },
-            {
               name: this.$t('menuEnvironment'),
               url: '/data/environment',
               icon: 'mdi mdi-18px mdi-nature-people',
@@ -217,10 +198,35 @@ export default {
               ]
             },
             {
+              name: this.$t('menuCompoundsData'),
+              url: '/data/compounds/compounds',
+              icon: 'mdi mdi-18px mdi-flask',
+              children: [
+                {
+                  name: this.$t('menuCompoundsCompounds'),
+                  identifiers: ['compounds'],
+                  url: '/data/compounds/compounds',
+                  icon: 'mdi mdi-18px mdi-atom'
+                },
+                {
+                  name: this.$t('menuCompoundDataExport'),
+                  identifiers: ['export-compounds'],
+                  url: '/data/export/compound',
+                  icon: 'mdi mdi-18px mdi-flask'
+                }
+              ]
+            },
+            {
               name: this.$t('menuDatasets'),
               identifiers: ['datasets'],
               url: '/data/datasets',
               icon: 'mdi mdi-18px mdi-database'
+            },
+            {
+              name: this.$t('menuDataStatistics'),
+              identifiers: ['statistics'],
+              url: '/data/statistics',
+              icon: 'mdi mdi-18px mdi-chart-areaspline'
             }
           ]
         },

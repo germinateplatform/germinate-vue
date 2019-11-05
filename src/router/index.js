@@ -112,6 +112,12 @@ const router = new Router({
               beforeEnter: requireAuth
             },
             {
+              path: 'statistics',
+              name: 'statistics',
+              component: () => import('@/views/data/DataStatistics.vue'),
+              beforeEnter: requireAuth
+            },
+            {
               path: 'trials',
               redirect: '/data/trials/traits',
               name: '',

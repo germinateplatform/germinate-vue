@@ -48,7 +48,7 @@
                     </b-dropdown-item>
                   </b-dropdown>
                 </b-input-group-prepend>
-                <template v-if="isType(f, String)">
+                <template v-if="isType(f, String) || isType(f, 'json')">
                   <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()"/>
                   <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                 </template>
@@ -128,7 +128,8 @@ export default {
         Boolean: ['equals'],
         dataType: ['equals'],
         locationType: ['equals'],
-        entityType: ['equals']
+        entityType: ['equals'],
+        json: ['contains']
       },
       comparators: {
         contains: {
@@ -245,6 +246,12 @@ export default {
         f.values = [0, 0]
       } else {
         f.values = [null, null]
+      }
+
+      if (this.validComparatorsForType[column.type]) {
+        if (this.validComparatorsForType[column.type].indexOf(f.comparator) === -1) {
+          f.comparator = this.validComparatorsForType[column.type][0]
+        }
       }
     },
     switchComparator: function (f, name) {

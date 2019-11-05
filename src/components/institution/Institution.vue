@@ -39,7 +39,7 @@ export default {
         operator: 'and',
         values: [institutionId]
       }])
-      this.$router.push({ path: '/data/germplasm' })
+      this.$router.push({ name: 'germplasm' })
     }
   },
   mounted: function () {

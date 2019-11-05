@@ -16,7 +16,9 @@
     <div class="text-center py-3">
       <b-img src="/img/germinate-square.svg" fluid class="about-header-logo"/>
     </div>
-    <div class="text-center" v-html="$t('pageAboutGerminateTitle')" />
+    <div class="text-center">
+      <h1>{{ $t('pageAboutGerminateTitle') }}<small> - {{ $t('pageAboutGerminateSubtitle') }}</small></h1>
+    </div>
     <b-row class="about-banners" v-if="banners">
       <b-col cols=12 sm=6 xl=3 v-for="(banner, index) in banners" :key="'about-banners-' + banner.key">
         <a target="_blank" :href="banner.link">
@@ -36,7 +38,7 @@
       </b-col>
     </b-row>
     <div v-html="$t('pageAboutGerminateText')" />
-    <h2>Team<small> - The people behind Germinate</small></h2>
+    <h2>{{ $t('pageAboutGerminateTeamTitle') }}<small> - {{ $t('pageAboutGerminateTeamSubtitle') }}</small></h2>
     <b-row class="team-members">
       <b-col cols=12 sm=6 xl=3 v-for="(member, i) in team" :key="'about-team-' + i" class="text-center pb-5">
         <div class="px-5 pt-5 pb-3">
@@ -48,7 +50,7 @@
         <a v-for="(link, j) in member.links" target="_blank" :title="link.title" :href="link.href" :key="`about-team-${i}-${j}`" class="px-1"><i :class="`mdi mdi-24px ${link.icon}`" /></a>
       </b-col>
     </b-row>
-    <h2>Funders<small> - Organisations supporting Germinate - past and present</small></h2>
+    <h2>{{ $t('pageAboutGerminateFundersTitle') }}<small> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>
     <b-row class="funders">
       <b-col cols=12 sm=6 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
         <div class="px-5 pt-5 pb-3 img-container d-flex justify-content-center">
@@ -59,15 +61,16 @@
         </div>
       </b-col>
     </b-row>
-    <b-row class="about-footer bg-dark py-5 px-3">
+    <b-row class="about-footer bg-dark px-3">
       <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img src="/img/germinate-square.svg" fluid />
+        <b-img src="/img/germinate-square.svg" fluid class="my-5" />
+        <b-img src="/img/germinate-text.svg" fluid class="my-5 germinate-text"/>
       </b-col>
       <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img src="/img/hutton.svg" fluid />
+        <b-img src="/img/hutton.svg" fluid class="my-5" />
       </b-col>
       <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img src="/img/ics-sdg.svg" fluid />
+        <b-img src="/img/ics-sdg.svg" fluid class="my-5" />
       </b-col>
     </b-row>
   </div>
@@ -117,6 +120,28 @@ export default {
             icon: 'mdi-earth',
             title: 'Website',
             href: 'http://www.hutton.ac.uk/staff/sebastian-raubach'
+          }]
+        },
+        {
+          name: 'Gordon Stephen',
+          job: 'BrAPI integrator',
+          img: 'team/gordon-stephen.jpg',
+          about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus nisl ut felis sodales, sit amet tincidunt sem aliquet. In sit amet elementum lectus. Aliquam vel orci ut mi tempus.',
+          links: [{
+            icon: 'mdi-earth',
+            title: 'Website',
+            href: 'http://www.hutton.ac.uk/staff/gordon-stephen'
+          }]
+        },
+        {
+          name: 'Iain Milne',
+          job: 'Flapjack developer',
+          img: 'team/iain-milne.jpg',
+          about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus nisl ut felis sodales, sit amet tincidunt sem aliquet. In sit amet elementum lectus. Aliquam vel orci ut mi tempus.',
+          links: [{
+            icon: 'mdi-earth',
+            title: 'Website',
+            href: 'http://www.hutton.ac.uk/staff/iain-milne'
           }]
         },
         {
@@ -223,6 +248,10 @@ export default {
 .about-footer img {
   max-height: 100px;
 }
+.about-footer img.germinate-text {
+  height: 30px;
+  margin-left: 15px;
+}
 .funders img {
   width: 100%;
   height: auto;
@@ -241,7 +270,7 @@ export default {
   height: 200px;
 }
 .funders img {
-  max-height: 150px;
+  height: 150px;
 }
 .hutton-header.row .col {
   min-height: 100px;

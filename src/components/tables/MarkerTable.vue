@@ -39,7 +39,7 @@ export default {
       type: String
     }, {
       name: 'markerSynonyms',
-      type: String
+      type: 'json'
     }, {
       name: 'marked',
       type: undefined

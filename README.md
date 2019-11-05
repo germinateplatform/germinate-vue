@@ -22,5 +22,5 @@ which brings focus and facilitates community building into research communities.
 
 
 
-<img src="public/img/hutton.svg" height="150" alt="Logo">
-<img src="public/img/ics-sdg.svg" height="150" alt="Logo">
+<img src="public/img/hutton-black.svg" height="150" alt="Logo">
+<img src="public/img/ics-sdg-black.svg" height="150" alt="Logo">

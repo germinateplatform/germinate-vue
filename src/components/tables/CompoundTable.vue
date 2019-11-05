@@ -35,7 +35,7 @@ export default {
       type: String
     }, {
       name: 'synonyms',
-      type: String
+      type: 'json'
     }, {
       name: 'unitName',
       type: String

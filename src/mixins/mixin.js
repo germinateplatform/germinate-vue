@@ -46,19 +46,19 @@ export default {
           tags: ['pca'],
           link: 'https://ics.hutton.ac.uk/curlywhirly'
         },
-        excel: {
-          name: 'Excel',
-          logo: 'tools/excel.svg',
-          text: () => this.$t('pageExportFormatsExcelText'),
-          tags: ['genotype', 'phenotype'],
-          link: 'https://products.office.com/excel'
-        },
         strudel: {
           name: 'Strudel',
           logo: 'tools/strudel.png',
           text: () => this.$t('pageExportFormatsStrudelText'),
           tags: ['genotype'],
           link: 'https://ics.hutton.ac.uk/strudel'
+        },
+        excel: {
+          name: 'Excel',
+          logo: 'tools/excel.svg',
+          text: () => this.$t('pageExportFormatsExcelText'),
+          tags: ['genotype', 'phenotype'],
+          link: 'https://products.office.com/excel'
         }
       },
       dataTypes: {

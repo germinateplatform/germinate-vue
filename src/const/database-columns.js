@@ -23,7 +23,7 @@ export default {
       type: String
     }, {
       name: 'synonyms',
-      type: String
+      type: 'json'
     }, {
       name: 'collectorNumber',
       type: String
@@ -257,7 +257,7 @@ export default {
       type: String
     }, {
       name: 'synonyms',
-      type: String
+      type: 'json'
     }, {
       name: 'mapFeatureType',
       type: String

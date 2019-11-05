@@ -46,7 +46,7 @@
     <ResizeObserver v-on:notify-width="handleResize" />
 
     <!-- Modal to ask for filenames -->
-    <b-modal ref="chartModal" :title="$t('modalTitleChartFilename')" @ok="download">
+    <b-modal ref="chartModal" :title="$t('modalTitleChartFilename')" :ok-title="$t('buttonOk')" :cancel-title="$t('buttonCancel')" @ok="download">
       <b-form v-on:submit.prevent="download">
         <b-form-input v-model="userFilename" autofocus />
       </b-form>
