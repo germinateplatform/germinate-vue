@@ -235,6 +235,7 @@
   "pageMapExportMarkerIntervalDescription": "Define two markers and the export will include all Markers between those two markers. Make sure both markers are on the same chromosome, otherwise the export will be empty.",
   "pageMapExportMarkerRadiusDescription": "Define a marker of interest and an offset to either side to export Markers in that area.",
   "pageMapExportDownloadTitle": "Download map",
+  "pageMapExportDownloadCloseAdvancedOptions": "Disable the advanced options above to export the complete map.",
   "pageMapExportDownloadFormatTitle": "Formats",
   "pageMapExportDownloadFlapjackFormat": "Download in Flapjack format",
   "pageMapExportDownloadStrudelFormat": "Download in Strudel format",

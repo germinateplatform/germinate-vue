@@ -3,13 +3,16 @@
     <p class="text-info"><i class="mdi mdi-18px fix-alignment mdi-information-outline" /> {{ $t('pageMapExportOptionDescription') }}</p>
     <b-card no-body v-if="chromosomes && chromosomes.length > 0">
       <b-tabs card v-model="tabIndex">
+        <!-- CHROMOSOMES -->
         <b-tab :title="$t('pageMapExportOptionChromosomes')">
           <b-form-group
             :label="$t('formLabelMapExportChromosomeSelection')"
             label-for="chromosomes">
-            <b-form-checkbox-group id="chromosomes" v-model="selectedChromosomes" :options="chromosomes" stacked/>
+            <b-form-select v-model="selectedChromosomes" :options="chromosomes" :select-size="7" multiple />
+            <!-- <b-form-checkbox-group id="chromosomes" v-model="selectedChromosomes" :options="chromosomes" stacked/> -->
           </b-form-group>
         </b-tab>
+        <!-- REGIONS -->
         <b-tab :title="$t('pageMapExportOptionRegions')">
           <p>{{ $t('pageMapExportRegionDescription') }}</p>
           <v-client-table :columns="columns" :options="options" v-model="regions">
@@ -20,6 +23,7 @@
           </v-client-table>
           <b-button @click="addRegion()" v-b-tooltip.hover :title="$t('tooltipMapExportRegionAdd')"><i class="mdi mdi-18px mdi-table-row-plus-after" /></b-button>
         </b-tab>
+        <!-- MARKER INTERVAL -->
         <b-tab :title="$t('pageMapExportOptionMarkerInterval')">
           <p>{{ $t('pageMapExportMarkerIntervalDescription') }}</p>
           <b-row>
@@ -27,18 +31,19 @@
               <b-form-group
                 :label="$t('formLabelMapExportIntervalFirstMarker')"
                 label-for="first-marker">
-                <Autocomplete id="first-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="extractMarkerName" @submit="setIntervalMarkerOne" />
+                <Autocomplete id="first-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="result => result.markerName" @submit="setIntervalMarkerOne" />
               </b-form-group>
             </b-col>
             <b-col xs=12 sm=6>
               <b-form-group
                 :label="$t('formLabelMapExportIntervalSecondMarker')"
                 label-for="second-marker">
-                <Autocomplete id="second-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="extractMarkerName" @submit="setIntervalMarkerTwo" />
+                <Autocomplete id="second-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="result => result.markerName" @submit="setIntervalMarkerTwo" />
               </b-form-group>
             </b-col>
           </b-row>
         </b-tab>
+        <!-- MARKER RADIUS -->
         <b-tab :title="$t('pageMapExportOptionMarkerRadius')">
           <p>{{ $t('pageMapExportMarkerRadiusDescription') }}</p>
           <b-row>
@@ -53,7 +58,7 @@
               <b-form-group
                 :label="$t('formLabelMapExportRadiusMarker')"
                 label-for="radius-marker">
-                <Autocomplete id="radius-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="extractMarkerName" @submit="setRadiusMarker" />
+                <Autocomplete id="radius-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="result => result.markerName" @submit="setRadiusMarker" />
               </b-form-group>
             </b-col>
             <b-col xs=12 sm=4>
@@ -66,6 +71,9 @@
           </b-row>
         </b-tab>
       </b-tabs>
+      <template v-slot:footer>
+        <span class="text-muted">{{ $t('pageMapExportDownloadCloseAdvancedOptions') }}</span>
+      </template>
     </b-card>
   </div>
 </template>
@@ -197,16 +205,23 @@ export default {
       this.regions = this.regions.filter(r => r.id !== row.id)
     },
     addRegion: function (region) {
+      // Set the id (required by the table) to the current maximum plus 1
       const id = this.regions.length < 1 ? 1 : (Math.max.apply(Math, this.regions.map(r => r.id)) + 1)
+
       if (region) {
+        // If a region has been specified, set the id
         region.id = id
+        // Then remove regions where start === end (e.g. automatically added ones)
         this.regions = this.regions.filter(r => r.start !== r.end)
+        // Add the region
         this.regions.push(region)
 
+        // Activate the tab
         this.$nextTick(() => {
           this.tabIndex = 1
         })
       } else {
+        // Just push a new empty region
         this.regions.push({
           id: id,
           chromosome: this.chromosomes[0],
@@ -215,14 +230,12 @@ export default {
         })
       }
     },
-    extractMarkerName: function (result) {
-      return result.markerName
-    },
     getMarkers: function (input) {
       if (input.length < 3) {
         return []
       } else {
         return new Promise(resolve => {
+          // Ask for markers like the given input
           const query = {
             filter: [{
               column: 'markerName',
@@ -237,6 +250,7 @@ export default {
           }
 
           this.apiPostMarkerTable(query, result => {
+            // Resolve the result
             resolve(result.data)
           })
         })
@@ -247,6 +261,7 @@ export default {
     this.apiGetMapChromosomes(this.mapId, result => {
       this.chromosomes = result
 
+      // Add an initial region for easier editing
       if (result && result.length > 0) {
         this.addRegion()
       }

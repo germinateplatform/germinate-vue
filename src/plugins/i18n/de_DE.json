@@ -233,6 +233,7 @@
   "pageMapExportMarkerIntervalDescription": "Die zwei definierten Marker beschränken den Export auf Marker zwischen diesen beiden Markern. Beide Marker müssen auf dem gleichen Chromosom liegen, sonst ist das Ergebnis leer.",
   "pageMapExportMarkerRadiusDescription": "Ein Marker von Interesse und Versatz zur linken und rechten Seite können hier definiert werden. Nur Marker in diesem Bereich werden exportiert.",
   "pageMapExportDownloadTitle": "Karte herunterladen",
+  "pageMapExportDownloadCloseAdvancedOptions": "Fortgeschrittene Optionen deaktivieren um komplette Karte herunterzuladen.",
   "pageMapExportDownloadFormatTitle": "Formate",
   "pageMapExportDownloadFlapjackFormat": "In Flapjack Format herunterladen",
   "pageMapExportDownloadStrudelFormat": "In Strudel Format herunterladen",
