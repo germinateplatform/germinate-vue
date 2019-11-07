@@ -1,6 +1,17 @@
 <template>
   <div>
-    <TraitExportSelection :datasetIds="datasetIds" exportType="export" v-on:button-clicked="download" />
+    <ExportSelection :datasetIds="datasetIds"
+                     :texts="texts"
+                     itemType="germplasm"
+                     groupType="germinatebase"
+                     experimentType="trials"
+                     idKey="traitId"
+                     nameKey="traitName"
+                     :min="1"
+                     :max="null"
+                     :onlyNumeric="false"
+                     :getItems="getItems"
+                     v-on:button-clicked="download" />
 
     <h2 class="mt-4">Download metadata</h2>
     <p>Something here</p>
@@ -9,7 +20,7 @@
 </template>
 
 <script>
-import TraitExportSelection from '@/components/export/TraitExportSelection'
+import ExportSelection from '@/components/export/ExportSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -19,10 +30,25 @@ export default {
       default: () => null
     }
   },
+  data: function () {
+    return {
+      texts: {
+        title: 'pageTrialsExportSelectTraitTitle',
+        text: 'pageTrialsExportSelectTraitExportText',
+        groupTitle: 'pageTrialsExportSelectGroupTitle',
+        groupText: 'pageTrialsExportSelectGroupExportText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        button: 'buttonExport'
+      }
+    }
+  },
   components: {
-    TraitExportSelection
+    ExportSelection
   },
   methods: {
+    getItems: function (callback) {
+      this.apiPostDatasetTraits(this.datasetIds, callback)
+    },
     download: function (query, selectedTraits) {
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport('trial', query, result => {

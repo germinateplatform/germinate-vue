@@ -94,6 +94,10 @@ export default {
           break
         case 'compound':
           this.$router.push({ name: 'export-compounds', params: { datasetIds: selectedIds.join(',') } })
+          break
+        case 'climate':
+          this.$router.push({ name: 'export-climate', params: { datasetIds: selectedIds.join(',') } })
+          break
       }
     },
     getExperimentTypes: function () {

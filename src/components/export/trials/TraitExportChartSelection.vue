@@ -1,6 +1,17 @@
 <template>
   <div>
-    <TraitExportSelection :datasetIds="datasetIds" exportType="chart" v-on:button-clicked="plot" />
+    <ExportSelection :datasetIds="datasetIds"
+                     :texts="texts"
+                     itemType="germplasm"
+                     groupType="germinatebase"
+                     experimentType="trials"
+                     idKey="traitId"
+                     nameKey="traitName"
+                     :min="2"
+                     :max="7"
+                     :onlyNumeric="false"
+                     :getItems="getItems"
+                     v-on:button-clicked="plot" />
     <b-row>
       <b-col cols=12 v-if="plotData">
         <h3 class="mt-3">{{ $t('pageTrialsExportColorByTitle') }}</h3>
@@ -9,8 +20,8 @@
 
         <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
         <p>{{ $t('pageTrialsExportChartText') }}</p>
-        <MatrixChart ref="chart" :datasetIds="datasetIds" v-if="selectedTraits.length > 2" experimentType="trials" />
-        <ScatterChart ref="chart" :datasetIds="datasetIds" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" experimentType="trials" v-else />
+        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedTraits.length > 2" experimentType="trials" />
+        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" experimentType="trials" v-else />
       </b-col>
     </b-row>
   </div>
@@ -19,7 +30,7 @@
 <script>
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
-import TraitExportSelection from '@/components/export/TraitExportSelection'
+import ExportSelection from '@/components/export/ExportSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -49,15 +60,26 @@ export default {
       }],
       colorBySelection: null,
       plotData: null,
-      selectedTraits: null
+      selectedTraits: null,
+      texts: {
+        title: 'pageTrialsExportSelectTraitTitle',
+        text: 'pageTrialsExportSelectTraitChartText',
+        groupTitle: 'pageTrialsExportSelectGroupTitle',
+        groupText: 'pageTrialsExportSelectGroupChartText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        button: 'buttonPlot'
+      }
     }
   },
   components: {
-    TraitExportSelection,
+    ExportSelection,
     MatrixChart,
     ScatterChart
   },
   methods: {
+    getItems: function (callback) {
+      this.apiPostDatasetTraits(this.datasetIds, callback)
+    },
     plot: function (query, selectedTraits) {
       this.plotData = null
       EventBus.$emit('show-loading', true)

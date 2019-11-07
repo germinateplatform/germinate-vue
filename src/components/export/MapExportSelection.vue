@@ -15,10 +15,10 @@
         <!-- REGIONS -->
         <b-tab :title="$t('pageMapExportOptionRegions')">
           <p>{{ $t('pageMapExportRegionDescription') }}</p>
-          <v-client-table :columns="columns" :options="options" v-model="regions">
-            <b-select slot="chromosome" slot-scope="{row, update}"  :options="chromosomes" v-model="row.chromosome" @change="update" />
-            <b-input slot="start" type="number" :min="0" slot-scope="{row, update}" v-model.number="row.start" @change="update" />
-            <b-input slot="end" type="number" :min="0" slot-scope="{row, update}" v-model.number="row.end" @change="update" />
+          <v-client-table :columns="columns" :options="options" :data="regions">
+            <b-select slot="chromosome" slot-scope="props" :options="chromosomes" v-model="props.row.chromosome" @change="setRegionChromosome($event, props.index)" />
+            <b-input slot="start" type="number" :min="0" slot-scope="props" v-model="props.row.start" @change="setRegionStart($event, props.index)" />
+            <b-input slot="end" type="number" :min="0" slot-scope="props" v-model="props.row.end" @change="setRegionEnd($event, props.index)"/>
             <b-button slot="delete" slot-scope="props" variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="deleteRegion(props.row)"><i class="mdi mdi-18px mdi-delete" /></b-button>
           </v-client-table>
           <b-button @click="addRegion()" v-b-tooltip.hover :title="$t('tooltipMapExportRegionAdd')"><i class="mdi mdi-18px mdi-table-row-plus-after" /></b-button>
@@ -135,6 +135,18 @@ export default {
     Autocomplete
   },
   methods: {
+    setRegionChromosome: function (event, index) {
+      index -= 1
+      this.regions[index].chromosome = event
+    },
+    setRegionStart: function (event, index) {
+      index -= 1
+      this.regions[index].start = parseFloat(event)
+    },
+    setRegionEnd: function (event, index) {
+      index -= 1
+      this.regions[index].end = parseFloat(event)
+    },
     setRadiusMarker: function (marker) {
       this.radius.markerId = marker.markerId
     },

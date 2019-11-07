@@ -16,6 +16,28 @@ import Passport from '@/views/data/germplasm/Passport'
 import { plotlyScatterPlot } from '@/plugins/charts/plotly-scatter-plot.js'
 
 export default {
+  props: {
+    datasetIds: {
+      type: Array,
+      default: () => []
+    },
+    x: {
+      type: String,
+      default: ''
+    },
+    y: {
+      type: String,
+      default: ''
+    },
+    experimentType: {
+      type: String,
+      default: 'trials'
+    },
+    itemType: {
+      type: String,
+      default: 'germplasm'
+    }
+  },
   data: function () {
     return {
       sourceFile: null,
@@ -34,30 +56,12 @@ export default {
       }],
       additionalButtons: [{
         html: () => '<i class="mdi mdi-18px mdi-delete" />',
-        disabled: () => this.markedIds.germplasm.length < 1,
+        disabled: () => this.markedIds[this.itemType].length < 1,
         callback: () => this.clearMarkedList()
       }, {
-        html: () => `<span class="badge badge-pill badge-info">${this.markedIds.germplasm.length}</span>`,
+        html: () => `<span class="badge badge-pill badge-info">${this.markedIds[this.itemType].length}</span>`,
         callback: () => this.redirectToList()
       }]
-    }
-  },
-  props: {
-    datasetIds: {
-      type: Array,
-      default: () => []
-    },
-    x: {
-      type: String,
-      default: ''
-    },
-    y: {
-      type: String,
-      default: ''
-    },
-    experimentType: {
-      type: String,
-      default: 'trials'
     }
   },
   components: {
@@ -66,16 +70,16 @@ export default {
   },
   methods: {
     clearMarkedList: function () {
-      this.$store.dispatch('ON_MARKED_IDS_CLEAR', 'germplasm')
+      this.$store.dispatch('ON_MARKED_IDS_CLEAR', this.itemType)
     },
     redirectToList: function () {
-      this.$router.push('/marked-items/germplasm')
+      this.$router.push('/marked-items/' + this.itemType)
     },
     toggleItems: function (add) {
       if (add === true) {
-        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: this.selectedIds })
+        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: this.itemType, ids: this.selectedIds })
       } else {
-        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: this.selectedIds })
+        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: this.selectedIds })
       }
     },
     getSourceFile: function () {
@@ -96,7 +100,7 @@ export default {
       reader.onload = () => {
         var dirtyTsv = reader.result
         var firstEOL = dirtyTsv.indexOf('\r\n')
-        var tsv = this.experimentType === 'compound' ? dirtyTsv : dirtyTsv.substring(firstEOL + 2)
+        var tsv = this.experimentType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
         var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
 
         this.$plotly.d3.select(this.$refs.scatterChart)
@@ -106,9 +110,10 @@ export default {
             .xCategory(this.x)
             .yCategory(this.y)
             .onPointClicked(p => {
-              this.germplasmId = p
-
-              this.$nextTick(() => this.$refs.passportModal.show())
+              if (this.experimentType === 'trials' || this.experimentType === 'compounds') {
+                this.germplasmId = p
+                this.$nextTick(() => this.$refs.passportModal.show())
+              }
             })
             .onPointsSelected(ps => {
               this.selectedIds = ps

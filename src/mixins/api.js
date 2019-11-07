@@ -179,6 +179,12 @@ export default {
       }
       return this.authAjax({ url: 'dataset/compound', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostDatasetClimates: function (datasetIds, onSuccess, onError) {
+      const queryData = {
+        datasetIds: datasetIds
+      }
+      return this.authAjax({ url: 'dataset/climate', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostDatasetGroups: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },

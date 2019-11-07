@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1>{{ $t('pageCompoundExportTitle') }}</h1>
+    <h1>{{ $t('pageClimateExportTitle') }}</h1>
     <template v-if="datasets && datasets.length > 0">
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
       </ul>
-      <b-row class="compound-tabs" v-if="tabs">
-        <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'compound-tabs-' + tab.key">
+      <b-row class="climate-tabs" v-if="tabs">
+        <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'climate-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
             <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
               <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
@@ -24,20 +24,18 @@
           </a>
         </b-col>
       </b-row>
-      <CompoundBoxplotSelection :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
-      <CompoundExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
-      <CompoundDataTable :getData="getCompoundData" :getIds="getCompoundDataIds" v-show="currentTab === 'table'" />
-      <CompoundExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" />
+      <ClimateBoxplotSelection :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
+      <ClimateExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
+      <!-- <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
+      <TraitExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" /> -->
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
 </template>
 
 <script>
-import CompoundBoxplotSelection from '@/components/export/compound/CompoundBoxplotSelection'
-import CompoundDataTable from '@/components/tables/CompoundDataTable'
-import CompoundExportChartSelection from '@/components/export/compound/CompoundExportChartSelection'
-import CompoundExportDownloadSelection from '@/components/export/compound/CompoundExportDownloadSelection'
+import ClimateBoxplotSelection from '@/components/export/climate/ClimateBoxplotSelection'
+import ClimateExportChartSelection from '@/components/export/climate/ClimateExportChartSelection'
 
 export default {
   props: [ 'datasetIds' ],
@@ -69,20 +67,10 @@ export default {
     }
   },
   components: {
-    CompoundBoxplotSelection,
-    CompoundDataTable,
-    CompoundExportChartSelection,
-    CompoundExportDownloadSelection
+    ClimateBoxplotSelection,
+    ClimateExportChartSelection
   },
   methods: {
-    getCompoundData: function (data, callback) {
-      data.datasetIds = this.datasetIds
-      return this.apiPostCompoundDataTable(data, callback)
-    },
-    getCompoundDataIds: function (data, callback) {
-      data.datasetIds = this.datasetIds
-      return this.apiPostCompoundDataTableIds(data, callback)
-    },
     tabSelected: function (tab) {
       this.currentTab = tab
     },
@@ -104,7 +92,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'compounds' } }))
+      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'trials' } }))
     },
     isAccepted: function (dataset) {
       if (this.token) {
@@ -122,7 +110,7 @@ export default {
         column: 'experimentType',
         comparator: 'equals',
         operator: 'and',
-        values: ['compound']
+        values: ['climate']
       }, {
         column: 'isExternal',
         comparator: 'equals',
@@ -155,10 +143,10 @@ export default {
 </script>
 
 <style>
-.compound-tabs *:hover {
+.climate-tabs *:hover {
   text-decoration: none;
 }
-.compound-tabs .card-footer i.mdi {
+.climate-tabs .card-footer i.mdi {
   vertical-align: sub;
 }
 </style>

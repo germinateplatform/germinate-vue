@@ -17,6 +17,14 @@ export default {
       type: Array,
       default: () => null
     },
+    yIds: {
+      type: Array,
+      default: () => null
+    },
+    yGroupIds: {
+      type: Array,
+      default: () => null
+    },
     chartMode: {
       type: String,
       default: 'itemByDataset'
@@ -45,6 +53,12 @@ export default {
           idKey: 'compoundId',
           apiKey: 'compound',
           nameKey: 'compoundName'
+        },
+        climate: {
+          itemKey: 'climates',
+          idKey: 'climateId',
+          apiKey: 'climate',
+          nameKey: 'climateName'
         }
       }
     }
@@ -74,7 +88,9 @@ export default {
 
       const query = {
         datasetIds: this.datasetIds,
-        xIds: this.xIds
+        xIds: this.xIds,
+        yIds: this.yIds,
+        yGroupIds: this.yGroupIds
       }
 
       this.apiPostTraitCompoundStats(this.itemTypes[this.itemType].apiKey, query, result => {

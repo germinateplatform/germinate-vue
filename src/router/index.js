@@ -212,6 +212,19 @@ const router = new Router({
               beforeEnter: requireAuth
             },
             {
+              path: 'export/climate/:datasetIds',
+              name: 'export-climate',
+              component: () => import('@/views/data/export/ClimateExport.vue'),
+              beforeEnter: requireAuth,
+              props (route) {
+                const datasetIds = route.params.datasetIds || ''
+
+                return {
+                  datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
+                }
+              }
+            },
+            {
               path: 'export/trials/:datasetIds',
               name: 'export-trials',
               component: () => import('@/views/data/export/TrialsExport.vue'),

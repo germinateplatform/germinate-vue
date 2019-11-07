@@ -1,6 +1,17 @@
 <template>
   <div>
-    <CompoundExportSelection :datasetIds="datasetIds" exportType="export" v-on:button-clicked="download" />
+    <ExportSelection :datasetIds="datasetIds"
+                     :texts="texts"
+                     itemType="germplasm"
+                     groupType="germinatebase"
+                     experimentType="compounds"
+                     idKey="compoundId"
+                     nameKey="compoundName"
+                     :min="1"
+                     :max="null"
+                     :onlyNumeric="false"
+                     :getItems="getItems"
+                     v-on:button-clicked="download" />
 
     <h2 class="mt-4">Download metadata</h2>
     <p>Something here</p>
@@ -9,7 +20,7 @@
 </template>
 
 <script>
-import CompoundExportSelection from '@/components/export/CompoundExportSelection'
+import ExportSelection from '@/components/export/ExportSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -19,10 +30,25 @@ export default {
       default: () => null
     }
   },
+  data: function () {
+    return {
+      texts: {
+        title: 'pageCompoundExportSelectCompoundTitle',
+        text: 'pageCompoundExportSelectCompoundExportText',
+        groupTitle: 'pageCompoundExportSelectGroupTitle',
+        groupText: 'pageCompoundExportSelectGroupExportText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        button: 'buttonExport'
+      }
+    }
+  },
   components: {
-    CompoundExportSelection
+    ExportSelection
   },
   methods: {
+    getItems: function (callback) {
+      this.apiPostDatasetCompounds(this.datasetIds, callback)
+    },
     download: function (query, selectedCompounds) {
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport('compound', query, result => {

@@ -1,6 +1,17 @@
 <template>
   <div>
-    <CompoundExportSelection :datasetIds="datasetIds" exportType="chart" v-on:button-clicked="plot" />
+    <ExportSelection :datasetIds="datasetIds"
+                     :texts="texts"
+                     itemType="germplasm"
+                     groupType="germinatebase"
+                     experimentType="compounds"
+                     idKey="compoundId"
+                     nameKey="compoundName"
+                     :min="2"
+                     :max="7"
+                     :onlyNumeric="false"
+                     :getItems="getItems"
+                     v-on:button-clicked="plot" />
     <b-row>
       <b-col cols=12 v-if="plotData">
         <h3 class="mt-3">{{ $t('pageCompoundExportColorByTitle') }}</h3>
@@ -9,8 +20,8 @@
 
         <h3 class="mt-3">{{ $t('pageCompoundExportChartTitle') }}</h3>
         <p>{{ $t('pageCompoundExportChartText') }}</p>
-        <MatrixChart ref="chart" :datasetIds="datasetIds" v-if="selectedCompounds.length > 2" experimentType="compound" />
-        <ScatterChart ref="chart" :datasetIds="datasetIds" :x="selectedCompounds[0].displayName" :y="selectedCompounds[1].displayName" experimentType="compound" v-else />
+        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedCompounds.length > 2" experimentType="compound" />
+        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedCompounds[0].displayName" :y="selectedCompounds[1].displayName" experimentType="compound" v-else />
       </b-col>
     </b-row>
   </div>
@@ -19,7 +30,7 @@
 <script>
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
-import CompoundExportSelection from '@/components/export/CompoundExportSelection'
+import ExportSelection from '@/components/export/ExportSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -43,15 +54,26 @@ export default {
       }],
       colorBySelection: null,
       plotData: null,
-      selectedCompounds: null
+      selectedCompounds: null,
+      texts: {
+        title: 'pageCompoundExportSelectCompoundTitle',
+        text: 'pageCompoundExportSelectCompoundChartText',
+        groupTitle: 'pageCompoundExportSelectGroupTitle',
+        groupText: 'pageCompoundExportSelectGroupChartText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        button: 'buttonPlot'
+      }
     }
   },
   components: {
-    CompoundExportSelection,
+    ExportSelection,
     MatrixChart,
     ScatterChart
   },
   methods: {
+    getItems: function (callback) {
+      this.apiPostDatasetCompounds(this.datasetIds, callback)
+    },
     plot: function (query, selectedCompounds) {
       this.plotData = null
       EventBus.$emit('show-loading', true)

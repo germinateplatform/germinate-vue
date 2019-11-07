@@ -33,15 +33,14 @@
           </b-button>
         </template>
       </b-button-group>
-
-      <!-- Loading indicator -->
-      <div class="text-center" v-if="loading">
-        <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
-      </div>
     </div>
 
+    <!-- Loading indicator -->
+    <div class="text-center" v-if="loading">
+      <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+    </div>
     <!-- This is where the chart goes -->
-    <slot name="chart" ref="chart" />
+    <slot name="chart" ref="chart"/>
     <!-- Resize listener that takes care of resizing according to page width -->
     <ResizeObserver v-on:notify-width="handleResize" />
 

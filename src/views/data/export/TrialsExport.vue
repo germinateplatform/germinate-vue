@@ -24,11 +24,7 @@
           </a>
         </b-col>
       </b-row>
-      <div v-show="currentTab === 'overview'">
-        <h2>{{ $t('pageTrialsExportTraitBoxplotTitle') }}</h2>
-        <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
-        <BoxplotChart :datasetIds="datasetIds" itemType="traits" />
-      </div>
+      <TraitBoxplotSelection :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
       <TraitExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
       <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
       <TraitExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" />
@@ -38,10 +34,10 @@
 </template>
 
 <script>
-import TraitExportChartSelection from '@/components/export/TraitExportChartSelection'
-import TraitExportDownloadSelection from '@/components/export/TraitExportDownloadSelection'
+import TraitBoxplotSelection from '@/components/export/trials/TraitBoxplotSelection'
+import TraitExportChartSelection from '@/components/export/trials/TraitExportChartSelection'
+import TraitExportDownloadSelection from '@/components/export/trials/TraitExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
-import BoxplotChart from '@/components/charts/BoxplotChart'
 
 export default {
   props: [ 'datasetIds' ],
@@ -73,10 +69,10 @@ export default {
     }
   },
   components: {
+    TraitBoxplotSelection,
     TraitExportDownloadSelection,
     TraitExportChartSelection,
-    TrialsDataTable,
-    BoxplotChart
+    TrialsDataTable
   },
   methods: {
     getTrialsData: function (data, callback) {
