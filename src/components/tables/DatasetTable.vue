@@ -28,7 +28,7 @@
       <span slot="countryName" slot-scope="props" class="table-country text-nowrap" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryCode }}</span></span>
 
       <span slot="experimentType" slot-scope="props"><i :class="`mdi mdi-18px ${experimentTypes[props.row.experimentType].icon} fix-alignment`" :style="`color: ${experimentTypes[props.row.experimentType].color()};`" /> {{ experimentTypes[props.row.experimentType].text() }}</span>
-      <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount !== undefined && props.row.dataObjectCount.value">{{ props.row.dataObjectCount.value }}</span>
+      <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount !== undefined && props.row.dataObjectCount.value">{{ props.row.dataObjectCount.value | toThousandSeparators }}</span>
       <span slot="dataPointCount" slot-scope="props" v-if="props.row.dataPointCount !== undefined && props.row.dataPointCount.value">{{ getDataPointCount(props.row) }}</span>
 
       <div slot="licenseName" slot-scope="props" v-if="props.row.licenseName">
@@ -65,6 +65,7 @@ import CollaboratorModal from '@/components/modals/CollaboratorModal'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props.js'
 import { EventBus } from '@/plugins/event-bus.js'
+import { mapFilters } from '@/plugins/map-filters.js'
 
 export default {
   name: 'DatasetTable',
@@ -212,6 +213,7 @@ export default {
     LicenseModal
   },
   methods: {
+    ...mapFilters(['toThousandSeparators']),
     downloadDataset: function (dataset) {
       switch (dataset.experimentType) {
         case 'trials':
@@ -325,7 +327,7 @@ export default {
       if (dataset.experimentType === 'genotype' || dataset.experimentType === 'allelefreq') {
         result = '≤'
       }
-      result += dataset.dataPointCount.value
+      result += this.toThousandSeparators(dataset.dataPointCount.value)
       return result
     },
     getSelected: function () {

@@ -4,6 +4,10 @@
   <img src="public/img/germinate-square.svg" width="200" alt="Logo">
 </p>
 
+![GitHub](https://img.shields.io/github/license/sebastian-raubach/germinate-vue)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/sebastian-raubach/germinate-vue)
+![GitHub last commit](https://img.shields.io/github/last-commit/sebastian-raubach/germinate-vue)
+
 Germinate is an open source plant database infrastructure and application programming platform
 on which complex data from genetic resource collections can be stored, queried and visualized
 using common, reusable, programming components. Germinate utilises modern web and database

@@ -29,6 +29,8 @@ const initialState = {
     germplasm: ['institutionId', 'institutionName'],
     germplasmAttributes: [],
     images: [],
+    climates: [],
+    climateData: [],
     compounds: [],
     compoundData: [],
     maps: [],

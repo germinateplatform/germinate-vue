@@ -184,8 +184,24 @@ const router = new Router({
               ]
             },
             {
-              path: 'environment',
-              redirect: '/data/environment/locations',
+              path: 'climate',
+              redirect: '/data/climate/climates',
+              name: '',
+              component: {
+                render (c) { return c('router-view') }
+              },
+              children: [
+                {
+                  path: 'climates',
+                  name: 'climates',
+                  component: () => import('@/views/data/climate/Climates.vue'),
+                  beforeEnter: requireAuth
+                }
+              ]
+            },
+            {
+              path: 'geography',
+              redirect: '/data/geography/locations',
               name: '',
               component: {
                 render (c) { return c('router-view') }
@@ -194,13 +210,13 @@ const router = new Router({
                 {
                   path: 'locations',
                   name: 'locations',
-                  component: () => import('@/views/data/environment/Locations.vue'),
+                  component: () => import('@/views/data/geography/Locations.vue'),
                   beforeEnter: requireAuth
                 },
                 {
                   path: 'geographic-search',
                   name: 'geographic-search',
-                  component: () => import('@/views/data/environment/GeographicSearch.vue'),
+                  component: () => import('@/views/data/geography/GeographicSearch.vue'),
                   beforeEnter: requireAuth
                 }
               ]
@@ -214,6 +230,19 @@ const router = new Router({
             {
               path: 'export/climate/:datasetIds',
               name: 'export-climate',
+              component: () => import('@/views/data/export/ClimateExport.vue'),
+              beforeEnter: requireAuth,
+              props (route) {
+                const datasetIds = route.params.datasetIds || ''
+
+                return {
+                  datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
+                }
+              }
+            },
+            {
+              path: 'export/climates/:datasetIds',
+              name: 'export-climates',
               component: () => import('@/views/data/export/ClimateExport.vue'),
               beforeEnter: requireAuth,
               props (route) {

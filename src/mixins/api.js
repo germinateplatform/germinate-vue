@@ -188,6 +188,15 @@ export default {
     apiPostDatasetGroups: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostClimateDataTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'dataset/data/climate/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostClimateDataTableIds: function (queryData, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
+      return this.authAjax({ url: 'dataset/data/climate/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostTrialsDataTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'dataset/data/trial/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

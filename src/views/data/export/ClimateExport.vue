@@ -26,8 +26,8 @@
       </b-row>
       <ClimateBoxplotSelection :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
       <ClimateExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
-      <!-- <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
-      <TraitExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" /> -->
+      <ClimateDataTable :getData="getClimateData" :getIds="getClimateDataIds" :downloadTable="downloadClimateData" v-show="currentTab === 'table'" />
+      <!-- <TraitExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" /> -->
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
@@ -35,6 +35,7 @@
 
 <script>
 import ClimateBoxplotSelection from '@/components/export/climate/ClimateBoxplotSelection'
+import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import ClimateExportChartSelection from '@/components/export/climate/ClimateExportChartSelection'
 
 export default {
@@ -68,9 +69,21 @@ export default {
   },
   components: {
     ClimateBoxplotSelection,
+    ClimateDataTable,
     ClimateExportChartSelection
   },
   methods: {
+    downloadClimateData: function (data, callback) {
+      return this.apiPostTableExport(data, 'dataset/data/climate', callback)
+    },
+    getClimateData: function (data, callback) {
+      data.datasetIds = this.datasetIds
+      return this.apiPostClimateDataTable(data, callback)
+    },
+    getClimateDataIds: function (data, callback) {
+      data.datasetIds = this.datasetIds
+      return this.apiPostClimateDataTableIds(data, callback)
+    },
     tabSelected: function (tab) {
       this.currentTab = tab
     },

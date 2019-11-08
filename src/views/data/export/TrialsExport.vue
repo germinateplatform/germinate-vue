@@ -26,7 +26,7 @@
       </b-row>
       <TraitBoxplotSelection :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
       <TraitExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
-      <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" v-show="currentTab === 'table'" />
+      <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsData" v-show="currentTab === 'table'" />
       <TraitExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
@@ -75,6 +75,9 @@ export default {
     TrialsDataTable
   },
   methods: {
+    downloadTrialsData: function (data, callback) {
+      return this.apiPostTableExport(data, 'dataset/data/trial', callback)
+    },
     getTrialsData: function (data, callback) {
       data.datasetIds = this.datasetIds
       return this.apiPostTrialsDataTable(data, callback)

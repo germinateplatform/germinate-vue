@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-server-table :url="''" :columns="columns.map(c => c.name)" :options="tableOptions" @loaded="$emit('loaded')" ref="table" class="table-overflow-fix">
+    <v-server-table :url="''" :columns="columns.map(c => c.name)" :options="tableOptions" @loading="isLoading = true" @loaded="notifyLoaded" ref="table" class="table-overflow-fix">
       <!-- Pass on all named slots -->
       <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
       <!-- Pass on all scoped slots -->
       <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope"><slot :name="slot" v-bind="scope"/></template>
 
-      <b-row slot="beforeTable" class="align-items-end">
-        <b-col cols=9 sm=6>
+      <div slot="beforeTable">
+        <div class="d-flex flex-row justify-content-between align-items-end">
           <TableFilter :columns="columns"
                       :texts="tableOptions.headings"
                       :tableName="tableOptions.tableName"
@@ -15,8 +15,9 @@
                       ref="tableFilter"
                       v-on:on-filter-changed="onFilterChanged"
                       v-on:on-column-toggle="onToggleColumn" />
-        </b-col>
-        <b-col cols=3 sm=6>
+
+          <b-progress :value="100" height="6px" variant="primary" v-b-tooltip.hover :title="$t('tooltipTableLoadingIndicator')" striped animated v-if="isLoading" class="table-loading-indicator flex-grow-1" />
+
           <b-button-group class="float-right per-page-dropdown">
             <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')">
               <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
@@ -24,8 +25,8 @@
             </b-dropdown>
             <MarkedItems class="float-right" :itemType="itemType" />
           </b-button-group>
-        </b-col>
-      </b-row>
+        </div>
+      </div>
 
       <div slot="h__selected" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds">
         <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
@@ -97,6 +98,7 @@ import TableFilter from '@/components/tables/TableFilter'
 import MarkedItems from '@/components/tables/MarkedItems'
 import { VueContext } from 'vue-context'
 import { EventBus } from '@/plugins/event-bus.js'
+import { mapFilters } from '@/plugins/map-filters.js'
 
 export default {
   props: {
@@ -229,7 +231,8 @@ export default {
       filter: null,
       tableOptions: tableOptions,
       newGroup: null,
-      groupTypeSelect: null
+      groupTypeSelect: null,
+      isLoading: false
     }
   },
   components: {
@@ -239,6 +242,11 @@ export default {
     VueContext
   },
   methods: {
+    ...mapFilters(['toThousandSeparators']),
+    notifyLoaded: function () {
+      this.isLoading = false
+      this.$emit('loaded')
+    },
     putGroup: function () {
       var group = {
         name: this.newGroup.groupName,
@@ -290,16 +298,33 @@ export default {
     },
     onDownloadTableClicked: function () {
       if (this.downloadTable !== null) {
-        EventBus.$emit('show-loading', true)
-        this.downloadTable(this.currentRequestData, result => {
-          this.downloadBlob({
-            blob: result,
-            filename: this.tableOptions.tableName + '-table',
-            extension: 'txt'
+        if (this.prevCount > 100000) {
+          this.$bvModal.msgBoxConfirm(this.$t('modalTextWarningLargeAmountOfData', { size: this.toThousandSeparators(this.prevCount) }), {
+            title: this.$t('modalTitleWarning'),
+            okTitle: this.$t('genericYes'),
+            cancelTitle: this.$t('genericNo'),
+            okVariant: 'primary'
           })
-          EventBus.$emit('show-loading', false)
-        })
+            .then(value => {
+              if (value === true) {
+                this.requestDownload()
+              }
+            })
+        } else {
+          this.requestDownload()
+        }
       }
+    },
+    requestDownload: function () {
+      EventBus.$emit('show-loading', true)
+      this.downloadTable(this.currentRequestData, result => {
+        this.downloadBlob({
+          blob: result,
+          filename: this.tableOptions.tableName + '-table',
+          extension: 'zip'
+        })
+        EventBus.$emit('show-loading', false)
+      })
     },
     contextMenu: function (event, row) {
       if (this.tableOptions.additionalMarkingOptions) {
@@ -429,5 +454,8 @@ span.VueTables__sort-icon.float-right.table-sort {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   border-bottom: 0;
+}
+.table-loading-indicator {
+  border-radius: 0;
 }
 </style>

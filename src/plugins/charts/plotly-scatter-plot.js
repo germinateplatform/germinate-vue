@@ -27,6 +27,15 @@ export function plotlyScatterPlot() {
 
 	function chart(selection) {
 		selection.each(function (rows) {
+			var symbolList = Plotly.PlotSchema.get()
+				.traces
+				.scatter
+				.attributes
+				.marker
+				.symbol
+				.values
+				.filter(s => typeof s === 'string')
+
 			var categories = new Set();
 
 			var unpacked = unpack(rows, colorBy);
@@ -54,6 +63,7 @@ export function plotlyScatterPlot() {
 					y: y,
 					marker: {
 						color: colors[i % colors.length],
+						symbol: symbolList[(i * 4) % symbolList.length],
 						size: 6,
 						opacity: 0.7
 					},

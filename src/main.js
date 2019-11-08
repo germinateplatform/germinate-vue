@@ -72,6 +72,16 @@ Vue.use({
   }
 })
 
+Vue.filter('toThousandSeparators', value => {
+  const locale = store.getters.locale
+
+  if (locale) {
+    return value.toLocaleString(locale.replace('_', '-'))
+  } else {
+    return value.toLocaleString()
+  }
+})
+
 Vue.filter('toDate', value => {
   var moment
   if (value.indexOf('-') !== -1) {

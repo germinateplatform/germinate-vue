@@ -179,21 +179,40 @@ export default {
               ]
             },
             {
-              name: this.$t('menuEnvironment'),
-              url: '/data/environment',
+              name: this.$t('menuGeography'),
+              url: '/data/geography',
               icon: 'mdi mdi-18px mdi-nature-people',
               children: [
                 {
                   name: this.$t('menuLocations'),
                   identifiers: ['locations'],
-                  url: '/data/environment/locations',
+                  url: '/data/geography/locations',
                   icon: 'mdi mdi-map'
                 },
                 {
                   name: this.$t('menuGeographicSearch'),
                   identifiers: ['geographic-search'],
-                  url: '/data/environment/geographic-search',
+                  url: '/data/geography/geographic-search',
                   icon: 'mdi mdi-map-search'
+                }
+              ]
+            },
+            {
+              name: this.$t('menuClimateData'),
+              url: '/data/climate/climates',
+              icon: 'mdi mdi-18px mdi-weather-snowy-rainy',
+              children: [
+                {
+                  name: this.$t('menuClimateClimates'),
+                  identifiers: ['climates'],
+                  url: '/data/climate/climates',
+                  icon: 'mdi mdi-18px mdi-weather-snowy-rainy'
+                },
+                {
+                  name: this.$t('menuClimateDataExport'),
+                  identifiers: ['export-climates'],
+                  url: '/data/export/climate',
+                  icon: 'mdi mdi-18px mdi-chart-snakey'
                 }
               ]
             },
