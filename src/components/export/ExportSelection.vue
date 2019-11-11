@@ -1,8 +1,8 @@
 <template>
   <b-row>
     <b-col cols=12 md=6 v-if="items && items.length > 0">
-      <h2>{{ $t(texts.title) }}</h2>
-      <p>{{ $t(texts.text) }}</p>
+      <h2>{{ $t(texts.exportTitle) }}</h2>
+      <p>{{ $t(texts.exportText) }}</p>
       <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 />
       <p class="text-danger" v-if="max !== null && selectedItems.length > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
       <p class="text-info" v-if="min !== null && selectedItems.length < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
@@ -11,7 +11,7 @@
       <ExportGroupSelection :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
     </b-col>
     <b-col cols=12>
-      <b-btn variant="primary" @click="buttonPressed" :disabled="buttonDisabled()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t(texts.button) }}</b-btn>
+      <b-btn variant="primary" @click="buttonPressed" :disabled="buttonDisabled()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t(texts.exportButton) }}</b-btn>
     </b-col>
   </b-row>
 </template>

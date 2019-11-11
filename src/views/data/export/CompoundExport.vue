@@ -2,6 +2,7 @@
   <div>
     <h1>{{ $t('pageCompoundExportTitle') }}</h1>
     <template v-if="datasets && datasets.length > 0">
+      <hr />
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
@@ -9,7 +10,7 @@
       <b-row class="compound-tabs" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'compound-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
-            <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
+            <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
               <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
                 <b-row>
                   <b-col cols=12 class="text-center">
@@ -24,57 +25,101 @@
           </a>
         </b-col>
       </b-row>
-      <CompoundBoxplotSelection :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
-      <CompoundExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
+      <BoxplotSelection :datasetIds="datasetIds"
+                        v-bind="config"
+                        :texts="textsChart"
+                        :getItems="getCompounds"
+                        v-show="currentTab === 'overview'" />
+      <CompoundExportChartSelection :datasetIds="datasetIds"
+                                    v-bind="config"
+                                    :texts="textsChart"
+                                    :getItems="getCompounds"
+                                    v-show="currentTab === 'matrix'"/>
       <CompoundDataTable :getData="getCompoundData" :getIds="getCompoundDataIds" v-show="currentTab === 'table'" />
-      <CompoundExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" />
+      <ExportDownloadSelection :datasetIds="datasetIds"
+                               v-bind="config"
+                               :texts="textsExport"
+                               :getItems="getCompounds"
+                               v-show="currentTab === 'export'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
 </template>
 
 <script>
-import CompoundBoxplotSelection from '@/components/export/compound/CompoundBoxplotSelection'
+import BoxplotSelection from '@/components/export/BoxplotSelection'
 import CompoundDataTable from '@/components/tables/CompoundDataTable'
-import CompoundExportChartSelection from '@/components/export/compound/CompoundExportChartSelection'
-import CompoundExportDownloadSelection from '@/components/export/compound/CompoundExportDownloadSelection'
+import CompoundExportChartSelection from '@/components/export/CompoundExportChartSelection'
+import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   props: [ 'datasetIds' ],
   data: function () {
     return {
       datasets: null,
-      currentTab: null,
+      compounds: null,
+      config: {
+        idKey: 'compoundId',
+        nameKey: 'compoundName',
+        downloadKey: 'compound',
+        itemType: 'germplasm',
+        xType: 'compounds',
+        groupType: 'germinatebase',
+        experimentType: 'compound'
+      },
+      textsChart: {
+        boxplotTitle: 'pageCompoundExportCompoundBoxplotTitle',
+        boxplotText: 'pageCompoundExportCompoundBoxplotText',
+        exportTitle: 'pageCompoundExportSelectCompoundTitle',
+        exportText: 'pageCompoundExportSelectCompoundChartText',
+        groupTitle: 'pageCompoundExportSelectGroupTitle',
+        groupText: 'pageCompoundExportSelectGroupChartText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        exportButton: 'buttonPlot'
+      },
+      textsExport: {
+        exportTitle: 'pageCompoundExportSelectCompoundTitle',
+        exportText: 'pageCompoundExportSelectCompoundExportText',
+        groupTitle: 'pageCompoundExportSelectGroupTitle',
+        groupText: 'pageCompoundExportSelectGroupExportText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        exportButton: 'buttonExport'
+      },
+      currentTab: 'overview',
       tabs: [{
         key: 'overview',
-        text: () => 'Data statistics',
+        text: () => this.$t('pageDataExportTabDataStatistics'),
         icon: 'mdi-eye',
         onSelection: () => this.tabSelected('overview')
       }, {
         key: 'matrix',
-        text: () => 'Data matrix',
+        text: () => this.$t('pageDataExportTabDataMatrix'),
         icon: 'mdi-grid',
         onSelection: () => this.tabSelected('matrix')
       }, {
         key: 'table',
-        text: () => 'Data table',
+        text: () => this.$t('pageDataExportTabDataTable'),
         icon: 'mdi-table-search',
         onSelection: () => this.tabSelected('table')
       }, {
         key: 'export',
-        text: () => 'Data export',
+        text: () => this.$t('pageDataExportTabDataExport'),
         icon: 'mdi-file-download-outline',
         onSelection: () => this.tabSelected('export')
       }]
     }
   },
   components: {
-    CompoundBoxplotSelection,
+    BoxplotSelection,
     CompoundDataTable,
     CompoundExportChartSelection,
-    CompoundExportDownloadSelection
+    ExportDownloadSelection
   },
   methods: {
+    getCompounds: function (callback) {
+      callback(this.compounds)
+    },
     getCompoundData: function (data, callback) {
       data.datasetIds = this.datasetIds
       return this.apiPostCompoundDataTable(data, callback)
@@ -85,6 +130,9 @@ export default {
     },
     tabSelected: function (tab) {
       this.currentTab = tab
+    },
+    getFilter: function (index) {
+      return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
     },
     getColor: function (index) {
       if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
@@ -112,43 +160,52 @@ export default {
       } else {
         return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
       }
+    },
+    getDatasets: function () {
+      const request = {
+        page: 1,
+        limit: this.JAVA_MAX_INTEGER,
+        filter: [{
+          column: 'experimentType',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['compound']
+        }, {
+          column: 'isExternal',
+          comparator: 'equals',
+          operator: 'and',
+          values: [0]
+        }, {
+          column: 'datasetId',
+          comparator: 'inSet',
+          operator: 'and',
+          values: this.datasetIds
+        }]
+      }
+
+      this.apiPostDatasetTable(request, result => {
+        this.datasets = result.data.filter(d => {
+          return (!d.licenseName || this.isAccepted(d))
+        })
+
+        if (this.datasets.length < 1) {
+          this.redirectBack()
+        }
+      }, {
+        codes: [404],
+        callback: () => {
+          this.redirectBack()
+        }
+      })
     }
   },
   mounted: function () {
-    const request = {
-      page: 1,
-      limit: this.JAVA_MAX_INTEGER,
-      filter: [{
-        column: 'experimentType',
-        comparator: 'equals',
-        operator: 'and',
-        values: ['compound']
-      }, {
-        column: 'isExternal',
-        comparator: 'equals',
-        operator: 'and',
-        values: [0]
-      }, {
-        column: 'datasetId',
-        comparator: 'inSet',
-        operator: 'and',
-        values: this.datasetIds
-      }]
-    }
+    EventBus.$emit('show-loading', true)
+    this.apiPostDatasetCompounds(this.datasetIds, result => {
+      this.compounds = result
 
-    this.apiPostDatasetTable(request, result => {
-      this.datasets = result.data.filter(d => {
-        return (!d.licenseName || this.isAccepted(d))
-      })
-
-      if (this.datasets.length < 1) {
-        this.redirectBack()
-      }
-    }, {
-      codes: [404],
-      callback: () => {
-        this.redirectBack()
-      }
+      this.getDatasets()
+      EventBus.$emit('show-loading', false)
     })
   }
 }
@@ -160,5 +217,9 @@ export default {
 }
 .compound-tabs .card-footer i.mdi {
   vertical-align: sub;
+}
+.compound-tabs .card,
+.compound-tabs .card * {
+  transition: filter 0.15s;
 }
 </style>

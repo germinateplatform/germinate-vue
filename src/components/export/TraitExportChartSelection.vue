@@ -1,16 +1,9 @@
 <template>
   <div>
-    <ExportSelection :datasetIds="datasetIds"
-                     :texts="texts"
-                     itemType="germplasm"
-                     groupType="germinatebase"
-                     experimentType="trials"
-                     idKey="traitId"
-                     nameKey="traitName"
+    <ExportSelection v-bind="$props"
                      :min="2"
                      :max="7"
                      :onlyNumeric="false"
-                     :getItems="getItems"
                      v-on:button-clicked="plot" />
     <b-row>
       <b-col cols=12 v-if="plotData">
@@ -38,6 +31,38 @@ export default {
     datasetIds: {
       type: Array,
       default: () => null
+    },
+    texts: {
+      type: Object,
+      default: () => {}
+    },
+    getItems: {
+      type: Function,
+      default: () => []
+    },
+    itemType: {
+      type: String,
+      default: 'germplasm'
+    },
+    groupType: {
+      type: String,
+      default: 'germinatebase'
+    },
+    experimentType: {
+      type: String,
+      default: null
+    },
+    downloadKey: {
+      type: String,
+      default: null
+    },
+    idKey: {
+      type: String,
+      default: null
+    },
+    nameKey: {
+      type: String,
+      default: null
     }
   },
   data: function () {
@@ -60,15 +85,7 @@ export default {
       }],
       colorBySelection: null,
       plotData: null,
-      selectedTraits: null,
-      texts: {
-        title: 'pageTrialsExportSelectTraitTitle',
-        text: 'pageTrialsExportSelectTraitChartText',
-        groupTitle: 'pageTrialsExportSelectGroupTitle',
-        groupText: 'pageTrialsExportSelectGroupChartText',
-        groupTooltip: 'pageExportSelectGroupTooltip',
-        button: 'buttonPlot'
-      }
+      selectedTraits: null
     }
   },
   components: {
@@ -77,9 +94,6 @@ export default {
     ScatterChart
   },
   methods: {
-    getItems: function (callback) {
-      this.apiPostDatasetTraits(this.datasetIds, callback)
-    },
     plot: function (query, selectedTraits) {
       this.plotData = null
       EventBus.$emit('show-loading', true)

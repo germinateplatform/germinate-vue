@@ -1,17 +1,10 @@
 <template>
   <div>
-    <ExportSelection :datasetIds="datasetIds"
-                     :texts="texts"
-                     itemType="germplasm"
-                     groupType="germinatebase"
-                     experimentType="compounds"
-                     idKey="compoundId"
-                     nameKey="compoundName"
+    <ExportSelection v-bind="$props"
                      :min="1"
                      :max="null"
                      :onlyNumeric="false"
-                     :getItems="getItems"
-                     v-on:button-clicked="download" />
+                     v-on:button-clicked="downloadData" />
 
     <h2 class="mt-4">Download metadata</h2>
     <p>Something here</p>
@@ -28,33 +21,50 @@ export default {
     datasetIds: {
       type: Array,
       default: () => null
-    }
-  },
-  data: function () {
-    return {
-      texts: {
-        title: 'pageCompoundExportSelectCompoundTitle',
-        text: 'pageCompoundExportSelectCompoundExportText',
-        groupTitle: 'pageCompoundExportSelectGroupTitle',
-        groupText: 'pageCompoundExportSelectGroupExportText',
-        groupTooltip: 'pageExportSelectGroupTooltip',
-        button: 'buttonExport'
-      }
+    },
+    texts: {
+      type: Object,
+      default: () => {}
+    },
+    getItems: {
+      type: Function,
+      default: () => []
+    },
+    itemType: {
+      type: String,
+      default: 'germplasm'
+    },
+    groupType: {
+      type: String,
+      default: 'germinatebase'
+    },
+    experimentType: {
+      type: String,
+      default: null
+    },
+    downloadKey: {
+      type: String,
+      default: null
+    },
+    idKey: {
+      type: String,
+      default: null
+    },
+    nameKey: {
+      type: String,
+      default: null
     }
   },
   components: {
     ExportSelection
   },
   methods: {
-    getItems: function (callback) {
-      this.apiPostDatasetCompounds(this.datasetIds, callback)
-    },
-    download: function (query, selectedCompounds) {
+    downloadData: function (query) {
       EventBus.$emit('show-loading', true)
-      this.apiPostDatasetExport('compound', query, result => {
+      this.apiPostDatasetExport(this.downloadKey, query, result => {
         var downloadRequest = {
           blob: result,
-          filename: 'compound-dataset-' + this.datasetIds.join('-'),
+          filename: this.experimentType + '-dataset-' + this.datasetIds.join('-'),
           extension: 'txt'
         }
 
@@ -70,7 +80,7 @@ export default {
       this.apiPostDatasetAttributeExport(request, result => {
         var downloadRequext = {
           blob: result,
-          filename: 'compound-dataset-metadata-' + this.datasetIds.join('-'),
+          filename: this.experimentType + '-dataset-metadata-' + this.datasetIds.join('-'),
           extension: 'txt'
         }
 

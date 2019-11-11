@@ -2,6 +2,7 @@
   <div>
     <h1>{{ $t('pageTrialsExportTitle') }}</h1>
     <template v-if="datasets && datasets.length > 0">
+      <hr />
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
@@ -9,7 +10,7 @@
       <b-row class="trials-tabs" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
-            <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
+            <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
               <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
                 <b-row>
                   <b-col cols=12 class="text-center">
@@ -24,58 +25,102 @@
           </a>
         </b-col>
       </b-row>
-      <TraitBoxplotSelection :datasetIds="datasetIds" v-show="currentTab === 'overview'" />
-      <TraitExportChartSelection :datasetIds="datasetIds" v-show="currentTab === 'matrix'"/>
-      <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsData" v-show="currentTab === 'table'" />
-      <TraitExportDownloadSelection :datasetIds="datasetIds" v-show="currentTab === 'export'" />
+      <BoxplotSelection :datasetIds="datasetIds"
+                        v-bind="config"
+                        :texts="textsChart"
+                        :getItems="getTraits"
+                        v-show="currentTab === 'overview'" />
+      <TraitExportChartSelection :datasetIds="datasetIds"
+                                 v-bind="config"
+                                 :texts="textsChart"
+                                 :getItems="getTraits"
+                                 v-show="currentTab === 'matrix'"/>
+      <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsTableData" v-show="currentTab === 'table'" />
+      <ExportDownloadSelection :datasetIds="datasetIds"
+                               v-bind="config"
+                               :texts="textsExport"
+                               :getItems="getTraits"
+                               v-show="currentTab === 'export'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
 </template>
 
 <script>
-import TraitBoxplotSelection from '@/components/export/trials/TraitBoxplotSelection'
-import TraitExportChartSelection from '@/components/export/trials/TraitExportChartSelection'
-import TraitExportDownloadSelection from '@/components/export/trials/TraitExportDownloadSelection'
+import BoxplotSelection from '@/components/export/BoxplotSelection'
+import TraitExportChartSelection from '@/components/export/TraitExportChartSelection'
+import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   props: [ 'datasetIds' ],
   data: function () {
     return {
       datasets: null,
-      currentTab: null,
+      traits: null,
+      config: {
+        idKey: 'traitId',
+        nameKey: 'traitName',
+        downloadKey: 'trial',
+        itemType: 'germplasm',
+        xType: 'traits',
+        groupType: 'germinatebase',
+        experimentType: 'trials'
+      },
+      textsChart: {
+        boxplotTitle: 'pageTrialsExportTraitBoxplotTitle',
+        boxplotText: 'pageTrialsExportTraitBoxplotText',
+        exportTitle: 'pageTrialsExportSelectTraitTitle',
+        exportText: 'pageTrialsExportSelectTraitChartText',
+        groupTitle: 'pageTrialsExportSelectGroupTitle',
+        groupText: 'pageTrialsExportSelectGroupChartText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        exportButton: 'buttonPlot'
+      },
+      textsExport: {
+        exportTitle: 'pageTrialsExportSelectTraitTitle',
+        exportText: 'pageTrialsExportSelectTraitExportText',
+        groupTitle: 'pageTrialsExportSelectGroupTitle',
+        groupText: 'pageTrialsExportSelectGroupExportText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        exportButton: 'buttonExport'
+      },
+      currentTab: 'overview',
       tabs: [{
         key: 'overview',
-        text: () => 'Data statistics',
+        text: () => this.$t('pageDataExportTabDataStatistics'),
         icon: 'mdi-eye',
         onSelection: () => this.tabSelected('overview')
       }, {
         key: 'matrix',
-        text: () => 'Data matrix',
+        text: () => this.$t('pageDataExportTabDataMatrix'),
         icon: 'mdi-grid',
         onSelection: () => this.tabSelected('matrix')
       }, {
         key: 'table',
-        text: () => 'Data table',
+        text: () => this.$t('pageDataExportTabDataTable'),
         icon: 'mdi-table-search',
         onSelection: () => this.tabSelected('table')
       }, {
         key: 'export',
-        text: () => 'Data export',
+        text: () => this.$t('pageDataExportTabDataExport'),
         icon: 'mdi-file-download-outline',
         onSelection: () => this.tabSelected('export')
       }]
     }
   },
   components: {
-    TraitBoxplotSelection,
-    TraitExportDownloadSelection,
+    BoxplotSelection,
+    ExportDownloadSelection,
     TraitExportChartSelection,
     TrialsDataTable
   },
   methods: {
-    downloadTrialsData: function (data, callback) {
+    getTraits: function (callback) {
+      callback(this.traits)
+    },
+    downloadTrialsTableData: function (data, callback) {
       return this.apiPostTableExport(data, 'dataset/data/trial', callback)
     },
     getTrialsData: function (data, callback) {
@@ -88,6 +133,9 @@ export default {
     },
     tabSelected: function (tab) {
       this.currentTab = tab
+    },
+    getFilter: function (index) {
+      return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
     },
     getColor: function (index) {
       if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
@@ -115,43 +163,52 @@ export default {
       } else {
         return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
       }
+    },
+    getDatasets: function () {
+      const request = {
+        page: 1,
+        limit: this.JAVA_MAX_INTEGER,
+        filter: [{
+          column: 'experimentType',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['trials']
+        }, {
+          column: 'isExternal',
+          comparator: 'equals',
+          operator: 'and',
+          values: [0]
+        }, {
+          column: 'datasetId',
+          comparator: 'inSet',
+          operator: 'and',
+          values: this.datasetIds
+        }]
+      }
+
+      this.apiPostDatasetTable(request, result => {
+        this.datasets = result.data.filter(d => {
+          return (!d.licenseName || this.isAccepted(d))
+        })
+
+        if (this.datasets.length < 1) {
+          this.redirectBack()
+        }
+      }, {
+        codes: [404],
+        callback: () => {
+          this.redirectBack()
+        }
+      })
     }
   },
   mounted: function () {
-    const request = {
-      page: 1,
-      limit: this.JAVA_MAX_INTEGER,
-      filter: [{
-        column: 'experimentType',
-        comparator: 'equals',
-        operator: 'and',
-        values: ['trials']
-      }, {
-        column: 'isExternal',
-        comparator: 'equals',
-        operator: 'and',
-        values: [0]
-      }, {
-        column: 'datasetId',
-        comparator: 'inSet',
-        operator: 'and',
-        values: this.datasetIds
-      }]
-    }
+    EventBus.$emit('show-loading', true)
+    this.apiPostDatasetTraits(this.datasetIds, result => {
+      this.traits = result
 
-    this.apiPostDatasetTable(request, result => {
-      this.datasets = result.data.filter(d => {
-        return (!d.licenseName || this.isAccepted(d))
-      })
-
-      if (this.datasets.length < 1) {
-        this.redirectBack()
-      }
-    }, {
-      codes: [404],
-      callback: () => {
-        this.redirectBack()
-      }
+      this.getDatasets()
+      EventBus.$emit('show-loading', false)
     })
   }
 }
@@ -163,5 +220,9 @@ export default {
 }
 .trials-tabs .card-footer i.mdi {
   vertical-align: sub;
+}
+.trials-tabs .card,
+.trials-tabs .card * {
+  transition: filter 0.15s;
 }
 </style>

@@ -31,6 +31,12 @@ export default {
       }
     }
   },
+  ACTIONS: {
+    tableActions: {
+      type: Array,
+      default: () => null
+    }
+  },
   FULL: {
     downloadTable: {
       type: Function,

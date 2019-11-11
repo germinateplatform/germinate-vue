@@ -29,7 +29,7 @@ export default {
       type: String,
       default: 'itemByDataset'
     },
-    itemType: {
+    xType: {
       type: String,
       default: 'traits'
     }
@@ -41,7 +41,7 @@ export default {
     return {
       plotData: null,
       loading: false,
-      itemTypes: {
+      xTypes: {
         traits: {
           itemKey: 'traits',
           idKey: 'traitId',
@@ -54,7 +54,7 @@ export default {
           apiKey: 'compound',
           nameKey: 'compoundName'
         },
-        climate: {
+        climates: {
           itemKey: 'climates',
           idKey: 'climateId',
           apiKey: 'climate',
@@ -73,15 +73,15 @@ export default {
     },
     getFilename: function () {
       if (this.chartMode === 'itemByDataset') {
-        return this.itemTypes[this.itemType].itemKey + '-boxplots-' + this.datasetIds.join('-')
+        return this.xTypes[this.xType].itemKey + '-boxplots-' + this.datasetIds.join('-')
       } else if (this.chartMode === 'datasetByItem') {
-        return this.itemTypes[this.itemType].itemKey + '-boxplots-' + this.xIds.join('-')
+        return this.xTypes[this.xType].itemKey + '-boxplots-' + this.xIds.join('-')
       } else {
-        return this.itemTypes[this.itemType].itemKey + '-boxplots'
+        return this.xTypes[this.xType].itemKey + '-boxplots'
       }
     },
     getHeight: function () {
-      return 200 + this.plotData[this.itemTypes[this.itemType].itemKey].length * 30 * this.plotData.datasets.length
+      return 200 + this.plotData[this.xTypes[this.xType].itemKey].length * 30 * this.plotData.datasets.length
     },
     redraw: function () {
       this.loading = true
@@ -93,7 +93,7 @@ export default {
         yGroupIds: this.yGroupIds
       }
 
-      this.apiPostTraitCompoundStats(this.itemTypes[this.itemType].apiKey, query, result => {
+      this.apiPostTraitCompoundStats(this.xTypes[this.xType].apiKey, query, result => {
         this.plotData = result
         this.chart()
         this.loading = false
@@ -115,9 +115,9 @@ export default {
           }
         }
       } else {
-        for (var item in this.plotData[this.itemTypes[this.itemType].itemKey]) {
+        for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
           for (var j = 0; j < 6; j++) {
-            y.push(this.plotData[this.itemTypes[this.itemType].itemKey][item][this.itemTypes[this.itemType].nameKey])
+            y.push(this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey])
           }
         }
       }
@@ -158,8 +158,8 @@ export default {
         var datasetId = this.plotData.datasets[dataset].datasetId
         var x = []
 
-        for (var item in this.plotData[this.itemTypes[this.itemType].itemKey]) {
-          var itemId = this.plotData[this.itemTypes[this.itemType].itemKey][item][this.itemTypes[this.itemType].idKey]
+        for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
+          var itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
           var itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
 
           if (itemData && itemData.min !== itemData.max) {
@@ -196,8 +196,8 @@ export default {
     },
     getInvertedData: function (y) {
       var traces = []
-      for (var item in this.plotData[this.itemTypes[this.itemType].itemKey]) {
-        var itemId = this.plotData[this.itemTypes[this.itemType].itemKey][item][this.itemTypes[this.itemType].idKey]
+      for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
+        var itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
         var x = []
 
         for (var d in this.plotData.datasets) {
@@ -226,7 +226,7 @@ export default {
         traces.push({
           x: x,
           y: y,
-          name: this.plotData[this.itemTypes[this.itemType].itemKey][item][this.itemTypes[this.itemType].nameKey],
+          name: this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey],
           marker: { color: this.serverSettings.colorsCharts[item] },
           type: 'box',
           boxmean: false,

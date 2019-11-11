@@ -82,6 +82,13 @@ const router = new Router({
               meta: { requiresAdmin: true },
               component: () => import('@/views/admin/Settings.vue'),
               beforeEnter: requireAuth
+            },
+            {
+              path: 'user-permissions',
+              name: 'user-permissions',
+              meta: { requireAdmin: true },
+              component: () => import('@/views/admin/UserPermissions.vue'),
+              beforeEnter: requireAuth
             }
           ]
         },

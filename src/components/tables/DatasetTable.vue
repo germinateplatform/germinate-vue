@@ -47,7 +47,7 @@
       <a href="#" class="text-decoration-none" slot="attributes" slot-scope="props" v-if="(props.row.attributes !== 0 || props.row.dublinCore) && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="showAttributes(props.row)">
         <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
       </a>
-      <a href="#" class="text-decoration-none" slot="download" slot-scope="props" v-if="!props.row.isExternal && (props.row.experimentType !== 'climate') && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="downloadDataset(props.row)">
+      <a href="#" class="text-decoration-none" slot="download" slot-scope="props" v-if="!props.row.isExternal && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="downloadDataset(props.row)">
         <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
       </a>
     </BaseTable>
@@ -217,45 +217,21 @@ export default {
     downloadDataset: function (dataset) {
       switch (dataset.experimentType) {
         case 'trials':
-          var trialQuery = {
-            xGroupIds: null,
-            xIds: null,
-            yGroupIds: null,
-            yIds: null,
-            currentTraitCount: null,
-            datasetIds: [dataset.datasetId]
-          }
-          EventBus.$emit('show-loading', true)
-          this.apiPostDatasetExport('trial', trialQuery, result => {
-            var trialRequest = {
-              blob: result,
-              filename: 'trial-dataset-' + dataset.datasetId,
-              extension: 'txt'
-            }
-
-            this.downloadBlob(trialRequest)
-            EventBus.$emit('show-loading', false)
-          })
+          this.initDownload(dataset, 'trial')
           break
         case 'compound':
-          var compoundQuery = {
-            xGroupIds: null,
-            xIds: null,
-            yGroupIds: null,
-            yIds: null,
-            currentCompoundCount: null,
-            datasetIds: [dataset.datasetId]
-          }
-          EventBus.$emit('show-loading', true)
-          this.apiPostDatasetExport('compound', compoundQuery, result => {
-            var compoundRequest = {
-              blob: result,
-              filename: 'compound-dataset-' + dataset.datasetId,
-              extension: 'txt'
-            }
-
-            this.downloadBlob(compoundRequest)
-            EventBus.$emit('show-loading', false)
+          this.initDownload(dataset, 'compound')
+          break
+        case 'climate':
+          this.initDownload(dataset, 'climate')
+          break
+        case 'allelefreq':
+          this.apiGetDatasetSourceFile(dataset.datasetId, result => {
+            this.downloadBlob({
+              filename: `allelefreq-${dataset.datasetId}`,
+              extension: 'txt',
+              blob: result
+            })
           })
           break
         case 'genotype':
@@ -282,20 +258,28 @@ export default {
               }
             })
           break
-        case 'allelefreq':
-          this.apiGetDatasetSourceFile(dataset.datasetId, result => {
-            this.downloadBlob({
-              filename: `allelefreq-${dataset.datasetId}`,
-              extension: 'txt',
-              blob: result
-            })
-          })
-
-          break
-        default:
-          // TODO: Notification
-          break
       }
+    },
+    initDownload: function (dataset, type) {
+      var query = {
+        xGroupIds: null,
+        xIds: null,
+        yGroupIds: null,
+        yIds: null,
+        currentTraitCount: null,
+        datasetIds: [dataset.datasetId]
+      }
+      EventBus.$emit('show-loading', true)
+      this.apiPostDatasetExport(type, query, result => {
+        var request = {
+          blob: result,
+          filename: type + '-dataset-' + dataset.datasetId,
+          extension: 'txt'
+        }
+
+        this.downloadBlob(request)
+        EventBus.$emit('show-loading', false)
+      })
     },
     isAccepted: function (dataset) {
       if (this.token) {

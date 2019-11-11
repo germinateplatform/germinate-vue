@@ -14,7 +14,7 @@
         <template v-if="serverSettings.authMode !== 'NONE' && token && token.userType === 'Administrator'">
           <b-dropdown-header tag="div" class="text-center"><strong>Admin settings</strong></b-dropdown-header>
           <b-dropdown-item><i class="mdi mdi-18px mdi-shield-account text-warning" /> Admin settings</b-dropdown-item>
-          <b-dropdown-item><i class="mdi mdi-18px mdi-account-key text-warning" /> User permissions</b-dropdown-item>
+          <b-dropdown-item :to="{ name: 'user-permissions' }"><i class="mdi mdi-18px mdi-account-key text-warning" /> User permissions</b-dropdown-item>
           <b-dropdown-item to="/import/data-upload"><i class="mdi mdi-18px mdi-upload text-warning" /> Data uploader</b-dropdown-item>
         </template>
       </template>

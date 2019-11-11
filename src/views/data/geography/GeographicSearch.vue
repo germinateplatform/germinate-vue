@@ -161,5 +161,7 @@ export default {
 </script>
 
 <style>
-
+.map-tabs .tab-content .tab-pane {
+  padding: 0;
+}
 </style>

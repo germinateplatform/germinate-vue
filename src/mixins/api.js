@@ -286,6 +286,10 @@ export default {
     apiGetSettingsFile: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'settings/file', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostUserGroupTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'usergroup/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostGroupTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

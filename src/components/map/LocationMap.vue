@@ -8,6 +8,7 @@
       :maxZoom="maxZoom"
       :zoom="zoom">
     </l-map>
+    <ColorGradient :colors="gradientColors" v-if="mapType === 'heatmap'" ref="gradient" />
     <div v-if="location" ref="popupContent">
       <dl class="row">
         <dt class="col-4 text-right">Location</dt>
@@ -27,6 +28,7 @@
 </template>
 
 <script>
+import ColorGradient from '@/components/util/ColorGradient'
 import L from 'leaflet'
 require('leaflet.heat')
 require('leaflet.sync')
@@ -43,7 +45,8 @@ export default {
       heat: null,
       location: null,
       markerClusterer: null,
-      editableLayers: null
+      editableLayers: null,
+      gradientColors: []
     }
   },
   props: {
@@ -64,6 +67,9 @@ export default {
     locations: function (newValue, oldValue) {
       this.updateCenter()
     }
+  },
+  components: {
+    ColorGradient
   },
   methods: {
     invalidateSize: function () {
@@ -179,20 +185,22 @@ export default {
             this.heat.setLatLngs(ls)
           } else {
             // Otherwise, create it
+            var gradient = {}
+
+            this.gradientColors.forEach((c, i) => {
+              var position = i * (1 / (this.gradientColors.length - 1))
+              gradient[position] = c
+            })
+
             this.heat = L.heatLayer(ls, {
-              minOpacity: 0.4,
+              minOpacity: 0.7,
               max: 1,
               radius: 10,
-              blur: 10,
-              gradient: {
-                0.3: '#000000',
-                0.44: '#570000',
-                0.58: '#ff0000',
-                0.72: '#ffc800',
-                0.86: '#ffff00',
-                1.0: '#ffffff'
-              }
+              blur: 7,
+              gradient: gradient
             }).addTo(this.$refs.map.mapObject)
+
+            this.$refs.gradient.refresh()
           }
         }
       }
@@ -202,6 +210,9 @@ export default {
     if (this.selectionMode === 'polygon') {
       require('leaflet-draw')
     }
+
+    this.gradientColors.push('#ffffff')
+    this.gradientColors.push(this.serverSettings.colorsCharts[0])
 
     this.$nextTick(() => {
       var openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-server-table :url="''" :columns="columns.map(c => c.name)" :options="tableOptions" @loading="isLoading = true" @loaded="notifyLoaded" ref="table" class="table-overflow-fix">
+  <div class="table-mb-0 table-overflow-fix">
+    <v-server-table :url="''" :columns="columns.map(c => c.name)" :options="tableOptions" @loading="isLoading = true" @loaded="notifyLoaded" ref="table">
       <!-- Pass on all named slots -->
       <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
       <!-- Pass on all scoped slots -->
@@ -16,7 +16,13 @@
                       v-on:on-filter-changed="onFilterChanged"
                       v-on:on-column-toggle="onToggleColumn" />
 
-          <b-progress :value="100" height="6px" variant="primary" v-b-tooltip.hover :title="$t('tooltipTableLoadingIndicator')" striped animated v-if="isLoading" class="table-loading-indicator flex-grow-1" />
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-end mx-1" v-if="filter === null || filter.length < 1">
+              <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span> Use the table filtering to search for specific items.</span>
+            </div>
+            <b-progress :value="100" height="6px" variant="primary" v-b-tooltip.hover :title="$t('tooltipTableLoadingIndicator')" striped animated v-if="isLoading" class="table-loading-indicator" />
+            <div v-else style="height: 6px;" />
+          </div>
 
           <b-button-group class="float-right per-page-dropdown">
             <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')">
@@ -54,29 +60,30 @@
         <b-form-checkbox  :checked="isMarked(props.row)" @change="markItem(props.row[tableOptions.idColumn], $event)" v-if="itemType"/>
       </div>
 
-      <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1 || downloadTable !== null">
+      <div slot="afterTable" v-if="columns.map(c => c.name).indexOf('selected') !== -1 || downloadTable !== null || tableActions !== null">
 
         <template v-if="downloadTable !== null">
           <b-button @click="onDownloadTableClicked"><i class="mdi mdi-18px fix-alignment mdi-download" /></b-button>
         </template>
 
         <template v-if="columns.map(c => c.name).indexOf('selected') !== -1">
-          <b-button-group v-if="tableActions">
-            <b-button v-for="action in tableActions"
-                      :key="`base-table-action-${action.id}`"
-                      :variant="action.variant"
-                      :disabled="action.disabled()"
-                      @click="action.callback(selectedItems)"
-                      v-b-tooltip.hover
-                      :title="action.text">
-              <i :class="action.icon" v-if="action.icon" :title="action.text" />
-              <span v-else>{{ action.text }}</span>
-            </b-button>
-          </b-button-group>
           <div>
             <i class="mdi mdi-18px mdi-arrow-up-bold"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
           </div>
         </template>
+
+        <b-button-group v-if="tableActions">
+          <b-button v-for="action in tableActions"
+                    :key="`base-table-action-${action.id}`"
+                    :variant="action.variant"
+                    :disabled="action.disabled()"
+                    @click="action.callback(selectedItems)"
+                    v-b-tooltip.hover
+                    :title="action.text">
+            <i :class="action.icon" v-if="action.icon" />
+            <span v-else>{{ action.text }}</span>
+          </b-button>
+        </b-button-group>
       </div>
     </v-server-table>
 
@@ -457,5 +464,8 @@ span.VueTables__sort-icon.float-right.table-sort {
 }
 .table-loading-indicator {
   border-radius: 0;
+}
+.table-mb-0 .table-responsive {
+  margin-bottom: 0;
 }
 </style>
