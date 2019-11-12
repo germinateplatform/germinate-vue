@@ -22,17 +22,21 @@
         </router-link>
       </b-col>
     </b-row>
-    <ImageCarousel />
+    <ImageCarousel class="mb-4" />
+
+    <NewsSection :projectCount="3" :newsCount="6" />
   </div>
 </template>
 
 <script>
 import ImageCarousel from '@/components/images/ImageCarousel'
+import NewsSection from '@/components/news/NewsSection'
 
 export default {
   name: 'dashboard',
   components: {
-    ImageCarousel
+    ImageCarousel,
+    NewsSection
   },
   data: function () {
     return {

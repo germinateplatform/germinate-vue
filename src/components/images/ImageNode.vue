@@ -1,7 +1,7 @@
 <template>
   <b-card no-body class="image-card" v-if="image">
     <a :href="getSrc('large')" class="baguettebox" @click.prevent>
-      <div class="card-img-wrap">
+      <div>
         <img :src="getSrc('small')" class="card-img" style="height: 300px"/>
       </div>
     </a>

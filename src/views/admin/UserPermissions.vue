@@ -14,7 +14,10 @@
           <UserGroupTable :getData="getUserGroups" :tableActions="userGroupActions" />
         </b-tab>
         <b-tab title="Tab 2">
-          <b-card-text>Tab Contents 2</b-card-text>
+          <template v-slot:title>
+            <i class="mdi mdi-18px mdi-database-lock" /> Dataset permissions
+          </template>
+          <DatasetPermissions />
         </b-tab>
       </b-tabs>
     </b-card>
@@ -22,6 +25,7 @@
 </template>
 
 <script>
+import DatasetPermissions from '@/components/admin/DatasetPermissions'
 import UserGroupTable from '@/components/tables/UserGroupTable'
 
 export default {
@@ -43,6 +47,7 @@ export default {
     }
   },
   components: {
+    DatasetPermissions,
     UserGroupTable
   },
   methods: {

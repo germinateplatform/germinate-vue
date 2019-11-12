@@ -1,7 +1,7 @@
 <template>
-  <b-modal id="license-modal" ref="licenseModal" :title="$t('modalTitleLicense')" size="lg" modal-class="d-print-none">
+  <b-modal id="license-modal" ref="licenseModal" scrollable :title="$t('modalTitleLicense')" size="lg" modal-class="d-print-none">
     <div v-if="license">
-      <div v-html="license.licenseContent" class="license-content d-print-block"></div>
+      <div v-html="license.licenseContent" class="d-print-block"></div>
       <a :href="htmlData" target="_blank" style="display: none;" :download="htmlFilename" ref="htmlDownloadLink" />
     </div>
     <div slot="modal-footer">
@@ -77,9 +77,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.license-content {
-  max-height: calc(100vh - 225px);
-  overflow-y: auto;
-}
+<style>
 </style>

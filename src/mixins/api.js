@@ -360,6 +360,10 @@ export default {
     apiPostEntityTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'entity/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostNewsTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

@@ -271,6 +271,7 @@ export default {
 }
 .funders img {
   height: 150px;
+  width: auto;
 }
 .hutton-header.row .col {
   min-height: 100px;
