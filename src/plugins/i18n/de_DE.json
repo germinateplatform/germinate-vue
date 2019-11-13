@@ -9,6 +9,7 @@
   "buttonExport": "Exportieren",
   "buttonEdit": "Bearbeiten",
   "buttonOk": "OK",
+  "buttonCreate": "Erstellen",
   "buttonDelete": "Löschen",
   "buttonDeleteSelected": "Ausgewählte löschen",
   "buttonUpload": "Hochladen",
@@ -105,6 +106,8 @@
   "formLabelMapExportRadiusOffsetRight": "Versatz rechts",
   "formLabelMapExportRadiusMarker": "Marker",
   "formLabelMapExportDownloadText": "Soll die Karte vor dem Herunterladen unterteilt werden?",
+  "formLabelUserGroupName": "Benutzergruppenname",
+  "formLabelUserGroupDescription": "Benutzergruppenbeschreibung",
   "inputPlaceholderMarkerNameAutocomplete": "Markernamen eintippen (Mindestens 3 Buchstaben)",
   "formDescriptionGroupType": "Typ dieser Gruppe auswählen.",
   "formDescriptionGroupTypeDisabled": "Der Typ dieser Gruppe kann nicht geändert werden.",
@@ -188,6 +191,7 @@
   "menuCompoundDataExport": "Verbindungs Export",
   "menuDataStatistics": "Datenstatistiken",
   "modalTitleWarning": "Warnung",
+  "modalTitleAddUserGroup": "Neue Benutzergruppe erstellen",
   "modalTextWarningLargeAmountOfData": "Der Download wird {size} Reihen enthalten. Dies wird wahrscheinlich sehr lange dauern. Trotzdem fortfahren?",
   "modalTitleLicense": "Lizenz",
   "modalTitleTableFilter": "Filter",
@@ -532,6 +536,7 @@
   "tooltipMapExportRegionAdd": "Region hinzufügen",
   "tooltipExportFormatLearnMore": "Lerne mehr über Exportformate",
   "tooltipTableLoadingIndicator": "Die Tabelle lädt die angeforderten Daten...",
+  "tooltipCreateNewGroup": "Neue Gruppe erstellen",
   "widgetAdditionalDatasetsTitle": "Zusätzliche Datensätze",
   "widgetAdditionalDatasetsText": "Es sind zusätzliche \"{type}\" Datensätze verfügbar. Diese können durch das Akzeptieren der Lizenz durchsucht werden. Durch Klicken auf die Lizenz in der untenstehenden Tabelle kann diese akzeptiert werden. Ein Popup zeigt die Lizenzdetails an und es kann dann entschieden werden ob Bedingungen akzeptabel sind. Falls die Lizenz akzeptiert wird aktualisiert sich die Ansicht automatisch.",
   "widgetHelpTitle": "Hilfe",
@@ -547,5 +552,6 @@
   "widgetAsyncJobPanelTitle": "Datenexportjobs",
   "widgetAsyncJobPanelDatasets": "Datensätze: {datasetIds}",
   "widgetSignInTitle": "Anmelden",
-  "widgetSignInText": "In Benutzerkonto anmelden"
+  "widgetSignInText": "In Benutzerkonto anmelden",
+  "widgetTableFilterInfo": "Nutze das Tabellen-Filtersystem um nach spezifischen Elementen zu suchen."
 }

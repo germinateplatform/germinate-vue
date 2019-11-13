@@ -11,7 +11,7 @@
             <i class="mdi mdi-18px mdi-account-group" /> User groups
           </template>
           <p>The table below shows the groups of users that are currently defined. You can add new groups, delete existing groups and add users to or remove users from groups.</p>
-          <UserGroupTable :getData="getUserGroups" :tableActions="userGroupActions" />
+          <UserGroups />
         </b-tab>
         <b-tab title="Tab 2">
           <template v-slot:title>
@@ -26,34 +26,17 @@
 
 <script>
 import DatasetPermissions from '@/components/admin/DatasetPermissions'
-import UserGroupTable from '@/components/tables/UserGroupTable'
+import UserGroups from '@/components/admin/UserGroups'
 
 export default {
   data: function () {
     return {
-      tabIndex: 0,
-      userGroupActions: [
-        {
-          id: 0,
-          text: 'Add group',
-          variant: null,
-          disabled: () => false,
-          icon: 'mdi mdi-18px mdi-plus-box',
-          callback: (selectedIds) => {
-            // TODO
-          }
-        }
-      ]
+      tabIndex: 0
     }
   },
   components: {
     DatasetPermissions,
-    UserGroupTable
-  },
-  methods: {
-    getUserGroups: function (query, callback) {
-      return this.apiPostUserGroupTable(query, callback)
-    }
+    UserGroups
   }
 }
 </script>

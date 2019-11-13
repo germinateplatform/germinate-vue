@@ -290,6 +290,12 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'usergroup/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiDeleteUserGroup: function (groupId, onSuccess, onError) {
+      return this.authAjax({ url: `usergroup/${groupId}`, method: 'DELETE', success: onSuccess, error: onError })
+    },
+    apiPutUserGroup: function (group, onSuccess, onError) {
+      return this.authAjax({ url: `usergroup`, method: 'PUT', data: group, success: onSuccess, error: onError })
+    },
     apiPostGroupTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

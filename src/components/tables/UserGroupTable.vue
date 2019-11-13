@@ -6,6 +6,11 @@
                ref="table"
                v-bind="$props"
                v-on="$listeners">
+      <span slot="createdOn" slot-scope="props" v-if="props.row.createdOn">{{props.row.createdOn | toDateTime}}</span>
+
+      <b-button-group slot="actions" slot-scope="props" v-if="token && token.userType === 'Administrator'">
+        <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('delete-group-clicked', props.row)"><i class="mdi mdi-18px mdi-delete" /></b-button>
+      </b-button-group>
     </BaseTable>
   </div>
 </template>

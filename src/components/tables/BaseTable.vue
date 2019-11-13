@@ -17,8 +17,8 @@
                       v-on:on-column-toggle="onToggleColumn" />
 
           <div class="flex-grow-1">
-            <div class="d-flex align-items-end mx-1" v-if="filter === null || filter.length < 1">
-              <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> Use the table filtering to search for specific items.</span>
+            <div class="d-flex align-items-end mx-1 text-info" v-if="filter === null || filter.length < 1">
+              <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
             </div>
             <b-progress :value="100" height="6px" variant="primary" v-b-tooltip.hover :title="$t('tooltipTableLoadingIndicator')" striped animated v-if="isLoading" class="table-loading-indicator" />
             <div v-else style="height: 6px;" />

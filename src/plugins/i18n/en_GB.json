@@ -9,6 +9,7 @@
   "buttonExport": "Export",
   "buttonEdit": "Edit",
   "buttonOk": "OK",
+  "buttonCreate": "Create",
   "buttonDelete": "Delete",
   "buttonDeleteSelected": "Delete selected",
   "buttonUpload": "Upload",
@@ -105,6 +106,8 @@
   "formLabelMapExportRadiusOffsetRight": "Offset right",
   "formLabelMapExportRadiusMarker": "Marker",
   "formLabelMapExportDownloadText": "Would you like to subset the map before downloading it?",
+  "formLabelUserGroupName": "User group name",
+  "formLabelUserGroupDescription": "User group description",
   "inputPlaceholderMarkerNameAutocomplete": "Type in marker name (At least 3 chars)",
   "formDescriptionGroupType": "Select the type of this group.",
   "formDescriptionGroupTypeDisabled": "The group type cannot be changed.",
@@ -189,6 +192,7 @@
   "menuCompoundDataExport": "Compound export",
   "menuDataStatistics": "Data statistics",
   "modalTitleWarning": "Warning",
+  "modalTitleAddUserGroup": "Add new user group",
   "modalTextWarningLargeAmountOfData": "You are about to download {size} rows. This is likely to take some time. Would you like to continue?",
   "modalTitleLicense": "License",
   "modalTitleTableFilter": "Filter",
@@ -534,6 +538,7 @@
   "tooltipTableItemsPerPage": "Items per page",
   "tooltipMapExportRegionAdd": "Add region",
   "tooltipTableLoadingIndicator": "The table is loading the requested data...",
+  "tooltipCreateNewGroup": "Create new group",
   "widgetAdditionalDatasetsTitle": "Additional datasets",
   "widgetAdditionalDatasetsText": "There are additional datasets containing more {type} data. Accepting their licenses will allow you to explore them. To accept the license, click on it in the table below. A popup will show the license details and you can decide whether or not you want to accept it. If you accept the license, the view will update automatically.",
   "widgetHelpTitle": "Help",
@@ -549,5 +554,6 @@
   "widgetAsyncJobPanelTitle": "Data export jobs",
   "widgetAsyncJobPanelDatasets": "Datasets: {datasetIds}",
   "widgetSignInTitle": "Sign in",
-  "widgetSignInText": "Sign in to your account"
+  "widgetSignInText": "Sign in to your account",
+  "widgetTableFilterInfo": "Use the table filtering to search for specific items."
 }
