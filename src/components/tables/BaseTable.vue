@@ -24,7 +24,7 @@
             <div v-else style="height: 6px;" />
           </div>
 
-          <b-button-group class="float-right per-page-dropdown">
+          <b-button-group class="float-right per-page-dropdown" v-if="!showAllItems">
             <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')">
               <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
               <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
@@ -34,10 +34,10 @@
         </div>
       </div>
 
-      <div slot="h__selected" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds">
+      <div slot="h__selected" v-if="(columns.map(c => c.name).indexOf('selected') !== -1) && (getIds !== null)">
         <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
       </div>
-      <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.name).indexOf('selected') !== -1 && getIds"/>
+      <b-form-checkbox slot="selected" slot-scope="props" :value="props.row[tableOptions.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.name).indexOf('selected') !== -1"/>
 
       <div slot="h__marked">
         <b-dropdown size="sm" dropleft variant="outline-primary" boundary="window">
@@ -109,11 +109,13 @@ import { mapFilters } from '@/plugins/map-filters.js'
 
 export default {
   props: {
+    showAllItems: {
+      type: Boolean,
+      default: null
+    },
     columns: {
       type: Array,
-      default: function () {
-        return []
-      }
+      default: () => []
     },
     filterOn: {
       type: Array,
@@ -121,9 +123,7 @@ export default {
     },
     options: {
       type: Object,
-      default: function () {
-        return {}
-      }
+      default: () => {}
     },
     itemType: {
       type: String,
@@ -144,12 +144,7 @@ export default {
     },
     getIds: {
       type: Function,
-      default: () => {
-        return {
-          data: [],
-          count: 0
-        }
-      }
+      default: null
     },
     tableActions: {
       type: Array,
@@ -167,6 +162,9 @@ export default {
     },
     token: function (newValue, oldValue) {
       this.refresh()
+    },
+    selectedItems: function (newValue, oldValue) {
+      this.$emit('selection-changed', newValue)
     }
   },
   data: function () {
@@ -205,7 +203,7 @@ export default {
       skin: 'table table-striped table-hover',
       texts: this.getPaginationTexts(),
       filterByColumn: true,
-      perPage: 10,
+      perPage: this.showAllItems ? 2147483647 : 10,
       perPageValues: [],
       pagination: {
         chunk: 5
@@ -232,7 +230,7 @@ export default {
 
     return {
       selectedItems: [],
-      perPageValues: [10, 25, 50, 100],
+      perPageValues: this.showAllItems ? [this.MAX_JAVA_INTEGER] : [10, 25, 50, 100],
       prevCount: -1,
       currentRequestData: null,
       filter: null,
@@ -350,7 +348,7 @@ export default {
       this.$refs.table.setLimit(value)
     },
     onSelectionHeaderClicked: function (value) {
-      if (value) {
+      if (value && this.getIds) {
         EventBus.$emit('show-loading', true)
         this.getIds(this.currentRequestData, result => {
           this.selectedItems = result.data
@@ -360,19 +358,24 @@ export default {
         this.selectedItems = []
       }
     },
+    setSelectedItems: function (toSelect) {
+      this.selectedItems = toSelect
+    },
     getCurrentRequestData: function () {
       return this.currentRequestData
     },
     markAllItems: function (mark) {
-      EventBus.$emit('show-loading', true)
-      this.getIds(this.currentRequestData, result => {
-        if (mark) {
-          this.$store.dispatch('ON_MARKED_IDS_ADD', { type: this.itemType, ids: result.data })
-        } else {
-          this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: result.data })
-        }
-        EventBus.$emit('show-loading', false)
-      })
+      if (this.getIds) {
+        EventBus.$emit('show-loading', true)
+        this.getIds(this.currentRequestData, result => {
+          if (mark) {
+            this.$store.dispatch('ON_MARKED_IDS_ADD', { type: this.itemType, ids: result.data })
+          } else {
+            this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: result.data })
+          }
+          EventBus.$emit('show-loading', false)
+        })
+      }
     },
     isSelected: function (row) {
       return this.selectedItems[row[this.tableOptions.idColumn]] !== undefined
@@ -421,7 +424,7 @@ export default {
     }
   },
   created: function () {
-    if (this.tableOptions.perPage !== this.tablePerPage) {
+    if (!this.showAllItems && this.tableOptions.perPage !== this.tablePerPage) {
       this.tableOptions.perPage = this.tablePerPage
     }
   },

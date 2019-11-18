@@ -416,6 +416,8 @@
   "tableColumnGroupCreatedOn": "Erstellt am",
   "tableColumnGroupUpdatedOn": "Aktualisiert am",
   "tableColumnGroupCount": "Gruppenmitglieder",
+  "tableColumnGenotypeDatasetGermplasmCount": "# Keimplasma",
+  "tableColumnGenotypeDatasetMarkerCount": "# Marker",
   "tableColumnEntityType": "Einheitstyp",
   "tableColumnBiologicalStatus": "Biologischer Status",
   "tableColumnSynonyms": "Synonyme",

@@ -5,7 +5,7 @@
     <div class="select-with-options">
       <div :id="`group-selection-${uuid}`" :class="groups === null ? 'loading-select' : ''">
         <b-progress :value="100" height="5px" variant="primary" striped animated v-if="groups === null" />
-        <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" />
+        <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
       </div>
       <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll()">
         {{ specialGroupSelection !== 'selection' ? $t(tooltip) : null }}
@@ -15,6 +15,7 @@
           v-model="specialGroupSelection"
           :options="specialGroupOptions"
           button-variant="outline-primary"
+          @change="$emit('change')"
           buttons />
       </b-button-group>
     </div>

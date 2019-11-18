@@ -2,37 +2,58 @@
   <div>
     <b-row>
       <b-col cols=12 md=6 >
-        <ExportGroupSelection title="pageGenotypesExportSelectGermplasmGroupTitle" text="pageGenotypesExportSelectGermplasmGroupText" tooltip="pageExportSelectGroupTooltip" :groups="germplasmGroups" itemType="germplasm" ref="germplasmGroups"/>
+        <ExportGroupSelection title="pageGenotypesExportSelectGermplasmGroupTitle"
+                              text="pageGenotypesExportSelectGermplasmGroupText"
+                              tooltip="pageExportSelectGroupTooltip"
+                              :groups="germplasmGroups"
+                              itemType="germplasm"
+                              ref="germplasmGroups"
+                              @change="updateGenotypeDatasetTable"/>
       </b-col>
       <b-col cols=12 md=6 >
-        <ExportGroupSelection title="pageGenotypesExportSelectMarkerGroupTitle" text="pageGenotypesExportSelectMarkerGroupText" tooltip="pageExportSelectGroupTooltip" :groups="markerGroups" itemType="markers" ref="markerGroups"/>
+        <ExportGroupSelection title="pageGenotypesExportSelectMarkerGroupTitle"
+                              text="pageGenotypesExportSelectMarkerGroupText"
+                              tooltip="pageExportSelectGroupTooltip"
+                              :groups="markerGroups"
+                              itemType="markers"
+                              ref="markerGroups"
+                              @change="updateGenotypeDatasetTable"/>
       </b-col>
     </b-row>
-    <b-row class="mt-3">
-      <b-col cols=12 md=6>
-        <h2>{{ $t('pageGenotypesExportSelectMapTitle') }}</h2>
-        <b-form-group
-            :label="$t('pageGenotypesExportSelectMapText')"
-            label-for="map-selection">
-          <b-form-select id="map-selection" v-model="map" :options="maps" />
-        </b-form-group>
-      </b-col>
-      <b-col cols=12 md=6>
-        <h2>{{$t('pageGenotypesExportEnableFlapjackTitle') }}</h2>
-        <p v-html="$t('pageGenotypesExportEnableFlapjackText')" />
-        <b-form-checkbox v-model="generateFlapjackProject" switch>
-          {{ generateFlapjackProject === true ? $t('genericYes') : $t('genericNo') }}
-        </b-form-checkbox>
-        <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
-      </b-col>
-    </b-row>
-    <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ experimentType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
+    <template v-if="experimentType === 'genotype' && datasetIds && datasetIds.length > 1">
+      <h2 class="mt-3">Germplasm and markers per dataset</h2>
+      <p>This table shows you how many of the germplasm and markers you selected are in each of the datasets you want to export. If there are datasets that you no longer want to export based on this information, please untick them in the table.</p>
+      <GenotypeDatasetTable :getData="getGenotypeSummaryData" :getIds="null" :selectable="true" v-on:selection-changed="onSelectionChanged" ref="genotypeDatasetTable" />
+    </template>
+    <template v-if="(datasetIds && datasetIds.length === 1) || selectedDatasetIds.length > 0 || experimentType !== 'genotype'">
+      <b-row class="mt-3">
+        <b-col cols=12 md=6>
+          <h2>{{ $t('pageGenotypesExportSelectMapTitle') }}</h2>
+          <b-form-group
+              :label="$t('pageGenotypesExportSelectMapText')"
+              label-for="map-selection">
+            <b-form-select id="map-selection" v-model="map" :options="maps" />
+          </b-form-group>
+        </b-col>
+        <b-col cols=12 md=6>
+          <h2>{{$t('pageGenotypesExportEnableFlapjackTitle') }}</h2>
+          <p v-html="$t('pageGenotypesExportEnableFlapjackText')" />
+          <b-form-checkbox v-model="generateFlapjackProject" switch>
+            {{ generateFlapjackProject === true ? $t('genericYes') : $t('genericNo') }}
+          </b-form-checkbox>
+          <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
+        </b-col>
+      </b-row>
+      <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ experimentType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
+    </template>
+    <h2 class="text-info" v-if="experimentType === 'genotype' && selectedDatasetIds.length < 1">Please select at least one dataset in the table above to continue.</h2>
   </div>
 </template>
 
 <script>
 import { EventBus } from '@/plugins/event-bus.js'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
+import GenotypeDatasetTable from '@/components/tables/GenotypeDatasetTable'
 
 export default {
   props: {
@@ -51,7 +72,8 @@ export default {
       germplasmGroups: null,
       maps: [],
       map: null,
-      generateFlapjackProject: false
+      generateFlapjackProject: false,
+      selectedDatasetIds: []
     }
   },
   watch: {
@@ -62,17 +84,31 @@ export default {
     }
   },
   components: {
-    ExportGroupSelection
+    ExportGroupSelection,
+    GenotypeDatasetTable
   },
   methods: {
-    exportData: function (binningConfig) {
-      EventBus.$emit('show-loading', true)
+    onSelectionChanged: function (selectedIds) {
+      this.selectedDatasetIds = selectedIds
+    },
+    updateGenotypeDatasetTable: function () {
+      this.$nextTick(() => this.$refs.genotypeDatasetTable.refresh())
+    },
+    getGenotypeSummaryData: function (query, callback) {
+      var combinedQuery = Object.assign({}, query, this.getQuery(false))
+
+      return this.apiPostGenotypeDatasetSummary(combinedQuery, result => {
+        callback(result)
+        this.$nextTick(() => this.$refs.genotypeDatasetTable.setSelectedItems(result.data.map(d => d.datasetId)))
+      })
+    },
+    getQuery: function (isFinal) {
       var query = {
         xGroupIds: null,
         xIds: null,
         yGroupIds: null,
         yIds: null,
-        datasetIds: this.datasetIds,
+        datasetIds: isFinal ? this.selectedDatasetIds : this.datasetIds,
         mapId: this.map,
         generateFlapjackProject: this.generateFlapjackProject
       }
@@ -97,12 +133,19 @@ export default {
         query.xGroupIds = markerGroups
       }
 
+      return query
+    },
+    exportData: function (binningConfig) {
+      EventBus.$emit('show-loading', true)
+      const query = this.getQuery(true)
+
       if (this.experimentType === 'genotype') {
         this.apiPostGenotypeDatasetExport(query, result => {
-          this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
+          if (result) {
+            result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+          }
 
           EventBus.$emit('toggle-aside')
-
           EventBus.$emit('show-loading', false)
         })
       } else if (this.experimentType === 'allelefreq') {
@@ -154,8 +197,8 @@ export default {
         this.maps = []
         this.map = null
 
-        if (result.data && result.data.length > 0) {
-          result.data.forEach(m => {
+        if (result && result.length > 0) {
+          result.forEach(m => {
             var name = m.mapName
 
             if (m.markerCount) {
@@ -168,13 +211,16 @@ export default {
             })
           })
 
-          this.map = result.data[0].mapId
+          this.map = result[0].mapId
         }
       })
     }
   },
   mounted: function () {
     if (this.datasetIds) {
+      if (this.datasetIds.length === 1) {
+        this.selectedDatasetIds = this.datasetIds
+      }
       this.updateGermplasmGroups()
       this.updateMarkerGroups()
       this.updateMaps()

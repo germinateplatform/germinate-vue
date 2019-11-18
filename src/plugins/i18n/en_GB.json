@@ -418,6 +418,8 @@
   "tableColumnGroupCreatedOn": "Created on",
   "tableColumnGroupUpdatedOn": "Updated on",
   "tableColumnGroupCount": "Group members",
+  "tableColumnGenotypeDatasetGermplasmCount": "# Germplasm",
+  "tableColumnGenotypeDatasetMarkerCount": "# Markers",
   "tableColumnEntityType": "Entity Type",
   "tableColumnBiologicalStatus": "Biological Status",
   "tableColumnSynonyms": "Synonyms",

@@ -161,6 +161,11 @@ export default {
     apiGetDatasetSourceFile: function (datasetId, onSuccess, onError) {
       return this.authAjax({ url: `dataset/${datasetId}/download-source?random=${this.uuidv4()}`, dataType: 'blob', success: onSuccess, error: onError })
     },
+    apiPostGenotypeDatasetSummary: function (queryData, onSuccess, onError) {
+      queryData.page = 0
+      queryData.limit = this.MAX_JAVA_INTEGER
+      return this.authAjax({ url: 'dataset/export/genotype/summary', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostGenotypeDatasetExport: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
