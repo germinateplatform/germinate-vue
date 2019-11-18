@@ -119,6 +119,12 @@ const router = new Router({
               beforeEnter: requireAuth
             },
             {
+              path: 'experiments/:experimentId',
+              name: 'experiment-details',
+              component: () => import('@/views/data/Experiments.vue'),
+              beforeEnter: requireAuth
+            },
+            {
               path: 'statistics',
               name: 'statistics',
               component: () => import('@/views/data/DataStatistics.vue'),

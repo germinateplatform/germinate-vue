@@ -40,7 +40,7 @@ export default {
   data: function () {
     return {
       zoom: 3,
-      maxZoom: 12,
+      maxZoom: 18,
       center: [22.5937, 2.1094],
       heat: null,
       location: null,

@@ -36,7 +36,7 @@ const initialState = {
     maps: [],
     markers: [],
     mapDefinitions: [],
-    datasets: [],
+    datasets: ['experimentId'],
     datasetAttributes: [],
     entities: [],
     groups: [],

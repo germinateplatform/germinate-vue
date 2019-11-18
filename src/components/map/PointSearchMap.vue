@@ -23,7 +23,7 @@ export default {
   data: function () {
     return {
       zoom: 3,
-      maxZoom: 12,
+      maxZoom: 18,
       marker: null,
       markerPosition: null,
       center: L.latLng(22.5937, 2.1094)

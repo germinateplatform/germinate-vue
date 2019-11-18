@@ -237,6 +237,10 @@ export default {
       delete queryData.ascending
       return this.authAjax({ url: 'map/mapdefinition/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostExperimentTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'experiment/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostDatasetTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

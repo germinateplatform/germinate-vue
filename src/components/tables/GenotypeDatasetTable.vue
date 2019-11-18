@@ -110,9 +110,12 @@ export default {
           .filter(r => r.dataObjectCount && r.dataObjectCount.value && r.dataPointCount && r.dataPointCount.value)
           .map(r => r.datasetId)
 
-          this.setSelectedItems(selected)
+        this.setSelectedItems(selected)
       }
     }
   }
 }
 </script>
+
+<style>
+</style>

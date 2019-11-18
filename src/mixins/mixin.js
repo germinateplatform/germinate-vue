@@ -190,7 +190,7 @@ export default {
         compound: {
           id: 6,
           icon: 'mdi-flask',
-          pageName: 'export-compound',
+          pageName: 'export-compounds',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeCompound')
         },

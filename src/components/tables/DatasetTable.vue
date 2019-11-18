@@ -20,8 +20,15 @@
       <template slot="datasetName" slot-scope="props">
         <a href="#" @click.prevent="clickHandler(props.row)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ props.row.datasetName }}</a>
         <a target="_blank" :href="props.row.hyperlink" v-else-if="props.row.hyperlink && props.row.isExternal">{{ props.row.datasetName }} <i class="mdi mdi-18px mdi-open-in-new fix-alignment" /></a>
+        <router-link :to="{ name: experimentTypes[props.row.experimentType].pageName, params: { datasetIds: props.row.datasetId.toString() } }" v-else-if="!props.row.isExternal && isPageAvailable(props.row.experimentType) && (!props.row.licenseName || isAccepted(props.row))">{{ props.row.datasetName }}</router-link>
         <span v-else>{{ props.row.datasetName }}</span>
       </template>
+
+      <span slot="experimentName" slot-scope="props"> {{ props.row.experimentName }}
+        <router-link :to="{ name: 'experiment-details', params: { experimentId: props.row.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
+          <i class="mdi mdi-18px fix-alignment mdi-information-outline" />
+        </router-link>
+      </span>
       <!-- Formatted date -->
       <span slot="startDate" slot-scope="props" v-if="props.row.startDate">{{ props.row.startDate | toDate }}</span>
       <span slot="endDate" slot-scope="props" v-if="props.row.endDate">{{ props.row.endDate | toDate }}</span>
@@ -94,6 +101,9 @@ export default {
         name: 'datasetDescription',
         type: String
       }, {
+        name: 'experimentId',
+        type: Number
+      }, {
         name: 'experimentName',
         type: String
       }, {
@@ -155,12 +165,13 @@ export default {
       options: {
         idColumn: 'datasetId',
         tableName: 'datasets',
-        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentName', 'experimentType', 'datatype', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
+        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentId', 'experimentName', 'experimentType', 'datatype', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
         filterable: [],
         headings: {
           datasetId: () => this.$t('tableColumnDatasetId'),
           datasetName: () => this.$t('tableColumnDatasetName'),
           datasetDescription: () => this.$t('tableColumnDatasetDescription'),
+          experimentId: () => this.$t('tableColumnExperimentId'),
           experimentName: () => this.$t('tableColumnExperimentName'),
           experimentType: () => this.$t('tableColumnDatasetExperimentType'),
           datatype: () => this.$t('tableColumnDatasetDataType'),
@@ -183,6 +194,8 @@ export default {
           column: 'datasetId'
         },
         columnsClasses: {
+          datasetId: 'text-right',
+          experimentId: 'text-right',
           selected: 'bg-info',
           dataObjectCount: 'text-right',
           dataPointCount: 'text-right',
@@ -371,3 +384,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.table-icon-link:hover {
+  text-decoration: none;
+}
+</style>
