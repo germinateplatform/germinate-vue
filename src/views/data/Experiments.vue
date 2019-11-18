@@ -2,11 +2,16 @@
   <div v-if="experiment">
     <h1>Experiment details <small>{{ experiment.name }}</small></h1>
     <DatasetTable :getData="getData" :filterOn="getFilter()" />
+
+    <h2 class="mt-4">Download metadata</h2>
+    <p>Something here</p>
+    <b-button @click="downloadMetadata"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownload') }}</b-button>
   </div>
 </template>
 
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
@@ -33,6 +38,22 @@ export default {
         values: [this.experimentId],
         canChange: false
       }]
+    },
+    downloadMetadata: function () {
+      EventBus.$emit('show-loading', true)
+      const request = {
+        experimentId: this.experimentId
+      }
+      this.apiPostDatasetAttributeExport(request, result => {
+        var downloadRequext = {
+          blob: result,
+          filename: this.experiment.experimenttypeDescription + '-experiment-metadata-' + this.experimentId,
+          extension: 'txt'
+        }
+
+        this.downloadBlob(downloadRequext)
+        EventBus.$emit('show-loading', false)
+      })
     }
   },
   mounted: function () {
