@@ -248,9 +248,9 @@ export default {
   },
   methods: {
     ...mapFilters(['toThousandSeparators']),
-    notifyLoaded: function () {
+    notifyLoaded: function (data) {
       this.isLoading = false
-      this.$emit('loaded')
+      this.$emit('loaded', data)
     },
     putGroup: function () {
       var group = {

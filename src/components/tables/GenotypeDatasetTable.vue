@@ -5,7 +5,8 @@
                :showAllItems="true"
                v-bind="$props"
                ref="datasetTable"
-               v-on="$listeners">
+               v-on="$listeners"
+               v-on:loaded="onLoaded">
       <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount !== undefined && props.row.dataObjectCount.value !== null">{{ props.row.dataObjectCount.value | toThousandSeparators }}</span>
       <span slot="dataPointCount" slot-scope="props" v-if="props.row.dataPointCount !== undefined && props.row.dataPointCount.value !== null">{{ props.row.dataPointCount.value | toThousandSeparators }}</span>
     </BaseTable>
@@ -74,7 +75,8 @@ export default {
           selected: 'bg-info',
           dataObjectCount: 'text-right',
           dataPointCount: 'text-right'
-        }
+        },
+        rowClassCallback: row => this.getRowClass(row)
       },
       columns: columns
     }
@@ -84,6 +86,13 @@ export default {
   },
   methods: {
     ...mapFilters(['toThousandSeparators']),
+    getRowClass: function (row) {
+      if (!row.dataObjectCount || !row.dataObjectCount.value || !row.dataPointCount || !row.dataPointCount.value) {
+        return 'table-danger'
+      } else {
+        return ''
+      }
+    },
     getSelected: function () {
       return this.$refs.datasetTable.getSelected()
     },
@@ -92,6 +101,17 @@ export default {
     },
     refresh: function () {
       this.$refs.datasetTable.refresh()
+    },
+    onLoaded: function (data) {
+      var selected = this.getSelected()
+
+      if (selected && data && data.data && data.data.data) {
+        selected = data.data.data.filter(r => selected.indexOf(r.datasetId) !== -1)
+          .filter(r => r.dataObjectCount && r.dataObjectCount.value && r.dataPointCount && r.dataPointCount.value)
+          .map(r => r.datasetId)
+
+          this.setSelectedItems(selected)
+      }
     }
   }
 }
