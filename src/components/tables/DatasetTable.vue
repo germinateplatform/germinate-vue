@@ -19,7 +19,7 @@
       </template>
       <template slot="datasetName" slot-scope="props">
         <a href="#" @click.prevent="clickHandler(props.row)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ props.row.datasetName }}</a>
-        <a target="_blank" :href="props.row.hyperlink" v-else-if="props.row.hyperlink && props.row.isExternal">{{ props.row.datasetName }} <i class="mdi mdi-18px mdi-open-in-new fix-alignment" /></a>
+        <span v-else-if="props.row.hyperlink && props.row.isExternal"><a target="_blank" :href="props.row.hyperlink">{{ props.row.datasetName }} </a><i class="mdi mdi-open-in-new" /></span>
         <router-link :to="{ name: experimentTypes[props.row.experimentType].pageName, params: { datasetIds: props.row.datasetId.toString() } }" v-else-if="!props.row.isExternal && isPageAvailable(props.row.experimentType) && (!props.row.licenseName || isAccepted(props.row))">{{ props.row.datasetName }}</router-link>
         <span v-else>{{ props.row.datasetName }}</span>
       </template>

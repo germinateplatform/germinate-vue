@@ -11,12 +11,12 @@
                 <p class="text-danger mt-3" v-if="response">{{ response }}</p>
               </b-card-body>
             </b-card>
-            <b-card no-body class="text-white bg-primary py-5">
+            <b-card no-body class="text-white bg-primary py-5" v-if="serverSettings && serverSettings.registrationEnabled">
               <b-card-body class="text-center">
                 <div>
-                  <h2>Sign up</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                  <b-button variant="primary" class="active mt-3">Register Now!</b-button>
+                  <h2>{{ $t('widgetRegisterTitle') }}</h2>
+                  <p>{{ $t('widgetRegisterText') }}</p>
+                  <b-button variant="primary" class="active mt-3" @click="$refs.registrationModal.show()">{{ $t('buttonRegister') }}</b-button>
                 </div>
               </b-card-body>
             </b-card>
@@ -24,11 +24,13 @@
         </b-col>
       </b-row>
     </div>
+    <RegistrationModal ref="registrationModal"/>
   </div>
 </template>
 
 <script>
 import SignInForm from '@/components/util/SignInForm'
+import RegistrationModal from '@/components/modals/RegistrationModal'
 
 export default {
   name: 'Login',
@@ -39,6 +41,7 @@ export default {
     }
   },
   components: {
+    RegistrationModal,
     SignInForm
   },
   methods: {

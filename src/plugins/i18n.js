@@ -44,11 +44,16 @@ export function loadLanguageAsync (lang) {
     if (m.data) {
       // Delete the content of the about Germinate page, we don't want people to change it.
       delete m.data.pageAboutGerminateTitle
+      delete m.data.pageAboutGerminateSubtitle
       delete m.data.pageAboutGerminateText
       delete m.data.pageAboutGerminateCardHomepageText
       delete m.data.pageAboutGerminateCardGithubText
       delete m.data.pageAboutGerminateCardPublicationText
       delete m.data.pageAboutGerminateCardDocumentationText
+      delete m.data.pageAboutGerminateTeamTitle
+      delete m.data.pageAboutGerminateTeamSubtitle
+      delete m.data.pageAboutGerminateFundersTitle
+      delete m.data.pageAboutGerminateFundersSubtitle
     }
     Object.assign(messages[lang], m.data)
     i18n.setLocaleMessage(lang, messages[lang])

@@ -267,16 +267,22 @@ export default {
           icon: 'mdi mdi-18px mdi-information',
           children: [
             {
+              name: this.$t('menuAboutProject'),
+              identifiers: ['about-project'],
+              url: '/about/project',
+              icon: 'mdi mdi-18px mdi-information-outline'
+            },
+            {
               name: this.$t('menuAboutGerminate'),
               identifiers: ['about-germinate'],
               url: '/about/germinate',
-              icon: 'mdi mdi-map'
+              icon: 'mdi mdi-18px mdi-alpha-g-circle-outline'
             },
             {
               name: this.$t('menuAboutExportFormat'),
               identifiers: ['about-export-formats'],
               url: '/about/export-formats',
-              icon: 'mdi mdi-file-export'
+              icon: 'mdi mdi-18px mdi-file-export'
             }
           ]
         }

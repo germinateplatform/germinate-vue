@@ -393,6 +393,11 @@ const router = new Router({
               component: () => import('@/views/about/AboutGerminate.vue')
             },
             {
+              path: 'project',
+              name: 'about-project',
+              component: () => import('@/views/about/AboutProject.vue')
+            },
+            {
               path: 'export-formats',
               name: 'about-export-formats',
               component: () => import('@/views/about/ExportFormats.vue')

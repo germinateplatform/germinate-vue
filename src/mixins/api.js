@@ -313,6 +313,10 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'institution/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiGetGatekeeperInstitutions: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'gatekeeper/institution', method: 'GET', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostTraitCompoundStats: function (statsType, queryData, onSuccess, onError) {
       return this.authAjax({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
