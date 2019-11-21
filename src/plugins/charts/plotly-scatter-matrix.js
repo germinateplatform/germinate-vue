@@ -179,7 +179,17 @@ export function plotlyScatterMatrix() {
 		return rows.filter(function (row) {
 			return row[referenceColumn] === referenceValue;
 		}).map(function (row) {
-			return row[key];
+			if (row[key] === '') {
+				return NaN
+			} else {
+				var value = parseFloat(row[key])
+
+				if (isNaN(value)) {
+					return row[key];
+				} else {
+					return value;
+				}
+			}
 		})
 	}
 
