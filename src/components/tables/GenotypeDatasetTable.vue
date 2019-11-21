@@ -3,6 +3,7 @@
     <BaseTable :options="options"
                :columns="columns"
                :showAllItems="true"
+               :filterEnabled="false"
                v-bind="$props"
                ref="datasetTable"
                v-on="$listeners"

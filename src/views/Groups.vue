@@ -264,9 +264,9 @@ export default {
       })
     },
     onGroupDeleteClicked: function (groupToDelete) {
-      this.apiDeleteGroup(groupToDelete.groupid, result => {
+      this.apiDeleteGroup(groupToDelete.groupId, result => {
         // If the current group was deleted, unset selection
-        if (this.group && groupToDelete.groupid === this.group.groupId) {
+        if (this.group && groupToDelete.groupId === this.group.groupId) {
           this.group = null
           this.groupId = null
         }

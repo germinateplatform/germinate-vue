@@ -9,9 +9,9 @@
     <div v-if="itemType">
       <h2>{{ itemType.text() }}</h2>
 
-      <GermplasmTable v-show="itemType === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" />
-      <MarkerTable    v-show="itemType === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"/>
-      <LocationTable  v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"/>
+      <GermplasmTable v-show="itemType === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmTable" />
+      <MarkerTable    v-show="itemType === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"    ref="markerTable" />
+      <LocationTable  v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  ref="locationTable" />
     </div>
     <h2 v-else>Unknown item type</h2>
   </div>
@@ -38,6 +38,18 @@ export default {
       } else if (newValue === this.markedItemTypes.locations) {
         window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'locations' } }).href)
       }
+    },
+    markedIds: {
+      handler: function (newValue, oldValue) {
+        if (this.itemType === this.markedItemTypes.germplasm) {
+          this.$refs.germplasmTable.refresh()
+        } else if (this.itemType === this.markedItemTypes.markers) {
+          this.$refs.markerTable.refresh()
+        } else if (this.itemType === this.markedItemTypes.locations) {
+          this.$refs.locationTable.refresh()
+        }
+      },
+      deep: true
     }
   },
   components: {

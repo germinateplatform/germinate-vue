@@ -1,15 +1,28 @@
 <template>
   <div>
-    <UserGroupTable :getData="getUserGroups" :tableActions="userGroupActions" v-on:delete-group-clicked="deleteGroup" ref="userGroupTable" />
+    <UserGroupTable :getData="getUserGroups"
+                    :tableActions="userGroupActions"
+                    v-on:delete-group-clicked="deleteGroup"
+                    v-on:edit-group-clicked="editGroup"
+                    v-on:group-selected="selectGroup"
+                    ref="userGroupTable" />
 
-    <b-modal id="add-user-group" :title="$t('modalTitleAddUserGroup')" ref="newGroupModal" :ok-title="$t('buttonCreate')" :cancel-title="$t('buttonCancel')" ok-variant="success" @ok="createNewGroup">
+    <UserGroupMembers :group="selectedGroup" v-if="selectedGroup" v-on:groups-changed="$refs.userGroupTable.refresh()" class="mt-3"/>
+
+    <b-modal id="add-user-group"
+             :title="$t('modalTitleAddUserGroup')"
+             ref="newGroupModal"
+             :ok-title="newGroup.userGroupId ? $t('buttonUpdate') : $t('buttonCreate')"
+             :cancel-title="$t('buttonCancel')"
+             ok-variant="success"
+             @ok="createNewGroup">
       <b-form @submit.stop.prevent="createNewGroup">
         <b-form-group
           :label="$t('formLabelUserGroupName')"
           label-for="group-name">
           <b-form-input
             id="group-name"
-            v-model="newGroup.name"
+            v-model="newGroup.userGroupName"
             type="email"
             autofocus
             required
@@ -20,7 +33,7 @@
           label-for="group-description">
           <b-form-input
             id="group-description"
-            v-model="newGroup.description"
+            v-model="newGroup.userGroupDescription"
             type="email"
             required
             :placeholder="$t('formLabelUserGroupDescription')" />
@@ -32,16 +45,17 @@
 
 <script>
 import UserGroupTable from '@/components/tables/UserGroupTable'
+import UserGroupMembers from '@/components/admin/UserGroupMembers'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
     return {
       newGroup: {
-        name: null,
-        description: null,
-        userGroup: null
+        userGroupName: null,
+        userGroupDescription: null
       },
+      selectedGroup: null,
       userGroupActions: [
         {
           id: 0,
@@ -50,6 +64,10 @@ export default {
           disabled: () => false,
           icon: 'mdi mdi-18px mdi-plus-box',
           callback: (selectedIds) => {
+            this.newGroup = {
+              userGroupName: null,
+              userGroupDescription: null
+            }
             this.$refs.newGroupModal.show()
           }
         }
@@ -57,9 +75,17 @@ export default {
     }
   },
   components: {
+    UserGroupMembers,
     UserGroupTable
   },
   methods: {
+    selectGroup: function (group) {
+      this.selectedGroup = group
+    },
+    editGroup: function (group) {
+      this.newGroup = group
+      this.$refs.newGroupModal.show()
+    },
     getUserGroups: function (query, callback) {
       return this.apiPostUserGroupTable(query, callback)
     },
@@ -85,12 +111,31 @@ export default {
     },
     createNewGroup: function (event) {
       EventBus.$emit('show-loading', true)
-      this.apiPutUserGroup(this.newGroup, result => {
-        this.newGroup.name = null
-        this.newGroup.description = null
-        this.$refs.userGroupTable.refresh()
-        EventBus.$emit('show-loading', false)
-      })
+      const payload = {
+        id: this.newGroup.userGroupId,
+        name: this.newGroup.userGroupName,
+        description: this.newGroup.userGroupDescription
+      }
+
+      if (payload.id) {
+        this.apiPatchUserGroup(payload, result => {
+          this.newGroup = {
+            userGroupName: null,
+            userGroupDescription: null
+          }
+          this.$refs.userGroupTable.refresh()
+          EventBus.$emit('show-loading', false)
+        })
+      } else {
+        this.apiPutUserGroup(payload, result => {
+          this.newGroup = {
+            userGroupName: null,
+            userGroupDescription: null
+          }
+          this.$refs.userGroupTable.refresh()
+          EventBus.$emit('show-loading', false)
+        })
+      }
     }
   }
 }

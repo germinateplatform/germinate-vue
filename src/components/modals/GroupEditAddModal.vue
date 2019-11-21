@@ -4,6 +4,7 @@
     :title="$t('modalTitleEditGroup')"
     :ok-title="$t('buttonSubmit')"
     :cancel-title="$t('buttonCancel')"
+    :ok-disabled="!canContinue()"
     @ok="okPressed"
     v-if="groupToEdit">
     <b-form @submit.stop.prevent>
@@ -42,6 +43,9 @@ export default {
     }
   },
   methods: {
+    canContinue: function () {
+      return this.groupToEdit.groupName && this.groupToEdit.groupTypeId
+    },
     okPressed: function () {
       // TODO: Verify that required fields are set
       this.$emit('ok')

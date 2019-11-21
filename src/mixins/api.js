@@ -305,6 +305,19 @@ export default {
     apiPutUserGroup: function (group, onSuccess, onError) {
       return this.authAjax({ url: `usergroup`, method: 'PUT', data: group, success: onSuccess, error: onError })
     },
+    apiPatchUserGroup: function (group, onSuccess, onError) {
+      return this.authAjax({ url: `usergroup/${group.id}`, data: group, method: 'PATCH', success: onSuccess, error: onError })
+    },
+    apiGetUsers: function (groupId, onSuccess, onError) {
+      if (groupId) {
+        return this.authAjax({ url: `usergroup/${groupId}/user`, success: onSuccess, error: onError })
+      } else {
+        return this.authAjax({ url: 'user', success: onSuccess, error: onError })
+      }
+    },
+    apiPatchUserGroupMembers: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: `usergroup/${queryData.userGroupId}/user`, data: queryData, method: 'PATCH', success: onSuccess, error: onError })
+    },
     apiPostGroupTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

@@ -6,9 +6,14 @@
                ref="table"
                v-bind="$props"
                v-on="$listeners">
+
+      <a slot="userGroupId" slot-scope="props" href="#" @click.prevent="$emit('group-selected', props.row)">{{ props.row.userGroupId }}</a>
+      <a slot="userGroupName" slot-scope="props" href="#" @click.prevent="$emit('group-selected', props.row)">{{ props.row.userGroupName }}</a>
+      <a slot="userGroupDescription" slot-scope="props" href="#" @click.prevent="$emit('group-selected', props.row)">{{ props.row.userGroupDescription }}</a>
       <span slot="createdOn" slot-scope="props" v-if="props.row.createdOn">{{props.row.createdOn | toDateTime}}</span>
 
       <b-button-group slot="actions" slot-scope="props" v-if="token && token.userType === 'Administrator'">
+        <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('edit-group-clicked', props.row)"><i class="mdi mdi-18px mdi-rename-box" /></b-button>
         <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('delete-group-clicked', props.row)"><i class="mdi mdi-18px mdi-delete" /></b-button>
       </b-button-group>
     </BaseTable>

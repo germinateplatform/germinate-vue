@@ -13,11 +13,12 @@
                       :tableName="tableOptions.tableName"
                       :filterOn="filterOn"
                       ref="tableFilter"
+                      v-if="filterEnabled"
                       v-on:on-filter-changed="onFilterChanged"
                       v-on:on-column-toggle="onToggleColumn" />
 
           <div class="flex-grow-1">
-            <div class="d-flex align-items-end mx-1 text-info" v-if="filter === null || filter.length < 1">
+            <div class="d-flex align-items-end mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
               <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
             </div>
             <b-progress :value="100" height="6px" variant="primary" v-b-tooltip.hover :title="$t('tooltipTableLoadingIndicator')" striped animated v-if="isLoading" class="table-loading-indicator" />
@@ -120,6 +121,10 @@ export default {
     filterOn: {
       type: Array,
       default: null
+    },
+    filterEnabled: {
+      type: Boolean,
+      default: true
     },
     options: {
       type: Object,
