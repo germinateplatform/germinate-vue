@@ -39,6 +39,7 @@ export default {
   data: function () {
     return {
       asyncJobs: null,
+      isUpdating: false,
       status: {
         running: {
           color: 'info',
@@ -107,15 +108,18 @@ export default {
         })
       })
     },
-    updateAsyncJobs: function (setTimer) {
-      if (setTimer === true) {
+    updateAsyncJobs: function (setTimer, overwrite = false) {
+      if (setTimer === true && (!this.isUpdating || overwrite)) {
+        this.isUpdating = true
         // Check it first
         this.updateInternal()
         // Then after 10 seconds, start another check
         setTimeout(() => {
           // Only repeat if the aside is still open
           if (document.body.classList.contains('aside-menu-show')) {
-            this.updateAsyncJobs(true)
+            this.updateAsyncJobs(true, true)
+          } else {
+            this.isUpdating = false
           }
         }, 10000)
       } else {

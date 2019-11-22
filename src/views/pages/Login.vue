@@ -54,7 +54,7 @@ export default {
         this.$store.dispatch('ON_TOKEN_CHANGED', result)
         if (this.originalTarget) {
           var path = this.originalTarget.path
-          this.$store.dispatch('ON_ORIGINAL_TARGET_CHANGED', null)
+          this.$store.commit('ON_ORIGINAL_TARGET_CHANGED_MUTATION', null)
           this.$router.push(path)
         } else {
           this.$router.push('/')

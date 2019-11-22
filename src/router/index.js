@@ -355,6 +355,12 @@ const router = new Router({
           beforeEnter: requireAuth
         },
         {
+          path: 'groups/upload/:file',
+          name: 'group-upload',
+          component: () => import('@/views/GroupUpload.vue'),
+          beforeEnter: requireAuth
+        },
+        {
           path: 'groups/:groupId',
           name: 'group-details',
           component: () => import('@/views/Groups.vue'),

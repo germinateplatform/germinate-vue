@@ -2,6 +2,25 @@ import axios from 'axios'
 import { mapState } from 'vuex'
 import { EventBus } from '@/plugins/event-bus.js'
 
+const gatekeeperErrors = {
+  'BAD_REQUEST_MISSING_FIELDS': 'gatekeeperErrorBadRequestMissingField',
+  'CONFLICT_USER_ALREADY_HAS_ACCESS': 'gatekeeperErrorConflictUserAlreadyHasAccess',
+  'CONFLICT_USER_ALREADY_REQUESTED_ACCESS': 'gatekeeperErrorConflictUserAlreadyRequestedAccess',
+  'CONFLICT_USERNAME_EMAIL_ALREADY_IN_USE': 'gatekeeperErrorConflictUsernameEmailAlreadyInUse',
+  'FORBIDDEN_ACCESS_TO_OTHER_USER': 'gatekeeperErrorForbiddenAccessToOtherUser',
+  'FORBIDDEN_INSUFFICIENT_PERMISSIONS': 'gatekeeperErrorForbiddenInsufficientPermissions',
+  'FORBIDDEN_INVALID_CREDENTIALS': 'gatekeeperErrorForbiddenInvalidCredentials',
+  'NOT_FOUND_ACTIVATION_KEY': 'gatekeeperErrorNotFoundActivationKey',
+  'NOT_FOUND_ACTIVATION_REQUEST': 'gatekeeperErrorNotFoundActivationRequest',
+  'NOT_FOUND_ID': 'gatekeeperErrorNotFoundId',
+  'NOT_FOUND_ID_OR_PAYLOAD': 'gatekeeperErrorNotFoundIdOrPayload',
+  'NOT_FOUND_INSTITUTION': 'gatekeeperErrorNotFoundInstitution',
+  'NOT_FOUND_PAYLOAD': 'gatekeeperErrorNotFoundPayload',
+  'NOT_FOUND_TOKEN': 'gatekeeperErrorNotFoundToken',
+  'NOT_FOUND_USER': 'gatekeeperErrorNotFoundUser',
+  'UNAVAILABLE_EMAIL': 'gatekeeperErrorUnavailableEmail'
+}
+
 export default {
   computed: {
     ...mapState([
@@ -343,47 +362,52 @@ export default {
       var variant = 'danger'
       var title = this.$t('genericError')
       var message = error.statusText
-      switch (error.status) {
-        case 400:
-          message = this.$t('httpErrorFourOO')
-          break
-        case 401:
-          message = this.$t('httpErrorFourOOne')
-          break
-        case 403:
-          message = this.$t('httpErrorFourOThree')
-          this.$store.dispatch('ON_TOKEN_CHANGED', null)
-          var authMode = this.$store.getters.serverSettings.authMode
-          if (authMode === 'FULL') {
-            this.$router.push('/g8/login')
-          } else if (authMode === 'SELECTIVE') {
-            EventBus.$emit('on-show-login-form')
-          }
-          return
-        case 404:
-          message = this.$t('httpErrorFourOFour')
-          break
-        case 405:
-          message = this.$t('httpErrorFourOFour')
-          break
-        case 408:
-          message = this.$t('httpErrorFourOEight')
-          break
-        case 409:
-          message = this.$t('httpErrorFourONine')
-          break
-        case 410:
-          message = this.$t('httpErrorFourTen')
-          break
-        case 500:
-          message = this.$t('httpErrorFiveOO')
-          break
-        case 501:
-          message = this.$t('httpErrorFiveOOne')
-          break
-        case 503:
-          message = this.$t('httpErrorFiveOThree')
-          break
+
+      if (error.data && error.data.reasonPhrase && gatekeeperErrors[error.data.reasonPhrase]) {
+        message = this.$t(gatekeeperErrors[error.data.reasonPhrase])
+      } else {
+        switch (error.status) {
+          case 400:
+            message = this.$t('httpErrorFourOO')
+            break
+          case 401:
+            message = this.$t('httpErrorFourOOne')
+            break
+          case 403:
+            message = this.$t('httpErrorFourOThree')
+            this.$store.dispatch('ON_TOKEN_CHANGED', null)
+            var authMode = this.$store.getters.serverSettings.authMode
+            if (authMode === 'FULL') {
+              this.$router.push('/g8/login')
+            } else if (authMode === 'SELECTIVE') {
+              EventBus.$emit('on-show-login-form')
+            }
+            return
+          case 404:
+            message = this.$t('httpErrorFourOFour')
+            break
+          case 405:
+            message = this.$t('httpErrorFourOFour')
+            break
+          case 408:
+            message = this.$t('httpErrorFourOEight')
+            break
+          case 409:
+            message = this.$t('httpErrorFourONine')
+            break
+          case 410:
+            message = this.$t('httpErrorFourTen')
+            break
+          case 500:
+            message = this.$t('httpErrorFiveOO')
+            break
+          case 501:
+            message = this.$t('httpErrorFiveOOne')
+            break
+          case 503:
+            message = this.$t('httpErrorFiveOThree')
+            break
+        }
       }
 
       this.$bvToast.toast(message, {

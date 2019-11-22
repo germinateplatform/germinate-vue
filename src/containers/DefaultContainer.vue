@@ -23,7 +23,7 @@
         <UserSettingsDropdown />
       </b-navbar-nav>
       <div>
-        <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" @click.native="updateAside" />
+        <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" @click.native="updateAside" v-b-popover="asidePopoverConfig" />
         <b-badge pill variant="info" class="async-badge" v-if="asyncJobCount !== null && asyncJobCount > 0">{{ asyncJobCount }}</b-badge>
       </div>
     </AppHeader>
@@ -90,7 +90,15 @@ export default {
   data () {
     return {
       nav: [],
-      searchTerm: null
+      searchTerm: null,
+      asidePopoverConfig: {
+        title: this.$t('popoverSideMenuTitle'),
+        content: this.$t('popoverSideMenuText'),
+        placement: 'left',
+        id: 'aside-popover-trigger',
+        trigger: 'manual',
+        variant: 'info'
+      }
     }
   },
   computed: {
@@ -322,6 +330,9 @@ export default {
     toggleAside: function () {
       if (!document.body.classList.contains('aside-menu-show')) {
         this.$refs.asideToggler.toggle()
+        this.$root.$emit('bv::show::popover', 'aside-popover-trigger')
+
+        setTimeout(() => this.$root.$emit('bv::hide::popover', 'aside-popover-trigger'), 5000)
       }
 
       this.updateAside()

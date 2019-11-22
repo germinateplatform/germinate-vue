@@ -25,7 +25,8 @@
         </b-form-checkbox>
       </div>
       <div v-else-if="currentStep === 1">
-        <div v-html="$t('widgetRegisterGdpr')" />
+        <div v-html="$t('widgetRegisterGdpr')"/>
+        <hr />
         <b-form-checkbox v-model="hasGatekeeper" switch>
           {{ $t('widgetRegisterGatekeeperAccount') }} <i class="mdi mdi-help-circle" v-b-tooltip.hover :title="$t('tooltipRegisterGatekeeper')" />
         </b-form-checkbox>
@@ -133,7 +134,6 @@ export default {
   },
   methods: {
     register: function () {
-      // TODO
       if (!this.hasGatekeeper) {
         this.user.userUsername = this.user.userEmailAddress
 
@@ -156,7 +156,9 @@ export default {
 
         delete newRequest.user.userPasswordConfirm
 
-        console.log(newRequest)
+        this.apiPostGatekeeperNew(newRequest, result => {
+          console.log(result)
+        })
       } else {
         var existingRequest = {
           locale: this.locale,
@@ -164,7 +166,9 @@ export default {
           password: this.user.userPassword
         }
 
-        console.log(existingRequest)
+        this.apiPostGatekeeperExisting(existingRequest, result => {
+          console.log(result)
+        })
       }
     },
     addInstitution: function () {

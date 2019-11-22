@@ -37,6 +37,15 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGermplasmTableCW: function (queryData, namesFromFile, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `germplasm/table?namesFromFile=${namesFromFile}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGermplasmTableCWIds: function (queryData, namesFromFile, onSuccess, onError) {
+      delete queryData.orderBy
+      delete queryData.ascending
+      return this.authAjax({ url: `germplasm/table/ids?namesFromFile=${namesFromFile}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostGermplasmTableIds: function (queryData, onSuccess, onError) {
       delete queryData.orderBy
       delete queryData.ascending
@@ -396,6 +405,12 @@ export default {
     apiPostNewsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGatekeeperExisting: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'gatekeeper/user/existing', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostGatekeeperNew: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'gatekeeper/user/new', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

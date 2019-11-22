@@ -50,21 +50,51 @@ export default {
     },
     updateParentMap: function () {
       this.$nextTick(() => this.$refs.parent.invalidateSize())
+    },
+    getGermplasm: function () {
+      this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
+        this.germplasm = result
+      })
+    },
+    getGermplasmIdByName: function (name) {
+      const query = {
+        filter: [{
+          column: 'germplasmName',
+          comparator: 'equals',
+          operator: 'and',
+          values: [name]
+        }],
+        page: 1,
+        limit: 1
+      }
+      this.apiPostGermplasmTable(query, result => {
+        if (result && result.data && result.data.length > 0) {
+          this.currentGermplasmId = result.data[0].germplasmId
+          this.getGermplasm()
+        }
+      })
     }
   },
   created: function () {
     var urlParam = this.$route.params.germplasmId
 
     if (urlParam) {
-      this.currentGermplasmId = parseInt(urlParam)
+      const int = parseInt(urlParam)
+
+      // If it's not a number, try and check if there's an accession with this name
+      if (isNaN(int)) {
+        this.getGermplasmIdByName(urlParam)
+      } else {
+        this.currentGermplasmId = parseInt(urlParam)
+      }
     } else {
       this.currentGermplasmId = this.germplasmId
     }
   },
   mounted: function () {
-    this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
-      this.germplasm = result
-    })
+    if (this.currentGermplasmId) {
+      this.getGermplasm()
+    }
   }
 }
 </script>
