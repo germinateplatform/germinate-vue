@@ -3,7 +3,7 @@
     <template v-if="(projects && projects.length > 0) || (news && news.length > 0)">
       <b-row>
         <b-col xs=12 sm=6 v-if="news && news.length > 0">
-          <h2>Latest news</h2>
+          <h2>{{ $t('pageNewsLatestNewsTitle') }}</h2>
           <b-list-group class="news-items">
             <b-list-group-item button class="d-flex flex-row align-items-center" v-for="newsItem in news" :key="'news-' + newsItem.newsId" @click="selectedNews = newsItem">
               <div><i :class="`mdi mdi-36px ${newsTypes[newsItem.newstypeName].icon} pr-3`" /></div>
@@ -29,7 +29,7 @@
           </b-modal>
         </b-col>
         <b-col xs=12 sm=6 v-if="projects && projects.length > 0">
-          <h2>Related projects</h2>
+          <h2>{{ $t('pageNewsRelatedProjectsTitle') }}</h2>
           <b-row>
             <b-col xs=12 xl=6 v-for="project in projects" :key="'project-' + project.newsId" class="mb-3">
               <b-card no-body class="news-card h-100">

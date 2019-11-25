@@ -17,7 +17,7 @@
             </b-input-group-append>
           </b-input-group>
         </b-nav-form>
-        <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()"><i class="mdi mdi-18px mdi-help-circle-outline" /></b-nav-item>
+        <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
         <LocaleDropdown />
         <MarkedItemDropdown />
         <UserSettingsDropdown />

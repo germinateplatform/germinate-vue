@@ -405,6 +405,8 @@
   "pageTrialsExportChartText": "Das folgende Diagramm plottet the ausgewählten Merkmale gegeneinander in einem Punktdiagramm oder einer Matrix an Diagrammen. Datenpunkte können geklickt werden um die Ausweisdatenseite zu öffnen oder ausgewählt werden um sie zur markierten Liste hinzuzufügen oder zu entfernen. Dies geschieht durch Auswahl im Menü in der oberen rechten Ecke.",
   "pageTrialsExportTraitBoxplotTitle": "Merkmals-Box-Plots",
   "pageTrialsExportTraitBoxplotText": "Das nachfolgende Diagramm zeigt alle numerischen Merkmale der ausgewählten Datensätze und deren Box-Plots pro Datensatz. Die Box-Plots repräsentieren das Merkmal durch dessen Minimum, Maximum und die Quartile.",
+  "pageNewsLatestNewsTitle": "Aktuelle Nachrichten",
+  "pageNewsRelatedProjectsTitle": "Ähnliche Projekte",
   "pageGroupUploadTitle": "Gruppen-Upload",
   "paginationCount": "Zeige {from} bis {to} von {count} Einträgen|{count} Einträge|Ein Eintrag",
   "paginationFirst": "Erste",

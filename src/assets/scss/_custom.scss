@@ -8,10 +8,6 @@ body {
   vertical-align: middle;
 }
 
-.sidebar .nav-link .nav-icon {
-  vertical-align: sub;
-}
-
 .sidebar .nav-link .badge {
   margin-top: 6px;
 }
@@ -103,7 +99,7 @@ button.mdi:before {
 }
 
 .b-dropdown i.mdi,
-.nav:not(.nav-tabs) .nav-item i.mdi,
+nav:not(.nav-tabs):not(.sidebar-nav) .nav-item i.mdi,
 .modal-footer .btn i.mdi,
 .v-context i.mdi,
 i.mdi-36px,

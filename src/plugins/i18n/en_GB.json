@@ -407,6 +407,8 @@
   "pageTrialsExportChartText": "The following chart plots the selected traits against each other in a scatter plot/matrix. Data points within the chart can be clicked to show their passport page or selected to add/remove them to/from the marked item list by using the options in the dropdown menu in the top-right corner.",
   "pageTrialsExportTraitBoxplotTitle": "Trait box plots",
   "pageTrialsExportTraitBoxplotText": "The chart below shows all numerical traits within the selected datasets and their respective box plots per dataset. The box plots represent the trait through its minimum, maximum and quartiles.",
+  "pageNewsLatestNewsTitle": "Latest news",
+  "pageNewsRelatedProjectsTitle": "Related projects",
   "pageGroupUploadTitle": "Group upload",
   "paginationCount": "Showing {from} to {to} of {count} records|{count} records|One record",
   "paginationFirst": "First",
