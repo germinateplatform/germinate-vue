@@ -46,6 +46,12 @@ export default {
       name: 'location',
       type: String
     }, {
+      name: 'latitude',
+      type: Number
+    }, {
+      name: 'longitude',
+      type: Number
+    }, {
       name: 'elevation',
       type: Number
     }, {

@@ -3,7 +3,6 @@
     v-if="images"
     :interval="4000"
     controls
-    img-width="1650"
     img-height="600"
     indicators>
     <b-carousel-slide

@@ -16,6 +16,8 @@
 
       <span slot="synonyms" slot-scope="props" v-if="props.row.synonyms">{{ props.row.synonyms.join(', ') }}</span>
       <span slot="elevation" slot-scope="props" v-if="props.row.elevation !== undefined">{{ props.row.elevation.toFixed(2) }}</span>
+      <span slot="latitude" slot-scope="props" v-if="props.row.latitude !== undefined">{{ props.row.latitude.toFixed(2) }}</span>
+      <span slot="longitude" slot-scope="props" v-if="props.row.longitude !== undefined">{{ props.row.longitude.toFixed(2) }}</span>
 
       <!-- Country flags -->
       <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryCode }}</span></span>
@@ -56,11 +58,21 @@
         <span> {{ props.row.pdci.toFixed(2) }}</span>
       </div>
 
+      <span slot="dataTypes" slot-scope="props" class="text-nowrap">
+        <i :class="`mdi mdi-18px ${experimentTypes.trials.icon}`" :style="`color: ${experimentTypes.trials.color()};`" v-b-tooltip.bottom.hover :title="experimentTypes.trials.text()" v-if="props.row.hasTrialsData" />
+        <i :class="`mdi mdi-18px ${experimentTypes.genotype.icon}`" :style="`color: ${experimentTypes.genotype.color()};`" v-b-tooltip.bottom.hover :title="experimentTypes.genotype.text()" v-if="props.row.hasGenotypicData" />
+        <i :class="`mdi mdi-18px ${experimentTypes.compound.icon}`" :style="`color: ${experimentTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="experimentTypes.compound.text()" v-if="props.row.hasCompoundData" />
+        <i :class="`mdi mdi-18px ${experimentTypes.allelefreq.icon}`" :style="`color: ${experimentTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="experimentTypes.allelefreq.text()" v-if="props.row.hasAllelefreqData" />
+      </span>
+
       <div slot="h__germplasmPuid">
         <span>{{ options.headings.germplasmPuid() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
       </div>
       <div slot="h__pdci">
         <span>{{ options.headings.pdci() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPdci')"/>
+      </div>
+      <div slot="h__dataTypes">
+        <span>{{ options.headings.dataTypes() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmDataTypes')"/>
       </div>
     </BaseTable>
   </div>
@@ -140,11 +152,20 @@ export default {
         name: 'elevation',
         type: Number
       }, {
+        name: 'latitude',
+        type: Number
+      }, {
+        name: 'longitude',
+        type: Number
+      }, {
         name: 'countryName',
         type: String
       }, {
         name: 'collDate',
         type: Date
+      }, {
+        name: 'dataTypes',
+        type: undefined
       }, {
         name: 'imageCount',
         type: Number
@@ -174,7 +195,7 @@ export default {
     var options = {
       idColumn: 'germplasmId',
       tableName: 'germplasm',
-      sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'institutionId', 'institutionName', 'location', 'elevation', 'countryName', 'collDate', 'pdci'],
+      sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'institutionId', 'institutionName', 'location', 'latitude', 'longitude', 'elevation', 'countryName', 'collDate', 'pdci'],
       filterable: [],
       headings: {
         selected: '',
@@ -194,10 +215,13 @@ export default {
         institutionName: () => this.$t('tableColumnInstitutionName'),
         location: () => this.$t('tableColumnGermplasmLocation'),
         elevation: () => this.$t('tableColumnElevation'),
+        latitude: () => this.$t('tableColumnLatitude'),
+        longitude: () => this.$t('tableColumnLongitude'),
         countryName: () => this.$t('tableColumnCountryName'),
         collDate: () => this.$t('tableColumnColldate'),
         pdci: () => this.$t('tableColumnPdci'),
-        imageCount: () => '',
+        imageCount: () => this.$t('tableColumnGermplasmImageCount'),
+        dataTypes: () => this.$t('tableColumnGermplasmDataTypes'),
         distance: () => this.$t('tableColumnGermplasmDistance'),
         marked: () => ''
       },
@@ -205,6 +229,8 @@ export default {
         germplasmId: 'text-right',
         institutionId: 'text-right',
         elevation: 'text-right',
+        latitude: 'text-right',
+        longitude: 'text-right',
         genus: 'font-italic',
         species: 'font-italic',
         subtaxa: 'font-italic'
