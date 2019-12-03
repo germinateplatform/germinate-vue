@@ -1,14 +1,14 @@
 <template>
-  <div v-if="group">
-    <h2>Group members <small> - {{ group.userGroupName }}</small></h2>
+  <div v-if="dataset">
+    <h2>User permissions</h2>
     <b-row>
       <b-col sm=6>
-        <h3>Current group members</h3>
-        <UserTable :users="usersForGroup" :isAdd="false" v-on:action-clicked="(ids) => patchGroup(ids, false)" ref="usersForGroupTable" />
+        <h3>Current user permissions</h3>
+        <UserTable :users="usersForDataset" :isAdd="false" v-on:action-clicked="(ids) => patchUserPermission(ids, false)" />
       </b-col>
       <b-col sm=6>
         <h3>Search for items<small> - Use the table filter or just browse the table</small></h3>
-        <UserTable :users="users" :isAdd="true" v-on:action-clicked="(ids) => patchGroup(ids, true)" ref="usersTable" />
+        <UserTable :users="users" :isAdd="true" v-on:action-clicked="(ids) => patchUserPermission(ids, true)" />
       </b-col>
     </b-row>
   </div>
@@ -19,7 +19,7 @@ import UserTable from '@/components/tables/UserTable'
 
 export default {
   props: {
-    group: {
+    dataset: {
       type: Object,
       default: () => null
     }
@@ -27,33 +27,38 @@ export default {
   data: function () {
     return {
       users: [],
-      usersForGroup: []
+      usersForDataset: []
     }
   },
   components: {
     UserTable
   },
+  watch: {
+    dataset: function (newValue, oldValue) {
+      this.getData()
+    }
+  },
   methods: {
     refresh: function () {
       this.getData()
     },
-    patchGroup: function (ids, isAdd) {
+    patchUserPermission: function (ids, isAdd) {
       const request = {
-        userGroupId: this.group.userGroupId,
+        datasetId: this.dataset.datasetId,
         isAddOperation: isAdd,
         userIds: ids
       }
-      this.apiPatchUserGroupMembers(request, result => {
+      this.apiPatchDatasetUserMembers(request, result => {
         this.getData()
-        this.$emit('groups-changed')
+        this.$emit('permissions-changed')
       })
     },
     getData: function () {
       this.apiGetUsers(null, result => {
         this.users = result
       })
-      this.apiGetUsers({ userGroupId: this.group.userGroupId }, result => {
-        this.usersForGroup = result
+      this.apiGetUsers({ datasetId: this.dataset.datasetId }, result => {
+        this.usersForDataset = result
       })
     }
   },

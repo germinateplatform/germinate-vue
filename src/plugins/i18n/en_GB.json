@@ -141,6 +141,7 @@
   "gatekeeperErrorNotFoundUser": "User not found",
   "gatekeeperErrorUnavailableEmail": "Email system currently unavailable",
   "genericAdd": "Add",
+  "genericRemove": "Remove",
   "genericNo": "No",
   "genericOk": "OK",
   "genericYes": "Yes",

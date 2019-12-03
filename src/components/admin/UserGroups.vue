@@ -2,12 +2,13 @@
   <div>
     <UserGroupTable :getData="getUserGroups"
                     :tableActions="userGroupActions"
+                    :hideDefaultActions="false"
                     v-on:delete-group-clicked="deleteGroup"
                     v-on:edit-group-clicked="editGroup"
                     v-on:group-selected="selectGroup"
                     ref="userGroupTable" />
 
-    <UserGroupMembers :group="selectedGroup" v-if="selectedGroup" v-on:groups-changed="$refs.userGroupTable.refresh()" class="mt-3"/>
+    <UserGroupMembers :group="selectedGroup" v-if="selectedGroup" v-on:groups-changed="updateTable" class="mt-3" ref="userGroupMembers" />
 
     <b-modal id="add-user-group"
              :title="$t('modalTitleAddUserGroup')"
@@ -79,12 +80,20 @@ export default {
     UserGroupTable
   },
   methods: {
+    groupsChanged: function () {
+      this.$refs.userGroupTable.refresh()
+      this.$emit('groups-changed')
+    },
     selectGroup: function (group) {
       this.selectedGroup = group
+      this.updateTable()
     },
     editGroup: function (group) {
       this.newGroup = group
       this.$refs.newGroupModal.show()
+    },
+    updateTable: function () {
+      this.$nextTick(() => this.$refs.userGroupMembers.refresh())
     },
     getUserGroups: function (query, callback) {
       return this.apiPostUserGroupTable(query, callback)
@@ -105,6 +114,8 @@ export default {
               if (this.userGroup && this.userGroup.userGroupId === group.userGroupId) {
                 this.userGroup = null
               }
+
+              this.$emit('groups-changed')
             })
           }
         })
@@ -125,6 +136,7 @@ export default {
           }
           this.$refs.userGroupTable.refresh()
           EventBus.$emit('show-loading', false)
+          this.$emit('groups-changed')
         })
       } else {
         this.apiPutUserGroup(payload, result => {
@@ -134,6 +146,7 @@ export default {
           }
           this.$refs.userGroupTable.refresh()
           EventBus.$emit('show-loading', false)
+          this.$emit('groups-changed')
         })
       }
     }

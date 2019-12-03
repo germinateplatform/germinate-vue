@@ -11,13 +11,13 @@
             <i class="mdi mdi-18px mdi-account-group" /> User groups
           </template>
           <p>The table below shows the groups of users that are currently defined. You can add new groups, delete existing groups and add users to or remove users from groups.</p>
-          <UserGroups />
+          <UserGroups v-on:groups-changed="$refs.datasetPermissions.refresh()"/>
         </b-tab>
         <b-tab title="Tab 2">
           <template v-slot:title>
             <i class="mdi mdi-18px mdi-database-lock" /> Dataset permissions
           </template>
-          <DatasetPermissions />
+          <DatasetPermissions ref="datasetPermissions" />
         </b-tab>
       </b-tabs>
     </b-card>

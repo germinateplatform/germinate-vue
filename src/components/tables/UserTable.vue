@@ -8,7 +8,7 @@
     <div slot="afterTable">
       <b-button-group>
         <b-button v-b-tooltip.hover
-                  :title="isAdd ? 'Add' : 'Remove'"
+                  :title="isAdd ? $t('genericAdd') : $t('genericRemove')"
                   @click="$emit('action-clicked', selectedItems)">
           <i :class="`mdi mdi-18px ${isAdd ? 'mdi-plus-box' : 'mdi-delete'}`" />
         </b-button>
