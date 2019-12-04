@@ -1,13 +1,15 @@
 <template>
   <div v-if="group">
-    <h2>Group members <small> - {{ group.userGroupName }}</small></h2>
+    <h2>{{ $t('pageUserPermissionsGroupMembersTitle') }} <small> - {{ group.userGroupName }}</small></h2>
     <b-row>
       <b-col sm=6>
-        <h3>Current group members</h3>
+        <h3>{{ $t('pageUserPermissionsGroupMembersCurrentTitle') }}</h3>
+        <p>{{ $t('pageUserPermissionsGroupMembersCurrentText') }}</p>
         <UserTable :users="usersForGroup" :isAdd="false" v-on:action-clicked="(ids) => patchGroup(ids, false)" ref="usersForGroupTable" />
       </b-col>
       <b-col sm=6>
-        <h3>Search for items<small> - Use the table filter or just browse the table</small></h3>
+        <h3>{{ $t('pageUserPermissionsGroupMembersNewTitle') }}<small> - {{ $t('pageUserPermissionsTableSearchHint') }}</small></h3>
+        <p>{{ $t('pageUserPermissionsGroupMembersNewText') }}</p>
         <UserTable :users="users" :isAdd="true" v-on:action-clicked="(ids) => patchGroup(ids, true)" ref="usersTable" />
       </b-col>
     </b-row>

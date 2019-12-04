@@ -1,16 +1,16 @@
 <template>
   <div v-if="dataset">
-    <h2>Group permissions</h2>
-    <p>Group permissions are permissions set for groups of users. All users within this group will have the same permissions for the selected dataset. Add and remove groups by using the tables below.</p>
+    <h2>{{ $t('pageUserPermissionsGroupPermissionsTitle') }}</h2>
+    <p>{{ $t('pageUserPermissionsGroupPermissionsText') }}</p>
     <b-row>
       <b-col sm=6>
-        <h3>Current group permissions</h3>
-        <p>These groups currently have access to the selected dataset. Remove them by selecting their checkbox and then clicking on the delete button below the table.</p>
+        <h3>{{ $t('pageUserPermissionsGroupPermissionsCurrentTitle') }}</h3>
+        <p>{{ $t('pageUserPermissionsGroupPermissionsCurrentText') }}</p>
         <UserGroupTable :hideDefaultActions="true" :getData="getUserGroups" :getIds="getUserGroupIds" :selectable="true" :tableActions="deleteActions" ref="currentGroupTable" />
       </b-col>
       <b-col sm=6>
-        <h3>Search for items<small> - Use the table filter or just browse the table</small></h3>
-        <p>These are all the currently defined groups</p>
+        <h3>{{ $t('pageUserPermissionsGroupPermissionsNewTitle') }}<small> - {{ $t('pageUserPermissionsTableSearchHint') }}</small></h3>
+        <p>{{ $t('pageUserPermissionsGroupPermissionsNewText') }}</p>
         <UserGroupTable :hideDefaultActions="true" :getData="getAllGroups" :getIds="getAllGroupIds" :selectable="true" :tableActions="addActions" ref="allGroupTable" />
       </b-col>
     </b-row>

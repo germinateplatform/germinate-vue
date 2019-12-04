@@ -1,13 +1,16 @@
 <template>
   <div v-if="dataset">
-    <h2>User permissions</h2>
+    <h2>{{ $t('pageUserPermissionsUserPermissionsTitle') }}</h2>
+    <p>{{ $t('pageUserPermissionsUserPermissionsText') }}</p>
     <b-row>
       <b-col sm=6>
-        <h3>Current user permissions</h3>
+        <h3>{{ $t('pageUserPermissionsUserPermissionsCurrentTitle') }}</h3>
+        <p>{{ $t('pageUserPermissionsUserPermissionsCurrentText') }}</p>
         <UserTable :users="usersForDataset" :isAdd="false" v-on:action-clicked="(ids) => patchUserPermission(ids, false)" />
       </b-col>
       <b-col sm=6>
-        <h3>Search for items<small> - Use the table filter or just browse the table</small></h3>
+        <h3>{{ $t('pageUserPermissionsUserPermissionsNewTitle') }}<small> - {{ $t('pageUserPermissionsTableSearchHint') }}</small></h3>
+        <p>{{ $t('pageUserPermissionsUserPermissionsNewText') }}</p>
         <UserTable :users="users" :isAdd="true" v-on:action-clicked="(ids) => patchUserPermission(ids, true)" />
       </b-col>
     </b-row>

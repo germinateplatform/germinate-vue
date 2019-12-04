@@ -80,10 +80,6 @@ export default {
     UserGroupTable
   },
   methods: {
-    groupsChanged: function () {
-      this.$refs.userGroupTable.refresh()
-      this.$emit('groups-changed')
-    },
     selectGroup: function (group) {
       this.selectedGroup = group
       this.updateTable()
@@ -93,7 +89,11 @@ export default {
       this.$refs.newGroupModal.show()
     },
     updateTable: function () {
-      this.$nextTick(() => this.$refs.userGroupMembers.refresh())
+      this.$nextTick(() => {
+        this.$refs.userGroupMembers.refresh()
+        this.$refs.userGroupTable.refresh()
+        this.$emit('groups-changed')
+      })
     },
     getUserGroups: function (query, callback) {
       return this.apiPostUserGroupTable(query, callback)
@@ -111,8 +111,8 @@ export default {
               this.$refs.userGroupTable.refresh()
               EventBus.$emit('show-loading', false)
 
-              if (this.userGroup && this.userGroup.userGroupId === group.userGroupId) {
-                this.userGroup = null
+              if (this.selectedGroup && this.selectedGroup.userGroupId === group.userGroupId) {
+                this.selectedGroup = null
               }
 
               this.$emit('groups-changed')

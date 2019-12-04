@@ -1,22 +1,24 @@
 <template>
   <div>
-    <h1>User permissions</h1>
+    <h1>{{ $t('pageUserPermissionsTitle') }}</h1>
     <hr />
+    <p>{{ $t('pageUserPermissionsText') }}</p>
     <b-card no-body>
       <b-tabs card
               active-nav-item-class="text-primary"
               v-model="tabIndex">
         <b-tab active>
           <template v-slot:title>
-            <i class="mdi mdi-18px mdi-account-group" /> User groups
+            <i class="mdi mdi-18px mdi-account-group" /> {{ $t('pageUserPermissionsTabUserGroups') }}
           </template>
-          <p>The table below shows the groups of users that are currently defined. You can add new groups, delete existing groups and add users to or remove users from groups.</p>
+          <p>{{ $t('pageUserPermissionsUserGroupsText') }}</p>
           <UserGroups v-on:groups-changed="$refs.datasetPermissions.refresh()"/>
         </b-tab>
         <b-tab title="Tab 2">
           <template v-slot:title>
-            <i class="mdi mdi-18px mdi-database-lock" /> Dataset permissions
+            <i class="mdi mdi-18px mdi-database-lock" /> {{ $t('pageUserPermissionsTabDatasetPermissions') }}
           </template>
+          <p>{{ $t('pageUserPermissionsDatasetsText') }}</p>
           <DatasetPermissions ref="datasetPermissions" />
         </b-tab>
       </b-tabs>
