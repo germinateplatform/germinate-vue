@@ -122,6 +122,12 @@ export default {
         name: 'entityTypeName',
         type: 'entityType'
       }, {
+        name: 'entityParentName',
+        type: String
+      }, {
+        name: 'entityParentGeneralIdentifier',
+        type: String
+      }, {
         name: 'biologicalStatusName',
         type: String
       }, {
@@ -205,6 +211,8 @@ export default {
         germplasmNumber: () => this.$t('tableColumnGermplasmNumber'),
         germplasmPuid: () => this.$t('tableColumnGermplasmPuid'),
         entityTypeName: () => this.$t('tableColumnEntityType'),
+        entityParentName: () => this.$t('tableColumnGermplasmEntityParentName'),
+        entityParentGeneralIdentifier: () => this.$t('tableColumnGermplasmEntityParentGeneralIdentifier'),
         biologicalStatusName: () => this.$t('tableColumnBiologicalStatus'),
         synonyms: () => this.$t('tableColumnSynonyms'),
         collectorNumber: () => this.$t('tableColumnCollectorNumber'),

@@ -19,6 +19,12 @@ export default {
       name: 'entityTypeName',
       type: 'entityType'
     }, {
+      name: 'entityParentName',
+      type: String
+    }, {
+      name: 'entityParentGeneralIdentifier',
+      type: String
+    }, {
       name: 'biologicalStatusName',
       type: String
     }, {
