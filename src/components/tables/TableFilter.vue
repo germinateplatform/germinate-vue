@@ -14,7 +14,7 @@
     </div>
     <div>
       <b-button-group class="table-filter">
-        <b-dropdown left v-if="columns && columns.length > 0">
+        <b-dropdown left v-if="columns && columns.length > 0" class="overflow-dropdown">
           <template slot="button-content"><i class="mdi mdi-18px mdi-view-column"/></template>
           <b-dropdown-form>
             <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.name" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
@@ -388,7 +388,7 @@ export default {
 }
 
 .overflow-dropdown .dropdown-menu {
-    max-height: 500px;
+    max-height: 50vh;
     overflow-y: auto;
     overflow-x: hidden;
 }

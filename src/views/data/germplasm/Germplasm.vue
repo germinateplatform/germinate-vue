@@ -20,10 +20,13 @@
     </b-button-group>
 
     <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" :downloadTable="downloadTable" ref="germplasmTable" />
+
+    <GermplasmDownload />
   </div>
 </template>
 
 <script>
+import GermplasmDownload from '@/components/germplasm/GermplasmDownload'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 
 export default {
@@ -34,6 +37,7 @@ export default {
     }
   },
   components: {
+    GermplasmDownload,
     GermplasmTable
   },
   watch: {

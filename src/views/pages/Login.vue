@@ -48,7 +48,6 @@ export default {
     login: function (user) {
       this.enabled = false
       this.apiPostToken(user, result => {
-        this.error = false
         this.enabled = true
         // If it's successful, finally store them
         this.$store.dispatch('ON_TOKEN_CHANGED', result)
@@ -61,8 +60,7 @@ export default {
         }
       }, {
         codes: [],
-        callback: function (error) {
-          this.error = true
+        callback: error => {
           if (error.status === 403 || error.status === 400) {
             this.response = this.$t('errorMessageInvalidUsernamePassword')
           } else {

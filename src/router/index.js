@@ -183,6 +183,12 @@ const router = new Router({
               },
               children: [
                 {
+                  path: 'markers',
+                  name: 'markers',
+                  component: () => import('@/views/data/genotype/Markers.vue'),
+                  beforeEnter: requireAuth
+                },
+                {
                   path: 'maps',
                   name: 'maps',
                   component: () => import('@/views/data/genotype/Maps.vue'),

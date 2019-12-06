@@ -357,7 +357,7 @@ export default {
      * This is the default error method that gets called if no other error handler is defined for the error code that caused it.
      * @param {*} error The error response object
      */
-    handleError (error) {
+    handleError: function (error) {
       EventBus.$emit('show-loading', false)
       var variant = 'danger'
       var title = this.$t('genericError')
@@ -376,7 +376,7 @@ export default {
           case 403:
             message = this.$t('httpErrorFourOThree')
             this.$store.dispatch('ON_TOKEN_CHANGED', null)
-            var authMode = this.$store.getters.serverSettings.authMode
+            var authMode = this.serverSettings.authMode
             if (authMode === 'FULL') {
               this.$router.push('/g8/login')
             } else if (authMode === 'SELECTIVE') {

@@ -53,7 +53,7 @@ export default {
           key: 'markers',
           text: () => this.$t('dashboardBannerMarkers'),
           icon: 'mdi-dna',
-          link: '/data/genotypes/maps'
+          link: '/data/genotypes/markers'
         },
         {
           key: 'traits',

@@ -201,7 +201,7 @@ export default {
     var options = {
       idColumn: 'germplasmId',
       tableName: 'germplasm',
-      sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'institutionId', 'institutionName', 'location', 'latitude', 'longitude', 'elevation', 'countryName', 'collDate', 'pdci'],
+      sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmNumber', 'germplasmPuid', 'entityTypeName', 'entityParentName', 'entityParentGeneralIdentifier', 'biologicalStatusName', 'synonyms', 'collectorNumber', 'genus', 'species', 'subtaxa', 'institutionId', 'institutionName', 'location', 'latitude', 'longitude', 'elevation', 'countryName', 'collDate', 'pdci'],
       filterable: [],
       headings: {
         selected: '',

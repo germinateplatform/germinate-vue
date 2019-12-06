@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <AppHeader fixed>
+    <AppHeader fixed id="app-header">
       <SidebarToggler class="d-lg-none" display="md" mobile @click.native="toggleSidebar" />
       <b-link class="navbar-brand" to="/">
         <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
@@ -27,6 +27,17 @@
         <b-badge pill variant="info" class="async-badge" v-if="asyncJobCount !== null && asyncJobCount > 0">{{ asyncJobCount }}</b-badge>
       </div>
     </AppHeader>
+
+    <b-popover target="app-header" show placement="bottom" variant="info" v-if="serverSettings && serverSettings.showGdprNotification === true && cookiesAccepted === null">
+      <template v-slot:title>{{ $t('widgetGdprNotificationTitle') }}</template>
+      <p>{{ $t('widgetGdprNotificationText') }}</p>
+      <p>{{ $t('widgetGdprNotificationReadMore') }}</p>
+      <div class="d-flex flex-row">
+        <b-button variant="success" class="flex-fill mr-2" @click="acceptCookies(true)">{{ $t('widgetGdprNotificationButtonAccept') }}</b-button>
+        <b-button variant="secondary" class="flex-fill text-muted" v-b-tooltip:hover :title="$t('tooltipGdprNotificationButtonReject')" @click="acceptCookies(false)">{{ $t('widgetGdprNotificationButtonDecline') }}</b-button>
+      </div>
+    </b-popover>
+
     <div class="app-body">
       <AppSidebar fixed>
         <SidebarHeader/>
@@ -115,6 +126,9 @@ export default {
     }
   },
   methods: {
+    acceptCookies: function (decision) {
+      this.$store.dispatch('ON_COOKIES_ACCEPTED', decision)
+    },
     search: function () {
       this.$router.push({ name: 'search', params: { searchTerm: this.searchTerm } })
     },
@@ -147,6 +161,12 @@ export default {
               url: '/data/genotypes/maps',
               icon: 'mdi mdi-18px mdi-dna',
               children: [
+                {
+                  name: this.$t('menuGenotypicMarkers'),
+                  identifiers: ['markers'],
+                  url: '/data/genotypes/markers',
+                  icon: 'mdi mdi-18px mdi-rotate-90 mdi-format-indent-increase'
+                },
                 {
                   name: this.$t('menuGenotypicMaps'),
                   identifiers: ['maps', 'map-details'],

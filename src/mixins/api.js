@@ -262,6 +262,9 @@ export default {
     apiPostTableExport: function (queryData, tableType, onSuccess, onError) {
       return this.authAjax({ url: `${tableType}/table/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
     },
+    apiExportPassport: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'germplasm/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostGermplasmAttributeTableExport: function (germplasmId, queryData, onSuccess, onError) {
       var url = germplasmId !== null ? `germplasm/${germplasmId}/attribute/export` : 'germplasm/attribute/export'
       return this.authAjax({ url: url, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })

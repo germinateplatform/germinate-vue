@@ -7,8 +7,10 @@ Vue.use(Vuex)
 var name = process.env.VUE_APP_INSTANCE_NAME
 
 if (!name) {
-  name = 'germinate'
+  name = 'germinate-' + window.location.pathname
 }
+
+const essentialKeys = ['token', 'locale', 'baseUrl', 'originalTarget', 'serverSettings', 'helpKey', 'asyncJobUuids', 'asyncJobCount', 'tableFiltering', 'markedIds', 'cookiesAccepted']
 
 const initialState = {
   token: null,
@@ -18,7 +20,17 @@ const initialState = {
   originalTarget: null,
   serverSettings: null,
   helpKey: null,
-  entityTypeStats: null,
+  entityTypeStats: [{
+    'Accession': {
+      count: 0
+    },
+    'Plant/Plot': {
+      count: 0
+    },
+    'Sample': {
+      count: 0
+    }
+  }],
   sidebarState: 'sidebar-lg-show',
   markedIds: {
     germplasm: [],
@@ -48,7 +60,8 @@ const initialState = {
   },
   asyncJobUuids: [],
   asyncJobCount: 0,
-  tableFiltering: null
+  tableFiltering: null,
+  cookiesAccepted: null
 }
 
 const store = new Vuex.Store({
@@ -66,7 +79,8 @@ const store = new Vuex.Store({
     serverSettings: state => state.serverSettings,
     tableFiltering: state => state.tableFiltering,
     asyncJobUuids: state => state.asyncJobUuids,
-    asyncJobCount: state => state.asyncJobCount
+    asyncJobCount: state => state.asyncJobCount,
+    cookiesAccepted: state => state.cookiesAccepted
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
@@ -155,6 +169,9 @@ const store = new Vuex.Store({
           state.asyncJobUuids.splice(index, 1)
         }
       }
+    },
+    ON_COOKIES_ACCEPTED_MUTATION: function (state, newCookiesAccepted) {
+      state.cookiesAccepted = newCookiesAccepted
     }
   },
   actions: {
@@ -214,11 +231,27 @@ const store = new Vuex.Store({
     },
     ON_ASYNC_JOB_UUID_REMOVE: function ({ commit }, uuid) {
       commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', uuid)
+    },
+    ON_COOKIES_ACCEPTED: function ({ commit }, cookiesAccepted) {
+      commit('ON_COOKIES_ACCEPTED_MUTATION', cookiesAccepted)
     }
   },
   plugins: [
     createPersistedState({
-      key: name
+      key: name,
+      reducer: (state, paths) => {
+        if (state.serverSettings && !state.serverSettings.showGdprNotification && state.cookiesAccepted === true) {
+          return state
+        } else {
+          var result = {}
+
+          essentialKeys.forEach(k => {
+            result[k] = state[k]
+          })
+
+          return result
+        }
+      }
     })
   ]
 })
