@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { EventBus } from '@/plugins/event-bus.js'
 
 const gatekeeperErrors = {
@@ -23,10 +23,11 @@ const gatekeeperErrors = {
 
 export default {
   computed: {
-    ...mapState([
+    ...mapGetters([
       'asyncJobCount',
       'asyncJobUuids',
       'baseUrl',
+      'cookiesAccepted',
       'entityTypeStats',
       'helpKey',
       'hiddenColumns',

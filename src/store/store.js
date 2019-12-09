@@ -4,6 +4,8 @@ import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
+const localStorage = window.localStorage
+
 var name = process.env.VUE_APP_INSTANCE_NAME
 
 if (!name) {
@@ -11,14 +13,10 @@ if (!name) {
 }
 
 const essentialKeys = ['token', 'locale', 'baseUrl', 'originalTarget', 'serverSettings', 'helpKey', 'asyncJobUuids', 'asyncJobCount', 'tableFiltering', 'markedIds', 'cookiesAccepted']
-
-const initialState = {
-  token: null,
+const userState = {
   locale: 'en_GB',
-  baseUrl: null,
   tablePerPage: 10,
   originalTarget: null,
-  serverSettings: null,
   helpKey: null,
   entityTypeStats: [{
     'Accession': {
@@ -64,114 +62,128 @@ const initialState = {
   cookiesAccepted: null
 }
 
-const store = new Vuex.Store({
-  state: JSON.parse(JSON.stringify(initialState)),
+const storeState = {
+  state: {
+    token: null,
+    serverSettings: null,
+    baseUrl: null,
+    userStates: {
+      null: JSON.parse(JSON.stringify(userState))
+    }
+  },
   getters: {
-    token: state => state.token,
-    locale: state => state.locale,
-    baseUrl: state => state.baseUrl,
-    tablePerPage: state => state.tablePerPage,
-    helpKey: state => state.helpKey,
-    markedIds: state => state.markedIds,
-    entityTypeStats: state => state.entityTypeStats,
-    hiddenColumns: state => state.hiddenColumns,
-    originalTarget: state => state.originalTarget,
-    serverSettings: state => state.serverSettings,
-    tableFiltering: state => state.tableFiltering,
-    asyncJobUuids: state => state.asyncJobUuids,
-    asyncJobCount: state => state.asyncJobCount,
-    cookiesAccepted: state => state.cookiesAccepted
+    token: (state, getters) => state.token,
+    baseUrl: (state, getters) => state.baseUrl,
+    serverSettings: (state, getters) => state.serverSettings,
+    userId: (state, getters) => state.token ? state.token.id : null,
+    locale: (state, getters) => state.userStates[getters.userId].locale,
+    tablePerPage: (state, getters) => state.userStates[getters.userId].tablePerPage,
+    helpKey: (state, getters) => state.userStates[getters.userId].helpKey,
+    markedIds: (state, getters) => state.userStates[getters.userId].markedIds,
+    entityTypeStats: (state, getters) => state.userStates[getters.userId].entityTypeStats,
+    hiddenColumns: (state, getters) => state.userStates[getters.userId].hiddenColumns,
+    originalTarget: (state, getters) => state.userStates[getters.userId].originalTarget,
+    tableFiltering: (state, getters) => state.userStates[getters.userId].tableFiltering,
+    asyncJobUuids: (state, getters) => state.userStates[getters.userId].asyncJobUuids,
+    asyncJobCount: (state, getters) => state.userStates[getters.userId].asyncJobCount,
+    cookiesAccepted: (state, getters) => state.userStates[getters.userId].cookiesAccepted,
+    sidebarState: (state, getters) => state.userStates[getters.userId].sidebarState
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
+      if (newToken && !state.userStates[newToken.id]) {
+        // Add the new user to the state, remember to use Vue.set to make it reactive
+        Vue.set(state.userStates, newToken.id, JSON.parse(JSON.stringify(userState)))
+      }
+
       state.token = newToken
-    },
-    ON_LOCALE_CHANGED_MUTATION: function (state, newLocale) {
-      state.locale = newLocale
     },
     ON_BASE_URL_CHANGED_MUTATION: function (state, newBaseUrl) {
       state.baseUrl = newBaseUrl
     },
+    ON_SETTINGS_CHANGED_MUTATION: function (state, newServerSettings) {
+      state.serverSettings = newServerSettings
+    },
+    ON_LOCALE_CHANGED_MUTATION: function (state, newLocale) {
+      state.userStates[state.token ? state.token.id : null].locale = newLocale
+    },
     ON_TABLE_PER_PAGE_CHANGED_MUTATION: function (state, newTablePerPage) {
-      state.tablePerPage = newTablePerPage
+      state.userStates[state.token ? state.token.id : null].tablePerPage = newTablePerPage
     },
     ON_MARKED_IDS_ADD_MUTATION: function (state, { type, ids }) {
       ids.forEach(id => {
-        if (state.markedIds[type].indexOf(id) === -1) {
-          state.markedIds[type].push(id)
+        if (state.userStates[state.token ? state.token.id : null].markedIds[type].indexOf(id) === -1) {
+          state.userStates[state.token ? state.token.id : null].markedIds[type].push(id)
         }
       })
     },
     ON_MARKED_IDS_REMOVE_MUTATION: function (state, { type, ids }) {
       ids.forEach(id => {
-        var index = state.markedIds[type].indexOf(id)
+        var index = state.userStates[state.token ? state.token.id : null].markedIds[type].indexOf(id)
         if (index !== -1) {
-          state.markedIds[type].splice(index, 1)
+          state.userStates[state.token ? state.token.id : null].markedIds[type].splice(index, 1)
         }
       })
     },
     ON_MARKED_IDS_CLEAR_MUTATION: function (state, type) {
-      state.markedIds[type] = []
+      state.userStates[state.token ? state.token.id : null].markedIds[type] = []
     },
     ON_HIDDEN_COLUMNS_ADD_MUTATION: function (state, { type, columns }) {
       columns.forEach(id => {
-        if (state.hiddenColumns[type].indexOf(id) === -1) {
-          state.hiddenColumns[type].push(id)
+        if (state.userStates[state.token ? state.token.id : null].hiddenColumns[type].indexOf(id) === -1) {
+          state.userStates[state.token ? state.token.id : null].hiddenColumns[type].push(id)
         }
       })
     },
     ON_HIDDEN_COLUMNS_REMOVE_MUTATION: function (state, { type, columns }) {
       columns.forEach(id => {
-        var index = state.hiddenColumns[type].indexOf(id)
+        var index = state.userStates[state.token ? state.token.id : null].hiddenColumns[type].indexOf(id)
         if (index !== -1) {
-          state.hiddenColumns[type].splice(index, 1)
+          state.userStates[state.token ? state.token.id : null].hiddenColumns[type].splice(index, 1)
         }
       })
     },
     ON_ORIGINAL_TARGET_CHANGED_MUTATION: function (state, newOriginalTarget) {
-      state.originalTarget = newOriginalTarget
-    },
-    ON_SETTINGS_CHANGED_MUTATION: function (state, newServerSettings) {
-      state.serverSettings = newServerSettings
+      state.userStates[state.token ? state.token.id : null].originalTarget = newOriginalTarget
     },
     ON_HELP_KEY_CHANGED_MUTATION: function (state, newHelpKey) {
-      state.helpKey = newHelpKey
+      state.userStates[state.token ? state.token.id : null].helpKey = newHelpKey
     },
     ON_TABLE_FILTERING_CHANGED_MUTATION: function (state, newTableFiltering) {
-      state.tableFiltering = newTableFiltering
+      state.userStates[state.token ? state.token.id : null].tableFiltering = newTableFiltering
     },
     ON_ENTITY_TYPE_STATS_CHANGED_MUTATION: function (state, newEntityTypeStats) {
-      state.entityTypeStats = newEntityTypeStats
+      state.userStates[state.token ? state.token.id : null].entityTypeStats = newEntityTypeStats
     },
     ON_ASYNC_JOB_COUNT_CHANGED_MUTATION: function (state, newAsyncJobCount) {
-      state.asyncJobCount = newAsyncJobCount
+      state.userStates[state.token ? state.token.id : null].asyncJobCount = newAsyncJobCount
     },
     ON_SIDEBAR_STATE_CHANGED_MUTATION: function (state, newSidebarState) {
-      state.sidebarState = newSidebarState
+      state.userStates[state.token ? state.token.id : null].sidebarState = newSidebarState
     },
     ON_ASYNC_JOB_UUID_MUTATION: function (state, newAsyncJobUuids) {
       if (!state.token) {
-        state.asyncJobUuids = newAsyncJobUuids
+        state.userStates[state.token ? state.token.id : null].asyncJobUuids = newAsyncJobUuids
       }
     },
     ON_ASYNC_JOB_UUID_ADD_MUTATION: function (state, uuid) {
       if (!state.token) {
-        if (state.asyncJobUuids.indexOf(uuid) === -1) {
-          state.asyncJobUuids.push(uuid)
+        if (state.userStates[state.token ? state.token.id : null].asyncJobUuids.indexOf(uuid) === -1) {
+          state.userStates[state.token ? state.token.id : null].asyncJobUuids.push(uuid)
         }
       }
     },
     ON_ASYNC_JOB_UUID_REMOVE_MUTATION: function (state, uuid) {
       if (!state.token) {
-        var index = state.asyncJobUuids.indexOf(uuid)
+        var index = state.userStates[state.token ? state.token.id : null].asyncJobUuids.indexOf(uuid)
 
         if (index !== -1) {
-          state.asyncJobUuids.splice(index, 1)
+          state.userStates[state.token ? state.token.id : null].asyncJobUuids.splice(index, 1)
         }
       }
     },
     ON_COOKIES_ACCEPTED_MUTATION: function (state, newCookiesAccepted) {
-      state.cookiesAccepted = newCookiesAccepted
+      state.userStates[state.token ? state.token.id : null].cookiesAccepted = newCookiesAccepted
     }
   },
   actions: {
@@ -239,21 +251,44 @@ const store = new Vuex.Store({
   plugins: [
     createPersistedState({
       key: name,
+      storage: {
+        getItem: key => {
+          var result = JSON.parse(localStorage.getItem(key))
+
+          if (result && result.userStates) {
+            Object.keys(result.userStates).forEach(us => {
+              result.userStates[us] = Object.assign(JSON.parse(JSON.stringify(userState)), result.userStates[us])
+            })
+          }
+
+          return JSON.stringify(result)
+        },
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: key => localStorage.removeItem(key)
+      },
       reducer: (state, paths) => {
-        if (state.serverSettings && !state.serverSettings.showGdprNotification && state.cookiesAccepted === true) {
-          return state
-        } else {
-          var result = {}
+        var result = JSON.parse(JSON.stringify(state))
 
-          essentialKeys.forEach(k => {
-            result[k] = state[k]
+        if (result.userStates && result.serverSettings && result.serverSettings.showGdprNotification) {
+          Object.keys(result.userStates).forEach(u => {
+            var currentUserState = result.userStates[u]
+
+            if (currentUserState.cookiesAccepted !== true) {
+              Object.keys(currentUserState).forEach(k => {
+                if (essentialKeys.indexOf(k) === -1) {
+                  delete currentUserState[k]
+                }
+              })
+            }
           })
-
-          return result
         }
+
+        return result
       }
     })
   ]
-})
+}
+
+const store = new Vuex.Store(storeState)
 
 export default store
