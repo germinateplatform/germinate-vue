@@ -1,15 +1,14 @@
 <template>
   <div>
-    <h2 class="mt-3">Advanced download</h2>
+    <h2 class="mt-3">{{ $t('pageGermplasmDownloadTitle') }}</h2>
     <b-row>
       <b-col lg=6>
         <b-card class="h-100">
           <b-card-title>
-            <i class="mdi mdi-passport mdi-18px text-primary" /> Passport data
+            <i class="mdi mdi-passport mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabGermplasmTitle') }}
           </b-card-title>
-          <b-card-sub-title class="mb-2">Export passport data for germplasm selections</b-card-sub-title>
-
-          <b-card-text>Please select which part of the data to export. This can either be the whole collection, your marked items or a group of germplasm.</b-card-text>
+          <b-card-sub-title class="mb-2">{{ $t('pageGermplasmDownloadTabGermplasmSubtitle') }}</b-card-sub-title>
+          <b-card-text>{{ $t('pageGermplasmDownloadTabGermplasmText') }}</b-card-text>
           <b-form-radio-group
             class="d-block mb-3"
             v-model="passportSelection"
@@ -22,21 +21,21 @@
             :options="groups"
             v-if="passportSelection === 'group'" />
 
-          <b-form-checkbox class="mb-3" v-model="passportIncludeAttributes" switch>Include attributes?</b-form-checkbox>
+          <b-form-checkbox class="mb-3" v-model="passportIncludeAttributes" switch>{{ $t('pageGermplasmDownloadTabIncludeAttributes') }}</b-form-checkbox>
 
           <template v-slot:footer>
-            <b-button variant="primary" @click="downloadGermplasm"><i class="mdi mdi-18px fix-alignment mdi-download"/> Download</b-button>
+            <b-button variant="primary" @click="downloadGermplasm"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
           </template>
         </b-card>
       </b-col>
       <b-col lg=6>
         <b-card class="h-100">
           <b-card-title>
-            <i class="mdi mdi-sitemap mdi-18px text-primary" /> Pedigree data
+            <i class="mdi mdi-sitemap mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabPedigreeTitle') }}
           </b-card-title>
-          <b-card-sub-title class="mb-2">Export pedigree data for germplasm selections</b-card-sub-title>
+          <b-card-sub-title class="mb-2">{{ $t('pageGermplasmDownloadTabPedigreeSubtitle') }}</b-card-sub-title>
 
-          <b-card-text>Please select which part of the data to export. This can either be the whole collection, your marked items or a group of germplasm.</b-card-text>
+          <b-card-text>{{ $t('pageGermplasmDownloadTabPedigreeText') }}</b-card-text>
           <b-form-radio-group
             class="d-block mb-3"
             v-model="pedigreeSelection"
@@ -50,7 +49,7 @@
             v-if="pedigreeSelection === 'group'" />
 
           <template v-slot:footer>
-            <b-button variant="primary" @click="downloadPedigree"><i class="mdi mdi-18px fix-alignment mdi-download"/> Download</b-button>
+            <b-button variant="primary" @click="downloadPedigree"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
           </template>
         </b-card>
       </b-col>
@@ -79,19 +78,22 @@ export default {
         this.updateSelectionOptions()
       },
       deep: true
+    },
+    locale: function (newValue, oldValue) {
+      this.updateSelectionOptions()
     }
   },
   methods: {
     updateSelectionOptions: function () {
       this.selectionOptions = [{
-        text: 'All germplasm',
+        text: this.$t('pageGermplasmDownloadSelectAll'),
         value: 'all'
       }, {
-        text: `Marked items (${this.markedIds.germplasm.length})`,
+        text: this.$t('pageGermplasmDownloadSelectMarked', { count: this.markedIds.germplasm.length }),
         value: 'marked',
         disabled: this.markedIds.germplasm.length < 1
       }, {
-        text: 'Group',
+        text: this.$t('pageGermplasmDownloadSelectGroup'),
         value: 'group',
         disabled: !this.groups || this.groups.length < 1
       }]

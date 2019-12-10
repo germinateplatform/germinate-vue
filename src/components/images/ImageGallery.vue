@@ -24,7 +24,7 @@ export default {
   data: function () {
     return {
       currentPage: 1,
-      imagesPerPage: 4,
+      imagesPerPage: 8,
       images: [],
       imageCount: -1
     }
