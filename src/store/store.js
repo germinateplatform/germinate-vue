@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
+import VueAnalytics from 'vue-analytics'
 
 Vue.use(Vuex)
 
@@ -12,7 +13,7 @@ if (!name) {
   name = 'germinate-' + window.location.pathname
 }
 
-const essentialKeys = ['token', 'locale', 'baseUrl', 'originalTarget', 'serverSettings', 'helpKey', 'asyncJobUuids', 'asyncJobCount', 'tableFiltering', 'markedIds', 'cookiesAccepted']
+const essentialKeys = ['token', 'locale', 'baseUrl', 'serverSettings', 'asyncJobUuids', 'asyncJobCount', 'markedIds', 'cookiesAccepted']
 const userState = {
   locale: 'en_GB',
   tablePerPage: 10,
@@ -103,6 +104,19 @@ const storeState = {
     },
     ON_SETTINGS_CHANGED_MUTATION: function (state, newServerSettings) {
       state.serverSettings = newServerSettings
+
+      if (newServerSettings && newServerSettings.googleAnalyticsKey) {
+        Vue.use(VueAnalytics, {
+          id: newServerSettings.googleAnalyticsKey,
+          disabled: () => {
+            if (state.serverSettings.cookiesAccepted != null) {
+              return !state.serverSettings.cookiesAccepted
+            } else {
+              return false
+            }
+          }
+        })
+      }
     },
     ON_LOCALE_CHANGED_MUTATION: function (state, newLocale) {
       state.userStates[state.token ? state.token.id : null].locale = newLocale
@@ -253,9 +267,12 @@ const storeState = {
       key: name,
       storage: {
         getItem: key => {
+          // Get the value and parse it
           var result = JSON.parse(localStorage.getItem(key))
 
+          // If it exists and there is user state data
           if (result && result.userStates) {
+            // Then for each user state, set the defaults for those fields that aren't stored (because of declined cookies (GDPR))
             Object.keys(result.userStates).forEach(us => {
               result.userStates[us] = Object.assign(JSON.parse(JSON.stringify(userState)), result.userStates[us])
             })
@@ -269,10 +286,13 @@ const storeState = {
       reducer: (state, paths) => {
         var result = JSON.parse(JSON.stringify(state))
 
+        // Check if GDPR settings are active
         if (result.userStates && result.serverSettings && result.serverSettings.showGdprNotification) {
+          // If so, for each user
           Object.keys(result.userStates).forEach(u => {
             var currentUserState = result.userStates[u]
 
+            // If they haven't accepted cookies, remove the keys that aren't flagged as "essential cookies"
             if (currentUserState.cookiesAccepted !== true) {
               Object.keys(currentUserState).forEach(k => {
                 if (essentialKeys.indexOf(k) === -1) {

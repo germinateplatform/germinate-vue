@@ -439,6 +439,7 @@
   "pageUserPermissionsGroupMembersNewTitle": "Search for users",
   "pageUserPermissionsGroupMembersNewText": "These are all the currently defined users.",
   "paginationCount": "Showing {from} to {to} of {count} records|{count} records|One record",
+  "paginationCountCustom": "No records|One record|Showing {from} to {to} of {count} records",
   "paginationFirst": "First",
   "paginationLast": "Last",
   "paginationFilter": "Filter",

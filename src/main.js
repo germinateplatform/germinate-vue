@@ -43,8 +43,8 @@ var tableOptions = {
 
 Vue.mixin(mixin)
 Vue.mixin(api)
-Vue.use(ClientTable, tableOptions, false, 'bootstrap4', 'footerPagination')
-Vue.use(ServerTable, tableOptions, false, 'bootstrap4', 'footerPagination')
+Vue.use(ClientTable, tableOptions, false, 'bootstrap4', 'default')
+Vue.use(ServerTable, tableOptions, false, 'bootstrap4', 'default')
 Vue.use(BootstrapVue)
 Vue.use(Autocomplete)
 Vue.component('l-map', LMap)

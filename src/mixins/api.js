@@ -176,9 +176,11 @@ export default {
       return this.authAjax({ url: 'dataset/export/genotype/summary', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGenotypeDatasetExport: function (queryData, onSuccess, onError) {
+      this.$ga.event('export', 'async', 'genotype', queryData.datasetIds.join('-'))
       return this.authAjax({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostAlleleFrequencyDatasetExport: function (queryData, onSuccess, onError) {
+      this.$ga.event('export', 'async', 'allelefreq', queryData.datasetIds.join('-'))
       return this.authAjax({ url: 'dataset/export/allelefreq', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetTraits: function (datasetIds, onSuccess, onError) {

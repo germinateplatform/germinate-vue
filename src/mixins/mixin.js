@@ -297,6 +297,8 @@ export default {
       document.body.appendChild(downloadLink)
       downloadLink.click()
       document.body.removeChild(downloadLink)
+
+      this.$ga.event('download', 'data', object.filename + '.' + extension)
     },
     downloadSvgsFromContainer: function (container, isPlotly, filename) {
       // get svg source.
@@ -323,6 +325,8 @@ export default {
       document.body.appendChild(downloadLink)
       downloadLink.click()
       document.body.removeChild(downloadLink)
+
+      this.$ga.event('download', 'svg', filename + '.svg')
     },
     toUrlString: function (params) {
       return Object.keys(params).filter(function (key) {
@@ -410,6 +414,8 @@ export default {
             break
         }
       }
+
+      this.$ga.exception(error.status + ' ' + message)
 
       this.$bvToast.toast(message, {
         title: title,

@@ -437,6 +437,7 @@
   "pageUserPermissionsGroupMembersNewTitle": "Suche nach Benutzern",
   "pageUserPermissionsGroupMembersNewText": "Dies sind alle aktuell definierten Benutzer.",
   "paginationCount": "Zeige {from} bis {to} von {count} Einträgen|{count} Einträge|Ein Eintrag",
+  "paginationCountCustom": "Kein Eintrag|Ein Eintrag|Zeige {from} bis {to} von {count} Einträgen",
   "paginationFirst": "Erste",
   "paginationLast": "Letzte",
   "paginationFilter": "Filter",

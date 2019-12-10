@@ -18,14 +18,18 @@
                       v-on:on-column-toggle="onToggleColumn" />
 
           <div class="flex-grow-1">
-            <div class="d-flex align-items-end mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
-              <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
+            <div class="d-flex flex-row justify-content-between">
+              <div class="d-flex align-items-end mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
+                <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
+              </div>
+              <div v-else />
+              <div v-if="currentRequestData !== null && prevCount >= 0" class="d-flex mx-2 mb-1">{{ $tc('paginationCountCustom', prevCount, { from: $options.filters.toThousandSeparators(currentRequestData.page * currentRequestData.limit + 1), to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, prevCount)), count: $options.filters.toThousandSeparators(prevCount) }) }}</div>
             </div>
             <b-progress :value="100" height="6px" variant="primary" v-b-tooltip.hover :title="$t('tooltipTableLoadingIndicator')" striped animated v-if="isLoading" class="table-loading-indicator" />
             <div v-else style="height: 6px;" />
           </div>
 
-          <b-button-group class="float-right per-page-dropdown" v-if="!showAllItems">
+          <b-button-group class="per-page-dropdown" v-if="!showAllItems">
             <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')">
               <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
               <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
@@ -208,6 +212,7 @@ export default {
       skin: 'table table-striped table-hover',
       texts: this.getPaginationTexts(),
       filterByColumn: true,
+      summary: true,
       perPage: this.showAllItems ? 2147483647 : 10,
       perPageValues: [],
       pagination: {
