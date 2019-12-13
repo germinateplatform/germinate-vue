@@ -1,19 +1,23 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               itemType="germplasm"
-               ref="compoundDataTable"
-               v-on="$listeners">
-      <router-link slot="germplasmId" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmId }}</router-link>
-      <router-link slot="germplasmName" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmName }}</router-link>
-      <router-link slot="germplasmGid" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmGid }}</router-link>
-      <span slot="entityType" slot-scope="props" class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityType].color()};`" /> {{ entityTypes[props.row.entityType].text() }}</span>
-      <!-- Formatted date -->
-      <span slot="recordingDate" slot-scope="props" v-if="props.row.recordingDate">{{ props.row.recordingDate | toDate }}</span>
-    </BaseTable>
-  </div>
+  <BaseTable v-bind="$props"
+            :columns="columns"
+            :options="options"
+            itemType="germplasm"
+            ref="compoundDataTable"
+            v-on="$listeners">
+    <template v-slot:cell(germplasmId)="data">
+      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmId }}</router-link>
+    </template>
+    <template v-slot:cell(germplasmName)="data">
+      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmName }}</router-link>
+    </template>
+    <template v-slot:cell(germplasmGid)="data">
+      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmGid }}</router-link>
+    </template>
+    <template v-slot:cell(entityType)="data">
+      <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityType].color()};`" /> {{ entityTypes[data.item.entityType].text() }}</span>
+    </template>
+  </BaseTable>
 </template>
 
 <script>
@@ -26,69 +30,98 @@ export default {
     ...defaultProps.FULL
   },
   data: function () {
-    const columns = [
-      {
-        name: 'germplasmId',
-        type: Number
-      }, {
-        name: 'germplasmGid',
-        type: String
-      }, {
-        name: 'germplasmName',
-        type: String
-      }, {
-        name: 'entityType',
-        type: 'entityType'
-      }, {
-        name: 'datasetName',
-        type: String
-      }, {
-        name: 'compoundId',
-        type: Number
-      }, {
-        name: 'compoundName',
-        type: String
-      }, {
-        name: 'unitName',
-        type: String
-      }, {
-        name: 'recordingDate',
-        type: Date
-      }, {
-        name: 'compoundValue',
-        type: String
-      }, {
-        name: 'marked',
-        type: null
-      }
-    ]
     return {
       options: {
         idColumn: 'germplasmId',
-        tableName: 'compoundData',
-        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'entityType', 'datasetName', 'compoundId', 'compoundName', 'unitName', 'recordingDate', 'compoundValue'],
-        filterable: [],
-        headings: {
-          germplasmId: () => this.$t('tableColumnGermplasmId'),
-          germplasmGid: () => this.$t('tableColumnGermplasmGeneralIdentifier'),
-          germplasmName: () => this.$t('tableColumnGermplasmName'),
-          entityType: () => this.$t('tableColumnEntityType'),
-          datasetName: () => this.$t('tableColumnDatasetName'),
-          locationName: () => this.$t('tableColumnLocationName'),
-          countryName: () => this.$t('tableColumnCountryName'),
-          compoundId: () => this.$t('tableColumnCompoundId'),
-          compoundName: () => this.$t('tableColumnCompoundName'),
-          unitName: () => this.$t('tableColumnCompoundUnitName'),
-          recordingDate: () => this.$t('tableColumnCompoundDataRecordingDate'),
-          compoundValue: () => this.$t('tableColumnCompoundDataCompoundValue')
-        },
-        columnsClasses: {
-          germplasmId: 'text-right',
-          compoundId: 'text-right',
-          marked: 'text-right'
+        tableName: 'compoundData'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      var result = [
+        {
+          key: 'germplasmId',
+          type: Number,
+          class: `text-right${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
+          sortable: true,
+          label: this.$t('tableColumnGermplasmId')
+        }, {
+          key: 'germplasmGid',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmGid')}`,
+          sortable: true,
+          label: this.$t('tableColumnGermplasmGeneralIdentifier')
+        }, {
+          key: 'germplasmName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmName')}`,
+          sortable: true,
+          label: this.$t('tableColumnGermplasmName')
+        }, {
+          key: 'entityType',
+          type: 'entityTyp',
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityType')}`,
+          sortable: true,
+          label: this.$t('tableColumnEntityType')
+        }, {
+          key: 'datasetName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
+          sortable: true,
+          label: this.$t('tableColumnDatasetName')
+        }, {
+          key: 'compoundId',
+          type: Number,
+          class: `text-right${this.isTableColumnHidden(this.options.tableName, 'compoundId')}`,
+          sortable: true,
+          label: this.$t('tableColumnCompoundId')
+        }, {
+          key: 'compoundName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'compoundName')}`,
+          sortable: true,
+          label: this.$t('tableColumnCompoundName')
+        }, {
+          key: 'unitName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,
+          sortable: true,
+          label: this.$t('tableColumnCompoundUnitName')
+        }, {
+          key: 'recordingDate',
+          type: Date,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'recordingDate')}`,
+          sortable: true,
+          label: this.$t('tableColumnCompoundDataRecordingDate'),
+          formatter: this.$options.filters.toDate
+        }, {
+          key: 'compoundValue',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'compoundValue')}`,
+          sortable: true,
+          label: this.$t('tableColumnCompoundDataCompoundValue'),
+          formatter: value => value !== null ? value.toFixed(2) : null
+        }, {
+          key: 'marked',
+          type: null,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          sortable: false,
+          label: ''
         }
-      },
-      columns: columns
+      ]
+
+      if (this.selectable === true) {
+        result.unshift({
+          key: 'selected',
+          type: undefined,
+          sortable: false,
+          class: 'bg-info',
+          label: ''
+        })
+      }
+
+      return result
     }
   },
   components: {
@@ -96,11 +129,12 @@ export default {
   },
   methods: {
     refresh: function () {
-      this.$refs.compoundDataTable.refresh()
+      this.$refs.climateDataTable.refresh()
     }
   }
 }
 </script>
 
 <style>
+
 </style>

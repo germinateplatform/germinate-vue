@@ -22,6 +22,7 @@
 
 <script>
 import SpecificPassport from '@/components/germplasm/SpecificPassport'
+import germplasmApi from '@/mixins/api/germplasm.js'
 
 export default {
   data: function () {
@@ -44,6 +45,7 @@ export default {
   components: {
     SpecificPassport
   },
+  mixins: [ germplasmApi ],
   methods: {
     updateChildMap: function () {
       this.$nextTick(() => this.$refs.child.invalidateSize())

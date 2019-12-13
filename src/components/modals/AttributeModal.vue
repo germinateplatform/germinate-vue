@@ -64,6 +64,7 @@
 
 <script>
 import DatasetAttributeTable from '@/components/tables/DatasetAttributeTable'
+import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   props: {
@@ -80,6 +81,7 @@ export default {
   components: {
     DatasetAttributeTable
   },
+  mixins: [ datasetApi ],
   methods: {
     getHref: function () {
       return 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.dataset.dublinCore))

@@ -12,6 +12,7 @@
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
 import { EventBus } from '@/plugins/event-bus.js'
+import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   data: function () {
@@ -23,6 +24,7 @@ export default {
   components: {
     DatasetTable
   },
+  mixins: [ datasetApi ],
   methods: {
     getData: function (query, callback) {
       return this.apiPostDatasetTable(query, callback)

@@ -1,66 +1,79 @@
 <template>
   <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               ref="datasetTable"
-               v-on="$listeners">
-      <div slot="h__dataObjectCount">
-        <span>{{ options.headings.dataObjectCount() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipDatasetDataObjects')"/>
-      </div>
-      <div slot="h__dataPointCount">
-        <span>{{ options.headings.dataPointCount() }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipDatasetDataPoints')"/>
-      </div>
-
-      <template slot="datasetId" slot-scope="props">
-        <a href="#" @click.prevent="clickHandler(props.row)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ props.row.datasetId }}</a>
-        <router-link :to="{ name: experimentTypes[props.row.experimentType].pageName, params: { datasetIds: props.row.datasetId.toString() } }" v-else-if="!props.row.isExternal && isPageAvailable(props.row.experimentType) && (!props.row.licenseName || isAccepted(props.row))">{{ props.row.datasetId }}</router-link>
-        <span v-else>{{ props.row.datasetId }}</span>
+    <BaseTable v-bind="$props"
+              :columns="columns"
+              :options="options"
+              ref="datasetTable"
+              v-on="$listeners">
+      <template v-slot:head(dataObjectCount)="data">
+        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipDatasetDataObjects')"/>
       </template>
-      <template slot="datasetName" slot-scope="props">
-        <a href="#" @click.prevent="clickHandler(props.row)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ props.row.datasetName }}</a>
-        <span v-else-if="props.row.hyperlink && props.row.isExternal"><a target="_blank" :href="props.row.hyperlink">{{ props.row.datasetName }} </a><i class="mdi mdi-open-in-new" /></span>
-        <router-link :to="{ name: experimentTypes[props.row.experimentType].pageName, params: { datasetIds: props.row.datasetId.toString() } }" v-else-if="!props.row.isExternal && isPageAvailable(props.row.experimentType) && (!props.row.licenseName || isAccepted(props.row))">{{ props.row.datasetName }}</router-link>
-        <span v-else>{{ props.row.datasetName }}</span>
+      <template v-slot:head(dataPointCount)="data">
+        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipDatasetDataPoints')"/>
       </template>
 
-      <span slot="experimentName" slot-scope="props"> {{ props.row.experimentName }}
-        <router-link :to="{ name: 'experiment-details', params: { experimentId: props.row.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
+      <template v-slot:cell(datasetId)="data">
+        <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetId }}</a>
+        <router-link :to="{ name: experimentTypes[data.item.experimentType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.experimentType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetId }}</router-link>
+        <span v-else>{{ data.item.datasetId }}</span>
+      </template>
+      <template v-slot:cell(datasetName)="data">
+        <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetName }}</a>
+        <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" :href="data.item.hyperlink">{{ data.item.datasetName }} </a><i class="mdi mdi-open-in-new" /></span>
+        <router-link :to="{ name: experimentTypes[data.item.experimentType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.experimentType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetName }}</router-link>
+        <span v-else>{{ data.item.datasetName }}</span>
+      </template>
+      <template v-slot:cell(experimentName)="data">
+        {{ data.item.experimentName }}
+        <router-link :to="{ name: 'experiment-details', params: { experimentId: data.item.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
           <i class="mdi mdi-18px fix-alignment mdi-information-outline" />
         </router-link>
-      </span>
-      <!-- Formatted date -->
-      <span slot="startDate" slot-scope="props" v-if="props.row.startDate">{{ props.row.startDate | toDate }}</span>
-      <span slot="endDate" slot-scope="props" v-if="props.row.endDate">{{ props.row.endDate | toDate }}</span>
+      </template>
 
       <!-- Country flags -->
-      <span slot="countryName" slot-scope="props" class="table-country text-nowrap" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode.toLowerCase()" v-if="props.row.countryCode"/> <span> {{ props.row.countryCode }}</span></span>
+      <template v-slot:cell(countryName)="data">
+        <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span></span>
+      </template>
 
-      <span slot="experimentType" slot-scope="props"><i :class="`mdi mdi-18px ${experimentTypes[props.row.experimentType].icon} fix-alignment`" :style="`color: ${experimentTypes[props.row.experimentType].color()};`" /> {{ experimentTypes[props.row.experimentType].text() }}</span>
-      <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount !== undefined && props.row.dataObjectCount.value">{{ props.row.dataObjectCount.value | toThousandSeparators }}</span>
-      <span slot="dataPointCount" slot-scope="props" v-if="props.row.dataPointCount !== undefined && props.row.dataPointCount.value">{{ getDataPointCount(props.row) }}</span>
+      <template v-slot:cell(experimentType)="data">
+        <span><i :class="`mdi mdi-18px ${experimentTypes[data.item.experimentType].icon} fix-alignment`" :style="`color: ${experimentTypes[data.item.experimentType].color()};`" /> {{ experimentTypes[data.item.experimentType].text() }}</span>
+      </template>
+      <template v-slot:cell(dataPointCount)="data">
+        <span v-if="data.item.dataPointCount !== undefined && data.item.dataPointCount.value">{{ getDataPointCount(data.item) }}</span>
+      </template>
 
-      <div slot="licenseName" slot-scope="props" v-if="props.row.licenseName">
-        <a href="#" @click.prevent="onLicenseClicked(props.row)" class="text-nowrap">
-          <span>{{ props.row.licenseName }} </span>
+      <template v-slot:cell(licenseName)="data">
+        <div v-if="data.item.licenseName">
+          <a href="#" @click.prevent="onLicenseClicked(data.item)" class="text-nowrap">
+            <span>{{ data.item.licenseName }} </span>
+          </a>
+          <i class="mdi mdi-18px mdi-check fix-alignment text-success" v-if="isAccepted(data.item)" />
+          <i class="mdi mdi-18px mdi-new-box fix-alignment text-danger" v-else />
+        </div>
+      </template>
+      <template v-slot:cell(datasetState)="data">
+        <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" />
+      </template>
+      <template v-slot:cell(isExternal)="data">
+        <i :class="`mdi mdi-18px ${getInternalExternalClass(data.item)}`" v-if="data.item.isExternal !== undefined" v-b-tooltip.hover :title="data.item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
+      </template>
+
+      <template v-slot:cell(collaborators)="data">
+        <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showCollaborators(data.item)">
+          <i class="mdi mdi-18px mdi-account-multiple" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')" />
         </a>
-        <i class="mdi mdi-18px mdi-check fix-alignment text-success" v-if="isAccepted(props.row)" />
-        <i class="mdi mdi-18px mdi-new-box fix-alignment text-danger" v-else />
-      </div>
-      <i slot="datasetState" slot-scope="props" :class="`mdi mdi-18px ${datasetStates[props.row.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[props.row.datasetState].text()" />
-      <i slot="isExternal" slot-scope="props" :class="`mdi mdi-18px ${getInternalExternalClass(props.row)}`" v-if="props.row.isExternal !== undefined" v-b-tooltip.hover :title="props.row.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
-
-      <a href="#" class="text-decoration-none" slot="collaborators" slot-scope="props" v-if="props.row.collaborators !== 0" @click.prevent="showCollaborators(props.row)">
-        <i class="mdi mdi-18px mdi-account-multiple" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')" />
-      </a>
-      <a href="#" class="text-decoration-none" slot="attributes" slot-scope="props" v-if="(props.row.attributes !== 0 || props.row.dublinCore) && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="showAttributes(props.row)">
-        <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
-      </a>
-      <a href="#" class="text-decoration-none" slot="download" slot-scope="props" v-if="!props.row.isExternal && (!props.row.licenseName || isAccepted(props.row))" @click.prevent="downloadDataset(props.row)">
-        <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
-      </a>
+      </template>
+      <template v-slot:cell(attributes)="data">
+        <a href="#" class="text-decoration-none" v-if="(data.item.attributes !== 0 || data.item.dublinCore) && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="showAttributes(data.item)">
+          <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
+        </a>
+      </template>
+      <template v-slot:cell(download)="data">
+        <a href="#" class="text-decoration-none" v-if="!data.item.isExternal && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="downloadDataset(data.item)">
+          <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
+        </a>
+      </template>
     </BaseTable>
-
     <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
     <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
     <AttributeModal :dataset="dataset" v-if="dataset && (dataset.dublinCore !== undefined || dataset.attributes !== 0)" ref="attributeModal" />
@@ -75,9 +88,11 @@ import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props.js'
 import { EventBus } from '@/plugins/event-bus.js'
 import { mapFilters } from '@/plugins/map-filters.js'
+import datasetApi from '@/mixins/api/dataset.js'
+import genotypeApi from '@/mixins/api/genotype.js'
 
 export default {
-  name: 'DatasetTable',
+  name: 'LocationTable',
   props: {
     ...defaultProps.FULL,
     selectable: {
@@ -90,123 +105,12 @@ export default {
     }
   },
   data: function () {
-    var columns = [
-      {
-        name: 'datasetId',
-        type: Number
-      }, {
-        name: 'datasetName',
-        type: String
-      }, {
-        name: 'datasetDescription',
-        type: String
-      }, {
-        name: 'experimentId',
-        type: Number
-      }, {
-        name: 'experimentName',
-        type: String
-      }, {
-        name: 'experimentType',
-        type: String
-      }, {
-        name: 'datatype',
-        type: String
-      }, {
-        name: 'location',
-        type: String
-      }, {
-        name: 'countryName',
-        type: String
-      }, {
-        name: 'licenseName',
-        type: String
-      }, {
-        name: 'contact',
-        type: String
-      }, {
-        name: 'startDate',
-        type: Date
-      }, {
-        name: 'endDate',
-        type: Date
-      }, {
-        name: 'dataObjectCount',
-        type: Number
-      }, {
-        name: 'dataPointCount',
-        type: Number
-      }, {
-        name: 'isExternal',
-        type: Boolean
-      }, {
-        name: 'datasetState',
-        type: undefined
-      }, {
-        name: 'collaborators',
-        type: undefined
-      }, {
-        name: 'attributes',
-        type: undefined
-      }, {
-        name: 'download',
-        type: undefined
-      }
-    ]
-
-    if (this.selectable === true) {
-      columns.unshift({
-        name: 'selected',
-        type: undefined
-      })
-    }
-
     return {
       options: {
         idColumn: 'datasetId',
         tableName: 'datasets',
-        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'experimentId', 'experimentName', 'experimentType', 'datatype', 'location', 'countryName', 'licenseName', 'contact', 'startDate', 'endDate', 'dataObjectCount', 'dataPointCount', 'isExternal'],
-        filterable: [],
-        headings: {
-          datasetId: () => this.$t('tableColumnDatasetId'),
-          datasetName: () => this.$t('tableColumnDatasetName'),
-          datasetDescription: () => this.$t('tableColumnDatasetDescription'),
-          experimentId: () => this.$t('tableColumnExperimentId'),
-          experimentName: () => this.$t('tableColumnExperimentName'),
-          experimentType: () => this.$t('tableColumnDatasetExperimentType'),
-          datatype: () => this.$t('tableColumnDatasetDataType'),
-          location: () => this.$t('tableColumnDatasetLocation'),
-          countryName: () => this.$t('tableColumnDatasetCountryName'),
-          licenseName: () => this.$t('tableColumnDatasetLicenseName'),
-          contact: () => this.$t('tableColumnDatasetContact'),
-          startDate: () => this.$t('tableColumnDatasetStartDate'),
-          endDate: () => this.$t('tableColumnDatasetEndDate'),
-          dataObjectCount: () => this.$t('tableColumnDatasetObjectCount'),
-          dataPointCount: () => this.$t('tableColumnDatasetPointCount'),
-          datasetState: '',
-          collaborators: '',
-          attributes: '',
-          download: '',
-          isExternal: () => this.$t('tableColumnDatasetExternal'),
-          selected: ''
-        },
-        orderBy: {
-          column: 'datasetId'
-        },
-        columnsClasses: {
-          datasetId: 'text-right',
-          experimentId: 'text-right',
-          selected: 'bg-info',
-          dataObjectCount: 'text-right',
-          dataPointCount: 'text-right',
-          datasetState: 'px-1',
-          collaborators: 'px-1',
-          download: 'px-1',
-          isExternal: 'px-1'
-        },
-        rowClassCallback: row => this.getRowClass(row)
+        rowVariant: this.getRowVariant
       },
-      columns: columns,
       dataset: null,
       license: null,
       datasetStates: {
@@ -225,14 +129,182 @@ export default {
       }
     }
   },
+  computed: {
+    columns: function () {
+      var result = [
+        {
+          key: 'datasetId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetId')}`,
+          label: this.$t('tableColumnDatasetId')
+        }, {
+          key: 'datasetName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
+          label: this.$t('tableColumnDatasetName')
+        }, {
+          key: 'datasetDescription',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
+          label: this.$t('tableColumnDatasetDescription')
+        }, {
+          key: 'experimentId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'experimentId')}`,
+          label: this.$t('tableColumnExperimentId')
+        }, {
+          key: 'experimentName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'experimentName')}`,
+          label: this.$t('tableColumnExperimentName')
+        }, {
+          key: 'experimentType',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'experimentType')}`,
+          label: this.$t('tableColumnDatasetExperimentType')
+        }, {
+          key: 'datatype',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datatype')}`,
+          label: this.$t('tableColumnDatasetDataType')
+        }, {
+          key: 'location',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'location')}`,
+          label: this.$t('tableColumnDatasetLocation')
+        }, {
+          key: 'countryName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
+          label: this.$t('tableColumnDatasetCountryName')
+        }, {
+          key: 'licenseName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'licenseName')}`,
+          label: this.$t('tableColumnDatasetLicenseName')
+        }, {
+          key: 'contact',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'contact')}`,
+          label: this.$t('tableColumnDatasetContact')
+        }, {
+          key: 'startDate',
+          type: Date,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'startDate')}`,
+          label: this.$t('tableColumnDatasetStartDate'),
+          formatter: this.$options.filters.toDate
+        }, {
+          key: 'endDate',
+          type: Date,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'endDate')}`,
+          label: this.$t('tableColumnDatasetEndDate'),
+          formatter: this.$options.filters.toDate
+        }, {
+          key: 'dataObjectCount',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataObjectCount')}`,
+          label: this.$t('tableColumnDatasetObjectCount'),
+          formatter: value => (value && (value.value !== undefined)) ? this.$options.filters.toThousandSeparators(value.value) : null
+        }, {
+          key: 'dataPointCount',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataPointCount')}`,
+          label: this.$t('tableColumnDatasetPointCount')
+        }, {
+          key: 'isExternal',
+          type: Boolean,
+          sortable: false,
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'isExternal')}`,
+          label: this.$t('tableColumnDatasetExternal')
+        }, {
+          key: 'datasetState',
+          type: undefined,
+          sortable: false,
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'datasetState')}`,
+          label: ''
+        }, {
+          key: 'collaborators',
+          type: undefined,
+          sortable: false,
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'collaborators')}`,
+          label: ''
+        }, {
+          key: 'attributes',
+          type: undefined,
+          sortable: false,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'attributes')}`,
+          label: ''
+        }, {
+          key: 'download',
+          type: undefined,
+          sortable: false,
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'download')}`,
+          label: ''
+        }
+      ]
+
+      if (this.selectable === true) {
+        result.unshift({
+          key: 'selected',
+          type: undefined,
+          sortable: false,
+          class: 'bg-info',
+          label: ''
+        })
+      }
+
+      return result
+    }
+  },
   components: {
     AttributeModal,
     BaseTable,
     CollaboratorModal,
     LicenseModal
   },
+  mixins: [ datasetApi, genotypeApi ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
+    getRowVariant: function (dataset) {
+      if (!dataset.licenseName) {
+        return null
+      } else {
+        return this.isAccepted(dataset) ? null : 'danger'
+      }
+    },
+    isAccepted: function (dataset) {
+      if (this.token) {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
+      } else {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
+      }
+    },
+    getDataPointCount: function (dataset) {
+      var result = ''
+      if (dataset.experimentType === 'genotype' || dataset.experimentType === 'allelefreq') {
+        result = '≤'
+      }
+      result += this.toThousandSeparators(dataset.dataPointCount.value)
+      return result
+    },
+    getInternalExternalClass: function (dataset) {
+      return dataset.isExternal ? 'mdi-link-box-variant-outline' : 'mdi-file-document-box-outline'
+    },
     downloadDataset: function (dataset) {
       switch (dataset.experimentType) {
         case 'trials':
@@ -300,13 +372,6 @@ export default {
         EventBus.$emit('show-loading', false)
       })
     },
-    isAccepted: function (dataset) {
-      if (this.token) {
-        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
-      } else {
-        return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
-      }
-    },
     showCollaborators: function (dataset) {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.collaboratorModal.show())
@@ -314,24 +379,6 @@ export default {
     showAttributes: function (dataset) {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.attributeModal.show())
-    },
-    getRowClass: function (dataset) {
-      if (!dataset.licenseName) {
-        return ''
-      } else {
-        return this.isAccepted(dataset) ? '' : 'table-danger'
-      }
-    },
-    getInternalExternalClass: function (dataset) {
-      return dataset.isExternal ? 'mdi-link-box-variant-outline' : 'mdi-file-document-box-outline'
-    },
-    getDataPointCount: function (dataset) {
-      var result = ''
-      if (dataset.experimentType === 'genotype' || dataset.experimentType === 'allelefreq') {
-        result = '≤'
-      }
-      result += this.toThousandSeparators(dataset.dataPointCount.value)
-      return result
     },
     getSelected: function () {
       return this.$refs.datasetTable.getSelected()

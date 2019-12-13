@@ -7,6 +7,7 @@
 
 <script>
 import GermplasmTable from '@/components/tables/GermplasmTable'
+import germplasmApi from '@/mixins/api/germplasm.js'
 
 export default {
   data: function () {
@@ -17,6 +18,7 @@ export default {
   components: {
     GermplasmTable
   },
+  mixins: [ germplasmApi ],
   methods: {
     getGermplasmData: function (query, callback) {
       return this.apiPostGermplasmTableCW(query, this.file, callback)

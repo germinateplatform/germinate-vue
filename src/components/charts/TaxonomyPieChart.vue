@@ -9,6 +9,7 @@
 <script>
 import BaseChart from '@/components/charts/BaseChart'
 import { plotlyPieChart } from '@/plugins/charts/plotly-pie-chart.js'
+import statsApi from '@/mixins/api/stats.js'
 
 export default {
   data: function () {
@@ -19,6 +20,7 @@ export default {
   components: {
     BaseChart
   },
+  mixins: [ statsApi ],
   methods: {
     getSourceFile: function () {
       return {

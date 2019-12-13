@@ -15,6 +15,7 @@
 <script>
 import ExportSelection from '@/components/export/ExportSelection'
 import { EventBus } from '@/plugins/event-bus.js'
+import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   props: {
@@ -58,6 +59,7 @@ export default {
   components: {
     ExportSelection
   },
+  mixins: [ datasetApi ],
   methods: {
     downloadData: function (query) {
       EventBus.$emit('show-loading', true)

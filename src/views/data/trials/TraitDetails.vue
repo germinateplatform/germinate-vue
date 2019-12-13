@@ -9,7 +9,7 @@
 
       <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageTraitDetailsStatsText') }}</p>
-      <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" itemType="traits" ref="traitDetailsChart" />
+      <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" />
 
       <div v-show="showAdditionalDatasets">
         <DatasetsWithUnacceptedLicense experimentType="trials" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
@@ -23,6 +23,7 @@
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import traitApi from '@/mixins/api/trait.js'
 
 export default {
   data: function () {
@@ -53,6 +54,7 @@ export default {
       this.$refs.traitDetailsChart.redraw()
     }
   },
+  mixins: [ traitApi ],
   mounted: function () {
     if (this.$route.params.traitId) {
       this.traitId = parseInt(this.$route.params.traitId)

@@ -113,6 +113,13 @@ import PedigreeTable from '@/components/tables/PedigreeTable'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 
 import ColumnsMixin from '@/const/database-columns.js'
+import compoundApi from '@/mixins/api/compound.js'
+import datasetApi from '@/mixins/api/dataset.js'
+import germplasmApi from '@/mixins/api/germplasm.js'
+import genotypeApi from '@/mixins/api/genotype.js'
+import locationApi from '@/mixins/api/location.js'
+import miscApi from '@/mixins/api/misc.js'
+import traitApi from '@/mixins/api/trait.js'
 
 export default {
   data: function () {
@@ -160,6 +167,7 @@ export default {
     PedigreeTable,
     TrialsDataTable
   },
+  mixins: [ compoundApi, datasetApi, germplasmApi, genotypeApi, locationApi, miscApi, traitApi ],
   methods: {
     isSearchType: function (requested) {
       return this.searchType === 'all' || this.searchType === requested

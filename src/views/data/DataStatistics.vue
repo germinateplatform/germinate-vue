@@ -48,6 +48,7 @@ import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
 import TaxonomyPieChart from '@/components/charts/TaxonomyPieChart'
 import { EventBus } from '@/plugins/event-bus.js'
+import statsApi from '@/mixins/api/stats.js'
 
 export default {
   data: function () {
@@ -62,6 +63,7 @@ export default {
     ChoroplethChart,
     TaxonomyPieChart
   },
+  mixins: [ statsApi ],
   methods: {
     biologicalStatusClicked: function (status) {
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{

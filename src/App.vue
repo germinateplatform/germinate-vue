@@ -12,8 +12,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import VueAnalytics from 'vue-analytics'
 import { EventBus } from '@/plugins/event-bus.js'
 import { loadLanguageAsync } from '@/plugins/i18n'
+import miscApi from '@/mixins/api/misc.js'
+import statsApi from '@/mixins/api/stats.js'
 
 export default {
   name: 'app',
@@ -22,14 +26,32 @@ export default {
       printContent: null
     }
   },
+  watch: {
+    token: function (newValue, oldValue) {
+      this.apiGetEntityTypeStats(result => {
+        this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
+      })
+    }
+  },
   created: async function () {
     this.apiGetEntityTypeStats(result => {
       this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
     })
     await this.apiGetSettings(result => {
+      if (result && result.googleAnalyticsKey) {
+        Vue.use(VueAnalytics, {
+          id: result.googleAnalyticsKey,
+          router: this.$router
+        })
+
+        // Disable initially, users have to opt-in
+        Vue.$ga.disable()
+      }
+
       this.$store.dispatch('ON_SETTINGS_CHANGED', result)
     })
   },
+  mixins: [ miscApi, statsApi ],
   methods: {
     print: function (newContent) {
       this.printContent = newContent

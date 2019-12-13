@@ -12,6 +12,7 @@
 import BaseChart from '@/components/charts/BaseChart'
 import { EventBus } from '@/plugins/event-bus.js'
 import { pedigreeChart } from '@/plugins/charts/d3-dagre-chart.js'
+import germplasmApi from '@/mixins/api/germplasm.js'
 
 export default {
   props: {
@@ -28,6 +29,7 @@ export default {
   components: {
     BaseChart
   },
+  mixins: [ germplasmApi ],
   methods: {
     getSourceFile: function () {
       return {

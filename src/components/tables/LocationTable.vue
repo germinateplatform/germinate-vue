@@ -1,26 +1,32 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               itemType="locations"
-               ref="locationTable"
-               v-on="$listeners">
-      <template slot="locationName" slot-scope="props">
-        <router-link to="/data/datasets" @click.native="navigateToDatasets(props.row)" event="" v-if="props.row.locationType === 'datasets'">{{ props.row.locationName }}</router-link>
-        <router-link to="/data/germplasm" @click.native="navigateToGermplasm(props.row)" event="" v-else-if="props.row.locationType === 'collectingsites'">{{ props.row.locationName }}</router-link>
-        <span v-else>{{ props.row.locationName }}</span>
-      </template>
+  <BaseTable v-bind="$props"
+              :columns="columns"
+              :options="options"
+              itemType="locations"
+              ref="locationTable"
+              v-on="$listeners">
+    <template v-slot:cell(locationName)="data">
+      <router-link to="/data/datasets" @click.native="navigateToDatasets(data.item)" event="" v-if="data.item.locationType === 'datasets'">{{ data.item.locationName }}</router-link>
+      <router-link to="/data/germplasm" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'">{{ data.item.locationName }}</router-link>
+      <span v-else>{{ data.item.locationName }}</span>
+    </template>
 
-      <span slot="locationLatitude" slot-scope="props" v-if="props.row.locationLatitude !== undefined">{{ props.row.locationLatitude.toFixed(2) }}</span>
-      <span slot="locationLongitude" slot-scope="props" v-if="props.row.locationLongitude !== undefined">{{ props.row.locationLongitude.toFixed(2) }}</span>
-      <span slot="locationElevation" slot-scope="props" v-if="props.row.locationElevation !== undefined">{{ props.row.locationElevation.toFixed(2) }}</span>
-
-      <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode2.toLowerCase()" v-if="props.row.countryCode2"/> <span> {{ props.row.countryCode2 }}</span></span>
-
-      <span slot="locationType" slot-scope="props"><i :class="`mdi mdi-18px ${locationTypes[props.row.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[props.row.locationType].color()};`" /> {{ locationTypes[props.row.locationType].text() }}</span>
-    </BaseTable>
-  </div>
+    <template v-slot:cell(locationLatitude)="data">
+      <span v-if="data.item.locationLatitude !== undefined">{{ data.item.locationLatitude.toFixed(2) }}</span>
+    </template>
+    <template v-slot:cell(locationLongitude)="data">
+      <span v-if="data.item.locationLongitude !== undefined">{{ data.item.locationLongitude.toFixed(2) }}</span>
+    </template>
+    <template v-slot:cell(locationElevation)="data">
+      <span v-if="data.item.locationElevation !== undefined">{{ data.item.locationElevation.toFixed(2) }}</span>
+    </template>
+    <template v-slot:cell(countryName)="data">
+      <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
+    </template>
+    <template v-slot:cell(locationType)="data">
+      <span><i :class="`mdi mdi-18px ${locationTypes[data.item.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[data.item.locationType].color()};`" /> {{ locationTypes[data.item.locationType].text() }}</span>
+    </template>
+  </BaseTable>
 </template>
 
 <script>
@@ -45,89 +51,100 @@ export default {
     }
   },
   data: function () {
-    var columns = [{
-      name: 'locationId',
-      type: Number
-    }, {
-      name: 'locationName',
-      type: String
-    }, {
-      name: 'locationRegion',
-      type: String
-    }, {
-      name: 'locationState',
-      type: String
-    }, {
-      name: 'locationType',
-      type: 'locationType'
-    }, {
-      name: 'locationLatitude',
-      type: Number
-    }, {
-      name: 'locationLongitude',
-      type: Number
-    }, {
-      name: 'locationElevation',
-      type: Number
-    }, {
-      name: 'countryName',
-      type: String
-    }, {
-      name: 'distance',
-      type: undefined
-    }, {
-      name: 'marked',
-      type: undefined
-    }]
-
-    if (this.tableMode !== 'distance') {
-      columns = columns.filter(c => c.name !== 'distance')
-    }
-
-    if (this.selectable === true) {
-      columns.unshift({
-        name: 'selected',
-        type: undefined
-      })
-    }
-
-    var options = {
-      idColumn: 'locationId',
-      tableName: 'locations',
-      sortable: ['locationId', 'locationName', 'locationRegion', 'locationState', 'locationType', 'locationLatitude', 'locationLongitud', 'locationElevation', 'countryName'],
-      filterable: [],
-      headings: {
-        selected: '',
-        locationId: () => this.$t('tableColumnLocationId'),
-        locationName: () => this.$t('tableColumnLocationName'),
-        locationRegion: () => this.$t('tableColumnLocationRegion'),
-        locationState: () => this.$t('tableColumnLocationState'),
-        locationType: () => this.$t('tableColumnLocationType'),
-        locationLatitude: () => this.$t('tableColumnLocationLatitude'),
-        locationLongitude: () => this.$t('tableColumnLocationLongitude'),
-        locationElevation: () => this.$t('tableColumnLocationElevation'),
-        countryName: () => this.$t('tableColumnLocationCountryName'),
-        distance: () => this.$t('tableColumnLocationDistance'),
-        marked: ''
-      },
-      columnsClasses: {
-        locationId: 'text-right',
-        locationLatitude: 'text-right',
-        locationLongitude: 'text-right',
-        locationElevation: 'text-right',
-        distance: 'text-right'
-      }
-    }
-
-    if (this.orderBy !== null) {
-      options.orderBy = {
-        column: this.orderBy
-      }
-    }
-
     return {
-      options: options,
-      columns: columns
+      options: {
+        idColumn: 'locationId',
+        tableName: 'locations',
+        orderBy: this.orderBy
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      var result = [
+        {
+          key: 'locationId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationId')}`,
+          label: this.$t('tableColumnLocationId')
+        }, {
+          key: 'locationName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'locationName')}`,
+          label: this.$t('tableColumnLocationName')
+        }, {
+          key: 'locationRegion',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'locationRegion')}`,
+          label: this.$t('tableColumnLocationRegion')
+        }, {
+          key: 'locationState',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'locationState')}`,
+          label: this.$t('tableColumnLocationState')
+        }, {
+          key: 'locationType',
+          type: 'locationType',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'locationType')}`,
+          label: this.$t('tableColumnLocationType')
+        }, {
+          key: 'locationLatitude',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationLatitude')}`,
+          label: this.$t('tableColumnLocationLatitude')
+        }, {
+          key: 'locationLongitude',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationLongitude')}`,
+          label: this.$t('tableColumnLocationLongitude')
+        }, {
+          key: 'locationElevation',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationElevation')}`,
+          label: this.$t('tableColumnLocationElevation')
+        }, {
+          key: 'countryName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
+          label: this.$t('tableColumnLocationCountryName')
+        }, {
+          key: 'distance',
+          type: undefined,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'distance') ? 'd-none' : ''}`,
+          label: this.$t('tableColumnLocationDistance')
+        }, {
+          key: 'marked',
+          type: undefined,
+          sortable: false,
+          class: 'text-right',
+          label: ''
+        }
+      ]
+
+      if (this.selectable === true) {
+        result.unshift({
+          key: 'selected',
+          type: undefined,
+          sortable: false,
+          label: ''
+        })
+      }
+
+      if (this.tableMode !== 'distance') {
+        return result.filter(c => c.key !== 'distance')
+      } else {
+        return result
+      }
     }
   },
   components: {
@@ -166,4 +183,5 @@ export default {
 </script>
 
 <style>
+
 </style>

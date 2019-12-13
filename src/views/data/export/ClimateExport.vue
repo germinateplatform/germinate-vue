@@ -27,6 +27,8 @@
       </b-row>
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
+                        xType="climates"
+                        experimentType="climate"
                         :texts="textsChart"
                         :getItems="getClimates"
                         v-show="currentTab === 'overview'" />
@@ -52,6 +54,9 @@ import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import ClimateExportChartSelection from '@/components/export/ClimateExportChartSelection'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import { EventBus } from '@/plugins/event-bus.js'
+import climateApi from '@/mixins/api/climate.js'
+import datasetApi from '@/mixins/api/dataset.js'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -116,6 +121,7 @@ export default {
     ClimateExportChartSelection,
     ExportDownloadSelection
   },
+  mixins: [ climateApi, datasetApi, miscApi ],
   methods: {
     getClimates: function (callback) {
       callback(this.climates)

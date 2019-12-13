@@ -6,7 +6,9 @@
                itemType="markers"
                ref="mapDefinitionTable"
                v-on="$listeners">
-      <span slot="synonyms" slot-scope="props" v-if="props.row.synonyms">{{ props.row.synonyms.join(', ') }}</span>
+      <template v-slot:cell(synonyms)="data">
+        <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -21,61 +23,73 @@ export default {
     ...defaultProps.FULL
   },
   data: function () {
-    const columns = [
-      {
-        name: 'markerId',
-        type: Number
-      }, {
-        name: 'markerName',
-        type: String
-      }, {
-        name: 'synonyms',
-        type: 'json'
-      }, {
-        name: 'mapFeatureType',
-        type: String
-      }, {
-        name: 'mapId',
-        type: Number
-      }, {
-        name: 'mapName',
-        type: String
-      }, {
-        name: 'chromosome',
-        type: String
-      }, {
-        name: 'position',
-        type: Number
-      }, {
-        name: 'marked',
-        type: null
-      }
-    ]
     return {
       options: {
         idColumn: 'markerId',
-        tableName: 'mapDefinitions',
-        sortable: ['markerId', 'markerName', 'synonyms', 'mapFeatureType', 'mapId', 'mapName', 'chromosome', 'position'],
-        filterable: [],
-        headings: {
-          markerId: () => this.$t('tableColumnMarkerId'),
-          markerName: () => this.$t('tableColumnMarkerName'),
-          synonyms: () => this.$t('tableColumnMarkerSynonyms'),
-          mapFeatureType: () => this.$t('tableColumnMapFeatureType'),
-          mapId: () => this.$t('tableColumnMarkerMapId'),
-          mapName: () => this.$t('tableColumnMapName'),
-          chromosome: () => this.$t('tableColumnMapChromosome'),
-          position: () => this.$t('tableColumnMapPosition')
-        },
-        columnsClasses: {
-          markerId: 'text-right',
-          mapId: 'text-right',
-          chromosome: 'text-right',
-          position: 'text-right',
-          marked: 'text-right'
+        tableName: 'mapDefinitions'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'markerId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'markerId')}`,
+          label: this.$t('tableColumnMarkerId')
+        }, {
+          key: 'markerName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'markerName')}`,
+          label: this.$t('tableColumnMarkerName')
+        }, {
+          key: 'synonyms',
+          type: 'json',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'synonyms')}`,
+          label: this.$t('tableColumnMarkerSynonyms')
+        }, {
+          key: 'mapFeatureType',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'mapFeatureType')}`,
+          label: this.$t('tableColumnMapFeatureType')
+        }, {
+          key: 'mapId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'mapId')}`,
+          label: this.$t('tableColumnMarkerMapId')
+        }, {
+          key: 'mapName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'mapName')}`,
+          label: this.$t('tableColumnMapName')
+        }, {
+          key: 'chromosome',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'chromosome')}`,
+          label: this.$t('tableColumnMapChromosome')
+        }, {
+          key: 'position',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'position')}`,
+          label: this.$t('tableColumnMapPosition'),
+          formatter: this.$options.filters.toThousandSeparators
+        }, {
+          key: 'marked',
+          type: null,
+          sortable: false,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          label: ''
         }
-      },
-      columns: columns
+      ]
     }
   },
   components: {

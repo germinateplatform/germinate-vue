@@ -1,21 +1,26 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               itemType="germplasm"
-               ref="trialsDataTable"
-               v-on="$listeners">
-      <router-link slot="germplasmId" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmId }}</router-link>
-      <router-link slot="germplasmName" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmName }}</router-link>
-      <router-link slot="germplasmGid" slot-scope="props" :to="'/data/germplasm/' + props.row.germplasmId">{{ props.row.germplasmGid }}</router-link>
-      <span slot="entityType" slot-scope="props" class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityType].color()};`" /> {{ entityTypes[props.row.entityType].text() }}</span>
-      <!-- Country flags -->
-      <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode2.toLowerCase()" v-if="props.row.countryCode2"/> <span> {{ props.row.countryCode2 }}</span></span>
-      <!-- Formatted date -->
-      <span slot="recordingDate" slot-scope="props" v-if="props.row.recordingDate">{{ props.row.recordingDate | toDate }}</span>
-    </BaseTable>
-  </div>
+  <BaseTable v-bind="$props"
+            :columns="columns"
+            :options="options"
+            itemType="germplasm"
+            ref="trialsDataTable"
+            v-on="$listeners">
+    <template v-slot:cell(germplasmId)="data">
+      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmId }}</router-link>
+    </template>
+    <template v-slot:cell(germplasmName)="data">
+      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmName }}</router-link>
+    </template>
+    <template v-slot:cell(germplasmGid)="data">
+      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmGid }}</router-link>
+    </template>
+    <template v-slot:cell(entityType)="data">
+      <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityType].color()};`" /> {{ entityTypes[data.item.entityType].text() }}</span>
+    </template>
+    <template v-slot:cell(countryName)="data">
+      <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
+    </template>
+  </BaseTable>
 </template>
 
 <script>
@@ -23,79 +28,114 @@ import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 
 export default {
-  name: 'TrialsDataTable',
+  name: 'CompoundDataTable',
   props: {
     ...defaultProps.FULL
   },
   data: function () {
-    const columns = [
-      {
-        name: 'germplasmId',
-        type: Number
-      }, {
-        name: 'germplasmGid',
-        type: String
-      }, {
-        name: 'germplasmName',
-        type: String
-      }, {
-        name: 'entityType',
-        type: 'entityType'
-      }, {
-        name: 'datasetName',
-        type: String
-      }, {
-        name: 'locationName',
-        type: String
-      }, {
-        name: 'countryName',
-        type: String
-      }, {
-        name: 'traitId',
-        type: Number
-      }, {
-        name: 'traitName',
-        type: String
-      }, {
-        name: 'unitName',
-        type: String
-      }, {
-        name: 'recordingDate',
-        type: Date
-      }, {
-        name: 'traitValue',
-        type: String
-      }, {
-        name: 'marked',
-        type: null
-      }
-    ]
     return {
       options: {
         idColumn: 'germplasmId',
-        tableName: 'trialsData',
-        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'entityType', 'datasetName', 'locationName', 'countryName', 'traitId', 'traitName', 'unitName', 'recordingDate', 'traitValue'],
-        filterable: [],
-        headings: {
-          germplasmId: () => this.$t('tableColumnGermplasmId'),
-          germplasmGid: () => this.$t('tableColumnGermplasmGeneralIdentifier'),
-          germplasmName: () => this.$t('tableColumnGermplasmName'),
-          entityType: () => this.$t('tableColumnEntityType'),
-          datasetName: () => this.$t('tableColumnDatasetName'),
-          locationName: () => this.$t('tableColumnLocationName'),
-          countryName: () => this.$t('tableColumnCountryName'),
-          traitId: () => this.$t('tableColumnTraitId'),
-          traitName: () => this.$t('tableColumnTraitName'),
-          unitName: () => this.$t('tableColumnTraitUnitName'),
-          recordingDate: () => this.$t('tableColumnTrialsDataRecordingDate'),
-          traitValue: () => this.$t('tableColumnTrialsDataTraitValue')
-        },
-        columnsClasses: {
-          germplasmId: 'text-right',
-          marked: 'text-right'
+        tableName: 'trialsData'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      var result = [
+        {
+          key: 'germplasmId',
+          type: Number,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
+          sortable: true,
+          label: this.$t('tableColumnGermplasmId')
+        }, {
+          key: 'germplasmGid',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmGid')}`,
+          sortable: true,
+          label: this.$t('tableColumnGermplasmGeneralIdentifier')
+        }, {
+          key: 'germplasmName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmName')}`,
+          sortable: true,
+          label: this.$t('tableColumnGermplasmName')
+        }, {
+          key: 'entityType',
+          type: 'entityTyp',
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityType')}`,
+          sortable: true,
+          label: this.$t('tableColumnEntityType')
+        }, {
+          key: 'datasetName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
+          sortable: true,
+          label: this.$t('tableColumnDatasetName')
+        }, {
+          key: 'locationName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'locationName')}`,
+          sortable: true,
+          label: this.$t('tableColumnLocationName')
+        }, {
+          key: 'countryName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
+          sortable: true,
+          label: this.$t('tableColumnCountryName')
+        }, {
+          key: 'traitId',
+          type: Number,
+          class: `text-right${this.isTableColumnHidden(this.options.tableName, 'traitId')}`,
+          sortable: true,
+          label: this.$t('tableColumnTraitId')
+        }, {
+          key: 'traitName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'traitName')}`,
+          sortable: true,
+          label: this.$t('tableColumnTraitName')
+        }, {
+          key: 'unitName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,
+          sortable: true,
+          label: this.$t('tableColumnCompoundUnitName')
+        }, {
+          key: 'recordingDate',
+          type: Date,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'recordingDate')}`,
+          sortable: true,
+          label: this.$t('tableColumnCompoundDataRecordingDate'),
+          formatter: this.$options.filters.toDate
+        }, {
+          key: 'traitValue',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'traitValue')}`,
+          sortable: true,
+          label: this.$t('tableColumnTrialsDataTraitValue')
+        }, {
+          key: 'marked',
+          type: null,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          sortable: false,
+          label: ''
         }
-      },
-      columns: columns
+      ]
+
+      if (this.selectable === true) {
+        result.unshift({
+          key: 'selected',
+          type: undefined,
+          sortable: false,
+          class: 'bg-info',
+          label: ''
+        })
+      }
+
+      return result
     }
   },
   components: {
@@ -103,11 +143,12 @@ export default {
   },
   methods: {
     refresh: function () {
-      this.$refs.trialsDataTable.refresh()
+      this.$refs.climateDataTable.refresh()
     }
   }
 }
 </script>
 
 <style>
+
 </style>

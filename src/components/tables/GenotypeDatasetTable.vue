@@ -8,8 +8,6 @@
                ref="datasetTable"
                v-on="$listeners"
                v-on:loaded="onLoaded">
-      <span slot="dataObjectCount" slot-scope="props" v-if="props.row.dataObjectCount !== undefined && props.row.dataObjectCount.value !== null">{{ props.row.dataObjectCount.value | toThousandSeparators }}</span>
-      <span slot="dataPointCount" slot-scope="props" v-if="props.row.dataPointCount !== undefined && props.row.dataPointCount.value !== null">{{ props.row.dataPointCount.value | toThousandSeparators }}</span>
     </BaseTable>
   </div>
 </template>
@@ -17,7 +15,6 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import { mapFilters } from '@/plugins/map-filters.js'
 
 export default {
   name: 'DatasetTable',
@@ -29,69 +26,70 @@ export default {
     }
   },
   data: function () {
-    var columns = [
-      {
-        name: 'datasetId',
-        type: Number
-      }, {
-        name: 'datasetName',
-        type: String
-      }, {
-        name: 'datasetDescription',
-        type: String
-      }, {
-        name: 'dataObjectCount',
-        type: Number
-      }, {
-        name: 'dataPointCount',
-        type: Number
-      }
-    ]
-
-    if (this.selectable === true) {
-      columns.unshift({
-        name: 'selected',
-        type: undefined
-      })
-    }
-
     return {
       options: {
         idColumn: 'datasetId',
         tableName: 'datasets',
-        sortable: ['datasetId', 'datasetName', 'datasetDescription', 'dataObjectCount', 'dataPointCount'],
-        filterable: [],
-        headings: {
-          datasetId: () => this.$t('tableColumnDatasetId'),
-          datasetName: () => this.$t('tableColumnDatasetName'),
-          datasetDescription: () => this.$t('tableColumnDatasetDescription'),
-          dataObjectCount: () => this.$t('tableColumnGenotypeDatasetGermplasmCount'),
-          dataPointCount: () => this.$t('tableColumnGenotypeDatasetMarkerCount'),
-          selected: ''
+        orderBy: 'datasetId',
+        rowVariant: this.getRowVariant
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'selected',
+          type: undefined,
+          class: `bg-info ${this.isTableColumnHidden(this.options.tableName, 'selected')}`,
+          sortable: false,
+          label: ''
         },
-        orderBy: {
-          column: 'datasetId'
-        },
-        columnsClasses: {
-          selected: 'bg-info',
-          dataObjectCount: 'text-right',
-          dataPointCount: 'text-right'
-        },
-        rowClassCallback: row => this.getRowClass(row)
-      },
-      columns: columns
+        {
+          key: 'datasetId',
+          type: Number,
+          sortable: false,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetId')}`,
+          label: this.$t('tableColumnDatasetId')
+        }, {
+          key: 'datasetName',
+          type: String,
+          sortable: false,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
+          label: this.$t('tableColumnDatasetName')
+        }, {
+          key: 'datasetDescription',
+          type: String,
+          sortable: false,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
+          label: this.$t('tableColumnDatasetDescription')
+        }, {
+          key: 'dataObjectCount',
+          type: Number,
+          sortable: false,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataObjectCount')}`,
+          label: this.$t('tableColumnGenotypeDatasetGermplasmCount'),
+          formatter: value => (value && (value.value !== undefined)) ? this.$options.filters.toThousandSeparators(value.value) : null
+        }, {
+          key: 'dataPointCount',
+          type: Number,
+          sortable: false,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataPointCount')}`,
+          label: this.$t('tableColumnGenotypeDatasetMarkerCount'),
+          formatter: value => (value && (value.value !== undefined)) ? this.$options.filters.toThousandSeparators(value.value) : null
+        }
+      ]
     }
   },
   components: {
     BaseTable
   },
   methods: {
-    ...mapFilters(['toThousandSeparators']),
-    getRowClass: function (row) {
+    getRowVariant: function (row) {
       if (!row.dataObjectCount || !row.dataObjectCount.value || !row.dataPointCount || !row.dataPointCount.value) {
-        return 'table-danger'
+        return 'danger'
       } else {
-        return ''
+        return null
       }
     },
     getSelected: function () {

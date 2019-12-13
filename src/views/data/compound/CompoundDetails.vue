@@ -9,7 +9,7 @@
 
       <h2>{{ $t('pageCompoundDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageCompoundDetailsStatsText') }}</p>
-      <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" itemType="compounds" ref="compoundDetailsChart" />
+      <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" xType="compounds" ref="compoundDetailsChart" />
 
       <div v-show="showAdditionalDatasets">
         <DatasetsWithUnacceptedLicense experimentType="compound" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
@@ -23,6 +23,7 @@
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
+import compoundApi from '@/mixins/api/compound.js'
 
 export default {
   data: function () {
@@ -38,6 +39,7 @@ export default {
     CompoundDataTable,
     DatasetsWithUnacceptedLicense
   },
+  mixins: [ compoundApi ],
   methods: {
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0

@@ -44,6 +44,7 @@ import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import MapExportSelection from '@/components/export/MapExportSelection'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
 import { EventBus } from '@/plugins/event-bus.js'
+import genotypeApi from '@/mixins/api/genotype.js'
 
 export default {
   data: function () {
@@ -60,6 +61,7 @@ export default {
     MapDefinitionTable,
     MapExportSelection
   },
+  mixins: [ genotypeApi ],
   methods: {
     exportMap: function (format) {
       var options = {
@@ -94,6 +96,7 @@ export default {
         },
         comparator: 'equals',
         operator: 'and',
+        canBeChanged: false,
         values: [this.mapId]
       }]
     },

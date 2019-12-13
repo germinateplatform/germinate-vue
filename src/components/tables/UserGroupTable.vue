@@ -6,16 +6,25 @@
                ref="table"
                v-bind="$props"
                v-on="$listeners">
+      <template v-slot:cell(userGroupId)="data">
+        <a v-if="hideDefaultActions !== true" href="#" @click.prevent="$emit('group-selected', data.item)">{{ data.item.userGroupId }}</a>
+        <span v-else>{{ data.item.userGroupId }}</span>
+      </template>
+      <template v-slot:cell(userGroupName)="data">
+        <a v-if="hideDefaultActions !== true" href="#" @click.prevent="$emit('group-selected', data.item)">{{ data.item.userGroupName }}</a>
+        <span v-else>{{ data.item.userGroupName }}</span>
+      </template>
+      <template v-slot:cell(userGroupDescription)="data">
+        <a v-if="hideDefaultActions !== true" href="#" @click.prevent="$emit('group-selected', data.item)">{{ data.item.userGroupDescription }}</a>
+        <span v-else>{{ data.item.userGroupDescription }}</span>
+      </template>
 
-      <a slot="userGroupId" slot-scope="props" href="#" @click.prevent="$emit('group-selected', props.row)">{{ props.row.userGroupId }}</a>
-      <a slot="userGroupName" slot-scope="props" href="#" @click.prevent="$emit('group-selected', props.row)">{{ props.row.userGroupName }}</a>
-      <a slot="userGroupDescription" slot-scope="props" href="#" @click.prevent="$emit('group-selected', props.row)">{{ props.row.userGroupDescription }}</a>
-      <span slot="createdOn" slot-scope="props" v-if="props.row.createdOn">{{props.row.createdOn | toDateTime}}</span>
-
-      <b-button-group slot="actions" slot-scope="props" v-if="hideDefaultActions !== true && token && token.userType === 'Administrator'">
-        <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('edit-group-clicked', props.row)"><i class="mdi mdi-18px mdi-rename-box" /></b-button>
-        <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('delete-group-clicked', props.row)"><i class="mdi mdi-18px mdi-delete" /></b-button>
-      </b-button-group>
+      <template v-slot:cell(actions)="data">
+        <b-button-group v-if="hideDefaultActions !== true && token && token.userType === 'Administrator'">
+          <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('edit-group-clicked', data.item)"><i class="mdi mdi-18px mdi-rename-box" /></b-button>
+          <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('delete-group-clicked', data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
+        </b-button-group>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -70,25 +79,65 @@ export default {
     return {
       options: {
         idColumn: 'userGroupId',
-        tableName: 'groups',
-        sortable: ['userGroupId', 'userGroupName', 'userGroupDescription', 'createdOn', 'count'],
-        filterable: [],
-        headings: {
-          selected: '',
-          userGroupId: () => this.$t('tableColumnUserGroupId'),
-          userGroupName: () => this.$t('tableColumnUserGroupName'),
-          userGroupDescription: () => this.$t('tableColumnUserGroupDescription'),
-          createdOn: () => this.$t('tableColumnUserGroupCreatedOn'),
-          count: () => this.$t('tableColumnUserGroupCount'),
-          actions: ''
-        },
-        columnsClasses: {
-          userGroupId: 'text-right',
-          count: 'text-right',
-          actions: 'text-right'
+        tableName: 'groups'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      var result = [
+        {
+          key: 'userGroupId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'userGroupId')}`,
+          label: this.$t('tableColumnUserGroupId')
+        }, {
+          key: 'userGroupName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'userGroupName')}`,
+          label: this.$t('tableColumnUserGroupName')
+        }, {
+          key: 'userGroupDescription',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'userGroupDescription')}`,
+          label: this.$t('tableColumnUserGroupDescription')
+        }, {
+          key: 'createdOn',
+          type: Date,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
+          label: this.$t('tableColumnUserGroupCreatedOn'),
+          formatter: this.$options.filters.toDate
+        }, {
+          key: 'count',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
+          label: this.$t('tableColumnUserGroupCount'),
+          formatter: this.$options.filters.toThousandSeparators
+        }, {
+          key: 'actions',
+          type: undefined,
+          sortable: false,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'actions')}`,
+          label: ''
         }
-      },
-      columns: columns
+      ]
+
+      if (this.selectable === true) {
+        result.unshift({
+          key: 'selected',
+          type: undefined,
+          sortable: false,
+          class: 'bg-info',
+          label: ''
+        })
+      }
+
+      return result
     }
   },
   components: {

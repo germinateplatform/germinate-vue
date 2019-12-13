@@ -23,6 +23,7 @@
 
 <script>
 import { EventBus } from '@/plugins/event-bus.js'
+import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   props: {
@@ -45,6 +46,7 @@ export default {
       htmlFilename: null
     }
   },
+  mixins: [ datasetApi ],
   methods: {
     show: function () {
       this.$refs.licenseModal.show()

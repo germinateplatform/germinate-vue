@@ -5,14 +5,30 @@
                v-bind="$props"
                ref="entityTable"
                v-on="$listeners">
-      <router-link slot="entityParentId" slot-scope="props" :to="'/data/germplasm/' + props.row.entityParentId">{{ props.row.entityParentId }}</router-link>
-      <router-link slot="entityParentGid" slot-scope="props" :to="'/data/germplasm/' + props.row.entityParentId">{{ props.row.entityParentGid }}</router-link>
-      <router-link slot="entityParentName" slot-scope="props" :to="'/data/germplasm/' + props.row.entityParentId">{{ props.row.entityParentName }}</router-link>
-      <router-link slot="entityChildId" slot-scope="props" :to="'/data/germplasm/' + props.row.entityChildId">{{ props.row.entityChildId }}</router-link>
-      <router-link slot="entityChildGid" slot-scope="props" :to="'/data/germplasm/' + props.row.entityChildId">{{ props.row.entityChildGid }}</router-link>
-      <router-link slot="entityChildName" slot-scope="props" :to="'/data/germplasm/' + props.row.entityChildId">{{ props.row.entityChildName }}</router-link>
-      <span slot="entityParentType" slot-scope="props" class="text-nowrap" v-if="props.row.entityParentType"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityParentType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityParentType].color()};`" /> {{ entityTypes[props.row.entityParentType].text() }}</span>
-      <span slot="entityChildType" slot-scope="props" class="text-nowrap" v-if="props.row.entityChildType"><i :class="`mdi mdi-18px ${entityTypes[props.row.entityChildType].icon} fix-alignment`" :style="`color: ${entityTypes[props.row.entityChildType].color()};`" /> {{ entityTypes[props.row.entityChildType].text() }}</span>
+      <template v-slot:cell(entityParentId)="data">
+        <router-link :to="'/data/germplasm/' + data.item.entityParentId">{{ data.item.entityParentId }}</router-link>
+      </template>
+      <template v-slot:cell(entityParentGid)="data">
+        <router-link :to="'/data/germplasm/' + data.item.entityParentId">{{ data.item.entityParentGid }}</router-link>
+      </template>
+      <template v-slot:cell(entityParentName)="data">
+        <router-link :to="'/data/germplasm/' + data.item.entityParentId">{{ data.item.entityParentName }}</router-link>
+      </template>
+      <template v-slot:cell(entityChildId)="data">
+        <router-link :to="'/data/germplasm/' + data.item.entityChildId">{{ data.item.entityChildId }}</router-link>
+      </template>
+      <template v-slot:cell(entityChildGid)="data">
+        <router-link :to="'/data/germplasm/' + data.item.entityChildId">{{ data.item.entityChildGid }}</router-link>
+      </template>
+      <template v-slot:cell(entityChildName)="data">
+        <router-link :to="'/data/germplasm/' + data.item.entityChildId">{{ data.item.entityChildName }}</router-link>
+      </template>
+      <template v-slot:cell(entityParentType)="data">
+        <span class="text-nowrap" v-if="data.item.entityParentType"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityParentType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityParentType].color()};`" /> {{ entityTypes[data.item.entityParentType].text() }}</span>
+      </template>
+      <template v-slot:cell(entityChildType)="data">
+        <span class="text-nowrap" v-if="data.item.entityChildType"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityChildType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityChildType].color()};`" /> {{ entityTypes[data.item.entityChildType].text() }}</span>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -27,54 +43,66 @@ export default {
     ...defaultProps.BASE
   },
   data: function () {
-    var columns = [{
-      name: 'entityParentId',
-      type: Number
-    }, {
-      name: 'entityParentGid',
-      type: String
-    }, {
-      name: 'entityParentName',
-      type: String
-    }, {
-      name: 'entityParentType',
-      type: 'entityType'
-    }, {
-      name: 'entityChildId',
-      type: Number
-    }, {
-      name: 'entityChildGid',
-      type: String
-    }, {
-      name: 'entityChildName',
-      type: String
-    }, {
-      name: 'entityChildType',
-      type: 'entityType'
-    }]
-
     return {
       options: {
         idColumn: 'entityParentId',
-        tableName: 'entities',
-        sortable: ['entityParentId', 'entityParentGid', 'entityParentName', 'entityParentType', 'entityChildId', 'entityChildGid', 'entityChildName', 'entityChildType'],
-        filterable: [],
-        headings: {
-          entityParentId: () => this.$t('tableColumnEntityParentId'),
-          entityParentGid: () => this.$t('tableColumnEntityParentGid'),
-          entityParentName: () => this.$t('tableColumnEntityParentName'),
-          entityParentType: () => this.$t('tableColumnEntityParentType'),
-          entityChildId: () => this.$t('tableColumnEntityChildId'),
-          entityChildGid: () => this.$t('tableColumnEntityChildGid'),
-          entityChildName: () => this.$t('tableColumnEntityChildName'),
-          entityChildType: () => this.$t('tableColumnEntityChildType')
-        },
-        columnsClasses: {
-          entityChildId: 'text-right',
-          entityParentId: 'text-right'
+        tableName: 'entities'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'entityParentId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'entityParentId')}`,
+          label: this.$t('tableColumnEntityParentId')
+        }, {
+          key: 'entityParentGid',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentGid')}`,
+          label: this.$t('tableColumnEntityParentGid')
+        }, {
+          key: 'entityParentName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentName')}`,
+          label: this.$t('tableColumnEntityParentName')
+        }, {
+          key: 'entityParentType',
+          type: 'entityType',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentType')}`,
+          label: this.$t('tableColumnEntityParentType')
+        }, {
+          key: 'entityChildId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'entityChildId')}`,
+          label: this.$t('tableColumnEntityChildId')
+        }, {
+          key: 'entityChildGid',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityChildGid')}`,
+          label: this.$t('tableColumnEntityChildGid')
+        }, {
+          key: 'entityChildName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityChildName')}`,
+          label: this.$t('tableColumnEntityChildName')
+        }, {
+          key: 'entityChildType',
+          type: 'entityType',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityChildType')}`,
+          label: this.$t('tableColumnEntityChildType')
         }
-      },
-      columns: columns
+      ]
     }
   },
   components: {

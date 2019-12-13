@@ -19,6 +19,7 @@
 
 <script>
 import UserGroupTable from '@/components/tables/UserGroupTable'
+import usergroupApi from '@/mixins/api/usergroup.js'
 
 export default {
   props: {
@@ -63,6 +64,7 @@ export default {
       this.refresh()
     }
   },
+  mixins: [ usergroupApi ],
   methods: {
     refresh: function () {
       this.$nextTick(() => {

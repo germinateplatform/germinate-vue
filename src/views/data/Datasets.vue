@@ -8,6 +8,8 @@
 
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
+import datasetApi from '@/mixins/api/dataset.js'
+
 export default {
   data: function () {
     return {
@@ -17,6 +19,7 @@ export default {
   components: {
     DatasetTable
   },
+  mixins: [ datasetApi ],
   methods: {
     getData: function (data, callback) {
       return this.apiPostDatasetTable(data, callback)

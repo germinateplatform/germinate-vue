@@ -18,6 +18,7 @@
     <GroupTable ref="groupsTable"
                 :getData="getGroupData"
                 :filterOn="filterOn"
+                :isEditable="true"
                 v-on:group-selected="onGroupSelected"
                 v-on:on-group-edit-clicked="onGroupEditClicked"
                 v-on:on-group-delete-clicked="onGroupDeleteClicked" />
@@ -75,6 +76,10 @@ import GroupTable from '@/components/tables/GroupTable'
 import LocationTable from '@/components/tables/LocationTable'
 import MarkerTable from '@/components/tables/MarkerTable'
 import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
+import groupApi from '@/mixins/api/group.js'
+import germplasmApi from '@/mixins/api/germplasm.js'
+import genotypeApi from '@/mixins/api/genotype.js'
+import locationApi from '@/mixins/api/location.js'
 
 export default {
   data: function () {
@@ -97,11 +102,12 @@ export default {
               return
             }
 
+            var type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: selectedIds,
               isAddition: false
             }
-            this.apiPatchGroupMembers(this.group.groupId, this.groupTypes[this.group.groupType].itemType, data, result => {
+            this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
             })
@@ -124,7 +130,7 @@ export default {
           callback: (selectedIds) => {
             var type = this.groupTypes[this.group.groupType].apiName
             const data = {
-              ids: this.markedIds[type],
+              ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: true
             }
             this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
@@ -142,7 +148,7 @@ export default {
           callback: (selectedIds) => {
             var type = this.groupTypes[this.group.groupType].apiName
             const data = {
-              ids: this.markedIds[type],
+              ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: false
             }
             this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
@@ -187,6 +193,7 @@ export default {
     LocationTable,
     MarkerTable
   },
+  mixins: [ groupApi, germplasmApi, genotypeApi, locationApi ],
   methods: {
     setGroupType: function (groupType) {
       if (this.selectedGroupType && groupType && this.selectedGroupType.id === groupType.id) {
@@ -264,15 +271,24 @@ export default {
       })
     },
     onGroupDeleteClicked: function (groupToDelete) {
-      this.apiDeleteGroup(groupToDelete.groupId, result => {
-        // If the current group was deleted, unset selection
-        if (this.group && groupToDelete.groupId === this.group.groupId) {
-          this.group = null
-          this.groupId = null
-        }
-        // Refresh the table
-        this.$refs.groupsTable.refresh()
+      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
+        okVariant: 'danger',
+        okTitle: this.$t('genericYes'),
+        cancelTitle: this.$t('genericNo')
       })
+        .then(value => {
+          if (value) {
+            this.apiDeleteGroup(groupToDelete.groupId, result => {
+              // If the current group was deleted, unset selection
+              if (this.group && groupToDelete.groupId === this.group.groupId) {
+                this.group = null
+                this.groupId = null
+              }
+              // Refresh the table
+              this.$refs.groupsTable.refresh()
+            })
+          }
+        })
     },
     onGroupSelected: function (groupId) {
       this.groupId = groupId

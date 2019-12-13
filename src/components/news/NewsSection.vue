@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import miscApi from '@/mixins/api/misc.js'
+
 export default {
   props: {
     newsCount: {
@@ -91,6 +93,7 @@ export default {
       this.$nextTick(() => this.$refs.newsModal.show())
     }
   },
+  mixins: [ miscApi ],
   methods: {
     getContent: function (item) {
       if (item.newsContent) {

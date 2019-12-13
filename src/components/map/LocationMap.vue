@@ -11,17 +11,17 @@
     <ColorGradient :colors="gradientColors" v-if="mapType === 'heatmap'" ref="gradient" />
     <div v-if="location" ref="popupContent">
       <dl class="row">
-        <dt class="col-4 text-right">Location</dt>
+        <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8">
           <router-link to="/data/datasets" v-if="location.locationType === 'datasets'" @click.native="navigateToDatasets(location)" event="">{{ location.locationName }}</router-link>
           <router-link to="/data/germplasm" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
           <span v-else>{{ location.locationName }}</span>
         </dd>
-        <template v-if="location.locationType"><dt class="col-4 text-right">Type</dt><dd class="col-8"><i :class="`mdi mdi-18px ${locationTypes[location.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[location.locationType].color()};`" /> {{ this.locationTypes[location.locationType].text() }}</dd></template>
-        <template v-if="location.countryCode2 || location.countryCode3"><dt class="col-4 text-right">Country</dt><dd class="col-8"><i :class="'flag-icon flag-icon-' + getFlag(location)" /> {{ getCountry(location) }}</dd></template>
-        <dt class="col-4 text-right">Latitude</dt><dd class="col-8">{{ location.locationLatitude.toFixed(2) }}</dd>
-        <dt class="col-4 text-right">Longitude</dt><dd class="col-8">{{ location.locationLongitude.toFixed(2) }}</dd>
-        <template v-if="location.locationElevation"><dt class="col-4 text-right">Elevation</dt><dd class="col-8">{{ location.locationElevation.toFixed(2) }}</dd></template>
+        <template v-if="location.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8"><i :class="`mdi mdi-18px ${locationTypes[location.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[location.locationType].color()};`" /> {{ this.locationTypes[location.locationType].text() }}</dd></template>
+        <template v-if="location.countryCode2 || location.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'flag-icon flag-icon-' + getFlag(location)" /> {{ getCountry(location) }}</dd></template>
+        <dt class="col-4 text-right">{{ $t('tableColumnLocationLatitude') }}</dt><dd class="col-8">{{ location.locationLatitude.toFixed(2) }}</dd>
+        <dt class="col-4 text-right">{{ $t('tableColumnLocationLongitude') }}</dt><dd class="col-8">{{ location.locationLongitude.toFixed(2) }}</dd>
+        <template v-if="location.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ location.locationElevation.toFixed(2) }}</dd></template>
       </dl>
     </div>
   </div>

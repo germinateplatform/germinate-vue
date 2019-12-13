@@ -25,6 +25,7 @@ import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
 import ExportSelection from '@/components/export/ExportSelection'
 import { EventBus } from '@/plugins/event-bus.js'
+import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   props: {
@@ -87,6 +88,7 @@ export default {
     MatrixChart,
     ScatterChart
   },
+  mixins: [ datasetApi ],
   methods: {
     plot: function (query, selectedClimates) {
       this.plotData = null

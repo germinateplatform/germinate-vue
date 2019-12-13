@@ -6,10 +6,15 @@
                itemType="markers"
                ref="markerTable"
                v-on="$listeners">
-      <!-- LINKS -->
-      <router-link slot="markerId" slot-scope="props" :to="'/data/genotype/marker/' + props.row.markerId">{{ props.row.markerId }}</router-link>
-      <router-link slot="markerName" slot-scope="props" :to="'/data/genotype/marker/' + props.row.markerId">{{ props.row.markerName }}</router-link>
-      <span slot="markerSynonyms" slot-scope="props" v-if="props.row.markerSynonyms">{{ props.row.markerSynonyms.join(', ') }}</span>
+      <template v-slot:cell(markerId)="data">
+        <router-link :to="'/data/genotype/marker/' + data.item.markerId">{{ data.item.markerId }}</router-link>
+      </template>
+      <template v-slot:cell(markerName)="data">
+        <router-link :to="'/data/genotype/marker/' + data.item.markerId">{{ data.item.markerName }}</router-link>
+      </template>
+      <template v-slot:cell(markerSynonyms)="data">
+        <span v-if="data.item.markerSynonyms">{{ data.item.markerSynonyms.join(', ') }}</span>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -28,50 +33,59 @@ export default {
     }
   },
   data: function () {
-    var columns = [{
-      name: 'markerId',
-      type: Number
-    }, {
-      name: 'markerName',
-      type: String
-    }, {
-      name: 'markerType',
-      type: String
-    }, {
-      name: 'markerSynonyms',
-      type: 'json'
-    }, {
-      name: 'marked',
-      type: undefined
-    }]
-
-    if (this.selectable === true) {
-      columns.unshift({
-        name: 'selected',
-        type: undefined
-      })
-    }
-
     return {
       options: {
         idColumn: 'markerId',
-        tableName: 'markers',
-        sortable: ['markerId', 'markerName', 'markerType', 'markerSynonyms'],
-        filterable: [],
-        headings: {
-          selected: '',
-          markerId: () => this.$t('tableColumnMarkerId'),
-          markerName: () => this.$t('tableColumnMarkerName'),
-          markerType: () => this.$t('tableColumnMarkerType'),
-          markerSynonyms: () => this.$t('tableColumnMarkerSynonyms'),
-          marked: () => ''
-        },
-        columnsClasses: {
-          markerId: 'text-right',
-          marked: 'text-right'
+        tableName: 'markers'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      var result = [
+        {
+          key: 'markerId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'markerId')}`,
+          label: this.$t('tableColumnMarkerId')
+        }, {
+          key: 'markerName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'markerName')}`,
+          label: this.$t('tableColumnMarkerName')
+        }, {
+          key: 'markerType',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'markerType')}`,
+          label: this.$t('tableColumnMarkerType')
+        }, {
+          key: 'markerSynonyms',
+          type: 'json',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'markerSynonyms')}`,
+          label: this.$t('tableColumnMarkerSynonyms')
+        }, {
+          key: 'marked',
+          type: undefined,
+          sortable: false,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          label: ''
         }
-      },
-      columns: columns
+      ]
+
+      if (this.selectable === true) {
+        result.unshift({
+          key: 'selected',
+          type: undefined,
+          sortable: false,
+          label: ''
+        })
+      }
+
+      return result
     }
   },
   components: {

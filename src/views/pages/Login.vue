@@ -31,6 +31,7 @@
 <script>
 import SignInForm from '@/components/util/SignInForm'
 import RegistrationModal from '@/components/modals/RegistrationModal'
+import authApi from '@/mixins/api/auth.js'
 
 export default {
   name: 'Login',
@@ -44,6 +45,7 @@ export default {
     RegistrationModal,
     SignInForm
   },
+  mixins: [ authApi ],
   methods: {
     login: function (user) {
       this.enabled = false

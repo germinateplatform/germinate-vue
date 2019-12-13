@@ -30,6 +30,7 @@
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
 import { EventBus } from '@/plugins/event-bus.js'
 import SignInForm from '@/components/util/SignInForm'
+import authApi from '@/mixins/api/auth.js'
 
 export default {
   name: 'UserSettingsDropdown',
@@ -43,6 +44,7 @@ export default {
       enabled: true
     }
   },
+  mixins: [ authApi ],
   methods: {
     signIn: function (user) {
       this.enabled = false

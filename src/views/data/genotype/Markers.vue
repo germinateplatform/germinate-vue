@@ -8,10 +8,13 @@
 
 <script>
 import MarkerTable from '@/components/tables/MarkerTable'
+import genotypeApi from '@/mixins/api/genotype.js'
+
 export default {
   components: {
     MarkerTable
   },
+  mixins: [ genotypeApi ],
   methods: {
     getData: function (data, callback) {
       return this.apiPostMarkerTable(data, callback)

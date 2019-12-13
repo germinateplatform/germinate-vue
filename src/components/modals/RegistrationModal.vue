@@ -99,6 +99,7 @@
 
 <script>
 import PasswordInput from '@/components/util/PasswordInput'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   data: function () {
@@ -132,6 +133,7 @@ export default {
   components: {
     PasswordInput
   },
+  mixins: [ miscApi ],
   methods: {
     register: function () {
       if (!this.hasGatekeeper) {

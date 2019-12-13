@@ -18,6 +18,7 @@
 
 <script>
 import UserTable from '@/components/tables/UserTable'
+import usergroupApi from '@/mixins/api/usergroup.js'
 
 export default {
   props: {
@@ -35,6 +36,7 @@ export default {
   components: {
     UserTable
   },
+  mixins: [ usergroupApi ],
   methods: {
     refresh: function () {
       this.getData()

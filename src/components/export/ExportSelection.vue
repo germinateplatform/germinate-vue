@@ -18,6 +18,7 @@
 
 <script>
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
+import groupApi from '@/mixins/api/group.js'
 
 export default {
   props: {
@@ -83,6 +84,7 @@ export default {
   components: {
     ExportGroupSelection
   },
+  mixins: [ groupApi ],
   methods: {
     buttonDisabled: function () {
       if (this.$refs.groupSelection) {

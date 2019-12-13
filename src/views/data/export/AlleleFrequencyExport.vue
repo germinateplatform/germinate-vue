@@ -16,6 +16,7 @@
 <script>
 import AlleleFrequencyChart from '@/components/charts/AlleleFrequencyChart'
 import GenotypeExportSelection from '@/components/export/GenotypeExportSelection'
+import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -29,6 +30,7 @@ export default {
     AlleleFrequencyChart,
     GenotypeExportSelection
   },
+  mixins: [ datasetApi ],
   methods: {
     triggerExport: function (binningConfig) {
       this.$refs.exportSelection.exportData(binningConfig)

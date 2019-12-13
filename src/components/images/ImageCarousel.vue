@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import miscApi from '@/mixins/api/misc.js'
+
 export default {
   data: function () {
     return {
@@ -36,6 +38,7 @@ export default {
       }
     }
   },
+  mixins: [ miscApi ],
   mounted: function () {
     this.apiGetSettingsFile({
       'file-type': 'carousel'

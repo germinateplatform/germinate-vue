@@ -11,8 +11,6 @@ import router from '@/router'
 import store from '@/store/store'
 import { i18n } from '@/plugins/i18n.js'
 import mixin from '@/mixins/mixin.js'
-import api from '@/mixins/api.js'
-import { ClientTable, ServerTable } from 'vue-tables-2'
 // LEAFLET
 import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet'
 import { Icon } from 'leaflet'
@@ -28,23 +26,7 @@ let axiosDefaults = require('axios/lib/defaults')
 // todo
 // cssVars()
 
-var tableOptions = {
-  pagination: {
-    // nav: 'scroll', // TODO: Revisit when https://github.com/matfish2/vue-tables-2/issues/694 is fixed.
-    nav: 'fixed',
-    edge: true
-  },
-  sortIcon: {
-    base: 'table-sort',
-    up: 'table-sort-up',
-    down: 'table-sort-down'
-  }
-}
-
 Vue.mixin(mixin)
-Vue.mixin(api)
-Vue.use(ClientTable, tableOptions, false, 'bootstrap4', 'default')
-Vue.use(ServerTable, tableOptions, false, 'bootstrap4', 'default')
 Vue.use(BootstrapVue)
 Vue.use(Autocomplete)
 Vue.component('l-map', LMap)
@@ -75,6 +57,10 @@ Vue.use({
 })
 
 Vue.filter('toThousandSeparators', value => {
+  if (value === null || value === undefined) {
+    return null
+  }
+
   const locale = store.getters.locale
 
   if (locale) {
@@ -85,6 +71,9 @@ Vue.filter('toThousandSeparators', value => {
 })
 
 Vue.filter('toDate', value => {
+  if (value === null || value === undefined) {
+    return null
+  }
   var moment
   if (value.indexOf('-') !== -1) {
     moment = window.moment(value)
@@ -95,6 +84,9 @@ Vue.filter('toDate', value => {
 })
 
 Vue.filter('toDateTime', value => {
+  if (value === null || value === undefined) {
+    return null
+  }
   var moment
   if (value.indexOf('-') !== -1) {
     moment = window.moment(value)

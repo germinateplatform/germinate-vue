@@ -26,6 +26,7 @@
 import _ from 'lodash'
 import LocationMap from '@/components/map/LocationMap'
 import LocationTable from '@/components/tables/LocationTable'
+import locationApi from '@/mixins/api/location.js'
 
 export default {
   data: function () {
@@ -57,6 +58,7 @@ export default {
     LocationMap,
     LocationTable
   },
+  mixins: [ locationApi ],
   methods: {
     getData: function (data, callback) {
       return this.apiPostLocationTable(data, callback)

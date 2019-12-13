@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import miscApi from '@/mixins/api/misc.js'
+
 export default {
   props: {
     institutionId: {
@@ -28,6 +30,7 @@ export default {
       institution: null
     }
   },
+  mixins: [ miscApi ],
   methods: {
     navigateToGermplasm: function (institutionId) {
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{

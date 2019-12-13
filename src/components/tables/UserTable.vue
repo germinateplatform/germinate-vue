@@ -1,20 +1,30 @@
 <template>
-  <v-client-table :columns="columns" :data="users" :options="options">
-    <div slot="h__selected">
-      <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
-    </div>
-    <b-form-checkbox slot="selected" slot-scope="props" :value="props.row.id" v-model="selectedItems" />
+  <div class="base-table">
+    <b-table :items="users"
+            :fields="columns"
+            striped
+            responsive
+            hover
+            outlined
+            show-empty
+            :empty-text="$t('paginationNoResult')"
+            ref="table">
+      <template v-slot:head(selected)="data">
+        <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
+      </template>
 
-    <div slot="afterTable">
-      <b-button-group>
-        <b-button v-b-tooltip.hover
-                  :title="isAdd ? $t('genericAdd') : $t('genericRemove')"
-                  @click="$emit('action-clicked', selectedItems)">
-          <i :class="`mdi mdi-18px ${isAdd ? 'mdi-plus-box' : 'mdi-delete'}`" />
-        </b-button>
-      </b-button-group>
-    </div>
-  </v-client-table>
+      <template v-slot:cell(selected)="data">
+        <b-form-checkbox :value="data.item.id" v-model="selectedItems" />
+      </template>
+    </b-table>
+    <b-button-group>
+      <b-button v-b-tooltip.hover
+                :title="isAdd ? $t('genericAdd') : $t('genericRemove')"
+                @click="$emit('action-clicked', selectedItems)">
+        <i :class="`mdi mdi-18px ${isAdd ? 'mdi-plus-box' : 'mdi-delete'}`" />
+      </b-button>
+    </b-button-group>
+  </div>
 </template>
 
 <script>
@@ -31,32 +41,46 @@ export default {
   },
   data: function () {
     return {
-      columns: ['selected', 'id', 'username', 'fullName', 'emailAddress', 'name'],
-      options: {
-        headings: {
-          selected: '',
-          id: () => 'Id',
-          username: () => 'Username',
-          fullName: () => 'Full name',
-          emailAddress: () => 'Email',
-          name: () => 'Institution'
-        },
-        sortable: ['id', 'username', 'fullName', 'emailAddress', 'name'],
-        filterable: ['id', 'username', 'fullName', 'emailAddress', 'name'],
-        skin: 'table table-striped table-hover',
-        texts: this.getPaginationTexts(),
-        perPage: 2147483647,
-        perPageValues: [],
-        pagination: {
-          chunk: 5
-        }
-      },
       selectedItems: []
     }
   },
   computed: {
     allSelected: function () {
-      return this.selectedItems.length > 0
+      return this.selectedItems.length > 0 && this.selectedItems.length === this.users.length
+    },
+    columns: function () {
+      return [
+        {
+          key: 'selected',
+          sortable: false,
+          label: ''
+        },
+        {
+          key: 'id',
+          sortable: true,
+          label: this.$t('tableColumnUserId')
+        },
+        {
+          key: 'username',
+          sortable: true,
+          label: this.$t('tableColumnUserUsername')
+        },
+        {
+          key: 'fullName',
+          sortable: true,
+          label: this.$t('tableColumnUserFullname')
+        },
+        {
+          key: 'emailAddress',
+          sortable: true,
+          label: this.$t('tableColumnUserEmail')
+        },
+        {
+          key: 'name',
+          sortable: true,
+          label: this.$t('tableColumnUserInstitution')
+        }
+      ]
     }
   },
   watch: {
@@ -77,5 +101,8 @@ export default {
 </script>
 
 <style>
-
+.base-table table th[aria-sort="none"] {
+  padding-right: 0.75em !important;
+  background-image: none !important;
+}
 </style>

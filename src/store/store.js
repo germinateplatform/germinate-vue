@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
-import VueAnalytics from 'vue-analytics'
 
 Vue.use(Vuex)
 
@@ -41,20 +40,20 @@ const userState = {
     germplasmAttributes: [],
     images: [],
     climates: [],
-    climateData: [],
+    climateData: ['climateId'],
     compounds: [],
-    compoundData: [],
+    compoundData: ['compoundId'],
     maps: [],
     markers: [],
     mapDefinitions: [],
     datasets: ['experimentId'],
     datasetAttributes: [],
     entities: [],
-    groups: [],
+    groups: ['userId'],
     locations: [],
     pedigrees: [],
     traits: [],
-    trialsData: [],
+    trialsData: ['traitId'],
     collaborators: []
   },
   asyncJobUuids: [],
@@ -106,16 +105,11 @@ const storeState = {
       state.serverSettings = newServerSettings
 
       if (newServerSettings && newServerSettings.googleAnalyticsKey) {
-        Vue.use(VueAnalytics, {
-          id: newServerSettings.googleAnalyticsKey,
-          disabled: () => {
-            if (state.serverSettings.cookiesAccepted != null) {
-              return !state.serverSettings.cookiesAccepted
-            } else {
-              return false
-            }
-          }
-        })
+        if (state.userStates[state.token ? state.token.id : null].cookiesAccepted === true) {
+          Vue.$ga.enable()
+        } else {
+          Vue.$ga.disable()
+        }
       }
     },
     ON_LOCALE_CHANGED_MUTATION: function (state, newLocale) {
@@ -198,6 +192,14 @@ const storeState = {
     },
     ON_COOKIES_ACCEPTED_MUTATION: function (state, newCookiesAccepted) {
       state.userStates[state.token ? state.token.id : null].cookiesAccepted = newCookiesAccepted
+
+      if (state.serverSettings && state.serverSettings.googleAnalyticsKey) {
+        if (newCookiesAccepted === true) {
+          Vue.$ga.enable()
+        } else {
+          Vue.$ga.disable()
+        }
+      }
     }
   },
   actions: {

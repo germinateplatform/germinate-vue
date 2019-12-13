@@ -299,7 +299,7 @@ const router = new Router({
               }
             },
             {
-              path: 'export/genotypes/:datasetIds',
+              path: 'export/genotype/:datasetIds',
               name: 'export-genotypes',
               component: () => import('@/views/data/export/GenotypeExport.vue'),
               beforeEnter: requireAuth,
@@ -433,10 +433,6 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   var serverSettings = store.getters.serverSettings
-
-  if (Vue.$ga) {
-    Vue.$ga.page(router)
-  }
 
   // Check if this page can be hidden
   const canBeHidden = !to.meta || to.meta.canBeHidden !== false

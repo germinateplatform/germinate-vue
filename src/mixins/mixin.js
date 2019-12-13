@@ -44,6 +44,50 @@ export default {
   data: function () {
     return {
       MAX_JAVA_INTEGER: 2147483647,
+      operators: [
+        {
+          text: () => this.$t('operatorsAnd'),
+          value: 'and'
+        },
+        {
+          text: () => this.$t('operatorsOr'),
+          value: 'or'
+        }
+      ],
+      comparators: {
+        contains: {
+          text: () => this.$t('comparatorsContains'),
+          values: 1
+        },
+        equals: {
+          text: () => this.$t('comparatorsEqual'),
+          values: 1
+        },
+        between: {
+          text: () => this.$t('comparatorsBetween'),
+          values: 2
+        },
+        greaterThan: {
+          text: () => this.$t('comparatorsGreaterThan'),
+          values: 1
+        },
+        greaterOrEquals: {
+          text: () => this.$t('comparatorsGreaterThanOrEquals'),
+          values: 1
+        },
+        lessThan: {
+          text: () => this.$t('comparatorsLessThan'),
+          values: 1
+        },
+        lessOrEquals: {
+          text: () => this.$t('comparatorsLessThanOrEquals'),
+          values: 1
+        },
+        inSet: {
+          text: () => this.$t('comparatorsInSet'),
+          values: 1
+        }
+      },
       exportFormats: {
         flapjack: {
           name: 'Flapjack',
@@ -238,6 +282,9 @@ export default {
     }
   },
   methods: {
+    isTableColumnHidden: function (tableName, columnKey) {
+      return (this.hiddenColumns[tableName].indexOf(columnKey) !== -1) ? 'd-none' : ''
+    },
     getNumberWithSuffix: function (value, decimals = 2) {
       const k = 1000
       const dm = decimals < 0 ? 0 : decimals

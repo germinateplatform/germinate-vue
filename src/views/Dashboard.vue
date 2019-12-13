@@ -31,6 +31,7 @@
 <script>
 import ImageCarousel from '@/components/images/ImageCarousel'
 import NewsSection from '@/components/news/NewsSection'
+import statsApi from '@/mixins/api/stats.js'
 
 export default {
   name: 'dashboard',
@@ -70,6 +71,7 @@ export default {
       ]
     }
   },
+  mixins: [ statsApi ],
   methods: {
     getColor: function (index) {
       if (!this.serverSettings || !this.serverSettings.colorsTemplate) {

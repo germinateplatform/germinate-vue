@@ -59,6 +59,8 @@
 
 <script>
 import { EventBus } from '@/plugins/event-bus.js'
+import groupApi from '@/mixins/api/group.js'
+import germplasmApi from '@/mixins/api/germplasm.js'
 
 export default {
   data: function () {
@@ -83,6 +85,7 @@ export default {
       this.updateSelectionOptions()
     }
   },
+  mixins: [ groupApi, germplasmApi ],
   methods: {
     updateSelectionOptions: function () {
       this.selectionOptions = [{

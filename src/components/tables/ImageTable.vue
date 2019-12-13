@@ -5,14 +5,15 @@
                v-bind="$props"
                ref="table"
                @loaded="update">
-      <span slot="imageRefTable" slot-scope="props"><i :class="`mdi mdi-18px ${imageTypes[props.row.imageRefTable].icon} fix-alignment`" :style="`color: ${imageTypes[props.row.imageRefTable].color()};`" /> {{ imageTypes[props.row.imageRefTable].text() }}</span>
+      <template v-slot:cell(imageRefTable)="data">
+        <span><i :class="`mdi mdi-18px ${imageTypes[data.item.imageRefTable].icon} fix-alignment`" :style="`color: ${imageTypes[data.item.imageRefTable].color()};`" /> {{ imageTypes[data.item.imageRefTable].text() }}</span>
+      </template>
 
-      <!-- Formatted date -->
-      <span slot="createdOn" slot-scope="props" v-if="props.row.createdOn">{{ props.row.createdOn | toDateTime }}</span>
-
-      <a slot="image" slot-scope="props" :href="getSrc(props.row, 'large')" class="baguettebox" @click.prevent>
-        <img :src="getSrc(props.row, 'small')" class="table-image" />
-      </a>
+      <template v-slot:cell(image)="data">
+        <a :href="getSrc(data.item, 'large')" class="baguettebox" @click.prevent>
+          <img :src="getSrc(data.item, 'small')" class="table-image" />
+        </a>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -28,50 +29,61 @@ export default {
     ...defaultProps.BASE
   },
   data: function () {
-    const columns = [
-      {
-        name: 'imageId',
-        type: Number
-      }, {
-        name: 'imageDescription',
-        type: String
-      }, {
-        name: 'imagePath',
-        type: String
-      }, {
-        name: 'imageRefTable',
-        type: String
-      }, {
-        name: 'referenceName',
-        type: String
-      }, {
-        name: 'createdOn',
-        type: Date
-      }, {
-        name: 'image',
-        type: undefined
-      }
-    ]
     return {
       options: {
         idColumn: 'imageId',
-        tableName: 'images',
-        sortable: ['imageId', 'imageDescription', 'imagePath', 'imageRefTable', 'referenceName', 'createdOn'],
-        filterable: [],
-        headings: {
-          imageId: () => this.$t('tableColumnImageId'),
-          imageDescription: () => this.$t('tableColumnImageDescription'),
-          imagePath: () => this.$t('tableColumnImagePath'),
-          imageRefTable: () => this.$t('tableColumnImageReferenceTable'),
-          referenceName: () => this.$t('tableColumnImageReferenceName'),
-          createdOn: () => this.$t('tableColumnImageCreatedOn'),
-          image: ''
-        },
-        columnsClasses: {
-          imageId: 'text-right'
+        tableName: 'images'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'imageId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'imageId')}`,
+          label: this.$t('tableColumnImageId')
+        }, {
+          key: 'imageDescription',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'imageDescription')}`,
+          label: this.$t('tableColumnImageDescription')
+        }, {
+          key: 'imagePath',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'imagePath')}`,
+          label: this.$t('tableColumnImagePath')
+        }, {
+          key: 'imageRefTable',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'imageRefTable')}`,
+          label: this.$t('tableColumnImageReferenceTable')
+        }, {
+          key: 'referenceName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'referenceName')}`,
+          label: this.$t('tableColumnImageReferenceName')
+        }, {
+          key: 'createdOn',
+          type: Date,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
+          label: this.$t('tableColumnImageCreatedOn'),
+          formatter: this.$options.filters.toDateTime
+        }, {
+          key: 'image',
+          type: undefined,
+          sortable: false,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'image')}`,
+          label: ''
         }
-      },
-      columns: columns
+      ]
     }
   },
   components: {
@@ -91,7 +103,6 @@ export default {
       return this.baseUrl + 'image/src?' + paramString
     },
     update: function () {
-      console.log('update')
       this.$nextTick(() => {
         baguetteBox.run('.baguettebox', {
           captions: 'true',

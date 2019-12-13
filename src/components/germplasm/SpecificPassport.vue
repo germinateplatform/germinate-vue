@@ -5,12 +5,12 @@
         <b-navbar-nav>
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
+          <b-nav-item href="#datasets" @click="scrollIntoView">{{ $t('pagePassportDatasetTitle') }}</b-nav-item>
           <b-nav-item href="#pedigree" @click="scrollIntoView">{{ $t('pagePassportPedigreeTitle') }}</b-nav-item>
-          <b-nav-item href="#entity" @click="scrollIntoView">{{ $t('pagePassportEntityTitle') }}</b-nav-item>
           <b-nav-item href="#location" @click="scrollIntoView" v-if="germplasm.declatitude && germplasm.declongitude">{{ $t('pagePassportLocationTitle') }}</b-nav-item>
           <b-nav-item href="#images" @click="scrollIntoView">{{ $t('pagePassportImageTitle') }}</b-nav-item>
           <b-nav-item href="#groups" @click="scrollIntoView">{{ $t('pagePassportGroupTitle') }}</b-nav-item>
-          <b-nav-item href="#datasets" @click="scrollIntoView">{{ $t('pagePassportDatasetTitle') }}</b-nav-item>
+          <b-nav-item href="#entity" @click="scrollIntoView">{{ $t('pagePassportEntityTitle') }}</b-nav-item>
           <b-nav-item href="#attributes" @click="scrollIntoView">{{ $t('pagePassportAttributeTitle') }}</b-nav-item>
         </b-navbar-nav>
       </b-navbar>
@@ -42,25 +42,16 @@
         </b-row>
 
         <hr />
+        <h2 class="mdi-heading" id="datasets"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
+        <p v-html="$t('pagePassportDatasetText')" />
+        <DatasetTable :getData="getDatasetData" />
+
+        <hr />
         <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-sitemap text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
         <p v-html="$t('pagePassportPedigreeText')" />
         <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
 
         <PedigreeChart :germplasmId="germplasmId" />
-
-        <hr />
-        <h2 class="mdi-heading" id="entity"><i class="mdi mdi-36px mdi-file-tree text-primary" /> <span> {{ $t('pagePassportEntityTitle') }}</span></h2>
-        <p v-html="$t('pagePassportEntityText')" />
-        <ul class="no-bullet-list">
-          <li><i class="mdi mdi-18px fix-alignment mdi-circle-medium" />{{ entityTypes['Accession'].text() }}</li>
-          <ul>
-            <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Plant/Plot'].text() }}</li>
-            <ul>
-              <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Sample'].text() }}</li>
-            </ul>
-          </ul>
-        </ul>
-        <EntityTable :getData="getEntityData" :filterOn="entityFilter" />
 
         <template v-if="germplasm.declatitude && germplasm.declongitude">
           <hr />
@@ -80,9 +71,18 @@
         <GroupTable :getData="getGroupData" />
 
         <hr />
-        <h2 class="mdi-heading" id="datasets"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
-        <p v-html="$t('pagePassportDatasetText')" />
-        <DatasetTable :getData="getDatasetData" />
+        <h2 class="mdi-heading" id="entity"><i class="mdi mdi-36px mdi-file-tree text-primary" /> <span> {{ $t('pagePassportEntityTitle') }}</span></h2>
+        <p v-html="$t('pagePassportEntityText')" />
+        <ul class="no-bullet-list">
+          <li><i class="mdi mdi-18px fix-alignment mdi-circle-medium" />{{ entityTypes['Accession'].text() }}</li>
+          <ul>
+            <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Plant/Plot'].text() }}</li>
+            <ul>
+              <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Sample'].text() }}</li>
+            </ul>
+          </ul>
+        </ul>
+        <EntityTable :getData="getEntityData" :filterOn="entityFilter" />
 
         <hr />
         <h2 class="mdi-heading" id="attributes"><i class="mdi mdi-36px text-primary mdi-playlist-plus"/><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
@@ -110,6 +110,8 @@ import LocationMap from '@/components/map/LocationMap'
 import ImageGallery from '@/components/images/ImageGallery'
 import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
+import germplasmApi from '@/mixins/api/germplasm.js'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   data: function () {
@@ -147,6 +149,7 @@ export default {
     PedigreeChart,
     PedigreeTable
   },
+  mixins: [ germplasmApi, miscApi ],
   methods: {
     scrollIntoView: function (evt) {
       evt.preventDefault()

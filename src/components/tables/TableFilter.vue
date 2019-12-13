@@ -1,27 +1,15 @@
 <template>
   <div>
     <div>
-      <div v-if="tempFilter" class="mb-2">
-        <span v-for="(filter, index) in tempFilter" :key="filter.column.name">
-          <b-badge :variant="isValidFilter(filter) ? 'info' : 'danger'" class="mr-2" v-b-tooltip="isValidFilter(filter) ? null : $t('tooltipTableFilterInvalid')" >
-            {{ "'" + texts[filter.column.name]() + "' " + comparators[filter.comparator].text() + " '" + filter.values.filter(f => f !== null).join(", ") + "'" }}
-          </b-badge>
-          <b-badge v-if="index < tempFilter.length - 1" class="mr-2">
-            {{ operators.filter(o => o.value === filter.operator)[0].text }}
-          </b-badge>
-        </span>
-      </div>
-    </div>
-    <div>
       <b-button-group class="table-filter">
-        <b-dropdown left v-if="columns && columns.length > 0" class="overflow-dropdown">
+        <b-dropdown left v-if="columns && columns.length > 0" class="overflow-dropdown" v-b-tooltip.hover :title="$t('tooltipTableColumnSelector')">
           <template slot="button-content"><i class="mdi mdi-18px mdi-view-column"/></template>
           <b-dropdown-form>
-            <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.name" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
+            <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.key" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
           </b-dropdown-form>
         </b-dropdown>
-        <b-button :variant="(filter && filter.length > 0) ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" />
-        <b-button v-if="filter && filter.length > 0" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter"/>
+        <b-button :variant="(filter && filter.length > 0) ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" v-b-tooltip.hover :title="$t('tooltipTableFilter')" />
+        <b-button v-if="filter && filter.length > 0" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter" v-b-tooltip.hover :title="$t('tooltipTableClearFilter')"/>
       </b-button-group>
       <b-modal :id="'table-filter-modal-' + id" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false, true)" @show="init">
         <b-form v-on:submit.prevent="setFilter(true, true)">
@@ -30,11 +18,11 @@
               <b-input-group class="mb-3">
                 <b-input-group-prepend>
                   <!-- Column selector -->
-                  <b-dropdown :text="texts[f.column.name]()" class="overflow-dropdown">
+                  <b-dropdown :text="getText(f.column)" class="overflow-dropdown">
                     <b-dropdown-item v-for="column in getColumns"
-                                    :key="'filter-column-' + column.name"
+                                    :key="'filter-column-' + column.key"
                                     @click="switchColumn(f, column)">
-                      {{ texts[column.name]() }}
+                      {{ getText(column) }}
                     </b-dropdown-item>
                   </b-dropdown>
                   <!-- comparator selector -->
@@ -103,10 +91,6 @@ export default {
         return []
       }
     },
-    texts: {
-      type: Object,
-      default: null
-    },
     tableName: {
       type: String,
       default: null
@@ -117,10 +101,6 @@ export default {
     }
   },
   data: function () {
-    var operators = [
-      { text: this.$t('operatorsAnd'), value: 'and' },
-      { text: this.$t('operatorsOr'), value: 'or' }
-    ]
     return {
       id: this.uuidv4(),
       validComparatorsForType: {
@@ -130,44 +110,10 @@ export default {
         entityType: ['equals'],
         json: ['contains']
       },
-      comparators: {
-        contains: {
-          text: () => this.$t('comparatorsContains'),
-          values: 1
-        },
-        equals: {
-          text: () => this.$t('comparatorsEqual'),
-          values: 1
-        },
-        between: {
-          text: () => this.$t('comparatorsBetween'),
-          values: 2
-        },
-        greaterThan: {
-          text: () => this.$t('comparatorsGreaterThan'),
-          values: 1
-        },
-        greaterOrEquals: {
-          text: () => this.$t('comparatorsGreaterThanOrEquals'),
-          values: 1
-        },
-        lessThan: {
-          text: () => this.$t('comparatorsLessThan'),
-          values: 1
-        },
-        lessOrEquals: {
-          text: () => this.$t('comparatorsLessThanOrEquals'),
-          values: 1
-        },
-        inSet: {
-          text: () => this.$t('comparatorsInSet'),
-          values: 1
-        }
-      },
       filter: null,
       tempFilter: [],
       targetFilter: [],
-      operators: operators
+      hasBeenCleared: false
     }
   },
   watch: {
@@ -179,11 +125,18 @@ export default {
     // Only get the columns that have a text that isn't empty
     getColumns: function () {
       return this.columns.filter(c => {
-        var show = this.texts[c.name] ? (this.texts[c.name]() !== '') : false
+        var show = c.label ? (c.label !== '') : false
         show = show && c.type !== undefined
         show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
         return show
       })
+    },
+    localFilterOn: function () {
+      if (this.hasBeenCleared && this.filterOn) {
+        return this.filterOn.filter(f => f.canBeChanged === false)
+      } else {
+        return this.filterOn
+      }
     }
   },
   methods: {
@@ -268,7 +221,7 @@ export default {
 
       this.filter.forEach(f => {
         var newFilter = {
-          column: f.column.name,
+          column: f.column.key || f.column.name,
           operator: f.operator,
           comparator: f.comparator,
           values: f.values
@@ -289,7 +242,7 @@ export default {
         }
       })
 
-      this.$emit('on-filter-changed', {
+      this.$emit('filter-changed', {
         filter: this.targetFilter,
         triggerUpdate: trigger
       })
@@ -308,24 +261,32 @@ export default {
       })
     },
     getText: function (column) {
-      if (this.texts && this.texts[column.name]) {
-        return this.texts[column.name]()
+      if (column.label) {
+        return column.label
+      } else if (column.name) {
+        const matches = this.columns.filter(c => c.key === column.name)
+        if (matches && matches.length > 0) {
+          return matches[0].label
+        } else {
+          return column.name
+        }
       } else {
-        return column
+        return column.key
       }
     },
     getValue: function (column) {
-      return this.hiddenColumns[this.tableName].indexOf(column.name) === -1
+      return this.hiddenColumns[this.tableName].indexOf(column.key) === -1
     },
     toggleColumn: function (value, column) {
       if (value) {
-        this.$store.dispatch('ON_HIDDEN_COLUMNS_REMOVE', { type: this.tableName, columns: [column.name] })
+        this.$store.dispatch('ON_HIDDEN_COLUMNS_REMOVE', { type: this.tableName, columns: [column.key] })
       } else {
-        this.$store.dispatch('ON_HIDDEN_COLUMNS_ADD', { type: this.tableName, columns: [column.name] })
+        this.$store.dispatch('ON_HIDDEN_COLUMNS_ADD', { type: this.tableName, columns: [column.key] })
       }
-      this.$emit('on-column-toggle', column.name)
+      this.$emit('on-column-toggle', column.key)
     },
     clearFilter: function () {
+      this.hasBeenCleared = true
       this.filter = this.filter.filter(f => {
         if (f.canBeChanged !== undefined) {
           return !f.canBeChanged
@@ -351,7 +312,7 @@ export default {
           values: f.values
         })
       })
-      this.$emit('on-filter-changed', {
+      this.$emit('filter-changed', {
         filter: this.targetFilter,
         triggerUpdate: true
       })
@@ -363,8 +324,8 @@ export default {
     },
     resetFilter: function (trigger) {
       this.tempFilter = []
-      if (this.filterOn) {
-        this.filterOn.forEach(f => {
+      if (this.localFilterOn) {
+        this.localFilterOn.forEach(f => {
           this.tempFilter.push(f)
         })
       }
@@ -373,7 +334,7 @@ export default {
     }
   },
   mounted: function () {
-    if (this.filterOn) {
+    if (this.localFilterOn) {
       this.resetFilter(true)
     }
   }

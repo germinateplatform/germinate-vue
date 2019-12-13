@@ -5,10 +5,12 @@
                v-bind="$props"
                ref="germplasmAttributeTable"
                v-on="$listeners">
-      <span slot="attributeType" slot-scope="props" v-if="props.row.attributeType">
-        <i :class="'mdi mdi-18px fix-alignment ' + dataTypes[props.row.attributeType].icon" :style="`color: ${dataTypes[props.row.attributeType].color()};`"/>
-        <span> {{ dataTypes[props.row.attributeType].text() }}</span>
-      </span>
+      <template v-slot:cell(attributeType)="data">
+        <span v-if="data.item.attributeType">
+          <i :class="'mdi mdi-18px fix-alignment ' + dataTypes[data.item.attributeType].icon" :style="`color: ${dataTypes[data.item.attributeType].color()};`"/>
+          <span> {{ dataTypes[data.item.attributeType].text() }}</span>
+        </span>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -24,49 +26,60 @@ export default {
     ...defaultProps.DOWNLOAD
   },
   data: function () {
-    var columns = [{
-      name: 'germplasmId',
-      type: undefined
-    }, {
-      name: 'germplasmGid',
-      type: undefined
-    }, {
-      name: 'germplasmName',
-      type: undefined
-    }, {
-      name: 'attributeName',
-      type: String
-    }, {
-      name: 'attributeDescription',
-      type: String
-    }, {
-      name: 'attributeType',
-      type: 'dataType'
-    }, {
-      name: 'attributeValue',
-      type: String
-    }]
-
     return {
       options: {
         idColumn: 'germplasmId',
-        tableName: 'germplasmAttributes',
-        sortable: ['germplasmId', 'germplasmGid', 'germplasmName', 'attributeName', 'attributeDescription', 'attributeType', 'attributeValue'],
-        filterable: [],
-        headings: {
-          germplasmId: () => this.$t('tableColumnAttributeGermplasmId'),
-          germplasmGid: () => this.$t('tableColumnAttributeGermplasmGid'),
-          germplasmName: () => this.$t('tableColumnAttributeGermplasmName'),
-          attributeName: () => this.$t('tableColumnAttributeName'),
-          attributeDescription: () => this.$t('tableColumnAttributeDescription'),
-          attributeType: () => this.$t('tableColumnAttributeDataType'),
-          attributeValue: () => this.$t('tableColumnAttributeValue')
-        },
-        columnsClasses: {
-          germplasmId: 'text-right'
+        tableName: 'germplasmAttributes'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'germplasmId',
+          type: undefined,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
+          label: this.$t('tableColumnAttributeGermplasmId')
+        }, {
+          key: 'germplasmGid',
+          type: undefined,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
+          label: this.$t('tableColumnAttributeGermplasmGid')
+        }, {
+          key: 'germplasmName',
+          type: undefined,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
+          label: this.$t('tableColumnAttributeGermplasmName')
+        }, {
+          key: 'attributeName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeName')}`,
+          label: this.$t('tableColumnAttributeName')
+        }, {
+          key: 'attributeDescription',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeDescription')}`,
+          label: this.$t('tableColumnAttributeDescription')
+        }, {
+          key: 'attributeType',
+          type: 'dataType',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeType')}`,
+          label: this.$t('tableColumnAttributeDataType')
+        }, {
+          key: 'attributeValue',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeValue')}`,
+          label: this.$t('tableColumnAttributeValue')
         }
-      },
-      columns: columns
+      ]
     }
   },
   components: {

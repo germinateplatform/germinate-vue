@@ -19,6 +19,8 @@
 
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
+import datasetApi from '@/mixins/api/dataset.js'
+
 export default {
   data: function () {
     return {
@@ -29,9 +31,20 @@ export default {
   components: {
     DatasetTable
   },
+  mixins: [ datasetApi ],
   methods: {
     checkLicenses: function () {
       var selectedIds = this.$refs.datasetTable.getSelected()
+
+      if (!selectedIds || selectedIds.length < 1) {
+        this.$bvToast.toast(this.$t('toastSelectDatasetText'), {
+          title: this.$t('toastSelectDatasetTitle'),
+          variant: 'danger',
+          autoHideDelay: 5000,
+          appendToast: true
+        })
+        return
+      }
 
       const query = {
         page: 1,

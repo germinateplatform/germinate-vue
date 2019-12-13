@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import datasetApi from '@/mixins/api/dataset.js'
+
 export default {
   name: 'DefaultAside',
   data: function () {
@@ -69,6 +71,7 @@ export default {
       }
     }
   },
+  mixins: [ datasetApi ],
   methods: {
     deleteJob: function (job) {
       this.$bvModal.msgBoxConfirm(this.$t('modalTextDeleteAsyncJob'), {

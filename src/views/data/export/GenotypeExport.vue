@@ -13,6 +13,7 @@
 
 <script>
 import GenotypeExportSelection from '@/components/export/GenotypeExportSelection'
+import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -24,6 +25,7 @@ export default {
   components: {
     GenotypeExportSelection
   },
+  mixins: [ datasetApi ],
   methods: {
     redirectBack: function () {
       this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', [{

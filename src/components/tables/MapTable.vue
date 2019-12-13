@@ -4,10 +4,16 @@
                :columns="columns"
                v-bind="$props"
                v-on="$listeners">
-      <router-link slot="mapId" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapId}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapId)">{{ props.row.mapId }}</router-link>
-      <router-link slot="mapName" slot-scope="props" :to="`/data/genotypes/maps/${props.row.mapId}`" event="" @click.native.prevent="$emit('map-selected', props.row.mapId)">{{ props.row.mapName }}</router-link>
-      <div slot="mapDescription" slot-scope="props" v-if="isLink(props.row)"> <span v-html="props.row.mapDescription" />&nbsp;<i class="mdi mdi-open-in-new" /></div>
-      <span v-else>{{ props.row.mapDescription }}</span>
+      <template v-slot:cell(mapId)="data">
+        <router-link :to="`/data/genotypes/maps/${data.item.mapId}`" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapId }}</router-link>
+      </template>
+      <template v-slot:cell(mapName)="data">
+        <router-link :to="`/data/genotypes/maps/${data.item.mapId}`" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapName }}</router-link>
+      </template>
+      <template v-slot:cell(mapDescription)="data">
+        <div v-if="isLink(data.item)"> <span v-html="data.item.mapDescription" />&nbsp;<i class="mdi mdi-open-in-new" /></div>
+        <span v-else>{{ data.item.mapDescription }}</span>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -22,39 +28,43 @@ export default {
     ...defaultProps.FULL
   },
   data: function () {
-    const columns = [
-      {
-        name: 'mapId',
-        type: Number
-      }, {
-        name: 'mapName',
-        type: String
-      }, {
-        name: 'mapDescription',
-        type: String
-      }, {
-        name: 'markerCount',
-        type: Number
-      }
-    ]
     return {
       options: {
         idColumn: 'mapId',
-        tableName: 'maps',
-        sortable: columns,
-        filterable: [],
-        headings: {
-          mapId: () => this.$t('tableColumnMapId'),
-          mapName: () => this.$t('tableColumnMapName'),
-          mapDescription: () => this.$t('tableColumnMapDescription'),
-          markerCount: () => this.$t('tableColumnMapMarkerCount')
-        },
-        columnsClasses: {
-          mapId: 'text-right',
-          markerCount: 'text-right'
+        tableName: 'maps'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'mapId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'mapId')}`,
+          label: this.$t('tableColumnMapId')
+        }, {
+          key: 'mapName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'mapName')}`,
+          label: this.$t('tableColumnMapName')
+        }, {
+          key: 'mapDescription',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'mapDescription')}`,
+          label: this.$t('tableColumnMapDescription')
+        }, {
+          key: 'markerCount',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'markerCount')}`,
+          label: this.$t('tableColumnMapMarkerCount'),
+          formatter: this.$options.filters.toThousandSeparators
         }
-      },
-      columns: columns
+      ]
     }
   },
   components: {

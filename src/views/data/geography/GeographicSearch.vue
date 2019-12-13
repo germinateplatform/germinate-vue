@@ -55,6 +55,8 @@ import GermplasmTable from '@/components/tables/GermplasmTable'
 import LocationTable from '@/components/tables/LocationTable'
 import PointSearchMap from '@/components/map/PointSearchMap'
 import LocationMap from '@/components/map/LocationMap'
+import germplasmApi from '@/mixins/api/germplasm.js'
+import locationApi from '@/mixins/api/location.js'
 
 export default {
   data: function () {
@@ -72,6 +74,7 @@ export default {
     PointSearchMap,
     LocationMap
   },
+  mixins: [ germplasmApi, locationApi ],
   methods: {
     getGermplasmData: function (data, callback) {
       if (this.tabIndex === 0) {

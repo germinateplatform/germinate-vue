@@ -7,10 +7,13 @@
 
 <script>
 import TraitTable from '@/components/tables/TraitTable'
+import traitApi from '@/mixins/api/trait.js'
+
 export default {
   components: {
     TraitTable
   },
+  mixins: [ traitApi ],
   methods: {
     getData: function (data, callback) {
       return this.apiPostTraitTable(data, callback)

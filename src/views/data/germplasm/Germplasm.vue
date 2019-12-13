@@ -19,15 +19,17 @@
       </b-button>
     </b-button-group>
 
-    <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" :downloadTable="downloadTable" ref="germplasmTable" />
+    <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" :downloadTable="downloadTable"  ref="germplasmTable" />
 
     <GermplasmDownload />
   </div>
 </template>
 
 <script>
-import GermplasmDownload from '@/components/germplasm/GermplasmDownload'
 import GermplasmTable from '@/components/tables/GermplasmTable'
+import GermplasmDownload from '@/components/germplasm/GermplasmDownload'
+import germplasmApi from '@/mixins/api/germplasm.js'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   data: function () {
@@ -37,8 +39,8 @@ export default {
     }
   },
   components: {
-    GermplasmDownload,
-    GermplasmTable
+    GermplasmTable,
+    GermplasmDownload
   },
   watch: {
     selectedEntityType: function (newValue, oldValue) {
@@ -57,6 +59,7 @@ export default {
       }
     }
   },
+  mixins: [ germplasmApi, miscApi ],
   methods: {
     setEntityType: function (entityType) {
       this.selectedEntityType = entityType

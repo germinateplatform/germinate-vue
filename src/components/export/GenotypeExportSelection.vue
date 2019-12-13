@@ -21,8 +21,8 @@
       </b-col>
     </b-row>
     <template v-if="experimentType === 'genotype' && datasetIds && datasetIds.length > 1">
-      <h2 class="mt-3">Germplasm and markers per dataset</h2>
-      <p>This table shows you how many of the germplasm and markers you selected are in each of the datasets you want to export. If there are datasets that you no longer want to export based on this information, please untick them in the table.</p>
+      <h2 class="mt-3">{{ $t('pageGenotypesExportMultipleSubselectTitle') }}</h2>
+      <p>{{ $t('pageGenotypesExportMultipleSubselectText') }}</p>
       <GenotypeDatasetTable :getData="getGenotypeSummaryData" :getIds="null" :selectable="true" v-on:selection-changed="onSelectionChanged" ref="genotypeDatasetTable" />
     </template>
     <template v-if="(datasetIds && datasetIds.length === 1) || selectedDatasetIds.length > 0 || experimentType !== 'genotype'">
@@ -54,6 +54,9 @@
 import { EventBus } from '@/plugins/event-bus.js'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 import GenotypeDatasetTable from '@/components/tables/GenotypeDatasetTable'
+import datasetApi from '@/mixins/api/dataset.js'
+import groupApi from '@/mixins/api/group.js'
+import genotypeApi from '@/mixins/api/genotype.js'
 
 export default {
   props: {
@@ -87,19 +90,23 @@ export default {
     ExportGroupSelection,
     GenotypeDatasetTable
   },
+  mixins: [ datasetApi, groupApi, genotypeApi ],
   methods: {
     onSelectionChanged: function (selectedIds) {
       this.selectedDatasetIds = selectedIds
     },
     updateGenotypeDatasetTable: function () {
-      this.$nextTick(() => this.$refs.genotypeDatasetTable.refresh())
+      if (this.$refs.genotypeDatasetTable) {
+        this.$nextTick(() => this.$refs.genotypeDatasetTable.refresh())
+      }
     },
     getGenotypeSummaryData: function (query, callback) {
       var combinedQuery = Object.assign({}, query, this.getQuery(false))
 
       return this.apiPostGenotypeDatasetSummary(combinedQuery, result => {
-        callback(result)
-        this.$nextTick(() => this.$refs.genotypeDatasetTable.setSelectedItems(result.data.map(d => d.datasetId)))
+        if (this.$refs.genotypeDatasetTable) {
+          this.$nextTick(() => this.$refs.genotypeDatasetTable.setSelectedItems(result.data.map(d => d.datasetId)))
+        }
       })
     },
     getQuery: function (isFinal) {

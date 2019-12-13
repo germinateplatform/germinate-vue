@@ -13,6 +13,7 @@
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
 import { loadLanguageAsync } from '@/plugins/i18n'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   name: 'LocaleDropdown',
@@ -33,6 +34,7 @@ export default {
       }]
     }
   },
+  mixins: [ miscApi ],
   methods: {
     onLocaleChanged: function (language) {
       loadLanguageAsync(language.locale).then(() => {

@@ -13,14 +13,29 @@
           </b-form-group>
         </b-tab>
         <!-- REGIONS -->
-        <b-tab :title="$t('pageMapExportOptionRegions')">
+        <b-tab :title="$t('pageMapExportOptionRegions')" class="base-table">
           <p>{{ $t('pageMapExportRegionDescription') }}</p>
-          <v-client-table :columns="columns" :options="options" :data="regions">
-            <b-select slot="chromosome" slot-scope="props" :options="chromosomes" v-model="props.row.chromosome" @change="setRegionChromosome($event, props.index)" />
-            <b-input slot="start" type="number" :min="0" slot-scope="props" v-model="props.row.start" @change="setRegionStart($event, props.index)" />
-            <b-input slot="end" type="number" :min="0" slot-scope="props" v-model="props.row.end" @change="setRegionEnd($event, props.index)"/>
-            <b-button slot="delete" slot-scope="props" variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="deleteRegion(props.row)"><i class="mdi mdi-18px mdi-delete" /></b-button>
-          </v-client-table>
+          <b-table :fields="columns"
+                   :items="regions"
+                   striped
+                   responsive
+                   hover
+                   outlined
+                   show-empty
+                   sort-by="chromosome">
+            <template v-slot:cell(chromosome)="data">
+              <b-select :options="chromosomes" v-model="data.item.chromosome" @change="setRegionChromosome($event, props.index)" />
+            </template>
+            <template v-slot:cell(start)="data">
+              <b-input type="number" :min="0" v-model="data.item.start" @change="setRegionStart($event, props.index)" />
+            </template>
+            <template v-slot:cell(end)="data">
+              <b-input type="number" :min="0" v-model="data.item.end" @change="setRegionEnd($event, props.index)"/>
+            </template>
+            <template v-slot:cell(delete)="data">
+              <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="deleteRegion(data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
+            </template>
+          </b-table>
           <b-button @click="addRegion()" v-b-tooltip.hover :title="$t('tooltipMapExportRegionAdd')"><i class="mdi mdi-18px mdi-table-row-plus-after" /></b-button>
         </b-tab>
         <!-- MARKER INTERVAL -->
@@ -80,6 +95,7 @@
 
 <script>
 import Autocomplete from '@trevoreyre/autocomplete-vue'
+import genotypeApi from '@/mixins/api/genotype.js'
 
 export default {
   props: {
@@ -100,40 +116,37 @@ export default {
         right: 0
       },
       intervalMarkerIdOne: null,
-      intervalMarkerIdTwo: null,
-      columns: ['chromosome', 'start', 'end', 'delete'],
-      options: {
-        skin: 'table table-striped table-hover',
-        texts: this.getPaginationTexts(),
-        filterByColumn: true,
-        perPage: 1000,
-        headings: {
-          chromosome: () => this.$t('tableColumnMapExportRegionChromosome'),
-          start: () => this.$t('tableColumnMapExportRegionStart'),
-          end: () => this.$t('tableColumnMapExportRegionEnd'),
-          delete: () => this.$t('tableColumnMapExportRegionDelete')
-        },
-        perPageValues: [],
-        pagination: {
-          chunk: 5
-        },
-        multiSorting: {
-          chromosome: [
-            {
-              column: 'start',
-              matchDir: true
-            }
-          ]
-        },
-        orderBy: {
-          column: 'chromosome'
+      intervalMarkerIdTwo: null
+    }
+  },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'chromosome',
+          sortable: true,
+          label: this.$t('tableColumnMapExportRegionChromosome')
+        }, {
+          key: 'start',
+          sortable: true,
+          label: this.$t('tableColumnMapExportRegionStart')
+        }, {
+          key: 'end',
+          sortable: true,
+          label: this.$t('tableColumnMapExportRegionEnd')
+        }, {
+          key: 'delete',
+          sortable: true,
+          label: this.$t('tableColumnMapExportRegionDelete'),
+          class: 'text-right'
         }
-      }
+      ]
     }
   },
   components: {
     Autocomplete
   },
+  mixins: [ genotypeApi ],
   methods: {
     setRegionChromosome: function (event, index) {
       index -= 1
@@ -283,5 +296,8 @@ export default {
 </script>
 
 <style>
-
+.base-table table th[aria-sort="none"] {
+  padding-right: 0.75em !important;
+  background-image: none !important;
+}
 </style>

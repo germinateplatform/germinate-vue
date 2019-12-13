@@ -17,16 +17,28 @@
       <hr />
       <h2>Status report</h2>
       <p class="text-warning">This table only shows the first error of each type. Please note that there may be many more errors in your file.</p>
-      <v-client-table :data="response" :columns="columns" :options="options">
-        <i slot="icon" slot-scope="props" :class="`mdi mdi-18px ${getIconAndVariant(props.row.status)}`" />
-        <span slot="status" slot-scope="props">{{ statusOptions[props.row.status]() }}</span>
-      </v-client-table>
+      <b-table :fields="columns"
+               :items="response"
+               striped
+               responsive
+               hover
+               outlined
+               show-empty
+               sort-by="rowIndex">
+        <template v-slot:cell(icon)="data">
+          <i :class="`mdi mdi-18px ${getIconAndVariant(data.item.status)}`" />
+        </template>
+        <template v-slot:cell(status)="data">
+          <span>{{ statusOptions[data.item.status]() }}</span>
+        </template>
+      </b-table>
     </template>
   </div>
 </template>
 
 <script>
 import { EventBus } from '@/plugins/event-bus.js'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   data: function () {
@@ -37,24 +49,6 @@ export default {
       timer: '',
       error: null,
       status: null,
-      columns: ['icon', 'status', 'rowIndex', 'message'],
-      options: {
-        skin: 'table table-striped table-hover',
-        texts: this.getPaginationTexts(),
-        filterable: [],
-        perPage: Number.MAX_SAFE_INTEGER,
-        perPageValues: [],
-        pagination: {
-          chunk: Number.MAX_SAFE_INTEGER
-        },
-        orderBy: {
-          column: 'rowIndex',
-          ascending: true
-        },
-        headings: {
-          icon: ''
-        }
-      },
       statusOptions: {
         OK: () => this.$t('importStatusOk'),
         GENERIC_DUPLICATE_COLUMN: () => this.$t('importStatusGenericDuplicateColumn'),
@@ -75,6 +69,23 @@ export default {
       }
     }
   },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'icon',
+          label: ''
+        }, {
+          key: 'status'
+        }, {
+          key: 'rowIndex'
+        }, {
+          key: 'message'
+        }
+      ]
+    }
+  },
+  mixins: [ miscApi ],
   methods: {
     getIconAndVariant: function (status) {
       if (status === 'OK') {

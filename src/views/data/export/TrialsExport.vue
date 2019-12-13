@@ -27,6 +27,8 @@
       </b-row>
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
+                        xTypes="traits"
+                        experimentType="trials"
                         :texts="textsChart"
                         :getItems="getTraits"
                         v-show="currentTab === 'overview'" />
@@ -52,6 +54,9 @@ import TraitExportChartSelection from '@/components/export/TraitExportChartSelec
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import { EventBus } from '@/plugins/event-bus.js'
+import datasetApi from '@/mixins/api/dataset.js'
+import miscApi from '@/mixins/api/misc.js'
+import traitApi from '@/mixins/api/trait.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -116,6 +121,7 @@ export default {
     TraitExportChartSelection,
     TrialsDataTable
   },
+  mixins: [ datasetApi, miscApi, traitApi ],
   methods: {
     getTraits: function (callback) {
       callback(this.traits)

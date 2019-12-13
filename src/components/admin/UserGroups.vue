@@ -48,6 +48,7 @@
 import UserGroupTable from '@/components/tables/UserGroupTable'
 import UserGroupMembers from '@/components/admin/UserGroupMembers'
 import { EventBus } from '@/plugins/event-bus.js'
+import usergroupApi from '@/mixins/api/usergroup.js'
 
 export default {
   data: function () {
@@ -79,6 +80,7 @@ export default {
     UserGroupMembers,
     UserGroupTable
   },
+  mixins: [ usergroupApi ],
   methods: {
     selectGroup: function (group) {
       this.selectedGroup = group

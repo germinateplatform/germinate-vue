@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import miscApi from '@/mixins/api/misc.js'
+
 export default {
   data: function () {
     return {
@@ -14,6 +16,7 @@ export default {
       newsItem: null
     }
   },
+  mixins: [ miscApi ],
   mounted: function () {
     this.newsId = this.$route.params.newsId
 

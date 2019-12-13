@@ -5,8 +5,12 @@
                v-bind="$props"
                ref="collaboratorTable"
                v-on="$listeners">
-      <a slot="collaboratorEmail" slot-scope="props" :href="`mailto:${props.row.collaboratorEmail}`" v-if="props.row.collaboratorEmail">{{ props.row.collaboratorEmail }}</a>
-      <span slot="countryName" slot-scope="props" class="table-country" v-b-tooltip.hover :title="props.row.countryName"><i :class="'flag-icon flag-icon-' + props.row.countryCode2.toLowerCase()" v-if="props.row.countryCode2"/> <span> {{ props.row.countryCode2 }}</span></span>
+      <template v-slot:cell(collaboratorEmail)="data">
+        <a :href="`mailto:${data.item.collaboratorEmail}`" v-if="data.item.collaboratorEmail">{{ data.item.collaboratorEmail }}</a>
+      </template>
+      <template v-slot:cell(countryName)="data">
+        <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -21,50 +25,60 @@ export default {
     ...defaultProps.BASE
   },
   data: function () {
-    var columns = [{
-      name: 'collaboratorId',
-      type: Number
-    }, {
-      name: 'collaboratorFirstName',
-      type: String
-    }, {
-      name: 'collaboratorLastName',
-      type: String
-    }, {
-      name: 'collaboratorEmail',
-      type: String
-    }, {
-      name: 'institutionName',
-      type: String
-    }, {
-      name: 'institutionAddress',
-      type: String
-    }, {
-      name: 'countryName',
-      type: String
-    }]
-
     return {
       options: {
         idColumn: 'collaboratorId',
-        tableName: 'collaborators',
-        sortable: ['collaboratorId', 'collaboratorFirstName', 'collaboratorLastName', 'collaboratorEmail', 'institutionName', 'institutionAddress', 'countryName'],
-        filterable: [],
-        headings: {
-          selected: '',
-          collaboratorId: () => this.$t('tableColumnCollaboratorId'),
-          collaboratorFirstName: () => this.$t('tableColumnCollaboratorFirstName'),
-          collaboratorLastName: () => this.$t('tableColumnCollaboratorLastName'),
-          collaboratorEmail: () => this.$t('tableColumnCollaboratorEmail'),
-          institutionName: () => this.$t('tableColumnInstitutionName'),
-          institutionAddress: () => this.$t('tableColumnInstitutionAddress'),
-          countryName: () => this.$t('tableColumnCountryName')
-        },
-        columnsClasses: {
-          collaboratorId: 'text-right'
+        tableName: 'collaborators'
+      }
+    }
+  },
+  computed: {
+    columns: function () {
+      return [
+        {
+          key: 'collaboratorId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'collaboratorId')}`,
+          label: this.$t('tableColumnCollaboratorId')
+        }, {
+          key: 'collaboratorFirstName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorFirstName')}`,
+          label: this.$t('tableColumnCollaboratorFirstName')
+        }, {
+          key: 'collaboratorLastName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorLastName')}`,
+          label: this.$t('tableColumnCollaboratorLastName')
+        }, {
+          key: 'collaboratorEmail',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorEmail')}`,
+          label: this.$t('tableColumnCollaboratorEmail')
+        }, {
+          key: 'institutionName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'institutionName')}`,
+          label: this.$t('tableColumnInstitutionName')
+        }, {
+          key: 'institutionAddress',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'institutionAddress')}`,
+          label: this.$t('tableColumnInstitutionAddress')
+        }, {
+          key: 'countryName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
+          label: this.$t('tableColumnCountryName')
         }
-      },
-      columns: columns
+      ]
     }
   },
   components: {

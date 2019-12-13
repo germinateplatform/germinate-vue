@@ -10,12 +10,14 @@
 <script>
 import ImageGallery from '@/components/images/ImageGallery'
 import ImageTable from '@/components/tables/ImageTable'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   components: {
     ImageGallery,
     ImageTable
   },
+  mixins: [ miscApi ],
   methods: {
     getImages: function (data, onSuccess, onError) {
       this.apiPostImages(data, onSuccess, onError)

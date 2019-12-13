@@ -27,6 +27,8 @@
       </b-row>
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
+                        xType="compounds"
+                        experimentType="compound"
                         :texts="textsChart"
                         :getItems="getCompounds"
                         v-show="currentTab === 'overview'" />
@@ -52,6 +54,7 @@ import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import CompoundExportChartSelection from '@/components/export/CompoundExportChartSelection'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import { EventBus } from '@/plugins/event-bus.js'
+import compoundApi from '@/mixins/api/compound.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -116,6 +119,7 @@ export default {
     CompoundExportChartSelection,
     ExportDownloadSelection
   },
+  mixins: [ compoundApi ],
   methods: {
     getCompounds: function (callback) {
       callback(this.compounds)

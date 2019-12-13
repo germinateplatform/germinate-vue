@@ -6,6 +6,7 @@
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
+import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   props: {
@@ -63,6 +64,7 @@ export default {
       }
     }
   },
+  mixins: [ datasetApi ],
   methods: {
     getSourceFile: function () {
       return {
