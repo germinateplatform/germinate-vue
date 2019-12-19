@@ -191,6 +191,10 @@ i.flag-icon {
 }
 
 /* Leaflet customization */
+.leaflet-container .leaflet-popup-content a {
+  color: var(--primary);
+}
+
 .marker-cluster, .prunecluster {
 	color: white;
 }
@@ -226,7 +230,7 @@ i.flag-icon {
 }
 
 .app-body {
-  margin-top: 96px;
+  margin-top: 69px;
 }
 
 img.mime-icon {

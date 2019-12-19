@@ -43,6 +43,7 @@ const userState = {
     climateData: ['climateId'],
     compounds: [],
     compoundData: ['compoundId'],
+    comments: ['commentForeignId', 'commentTypeId'],
     maps: [],
     markers: [],
     mapDefinitions: [],
@@ -277,6 +278,12 @@ const storeState = {
             // Then for each user state, set the defaults for those fields that aren't stored (because of declined cookies (GDPR))
             Object.keys(result.userStates).forEach(us => {
               result.userStates[us] = Object.assign(JSON.parse(JSON.stringify(userState)), result.userStates[us])
+
+              Object.keys(userState.hiddenColumns).forEach(hd => {
+                if (!result.userStates[us].hiddenColumns[hd]) {
+                  result.userStates[us].hiddenColumns[hd] = userState.hiddenColumns[hd]
+                }
+              })
             })
           }
 

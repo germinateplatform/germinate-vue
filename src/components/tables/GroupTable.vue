@@ -43,6 +43,7 @@ export default {
   name: 'GroupTable',
   props: {
     ...defaultProps.BASE,
+    ...defaultProps.ACTIONS,
     isEditable: {
       type: Boolean,
       default: false

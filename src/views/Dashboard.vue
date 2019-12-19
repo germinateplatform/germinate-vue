@@ -2,7 +2,7 @@
   <div class="animated fadeIn">
     <b-row class="dashboard-stats" v-if="stats">
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in statCategories" :key="'dashboard-stats-' + category.key">
-        <router-link :to="category.link" :title="`${category.text()}: ${stats[category.key]}`">
+        <router-link :to="{ name: category.link }" :title="`${category.text()}: ${stats[category.key]}`">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
@@ -24,6 +24,11 @@
     </b-row>
     <ImageCarousel class="mb-4" />
 
+    <h1>{{ $t('pageDashboardTitle') }}</h1>
+    <p v-html="$t('pageDashboardText')" />
+
+    <b-button @click="startIntroduction"><i class="mdi mdi-18px fix-alignment mdi-presentation-play" /> {{ $t('widgetIntroTourButtonText') }}</b-button>
+
     <NewsSection :projectCount="3" :newsCount="6" />
   </div>
 </template>
@@ -32,6 +37,7 @@
 import ImageCarousel from '@/components/images/ImageCarousel'
 import NewsSection from '@/components/news/NewsSection'
 import statsApi from '@/mixins/api/stats.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   name: 'dashboard',
@@ -48,31 +54,34 @@ export default {
           key: 'germplasm',
           text: () => this.$t('dashboardBannerGermplasm'),
           icon: 'mdi-sprout',
-          link: '/data/germplasm'
+          link: 'germplasm'
         },
         {
           key: 'markers',
           text: () => this.$t('dashboardBannerMarkers'),
           icon: 'mdi-dna',
-          link: '/data/genotypes/markers'
+          link: 'markers'
         },
         {
           key: 'traits',
           text: () => this.$t('dashboardBannerTraits'),
           icon: 'mdi-tag-text-outline',
-          link: '/data/traits'
+          link: 'traits'
         },
         {
           key: 'locations',
           text: () => this.$t('dashboardBannerLocations'),
           icon: 'mdi-map-marker',
-          link: '/geo/locations'
+          link: 'locations'
         }
       ]
     }
   },
   mixins: [ statsApi ],
   methods: {
+    startIntroduction: function () {
+      EventBus.$emit('show-introduction')
+    },
     getColor: function (index) {
       if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
         return '#00acef'

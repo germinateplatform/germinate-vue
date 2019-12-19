@@ -44,16 +44,16 @@ export default {
   data: function () {
     return {
       MAX_JAVA_INTEGER: 2147483647,
-      operators: [
-        {
+      operators: {
+        and: {
           text: () => this.$t('operatorsAnd'),
           value: 'and'
         },
-        {
+        or: {
           text: () => this.$t('operatorsOr'),
           value: 'or'
         }
-      ],
+      },
       comparators: {
         contains: {
           text: () => this.$t('comparatorsContains'),
@@ -282,8 +282,22 @@ export default {
     }
   },
   methods: {
+    getWindowWidth: function () {
+      return Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      )
+    },
     isTableColumnHidden: function (tableName, columnKey) {
-      return (this.hiddenColumns[tableName].indexOf(columnKey) !== -1) ? 'd-none' : ''
+      if (this.hiddenColumns[tableName]) {
+        return (this.hiddenColumns[tableName].indexOf(columnKey) !== -1) ? 'd-none' : ''
+      } else {
+        console.log(tableName, columnKey)
+        return ''
+      }
     },
     getNumberWithSuffix: function (value, decimals = 2) {
       const k = 1000

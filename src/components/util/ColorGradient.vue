@@ -3,10 +3,10 @@
     <canvas class="gradient-canvas" ref="canvas" />
     <b-row>
       <b-col class="text-left">
-        Low
+        {{ $t('widgetGradientLow') }}
       </b-col>
       <b-col class="text-right">
-        High
+        {{ $t('widgetGradientHigh') }}
       </b-col>
     </b-row>
   </div>

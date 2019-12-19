@@ -29,6 +29,9 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: `group/${groupId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGroupGermplasmTableExport: function (groupId, queryData, onSuccess, onError) {
+      return this.authAjax({ url: `group/${groupId}/germplasm/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostGroupGermplasmTableIds: function (groupId, queryData, onSuccess, onError) {
       delete queryData.orderBy
       delete queryData.ascending

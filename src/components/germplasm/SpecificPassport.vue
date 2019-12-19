@@ -12,6 +12,7 @@
           <b-nav-item href="#groups" @click="scrollIntoView">{{ $t('pagePassportGroupTitle') }}</b-nav-item>
           <b-nav-item href="#entity" @click="scrollIntoView">{{ $t('pagePassportEntityTitle') }}</b-nav-item>
           <b-nav-item href="#attributes" @click="scrollIntoView">{{ $t('pagePassportAttributeTitle') }}</b-nav-item>
+          <b-nav-item href="#comments" @click="scrollIntoView" v-if="serverSettings && serverSettings.commentsEnabled === true">{{ $t('pagePassportCommentTitle') }}</b-nav-item>
         </b-navbar-nav>
       </b-navbar>
       <div id="nav-scroller">
@@ -47,7 +48,7 @@
         <DatasetTable :getData="getDatasetData" />
 
         <hr />
-        <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-sitemap text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-tournament mdi-rotate-90 text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
         <p v-html="$t('pagePassportPedigreeText')" />
         <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
 
@@ -88,6 +89,13 @@
         <h2 class="mdi-heading" id="attributes"><i class="mdi mdi-36px text-primary mdi-playlist-plus"/><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
         <p v-html="$t('pagePassportAttributeText')" />
         <GermplasmAttributeTable :getData="getGermplasmAttributeData" />
+
+        <template v-if="serverSettings && serverSettings.commentsEnabled === true">
+          <hr />
+          <h2 class="mdi-heading" id="comments"><i class="mdi mdi-36px text-primary mdi-comment-account-outline"/><span> {{ $t('pagePassportCommentTitle') }}</span></h2>
+          <p v-html="$t('pagePassportCommentText')" />
+          <CommentTable :getData="getCommentData" ref="commentTable" :commentTypeId="1" :referenceId="currentGermplasmId" />
+        </template>
       </div>
     </div>
     <div class="text-center" v-else>
@@ -100,6 +108,7 @@
 </template>
 
 <script>
+import CommentTable from '@/components/tables/CommentTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import EntityTable from '@/components/tables/EntityTable'
 import GermplasmAttributeTable from '@/components/tables/GermplasmAttributeTable'
@@ -118,6 +127,7 @@ export default {
     return {
       germplasm: null,
       germplasmTableData: null,
+      commentFilter: null,
       pedigreeFilter: null,
       entityFilter: null,
       currentGermplasmId: null,
@@ -138,6 +148,7 @@ export default {
     }
   },
   components: {
+    CommentTable,
     DatasetTable,
     EntityTable,
     GermplasmAttributeTable,
@@ -165,6 +176,9 @@ export default {
     },
     getGermplasmAttributeData: function (data, callback) {
       return this.apiPostGermplasmAttributeTable(this.currentGermplasmId, data, callback)
+    },
+    getCommentData: function (data, callback) {
+      return this.apiPostCommentsTable(data, callback)
     },
     getDatasetData: function (data, callback) {
       return this.apiPostGermplasmDatasetTable(this.currentGermplasmId, data, callback)

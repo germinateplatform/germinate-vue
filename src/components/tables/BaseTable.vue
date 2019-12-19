@@ -7,7 +7,7 @@
             {{ "'" + columns.filter(fs => fs.key === f.column)[0].label + "' " + comparators[f.comparator].text() + " '" + f.values.filter(f => f !== null).join(", ") + "'" }}
           </b-badge>
           <b-badge v-if="index < filter.length - 1" class="mr-2">
-            {{ operators.filter(o => o.value === f.operator)[0].text() }}
+            {{ Object.keys(operators).filter(o => operators[o].value === f.operator).map(o => operators[o])[0].text() }}
           </b-badge>
         </span>
       </div>
@@ -51,8 +51,10 @@
             hover
             outlined
             show-empty
+            head-variant="dark"
             :empty-text="$t('paginationNoResult')"
             :sort-by="options.orderBy"
+            :sort-desc="options.orderByDesc"
             :tbody-tr-class="options ? options.rowClassCallback : null"
             @refreshed="notifyLoaded"
             ref="table">
@@ -94,7 +96,7 @@
     </b-table>
 
     <div class="d-flex justify-content-between align-items-start">
-      <div>
+      <div class="table-bottom-left">
         <template v-if="columns.map(c => c.key).indexOf('selected') !== -1">
           <div>
             <i class="mdi mdi-18px mdi-arrow-up-bold ml-1"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
@@ -120,7 +122,7 @@
 
       <div class="d-flex">
         <b-button-group class="table-pagination" v-show="pagination.totalCount > tablePerPage">
-          <b-button variant="outline-secondary" class="text-primary" @click="showJumpToPage"><i class="mdi mdi-book-open-page-variant" /> {{ pagination.currentPage }} of {{ maxPage  }}</b-button>
+          <b-button variant="outline-secondary" class="text-primary" @click="showJumpToPage"><i class="mdi mdi-book-open-page-variant" /> {{ $t('paginationPageCustom', { from: pagination.currentPage, to: maxPage }) }}</b-button>
           <b-pagination v-model="pagination.currentPage"
                         :total-rows="pagination.totalCount"
                         :per-page="tablePerPage" />
@@ -524,5 +526,13 @@ export default {
   border-right: 0;
   border-top: 0;
   margin-top: -1px;
+}
+.base-table table.b-table[aria-busy='true'] {
+  opacity: 1;
+}
+.base-table .table-bottom-left .btn-group:first-child .btn {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 0;
 }
 </style>

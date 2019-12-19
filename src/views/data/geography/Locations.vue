@@ -1,22 +1,29 @@
 <template>
   <div>
-    <h1>Locations</h1>
+    <h1>{{ $t('pageLocationsTitle') }}</h1>
+    <p>{{ $t('pageLocationsText') }}</p>
     <LocationTable :getData="getData"
                     :getIds="getIds"
                     v-on:data-changed="onDataChanged" />
 
-    <h1>Maps</h1>
-    <p class="text-info">Filtering the table will adjust the maps below. You can use this to, e.g., only look at trial sites or only locations from a specific country.</p>
+    <h2>{{ $t('pageLocationsMapsTitle') }}</h2>
+    <p class="text-info">{{ $t('pageLocationsMapsText') }}</p>
+
+    <template v-if="climates && climates.length > 0">
+      <h3>Climate map overlays</h3>
+      <b-form-select v-model="climate" :options="climateOptions" />
+    </template>
+
     <b-row>
       <b-col cols=12 xl=6>
-        <h2>Clustered locations</h2>
-        <p>This map shows the locations clustered into groups. The numbers on the cluster nodes as well as their size and color represent the number of clustered locations. Clicking on a cluster node will expand this cluster and zoom in.</p>
-        <LocationMap v-if="locations && locations.length > 0" :locations="locations" mapType="cluster" class="mb-3" v-on:map-loaded="map => { clusteredMap = map }" />
+        <h2>{{ $t('pageLocationsMapsClusteredTitle') }}</h2>
+        <p>{{ $t('pageLocationsMapsClusteredText') }}</p>
+        <LocationMap v-if="locations && locations.length > 0" :imageOverlays="climateImageOverlays" :locations="locations" mapType="cluster" class="mb-3" v-on:map-loaded="map => { clusteredMap = map }" />
       </b-col>
       <b-col cols=12 xl=6>
-        <h2>Heatmapped locations</h2>
-        <p>The map below represents the density of locations with colors on a gradient. The gradient ranges from a low density (represented by the color black) to a high density (represented by the color white). Zooming in will cause the density to dissipate.</p>
-        <LocationMap v-if="locations && locations.length > 0" :locations="locations" mapType="heatmap" class="mb-3" v-on:map-loaded="map => { heatmappedMap = map }" />
+        <h2>{{ $t('pageLocationsMapsHeatmappedTitle') }}</h2>
+        <p>{{ $t('pageLocationsMapsHeatmappedText') }}</p>
+        <LocationMap v-if="locations && locations.length > 0" :imageOverlays="climateImageOverlays" :locations="locations" mapType="heatmap" class="mb-3" v-on:map-loaded="map => { heatmappedMap = map }" />
       </b-col>
     </b-row>
   </div>
@@ -26,11 +33,19 @@
 import _ from 'lodash'
 import LocationMap from '@/components/map/LocationMap'
 import LocationTable from '@/components/tables/LocationTable'
+import climateApi from '@/mixins/api/climate.js'
 import locationApi from '@/mixins/api/location.js'
 
 export default {
   data: function () {
     return {
+      climate: null,
+      climates: [],
+      climateOptions: [{
+        value: null,
+        text: 'Please select a climate'
+      }],
+      climateImageOverlays: [],
       tableFilter: null,
       locations: null,
       clusteredMap: null,
@@ -52,13 +67,54 @@ export default {
         this.heatmappedMap.sync(this.clusteredMap)
         this.clusteredMap.sync(this.heatmappedMap)
       }
+    },
+    climate: function (oldValue, newValue) {
+      if (this.climate !== null) {
+        const queryData = {
+          filter: [{
+            column: 'climateId',
+            comparator: 'equals',
+            operator: 'and',
+            values: [this.climate.climateId]
+          }],
+          page: 1,
+          limit: this.MAX_JAVA_INTEGER
+        }
+        this.apiPostClimateOverlays(queryData, result => {
+          var array = []
+
+          if (result && result.data) {
+            result.data.forEach(i => {
+              var path = ''
+
+              var params = {
+                token: this.token ? this.token.imageToken : null
+              }
+              var paramString = this.toUrlString(params)
+
+              path = this.baseUrl + `climate/overlay/${i.climateOverlayId}/src?` + paramString
+
+              array.push({
+                id: i.climateOverlayId,
+                url: path,
+                isLegend: i.isLegend,
+                bounds: [[i.bottomLeftLatitude, i.bottomLeftLongitude], [i.topRightLatitude, i.topRightLongitude]]
+              })
+            })
+          }
+
+          this.climateImageOverlays = array
+        })
+      } else {
+        this.climateImageOverlays = []
+      }
     }
   },
   components: {
     LocationMap,
     LocationTable
   },
-  mixins: [ locationApi ],
+  mixins: [ climateApi, locationApi ],
   methods: {
     getData: function (data, callback) {
       return this.apiPostLocationTable(data, callback)
@@ -79,6 +135,37 @@ export default {
         })
       }
     }
+  },
+  mounted: function () {
+    const queryData = {
+      filter: [{
+        column: 'overlays',
+        comparator: 'greaterThan',
+        operator: 'and',
+        values: [0]
+      }]
+    }
+
+    this.apiPostClimates(queryData, result => {
+      if (result && result.data) {
+        this.climates = result.data
+
+        this.climates.forEach(c => {
+          var itemName = c.climateName
+
+          if (c.unitAbbreviation) {
+            itemName += ` [${c.unitAbbreviation}]`
+          }
+
+          this.climateOptions.push({
+            value: c,
+            text: itemName
+          })
+
+          c.displayName = itemName
+        })
+      }
+    })
   }
 }
 </script>

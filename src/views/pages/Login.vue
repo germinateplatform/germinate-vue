@@ -1,8 +1,9 @@
 <template>
   <div class="app page-login flex-row align-items-center">
     <div class="container">
-      <b-row class="justify-content-center">
-        <b-col md="8">
+      <!-- <b-row class="justify-content-center"> -->
+      <b-row>
+        <b-col lg=7>
           <b-card-group>
             <b-card no-body class="p-4">
               <b-card-body>
@@ -22,6 +23,10 @@
             </b-card>
           </b-card-group>
         </b-col>
+        <b-col lg=1 class="d-none d-lg-block"></b-col>
+        <b-col lg=4>
+          <div id="svg-logo" class="d-flex justify-content-center align-items-center h-100 py-3"/>
+        </b-col>
       </b-row>
     </div>
     <RegistrationModal ref="registrationModal"/>
@@ -32,6 +37,7 @@
 import SignInForm from '@/components/util/SignInForm'
 import RegistrationModal from '@/components/modals/RegistrationModal'
 import authApi from '@/mixins/api/auth.js'
+import Snap from 'snapsvg'
 
 export default {
   name: 'Login',
@@ -73,13 +79,84 @@ export default {
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
         }
       })
+    },
+    animateLogo: function () {
+      const s = new Snap('#svg-logo svg')
+
+      const elements = [{
+        id: '#sh',
+        opacity: 0.29200003
+      }, {
+        id: '#t3',
+        opacity: 1
+      }, {
+        id: '#t2',
+        opacity: 1
+      }, {
+        id: '#t1',
+        opacity: 1
+      }, {
+        id: '#g6',
+        opacity: 1
+      }, {
+        id: '#g5',
+        opacity: 1
+      }, {
+        id: '#g4',
+        opacity: 1
+      }, {
+        id: '#g3',
+        opacity: 1
+      }, {
+        id: '#g2',
+        opacity: 1
+      }, {
+        id: '#g1',
+        opacity: 1
+      }, {
+        id: '#bg',
+        opacity: 1
+      }]
+
+      s.selectAll('path').forEach(e => {
+        e.stop()
+        e.attr({
+          opacity: 0
+        })
+      })
+
+      elements.forEach(e => {
+        const el = s.select(e.id)
+        el.stop()
+        el.attr({
+          opacity: 0
+        })
+      })
+
+      elements.reverse().forEach((e, i) => {
+        setTimeout(() => s.select(e.id).animate({ opacity: e.opacity }, 500, window.mina.linear), i * 65)
+      })
     }
+  },
+  mounted: function () {
+    // TODO: Check this works in production on a subdirectory of a domain rather than top-level
+    Snap.load('/img/germinate-square.svg', data => {
+      new Snap('#svg-logo').append(data)
+
+      this.animateLogo()
+
+      new Snap('#svg-logo svg').click(e => this.animateLogo())
+    })
   }
 }
 </script>
 
-<style scoped>
+<style>
 .page-login {
   min-height: calc(100vh - 255px);
+}
+#svg-logo > svg {
+  max-width: 300px;
+  max-height: 300px;
 }
 </style>

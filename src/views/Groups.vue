@@ -19,11 +19,13 @@
                 :getData="getGroupData"
                 :filterOn="filterOn"
                 :isEditable="true"
+                :tableActions="token ? tableActions : null"
                 v-on:group-selected="onGroupSelected"
                 v-on:on-group-edit-clicked="onGroupEditClicked"
                 v-on:on-group-delete-clicked="onGroupDeleteClicked" />
 
     <div v-if="group">
+      <hr />
       <h2>{{ group.groupName }} <small>{{ groupTypes[group.groupType].text() }}</small></h2>
       <template v-if="group.groupDescription">
         <h3>{{ $t('pageGroupsDescriptionTitle') }}</h3>
@@ -47,20 +49,21 @@
                       ref="groupmembersTable"
                       :getData="getGermplasmData"
                       :getIds="getGermplasmIds"
+                      :downloadTable="downloadGermplasmData"
                       :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
-                      :tableActions="userCanEdit ? tableActions : null"/>
+                      :tableActions="userCanEdit ? groupTableActions : null"/>
       <MarkerTable v-else-if="group.groupType === 'markers'"
                    ref="groupmembersTable"
                    :getData="getMarkerData"
                    :getIds="getMarkerIds"
                    :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
-                   :tableActions="userCanEdit ? tableActions : null"/>
+                   :tableActions="userCanEdit ? groupTableActions : null"/>
       <LocationTable v-else-if="group.groupType === 'locations'"
                      ref="groupmembersTable"
                      :getData="getLocationData"
                      :getIds="getLocationIds"
                      :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
-                     :tableActions="userCanEdit ? tableActions : null"/>
+                     :tableActions="userCanEdit ? groupTableActions : null"/>
     </div>
 
     <GroupEditAddModal ref="groupDetailsModal"
@@ -91,6 +94,26 @@ export default {
       filterOn: [],
       selectedGroupType: null,
       tableActions: [
+        {
+          id: 0,
+          text: this.$t('tooltipCreateNewGroup'),
+          variant: null,
+          disabled: () => false,
+          icon: 'mdi mdi-18px mdi-plus-box',
+          callback: (selectedIds) => {
+            this.groupToEdit = {
+              groupId: null,
+              groupName: null,
+              groupDescription: null,
+              groupTypeId: null,
+              userId: this.token ? this.token.id : null
+            }
+
+            this.$nextTick(() => this.$refs.groupDetailsModal.show())
+          }
+        }
+      ],
+      groupTableActions: [
         {
           id: 0,
           text: this.$t('buttonDeleteSelected'),
@@ -225,6 +248,9 @@ export default {
     getGermplasmData: function (data, callback) {
       return this.apiPostGroupGermplasmTable(this.group.groupId, data, callback)
     },
+    downloadGermplasmData: function (data, callback) {
+      return this.apiPostGroupGermplasmTableExport(this.group.groupId, data, callback)
+    },
     getGermplasmIds: function (data, callback) {
       return this.apiPostGroupGermplasmTableIds(this.group.groupId, data, callback)
     },
@@ -244,15 +270,23 @@ export default {
       var group = {
         id: this.groupToEdit.groupId,
         name: this.groupToEdit.groupName,
-        description: this.groupToEdit.groupDescription
+        description: this.groupToEdit.groupDescription,
+        grouptypeId: this.groupToEdit.groupTypeId,
+        createdBy: this.token.id
       }
       // Remove empty descriptions
       if (!group.description) {
         delete group.description
       }
-      this.apiPatchGroup(group, result => {
-        this.$refs.groupsTable.refresh()
-      })
+      if (group.id !== null) {
+        this.apiPatchGroup(group, result => {
+          this.$refs.groupsTable.refresh()
+        })
+      } else {
+        this.apiPutGroup(group, result => {
+          this.$refs.groupsTable.refresh()
+        })
+      }
     },
     onGroupEditClicked: function (groupToEdit) {
       this.groupToEdit = groupToEdit

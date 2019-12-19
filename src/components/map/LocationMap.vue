@@ -7,6 +7,15 @@
       ref="map"
       :maxZoom="maxZoom"
       :zoom="zoom">
+      <template v-if="imageOverlays && imageOverlays.length > 0">
+        <div class="location-map-legend">
+          <img :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" />
+        </div>
+        <l-image-overlay v-for="image in getOverlays(false)"
+                        :key="`map-overlay-${image.id}`"
+                        :url="image.url"
+                        :bounds="image.bounds" />
+      </template>
     </l-map>
     <ColorGradient :colors="gradientColors" v-if="mapType === 'heatmap'" ref="gradient" />
     <div v-if="location" ref="popupContent">
@@ -61,6 +70,10 @@ export default {
     selectionMode: {
       type: String,
       default: 'none'
+    },
+    imageOverlays: {
+      type: Array,
+      default: () => []
     }
   },
   watch: {
@@ -72,6 +85,9 @@ export default {
     ColorGradient
   },
   methods: {
+    getOverlays: function (isLegend) {
+      return this.imageOverlays.filter(i => i.isLegend === isLegend)
+    },
     invalidateSize: function () {
       this.$nextTick(() => this.$refs.map.mapObject.invalidateSize())
     },
@@ -296,6 +312,18 @@ export default {
 
 <style>
 .location-map {
+  position: relative;
   height: 600px !important;
+}
+
+.location-map .location-map-legend {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, .7);
+  border: 1px solid #6f7277;
+  padding: 5px;
+  pointer-events: none;
+  z-index: 1000;
 }
 </style>

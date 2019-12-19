@@ -48,7 +48,7 @@
 
     <!-- Country flags -->
     <template v-slot:cell(countryName)="data">
-      <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span></span>
+      <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span></span>
     </template>
     <!-- Formatted date -->
     <template v-slot:cell(collDate)="data">
@@ -91,7 +91,7 @@
         <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg); vertical-align: text-bottom;">
           <g>
             <circle id="circle" style="stroke-dasharray: 44; stroke-dashoffset: 0;" r="7" cy="9" cx="9" stroke-width="4" stroke="#ccc" fill="none"/>
-            <circle id="circle" :style="'stroke-dasharray: 44; stroke-dashoffset: ' + getPdci(data.item.pdci, 44) + ';'" r="7" cy="9" cx="9" stroke-width="4" stroke="#00acef" fill="none"/>
+            <circle id="circle" :style="'stroke-dasharray: 44; stroke-dashoffset: ' + getPdci(data.item.pdci, 44) + ';'" r="7" cy="9" cx="9" stroke-width="4" stroke="#2f353a" fill="none"/>
           </g>
         </svg>
         <span> {{ data.item.pdci.toFixed(2) }}</span>

@@ -34,9 +34,6 @@ export default {
     }
   },
   created: async function () {
-    this.apiGetEntityTypeStats(result => {
-      this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
-    })
     await this.apiGetSettings(result => {
       if (result && result.googleAnalyticsKey) {
         Vue.use(VueAnalytics, {
@@ -49,6 +46,10 @@ export default {
       }
 
       this.$store.dispatch('ON_SETTINGS_CHANGED', result)
+
+      this.apiGetEntityTypeStats(result => {
+        this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
+      })
     })
   },
   mixins: [ miscApi, statsApi ],

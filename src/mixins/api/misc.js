@@ -39,6 +39,16 @@ export default {
     apiPostNewsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostCommentsTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'comment/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPutComment: function (comment, onSuccess, onError) {
+      return this.authAjax({ url: 'comment', data: comment, method: 'PUT', success: onSuccess, error: onError })
+    },
+    apiDeleteComment: function (commentId, onSuccess, onError) {
+      return this.authAjax({ url: `comment/${commentId}`, method: 'DELETE', success: onSuccess, error: onError })
     }
   }
 }

@@ -67,7 +67,7 @@
                 </b-input-group-append>
               </b-input-group>
               <b-form-radio-group
-                :options="operators"
+                :options="localOperators"
                 button-variant="outline-secondary"
                 v-model="f.operator"
                 buttons
@@ -119,6 +119,9 @@ export default {
   watch: {
     filterOn: function (newValue, oldValue) {
       this.resetFilter(false)
+    },
+    locale: function (newValue, oldValue) {
+      this.updateOperators()
     }
   },
   computed: {
@@ -140,6 +143,14 @@ export default {
     }
   },
   methods: {
+    updateOperators: function () {
+      this.localOperators = Object.keys(this.operators).map(o => {
+        return {
+          text: this.operators[o].text(),
+          value: this.operators[o].value
+        }
+      })
+    },
     isValidFilter: function (filter) {
       if (filter.column.type === Number) {
         return filter.values.filter(v => isNaN(v)).length === 0
@@ -334,6 +345,8 @@ export default {
     }
   },
   mounted: function () {
+    this.updateOperators()
+
     if (this.localFilterOn) {
       this.resetFilter(true)
     }

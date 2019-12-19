@@ -263,7 +263,7 @@ export default {
           key: 'selected',
           type: undefined,
           sortable: false,
-          class: 'bg-info',
+          class: 'bg-primary',
           label: ''
         })
       }

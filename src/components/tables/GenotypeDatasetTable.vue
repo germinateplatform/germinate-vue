@@ -41,7 +41,7 @@ export default {
         {
           key: 'selected',
           type: undefined,
-          class: `bg-info ${this.isTableColumnHidden(this.options.tableName, 'selected')}`,
+          class: `bg-primary ${this.isTableColumnHidden(this.options.tableName, 'selected')}`,
           sortable: false,
           label: ''
         },

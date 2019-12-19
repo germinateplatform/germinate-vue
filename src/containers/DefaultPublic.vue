@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app public">
     <AppHeader fixed>
       <b-link class="navbar-brand" to="/">
         <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
@@ -46,4 +46,7 @@ export default {
 </script>
 
 <style>
+.app.public {
+  background-image: linear-gradient(-65deg, #20a8d8, #f0f3f5, #f0f3f5);
+}
 </style>

@@ -17,13 +17,13 @@
             </b-input-group-append>
           </b-input-group>
         </b-nav-form>
-        <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
-        <LocaleDropdown />
+        <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()" id="top-nav-help"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
+        <LocaleDropdown class="top-nav-locale"/>
         <MarkedItemDropdown />
         <UserSettingsDropdown />
       </b-navbar-nav>
       <div>
-        <AsideToggler class="d-block" :display="'xs'" ref="asideToggler" @click.native="updateAside" v-b-popover="asidePopoverConfig" />
+        <AsideToggler class="d-block aside-toggler" :display="'xs'" ref="asideToggler" @click.native="updateAside" v-b-popover="asidePopoverConfig" />
         <b-badge pill variant="info" class="async-badge" v-if="asyncJobCount !== null && asyncJobCount > 0">{{ asyncJobCount }}</b-badge>
       </div>
     </AppHeader>
@@ -69,6 +69,24 @@
     <b-modal :title="$t('widgetHelpTitle')" v-if="helpKey" ref="helpModal" ok-only size="lg">
       <p v-html="$t(this.helpKey)" />
     </b-modal>
+
+    <b-popover :target="popoverTarget" :placement="popoverContent[popoverIndex].position" ref="popover" :show="popoverShow" v-if="popoverShow" variant="info">
+      <template v-slot:title>
+        <b-button @click="popoverShow = false" size="sm" class="ml-1 close" aria-label="Close">
+          <i class="mdi mdi-close" />
+        </b-button>
+        <span>{{ popoverContent[popoverIndex].title() }}</span>
+      </template>
+      <div>
+        <p>{{ popoverContent[popoverIndex].text() }}</p>
+
+        <b-button-group class="d-flex">
+          <b-button variant="secondary" @click="popoverIndex = popoverIndex - 1" :disabled="popoverIndex < 1">{{ $t('buttonBack') }}</b-button>
+          <b-button variant="success" @click="popoverIndex = popoverIndex + 1" v-if="popoverIndex < popoverContent.length - 1">{{ $t('buttonNext') }}</b-button>
+          <b-button variant="success" @click="resetPopover" v-else>{{ $t('buttonClose') }}</b-button>
+        </b-button-group>
+      </div>
+    </b-popover>
   </div>
 </template>
 
@@ -102,6 +120,35 @@ export default {
     return {
       nav: [],
       searchTerm: null,
+      popoverTarget: null,
+      popoverIndex: 0,
+      popoverShow: false,
+      popoverContent: [{
+        title: () => this.$t('widgetIntroTourStepTitleWelcome'),
+        text: () => this.$t('widgetIntroTourStepTextWelcome'),
+        target: () => '#app-header',
+        position: 'bottom'
+      }, {
+        title: () => this.$t('widgetIntroTourStepTitleMenu'),
+        text: () => this.$t('widgetIntroTourStepTextMenu'),
+        target: () => this.getMenuElement(),
+        position: 'right'
+      }, {
+        title: () => this.$t('widgetIntroTourTitleHelp'),
+        text: () => this.$t('widgetIntroTourTextHelp'),
+        target: () => '#top-nav-help',
+        position: 'bottom'
+      }, {
+        title: () => this.$t('widgetIntroTourTitleLanguage'),
+        text: () => this.$t('widgetIntroTourTextLanguage'),
+        target: () => '.top-nav-locale',
+        position: 'bottom'
+      }, {
+        title: () => this.$t('widgetIntroTourTitleAsync'),
+        text: () => this.$t('widgetIntroTourTextAsync'),
+        target: () => '.aside-toggler',
+        position: 'bottom'
+      }],
       asidePopoverConfig: {
         title: this.$t('popoverSideMenuTitle'),
         content: this.$t('popoverSideMenuText'),
@@ -123,6 +170,16 @@ export default {
   watch: {
     locale: function (newValue, oldValue) {
       this.updateNav()
+    },
+    popoverIndex: function (newValue, oldValue) {
+      if (this.popoverShow) {
+        this.updatePopover()
+      } else {
+        this.resetPopover()
+      }
+    },
+    $route (newValue, oldValue) {
+      this.resetPopover()
     }
   },
   methods: {
@@ -338,6 +395,15 @@ export default {
         this.nav = tempNav
       }
     },
+    getMenuElement: function () {
+      var width = this.getWindowWidth()
+
+      if (width < 992) {
+        return '.navbar-toggler'
+      } else {
+        return '.app-body .sidebar .sidebar-nav .nav'
+      }
+    },
     toggleSidebar: function () {
       this.$nextTick(() => {
         const isMinimized = document.body.classList.contains('sidebar-minimized')
@@ -359,14 +425,33 @@ export default {
     },
     updateAside: function () {
       this.$nextTick(() => this.$refs.aside.updateAsyncJobs(true))
+    },
+    updatePopover: function () {
+      this.popoverShow = false
+      this.$nextTick(() => {
+        this.popoverTarget = document.querySelector(this.popoverContent[this.popoverIndex].target())
+        this.popoverShow = true
+        this.popoverTarget.scrollIntoView({ behavior: 'smooth' })
+      })
+    },
+    resetPopover: function () {
+      this.popoverIndex = 0
+      this.popoverTarget = null
+      this.popoverShow = false
+    },
+    startIntroduction: function () {
+      this.resetPopover()
+      this.updatePopover()
     }
   },
   destroyed: function () {
     EventBus.$off('toggle-aside', this.toggleAside)
+    EventBus.$off('show-introduction')
   },
   mounted: function () {
     this.updateNav()
     EventBus.$on('toggle-aside', this.toggleAside)
+    EventBus.$on('show-introduction', this.startIntroduction)
 
     if (this.sidebarState && this.sidebarState.length > 0) {
       this.$nextTick(() => document.body.classList.add(...this.sidebarState.split(' ')))

@@ -7,7 +7,7 @@
             v-on="$listeners">
 
     <template v-slot:cell(countryName)="data">
-      <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
+      <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
     </template>
     <template v-slot:cell(locationType)="data">
       <span><i :class="`mdi mdi-18px ${locationTypes[data.item.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[data.item.locationType].color()};`" /> {{ locationTypes[data.item.locationType].text() }}</span>
@@ -138,7 +138,7 @@ export default {
           key: 'selected',
           type: undefined,
           sortable: false,
-          class: 'bg-info',
+          class: 'bg-primary',
           label: ''
         })
       }

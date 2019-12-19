@@ -12,7 +12,7 @@ import store from '@/store/store'
 import { i18n } from '@/plugins/i18n.js'
 import mixin from '@/mixins/mixin.js'
 // LEAFLET
-import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet'
+import { LMap, LTileLayer, LMarker, LPopup, LImageOverlay } from 'vue2-leaflet'
 import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -33,6 +33,7 @@ Vue.component('l-map', LMap)
 Vue.component('l-tile-layer', LTileLayer)
 Vue.component('l-marker', LMarker)
 Vue.component('l-popup', LPopup)
+Vue.component('l-image-overlay', LImageOverlay)
 
 delete Icon.Default.prototype._getIconUrl
 Icon.Default.mergeOptions({
