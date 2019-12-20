@@ -56,12 +56,14 @@
                    ref="groupmembersTable"
                    :getData="getMarkerData"
                    :getIds="getMarkerIds"
+                   :downloadTable="downloadMarkerData"
                    :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
                    :tableActions="userCanEdit ? groupTableActions : null"/>
       <LocationTable v-else-if="group.groupType === 'locations'"
                      ref="groupmembersTable"
                      :getData="getLocationData"
                      :getIds="getLocationIds"
+                     :downloadTable="downloadLocationData"
                      :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
                      :tableActions="userCanEdit ? groupTableActions : null"/>
     </div>
@@ -257,11 +259,17 @@ export default {
     getMarkerData: function (data, callback) {
       return this.apiPostGroupMarkerTable(this.group.groupId, data, callback)
     },
+    downloadMarkerData: function (data, callback) {
+      return this.apiPostGroupMarkerTableExport(this.group.groupId, data, callback)
+    },
     getMarkerIds: function (data, callback) {
       return this.apiPostGroupMarkerTableIds(this.group.groupId, data, callback)
     },
     getLocationData: function (data, callback) {
       return this.apiPostGroupLocationTable(this.group.groupId, data, callback)
+    },
+    downloadLocationData: function (data, callback) {
+      return this.apiPostGroupLocationTableExport(this.group.groupId, data, callback)
     },
     getLocationIds: function (data, callback) {
       return this.apiPostGroupLocationTableIds(this.group.groupId, data, callback)

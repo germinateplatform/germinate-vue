@@ -31,6 +31,9 @@ export default {
       delete queryData.ascending
       return this.authAjax({ url: 'location/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGroupLocationTableExport: function (groupId, queryData, onSuccess, onError) {
+      return this.authAjax({ url: `group/${groupId}/location/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostGroupLocationTable: function (groupId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: `group/${groupId}/location`, method: 'POST', data: queryData, success: onSuccess, error: onError })

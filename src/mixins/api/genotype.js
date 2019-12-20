@@ -29,6 +29,9 @@ export default {
       this.$ga.event('export', 'async', 'genotype', queryData.datasetIds.join('-'))
       return this.authAjax({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostGroupMarkerTableExport: function (groupId, queryData, onSuccess, onError) {
+      return this.authAjax({ url: `group/${groupId}/marker/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostMapsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'map/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

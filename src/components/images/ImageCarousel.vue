@@ -1,9 +1,10 @@
 <template>
   <b-carousel
+    class="image-carousel"
     v-if="images"
     :interval="4000"
     controls
-    img-height="600"
+    :img-height="600"
     indicators>
     <b-carousel-slide
       v-for="image in images[locale]"
@@ -59,5 +60,9 @@ export default {
 <style>
 .carousel-caption {
   background-color: rgba(0,0,0,.5);
+}
+.image-carousel img {
+  min-height: 300px;
+  object-fit: cover;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="animated fadeIn">
     <b-row class="dashboard-stats" v-if="stats">
-      <b-col cols=12 sm=6 xl=3 v-for="(category, index) in statCategories" :key="'dashboard-stats-' + category.key">
+      <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.key">
         <router-link :to="{ name: category.link }" :title="`${category.text()}: ${stats[category.key]}`">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
@@ -27,8 +27,9 @@
     <h1>{{ $t('pageDashboardTitle') }}</h1>
     <p v-html="$t('pageDashboardText')" />
 
-    <b-button @click="startIntroduction"><i class="mdi mdi-18px fix-alignment mdi-presentation-play" /> {{ $t('widgetIntroTourButtonText') }}</b-button>
+    <b-button variant="primary" @click="startIntroduction"><i class="mdi mdi-18px fix-alignment mdi-presentation-play" /> {{ $t('widgetIntroTourButtonText') }}</b-button>
 
+    <hr />
     <NewsSection :projectCount="3" :newsCount="6" />
   </div>
 </template>
@@ -73,8 +74,30 @@ export default {
           text: () => this.$t('dashboardBannerLocations'),
           icon: 'mdi-map-marker',
           link: 'locations'
+        },
+        {
+          key: 'groups',
+          text: () => this.$t('dashboardBannerGroups'),
+          icon: 'mdi-group',
+          link: 'groups'
+        },
+        {
+          key: 'compounds',
+          text: () => this.$t('dashboardBannerCompounds'),
+          icon: 'mdi-atom',
+          link: 'compounds'
         }
       ]
+    }
+  },
+  computed: {
+    dashboardCategories: function () {
+      if (this.serverSettings && this.serverSettings.dashboardCategories) {
+        console.log(this.serverSettings.dashboardCategories)
+        return this.serverSettings.dashboardCategories.map(c => this.statCategories.find(s => s.key === c))
+      } else {
+        return this.statCategories
+      }
     }
   },
   mixins: [ statsApi ],
