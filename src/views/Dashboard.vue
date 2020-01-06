@@ -93,7 +93,6 @@ export default {
   computed: {
     dashboardCategories: function () {
       if (this.serverSettings && this.serverSettings.dashboardCategories) {
-        console.log(this.serverSettings.dashboardCategories)
         return this.serverSettings.dashboardCategories.map(c => this.statCategories.find(s => s.key === c))
       } else {
         return this.statCategories

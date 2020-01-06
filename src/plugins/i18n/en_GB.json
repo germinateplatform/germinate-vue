@@ -46,6 +46,8 @@
   "dashboardBannerMarkers": "Markers",
   "dashboardBannerLocations": "Locations",
   "dashboardBannerTraits": "Traits",
+  "dashboardBannerGroups": "Groups",
+  "dashboardBannerCompounds": "Compounds",
   "datasetStatePublic": "Public",
   "datasetStatePrivate": "Private",
   "datasetStateHidden": "Hidden",
@@ -727,5 +729,7 @@
   "widgetIntroTourTextLanguage": "You can switch to a different language by clicking on this .",
   "widgetIntroTourTitleAsync": "Long running data export",
   "widgetIntroTourTextAsync": "Long running data export jobs are processed asynchronously, which means you don't have to sit and wait for them to finish. Come back later and check this side panel for their progress.",
-  "widgetIntroTourButtonText": "Introduction tour"
+  "widgetIntroTourButtonText": "Introduction tour",
+  "widgetDatasetDownloadMetadataTitle": "Download metadata",
+  "widgetDatasetDownloadMetadataText": "You can download all metadata about the selected datasets by clicking the button below."
 }

@@ -10,7 +10,7 @@
       <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll()">
         {{ specialGroupSelection !== 'selection' ? $t(tooltip) : null }}
       </b-tooltip>
-      <b-button-group v-if="specialGroupOptions && specialGroupOptions.length > 0">
+      <b-button-group>
         <b-form-radio-group
           v-model="specialGroupSelection"
           :options="specialGroupOptions"
@@ -120,5 +120,8 @@ export default {
 .loading-select > *:last-child {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+.select-with-options .group-select {
+  border-bottom-left-radius: 0;
 }
 </style>

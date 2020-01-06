@@ -6,8 +6,8 @@
                      :onlyNumeric="false"
                      v-on:button-clicked="downloadData" />
 
-    <h2 class="mt-4">Download metadata</h2>
-    <p>Something here</p>
+    <h2 class="mt-4">{{ $t('widgetDatasetDownloadMetadataTitle') }}</h2>
+    <p>{{ $t('widgetDatasetDownloadMetadataText') }}</p>
     <b-button @click="downloadMetadata"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownload') }}</b-button>
   </div>
 </template>

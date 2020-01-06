@@ -3,13 +3,11 @@ import VueI18n from 'vue-i18n'
 import axios from 'axios'
 
 import enGB from '@/plugins/i18n/en_GB.json'
-import deDE from '@/plugins/i18n/de_DE.json'
 
 Vue.use(VueI18n)
 
 var messages = {
-  en_GB: enGB,
-  de_DE: deDE
+  en_GB: enGB
 }
 
 export const i18n = new VueI18n({
@@ -55,6 +53,11 @@ export function loadLanguageAsync (lang) {
       delete m.data.pageAboutGerminateFundersTitle
       delete m.data.pageAboutGerminateFundersSubtitle
     }
+
+    if (!messages[lang]) {
+      messages[lang] = {}
+    }
+
     Object.assign(messages[lang], m.data)
     i18n.setLocaleMessage(lang, messages[lang])
     loadedLanguages.push(lang)
