@@ -17,6 +17,7 @@ WORKDIR /opt/germinate-client
 RUN rm -f .env && \
     echo "VUE_APP_BASE_URL=/api/" > .env
 RUN apt-get install -y build-essential && \
+    rm -f package-lock.json && \
     npm i && \
     npm run build && \
     mkdir /opt/germinate-server/web/dist/ && \
