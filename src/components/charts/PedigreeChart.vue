@@ -14,6 +14,12 @@ import { EventBus } from '@/plugins/event-bus.js'
 import { pedigreeChart } from '@/plugins/charts/d3-dagre-chart.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 
+const d3Select = require('d3-selection')
+const d3Dsv = require('d3-dsv')
+const d3Shape = require('d3-shape')
+// const d3 = require('d3')
+const dagreD3 = require('dagre-d3')
+
 export default {
   props: {
     germplasmId: {
@@ -52,7 +58,7 @@ export default {
           reader.onload = () => {
             var dirtyTsv = reader.result
             var firstEOL = dirtyTsv.indexOf('\n')
-            var parsedTsv = this.$d3.tsvParse(dirtyTsv.substring(firstEOL + 1))// Remove the first row (Helium header)
+            var parsedTsv = d3Dsv.tsvParse(dirtyTsv.substring(firstEOL + 1))// Remove the first row (Helium header)
 
             var nodes = {}
             var connections = []
@@ -95,9 +101,9 @@ export default {
               }
             }
 
-            this.$d3.select(this.$refs.pedigreeChart)
+            d3Select.select(this.$refs.pedigreeChart)
               .datum(data)
-              .call(pedigreeChart()
+              .call(pedigreeChart(dagreD3)
                 .margin({ left: 50, right: 50, top: 30, bottom: 30 })
                 .width(this.$refs.pedigreeChart.offsetWidth)
                 .height(600)
@@ -107,7 +113,7 @@ export default {
                 .onClick(d => {
                   this.navigateToPassportPage(d)
                 })
-                .interpolate(this.$d3.curveBundle))
+                .interpolate(d3Shape.curveBundle))
           }
           reader.readAsText(this.plotData)
         }

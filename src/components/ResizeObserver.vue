@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import { debounce } from 'lodash/core'
 export default {
   name: 'resize-observer',
   data: function () {
@@ -25,13 +25,13 @@ export default {
       }
     },
     addResizeHandlers () {
-      this.resizeObject.contentDocument.defaultView.addEventListener('resize', _.debounce(this.compareAndNotify, 100))
+      this.resizeObject.contentDocument.defaultView.addEventListener('resize', debounce(this.compareAndNotify, 100))
       this.compareAndNotify()
     },
     removeResizeHandlers () {
       if (this.resizeObject && this.resizeObject.onload) {
         if (this.resizeObject.contentDocument) {
-          this.resizeObject.contentDocument.defaultView.removeEventListener('resize', _.debounce(this.compareAndNotify, 100))
+          this.resizeObject.contentDocument.defaultView.removeEventListener('resize', debounce(this.compareAndNotify, 100))
         }
         delete this.resizeObject.onload
       }

@@ -52,6 +52,7 @@ export function loadLanguageAsync (lang) {
       delete m.data.pageAboutGerminateTeamSubtitle
       delete m.data.pageAboutGerminateFundersTitle
       delete m.data.pageAboutGerminateFundersSubtitle
+      delete m.data.pageAboutGerminateFundersText
     }
 
     if (!messages[lang]) {

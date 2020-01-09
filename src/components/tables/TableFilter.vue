@@ -268,7 +268,7 @@ export default {
         column: validColumns[0],
         comparator: 'equals',
         values: ['', ''],
-        operator: this.operators[0].value
+        operator: this.operators.and.value
       })
     },
     getText: function (column) {

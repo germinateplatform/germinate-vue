@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 /* eslint-disable */
-export function pedigreeChart() {
+export function pedigreeChart(dagreD3) {
 	var margin = {
 			top: 20,
 			right: 20,

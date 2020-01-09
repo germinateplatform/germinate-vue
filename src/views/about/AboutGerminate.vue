@@ -51,6 +51,7 @@
       </b-col>
     </b-row>
     <h2>{{ $t('pageAboutGerminateFundersTitle') }}<small> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>
+    <p>{{ $t('pageAboutGerminateFundersText') }}</p>
     <b-row class="funders">
       <b-col cols=12 sm=6 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
         <div class="px-5 pt-5 pb-3 img-container d-flex justify-content-center">
@@ -111,7 +112,7 @@ export default {
           name: 'Sebastian Raubach',
           job: 'Lead developer',
           img: 'team/sebastian-raubach.jpg',
-          about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus nisl ut felis sodales, sit amet tincidunt sem aliquet. In sit amet elementum lectus. Aliquam vel orci ut mi tempus.',
+          about: 'Sebastian is responsible for the bulk of the development on the database and web interface. He makes sure everything is nice and tidy and looks as best as it can.',
           links: [{
             icon: 'mdi-twitter',
             title: 'Twitter',
@@ -126,7 +127,7 @@ export default {
           name: 'Gordon Stephen',
           job: 'BrAPI integrator',
           img: 'team/gordon-stephen.jpg',
-          about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus nisl ut felis sodales, sit amet tincidunt sem aliquet. In sit amet elementum lectus. Aliquam vel orci ut mi tempus.',
+          about: 'Gordon looks after the Plant Breeding API (BrAPI) part of Germinate. He attends the hackathons and updates the Germinate implementation of BrAPI accordingly.',
           links: [{
             icon: 'mdi-earth',
             title: 'Website',
@@ -137,7 +138,7 @@ export default {
           name: 'Iain Milne',
           job: 'Flapjack developer',
           img: 'team/iain-milne.jpg',
-          about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus nisl ut felis sodales, sit amet tincidunt sem aliquet. In sit amet elementum lectus. Aliquam vel orci ut mi tempus.',
+          about: 'Iain is the main developer of Flapjack and makes sure that the integration between Germinate and Flapjack are as smooth as possible.',
           links: [{
             icon: 'mdi-earth',
             title: 'Website',
@@ -146,9 +147,9 @@ export default {
         },
         {
           name: 'Paul Shaw',
-          job: 'Project Manager',
+          job: 'Principal Investigator',
           img: 'team/paul-shaw.jpg',
-          about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum luctus nisl ut felis sodales, sit amet tincidunt sem aliquet. In sit amet elementum lectus. Aliquam vel orci ut mi tempus.',
+          about: 'Paul looks after the Germinate project at a high level and ensures the funding stream doesn\'t dry up.',
           links: [{
             icon: 'mdi-twitter',
             title: 'Twitter',
@@ -265,6 +266,10 @@ export default {
   max-height: 300px;
   width: auto;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);
+  transition: transform .2s;
+}
+.team-members img:hover {
+  transform: scale(1.05);
 }
 .funders .img-container {
   height: 200px;

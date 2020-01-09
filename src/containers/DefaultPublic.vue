@@ -2,7 +2,7 @@
   <div class="app public">
     <AppHeader fixed>
       <b-link class="navbar-brand" to="/">
-        <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
+        <img class="navbar-brand-full" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
       </b-link>
       <b-navbar-nav class="ml-auto">

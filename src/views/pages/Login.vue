@@ -140,7 +140,7 @@ export default {
   },
   mounted: function () {
     // TODO: Check this works in production on a subdirectory of a domain rather than top-level
-    Snap.load('/img/germinate-square.svg', data => {
+    Snap.load('./img/germinate-square.svg', data => {
       new Snap('#svg-logo').append(data)
 
       this.animateLogo()

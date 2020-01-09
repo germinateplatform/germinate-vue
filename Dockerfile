@@ -22,13 +22,12 @@ RUN apt-get install -y build-essential && \
     mkdir /opt/germinate-server/web/dist/ && \
     cp -a /opt/germinate-client/dist/. /opt/germinate-server/web/dist/
 
-# Download Ant and build the server code
-RUN wget https://www-eu.apache.org/dist//ant/binaries/apache-ant-1.10.6-bin.tar.gz -P /tmp/ && \
-    tar xvzf /tmp/apache-ant-1.10.6-bin.tar.gz -C /opt/ && \
+# Download Gradle and build the server code
+RUN wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/ && \
+    unzip /tmp/gradle-6.0.1-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
-    echo "project.name=ROOT" > /opt/germinate-server/build.properties && \
-    echo "api.version=3.7.0" >> /opt/germinate-server/build.properties && \
-    /opt/apache-ant-1.10.6/bin/ant -f /opt/germinate-server/build.xml war && \
+    echo "project.name=ROOT" > /opt/germinate-server/gradle.properties && \
+    /opt/gradle-6.0.1/bin/gradle p /opt/germinate-server war && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
     cp /opt/germinate-server/ROOT.war /usr/local/tomcat/webapps/

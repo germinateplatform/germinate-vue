@@ -10,8 +10,9 @@
     <p class="text-info">{{ $t('pageLocationsMapsText') }}</p>
 
     <template v-if="climates && climates.length > 0">
-      <h3>Climate map overlays</h3>
-      <b-form-select v-model="climate" :options="climateOptions" />
+      <h3>{{ $t('pageLocationsMapsClimateOverlaysTitle') }}</h3>
+      <p>{{ $t('pageLocationsMapsClimateOverlaysText') }}</p>
+      <b-form-select v-model="climate" :options="climateOptions" class="mb-3" />
     </template>
 
     <b-row>
@@ -30,7 +31,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import { isEqual } from 'lodash/core'
 import LocationMap from '@/components/map/LocationMap'
 import LocationTable from '@/components/tables/LocationTable'
 import climateApi from '@/mixins/api/climate.js'
@@ -43,7 +44,7 @@ export default {
       climates: [],
       climateOptions: [{
         value: null,
-        text: 'Please select a climate'
+        text: this.$t('pageLocationsMapsClimateOverlaysSelectText')
       }],
       climateImageOverlays: [],
       tableFilter: null,
@@ -123,8 +124,9 @@ export default {
       return this.apiPostLocationTableIds(data, callback)
     },
     onDataChanged: function (request, data) {
-      if (!this.locations || !_.isEqual(request.filter, this.tableFilter)) {
-        this.tableFilter = request.filter
+      const sameAsBefore = isEqual(request.filter, this.tableFilter)
+      if (!this.locations || !sameAsBefore) {
+        this.tableFilter = JSON.parse(JSON.stringify(request.filter))
 
         // Create a custom request based on the one from the table, but change limit and page to get all the locations
         var customRequest = Object.assign({}, request)

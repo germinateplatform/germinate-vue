@@ -3,7 +3,7 @@
     <AppHeader fixed id="app-header">
       <SidebarToggler class="d-lg-none" display="md" mobile @click.native="toggleSidebar" />
       <b-link class="navbar-brand" to="/">
-        <img class="navbar-brand-full" src="/img/germinate-square.svg" width="48" height="48" alt="Germinate">
+        <img class="navbar-brand-full" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="48" height="48" alt="Germinate">
         <img class="navbar-brand-full navbar-brand-text" src="img/germinate-text.svg" height="22" alt="Germinate">
       </b-link>

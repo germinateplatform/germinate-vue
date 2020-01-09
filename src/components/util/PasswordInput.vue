@@ -13,6 +13,8 @@
 </template>
 
 <script>
+const zxcvbn = require('zxcvbn')
+
 export default {
   data: function () {
     return {
@@ -43,7 +45,7 @@ export default {
         return
       }
 
-      this.score = this.$zxcvbn(this.password).score
+      this.score = zxcvbn(this.password).score
 
       switch (this.score) {
         case 0:
