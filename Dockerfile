@@ -27,7 +27,7 @@ RUN wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/
     unzip /tmp/gradle-6.0.1-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=ROOT" > /opt/germinate-server/gradle.properties && \
-    /opt/gradle-6.0.1/bin/gradle p /opt/germinate-server war && \
+    /opt/gradle-6.0.1/bin/gradle -p /opt/germinate-server war && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
     cp /opt/germinate-server/ROOT.war /usr/local/tomcat/webapps/
