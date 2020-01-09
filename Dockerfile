@@ -20,8 +20,8 @@ RUN apt-get install -y build-essential && \
     rm -f package-lock.json && \
     npm i && \
     npm run build && \
-    mkdir /opt/germinate-server/web/dist/ && \
-    cp -a /opt/germinate-client/dist/. /opt/germinate-server/web/dist/
+    mkdir /opt/germinate-server/client/ && \
+    cp -a /opt/germinate-client/dist/. /opt/germinate-server/client/
 
 # Download Gradle and build the server code
 RUN wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/ && \
