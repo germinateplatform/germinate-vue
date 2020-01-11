@@ -20,17 +20,17 @@ RUN apt-get install -y build-essential && \
     rm -f package-lock.json && \
     npm i && \
     npm run build && \
-    mkdir /opt/germinate-server/web/dist/ && \
-    cp -a /opt/germinate-client/dist/. /opt/germinate-server/web/dist/
+    mkdir /opt/germinate-server/client/ && \
+    cp -a /opt/germinate-client/dist/. /opt/germinate-server/client/
 
 # Download Gradle and build the server code
 RUN wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/ && \
     unzip /tmp/gradle-6.0.1-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
-    echo "project.name=ROOT" > /opt/germinate-server/gradle.properties && \
+    echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
     /opt/gradle-6.0.1/bin/gradle -p /opt/germinate-server war && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
-    cp /opt/germinate-server/ROOT.war /usr/local/tomcat/webapps/
+    cp /opt/germinate-server/build/libs/germinate-3.7.0.war /usr/local/tomcat/webapps/ROOT.war
 
 WORKDIR /
