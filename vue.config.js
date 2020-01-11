@@ -1,5 +1,3 @@
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
 module.exports = {
   lintOnSave: true,
   runtimeCompiler: true,
@@ -12,8 +10,5 @@ module.exports = {
         .loader("imports-loader?this=>window,fix=>module.exports=0");
 
     config.resolve.alias.set("snapsvg", "snapsvg/dist/snap.svg.js");
-  },
-  configureWebpack: {
-    plugins: [new BundleAnalyzerPlugin()]
   }
 }
