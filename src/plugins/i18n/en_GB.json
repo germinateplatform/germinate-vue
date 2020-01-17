@@ -25,6 +25,7 @@
   "buttonDownloadPng": "Download PNG",
   "buttonDownloadSvg": "Download SVG",
   "buttonDownloadFile": "Download data file",
+  "buttonDownloadImages": "Download images",
   "buttonAddMarkedItems": "Add marked items",
   "buttonRemoveMarkedItems": "Remove marked items",
   "buttonRegister": "Register",

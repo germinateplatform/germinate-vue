@@ -65,6 +65,7 @@
         <h2 class="mdi-heading" id="images"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
         <p v-html="$t('pagePassportImageText')" />
         <ImageGallery :getImages="getImages" />
+        <b-button class="mdi mdi-18px mdi-download" @click="downloadImages"> {{ $t('buttonDownloadImages') }}</b-button>
 
         <hr />
         <h2 class="mdi-heading" id="groups"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
@@ -121,6 +122,7 @@ import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import miscApi from '@/mixins/api/misc.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
@@ -191,6 +193,31 @@ export default {
     },
     getPedigreeData: function (data, callback) {
       return this.apiPostPedigreeTable(data, callback)
+    },
+    downloadImages: function () {
+      const data = {
+        filter: [{
+          column: 'imageForeignId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.currentGermplasmId]
+        }, {
+          column: 'imageRefTable',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['germinatebase']
+        }]
+      }
+
+      EventBus.$emit('show-loading', true)
+      this.apiPostImagesExport(data, result => {
+        this.downloadBlob({
+          blob: result,
+          filename: this.germplasm.germplasmName,
+          extension: 'zip'
+        })
+        EventBus.$emit('show-loading', false)
+      })
     },
     getImages: function (data, onSuccess, onError) {
       data.filter = [{

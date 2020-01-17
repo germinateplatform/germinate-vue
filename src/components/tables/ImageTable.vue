@@ -26,7 +26,8 @@ import defaultProps from '@/const/table-props.js'
 export default {
   name: 'ImageTable',
   props: {
-    ...defaultProps.BASE
+    ...defaultProps.BASE,
+    ...defaultProps.DOWNLOAD
   },
   data: function () {
     return {
