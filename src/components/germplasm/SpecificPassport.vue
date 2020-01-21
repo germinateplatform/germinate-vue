@@ -22,7 +22,7 @@
         <h2 class="mdi-heading" id="mcpd">
           <span>{{ getTitle() }}</span>
           <small v-if="germplasm.entitytype"> {{ germplasm.entitytype }} </small>
-          <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover title="Click to mark/unmark Germplasm"/>
+          <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipGermplasmMarkedItem')"/>
         </h2>
         <p v-html="$t('pagePassportText')" />
 

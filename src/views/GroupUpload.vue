@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageGroupUploadTitle') }}</h1>
+    <p>{{ $t('pageGroupUploadText') }}</p>
     <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" />
   </div>
 </template>

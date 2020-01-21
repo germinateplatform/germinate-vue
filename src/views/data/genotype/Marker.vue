@@ -6,7 +6,7 @@
     <template v-if="marker">
       <h2 class="mdi-heading" id="mcpd">
         <span>{{ marker.markerName }}</span>
-        <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover title="Click to mark/unmark Marker"/>
+        <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipMarkerMarkedItem')"/>
       </h2>
       <p>{{ $t('pageMarkerDetailsText') }}</p>
 
