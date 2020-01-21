@@ -7,10 +7,10 @@
                ref="markerTable"
                v-on="$listeners">
       <template v-slot:cell(markerId)="data">
-        <router-link :to="'/data/genotype/marker/' + data.item.markerId">{{ data.item.markerId }}</router-link>
+        <router-link :to="{name: 'marker', params: { markerId: data.item.markerId }}">{{ data.item.markerId }}</router-link>
       </template>
       <template v-slot:cell(markerName)="data">
-        <router-link :to="'/data/genotype/marker/' + data.item.markerId">{{ data.item.markerName }}</router-link>
+        <router-link :to="{name: 'marker', params: { markerId: data.item.markerId }}">{{ data.item.markerName }}</router-link>
       </template>
       <template v-slot:cell(markerSynonyms)="data">
         <span v-if="data.item.markerSynonyms">{{ data.item.markerSynonyms.join(', ') }}</span>

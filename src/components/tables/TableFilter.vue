@@ -2,13 +2,14 @@
   <div>
     <div>
       <b-button-group class="table-filter">
-        <b-dropdown left v-if="columns && columns.length > 0" class="overflow-dropdown" v-b-tooltip.hover :title="$t('tooltipTableColumnSelector')">
+        <b-button @click="$emit('help-clicked')" class="mdi mdi-18px mdi-help-circle-outline" v-b-tooltip.hover :title="$t('tooltipTableHelp')" />
+        <b-dropdown left v-if="columns && columns.length > 0" class="overflow-dropdown" id="column-selector" v-b-tooltip.hover :title="$t('tooltipTableColumnSelector')">
           <template slot="button-content"><i class="mdi mdi-18px mdi-view-column"/></template>
           <b-dropdown-form>
             <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.key" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
           </b-dropdown-form>
         </b-dropdown>
-        <b-button :variant="(filter && filter.length > 0) ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" v-b-tooltip.hover :title="$t('tooltipTableFilter')" />
+        <b-button :variant="(filter && filter.length > 0) ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" id="filter-toggle" v-b-tooltip.hover :title="$t('tooltipTableFilter')" />
         <b-button v-if="filter && filter.length > 0" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter" v-b-tooltip.hover :title="$t('tooltipTableClearFilter')"/>
       </b-button-group>
       <b-modal :id="'table-filter-modal-' + id" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false, true)" @show="init">

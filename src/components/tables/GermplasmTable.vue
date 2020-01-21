@@ -259,7 +259,7 @@ export default {
           key: 'subtaxa',
           type: String,
           sortable: true,
-          class: `font-italic ${this.isTableColumnHidden(this.options.tableName, 'subtaxa')}`,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'subtaxa')}`,
           label: this.$t('tableColumnSubtaxa')
         }, {
           key: 'location',

@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1>Marked items</h1>
+    <h1>{{ $t('pageMarkedItemsTitle') }}</h1>
+    <hr/>
+    <p>{{ $t('pageMarkedItemsText') }}</p>
     <b-form-radio-group
         v-model="itemType"
         :options="options"

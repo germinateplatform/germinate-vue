@@ -32,6 +32,10 @@ export default {
     apiPostGroupMarkerTableExport: function (groupId, queryData, onSuccess, onError) {
       return this.authAjax({ url: `group/${groupId}/marker/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostMarkerGroupTable: function (markerId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `marker/${markerId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostMapsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'map/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -61,6 +65,10 @@ export default {
     apiPostAlleleFrequencyDatasetExport: function (queryData, onSuccess, onError) {
       this.$ga.event('export', 'async', 'allelefreq', queryData.datasetIds.join('-'))
       return this.authAjax({ url: 'dataset/export/allelefreq', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostMarkerDatasetTable: function (markerId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `marker/${markerId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

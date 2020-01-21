@@ -8,7 +8,7 @@
         <img class="navbar-brand-full navbar-brand-text" src="img/germinate-text.svg" height="22" alt="Germinate">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
-      <b-navbar-nav class="ml-auto">
+      <b-navbar-nav class="ml-auto align-items-stretch top-nav">
         <b-nav-form @submit.prevent="search">
           <b-input-group class="mr-sm-2">
             <b-form-input size="sm" v-model="searchTerm" :placeholder="$t('inputPlaceholderSearch')"></b-form-input>
@@ -17,10 +17,10 @@
             </b-input-group-append>
           </b-input-group>
         </b-nav-form>
-        <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()" id="top-nav-help"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
-        <LocaleDropdown class="top-nav-locale"/>
-        <MarkedItemDropdown />
-        <UserSettingsDropdown />
+        <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()" id="top-nav-help" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
+        <LocaleDropdown class="top-nav-locale d-flex align-self-center"/>
+        <MarkedItemDropdown  class="d-flex align-self-center" />
+        <UserSettingsDropdown  class="d-flex align-self-center" />
       </b-navbar-nav>
       <div>
         <AsideToggler class="d-block aside-toggler" :display="'xs'" ref="asideToggler" @click.native="updateAside" v-b-popover="asidePopoverConfig" />
@@ -70,23 +70,7 @@
       <p v-html="$t(this.helpKey)" />
     </b-modal>
 
-    <b-popover :target="popoverTarget" :placement="popoverContent[popoverIndex].position" ref="popover" :show="popoverShow" v-if="popoverShow" variant="info">
-      <template v-slot:title>
-        <b-button @click="popoverShow = false" size="sm" class="ml-1 close" aria-label="Close">
-          <i class="mdi mdi-close" />
-        </b-button>
-        <span>{{ popoverContent[popoverIndex].title() }}</span>
-      </template>
-      <div>
-        <p>{{ popoverContent[popoverIndex].text() }}</p>
-
-        <b-button-group class="d-flex">
-          <b-button variant="secondary" @click="popoverIndex = popoverIndex - 1" :disabled="popoverIndex < 1">{{ $t('buttonBack') }}</b-button>
-          <b-button variant="success" @click="popoverIndex = popoverIndex + 1" v-if="popoverIndex < popoverContent.length - 1">{{ $t('buttonNext') }}</b-button>
-          <b-button variant="success" @click="resetPopover" v-else>{{ $t('buttonClose') }}</b-button>
-        </b-button-group>
-      </div>
-    </b-popover>
+    <Tour :steps="popoverContent" ref="introductionTour" />
   </div>
 </template>
 
@@ -96,6 +80,7 @@ import DefaultAside from './DefaultAside'
 import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
 import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
 import LocaleDropdown from '@/components/dropdown/LocaleDropdown'
+import Tour from '@/components/util/Tour'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -114,15 +99,13 @@ export default {
     SidebarHeader,
     SidebarNav,
     SidebarMinimizer,
+    Tour,
     MarkedItemDropdown
   },
   data () {
     return {
       nav: [],
       searchTerm: null,
-      popoverTarget: null,
-      popoverIndex: 0,
-      popoverShow: false,
       popoverContent: [{
         title: () => this.$t('widgetIntroTourStepTitleWelcome'),
         text: () => this.$t('widgetIntroTourStepTextWelcome'),
@@ -170,16 +153,6 @@ export default {
   watch: {
     locale: function (newValue, oldValue) {
       this.updateNav()
-    },
-    popoverIndex: function (newValue, oldValue) {
-      if (this.popoverShow) {
-        this.updatePopover()
-      } else {
-        this.resetPopover()
-      }
-    },
-    $route (newValue, oldValue) {
-      this.resetPopover()
     }
   },
   methods: {
@@ -187,7 +160,12 @@ export default {
       this.$store.dispatch('ON_COOKIES_ACCEPTED', decision)
     },
     search: function () {
-      this.$router.push({ name: 'search', params: { searchTerm: this.searchTerm } })
+      if (this.searchTerm && this.searchTerm.length > 0) {
+        this.$router.push({ name: 'search-query', params: { searchTerm: this.searchTerm } })
+      } else {
+        this.$router.push({ name: 'search' })
+      }
+      this.searchTerm = null
     },
     getHelpDisabled: function () {
       return this.helpKey === undefined || this.helpKey === null
@@ -426,22 +404,8 @@ export default {
     updateAside: function () {
       this.$nextTick(() => this.$refs.aside.updateAsyncJobs(true))
     },
-    updatePopover: function () {
-      this.popoverShow = false
-      this.$nextTick(() => {
-        this.popoverTarget = document.querySelector(this.popoverContent[this.popoverIndex].target())
-        this.popoverShow = true
-        this.popoverTarget.scrollIntoView({ behavior: 'smooth' })
-      })
-    },
-    resetPopover: function () {
-      this.popoverIndex = 0
-      this.popoverTarget = null
-      this.popoverShow = false
-    },
     startIntroduction: function () {
-      this.resetPopover()
-      this.updatePopover()
+      this.$refs.introductionTour.start()
     }
   },
   destroyed: function () {
@@ -492,5 +456,13 @@ export default {
 }
 .app-header .navbar-brand-text {
   margin-left: 10px;
+}
+.top-nav li.nav-item {
+  justify-content: center;
+  min-height: 40px;
+}
+.top-nav li.nav-item a {
+  -ms-flex-item-align: center !important;
+  align-self: center !important;
 }
 </style>

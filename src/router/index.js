@@ -189,6 +189,12 @@ const router = new Router({
                   beforeEnter: requireAuth
                 },
                 {
+                  path: 'marker/:markerId',
+                  name: 'marker',
+                  component: () => import('@/views/data/genotype/Marker.vue'),
+                  beforeEnter: requireAuth
+                },
+                {
                   path: 'maps',
                   name: 'maps',
                   component: () => import('@/views/data/genotype/Maps.vue'),

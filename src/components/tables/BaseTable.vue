@@ -1,5 +1,5 @@
 <template>
-  <div class="base-table table-overflow-fix">
+  <div class="base-table table-overflow-fix" :id="id">
     <div>
       <div v-if="filter" class="mb-2">
         <span v-for="(f, index) in filter" :key="f.column.name">
@@ -19,7 +19,8 @@
                    :filterOn="filterOn"
                    ref="tableFilter"
                    v-if="filterEnabled"
-                   v-on:filter-changed="onFilterChanged" />
+                   v-on:filter-changed="onFilterChanged"
+                   v-on:help-clicked="$refs.tableTour.start()"/>
 
       <div class="flex-grow-1">
         <div class="d-flex flex-row justify-content-between">
@@ -28,8 +29,8 @@
           </div>
           <div v-else />
           <template v-if="currentRequestData !== null && pagination.totalCount >= 0">
-            <div v-if="showAllItems !== true" class="d-flex mx-2 mb-1">{{ $tc('paginationCountCustom', pagination.totalCount, { from: $options.filters.toThousandSeparators(currentRequestData.page * currentRequestData.limit + 1), to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)), count: $options.filters.toThousandSeparators(pagination.totalCount) }) }}</div>
-            <div v-else class="d-flex mx-2 mb-1">{{ $tc('paginationCountCustom', pagination.totalCount, { from: 1, to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)), count: $options.filters.toThousandSeparators(pagination.totalCount) }) }}</div>
+            <div v-if="showAllItems !== true" class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: $options.filters.toThousandSeparators(currentRequestData.page * currentRequestData.limit + 1), to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)), count: $options.filters.toThousandSeparators(pagination.totalCount) }) }}</div>
+            <div v-else class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: 1, to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)), count: $options.filters.toThousandSeparators(pagination.totalCount) }) }}</div>
           </template>
         </div>
         <b-progress :value="100" height="6px" variant="primary" v-b-tooltip.hover :title="$t('tooltipTableLoadingIndicator')" striped animated v-if="isLoading" class="table-loading-indicator" />
@@ -37,7 +38,7 @@
       </div>
 
       <b-button-group class="per-page-dropdown" v-if="!showAllItems">
-        <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')">
+        <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')" id="table-page-size-dropdown">
           <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
           <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
         </b-dropdown>
@@ -104,7 +105,7 @@
         </template>
 
         <b-button-group v-if="tableActions || downloadTable">
-          <b-button class="table-download" v-if="downloadTable !== null" @click="onDownloadTableClicked"><i class="mdi mdi-18px fix-alignment mdi-download" /></b-button>
+          <b-button class="table-download" v-if="downloadTable !== null" @click="onDownloadTableClicked" id="table-download"><i class="mdi mdi-18px fix-alignment mdi-download" /></b-button>
           <template v-if="tableActions">
             <b-button v-for="action in tableActions"
                       :key="`base-table-action-${action.id}`"
@@ -122,10 +123,11 @@
 
       <div class="d-flex">
         <b-button-group class="table-pagination" v-show="pagination.totalCount > tablePerPage">
-          <b-button variant="outline-secondary" class="text-primary" @click="showJumpToPage"><i class="mdi mdi-book-open-page-variant" /> {{ $t('paginationPageCustom', { from: pagination.currentPage, to: maxPage }) }}</b-button>
+          <b-button variant="outline-secondary" class="text-primary" @click="showJumpToPage" id="table-jump-to-page"><i class="mdi mdi-book-open-page-variant" /> {{ $t('paginationPageCustom', { from: pagination.currentPage, to: maxPage }) }}</b-button>
           <b-pagination v-model="pagination.currentPage"
                         :total-rows="pagination.totalCount"
-                        :per-page="tablePerPage" />
+                        :per-page="tablePerPage"
+                        id="table-pagination" />
         </b-button-group>
       </div>
     </div>
@@ -161,6 +163,8 @@
         </b-form-group>
       </b-form>
     </b-modal>
+
+    <Tour ref="tableTour" :steps="tableTourSteps" />
   </div>
 </template>
 
@@ -168,6 +172,7 @@
 import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
 import MarkedItems from '@/components/tables/MarkedItems'
 import TableFilter from '@/components/tables/TableFilter'
+import Tour from '@/components/util/Tour'
 import { VueContext } from 'vue-context'
 import { EventBus } from '@/plugins/event-bus.js'
 import { mapFilters } from '@/plugins/map-filters.js'
@@ -222,6 +227,8 @@ export default {
     }
   },
   data: function () {
+    const id = 'table-' + this.uuidv4()
+
     return {
       pagination: {
         currentPage: 1,
@@ -234,12 +241,17 @@ export default {
       groupTypeSelect: null,
       newGroup: null,
       selectedItems: [],
-      jumpToPageValue: 1
+      jumpToPageValue: 1,
+      tableTourSteps: [],
+      id: id
     }
   },
   watch: {
     'pagination.currentPage': function (newValue, oldValue) {
       this.$refs.table.refresh()
+    },
+    'pagination.totalCount': function (newValue, oldValue) {
+      this.updateTableTour()
     },
     tablePerPage: function (newValue, oldValue) {
       this.$nextTick(() => this.$refs.table.refresh())
@@ -260,6 +272,7 @@ export default {
     GroupEditAddModal,
     MarkedItems,
     TableFilter,
+    Tour,
     VueContext
   },
   mixins: [ groupApi ],
@@ -476,7 +489,77 @@ export default {
         })
         EventBus.$emit('show-loading', false)
       })
+    },
+    updateTableTour: function () {
+      var tableTourSteps = [
+        {
+          title: () => this.$t('popoverTableTourColumnSelectorTitle'),
+          text: () => this.$t('popoverTableTourColumnSelectorText'),
+          target: () => `#${this.id} #column-selector`,
+          position: 'top'
+        }, {
+          title: () => this.$t('popoverTableTourTableFilteringTitle'),
+          text: () => this.$t('popoverTableTourTableFilteringText'),
+          target: () => `#${this.id} #filter-toggle`,
+          position: 'top'
+        }, {
+          title: () => this.$t('popoverTableTourResultSizeTitle'),
+          text: () => this.$t('popoverTableTourResultSizeText'),
+          target: () => `#${this.id} #table-row-count`,
+          position: 'top'
+        }, {
+          title: () => this.$t('popoverTableTourPageSizeTitle'),
+          text: () => this.$t('popoverTableTourPageSizeText'),
+          target: () => `#${this.id} #table-page-size-dropdown`,
+          position: 'top'
+        }
+      ]
+
+      if (this.itemType !== null) {
+        tableTourSteps.push({
+          title: () => this.$t('popoverTableTourMarkedItemsTitle'),
+          text: () => this.$t('popoverTableTourMarkedItemsText'),
+          target: () => `#${this.id} #marked-items-count`,
+          position: 'top'
+        })
+        tableTourSteps.push({
+          title: () => this.$t('popoverTableTourMarkedItemsClearTitle'),
+          text: () => this.$t('popoverTableTourMarkedItemsClearText'),
+          target: () => `#${this.id} #marked-items-clear`,
+          position: 'top'
+        })
+      }
+
+      if (this.downloadTable !== null) {
+        tableTourSteps.push({
+          title: () => this.$t('popoverTableTourDownloadTitle'),
+          text: () => this.$t('popoverTableTourDownloadText'),
+          target: () => `#${this.id} #table-download`,
+          position: 'bottom'
+        })
+      }
+
+      if (this.pagination.totalCount > this.tablePerPage) {
+        tableTourSteps.push({
+          title: () => this.$t('popoverTableTourPaginationTitle'),
+          text: () => this.$t('popoverTableTourPaginationText'),
+          target: () => `#${this.id} #table-pagination`,
+          position: 'bottom'
+        })
+
+        tableTourSteps.push({
+          title: () => this.$t('popoverTableTourPaginationJumpToPageTitle'),
+          text: () => this.$t('popoverTableTourPaginationJumpToPageText'),
+          target: () => `#${this.id} #table-jump-to-page`,
+          position: 'bottom'
+        })
+      }
+
+      this.tableTourSteps = tableTourSteps
     }
+  },
+  mounted: function () {
+    this.updateTableTour()
   }
 }
 </script>

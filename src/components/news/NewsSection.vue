@@ -10,7 +10,7 @@
               <div class="flex-column align-items-start flex-grow-1">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ newsItem.newsTitle }}</h5>
-                  <small><i class="mdi mdi-calendar-clock" /> {{ newsItem.updatedOn | toDate }}</small>
+                  <small class="text-nowrap"><i class="mdi mdi-calendar-clock" /> {{ newsItem.updatedOn | toDate }}</small>
                 </div>
                 <p class="mb-1" v-if="newsItem.newsContent">{{ getContent(newsItem) }}</p>
                 <small>{{ newsTypes[newsItem.newstypeName].text() }}</small>

@@ -38,6 +38,15 @@
             <Mcpd :germplasm="germplasm"/>
           </b-col>
           <b-col cols=12 lg=6>
+            <template v-if="germplasmTableData.synonyms">
+              <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-tag-text-outline"/><span> {{ $t('pagePassportSynonymsTitle') }}</span></h2>
+              <ul>
+                <li v-for="(synonym, index) in germplasmTableData.synonyms" :key="`germplasm-synonym-${index}`">
+                  {{ synonym }}
+                </li>
+              </ul>
+            </template>
+
             <Institution :institutionId="germplasmTableData.institutionId" id="institution"/>
           </b-col>
         </b-row>

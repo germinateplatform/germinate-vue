@@ -293,7 +293,13 @@ const storeState = {
         removeItem: key => localStorage.removeItem(key)
       },
       reducer: (state, paths) => {
-        var result = JSON.parse(JSON.stringify(state))
+        var result = {}
+        try {
+          result = JSON.parse(JSON.stringify(state))
+        } catch (err) {
+          console.error(err)
+          console.log(state)
+        }
 
         // Check if GDPR settings are active
         if (result.userStates && result.serverSettings && result.serverSettings.showGdprNotification) {

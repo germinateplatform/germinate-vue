@@ -1,8 +1,8 @@
 <template>
   <div>
     <b-button-group class="marked-items" v-if="itemType && markedIds && markedIds[itemType]">
-      <b-button @click="clear" class="mdi mdi-18px mdi-delete" :disabled="markedIds[itemType].length < 1"/>
-      <b-button @click="navigate"><b-badge pill variant="light">{{ markedIds[itemType].length }}</b-badge></b-button>
+      <b-button @click="clear" class="mdi mdi-18px mdi-delete" :disabled="markedIds[itemType].length < 1" id="marked-items-clear"/>
+      <b-button @click="navigate" id="marked-items-count"><b-badge pill variant="light">{{ markedIds[itemType].length }}</b-badge></b-button>
     </b-button-group>
   </div>
 </template>

@@ -57,10 +57,11 @@ export default {
       this.enabled = false
       this.apiPostToken(user, result => {
         this.enabled = true
+        const originalTarget = this.originalTarget
         // If it's successful, finally store them
         this.$store.dispatch('ON_TOKEN_CHANGED', result)
-        if (this.originalTarget) {
-          var path = this.originalTarget.path
+        if (originalTarget) {
+          var path = originalTarget.path
           this.$store.commit('ON_ORIGINAL_TARGET_CHANGED_MUTATION', null)
           this.$router.push(path)
         } else {
