@@ -91,7 +91,31 @@ export default {
     start: function () {
       this.resetPopover()
       this.updatePopover()
+    },
+    handleKeys: function (e) {
+      if (this.popoverShow) {
+        if (e.keyCode === 39) {
+          // Right
+          if (this.currentIndex < this.steps.length - 1) {
+            this.currentIndex++
+          }
+        } else if (e.keyCode === 37) {
+          // Left
+          if (this.currentIndex > 0) {
+            this.currentIndex--
+          }
+        } else if (e.keyCode === 27) {
+          // Escape
+          this.resetPopover()
+        }
+      }
     }
+  },
+  mounted: function () {
+    document.addEventListener('keyup', this.handleKeys)
+  },
+  destroyed: function () {
+    document.removeEventListener('keyup', this.handleKeys)
   }
 }
 </script>
