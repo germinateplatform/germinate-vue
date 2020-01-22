@@ -14,7 +14,7 @@
       <div id="hutton-banner-partnership" class="col"></div>
       </div>
     <div class="text-center py-3">
-      <b-img src="/img/germinate-square.svg" fluid class="about-header-logo"/>
+      <b-img src="./img/germinate-square.svg" fluid class="about-header-logo"/>
     </div>
     <div class="text-center">
       <h1>{{ $t('pageAboutGerminateTitle') }}<small> - {{ $t('pageAboutGerminateSubtitle') }}</small></h1>
@@ -42,7 +42,7 @@
     <b-row class="team-members">
       <b-col cols=12 sm=6 xl=3 v-for="(member, i) in team" :key="'about-team-' + i" class="text-center pb-5">
         <div class="px-5 pt-5 pb-3">
-          <b-img :src="`/img/${member.img}`" rounded="circle" fluid />
+          <b-img :src="`./img/${member.img}`" rounded="circle" fluid />
         </div>
         <h2>{{ member.name }}</h2>
         <h5 class="text-primary text-uppercase">{{ member.job }}</h5>
@@ -56,22 +56,22 @@
       <b-col cols=12 sm=6 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
         <div class="px-5 pt-5 pb-3 img-container d-flex justify-content-center">
           <a :href="funder.href" :title="funder.name" target="_blank" class="align-self-center" v-if="funder.href">
-            <b-img :src="`/img/${funder.logo}`" fluid />
+            <b-img :src="`./img/${funder.logo}`" fluid />
           </a>
-          <b-img :src="`/img/${funder.logo}`" fluid v-else />
+          <b-img :src="`./img/${funder.logo}`" fluid v-else />
         </div>
       </b-col>
     </b-row>
     <b-row class="about-footer bg-dark px-3">
       <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img src="/img/germinate-square.svg" fluid class="my-5" />
-        <b-img src="/img/germinate-text.svg" fluid class="my-5 germinate-text"/>
+        <b-img src="./img/germinate-square.svg" fluid class="my-5" />
+        <b-img src="./img/germinate-text.svg" fluid class="my-5 germinate-text"/>
       </b-col>
       <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img src="/img/hutton.svg" fluid class="my-5" />
+        <b-img src="./img/hutton.svg" fluid class="my-5" />
       </b-col>
       <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img src="/img/ics-sdg.svg" fluid class="my-5" />
+        <b-img src="./img/ics-sdg.svg" fluid class="my-5" />
       </b-col>
     </b-row>
   </div>

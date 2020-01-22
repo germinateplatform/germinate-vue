@@ -28,8 +28,8 @@
 
       <h4>{{ $t('pageMapExportDownloadFormatTitle') }}</h4>
       <b-list-group class="d-inline-block">
-        <b-list-group-item button @click="exportMap('flapjack')"><img :src="`/img/${exportFormats.flapjack.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadFlapjackFormat') }}</b-list-group-item>
-        <b-list-group-item button @click="exportMap('strudel')"><img :src="`/img/${exportFormats.strudel.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadStrudelFormat') }}</b-list-group-item>
+        <b-list-group-item button @click="exportMap('flapjack')"><img :src="`./img/${exportFormats.flapjack.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadFlapjackFormat') }}</b-list-group-item>
+        <b-list-group-item button @click="exportMap('strudel')"><img :src="`./img/${exportFormats.strudel.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadStrudelFormat') }}</b-list-group-item>
       </b-list-group>
 
       <p><span class="text-muted" v-html="$t('pageExportFormatsGenotypeText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
