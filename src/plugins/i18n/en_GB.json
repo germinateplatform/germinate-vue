@@ -189,6 +189,7 @@
   "importStatusMcpdInvalidSampstat": "Invalid SAMPSTAT (Biological status of accession) found. Please check the MCPD 2.1 documentation for all valid codes.",
   "importStatusMcpdInvalidStorage": "Invalid STORAGE (Type of germplasm storage) found. Please check the MCPD 2.1 documentation for all valid codes.",
   "importStatusMcpdMissingField": "A required field is not set. Please specify a value for this field.",
+  "importStatusMcpdMissingAccenumb": "A specified ACCENUMB under the 'ADDITIONAL_ATTRIBUTES' tab was not found in the database or the 'DATA' sheet.",
   "importStatusMissingDbItemUpdate": "An item marked for update has not been found in the database and can therefore not be updated. Please make sure to only update existing items.",
   "importStatusOk": "Import successful.",
   "inputPlaceholderMarkerNameAutocomplete": "Type in marker name (At least 3 chars)",

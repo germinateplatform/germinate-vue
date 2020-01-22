@@ -138,7 +138,7 @@ export default {
           name: 'Iain Milne',
           job: 'Flapjack developer',
           img: 'team/iain-milne.jpg',
-          about: 'Iain is the main developer of Flapjack and makes sure that the integration between Germinate and Flapjack are as smooth as possible.',
+          about: 'Iain is the main developer of Flapjack and makes sure that the integration between Germinate and Flapjack is as smooth as possible.',
           links: [{
             icon: 'mdi-earth',
             title: 'Website',

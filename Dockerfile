@@ -15,7 +15,7 @@ RUN apt-get update && \
 # Build the client code
 WORKDIR /opt/germinate-client
 RUN rm -f .env && \
-    echo "VUE_APP_BASE_URL=/api/" > .env
+    echo "VUE_APP_BASE_URL=./api/" > .env
 RUN apt-get install -y build-essential && \
     rm -f package-lock.json && \
     npm i && \
@@ -31,6 +31,6 @@ RUN wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/
     /opt/gradle-6.0.1/bin/gradle -p /opt/germinate-server war && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
-    cp /opt/germinate-server/build/libs/germinate-3.7.0.war /usr/local/tomcat/webapps/ROOT.war
+    cp /opt/germinate-server/build/libs/germinate-4.0.0.war /usr/local/tomcat/webapps/ROOT.war
 
 WORKDIR /

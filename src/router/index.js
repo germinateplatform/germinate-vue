@@ -63,6 +63,12 @@ const router = new Router({
       component: () => import('@/containers/DefaultContainer'),
       children: [
         {
+          path: '/',
+          name: 'home-default',
+          component: () => import('@/views/Dashboard'),
+          beforeEnter: requireAuth
+        },
+        {
           path: 'home',
           name: 'home',
           component: () => import('@/views/Dashboard'),
