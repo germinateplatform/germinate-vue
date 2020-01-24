@@ -444,7 +444,7 @@ export default {
             this.$store.dispatch('ON_TOKEN_CHANGED', null)
             var authMode = this.serverSettings.authMode
             if (authMode === 'FULL') {
-              this.$router.push('/g8/login')
+              this.$router.push({ name: 'login' })
             } else if (authMode === 'SELECTIVE') {
               EventBus.$emit('on-show-login-form')
             }
@@ -521,7 +521,7 @@ export default {
               vm.$store.dispatch('ON_TOKEN_CHANGED', null)
               var authMode = vm.$store.getters.serverSettings.authMode
               if (authMode === 'FULL') {
-                vm.$router.push('/g8/login')
+                vm.$router.push({ name: 'login' })
               } else if (authMode === 'SELECTIVE') {
                 EventBus.$emit('on-show-login-form')
               }
@@ -622,7 +622,7 @@ export default {
               vm.$store.dispatch('ON_TOKEN_CHANGED', null)
               var authMode = vm.$store.getters.serverSettings.authMode
               if (authMode === 'FULL') {
-                vm.$router.push('/g8/login')
+                vm.$router.push({ name: 'login' })
               } else if (authMode === 'SELECTIVE') {
                 EventBus.$emit('on-show-login-form')
               }

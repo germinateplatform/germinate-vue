@@ -51,7 +51,7 @@ const router = new Router({
       children: [
         {
           path: 'login',
-          name: 'Login',
+          name: 'login',
           component: () => import(/* webpackChunkName: "login" */ '@/views/pages/Login.vue')
         }
       ]

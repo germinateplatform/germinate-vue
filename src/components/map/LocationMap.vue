@@ -3,7 +3,6 @@
     <l-map
       class="location-map"
       :center="center"
-      v-if="(locations && locations.length > 0) || selectionMode !== 'none'"
       ref="map"
       :maxZoom="maxZoom"
       :zoom="zoom">
@@ -22,8 +21,11 @@
       <dl class="row">
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8">
-          <router-link to="/data/datasets" v-if="location.locationType === 'datasets'" @click.native="navigateToDatasets(location)" event="">{{ location.locationName }}</router-link>
-          <router-link to="/data/germplasm" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
+          <template v-if="showLinks">
+            <router-link to="/data/datasets" v-if="location.locationType === 'datasets' && $route.name !== 'datasets'" @click.native="navigateToDatasets(location)" event="">{{ location.locationName }}</router-link>
+            <router-link to="/data/germplasm" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
+            <span v-else>{{ location.locationName }}</span>
+          </template>
           <span v-else>{{ location.locationName }}</span>
         </dd>
         <template v-if="location.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8"><i :class="`mdi mdi-18px ${locationTypes[location.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[location.locationType].color()};`" /> {{ this.locationTypes[location.locationType].text() }}</dd></template>
@@ -55,13 +57,14 @@ export default {
       location: null,
       markerClusterer: null,
       editableLayers: null,
-      gradientColors: []
+      gradientColors: [],
+      markers: []
     }
   },
   props: {
     locations: {
       type: Array,
-      default: null
+      default: () => []
     },
     mapType: {
       type: String,
@@ -74,11 +77,15 @@ export default {
     imageOverlays: {
       type: Array,
       default: () => []
+    },
+    showLinks: {
+      type: Boolean,
+      default: true
     }
   },
   watch: {
     locations: function (newValue, oldValue) {
-      this.updateCenter()
+      this.updateMap()
     }
   },
   components: {
@@ -124,12 +131,12 @@ export default {
     navigateToDatasets: function (location) {
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
-          name: 'location',
-          type: String
+          name: 'locationIds',
+          type: 'json'
         },
-        comparator: 'equals',
+        comparator: 'contains',
         operator: 'and',
-        values: [location.locationName]
+        values: [location.locationId]
       }])
       this.$router.push({ path: '/data/datasets' })
     },
@@ -151,9 +158,14 @@ export default {
         return ''
       }
     },
-    updateCenter: function () {
+    updateMap: function () {
       var map = this.$refs.map.mapObject
-      if (this.locations) {
+
+      if (this.markers && this.markers.length > 0) {
+        this.markers.forEach(m => map.removeLayer(m))
+      }
+
+      if (this.locations && this.locations.length > 0) {
         if (this.locations.length === 1) {
           // If there's just one location, center it and open the popup
           this.location = this.locations[0]
@@ -167,7 +179,9 @@ export default {
           })
           marker.addTo(map)
           marker.fire('click')
-        } else {
+
+          this.markers.push(marker)
+        } else if (this.locations.length > 1) {
           // If there are multiple locations, fit them into view
           var latLngBounds = L.latLngBounds()
 
@@ -220,6 +234,8 @@ export default {
           }
         }
       }
+
+      this.$nextTick(() => map.invalidateSize())
     }
   },
   mounted: function () {
@@ -253,7 +269,7 @@ export default {
 
       L.control.layers(baseMaps).addTo(map)
 
-      this.updateCenter()
+      this.updateMap()
 
       if (this.selectionMode === 'polygon') {
         this.editableLayers = new L.FeatureGroup()

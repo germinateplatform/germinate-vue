@@ -58,15 +58,16 @@
     <!-- Image preview -->
     <template v-slot:cell(imageCount)="data">
       <div class="table-image" v-if="data.item.imageCount !== undefined && data.item.imageCount > 0">
-        <div :id="`table-image-popover-${data.item.germplasmId}`">
+        <a href="#" class="text-dark" @click.prevent="" :id="`table-image-popover-${data.item.germplasmId}`">
           <i class="mdi mdi-18px mdi-camera"/> <span> {{ data.item.imageCount }}</span>
-        </div>
+        </a>
         <b-popover
           :target="`table-image-popover-${data.item.germplasmId}`"
+          custom-class="table-image-popover"
           placement="top"
           boundary="window"
-          triggers="hover focus">
-          <b-img fluid :src="getSrc(data.item)" />
+          triggers="click blur">
+          <img :src="getSrc(data.item)" />
         </b-popover>
       </div>
     </template>
@@ -457,7 +458,26 @@ export default {
 .table-image * {
   vertical-align: top;
 }
+.table-image:hover {
+  cursor: pointer;
+}
+.table-image > a {
+  text-decoration: none;
+}
 .pdci-table > svg {
   vertical-align: sub;
+}
+.table-image-popover {
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+}
+.table-image-popover .popover-body {
+  padding: 0;
+}
+.table-image-popover .popover-body img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
 }
 </style>

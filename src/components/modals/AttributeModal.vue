@@ -1,5 +1,5 @@
 <template>
-  <b-modal :ref="`attributeModal-${id}`" ok-only :ok-title="$t('buttonClose')" size="lg" title="Attributes">
+  <b-modal :ref="`attributeModal-${id}`" ok-only :ok-title="$t('buttonClose')" size="lg" :title="$t('modalTitleAttributes')">
     <div>
       <template v-if="dataset">
         <h2>{{ $t('modalTitleDatasetAttributes') }}</h2>

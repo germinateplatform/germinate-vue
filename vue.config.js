@@ -1,7 +1,7 @@
 module.exports = {
   lintOnSave: true,
   runtimeCompiler: true,
-  publicPath: process.env.NODE_ENV === 'production' ? '' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   chainWebpack: config => {
     config.module
       .rule("Snap")

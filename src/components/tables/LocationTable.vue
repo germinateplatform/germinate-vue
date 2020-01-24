@@ -166,12 +166,12 @@ export default {
     navigateToDatasets: function (location) {
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
-          name: 'location',
-          type: String
+          name: 'locationIds',
+          type: 'json'
         },
-        comparator: 'equals',
+        comparator: 'contains',
         operator: 'and',
-        values: [location.locationName]
+        values: [location.locationId]
       }])
       this.$router.push({ path: '/data/datasets' })
     },

@@ -1,7 +1,15 @@
 <template>
   <div>
     <div v-if="trait">
-      <h1>{{ trait.traitName }}</h1>
+      <h1>{{ trait.traitName }} <small v-if="trait.unitName">{{ trait.unitName }}</small></h1>
+      <p v-if="trait.traitDescription">{{ trait.traitDescription }}</p>
+
+      <template v-if="trait.synonyms">
+        <h2>{{ $t('genericSynonyms') }}</h2>
+        <ul>
+          <li v-for="(synonym, index) in trait.synonyms" :key="`trait-synonyms-${index}`">{{ synonym }}</li>
+        </ul>
+      </template>
 
       <h2>{{ $t('pageTraitDetailsDataTitle') }}</h2>
       <p>{{ $t('pageTraitDetailsDataText') }}</p>

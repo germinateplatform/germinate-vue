@@ -3,6 +3,7 @@
     <BaseTable v-bind="$props"
               :columns="columns"
               :options="options"
+              class="dataset-table"
               ref="datasetTable"
               v-on="$listeners">
       <template v-slot:head(dataObjectCount)="data">
@@ -31,8 +32,13 @@
       </template>
 
       <!-- Country flags -->
-      <template v-slot:cell(countryName)="data">
-        <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span></span>
+      <template v-slot:cell(countryCodes)="data">
+        <span v-for="country in getUnique(data.item.countryCodes)" :key="`country-flag-${country}`" class="table-country text-nowrap" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'flag-icon flag-icon-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
+      </template>
+      <template v-slot:cell(locationIds)="data">
+        <a href="#" class="text-decoration-none" v-if="data.item.locationIds && data.item.locationIds.length > 0" @click.prevent="showLocations(data)">
+          <i class="mdi mdi-18px mdi-map-marker" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')" />
+        </a>
       </template>
 
       <template v-slot:cell(experimentType)="data">
@@ -73,6 +79,11 @@
           <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
         </a>
       </template>
+
+      <template v-slot:row-details="data">
+        <LocationMap :locations="locations" v-if="dataset && dataset.datasetId === data.item.datasetId && locations && locations.length > 0" :showLinks="false"/>
+      </template>
+
     </BaseTable>
     <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
     <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
@@ -84,12 +95,17 @@
 import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 import CollaboratorModal from '@/components/modals/CollaboratorModal'
+import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props.js'
 import { EventBus } from '@/plugins/event-bus.js'
 import { mapFilters } from '@/plugins/map-filters.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import genotypeApi from '@/mixins/api/genotype.js'
+import locationApi from '@/mixins/api/location.js'
+
+var countries = require('i18n-iso-countries')
+countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
 export default {
   name: 'LocationTable',
@@ -112,7 +128,9 @@ export default {
         rowVariant: this.getRowVariant
       },
       dataset: null,
+      locations: null,
       license: null,
+      previousDetailsRow: null,
       datasetStates: {
         public: {
           icon: 'mdi-lock-open-outline',
@@ -175,18 +193,6 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'datatype')}`,
           label: this.$t('tableColumnDatasetDataType')
         }, {
-          key: 'location',
-          type: String,
-          sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'location')}`,
-          label: this.$t('tableColumnDatasetLocation')
-        }, {
-          key: 'countryName',
-          type: String,
-          sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
-          label: this.$t('tableColumnDatasetCountryName')
-        }, {
           key: 'licenseName',
           type: String,
           sortable: true,
@@ -225,6 +231,18 @@ export default {
           sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataPointCount')}`,
           label: this.$t('tableColumnDatasetPointCount')
+        }, {
+          key: 'countryCodes',
+          type: 'json',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'countryCodes')}`,
+          label: this.$t('tableColumnDatasetCountryName')
+        }, {
+          key: 'locationIds',
+          type: 'json',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'locationIds')}`,
+          label: ''
         }, {
           key: 'isExternal',
           type: Boolean,
@@ -275,11 +293,18 @@ export default {
     AttributeModal,
     BaseTable,
     CollaboratorModal,
+    LocationMap,
     LicenseModal
   },
-  mixins: [ datasetApi, genotypeApi ],
+  mixins: [ datasetApi, genotypeApi, locationApi ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
+    getUnique: function (input) {
+      return [...new Set(input)]
+    },
+    getCountryName: function (code2) {
+      return countries.getName(code2, 'en')
+    },
     getRowVariant: function (dataset) {
       if (!dataset.licenseName) {
         return null
@@ -376,6 +401,46 @@ export default {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.collaboratorModal.show())
     },
+    showLocations: function (data) {
+      if (this.previousDetailsRow && (this.previousDetailsRow.item.datasetId === data.item.datasetId)) {
+        data.toggleDetails()
+        return
+      }
+
+      const dataset = data.item
+      this.dataset = dataset
+      var query = {
+        page: 1,
+        limit: this.MAX_JAVA_INTEGER,
+        filter: [{
+          column: 'locationId',
+          comparator: 'inSet',
+          operator: 'and',
+          values: dataset.locationIds
+        }]
+      }
+
+      this.apiPostLocationTable(query, result => {
+        if (result) {
+          this.locations = result.data
+
+          if (this.previousDetailsRow) {
+            this.previousDetailsRow.toggleDetails()
+          }
+
+          data.toggleDetails()
+
+          this.previousDetailsRow = data
+        } else {
+          this.$bvToast.toast('Request to the server timed out.', {
+            title: this.$t('genericError'),
+            variant: 'danger',
+            autoHideDelay: 5000,
+            appendToast: true
+          })
+        }
+      })
+    },
     showAttributes: function (dataset) {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.attributeModal.show())
@@ -435,5 +500,8 @@ export default {
 <style>
 .table-icon-link:hover {
   text-decoration: none;
+}
+.dataset-table .b-table-details td {
+  padding: 0;
 }
 </style>

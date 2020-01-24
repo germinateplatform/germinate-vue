@@ -170,7 +170,7 @@ i.flag-icon {
 
 .app-header {
   height: auto;
-  min-height: 55px;
+  min-height: 65px;
 }
 
 .tooltip {
@@ -245,8 +245,8 @@ img.mime-icon {
   .app-header .navbar-nav {
     max-width: 75%;
   }
-  .app-body {
-    margin-top: 55px;
+  .header-fixed .app-body {
+    margin-top: 65px;
   }
 }
 
@@ -272,6 +272,7 @@ img.mime-icon {
   .app-header .navbar-brand {
       position: absolute;
       left: 0;
+      top: unset;
       margin-left: 54px;
   }
   .app-header .navbar-brand {

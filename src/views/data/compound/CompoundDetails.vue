@@ -1,7 +1,15 @@
 <template>
   <div>
     <div v-if="compound">
-      <h1>{{ compound.compoundName }}</h1>
+      <h1>{{ compound.compoundName }} <small v-if="compound.unitName">{{ compound.unitName }}</small></h1>
+      <p v-if="compound.compoundDescription">{{ compound.compoundDescription }}</p>
+
+      <template v-if="compound.synonyms">
+        <h2>{{ $t('genericSynonyms') }}</h2>
+        <ul>
+          <li v-for="(synonym, index) in compound.synonyms" :key="`compound-synonyms-${index}`">{{ synonym }}</li>
+        </ul>
+      </template>
 
       <h2>{{ $t('pageCompoundDetailsDataTitle') }}</h2>
       <p>{{ $t('pageCompoundDetailsDataText') }}</p>

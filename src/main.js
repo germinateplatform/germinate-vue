@@ -92,7 +92,7 @@ Vue.filter('toDateTime', value => {
 })
 
 // Set base URL
-var baseUrl = 'http://localhost:8080/germinate/v3.6.0/api/'
+var baseUrl = 'http://localhost:8080/germinate/v4.0.0/api/'
 
 if (process.env.VUE_APP_BASE_URL) {
   baseUrl = process.env.VUE_APP_BASE_URL

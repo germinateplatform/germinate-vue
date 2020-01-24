@@ -75,7 +75,7 @@ export default {
         this.$store.dispatch('ON_TOKEN_CHANGED', null)
 
         if (this.serverSettings.authMode === 'FULL') {
-          this.$router.push('/g8/login')
+          this.$router.push({ name: 'login' })
         } else {
           this.$router.push('/home')
         }

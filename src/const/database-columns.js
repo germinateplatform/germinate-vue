@@ -112,9 +112,6 @@ export default {
       name: 'datatype',
       type: String
     }, {
-      name: 'location',
-      type: String
-    }, {
       name: 'countryName',
       type: String
     }, {
