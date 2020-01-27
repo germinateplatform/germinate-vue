@@ -6,6 +6,10 @@ export default {
       }
       return this.authAjax({ url: 'dataset/climate', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostClimateTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'climate/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostClimates: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'climate/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },

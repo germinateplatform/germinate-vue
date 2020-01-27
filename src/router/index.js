@@ -227,6 +227,12 @@ const router = new Router({
                   name: 'climates',
                   component: () => import('@/views/data/climate/Climates.vue'),
                   beforeEnter: requireAuth
+                },
+                {
+                  path: 'climates/:climateId',
+                  name: 'climate-details',
+                  component: () => import('@/views/data/climate/ClimateDetails.vue'),
+                  beforeEnter: requireAuth
                 }
               ]
             },

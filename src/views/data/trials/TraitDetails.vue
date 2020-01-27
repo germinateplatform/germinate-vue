@@ -111,7 +111,7 @@ export default {
           type: Number
         },
         comparator: 'equals',
-        operator: 'or',
+        operator: 'and',
         values: [this.traitId],
         canBeChanged: false
       }]

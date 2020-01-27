@@ -1,6 +1,6 @@
 <template>
   <b-form>
-    <p class="text-muted">{{ $t('widgetSignInText') }}</p>
+    <p class="text-muted" v-html="$t('widgetSignInText')" />
     <b-form @submit.prevent="login">
       <b-input-group class="mb-3">
         <b-input-group-prepend is-text><i class="mdi mdi-18px mdi-account" /></b-input-group-prepend>
