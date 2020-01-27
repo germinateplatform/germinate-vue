@@ -4,6 +4,10 @@
       <h1>{{ compound.compoundName }} <small v-if="compound.unitName">{{ compound.unitName }}</small></h1>
       <p v-if="compound.compoundDescription">{{ compound.compoundDescription }}</p>
 
+      <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="compound.compoundName" />
+
+      <hr/>
+
       <template v-if="compound.synonyms">
         <h2>{{ $t('genericSynonyms') }}</h2>
         <ul>
@@ -31,6 +35,8 @@
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
+import ImageGallery from '@/components/images/ImageGallery'
+import miscApi from '@/mixins/api/misc.js'
 import compoundApi from '@/mixins/api/compound.js'
 
 export default {
@@ -45,10 +51,42 @@ export default {
   components: {
     BoxplotChart,
     CompoundDataTable,
-    DatasetsWithUnacceptedLicense
+    DatasetsWithUnacceptedLicense,
+    ImageGallery
   },
-  mixins: [ compoundApi ],
+  mixins: [ compoundApi, miscApi ],
   methods: {
+    getImages: function (data, onSuccess, onError) {
+      data.filter = [{
+        column: 'imageForeignId',
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.compoundId]
+      }, {
+        column: 'imageRefTable',
+        comparator: 'equals',
+        operator: 'and',
+        values: ['compounds']
+      }]
+      this.apiPostImages(data, onSuccess, onError)
+    },
+    downloadImages: function (callback) {
+      const data = {
+        filter: [{
+          column: 'imageForeignId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.compoundId]
+        }, {
+          column: 'imageRefTable',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['compounds']
+        }]
+      }
+
+      this.apiPostImagesExport(data, callback)
+    },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
     },

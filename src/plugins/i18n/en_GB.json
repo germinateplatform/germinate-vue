@@ -420,6 +420,8 @@
   "pagePassportImageText": "This section shows all the images associated with this germplasm.",
   "pagePassportImageTitle": "Images",
   "pagePassportInstitutionTitle": "Institution",
+  "pagePassportLinksTitle": "External links",
+  "pagePassportLinksText": "Further resources with information about this germplasm are available below.",
   "pagePassportLocationText": "This map shows the location where this material has been collected.",
   "pagePassportLocationTitle": "Location data",
   "pagePassportMcpdTitle": "MCPD",

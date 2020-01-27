@@ -13,12 +13,15 @@
       :per-page="imagesPerPage"
       @change="page => getPage(page)">
     </b-pagination>
+
+    <b-button class="mdi mdi-18px mdi-download" @click="download" v-if="downloadImages"> {{ $t('buttonDownloadImages') }}</b-button>
   </div>
 </template>
 
 <script>
 import baguetteBox from 'baguettebox.js'
 import ImageNode from '@/components/images/ImageNode'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
@@ -38,12 +41,33 @@ export default {
           count: 0
         }
       }
+    },
+    downloadImages: {
+      type: Function,
+      default: () => {
+        return []
+      }
+    },
+    downloadName: {
+      type: String,
+      default: 'images'
     }
   },
   components: {
     ImageNode
   },
   methods: {
+    download: function () {
+      EventBus.$emit('show-loading', true)
+      this.downloadImages(result => {
+        this.downloadBlob({
+          blob: result,
+          filename: this.downloadName,
+          extension: 'zip'
+        })
+        EventBus.$emit('show-loading', false)
+      })
+    },
     getPage: function (page) {
       this.getImages({
         limit: this.imagesPerPage,

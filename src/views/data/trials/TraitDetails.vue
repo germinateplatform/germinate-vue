@@ -4,6 +4,10 @@
       <h1>{{ trait.traitName }} <small v-if="trait.unitName">{{ trait.unitName }}</small></h1>
       <p v-if="trait.traitDescription">{{ trait.traitDescription }}</p>
 
+      <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="trait.traitName" />
+
+      <hr/>
+
       <template v-if="trait.synonyms">
         <h2>{{ $t('genericSynonyms') }}</h2>
         <ul>
@@ -30,7 +34,9 @@
 <script>
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import BoxplotChart from '@/components/charts/BoxplotChart'
+import ImageGallery from '@/components/images/ImageGallery'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
 
 export default {
@@ -45,9 +51,41 @@ export default {
   components: {
     DatasetsWithUnacceptedLicense,
     BoxplotChart,
+    ImageGallery,
     TrialsDataTable
   },
   methods: {
+    getImages: function (data, onSuccess, onError) {
+      data.filter = [{
+        column: 'imageForeignId',
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.traitId]
+      }, {
+        column: 'imageRefTable',
+        comparator: 'equals',
+        operator: 'and',
+        values: ['phenotypes']
+      }]
+      this.apiPostImages(data, onSuccess, onError)
+    },
+    downloadImages: function (callback) {
+      const data = {
+        filter: [{
+          column: 'imageForeignId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.traitId]
+        }, {
+          column: 'imageRefTable',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['phenotypes']
+        }]
+      }
+
+      this.apiPostImagesExport(data, callback)
+    },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
     },
@@ -62,7 +100,7 @@ export default {
       this.$refs.traitDetailsChart.redraw()
     }
   },
-  mixins: [ traitApi ],
+  mixins: [ miscApi, traitApi ],
   mounted: function () {
     if (this.$route.params.traitId) {
       this.traitId = parseInt(this.$route.params.traitId)

@@ -52,6 +52,11 @@
         </b-row>
 
         <hr />
+        <h2 class="mdi-heading" id="links"><i class="mdi mdi-36px text-primary mdi-link-variant"/><span> {{ $t('pagePassportLinksTitle') }}</span></h2>
+        <p v-html="$t('pagePassportLinksText')" />
+        <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
+
+        <hr />
         <h2 class="mdi-heading" id="datasets"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
         <p v-html="$t('pagePassportDatasetText')" />
         <DatasetTable :getData="getDatasetData" />
@@ -73,8 +78,7 @@
         <hr />
         <h2 class="mdi-heading" id="images"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
         <p v-html="$t('pagePassportImageText')" />
-        <ImageGallery :getImages="getImages" />
-        <b-button class="mdi mdi-18px mdi-download" @click="downloadImages"> {{ $t('buttonDownloadImages') }}</b-button>
+        <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="germplasm.accenumb" />
 
         <hr />
         <h2 class="mdi-heading" id="groups"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
@@ -125,13 +129,13 @@ import GermplasmAttributeTable from '@/components/tables/GermplasmAttributeTable
 import GroupTable from '@/components/tables/GroupTable'
 import Institution from '@/components/institution/Institution'
 import Mcpd from '@/components/germplasm/Mcpd'
+import Links from '@/components/util/Links'
 import LocationMap from '@/components/map/LocationMap'
 import ImageGallery from '@/components/images/ImageGallery'
 import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import miscApi from '@/mixins/api/misc.js'
-import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
@@ -166,6 +170,7 @@ export default {
     GroupTable,
     ImageGallery,
     Institution,
+    Links,
     LocationMap,
     Mcpd,
     PedigreeChart,
@@ -203,7 +208,7 @@ export default {
     getPedigreeData: function (data, callback) {
       return this.apiPostPedigreeTable(data, callback)
     },
-    downloadImages: function () {
+    downloadImages: function (callback) {
       const data = {
         filter: [{
           column: 'imageForeignId',
@@ -218,15 +223,7 @@ export default {
         }]
       }
 
-      EventBus.$emit('show-loading', true)
-      this.apiPostImagesExport(data, result => {
-        this.downloadBlob({
-          blob: result,
-          filename: this.germplasm.germplasmName,
-          extension: 'zip'
-        })
-        EventBus.$emit('show-loading', false)
-      })
+      this.apiPostImagesExport(data, callback)
     },
     getImages: function (data, onSuccess, onError) {
       data.filter = [{

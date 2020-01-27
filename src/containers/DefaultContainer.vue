@@ -60,6 +60,9 @@
       </AppAside>
     </div>
     <TheFooter class="bg-dark">
+      <div class="text-muted">
+        Version 4.0.0
+      </div>
       <div class="ml-auto">
         <a href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>
         <span class="ml-1">&copy; {{ new Date().getFullYear() }} The James Hutton Institute.</span>

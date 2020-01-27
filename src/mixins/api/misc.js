@@ -52,6 +52,9 @@ export default {
     },
     apiDeleteComment: function (commentId, onSuccess, onError) {
       return this.authAjax({ url: `comment/${commentId}`, method: 'DELETE', success: onSuccess, error: onError })
+    },
+    apiPostLinks: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'link/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }
