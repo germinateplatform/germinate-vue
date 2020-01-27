@@ -19,8 +19,8 @@
         </b-nav-form>
         <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()" id="top-nav-help" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
         <LocaleDropdown class="top-nav-locale d-flex align-self-center"/>
-        <MarkedItemDropdown  class="d-flex align-self-center" />
-        <UserSettingsDropdown  class="d-flex align-self-center" />
+        <MarkedItemDropdown class="d-flex align-self-center" />
+        <UserSettingsDropdown class="d-flex align-self-center" />
       </b-navbar-nav>
       <div>
         <AsideToggler class="d-block aside-toggler" :display="'xs'" ref="asideToggler" @click.native="updateAside" v-b-popover="asidePopoverConfig" />

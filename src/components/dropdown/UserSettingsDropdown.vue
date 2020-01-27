@@ -1,25 +1,27 @@
 <template>
-  <AppHeaderDropdown right v-if="serverSettings.authMode !== 'NONE'">
-    <template slot="header">
-      <i class="mdi mdi-18px mdi-account" />
-    </template>
-    <template slot="dropdown">
-      <b-dropdown-header tag="div" class="text-center"><strong>User settings</strong></b-dropdown-header>
-      <b-dropdown-item><i class="mdi mdi-18px mdi-settings text-primary" /> Settings</b-dropdown-item>
-      <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> Logout</b-dropdown-item>
-      <b-dropdown-item @click="$refs.signInModal.show()" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> Login</b-dropdown-item>
-      <template v-if="token && token.userType === 'Administrator'">
-        <b-dropdown-header tag="div" class="text-center"><strong>Admin settings</strong></b-dropdown-header>
-        <b-dropdown-item><i class="mdi mdi-18px mdi-shield-account text-warning" /> Admin settings</b-dropdown-item>
-        <b-dropdown-item :to="{ name: 'user-permissions' }"><i class="mdi mdi-18px mdi-account-key text-warning" /> User permissions</b-dropdown-item>
-        <b-dropdown-item to="/import/data-upload"><i class="mdi mdi-18px mdi-upload text-warning" /> Data uploader</b-dropdown-item>
+  <div>
+    <AppHeaderDropdown right v-if="serverSettings.authMode !== 'NONE'" class="d-flex align-self-center">
+      <template slot="header">
+        <i class="mdi mdi-18px mdi-account" />
       </template>
-    </template>
+      <template slot="dropdown">
+        <b-dropdown-header tag="div" class="text-center"><strong>User settings</strong></b-dropdown-header>
+        <b-dropdown-item><i class="mdi mdi-18px mdi-settings text-primary" /> Settings</b-dropdown-item>
+        <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> Logout</b-dropdown-item>
+        <b-dropdown-item @click="showLogin" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> Login</b-dropdown-item>
+        <template v-if="token && token.userType === 'Administrator'">
+          <b-dropdown-header tag="div" class="text-center"><strong>Admin settings</strong></b-dropdown-header>
+          <b-dropdown-item><i class="mdi mdi-18px mdi-shield-account text-warning" /> Admin settings</b-dropdown-item>
+          <b-dropdown-item :to="{ name: 'user-permissions' }"><i class="mdi mdi-18px mdi-account-key text-warning" /> User permissions</b-dropdown-item>
+          <b-dropdown-item to="/import/data-upload"><i class="mdi mdi-18px mdi-upload text-warning" /> Data uploader</b-dropdown-item>
+        </template>
+      </template>
+    </AppHeaderDropdown>
     <b-modal ref="signInModal" :title="$t('widgetSignInTitle')" hide-footer>
       <SignInForm v-on:login="signIn" :enabled="enabled" />
       <p class="text-danger mt-3" v-if="response">{{ response }}</p>
     </b-modal>
-  </AppHeaderDropdown>
+  </div>
 </template>
 
 <script>
@@ -86,10 +88,16 @@ export default {
           vm.$store.dispatch('ON_TOKEN_CHANGED', null)
         }
       })
+    },
+    showLogin: function () {
+      console.log(this.$refs)
+      this.$nextTick(() => this.$refs.signInModal.show())
     }
   },
   mounted: function () {
-    EventBus.$on('on-show-login-form', () => this.$refs.signInModal.show())
+    EventBus.$on('on-show-login-form', () => {
+      this.showLogin()
+    })
   }
 }
 </script>
