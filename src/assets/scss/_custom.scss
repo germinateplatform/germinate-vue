@@ -225,12 +225,12 @@ i.flag-icon {
 }
 
 .app-header .navbar-nav {
-  max-width: 50%;
+  max-width: 60%;
   flex-wrap: wrap;
 }
 
 .app-body {
-  margin-top: 82px;
+  margin-top: 65px;
 }
 
 img.mime-icon {
@@ -277,5 +277,11 @@ img.mime-icon {
   }
   .app-header .navbar-brand {
     justify-content: left;
+  }
+}
+
+@media (min-width: 992px) {
+  .sidebar-fixed .app-header + .app-body .sidebar {
+      height: calc(100vh - 65px);
   }
 }

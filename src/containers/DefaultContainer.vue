@@ -9,7 +9,7 @@
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
       <b-navbar-nav class="ml-auto align-items-stretch top-nav">
-        <b-nav-form @submit.prevent="search">
+        <b-nav-form @submit.prevent="search" class="d-none d-sm-inline">
           <b-input-group class="mr-sm-2">
             <b-form-input size="sm" v-model="searchTerm" :placeholder="$t('inputPlaceholderSearch')"></b-form-input>
             <b-input-group-append>
@@ -326,6 +326,12 @@ export default {
           identifiers: ['images'],
           url: '/images',
           icon: 'mdi mdi-18px mdi-image-multiple'
+        },
+        {
+          name: this.$t('menuSearch'),
+          identifiers: ['search'],
+          url: '/search',
+          icon: 'mdi mdi-18px mdi-magnify'
         },
         {
           name: this.$t('menuAbout'),

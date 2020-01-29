@@ -658,66 +658,6 @@ export default {
 
       return promise
     },
-    unauthAjax ({ url = null, method = 'GET', data = null, dataType = 'json', success = null, error = { codes: [], callback: this.handleError } }) {
-      var vm = this
-      var requestData = null
-      var requestParams = null
-
-      // Stringify the data object for non-GET requests
-      if (data !== null || data !== undefined) {
-        if (method === 'GET') {
-          requestParams = data
-        } else {
-          requestData = data
-        }
-      }
-
-      return axios({
-        url: url,
-        method: method,
-        data: requestData,
-        params: requestParams,
-        crossDomain: true,
-        responseType: dataType,
-        headers: {
-          'content-type': 'application/json; charset=utf-8'
-        }
-      })
-        .then(function (result) {
-          if (success) {
-            success(result.data)
-          }
-        })
-        .catch(function (err) {
-          if (err.response) {
-            // The request was made and the server responded with a status code that falls out of the range of 2xx
-            if (error && error.callback) {
-              if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
-                error.callback(err.response)
-              } else {
-                vm.handleError(err.response)
-              }
-            } else if (process.env.NODE_ENV === 'development') {
-              console.error(err)
-            }
-          } else if (err.request) {
-            // The request was made but no response was received `err.request` is an instance of XMLHttpRequest in the browser
-            if (err.request.textStatus === 'timeout') {
-              vm.$bvToast.toast('Request to the server timed out.', {
-                title: 'Error',
-                variant: 'danger',
-                autoHideDelay: 5000,
-                appendToast: true
-              })
-            }
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            if (process.env.NODE_ENV === 'development') {
-              console.error(err)
-            }
-          }
-        })
-    },
     getToken () {
       var t = this.$store.getters.token
 

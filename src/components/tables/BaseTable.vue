@@ -12,7 +12,7 @@
         </span>
       </div>
     </div>
-    <div class="d-flex flex-row justify-content-between align-items-end">
+    <div class="d-flex flex-row flex-wrap justify-content-between align-items-end">
       <TableFilter :columns="columns"
                    :texts="options.headings"
                    :tableName="options.tableName"
@@ -24,7 +24,7 @@
 
       <div class="flex-grow-1">
         <div class="d-flex flex-row justify-content-between">
-          <div class="d-flex align-items-end mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
+          <div class="d-none d-sm-flex align-items-end mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
             <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
           </div>
           <div v-else />
@@ -96,7 +96,7 @@
       </template>
     </b-table>
 
-    <div class="d-flex justify-content-between align-items-start">
+    <div class="d-flex flex-wrap-reverse justify-content-between align-items-end">
       <div class="table-bottom-left">
         <template v-if="columns.map(c => c.key).indexOf('selected') !== -1">
           <div>

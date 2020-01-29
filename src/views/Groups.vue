@@ -3,6 +3,8 @@
     <h1>{{ $t('pageGroupsTitle') }}</h1>
     <hr />
 
+    <p>{{ $t('pageGroupsText') }}</p>
+
     <!-- These buttons are for switching between different group types. They make switching very convenient. -->
     <b-button-group>
       <b-button v-for="groupType in getGroupTypeOptions()"

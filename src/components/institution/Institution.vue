@@ -2,15 +2,15 @@
   <div v-if="institution">
     <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-city text-primary" /> <span> {{ $t('pagePassportInstitutionTitle') }} </span></h2>
     <dl class="row">
-      <dt class="col-sm-3 text-right">Id</dt><dd class="col-sm-9">{{ institution.institutionId }}</dd>
-      <dt class="col-sm-3 text-right">Name</dt><dd class="col-sm-9">{{ institution.institutionName }}</dd>
-      <dt class="col-sm-3 text-right">Acronym</dt><dd class="col-sm-9">{{ institution.institutionAcronym }}</dd>
-      <dt class="col-sm-3 text-right">Address</dt><dd class="col-sm-9">{{ institution.institutionAddress }}</dd>
-      <dt class="col-sm-3 text-right">Email</dt><dd class="col-sm-9"><template v-if="institution.institutionEmail"><a :href="`mailto:${institution.institutionEmail}`">{{ institution.institutionEmail }}</a></template></dd>
-      <dt class="col-sm-3 text-right">Phone</dt><dd class="col-sm-9">{{ institution.institutionPhone }}</dd>
-      <dt class="col-sm-3 text-right">Contact</dt><dd class="col-sm-9">{{ institution.institutionContact }}</dd>
-      <dt class="col-sm-3 text-right">Country</dt><dd class="col-sm-9"><template v-if="institution.countryCode"><i :class="'flag-icon flag-icon-' + institution.countryCode.toLowerCase()"/> {{ institution.countryName }}</template></dd>
-      <dt class="col-sm-3"></dt><dd class="col-sm-9"><b-button @click.prevent="navigateToGermplasm(institution.institutionId)"><i class="mdi mdi-18px fix-alignment mdi-sprout"/> View Germplasm from this institute</b-button></dd>
+      <dt class="col-3 text-right">Id</dt><dd class="col-9">{{ institution.institutionId }}</dd>
+      <dt class="col-3 text-right">Name</dt><dd class="col-9">{{ institution.institutionName }}</dd>
+      <dt class="col-3 text-right">Acronym</dt><dd class="col-9">{{ institution.institutionAcronym }}</dd>
+      <dt class="col-3 text-right">Address</dt><dd class="col-9">{{ institution.institutionAddress }}</dd>
+      <dt class="col-3 text-right">Email</dt><dd class="col-9"><template v-if="institution.institutionEmail"><a :href="`mailto:${institution.institutionEmail}`">{{ institution.institutionEmail }}</a></template></dd>
+      <dt class="col-3 text-right">Phone</dt><dd class="col-9">{{ institution.institutionPhone }}</dd>
+      <dt class="col-3 text-right">Contact</dt><dd class="col-9">{{ institution.institutionContact }}</dd>
+      <dt class="col-3 text-right">Country</dt><dd class="col-9"><template v-if="institution.countryCode"><i :class="'flag-icon flag-icon-' + institution.countryCode.toLowerCase()"/> {{ institution.countryName }}</template></dd>
+      <dt class="col-3"></dt><dd class="col-9"><b-button @click.prevent="navigateToGermplasm(institution.institutionId)"><i class="mdi mdi-18px fix-alignment mdi-sprout"/> View Germplasm from this institute</b-button></dd>
     </dl>
   </div>
 </template>
