@@ -1,5 +1,5 @@
 <template>
-  <div class="base-table table-overflow-fix" :id="id">
+  <div class="base-table" :id="id">
     <div>
       <div v-if="filter" class="mb-2">
         <span v-for="(f, index) in filter" :key="f.column.name">
@@ -577,9 +577,6 @@ export default {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   border-bottom: 0;
-}
-.table-overflow-fix table {
-  /* margin: 0 -1px; */
 }
 .base-table .table-responsive {
   margin-bottom: 0;

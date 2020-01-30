@@ -2,6 +2,8 @@
 
 body {
   background-color: #ffffff;
+  // This is to stop tables from overflowing in production.
+  overflow-x: hidden;
 }
 
 .sidebar .nav-link * {
