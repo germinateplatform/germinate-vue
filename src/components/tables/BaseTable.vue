@@ -53,6 +53,7 @@
             outlined
             show-empty
             head-variant="dark"
+            table-class="position-relative"
             :empty-text="$t('paginationNoResult')"
             :sort-by="options.orderBy"
             :sort-desc="options.orderByDesc"
