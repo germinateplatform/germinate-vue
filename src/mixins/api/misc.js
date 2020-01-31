@@ -39,6 +39,9 @@ export default {
     apiPostImagesExport: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'image/table/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
     },
+    apiGetImageTags: function (onSuccess, onError) {
+      return this.authAjax({ url: 'imagetag', success: onSuccess, error: onError })
+    },
     apiPostNewsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

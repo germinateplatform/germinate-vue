@@ -14,6 +14,21 @@
           <img :src="getSrc(data.item, 'small')" class="table-image" />
         </a>
       </template>
+
+      <template v-slot:cell(referenceName)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.imageForeignId } }" v-if="data.item.imageRefTable === 'germinatebase'">{{ data.item.referenceName }}</router-link>
+        <router-link :to="{ name: 'trait-details', params: { traitId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'phenotypes'">{{ data.item.referenceName }}</router-link>
+        <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'compounds'">{{ data.item.referenceName }}</router-link>
+        <span v-else>{{ data.item.referenceName }}</span>
+      </template>
+
+      <template v-slot:cell(tags)="data">
+        <div v-if="data.item.tags">
+          <b-badge v-for="(tag, index) in data.item.tags" :key="`image-tag-${data.item.imageId}-${index}`" class="mr-1" href="#" @click.native.prevent="$emit('tag-clicked', tag)" :style="`background-color: ${getColor(tag)};`">
+            {{ tag.tagName }}
+          </b-badge>
+        </div>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -34,7 +49,8 @@ export default {
       options: {
         idColumn: 'imageId',
         tableName: 'images'
-      }
+      },
+      tags: []
     }
   },
   computed: {
@@ -46,6 +62,18 @@ export default {
           sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'imageId')}`,
           label: this.$t('tableColumnImageId')
+        }, {
+          key: 'referenceName',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'referenceName')}`,
+          label: this.$t('tableColumnImageReferenceName')
+        }, {
+          key: 'imageRefTable',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'imageRefTable')}`,
+          label: this.$t('tableColumnImageReferenceTable')
         }, {
           key: 'imageDescription',
           type: String,
@@ -59,17 +87,11 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'imagePath')}`,
           label: this.$t('tableColumnImagePath')
         }, {
-          key: 'imageRefTable',
-          type: String,
-          sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'imageRefTable')}`,
-          label: this.$t('tableColumnImageReferenceTable')
-        }, {
-          key: 'referenceName',
-          type: String,
-          sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'referenceName')}`,
-          label: this.$t('tableColumnImageReferenceName')
+          key: 'tags',
+          type: 'json',
+          sortable: false,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'tags')}`,
+          label: this.$t('tableColumnImageTags')
         }, {
           key: 'createdOn',
           type: Date,
@@ -91,6 +113,15 @@ export default {
     BaseTable
   },
   methods: {
+    getColor: function (tag) {
+      var index = this.tags.indexOf(tag.tagName)
+      if (index === -1) {
+        this.tags.push(tag.tagName)
+        index = this.tags.length
+      }
+
+      return this.serverSettings.colorsTemplate[index % this.serverSettings.colorsTemplate.length]
+    },
     getSrc: function (image, size) {
       var params = {
         name: image.imagePath,

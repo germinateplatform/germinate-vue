@@ -18,7 +18,7 @@ function requireAuth (to, from, next) {
     if (!auth.loggedIn()) {
       // Remember the original target
       if (!store.getters.originalTarget) {
-        store.dispatch('ON_ORIGINAL_TARGET_CHANGED', to)
+        store.dispatch('ON_ORIGINAL_TARGET_CHANGED', to.path)
       }
       next({ path: '/g8/login' })
       return

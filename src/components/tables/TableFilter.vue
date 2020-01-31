@@ -134,13 +134,6 @@ export default {
         show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
         return show
       })
-    },
-    localFilterOn: function () {
-      if (this.hasBeenCleared && this.filterOn) {
-        return this.filterOn.filter(f => f.canBeChanged === false)
-      } else {
-        return this.filterOn
-      }
     }
   },
   methods: {
@@ -335,20 +328,22 @@ export default {
       }
     },
     resetFilter: function (trigger) {
-      this.tempFilter = []
-      if (this.localFilterOn) {
-        this.localFilterOn.forEach(f => {
-          this.tempFilter.push(f)
-        })
-      }
+      this.$nextTick(() => {
+        this.tempFilter = []
+        if (this.filterOn) {
+          this.filterOn.forEach(f => {
+            this.tempFilter.push(f)
+          })
+        }
 
-      this.setFilter(false, trigger)
+        this.setFilter(false, trigger)
+      })
     }
   },
   mounted: function () {
     this.updateOperators()
 
-    if (this.localFilterOn) {
+    if (this.filterOn) {
       this.resetFilter(true)
     }
   }

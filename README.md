@@ -1,7 +1,7 @@
 # Germinate - The generic plant genetic resources database
 
 <p align="center">
-  <img src="public/img/germinate-square.svg" width="200" alt="Logo">
+  <img src="https://raw.githubusercontent.com/sebastian-raubach/germinate-vue/master/public/img/germinate-square.svg?sanitize=true" width="200" alt="Logo">
 </p>
 
 ![GitHub](https://img.shields.io/github/license/sebastian-raubach/germinate-vue)
@@ -26,5 +26,6 @@ which brings focus and facilitates community building into research communities.
 
 
 
-<img src="public/img/hutton-black.svg" height="150" alt="Logo">
-<img src="public/img/ics-sdg-black.svg" height="150" alt="Logo">
+<img src="https://raw.githubusercontent.com/sebastian-raubach/germinate-vue/master/public/img/hutton-black.svg?sanitize=true" height="150" alt="The James Hutton Institute logo">
+<br />
+<img src="https://raw.githubusercontent.com/sebastian-raubach/germinate-vue/master/public/img/ics-sdg-black.svg?sanitize=true" height="150" alt="Software Development Group logo">

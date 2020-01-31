@@ -61,7 +61,7 @@ export default {
         // If it's successful, finally store them
         this.$store.dispatch('ON_TOKEN_CHANGED', result)
         if (originalTarget) {
-          var path = originalTarget.path
+          var path = originalTarget
           this.$store.commit('ON_ORIGINAL_TARGET_CHANGED_MUTATION', null)
           this.$router.push(path)
         } else {

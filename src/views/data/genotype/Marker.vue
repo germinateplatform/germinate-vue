@@ -11,6 +11,14 @@
       <p>{{ $t('pageMarkerDetailsText') }}</p>
 
       <template v-if="marker.markerSynonyms && marker.markerSynonyms.length > 0">
+        <h3>{{ $t('pageMarkerDetailsSynonymsTitle') }}</h3>
+        <ul>
+          <li v-for="(synonym, index) in marker.markerSynonyms" :key="`marker-synonym-${index}`">
+            {{ synonym }}
+          </li>
+        </ul>
+
+        <hr/>
         <h3>{{ $t('pageMarkerDetailsDatasetsTitle') }}</h3>
         <p>{{ $t('pageMarkerDetailsDatasetsText') }}</p>
         <DatasetTable :getData="getDatasetData" />
@@ -24,14 +32,6 @@
         <h3>{{ $t('pageMarkerDetailsGroupsTitle') }}</h3>
         <p>{{ $t('pageMarkerDetailsGroupsText') }}</p>
         <GroupTable :getData="getGroupData" />
-
-        <hr/>
-        <h3>{{ $t('pageMarkerDetailsSynonymsTitle') }}</h3>
-        <ul>
-          <li v-for="(synonym, index) in marker.markerSynonyms" :key="`marker-synonym-${index}`">
-            {{ synonym }}
-          </li>
-        </ul>
       </template>
     </template>
     <h3 v-else-if="noData === true">{{ $t('pageMarkerDetailsNoMarkerWithIdFound', { markerId: currentMarkerId }) }}</h3>

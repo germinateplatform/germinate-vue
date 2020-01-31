@@ -32,7 +32,8 @@ export default {
         },
         comparator: 'equals',
         operator: 'and',
-        values: [isExternal]
+        values: [isExternal],
+        canBeChanged: false
       }]
 
       if (this.filterOn && this.filterOn.length > 0) {

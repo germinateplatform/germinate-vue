@@ -7,10 +7,10 @@
               ref="datasetTable"
               v-on="$listeners">
       <template v-slot:head(dataObjectCount)="data">
-        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipDatasetDataObjects')"/>
+        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataObjects')"/>
       </template>
       <template v-slot:head(dataPointCount)="data">
-        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipDatasetDataPoints')"/>
+        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataPoints')"/>
       </template>
 
       <template v-slot:cell(datasetId)="data">
@@ -32,12 +32,13 @@
       </template>
 
       <!-- Country flags -->
-      <template v-slot:cell(countryCodes)="data">
-        <span v-for="country in getUnique(data.item.countryCodes)" :key="`country-flag-${country}`" class="table-country text-nowrap" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'flag-icon flag-icon-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
+      <template v-slot:cell(countries)="data">
+        <span v-for="country in getCountries(data.item.locations)" :key="`country-flag-${country}`" class="table-country text-nowrap" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'flag-icon flag-icon-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
       </template>
-      <template v-slot:cell(locationIds)="data">
-        <a href="#" class="text-decoration-none" v-if="data.item.locationIds && data.item.locationIds.length > 0" @click.prevent="showLocations(data)">
-          <i class="mdi mdi-18px mdi-map-marker" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')" />
+      <template v-slot:cell(locations)="data">
+        <a href="#" class="text-decoration-none text-nowrap" v-if="data.item.locations && data.item.locations.length > 0" @click.prevent="showLocations(data)">
+          <i class="mdi mdi-18px mdi-map-marker align-middle" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')" />
+          <span>{{ data.item.locations.length }}</span>
         </a>
       </template>
 
@@ -205,6 +206,18 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'contact')}`,
           label: this.$t('tableColumnDatasetContact')
         }, {
+          key: 'countries',
+          type: undefined,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'countries')}`,
+          label: this.$t('tableColumnDatasetCountryName')
+        }, {
+          key: 'locations',
+          type: 'json',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'locations')}`,
+          label: this.$t('tableColumnDatasetLocations')
+        }, {
           key: 'startDate',
           type: Date,
           sortable: true,
@@ -231,18 +244,6 @@ export default {
           sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataPointCount')}`,
           label: this.$t('tableColumnDatasetPointCount')
-        }, {
-          key: 'countryCodes',
-          type: 'json',
-          sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'countryCodes')}`,
-          label: this.$t('tableColumnDatasetCountryName')
-        }, {
-          key: 'locationIds',
-          type: 'json',
-          sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationIds')}`,
-          label: ''
         }, {
           key: 'isExternal',
           type: Boolean,
@@ -299,8 +300,12 @@ export default {
   mixins: [ datasetApi, genotypeApi, locationApi ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
-    getUnique: function (input) {
-      return [...new Set(input)]
+    getCountries: function (locations) {
+      if (locations) {
+        return [...new Set(locations.map(l => l.countryName))]
+      } else {
+        return []
+      }
     },
     getCountryName: function (code2) {
       return countries.getName(code2, 'en')
@@ -416,7 +421,7 @@ export default {
           column: 'locationId',
           comparator: 'inSet',
           operator: 'and',
-          values: dataset.locationIds
+          values: dataset.locations.map(l => l.locationId)
         }]
       }
 

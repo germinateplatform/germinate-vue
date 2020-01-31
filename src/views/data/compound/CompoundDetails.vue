@@ -4,7 +4,7 @@
       <h1>{{ compound.compoundName }} <small v-if="compound.unitName">{{ compound.unitName }}</small></h1>
       <p v-if="compound.compoundDescription">{{ compound.compoundDescription }}</p>
 
-      <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="compound.compoundName" />
+      <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="compound.compoundName" v-on:tag-clicked="onImageTagClicked" ref="imageGallery"/>
 
       <hr/>
 
@@ -45,7 +45,8 @@ export default {
       compoundId: null,
       compound: null,
       tableFilter: null,
-      showAdditionalDatasets: true
+      showAdditionalDatasets: true,
+      imageTag: null
     }
   },
   components: {
@@ -56,6 +57,10 @@ export default {
   },
   mixins: [ compoundApi, miscApi ],
   methods: {
+    onImageTagClicked: function (tag) {
+      this.imageTag = tag
+      this.$nextTick(() => this.$refs.imageGallery.refresh())
+    },
     getImages: function (data, onSuccess, onError) {
       data.filter = [{
         column: 'imageForeignId',
@@ -68,6 +73,16 @@ export default {
         operator: 'and',
         values: ['compounds']
       }]
+
+      if (this.imageTag) {
+        data.filter.push({
+          column: 'tags',
+          comparator: 'contains',
+          operator: 'and',
+          values: [this.imageTag.tagName]
+        })
+      }
+
       this.apiPostImages(data, onSuccess, onError)
     },
     downloadImages: function (callback) {
@@ -83,6 +98,15 @@ export default {
           operator: 'and',
           values: ['compounds']
         }]
+      }
+
+      if (this.imageTag) {
+        data.filter.push({
+          column: 'tags',
+          comparator: 'contains',
+          operator: 'and',
+          values: [this.imageTag.tagName]
+        })
       }
 
       this.apiPostImagesExport(data, callback)

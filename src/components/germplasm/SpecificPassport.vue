@@ -78,7 +78,7 @@
         <hr />
         <h2 class="mdi-heading" id="images"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
         <p v-html="$t('pagePassportImageText')" />
-        <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="germplasm.accenumb" />
+        <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="germplasm.accenumb" v-on:tag-clicked="onImageTagClicked" ref="imageGallery" />
 
         <hr />
         <h2 class="mdi-heading" id="groups"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
@@ -145,6 +145,7 @@ export default {
       commentFilter: null,
       pedigreeFilter: null,
       entityFilter: null,
+      imageTag: null,
       currentGermplasmId: null,
       scrollSpyConfig: {
         offset: 112,
@@ -178,6 +179,10 @@ export default {
   },
   mixins: [ germplasmApi, miscApi ],
   methods: {
+    onImageTagClicked: function (tag) {
+      this.imageTag = tag
+      this.$nextTick(() => this.$refs.imageGallery.refresh())
+    },
     scrollIntoView: function (evt) {
       evt.preventDefault()
       const href = evt.target.getAttribute('href')
@@ -223,6 +228,15 @@ export default {
         }]
       }
 
+      if (this.imageTag) {
+        data.filter.push({
+          column: 'tags',
+          comparator: 'contains',
+          operator: 'and',
+          values: [this.imageTag.tagName]
+        })
+      }
+
       this.apiPostImagesExport(data, callback)
     },
     getImages: function (data, onSuccess, onError) {
@@ -237,6 +251,16 @@ export default {
         operator: 'and',
         values: ['germinatebase']
       }]
+
+      if (this.imageTag) {
+        data.filter.push({
+          column: 'tags',
+          comparator: 'contains',
+          operator: 'and',
+          values: [this.imageTag.tagName]
+        })
+      }
+
       this.apiPostImages(data, onSuccess, onError)
     },
     getLocation: function () {
@@ -365,7 +389,7 @@ export default {
 .scrollspy-sticky {
   position: -webkit-sticky;
   position: sticky;
-  top: 55px;
+  top: 65px;
   align-self: flex-start;
   z-index: 500;
 }
