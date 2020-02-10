@@ -37,6 +37,7 @@
 import baguetteBox from 'baguettebox.js'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import { EXIF } from 'exif-js'
 
 export default {
   name: 'ImageTable',
@@ -113,6 +114,18 @@ export default {
     BaseTable
   },
   methods: {
+    rotateBasedOnExif: function (image) {
+      EXIF.getData(image, function () {
+        var orientation = EXIF.getTag(this, 'Orientation')
+        if (orientation === 6) {
+          image.className = 'rotate90'
+        } else if (orientation === 8) {
+          image.className = 'rotate270'
+        } else if (orientation === 3) {
+          image.className = 'rotate180'
+        }
+      })
+    },
     getColor: function (tag) {
       var index = this.tags.indexOf(tag.tagName)
       if (index === -1) {
@@ -138,8 +151,21 @@ export default {
       this.$nextTick(() => {
         baguetteBox.run('.baguettebox', {
           captions: 'true',
-          fullscreen: true,
-          filter: /.*/i
+          fullScreen: false,
+          filter: /.*/i,
+          afterShow: () => {
+            const overlays = document.querySelectorAll('#baguetteBox-overlay img')
+
+            overlays.forEach(n => {
+              if (n.complete && n.naturalHeight !== 0) {
+                this.rotateBasedOnExif(n)
+              } else {
+                n.addEventListener('load', () => {
+                  this.rotateBasedOnExif(n)
+                })
+              }
+            })
+          }
         })
       })
     },

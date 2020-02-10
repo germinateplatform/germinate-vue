@@ -18,6 +18,35 @@ body {
   min-width: 250px;
 }
 
+// Image rotation based on EXIF information
+img.rotate90 {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  transition: 0.5s ease-in-out;
+}
+img.rotate180 {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+  transition: 0.5s ease-in-out;
+}
+img.rotate270 {
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg);
+  transition: 0.5s ease-in-out;
+}
+#baguetteBox-overlay .full-image figcaption {
+  z-index: 1;
+}
+
 // Indentation of sidebar menu items
 .sidebar
   .ps

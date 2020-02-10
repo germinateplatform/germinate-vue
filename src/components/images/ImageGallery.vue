@@ -2,7 +2,7 @@
   <div v-if="(images && images.length > 0) || selectedTag !== null">
     <div v-if="imageTags && imageTags.length" class="mb-3">
       <h3>{{ $t('widgetImageTagsTitle') }}</h3>
-      <b-badge class="mr-3" href="#" @click.native.prevent="onTagClicked(null)" variant="danger">
+      <b-badge class="mr-3" href="#" @click.native.prevent="onTagClicked(null)" variant="danger" v-if="selectedTag">
         <i class="mdi mdi-close" />
         <span> {{ $t('widgetImageTagsDeselect') }}</span>
       </b-badge>
@@ -12,9 +12,9 @@
       </b-badge>
     </div>
 
-    <b-row v-if="images && images.length > 0" class="image-grid">
+    <b-row v-if="images && images.length > 0" class="image-grid mb-3">
       <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId">
-        <ImageNode :image="image" :ref="`image-${index}`" />
+        <ImageNode :image="image" :ref="`image-${index}`" class="h-100" />
       </b-col>
     </b-row>
     <h3 v-else>{{ $t('headingNoData') }}</h3>
@@ -35,6 +35,7 @@
 import baguetteBox from 'baguettebox.js'
 import ImageNode from '@/components/images/ImageNode'
 import miscApi from '@/mixins/api/misc.js'
+import { EXIF } from 'exif-js'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -101,10 +102,35 @@ export default {
         this.$nextTick(() => {
           baguetteBox.run('.image-grid', {
             captions: 'true',
-            fullscreen: true,
-            filter: /.*/i
+            fullScreen: false,
+            filter: /.*/i,
+            afterShow: () => {
+              const overlays = document.querySelectorAll('#baguetteBox-overlay img')
+
+              overlays.forEach(n => {
+                if (n.complete && n.naturalHeight !== 0) {
+                  this.rotateBasedOnExif(n)
+                } else {
+                  n.addEventListener('load', () => {
+                    this.rotateBasedOnExif(n)
+                  })
+                }
+              })
+            }
           })
         })
+      })
+    },
+    rotateBasedOnExif: function (image) {
+      EXIF.getData(image, function () {
+        var orientation = EXIF.getTag(this, 'Orientation')
+        if (orientation === 6) {
+          image.className = 'rotate90'
+        } else if (orientation === 8) {
+          image.className = 'rotate270'
+        } else if (orientation === 3) {
+          image.className = 'rotate180'
+        }
       })
     },
     refresh: function () {
