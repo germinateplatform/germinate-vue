@@ -86,6 +86,12 @@ export default {
           text: () => this.$t('dashboardBannerCompounds'),
           icon: 'mdi-atom',
           link: 'compounds'
+        },
+        {
+          key: 'images',
+          text: () => this.$t('dashboardBannerImages'),
+          icon: 'mdi-image-multiple',
+          link: 'images'
         }
       ]
     }

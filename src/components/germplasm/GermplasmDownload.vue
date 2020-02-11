@@ -28,7 +28,7 @@
           </template>
         </b-card>
       </b-col>
-      <b-col lg=6>
+      <b-col lg=6 v-if="hasPedigreeData">
         <b-card class="h-100 mb-3">
           <b-card-title>
             <i class="mdi mdi-sitemap mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabPedigreeTitle') }}
@@ -71,7 +71,8 @@ export default {
       passportGroup: null,
       pedigreeSelection: 'all',
       pedigreeGroup: null,
-      groups: null
+      groups: null,
+      hasPedigreeData: false
     }
   },
   watch: {
@@ -172,6 +173,17 @@ export default {
         this.passportGroup = this.groups[0].value
       }
       this.updateSelectionOptions()
+    })
+
+    const pedigreeQuery = {
+      page: 1,
+      limit: 1
+    }
+
+    this.apiPostPedigreeTable(pedigreeQuery, result => {
+      if (result && result.count) {
+        this.hasPedigreeData = result.count > 0
+      }
     })
   }
 }

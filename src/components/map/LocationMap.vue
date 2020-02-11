@@ -185,7 +185,8 @@ export default {
           // If there are multiple locations, fit them into view
           var latLngBounds = L.latLngBounds()
 
-          this.locations.forEach(l => latLngBounds.extend([l.locationLatitude, l.locationLongitude]))
+          this.locations.filter(l => l.locationLatitude && l.locationLongitude)
+            .forEach(l => latLngBounds.extend([l.locationLatitude, l.locationLongitude]))
 
           this.$refs.map.fitBounds(latLngBounds.pad(0.1))
         }
@@ -199,17 +200,19 @@ export default {
             this.markerClusterer = L.markerClusterGroup()
             map.addLayer(this.markerClusterer)
           }
-          this.locations.forEach(l => {
-            var marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
-            marker.on('click', e => {
-              var popup = e.target.getPopup()
-              this.location = l
-              this.$nextTick(() => popup.setContent(this.$refs.popupContent))
+          this.locations.filter(l => l.locationLatitude && l.locationLongitude)
+            .forEach(l => {
+              var marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
+              marker.on('click', e => {
+                var popup = e.target.getPopup()
+                this.location = l
+                this.$nextTick(() => popup.setContent(this.$refs.popupContent))
+              })
+              this.markerClusterer.addLayer(marker)
             })
-            this.markerClusterer.addLayer(marker)
-          })
         } else if (this.mapType === 'heatmap') {
-          var ls = this.locations.map(l => [l.locationLatitude, l.locationLongitude, 1])
+          var ls = this.locations.filter(l => l.locationLatitude && l.locationLongitude)
+            .map(l => [l.locationLatitude, l.locationLongitude, 1])
           if (this.heat) {
             // If it exists, just set it
             this.heat.setLatLngs(ls)

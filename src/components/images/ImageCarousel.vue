@@ -2,14 +2,14 @@
   <b-carousel
     class="image-carousel"
     v-if="images"
-    :interval="4000"
+    :interval="5000"
     controls
     :img-height="600"
     indicators>
     <b-carousel-slide
       v-for="image in images[locale]"
       :key="`dashboard-carousel-${image.name}`"
-      :caption="image.text"
+      :caption-html="image.text"
       :img-src="image.src" />
   </b-carousel>
 </template>

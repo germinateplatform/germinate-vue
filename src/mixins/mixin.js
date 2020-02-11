@@ -300,6 +300,10 @@ export default {
       }
     },
     getNumberWithSuffix: function (value, decimals = 2) {
+      if (value === undefined || value === null || value === 0) {
+        return '0'
+      }
+
       const k = 1000
       const dm = decimals < 0 ? 0 : decimals
       const sizes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']

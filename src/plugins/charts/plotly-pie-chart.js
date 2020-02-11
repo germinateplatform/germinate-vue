@@ -64,7 +64,7 @@ export function plotlyPieChart() {
 				},
 				barmode: 'group',
 				legend: {
-					orientation: 'h'
+					orientation: 'v'
 				}
 			};
 

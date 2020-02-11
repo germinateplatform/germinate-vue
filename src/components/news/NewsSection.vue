@@ -6,14 +6,15 @@
           <h2>{{ $t('pageNewsLatestNewsTitle') }}</h2>
           <b-list-group class="news-items">
             <b-list-group-item button class="d-flex flex-row align-items-center" v-for="newsItem in news" :key="'news-' + newsItem.newsId" @click="selectedNews = newsItem">
-              <div><i :class="`mdi mdi-36px ${newsTypes[newsItem.newstypeName].icon} pr-3`" /></div>
+              <div class="pr-3"><i :class="`mdi mdi-36px ${newsTypes[newsItem.newstypeName].icon}`" /></div>
               <div class="flex-column align-items-start flex-grow-1">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ newsItem.newsTitle }}</h5>
-                  <small class="text-nowrap"><i class="mdi mdi-calendar-clock" /> {{ newsItem.updatedOn | toDate }}</small>
+                  <small class="text-nowrap" v-if="newsItem.updatedOn"><i class="mdi mdi-calendar-clock" /> {{ newsItem.updatedOn | toDate }}</small>
+                  <small class="text-nowrap" v-else-if="newsItem.createdOn"><i class="mdi mdi-calendar-clock" /> {{ newsItem.createdOn | toDate }}</small>
                 </div>
                 <p class="mb-1" v-if="newsItem.newsContent">{{ getContent(newsItem) }}</p>
-                <small>{{ newsTypes[newsItem.newstypeName].text() }}</small>
+                <small class="text-muted">{{ newsTypes[newsItem.newstypeName].text() }}</small>
               </div>
             </b-list-group-item>
           </b-list-group>
@@ -22,10 +23,12 @@
             v-model="newsCurrentPage"
             :total-rows="newsTotalCount"
             :per-page="newsCount"
+            v-show="newsTotalCount > newsCount"
             @change="updateNews" />
 
           <b-modal ref="newsModal" :title="selectedNews.newsTitle" scrollable size="xl" v-if="selectedNews" ok-only :ok-title="$t('buttonClose')">
-            <span v-html="selectedNews.newsContent" />
+            <div v-html="selectedNews.newsContent" />
+            <b-button v-if="selectedNews.newsHyperlink" class="mt-3" :href="selectedNews.newsHyperlink" target="_blank">{{ $('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
           </b-modal>
         </b-col>
         <b-col xs=12 sm=6 v-if="projects && projects.length > 0">
@@ -84,6 +87,10 @@ export default {
         'Updates': {
           text: () => 'General updates',
           icon: 'mdi-refresh'
+        },
+        'General': {
+          text: () => 'General news',
+          icon: 'mdi-newspaper'
         }
       }
     }
@@ -134,7 +141,7 @@ export default {
           column: 'newstypeName',
           comparator: 'inSet',
           operator: 'and',
-          values: ['Data', 'Updates']
+          values: ['Data', 'Updates', 'General']
         }]
       }
       this.apiPostNewsTable(newsQuery, result => {
