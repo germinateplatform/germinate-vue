@@ -1,10 +1,10 @@
 <template>
-  <AppHeaderDropdown right>
+  <AppHeaderDropdown right v-if="languages && languages.length > 1">
     <template slot="header">
       <i class="mdi mdi-18px mdi-translate" />
     </template>\
     <template slot="dropdown">
-      <b-dropdown-header tag="div" class="text-center"><strong>Locale</strong></b-dropdown-header>
+      <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownLocales') }}</strong></b-dropdown-header>
       <b-dropdown-item v-for="language in languages" :key="'locale-' + language.locale" @click="onLocaleChanged(language)"><i :class="'flag-icon flag-icon-' + language.flag" /> {{ language.name }}</b-dropdown-item>
     </template>
   </AppHeaderDropdown>

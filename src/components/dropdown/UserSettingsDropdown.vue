@@ -5,15 +5,15 @@
         <i class="mdi mdi-18px mdi-account" />
       </template>
       <template slot="dropdown">
-        <b-dropdown-header tag="div" class="text-center"><strong>User settings</strong></b-dropdown-header>
-        <b-dropdown-item><i class="mdi mdi-18px mdi-settings text-primary" /> Settings</b-dropdown-item>
-        <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> Logout</b-dropdown-item>
-        <b-dropdown-item @click="showLogin" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> Login</b-dropdown-item>
+        <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettings') }}</strong></b-dropdown-header>
+        <b-dropdown-item><i class="mdi mdi-18px mdi-settings text-primary" /> {{ $t('dropdownUserSettingsSettings') }}</b-dropdown-item>
+        <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> {{ $t('dropdownUserSettingsLogout') }}</b-dropdown-item>
+        <b-dropdown-item @click="showLogin" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> {{ $t('dropdownUserSettingsLogin') }}</b-dropdown-item>
         <template v-if="token && token.userType === 'Administrator'">
-          <b-dropdown-header tag="div" class="text-center"><strong>Admin settings</strong></b-dropdown-header>
-          <b-dropdown-item><i class="mdi mdi-18px mdi-shield-account text-warning" /> Admin settings</b-dropdown-item>
-          <b-dropdown-item :to="{ name: 'user-permissions' }"><i class="mdi mdi-18px mdi-account-key text-warning" /> User permissions</b-dropdown-item>
-          <b-dropdown-item to="/import/data-upload"><i class="mdi mdi-18px mdi-upload text-warning" /> Data uploader</b-dropdown-item>
+          <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettingsAdvancedSettings') }}</strong></b-dropdown-header>
+          <!-- <b-dropdown-item><i class="mdi mdi-18px mdi-shield-account text-warning" /> {{ $t('dropdownUserSettingsAdminSettings') }}</b-dropdown-item> -->
+          <b-dropdown-item :to="{ name: 'user-permissions' }"><i class="mdi mdi-18px mdi-account-key text-warning" /> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
+          <b-dropdown-item :to="{ name: 'import-upload' }"><i class="mdi mdi-18px mdi-upload text-warning" /> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
         </template>
       </template>
     </AppHeaderDropdown>
