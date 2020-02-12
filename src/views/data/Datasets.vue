@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Datasets</h1>
+    <h1>{{ $t('pageDatasetsTitle') }}</h1>
     <DatasetTable :getData="getData" :filterOn="getFilter(0)"/>
     <DatasetTable :getData="getData" :filterOn="getFilter(1)"/>
   </div>

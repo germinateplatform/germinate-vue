@@ -320,9 +320,9 @@ export default {
       for (var i = 0; i < steps; i++) {
         var iNorm = i / (steps - 1)
         result.push(this.rgbToHex(
-          oneRgb.r + iNorm * (twoRgb.r - oneRgb.r),
-          oneRgb.g + iNorm * (twoRgb.g - oneRgb.g),
-          oneRgb.b + iNorm * (twoRgb.b - oneRgb.b)
+          Math.floor(oneRgb.r + iNorm * (twoRgb.r - oneRgb.r)),
+          Math.floor(oneRgb.g + iNorm * (twoRgb.g - oneRgb.g)),
+          Math.floor(oneRgb.b + iNorm * (twoRgb.b - oneRgb.b))
         ))
       }
       return result

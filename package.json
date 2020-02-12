@@ -50,6 +50,7 @@
     "moment": "^2.24.0",
     "plotly.js": "^1.51.3",
     "simple-line-icons": "^2.4.1",
+    "simplex-noise": "^2.4.0",
     "snapsvg": "^0.5.1",
     "vue": "^2.6.11",
     "vue-analytics": "^5.21.1",

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { debounce } from 'lodash/core'
+import { debounce } from 'lodash'
 export default {
   name: 'resize-observer',
   data: function () {

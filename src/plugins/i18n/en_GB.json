@@ -321,6 +321,7 @@
   "pageCompoundsTitle": "Compounds",
   "pageDashboardText": "<b>Welcome to Germinate.</b> This is the template text for the Germinate home page. Replace me with text about this project.",
   "pageDashboardTitle": "Home",
+  "pageDatasetsTitle": "Datasets",
   "pageDataExportTabDataExport": "Data export",
   "pageDataExportTabDataMatrix": "Data matrix",
   "pageDataExportTabDataStatistics": "Data statistics",

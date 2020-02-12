@@ -247,7 +247,7 @@ export default {
             {
               name: this.$t('menuGeography'),
               url: '/data/geography',
-              icon: 'mdi mdi-18px mdi-nature-people',
+              icon: 'mdi mdi-18px mdi-earth',
               children: [
                 {
                   name: this.$t('menuLocations'),

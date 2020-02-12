@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { isEqual } from 'lodash/core'
+import { isEqual } from 'lodash'
 import LocationMap from '@/components/map/LocationMap'
 import LocationTable from '@/components/tables/LocationTable'
 import climateApi from '@/mixins/api/climate.js'

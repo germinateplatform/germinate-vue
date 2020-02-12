@@ -106,7 +106,7 @@
         </template>
 
         <b-button-group v-if="tableActions || downloadTable">
-          <b-button class="table-download" v-if="downloadTable !== null" @click="onDownloadTableClicked" id="table-download"><i class="mdi mdi-18px fix-alignment mdi-download" /></b-button>
+          <b-button class="table-download" v-if="downloadTable !== null" @click="onDownloadTableClicked" id="table-download" v-b-tooltip.hover.bottom :title="$t('buttonDownload')"><i class="mdi mdi-18px fix-alignment mdi-download" /></b-button>
           <template v-if="tableActions">
             <b-button v-for="action in tableActions"
                       :key="`base-table-action-${action.id}`"
