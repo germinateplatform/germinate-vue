@@ -87,7 +87,7 @@ export default {
       if (isNaN(int)) {
         this.getGermplasmIdByName(urlParam)
       } else {
-        this.currentGermplasmId = parseInt(urlParam)
+        this.currentGermplasmId = int
       }
     } else {
       this.currentGermplasmId = this.germplasmId

@@ -17,22 +17,22 @@
             {{ synonym }}
           </li>
         </ul>
-
-        <hr/>
-        <h3>{{ $t('pageMarkerDetailsDatasetsTitle') }}</h3>
-        <p>{{ $t('pageMarkerDetailsDatasetsText') }}</p>
-        <DatasetTable :getData="getDatasetData" />
-
-        <hr/>
-        <h3>{{ $t('pageMarkerDetailsMapsTitle') }}</h3>
-        <p>{{ $t('pageMarkerDetailsMapsText') }}</p>
-        <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" />
-
-        <hr />
-        <h3>{{ $t('pageMarkerDetailsGroupsTitle') }}</h3>
-        <p>{{ $t('pageMarkerDetailsGroupsText') }}</p>
-        <GroupTable :getData="getGroupData" />
       </template>
+
+      <hr/>
+      <h3>{{ $t('pageMarkerDetailsDatasetsTitle') }}</h3>
+      <p>{{ $t('pageMarkerDetailsDatasetsText') }}</p>
+      <DatasetTable :getData="getDatasetData" />
+
+      <hr/>
+      <h3>{{ $t('pageMarkerDetailsMapsTitle') }}</h3>
+      <p>{{ $t('pageMarkerDetailsMapsText') }}</p>
+      <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" />
+
+      <hr />
+      <h3>{{ $t('pageMarkerDetailsGroupsTitle') }}</h3>
+      <p>{{ $t('pageMarkerDetailsGroupsText') }}</p>
+      <GroupTable :getData="getGroupData" />
     </template>
     <h3 v-else-if="noData === true">{{ $t('pageMarkerDetailsNoMarkerWithIdFound', { markerId: currentMarkerId }) }}</h3>
   </div>
@@ -100,6 +100,44 @@ export default {
     },
     getGroupData: function (data, callback) {
       return this.apiPostMarkerGroupTable(this.currentMarkerId, data, callback)
+    },
+    getMarkerIdByName: function (name) {
+      const query = {
+        filter: [{
+          column: 'markerName',
+          comparator: 'equals',
+          operator: 'and',
+          values: [name]
+        }],
+        page: 1,
+        limit: 1
+      }
+      this.apiPostMarkerTable(query, result => {
+        if (result && result.data && result.data.length > 0) {
+          this.currentMarkerId = result.data[0].markerId
+          this.getMarker()
+        }
+      })
+    },
+    getMarker: function () {
+      const request = {
+        page: 1,
+        limit: 1,
+        filter: [{
+          column: 'markerId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.currentMarkerId]
+        }]
+      }
+
+      this.apiPostMarkerTable(request, result => {
+        if (result && result.data && result.data.length > 0) {
+          this.marker = result.data[0]
+        } else {
+          this.noData = true
+        }
+      })
     }
   },
   created: function () {
@@ -108,28 +146,20 @@ export default {
     if (this.markerId) {
       this.currentMarkerId = this.markerId
     } else if (urlParam) {
-      this.currentMarkerId = parseInt(urlParam)
+      const int = parseInt(urlParam)
+
+      // If it's not a number, try and check of there's a marker with this name
+      if (isNaN(int)) {
+        this.getMarkerIdByName(urlParam)
+      } else {
+        this.currentMarkerId = int
+      }
     }
   },
   mounted: function () {
-    const request = {
-      page: 1,
-      limit: 1,
-      filter: [{
-        column: 'markerId',
-        comparator: 'equals',
-        operator: 'and',
-        values: [this.currentMarkerId]
-      }]
+    if (this.currentMarkerId) {
+      this.getMarker()
     }
-
-    this.apiPostMarkerTable(request, result => {
-      if (result && result.data && result.data.length > 0) {
-        this.marker = result.data[0]
-      } else {
-        this.noData = true
-      }
-    })
   }
 }
 </script>

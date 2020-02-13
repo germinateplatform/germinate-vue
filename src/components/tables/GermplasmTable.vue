@@ -58,7 +58,7 @@
     <!-- Image preview -->
     <template v-slot:cell(imageCount)="data">
       <div class="table-image" v-if="data.item.imageCount !== undefined && data.item.imageCount > 0">
-        <a href="#" class="text-dark" @click.prevent="" :id="`table-image-popover-${data.item.germplasmId}`">
+        <a href="#" class="text-dark" @click.prevent="" :id="`table-image-popover-${data.item.germplasmId}`" v-b-tooltip.hover :title="$t('tableTooltipGermplasmImage')">
           <i class="mdi mdi-18px mdi-camera"/> <span> {{ data.item.imageCount }}</span>
         </a>
         <b-popover

@@ -735,6 +735,7 @@
   "tableTooltipDatasetDownload": "Download full dataset",
   "tableTooltipDatasetLocations": "Show locations",
   "tableTooltipExperimentDetailsLink": "Show all datasets for this experiment",
+  "tableTooltipGermplasmImage": "Images available for this germplasm. Click to see an example.",
   "toastGroupCreateWithMembers": "Group created. Number of items added: {count}.",
   "toastSelectDatasetText": "Please select at least one dataset using the checkboxes.",
   "toastSelectDatasetTitle": "Datasets",
