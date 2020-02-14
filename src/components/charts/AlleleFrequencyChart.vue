@@ -1,26 +1,26 @@
 <template>
   <div class="mt-3">
     <div v-if="dataCount > 0">
-      <h2>Binning</h2>
-      <p>Something something</p>
+      <h2>{{ $t('pageAlleleFrequencyBinningTitle') }}</h2>
+      <p>{{ $t('pageAlleleFrequencyBinningText') }}</p>
       <b-row>
         <!-- Equal width binning -->
         <b-col xs=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('equal')}`" no-body>
             <b-card-body>
-              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-justify mdi-rotate-90 fix-alignment" /> Equal-width binning <i class="mdi mdi-18px mdi-help-circle" v-b-popover.hover="'The data will be binned into a set number of equal-width bins.'" /></h5>
+              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-justify mdi-rotate-90 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningEqualTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningEqualTitle')" /></h5>
               <b-form-group label="Number of bins" for="nrOfBins">
                 <b-input min="2" max="20" id="nrOfBins" type="number" v-model.number="equalBins"/>
               </b-form-group>
             </b-card-body>
-            <b-button variant="primary" @click="updateBinning('equal')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> Update</b-button>
+            <b-button variant="primary" @click="updateBinning('equal')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> {{ $t('buttonUpdate') }}</b-button>
           </b-card>
         </b-col>
         <!-- Split point binning -->
         <b-col xs=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('split')}`" no-body>
             <b-card-body>
-              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-indent-increase mdi-rotate-270 fix-alignment" /> Split point binning <i class="mdi mdi-18px mdi-help-circle" v-b-popover.hover="'The data will be binned into a number of equal-width bins to the left of the split, and a number of equal-width bins to the right of the split.'" /></h5>
+              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-indent-increase mdi-rotate-270 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningSplitTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningSplitText')" /></h5>
               <b-form-group label="Bins to the left" for="nrOfLeftBins">
                 <b-input min="1" max="10" id="nrOfLeftBins" type="number" v-model.number="splitLeftBins"/>
               </b-form-group>
@@ -31,35 +31,36 @@
                 <b-input min="1" max="10" id="nrOfRightBins" type="number" v-model.number="splitRightBins"/>
               </b-form-group>
             </b-card-body>
-            <b-button variant="primary" @click="updateBinning('split')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> Update</b-button>
+            <b-button variant="primary" @click="updateBinning('split')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> {{ $t('buttonUpdate') }}</b-button>
           </b-card>
         </b-col>
         <!-- Automatic binning -->
         <b-col xs=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('auto')}`" no-body>
             <b-card-body>
-              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-left mdi-rotate-270 fix-alignment" /> Automatic binning <i class="mdi mdi-18px mdi-help-circle" v-b-popover.hover="'The data will be binned automatically, with each (variable-width) bin containing an equal amount of the distribution.'" /></h5>
+              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-left mdi-rotate-270 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningAutoTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningAutoText')" /></h5>
               <b-form-group label="Number of bins" for="nrOfBins">
                 <b-input min="2" max="20" id="nrOfBins" type="number" v-model.number="autoBins"/>
               </b-form-group>
             </b-card-body>
-            <b-button variant="primary" @click="updateBinning('auto')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> Update</b-button>
+            <b-button variant="primary" @click="updateBinning('auto')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> {{ $t('buttonUpdate') }}</b-button>
           </b-card>
         </b-col>
       </b-row>
 
-      <h2>Resulting binning chart</h2>
+      <h2>{{ $t('pageAlleleFrequencyBinningChartTitle') }}</h2>
+      <p>{{ $t('pageAlleleFrequencyBinningChartText') }}</p>
       <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename">
         <div slot="chart" id="allelefreq-chart" ref="allelefreqChart" />
       </BaseChart>
 
-      <p>The colors used in the chart are the default Flapjack colors. If you modified the color scale in your copy of Flapjack, these colors may me different to the ones you can see here.</p>
+      <p>{{ $t('pageAlleleFrequencyBinningChartColors') }}</p>
 
-      <h2>Export</h2>
-      <p>Once you are happy with your selection of the binning mechanism, the data can be exported by clicking on the button below.</p>
-      <b-button variant="primary" @click="triggerExport"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Export</b-button>
+      <h2>{{ $t('pageAlleleFrequencyBinningExportTitle') }}</h2>
+      <p>{{ $t('pageAlleleFrequencyBinningExportText') }}</p>
+      <b-button variant="primary" @click="triggerExport"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonExport') }}</b-button>
     </div>
-    <h3 class="mt-3" v-else>The selection did not return any data.</h3>
+    <h3 class="mt-3" v-else>{{ $t('headingNoData') }}</h3>
   </div>
 </template>
 

@@ -301,7 +301,7 @@ export default {
         }, {
           key: 'dataTypes',
           type: undefined,
-          sortable: true,
+          sortable: false,
           class: `${this.isTableColumnHidden(this.options.tableName, 'dataTypes')}`,
           label: this.$t('tableColumnGermplasmDataTypes')
         }, {

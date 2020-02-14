@@ -208,7 +208,7 @@ export default {
         }, {
           key: 'countries',
           type: undefined,
-          sortable: true,
+          sortable: false,
           class: `${this.isTableColumnHidden(this.options.tableName, 'countries')}`,
           label: this.$t('tableColumnDatasetCountryName')
         }, {
