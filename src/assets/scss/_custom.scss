@@ -315,4 +315,8 @@ img.mime-icon {
   .sidebar-fixed .app-header + .app-body .sidebar {
       height: calc(100vh - 65px);
   }
+  .sidebar-lg-show.sidebar-fixed .app.public .app-footer,
+  .sidebar-show.sidebar-fixed .app.public .app-footer {
+    margin-left: 0;
+  }
 }

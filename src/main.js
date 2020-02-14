@@ -1,8 +1,5 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import 'core-js/es6/promise'
-import 'core-js/es6/string'
-import 'core-js/es7/array'
 // import cssVars from 'css-vars-ponyfill'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
@@ -19,8 +16,11 @@ import 'leaflet/dist/leaflet.css'
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
 
-require('es6-object-assign/auto')
-require('es6-set/implement')
+// require('core-js/es6/promise')
+// require('core-js/es6/string')
+// require('core-js/es7/array')
+// require('es6-object-assign/auto')
+// require('es6-set/implement')
 let axiosDefaults = require('axios/lib/defaults')
 
 // todo

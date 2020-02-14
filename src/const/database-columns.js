@@ -112,7 +112,7 @@ export default {
       name: 'datatype',
       type: String
     }, {
-      name: 'countryName',
+      name: 'locations',
       type: String
     }, {
       name: 'licenseName',

@@ -112,7 +112,7 @@ export default {
     }
   },
   mounted: function () {
-    var primaryColor = this.serverSettings.colorPrimary ? this.serverSettings.colorPrimary : '#20a8d8'
+    var primaryColor = (this.serverSettings && this.serverSettings.colorPrimary) ? this.serverSettings.colorPrimary : '#20a8d8'
     this.backgroundColors = this.createColorGradient('#ffffff', primaryColor, 4)
 
     this.updateBackground()
