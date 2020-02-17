@@ -485,7 +485,7 @@ export default {
       this.downloadTable(this.currentRequestData, result => {
         this.downloadBlob({
           blob: result,
-          filename: this.options.tableName + '-table',
+          filename: `${this.options.tableName}-table-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
           extension: 'zip'
         })
         EventBus.$emit('show-loading', false)

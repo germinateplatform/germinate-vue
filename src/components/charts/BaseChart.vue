@@ -3,7 +3,7 @@
     <div class="text-right">
       <!-- Chart options -->
       <b-button-group>
-        <b-dropdown no-caret right>
+        <b-dropdown no-caret right v-b-tooltip.hover="$t('chartTooltipOptions')" id="additional-options">
           <template v-slot:button-content>
             <i class="mdi mdi-18px mdi-dots-vertical"/>
             <slot name="buttonContent" />
@@ -28,6 +28,9 @@
           <b-button v-for="(button, index) in additionalButtons"
                     :key="`additional-button-${index}`"
                     :disabled="button.disabled ? button.disabled() : false"
+                    v-b-tooltip.hover
+                    :title="button.title ? button.title() : null"
+                    :id="button.id ? button.id : null"
                     @click="button.callback">
             <span v-html="button.html()" />
           </b-button>

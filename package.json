@@ -63,6 +63,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@vue/babel-preset-app": "^4.2.2",
     "@vue/cli-plugin-babel": "^3.12.1",
     "@vue/cli-plugin-e2e-nightwatch": "^4.2.2",
     "@vue/cli-plugin-eslint": "^3.12.1",

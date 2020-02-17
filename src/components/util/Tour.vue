@@ -12,7 +12,7 @@
         <p v-html="steps[currentIndex].text()" />
 
         <b-button-group class="d-flex">
-          <b-button variant="secondary" @click="currentIndex = currentIndex - 1" :disabled="currentIndex < 1"><i class="mdi mdi-18px fix-alignment mdi-chevron-left" /> {{ $t('buttonBack') }}</b-button>
+          <b-button variant="secondary" @click="currentIndex = currentIndex - 1" :disabled="currentIndex < 1" v-if="steps.length > 1"><i class="mdi mdi-18px fix-alignment mdi-chevron-left" /> {{ $t('buttonBack') }}</b-button>
           <b-button variant="success" @click="currentIndex = currentIndex + 1" v-if="currentIndex < steps.length - 1">{{ $t('buttonNext') }} <i class="mdi mdi-18px fix-alignment mdi-chevron-right" /></b-button>
           <b-button variant="success" @click="resetPopover" v-else>{{ $t('buttonClose') }} <i class="mdi mdi-18px fix-alignment mdi-check" /></b-button>
         </b-button-group>

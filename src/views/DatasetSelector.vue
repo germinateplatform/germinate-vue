@@ -3,7 +3,7 @@
     <div v-if="experimentType">
       <h1>{{ experimentTypes[experimentType].text() }}</h1>
       <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3" ref="datasetTable"/>
-      <b-button variant="primary" @click="checkLicenses" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> Continue</b-button>
+      <b-button variant="primary" @click="checkLicenses" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonNext') }}</b-button>
     </div>
     <div v-else>
       <h1>Invalid experiment type</h1>

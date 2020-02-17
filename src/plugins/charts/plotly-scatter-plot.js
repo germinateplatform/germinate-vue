@@ -51,13 +51,13 @@ export function plotlyScatterPlot() {
 			});
 
 			for (var i = 0; i < cats.length; i++) {
-				var x = cats[i] ? unpackConditional(rows, xCategory, colorBy, cats[i]) : unpack(rows, xCategory);
-				var y = cats[i] ? unpackConditional(rows, yCategory, colorBy, cats[i]) : unpack(rows, yCategory);
-				var ids = cats[i] ? unpackConditional(rows, 'dbId', colorBy, cats[i]) : unpack(rows, 'dbId');
+				var x = unpackConditional(rows, xCategory, colorBy, cats[i]);
+				var y = unpackConditional(rows, yCategory, colorBy, cats[i]);
+				var ids = unpackConditional(rows, 'dbId', colorBy, cats[i]);
 				ids = ids.map(function (i) {
 					return i + "-" + uuidv4();
 				});
-				var names = cats[i] ? unpackConditional(rows, 'name', colorBy, cats[i]) : unpack(rows, 'name');
+				var names = unpackConditional(rows, 'name', colorBy, cats[i]);
 				data.push({
 					x: x,
 					y: y,

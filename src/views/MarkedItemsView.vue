@@ -11,7 +11,7 @@
     <div v-if="itemType">
       <h2>{{ itemType.text() }}</h2>
 
-      <GermplasmTable v-show="itemType === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmTable" />
+      <GermplasmTable v-show="itemType === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" ref="germplasmTable" />
       <MarkerTable    v-show="itemType === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"    ref="markerTable" />
       <LocationTable  v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  ref="locationTable" />
     </div>
@@ -26,6 +26,7 @@ import MarkerTable from '@/components/tables/MarkerTable'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   data: function () {
@@ -62,42 +63,50 @@ export default {
     LocationTable,
     MarkerTable
   },
-  mixins: [ germplasmApi, genotypeApi, locationApi ],
+  mixins: [ germplasmApi, genotypeApi, locationApi, miscApi ],
   methods: {
     getGermplasmData: function (data, callback) {
-      this.adjustFilter(data, 'germplasmId', 'germplasm')
+      data = this.adjustFilter(data, 'germplasmId', 'germplasm')
       return this.apiPostGermplasmTable(data, callback)
     },
     getGermplasmIds: function (data, callback) {
-      this.adjustFilter(data, 'germplasmId', 'germplasm')
+      data = this.adjustFilter(data, 'germplasmId', 'germplasm')
       return this.apiPostGermplasmTableIds(data, callback)
     },
+    downloadGermplasm: function (data, callback) {
+      data = this.adjustFilter(data, 'germplasmId', 'germplasm')
+      return this.apiPostTableExport(data, 'germplasm', callback)
+    },
     getMarkerData: function (data, callback) {
-      this.adjustFilter(data, 'markerId', 'markers')
+      data = this.adjustFilter(data, 'markerId', 'markers')
       return this.apiPostMarkerTable(data, callback)
     },
     getMarkerIds: function (data, callback) {
-      this.adjustFilter(data, 'markerId', 'markers')
+      data = this.adjustFilter(data, 'markerId', 'markers')
       return this.apiPostMarkerTableIds(data, callback)
     },
     getLocationData: function (data, callback) {
-      this.adjustFilter(data, 'locationId', 'locations')
+      data = this.adjustFilter(data, 'locationId', 'locations')
       return this.apiPostLocationTable(data, callback)
     },
     getLocationIds: function (data, callback) {
-      this.adjustFilter(data, 'locationId', 'locations')
+      data = this.adjustFilter(data, 'locationId', 'locations')
       return this.apiPostLocationTableIds(data, callback)
     },
     adjustFilter: function (data, id, type) {
-      if (!data.filter) {
-        data.filter = []
+      const newData = JSON.parse(JSON.stringify(data))
+
+      if (!newData.filter) {
+        newData.filter = []
       }
-      data.filter.unshift({
+      newData.filter.unshift({
         column: id,
         comparator: 'inSet',
         operator: 'and',
         values: this.markedIds[type]
       })
+
+      return newData
     }
   },
   mounted: function () {

@@ -1,18 +1,21 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" :additionalMenuItems="additionalMenuItems" :additionalButtons="additionalButtons">
+    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" :additionalMenuItems="additionalMenuItems" :additionalButtons="additionalButtons">
       <div slot="chart" id="scatter-chart" ref="scatterChart" class="text-center" />
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
     </BaseChart>
     <b-modal size="xl" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null" ok-only hide-header :ok-title="$t('buttonClose')">
       <Passport :germplasmId="germplasmId" :isPopup="true" />
     </b-modal>
+
+    <Tour :steps="popoverContent" ref="tour" />
   </div>
 </template>
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
 import Passport from '@/views/data/germplasm/Passport'
+import Tour from '@/components/util/Tour'
 import { plotlyScatterPlot } from '@/plugins/charts/plotly-scatter-plot.js'
 
 export default {
@@ -39,7 +42,10 @@ export default {
     }
   },
   data: function () {
+    const id = 'chart-' + this.uuidv4()
+
     return {
+      id: id,
       sourceFile: null,
       germplasmId: null,
       selectedIds: [],
@@ -55,20 +61,58 @@ export default {
         callback: () => this.toggleItems(false)
       }],
       additionalButtons: [{
+        html: () => '<i class="mdi mdi-18px mdi-help-circle-outline" />',
+        title: () => this.$t('chartTooltipMatrixTour'),
+        callback: () => this.showTour()
+      }, {
         html: () => '<i class="mdi mdi-18px mdi-delete" />',
         disabled: () => this.markedIds[this.itemType].length < 1,
+        title: () => this.$t('chartTooltipMarkedItemsClear'),
+        id: 'marked-items-delete',
         callback: () => this.clearMarkedList()
       }, {
         html: () => `<span class="badge badge-pill badge-info">${this.markedIds[this.itemType].length}</span>`,
-        callback: () => this.redirectToList()
+        title: () => this.$t('chartTooltipMarkedItemsCount'),
+        callback: () => this.redirectToList(),
+        id: 'marked-items-count'
+      }],
+      popoverContent: [{
+        title: () => this.$t('popoverChartTourGenericOptionsTitle'),
+        text: () => this.$t('popoverChartTourGenericOptionsText'),
+        target: () => `#${id} #additional-options`,
+        position: 'bottom'
+      }, {
+        title: () => this.$t('popoverChartTourGenericModebarTitle'),
+        text: () => this.$t('popoverChartTourGenericModebarText'),
+        target: () => `#${id} .modebar`,
+        position: 'bottom'
+      }, {
+        title: () => this.$t('popoverChartTourGenericSelectionTitle'),
+        text: () => this.$t('popoverChartTourMarkableSelectionText'),
+        target: () => `#${id}`,
+        position: 'top'
+      }, {
+        title: () => this.$t('popoverChartTourMarkableCountTitle'),
+        text: () => this.$t('popoverChartTourMarkableCountText'),
+        target: () => `#${id} #marked-items-count`,
+        position: 'bottom'
+      }, {
+        title: () => this.$t('popoverChartTourMarkableClearTitle'),
+        text: () => this.$t('popoverChartTourMarkableClearText'),
+        target: () => `#${id} #marked-items-delete`,
+        position: 'bottom'
       }]
     }
   },
   components: {
     BaseChart,
-    Passport
+    Passport,
+    Tour
   },
   methods: {
+    showTour: function () {
+      this.$refs.tour.start()
+    },
     clearMarkedList: function () {
       this.$store.dispatch('ON_MARKED_IDS_CLEAR', this.itemType)
     },

@@ -17,6 +17,7 @@
 /* eslint-disable */
 export function plotlyMapChart() {
 	var onPointsSelected = null,
+	  onSelectionCleared = null,
 		distinctChromosomes = [],
 		colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
 
@@ -65,7 +66,7 @@ export function plotlyMapChart() {
 				var datum = {
 					x: x,
 					type: 'histogram',
-					name: 'Chr' + c,
+					name: 'Chr ' + c,
 					marker: {
 						color: colors[i % colors.length]
 					},
@@ -80,7 +81,7 @@ export function plotlyMapChart() {
 				data.push(datum);
 
 				layout['yaxis' + axisIndex] = {
-					title: 'Chr' + c
+					title: 'Chr ' + c
 				}
 
 				layout.grid.subplots.push(['xy' + axisIndex]);
@@ -100,6 +101,9 @@ export function plotlyMapChart() {
 			this.on('plotly_selected', function (eventData) {
 				if (!eventData || (eventData.points.length < 1)) {
 					Plotly.restyle(that, {selectedpoints: null});
+
+					if (onSelectionCleared)
+						onSelectionCleared()
 				} else {
 					var chromosome = eventData.points[0].curveNumber;
 
@@ -127,6 +131,12 @@ export function plotlyMapChart() {
 	chart.onPointsSelected = function (_) {
 		if (!arguments.length) return onPointsSelected;
 		onPointsSelected = _;
+		return chart;
+	};
+
+	chart.onSelectionCleared = function (_) {
+		if (!arguments.length) return onSelectionCleared;
+		onSelectionCleared = _;
 		return chart;
 	};
 

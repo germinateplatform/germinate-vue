@@ -47,6 +47,14 @@
       <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ experimentType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
     </template>
     <h2 class="text-info" v-if="experimentType === 'genotype' && selectedDatasetIds.length < 1">Please select at least one dataset in the table above to continue.</h2>
+
+    <slot name="optionalContent" />
+
+    <template v-if="exportStarted">
+      <h2 class="mt-4">{{ $t('widgetDatasetDownloadMetadataTitle') }}</h2>
+      <p>{{ $t('widgetDatasetDownloadMetadataText') }}</p>
+      <b-button @click="downloadMetadata"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownload') }}</b-button>
+    </template>
   </div>
 </template>
 
@@ -76,7 +84,8 @@ export default {
       maps: [],
       map: null,
       generateFlapjackProject: false,
-      selectedDatasetIds: []
+      selectedDatasetIds: [],
+      exportStarted: false
     }
   },
   watch: {
@@ -107,6 +116,22 @@ export default {
         if (this.$refs.genotypeDatasetTable) {
           this.$nextTick(() => this.$refs.genotypeDatasetTable.setSelectedItems(result.data.map(d => d.datasetId)))
         }
+      })
+    },
+    downloadMetadata: function () {
+      EventBus.$emit('show-loading', true)
+      const request = {
+        datasetIds: this.selectedDatasetIds
+      }
+      this.apiPostDatasetAttributeExport(request, result => {
+        var downloadRequext = {
+          blob: result,
+          filename: this.experimentType + '-dataset-metadata-' + this.selectedDatasetIds.join('-'),
+          extension: 'txt'
+        }
+
+        this.downloadBlob(downloadRequext)
+        EventBus.$emit('show-loading', false)
       })
     },
     getQuery: function (isFinal) {
@@ -154,6 +179,7 @@ export default {
 
           EventBus.$emit('toggle-aside')
           EventBus.$emit('show-loading', false)
+          this.exportStarted = true
         })
       } else if (this.experimentType === 'allelefreq') {
         if (binningConfig) {
@@ -162,8 +188,8 @@ export default {
             this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
 
             EventBus.$emit('toggle-aside')
-
             EventBus.$emit('show-loading', false)
+            this.exportStarted = true
           })
         } else {
           this.apiPostDatasetExport('allelefreq/histogram', query, result => {

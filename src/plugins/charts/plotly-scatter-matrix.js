@@ -55,7 +55,6 @@ export function plotlyScatterMatrix() {
 			});
 
 			for (var i = 0; i < cats.length; i++) {
-
 				var ids = cats[i] ? unpackConditional(rows, 'dbId', colorBy, cats[i]) : unpack(rows, 'dbId');
 				ids = ids.map(function (i) {
 					return i + "-" + uuidv4();

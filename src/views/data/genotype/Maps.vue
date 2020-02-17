@@ -12,7 +12,7 @@
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
-      <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename">
+      <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :additionalMenuItems="additionalMenuItems" >
         <div slot="chart" id="map-chart" ref="mapChart" />
       </BaseChart>
 
@@ -52,7 +52,19 @@ export default {
       mapId: null,
       map: null,
       sourceFile: null,
-      useAdvancedExportOptions: false
+      chartSelection: [],
+      useAdvancedExportOptions: false,
+      additionalMenuItems: [{
+        icon: 'mdi-checkbox-marked',
+        disabled: () => !this.chartSelection || this.chartSelection.length < 1,
+        text: () => this.$t('widgetChartMarkSelectedItems'),
+        callback: () => this.toggleItems(true)
+      }, {
+        icon: 'mdi-checkbox-blank-outline',
+        disabled: () => !this.chartSelection || this.chartSelection.length < 1,
+        text: () => this.$t('widgetChartUnmarkSelectedItems'),
+        callback: () => this.toggleItems(false)
+      }]
     }
   },
   components: {
@@ -63,6 +75,53 @@ export default {
   },
   mixins: [ genotypeApi ],
   methods: {
+    toggleItems: function (add) {
+      if (this.chartSelection && this.chartSelection.length > 0) {
+        var counter = 0
+
+        this.chartSelection.forEach(s => {
+          const query = {
+            page: 1,
+            limit: this.MAX_JAVA_INTEGER,
+            filter: [{
+              column: 'mapId',
+              comparator: 'equals',
+              operator: 'and',
+              values: [this.mapId]
+            }, {
+              column: 'chromosome',
+              comparator: 'equals',
+              operator: 'and',
+              values: [s.chromosome]
+            }, {
+              column: 'position',
+              comparator: 'between',
+              operator: 'and',
+              values: s.range
+            }]
+          }
+
+          counter = counter + 1
+          EventBus.$emit('show-loading', true)
+          // Get the ids of the markers in the requested regions
+          this.apiPostMapdefinitionTableIds(query, result => {
+            if (result && result.data && result.data.length > 0) {
+              if (add) {
+                this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'markers', ids: result.data })
+              } else {
+                this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'markers', ids: result.data })
+              }
+            }
+
+            counter = counter - 1
+
+            if (counter < 1) {
+              EventBus.$emit('show-loading', false)
+            }
+          })
+        })
+      }
+    },
     exportMap: function (format) {
       var options = {
         format: format
@@ -158,7 +217,15 @@ export default {
                     start: Math.floor(start),
                     end: Math.ceil(end)
                   })
+
+                  this.chartSelection.push({
+                    chromosome: chromosome,
+                    range: [Math.floor(start), Math.ceil(end)]
+                  })
                 })
+              })
+              .onSelectionCleared(() => {
+                this.chartSelection = []
               }))
         }
         reader.readAsText(result)

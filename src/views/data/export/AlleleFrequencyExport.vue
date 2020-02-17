@@ -6,9 +6,11 @@
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
       </ul>
-      <GenotypeExportSelection :datasetIds="datasetIds" experimentType="allelefreq" v-on:on-file-loaded="onFileLoaded" ref="exportSelection" />
-
-      <AlleleFrequencyChart :datasetIds="datasetIds" :sourceFile="chartFile" v-if="chartFile" v-on:trigger-export="triggerExport" />
+      <GenotypeExportSelection :datasetIds="datasetIds" experimentType="allelefreq" v-on:on-file-loaded="onFileLoaded" ref="exportSelection">
+        <template slot="optionalContent">
+          <AlleleFrequencyChart :datasetIds="datasetIds" :sourceFile="chartFile" v-if="chartFile" v-on:trigger-export="triggerExport" />
+        </template>
+      </GenotypeExportSelection>
     </template>
   </div>
 </template>
