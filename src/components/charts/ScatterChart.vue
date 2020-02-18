@@ -101,6 +101,11 @@ export default {
         text: () => this.$t('popoverChartTourMarkableClearText'),
         target: () => `#${id} #marked-items-delete`,
         position: 'bottom'
+      }, {
+        title: () => this.$t('popoverChartTourMarkableSelectionToggleTitle'),
+        text: () => this.$t('popoverChartTourMarkableSelectionToggleText'),
+        target: () => `#${id} #additional-options`,
+        position: 'bottom'
       }]
     }
   },
@@ -115,9 +120,10 @@ export default {
     },
     clearMarkedList: function () {
       this.$store.dispatch('ON_MARKED_IDS_CLEAR', this.itemType)
+      this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-delete'))
     },
     redirectToList: function () {
-      this.$router.push('/marked-items/' + this.itemType)
+      this.$router.push({ name: 'marked-items-type', params: { itemType: this.itemType } })
     },
     toggleItems: function (add) {
       if (add === true) {

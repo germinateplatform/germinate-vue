@@ -12,9 +12,7 @@
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
-      <BaseChart :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :additionalMenuItems="additionalMenuItems" >
-        <div slot="chart" id="map-chart" ref="mapChart" />
-      </BaseChart>
+      <MapChart :mapId="mapId" ref="mapChart" v-on:points-selected="onPointsSelected" />
 
       <h2>{{ $t('pageMapExportDownloadTitle') }}</h2>
       <b-form-group
@@ -38,11 +36,10 @@
 </template>
 
 <script>
-import BaseChart from '@/components/charts/BaseChart'
+import MapChart from '@/components/charts/MapChart'
 import MapTable from '@/components/tables/MapTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import MapExportSelection from '@/components/export/MapExportSelection'
-import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
 import { EventBus } from '@/plugins/event-bus.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 
@@ -51,77 +48,17 @@ export default {
     return {
       mapId: null,
       map: null,
-      sourceFile: null,
-      chartSelection: [],
-      useAdvancedExportOptions: false,
-      additionalMenuItems: [{
-        icon: 'mdi-checkbox-marked',
-        disabled: () => !this.chartSelection || this.chartSelection.length < 1,
-        text: () => this.$t('widgetChartMarkSelectedItems'),
-        callback: () => this.toggleItems(true)
-      }, {
-        icon: 'mdi-checkbox-blank-outline',
-        disabled: () => !this.chartSelection || this.chartSelection.length < 1,
-        text: () => this.$t('widgetChartUnmarkSelectedItems'),
-        callback: () => this.toggleItems(false)
-      }]
+      useAdvancedExportOptions: false
     }
   },
   components: {
-    BaseChart,
+    MapChart,
     MapTable,
     MapDefinitionTable,
     MapExportSelection
   },
   mixins: [ genotypeApi ],
   methods: {
-    toggleItems: function (add) {
-      if (this.chartSelection && this.chartSelection.length > 0) {
-        var counter = 0
-
-        this.chartSelection.forEach(s => {
-          const query = {
-            page: 1,
-            limit: this.MAX_JAVA_INTEGER,
-            filter: [{
-              column: 'mapId',
-              comparator: 'equals',
-              operator: 'and',
-              values: [this.mapId]
-            }, {
-              column: 'chromosome',
-              comparator: 'equals',
-              operator: 'and',
-              values: [s.chromosome]
-            }, {
-              column: 'position',
-              comparator: 'between',
-              operator: 'and',
-              values: s.range
-            }]
-          }
-
-          counter = counter + 1
-          EventBus.$emit('show-loading', true)
-          // Get the ids of the markers in the requested regions
-          this.apiPostMapdefinitionTableIds(query, result => {
-            if (result && result.data && result.data.length > 0) {
-              if (add) {
-                this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'markers', ids: result.data })
-              } else {
-                this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'markers', ids: result.data })
-              }
-            }
-
-            counter = counter - 1
-
-            if (counter < 1) {
-              EventBus.$emit('show-loading', false)
-            }
-          })
-        })
-      }
-    },
     exportMap: function (format) {
       var options = {
         format: format
@@ -162,15 +99,6 @@ export default {
     getMapData: function (data, callback) {
       return this.apiPostMapsTable(data, callback)
     },
-    getSourceFile: function () {
-      return {
-        blob: this.sourceFile,
-        filename: this.getFilename()
-      }
-    },
-    getFilename: function () {
-      return 'map-' + this.mapId
-    },
     getMapDefinitionData: function (data, callback) {
       return this.apiPostMapdefinitionTable(data, callback)
     },
@@ -185,50 +113,23 @@ export default {
           if (result && result.data && result.data.length > 0) {
             window.history.replaceState({}, null, this.$router.resolve({ name: 'map-details', params: { mapId: this.mapId } }).href)
             this.map = result.data[0]
-            this.drawChart()
-            this.$nextTick(() => this.$refs.mapDefinitionTable.refresh())
+            this.$nextTick(() => {
+              this.$refs.mapChart.redraw()
+              this.$refs.mapDefinitionTable.refresh()
+            })
           }
         })
       }
     },
-    drawChart: function () {
-      var request = {
-        format: 'flapjack'
-      }
-      this.apiPostMapExport(this.mapId, request, result => {
-        this.sourceFile = result
-        var reader = new FileReader()
-        reader.onload = () => {
-          var dirtyTsv = reader.result
-          var firstEOL = dirtyTsv.indexOf('\r\n')
-          var tsv = 'markerName\tchromosome\tposition\r\n' + dirtyTsv.substring(firstEOL + 2)
-          var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
+    onPointsSelected: function (chromosome, start, end) {
+      this.useAdvancedExportOptions = true
 
-          this.$plotly.d3.select(this.$refs.mapChart)
-            .datum(data)
-            .call(plotlyMapChart()
-              .colors(this.serverSettings.colorsCharts)
-              .onPointsSelected((chromosome, start, end) => {
-                this.useAdvancedExportOptions = true
-
-                this.$nextTick(() => {
-                  this.$refs.exportOptions.addRegion({
-                    chromosome: chromosome,
-                    start: Math.floor(start),
-                    end: Math.ceil(end)
-                  })
-
-                  this.chartSelection.push({
-                    chromosome: chromosome,
-                    range: [Math.floor(start), Math.ceil(end)]
-                  })
-                })
-              })
-              .onSelectionCleared(() => {
-                this.chartSelection = []
-              }))
-        }
-        reader.readAsText(result)
+      this.$nextTick(() => {
+        this.$refs.exportOptions.addRegion({
+          chromosome: chromosome,
+          start: Math.floor(start),
+          end: Math.ceil(end)
+        })
       })
     }
   },

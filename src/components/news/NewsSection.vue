@@ -28,7 +28,7 @@
 
           <b-modal ref="newsModal" :title="selectedNews.newsTitle" scrollable size="xl" v-if="selectedNews" ok-only :ok-title="$t('buttonClose')">
             <div v-html="selectedNews.newsContent" />
-            <b-button v-if="selectedNews.newsHyperlink" class="mt-3" :href="selectedNews.newsHyperlink" target="_blank">{{ $('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
+            <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" class="mt-3" :href="selectedNews.newsHyperlink" target="_blank">{{ $t('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
           </b-modal>
         </b-col>
         <b-col xs=12 sm=6 v-if="projects && projects.length > 0">
