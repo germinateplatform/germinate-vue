@@ -432,13 +432,16 @@ export default {
           ids: this.markedIds[this.itemType],
           isAddition: true
         }
-        this.apiPatchGroupMembers(result, this.itemType.apiName, data, result => {
-          this.$bvToast.toast(this.$t('toastGroupCreateWithMembers', { count: result }), {
+        const groupId = result
+        this.apiPatchGroupMembers(groupId, this.itemType, data, result => {
+          this.$root.$bvToast.toast(this.$t('toastGroupCreateWithMembers', { count: result }), {
             title: this.$t('genericSuccess'),
             variant: 'success',
             autoHideDelay: 5000,
             appendToast: true
           })
+
+          this.$router.push({ name: 'group-details', params: { groupId: groupId } })
         })
       })
     },

@@ -42,7 +42,7 @@
           </b-card-body>
         </b-tab>
         <template v-slot:tabs-end>
-          <b-nav-item href="#" @click="query" class="ml-auto text-primary bg-primary"><span class="text-white"><i class="mdi mdi-18px mdi-arrow-right-box" /> Run query</span></b-nav-item>
+          <b-nav-item href="#" @click="query" class="ml-auto text-primary bg-primary"><span class="text-white"><i class="mdi mdi-18px mdi-arrow-right-box" /> {{ $t('pageGeographicSearchButtonRun') }}</span></b-nav-item>
         </template>
       </b-tabs>
     </b-card>
@@ -128,8 +128,8 @@ export default {
             this.$refs.germplasmPointTable.refresh()
           })
         } else {
-          this.$bvToast.toast('Please select a point by clicking on the map.', {
-            title: 'No point selected',
+          this.$bvToast.toast(this.$t('toastGeographicSearchSelectPointText'), {
+            title: this.$t('toastGeographicSearchSelectPointTitle'),
             variant: 'info',
             autoHideDelay: 5000,
             appendToast: true
@@ -144,8 +144,8 @@ export default {
             this.$refs.germplasmPolygonTable.refresh()
           })
         } else {
-          this.$bvToast.toast('Please create a polygon by clicking on the map.', {
-            title: 'No polygon defined',
+          this.$bvToast.toast(this.$t('toastGeographicSearchSelectPolygonText'), {
+            title: this.$t('toastGeographicSearchSelectPolygonTitle'),
             variant: 'info',
             autoHideDelay: 5000,
             appendToast: true
