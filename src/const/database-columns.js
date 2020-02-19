@@ -106,7 +106,7 @@ export default {
       name: 'experimentName',
       type: String
     }, {
-      name: 'experimentType',
+      name: 'datasetType',
       type: String
     }, {
       name: 'datatype',

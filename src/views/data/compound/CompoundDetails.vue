@@ -24,10 +24,10 @@
       <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" xType="compounds" ref="compoundDetailsChart" />
 
       <div v-show="showAdditionalDatasets">
-        <DatasetsWithUnacceptedLicense experimentType="compound" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
+        <DatasetsWithUnacceptedLicense datasetType="compound" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
       </div>
     </div>
-    <h3 v-else>Compound not found</h3>
+    <h3 v-else>{{ $t('headingNoData') }}</h3>
   </div>
 </template>
 

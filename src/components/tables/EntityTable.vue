@@ -6,22 +6,22 @@
                ref="entityTable"
                v-on="$listeners">
       <template v-slot:cell(entityParentId)="data">
-        <router-link :to="'/data/germplasm/' + data.item.entityParentId">{{ data.item.entityParentId }}</router-link>
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentId }}</router-link>
       </template>
       <template v-slot:cell(entityParentGid)="data">
-        <router-link :to="'/data/germplasm/' + data.item.entityParentId">{{ data.item.entityParentGid }}</router-link>
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentGid }}</router-link>
       </template>
       <template v-slot:cell(entityParentName)="data">
-        <router-link :to="'/data/germplasm/' + data.item.entityParentId">{{ data.item.entityParentName }}</router-link>
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentName }}</router-link>
       </template>
       <template v-slot:cell(entityChildId)="data">
-        <router-link :to="'/data/germplasm/' + data.item.entityChildId">{{ data.item.entityChildId }}</router-link>
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildId }}</router-link>
       </template>
       <template v-slot:cell(entityChildGid)="data">
-        <router-link :to="'/data/germplasm/' + data.item.entityChildId">{{ data.item.entityChildGid }}</router-link>
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildGid }}</router-link>
       </template>
       <template v-slot:cell(entityChildName)="data">
-        <router-link :to="'/data/germplasm/' + data.item.entityChildId">{{ data.item.entityChildName }}</router-link>
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildName }}</router-link>
       </template>
       <template v-slot:cell(entityParentType)="data">
         <span class="text-nowrap" v-if="data.item.entityParentType"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityParentType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityParentType].color()};`" /> {{ entityTypes[data.item.entityParentType].text() }}</span>

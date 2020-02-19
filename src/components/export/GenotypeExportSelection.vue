@@ -20,12 +20,12 @@
                               @change="updateGenotypeDatasetTable"/>
       </b-col>
     </b-row>
-    <template v-if="experimentType === 'genotype' && datasetIds && datasetIds.length > 1">
+    <template v-if="datasetType === 'genotype' && datasetIds && datasetIds.length > 1">
       <h2 class="mt-3">{{ $t('pageGenotypesExportMultipleSubselectTitle') }}</h2>
       <p>{{ $t('pageGenotypesExportMultipleSubselectText') }}</p>
       <GenotypeDatasetTable :getData="getGenotypeSummaryData" :getIds="null" :selectable="true" v-on:selection-changed="onSelectionChanged" ref="genotypeDatasetTable" />
     </template>
-    <template v-if="(datasetIds && datasetIds.length === 1) || selectedDatasetIds.length > 0 || experimentType !== 'genotype'">
+    <template v-if="(datasetIds && datasetIds.length === 1) || selectedDatasetIds.length > 0 || datasetType !== 'genotype'">
       <b-row class="mt-3">
         <b-col cols=12 md=6>
           <h2>{{ $t('pageGenotypesExportSelectMapTitle') }}</h2>
@@ -44,9 +44,9 @@
           <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
         </b-col>
       </b-row>
-      <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ experimentType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
+      <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ datasetType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
     </template>
-    <h2 class="text-info" v-if="experimentType === 'genotype' && selectedDatasetIds.length < 1">Please select at least one dataset in the table above to continue.</h2>
+    <h2 class="text-info" v-if="datasetType === 'genotype' && selectedDatasetIds.length < 1">Please select at least one dataset in the table above to continue.</h2>
 
     <slot name="optionalContent" />
 
@@ -72,7 +72,7 @@ export default {
       type: Array,
       default: () => null
     },
-    experimentType: {
+    datasetType: {
       type: String,
       default: null
     }
@@ -126,7 +126,7 @@ export default {
       this.apiPostDatasetAttributeExport(request, result => {
         var downloadRequext = {
           blob: result,
-          filename: this.experimentType + '-dataset-metadata-' + this.selectedDatasetIds.join('-'),
+          filename: this.datasetType + '-dataset-metadata-' + this.selectedDatasetIds.join('-'),
           extension: 'txt'
         }
 
@@ -171,7 +171,7 @@ export default {
       EventBus.$emit('show-loading', true)
       const query = this.getQuery(true)
 
-      if (this.experimentType === 'genotype') {
+      if (this.datasetType === 'genotype') {
         this.apiPostGenotypeDatasetExport(query, result => {
           if (result) {
             result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
@@ -181,7 +181,7 @@ export default {
           EventBus.$emit('show-loading', false)
           this.exportStarted = true
         })
-      } else if (this.experimentType === 'allelefreq') {
+      } else if (this.datasetType === 'allelefreq') {
         if (binningConfig) {
           query.config = binningConfig
           this.apiPostAlleleFrequencyDatasetExport(query, result => {
@@ -204,7 +204,7 @@ export default {
       const request = {
         datasetIds: this.datasetIds,
         groupType: 'markers',
-        experimentType: this.experimentType
+        datasetType: this.datasetType
       }
       this.apiPostDatasetGroups(request, result => {
         this.markerGroups = result
@@ -214,7 +214,7 @@ export default {
       const request = {
         datasetIds: this.datasetIds,
         groupType: 'germinatebase',
-        experimentType: this.experimentType
+        datasetType: this.datasetType
       }
       this.apiPostDatasetGroups(request, result => {
         this.germplasmGroups = result

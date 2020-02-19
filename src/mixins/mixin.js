@@ -236,7 +236,7 @@ export default {
           text: () => this.$t('locationTypeDataset')
         }
       },
-      experimentTypes: {
+      datasetTypes: {
         allelefreq: {
           id: 4,
           icon: 'mdi-pulse',

@@ -39,7 +39,7 @@ export default {
       type: String,
       default: 'germinatebase'
     },
-    experimentType: {
+    datasetType: {
       type: String,
       default: null
     },
@@ -66,7 +66,7 @@ export default {
       this.apiPostDatasetExport(this.downloadKey, query, result => {
         var downloadRequest = {
           blob: result,
-          filename: this.experimentType + '-dataset-' + this.datasetIds.join('-'),
+          filename: this.datasetType + '-dataset-' + this.datasetIds.join('-'),
           extension: 'txt'
         }
 
@@ -82,7 +82,7 @@ export default {
       this.apiPostDatasetAttributeExport(request, result => {
         var downloadRequext = {
           blob: result,
-          filename: this.experimentType + '-dataset-metadata-' + this.datasetIds.join('-'),
+          filename: this.datasetType + '-dataset-metadata-' + this.datasetIds.join('-'),
           extension: 'txt'
         }
 

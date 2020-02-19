@@ -32,7 +32,7 @@ export default {
       type: String,
       default: ''
     },
-    experimentType: {
+    datasetType: {
       type: String,
       default: 'trials'
     },
@@ -89,7 +89,7 @@ export default {
       }, {
         title: () => this.$t('popoverChartTourMarkableSelectionTitle'),
         text: () => this.$t('popoverChartTourMarkableSelectionText'),
-        target: () => `#${id}`,
+        target: () => `#${id} #scatter-chart`,
         position: 'top'
       }, {
         title: () => this.$t('popoverChartTourMarkableCountTitle'),
@@ -139,7 +139,7 @@ export default {
       }
     },
     getFilename: function () {
-      return this.experimentType + '-' + this.datasetIds.join('-')
+      return this.datasetType + '-' + this.datasetIds.join('-')
     },
     redraw: function (result, colorBy) {
       this.sourceFile = result
@@ -150,7 +150,7 @@ export default {
       reader.onload = () => {
         var dirtyTsv = reader.result
         var firstEOL = dirtyTsv.indexOf('\r\n')
-        var tsv = this.experimentType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
+        var tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
         var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
 
         this.$plotly.d3.select(this.$refs.scatterChart)
@@ -160,7 +160,7 @@ export default {
             .xCategory(this.x)
             .yCategory(this.y)
             .onPointClicked(p => {
-              if (this.experimentType === 'trials' || this.experimentType === 'compounds') {
+              if (this.datasetType === 'trials' || this.datasetType === 'compounds') {
                 this.germplasmId = p
                 this.$nextTick(() => this.$refs.passportModal.show())
               }

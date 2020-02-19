@@ -13,10 +13,10 @@
       <BoxplotChart chartMode="datasetByItem" :xIds="[climateId]" xType="climates" ref="climateDetailsChart" />
 
       <div v-show="showAdditionalDatasets">
-        <DatasetsWithUnacceptedLicense experimentType="climate" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
+        <DatasetsWithUnacceptedLicense datasetType="climate" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
       </div>
     </div>
-    <h3 v-else>Climate not found</h3>
+    <h3 v-else>{{ $t('headingNoData') }}</h3>
   </div>
 </template>
 

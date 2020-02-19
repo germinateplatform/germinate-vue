@@ -34,7 +34,7 @@ export default {
       type: String,
       default: 'germinatebase'
     },
-    experimentType: {
+    datasetType: {
       type: String,
       default: null
     },
@@ -156,7 +156,7 @@ export default {
       const request = {
         datasetIds: this.datasetIds,
         groupType: this.groupType,
-        experimentType: this.experimentType
+        datasetType: this.datasetType
       }
       this.apiPostDatasetGroups(request, result => {
         this.groups = result

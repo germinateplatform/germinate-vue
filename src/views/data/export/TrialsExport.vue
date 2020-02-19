@@ -28,7 +28,7 @@
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
                         xTypes="traits"
-                        experimentType="trials"
+                        datasetType="trials"
                         :texts="textsChart"
                         :getItems="getTraits"
                         v-show="currentTab === 'overview'" />
@@ -71,7 +71,7 @@ export default {
         itemType: 'germplasm',
         xType: 'traits',
         groupType: 'germinatebase',
-        experimentType: 'trials'
+        datasetType: 'trials'
       },
       textsChart: {
         boxplotTitle: 'pageTrialsExportTraitBoxplotTitle',
@@ -161,7 +161,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'trials' } }))
+      this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'trials' } }))
     },
     isAccepted: function (dataset) {
       if (this.token) {
@@ -175,7 +175,7 @@ export default {
         page: 1,
         limit: this.JAVA_MAX_INTEGER,
         filter: [{
-          column: 'experimentType',
+          column: 'datasetType',
           comparator: 'equals',
           operator: 'and',
           values: ['trials']

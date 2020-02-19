@@ -125,9 +125,15 @@ const router = new Router({
               beforeEnter: requireAuth
             },
             {
+              path: 'experiments',
+              name: 'experiments',
+              component: () => import('@/views/data/Experiments.vue'),
+              beforeEnter: requireAuth
+            },
+            {
               path: 'experiments/:experimentId',
               name: 'experiment-details',
-              component: () => import('@/views/data/Experiments.vue'),
+              component: () => import('@/views/data/ExperimentDetails.vue'),
               beforeEnter: requireAuth
             },
             {
@@ -259,7 +265,7 @@ const router = new Router({
               ]
             },
             {
-              path: 'export/:experimentType',
+              path: 'export/:datasetType',
               name: 'export',
               component: () => import('@/views/DatasetSelector.vue'),
               beforeEnter: requireAuth

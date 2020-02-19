@@ -34,7 +34,7 @@
 
     <h2>{{ $t('pageStatisticsDatasetTitle') }}</h2>
     <p>{{ $t('pageStatisticsDatasetText') }}</p>
-    <BarChart xColumn="ExperimentType"
+    <BarChart xColumn="DatasetType"
               xTitle="Experiment type"
               yTitle="Data points"
               downloadName="datasets"
@@ -91,7 +91,7 @@ export default {
       this.$router.push({ name: 'germplasm' })
     },
     datasetClicked: function (dataset) {
-      this.$router.push({ name: 'export', params: { experimentType: dataset } })
+      this.$router.push({ name: 'export', params: { datasetType: dataset } })
     }
   },
   mounted: function () {

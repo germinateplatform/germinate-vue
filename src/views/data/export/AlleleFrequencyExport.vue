@@ -6,7 +6,7 @@
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
       </ul>
-      <GenotypeExportSelection :datasetIds="datasetIds" experimentType="allelefreq" v-on:on-file-loaded="onFileLoaded" ref="exportSelection">
+      <GenotypeExportSelection :datasetIds="datasetIds" datasetType="allelefreq" v-on:on-file-loaded="onFileLoaded" ref="exportSelection">
         <template slot="optionalContent">
           <AlleleFrequencyChart :datasetIds="datasetIds" :sourceFile="chartFile" v-if="chartFile" v-on:trigger-export="triggerExport" />
         </template>
@@ -47,7 +47,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'allelefreq' } }))
+      this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'allelefreq' } }))
     },
     onFileLoaded: function (chartFile) {
       this.chartFile = chartFile
@@ -58,7 +58,7 @@ export default {
       page: 1,
       limit: this.JAVA_MAX_INTEGER,
       filter: [{
-        column: 'experimentType',
+        column: 'datasetType',
         comparator: 'equals',
         operator: 'and',
         values: ['allelefreq']

@@ -13,8 +13,8 @@
 
         <h3 class="mt-3">{{ $t('pageCompoundExportChartTitle') }}</h3>
         <p>{{ $t('pageCompoundExportChartText') }}</p>
-        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedCompounds.length > 2" experimentType="compound" />
-        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedCompounds[0].displayName" :y="selectedCompounds[1].displayName" experimentType="compound" v-else />
+        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedCompounds.length > 2" datasetType="compound" />
+        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedCompounds[0].displayName" :y="selectedCompounds[1].displayName" datasetType="compound" v-else />
       </b-col>
     </b-row>
   </div>
@@ -49,7 +49,7 @@ export default {
       type: String,
       default: 'germinatebase'
     },
-    experimentType: {
+    datasetType: {
       type: String,
       default: null
     },

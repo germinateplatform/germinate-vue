@@ -49,6 +49,7 @@ const userState = {
     mapDefinitions: [],
     datasets: ['experimentId'],
     datasetAttributes: [],
+    experiments: [],
     entities: [],
     groups: ['userId'],
     locations: [],

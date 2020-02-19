@@ -28,7 +28,7 @@
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
                         xType="climates"
-                        experimentType="climate"
+                        datasetType="climate"
                         :texts="textsChart"
                         :getItems="getClimates"
                         v-show="currentTab === 'overview'" />
@@ -71,7 +71,7 @@ export default {
         itemType: 'locations',
         xType: 'climates',
         groupType: 'locations',
-        experimentType: 'climate'
+        datasetType: 'climate'
       },
       textsChart: {
         boxplotTitle: 'pageClimateExportClimateBoxplotTitle',
@@ -161,7 +161,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'trials' } }))
+      this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'trials' } }))
     },
     isAccepted: function (dataset) {
       if (this.token) {
@@ -175,7 +175,7 @@ export default {
         page: 1,
         limit: this.JAVA_MAX_INTEGER,
         filter: [{
-          column: 'experimentType',
+          column: 'datasetType',
           comparator: 'equals',
           operator: 'and',
           values: ['climate']

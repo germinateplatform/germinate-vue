@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>{{ $t('widgetAdditionalDatasetsTitle') }}</h2>
-    <p>{{ $t('widgetAdditionalDatasetsText', { type: experimentTypes[experimentType].text() }) }}</p>
+    <p>{{ $t('widgetAdditionalDatasetsText', { type: datasetTypes[datasetType].text() }) }}</p>
     <DatasetTable :getData="getData" :filterOn="filterOn" :selectable="false" v-on:license-accepted="onLicenseAccepted" v-on:data-changed="emitDataChanged" />
   </div>
 </template>
@@ -12,7 +12,7 @@ import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
   props: {
-    experimentType: {
+    datasetType: {
       type: String,
       default: null
     }
@@ -21,12 +21,12 @@ export default {
     return {
       filterOn: [{
         column: {
-          name: 'experimentType',
+          name: 'datasetType',
           type: String
         },
         comparator: 'equals',
         oparator: 'and',
-        values: [this.experimentType],
+        values: [this.datasetType],
         canBeChanged: false
       }]
     }

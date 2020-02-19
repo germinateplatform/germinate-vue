@@ -32,7 +32,7 @@ export default {
       type: Array,
       default: () => []
     },
-    experimentType: {
+    datasetType: {
       type: String,
       default: 'trials'
     },
@@ -90,7 +90,7 @@ export default {
       }, {
         title: () => this.$t('popoverChartTourMarkableSelectionTitle'),
         text: () => this.$t('popoverChartTourMarkableSelectionText'),
-        target: () => `#${id}`,
+        target: () => `#${id} #matrix-chart`,
         position: 'top'
       }, {
         title: () => this.$t('popoverChartTourMarkableCountTitle'),
@@ -152,7 +152,7 @@ export default {
       reader.onload = () => {
         var dirtyTsv = reader.result
         var firstEOL = dirtyTsv.indexOf('\r\n')
-        var tsv = this.experimentType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
+        var tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
         var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
 
         this.loading = false
@@ -163,7 +163,7 @@ export default {
             .colorBy(colorBy)
             .columnsToIgnore(['name', 'puid', 'entity_parent_name', 'entity_parent_general_identifier', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'treatments_description', 'year'])
             .onPointClicked(p => {
-              if (this.experimentType === 'trials' || this.experimentType === 'compounds') {
+              if (this.datasetType === 'trials' || this.datasetType === 'compounds') {
                 this.germplasmId = p
                 this.$nextTick(() => this.$refs.passportModal.show())
               }

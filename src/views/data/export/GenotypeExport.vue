@@ -6,7 +6,7 @@
       <ul>
         <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
       </ul>
-      <GenotypeExportSelection :datasetIds="datasetIds" experimentType="genotype" />
+      <GenotypeExportSelection :datasetIds="datasetIds" datasetType="genotype" />
     </template>
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { experimentType: 'genotype' } }))
+      this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'genotype' } }))
     }
   },
   mounted: function () {
@@ -45,7 +45,7 @@ export default {
       page: 1,
       limit: this.JAVA_MAX_INTEGER,
       filter: [{
-        column: 'experimentType',
+        column: 'datasetType',
         comparator: 'equals',
         operator: 'and',
         values: ['genotype']

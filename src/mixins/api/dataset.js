@@ -4,8 +4,8 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: `dataset/${datasetId}/collaborator`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostDatasetExport: function (experimentType, queryData, onSuccess, onError) {
-      return this.authAjax({ url: `dataset/export/${experimentType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    apiPostDatasetExport: function (datasetType, queryData, onSuccess, onError) {
+      return this.authAjax({ url: `dataset/export/${datasetType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetAttributeExport: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'dataset/attribute/export', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })

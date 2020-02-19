@@ -13,8 +13,8 @@
 
         <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
         <p class="text-info">{{ $t('pageTrialsExportChartText') }}</p>
-        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedTraits.length > 2" experimentType="trials" />
-        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" experimentType="trials" v-else />
+        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedTraits.length > 2" datasetType="trials" />
+        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" datasetType="trials" v-else />
       </b-col>
     </b-row>
   </div>
@@ -49,7 +49,7 @@ export default {
       type: String,
       default: 'germinatebase'
     },
-    experimentType: {
+    datasetType: {
       type: String,
       default: null
     },

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="experimentType">
-      <h1>{{ experimentTypes[experimentType].text() }}</h1>
+    <div v-if="datasetType">
+      <h1>{{ datasetTypes[datasetType].text() }}</h1>
       <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3" ref="datasetTable"/>
       <b-button variant="primary" @click="checkLicenses" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonNext') }}</b-button>
     </div>
@@ -9,8 +9,8 @@
       <h1>Invalid experiment type</h1>
       <p>Are you looking for any of these?</p>
       <ul>
-        <li v-for="(experimentType, name) in getExperimentTypes()" :key="`experiment-type-${name}`">
-          <router-link :to="{ name: 'export', params: { experimentType: name } }">{{ experimentType.text() }}</router-link>
+        <li v-for="(datasetType, name) in getDatasetTypes()" :key="`experiment-type-${name}`">
+          <router-link :to="{ name: 'export', params: { datasetType: name } }">{{ datasetType.text() }}</router-link>
         </li>
       </ul>
     </div>
@@ -25,7 +25,7 @@ export default {
   data: function () {
     return {
       filterOn: null,
-      experimentType: null
+      datasetType: null
     }
   },
   components: {
@@ -95,7 +95,7 @@ export default {
       })
     },
     navigateToExportPage: function (selectedIds) {
-      switch (this.experimentType) {
+      switch (this.datasetType) {
         case 'trials':
           this.$router.push({ name: 'export-trials', params: { datasetIds: selectedIds.join(',') } })
           break
@@ -113,8 +113,8 @@ export default {
           break
       }
     },
-    getExperimentTypes: function () {
-      var result = Object.assign({}, this.experimentTypes)
+    getDatasetTypes: function () {
+      var result = Object.assign({}, this.datasetTypes)
       delete result.unknown
       return result
     },
@@ -127,10 +127,10 @@ export default {
     },
     adjustData: function (data) {
       var additional = [{
-        column: 'experimentType',
+        column: 'datasetType',
         comparator: 'equals',
         operator: 'and',
-        values: [this.experimentType]
+        values: [this.datasetType]
       }, {
         column: 'isExternal',
         comparator: 'equals',
@@ -151,10 +151,10 @@ export default {
       this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', null)
     }
 
-    var experimentType = this.$route.params.experimentType
+    var datasetType = this.$route.params.datasetType
 
-    if (this.experimentTypes[experimentType]) {
-      this.experimentType = experimentType
+    if (this.datasetTypes[datasetType]) {
+      this.datasetType = datasetType
     }
   }
 }

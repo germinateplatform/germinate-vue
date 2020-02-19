@@ -9,7 +9,7 @@
         <b-dropdown>
           <template slot="button-content"><i class="mdi mdi-18px mdi-download"/> {{ $t('buttonDownload') }}</template>
           <b-dropdown-item @click="onPrint"><i class="mdi mdi-18px mdi-printer" /> {{ $t('buttonPrint') }}</b-dropdown-item>
-          <b-dropdown-item @click="onDownload"><i class="mdi mdi-18px mdi-file-xml" /> {{ $t('buttonHtml') }}</b-dropdown-item>
+          <b-dropdown-item @click="onDownload"><i class="mdi mdi-18px mdi-file-code" /> {{ $t('buttonHtml') }}</b-dropdown-item>
         </b-dropdown>
         <b-button v-if="isAccepted" @click="hide"><i class="mdi mdi-18px mdi-cancel" /> {{ $t('buttonClose') }}</b-button>
         <template v-else>

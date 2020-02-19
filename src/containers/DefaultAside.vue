@@ -15,7 +15,7 @@
                           :key="job.id"
                           :class="`list-group-item-accent-${status[job.status].color} list-group-item-divider`">
         <a href="#" class="text-muted" @click.prevent="deleteJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
-        <div><strong>{{ getExperimentType(job.experimentTypeId) }}</strong></div>
+        <div><strong>{{ getDatasetType(job.datasettypeId) }}</strong></div>
         <div v-if="job.datasetIds" class="text-muted">{{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</div>
         <div class="text-muted">
           <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ job.updatedOn | toDateTime }}</small>
@@ -90,13 +90,13 @@ export default {
         }
       })
     },
-    getExperimentType: function (experimentTypeId) {
-      var match = Object.keys(this.experimentTypes).filter(k => {
-        return this.experimentTypes[k].id === experimentTypeId
+    getDatasetType: function (datasettypeId) {
+      var match = Object.keys(this.datasetTypes).filter(k => {
+        return this.datasetTypes[k].id === datasettypeId
       })
 
       if (match && match.length > 0) {
-        return this.experimentTypes[match[0]].text()
+        return this.datasetTypes[match[0]].text()
       } else {
         return 'UNKNOWN DATASET TYPE'
       }

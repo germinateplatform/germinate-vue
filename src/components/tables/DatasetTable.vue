@@ -15,13 +15,13 @@
 
       <template v-slot:cell(datasetId)="data">
         <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetId }}</a>
-        <router-link :to="{ name: experimentTypes[data.item.experimentType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.experimentType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetId }}</router-link>
+        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetId }}</router-link>
         <span v-else>{{ data.item.datasetId }}</span>
       </template>
       <template v-slot:cell(datasetName)="data">
         <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetName }}</a>
         <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" :href="data.item.hyperlink">{{ data.item.datasetName }} </a><i class="mdi mdi-open-in-new" /></span>
-        <router-link :to="{ name: experimentTypes[data.item.experimentType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.experimentType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetName }}</router-link>
+        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetName }}</router-link>
         <span v-else>{{ data.item.datasetName }}</span>
       </template>
       <template v-slot:cell(experimentName)="data">
@@ -42,8 +42,8 @@
         </a>
       </template>
 
-      <template v-slot:cell(experimentType)="data">
-        <span><i :class="`mdi mdi-18px ${experimentTypes[data.item.experimentType].icon} fix-alignment`" :style="`color: ${experimentTypes[data.item.experimentType].color()};`" /> {{ experimentTypes[data.item.experimentType].text() }}</span>
+      <template v-slot:cell(datasetType)="data">
+        <span><i :class="`mdi mdi-18px ${datasetTypes[data.item.datasetType].icon} fix-alignment`" :style="`color: ${datasetTypes[data.item.datasetType].color()};`" /> {{ datasetTypes[data.item.datasetType].text() }}</span>
       </template>
       <template v-slot:cell(dataPointCount)="data">
         <span v-if="data.item.dataPointCount !== undefined && data.item.dataPointCount.value">{{ getDataPointCount(data.item) }}</span>
@@ -109,7 +109,7 @@ var countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
 export default {
-  name: 'LocationTable',
+  name: 'DatasetTable',
   props: {
     ...defaultProps.FULL,
     selectable: {
@@ -182,11 +182,11 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'experimentName')}`,
           label: this.$t('tableColumnExperimentName')
         }, {
-          key: 'experimentType',
+          key: 'datasetType',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'experimentType')}`,
-          label: this.$t('tableColumnDatasetExperimentType')
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetType')}`,
+          label: this.$t('tableColumnDatasetDatasetType')
         }, {
           key: 'datatype',
           type: String,
@@ -326,7 +326,7 @@ export default {
     },
     getDataPointCount: function (dataset) {
       var result = ''
-      if (dataset.experimentType === 'genotype' || dataset.experimentType === 'allelefreq') {
+      if (dataset.datasetType === 'genotype' || dataset.datasetType === 'allelefreq') {
         result = '≤'
       }
       result += this.toThousandSeparators(dataset.dataPointCount.value)
@@ -336,7 +336,7 @@ export default {
       return dataset.isExternal ? 'mdi-link-box-variant-outline' : 'mdi-file-document-box-outline'
     },
     downloadDataset: function (dataset) {
-      switch (dataset.experimentType) {
+      switch (dataset.datasetType) {
         case 'trials':
           this.initDownload(dataset, 'trial')
           break

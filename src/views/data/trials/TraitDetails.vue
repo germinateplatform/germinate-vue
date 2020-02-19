@@ -24,10 +24,10 @@
       <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" />
 
       <div v-show="showAdditionalDatasets">
-        <DatasetsWithUnacceptedLicense experimentType="trials" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
+        <DatasetsWithUnacceptedLicense datasetType="trials" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
       </div>
     </div>
-    <h3 v-else>Trait not found</h3>
+    <h3 v-else>{{ $t('headingNoData') }}</h3>
   </div>
 </template>
 

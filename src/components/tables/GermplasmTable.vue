@@ -101,10 +101,10 @@
 
     <template v-slot:cell(dataTypes)="data">
       <span class="text-nowrap">
-        <i :class="`mdi mdi-18px ${experimentTypes.trials.icon}`" :style="`color: ${experimentTypes.trials.color()};`" v-b-tooltip.bottom.hover :title="experimentTypes.trials.text()" v-if="data.item.hasTrialsData" />
-        <i :class="`mdi mdi-18px ${experimentTypes.genotype.icon}`" :style="`color: ${experimentTypes.genotype.color()};`" v-b-tooltip.bottom.hover :title="experimentTypes.genotype.text()" v-if="data.item.hasGenotypicData" />
-        <i :class="`mdi mdi-18px ${experimentTypes.compound.icon}`" :style="`color: ${experimentTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="experimentTypes.compound.text()" v-if="data.item.hasCompoundData" />
-        <i :class="`mdi mdi-18px ${experimentTypes.allelefreq.icon}`" :style="`color: ${experimentTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="experimentTypes.allelefreq.text()" v-if="data.item.hasAllelefreqData" />
+        <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()" v-if="data.item.hasTrialsData" />
+        <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()" v-if="data.item.hasGenotypicData" />
+        <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()" v-if="data.item.hasCompoundData" />
+        <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()" v-if="data.item.hasAllelefreqData" />
       </span>
     </template>
   </BaseTable>
