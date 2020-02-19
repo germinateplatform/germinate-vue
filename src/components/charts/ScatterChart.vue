@@ -87,7 +87,7 @@ export default {
         target: () => `#${id} .modebar`,
         position: 'bottom'
       }, {
-        title: () => this.$t('popoverChartTourGenericSelectionTitle'),
+        title: () => this.$t('popoverChartTourMarkableSelectionTitle'),
         text: () => this.$t('popoverChartTourMarkableSelectionText'),
         target: () => `#${id}`,
         position: 'top'

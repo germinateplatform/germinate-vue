@@ -349,7 +349,7 @@ export default {
         case 'allelefreq':
           this.apiGetDatasetSourceFile(dataset.datasetId, result => {
             this.downloadBlob({
-              filename: `allelefreq-${dataset.datasetId}`,
+              filename: `allelefreq-${dataset.datasetId}-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
               extension: 'txt',
               blob: result
             })
@@ -394,7 +394,7 @@ export default {
       this.apiPostDatasetExport(type, query, result => {
         var request = {
           blob: result,
-          filename: type + '-dataset-' + dataset.datasetId,
+          filename: `${type}-dataset-${dataset.datasetId}-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
           extension: 'txt'
         }
 

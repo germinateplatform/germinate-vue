@@ -37,7 +37,7 @@
                                     :texts="textsChart"
                                     :getItems="getCompounds"
                                     v-show="currentTab === 'matrix'"/>
-      <CompoundDataTable :getData="getCompoundData" :getIds="getCompoundDataIds" v-show="currentTab === 'table'" />
+      <CompoundDataTable :getData="getCompoundData" :getIds="getCompoundDataIds" :downloadTable="downloadCompoundTableData" v-show="currentTab === 'table'" />
       <ExportDownloadSelection :datasetIds="datasetIds"
                                v-bind="config"
                                :texts="textsExport"
@@ -55,6 +55,8 @@ import CompoundExportChartSelection from '@/components/export/CompoundExportChar
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 import compoundApi from '@/mixins/api/compound.js'
+import datasetApi from '@/mixins/api/dataset.js'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -119,10 +121,13 @@ export default {
     CompoundExportChartSelection,
     ExportDownloadSelection
   },
-  mixins: [ compoundApi ],
+  mixins: [ datasetApi, compoundApi, miscApi ],
   methods: {
     getCompounds: function (callback) {
       callback(this.compounds)
+    },
+    downloadCompoundTableData: function (data, callback) {
+      return this.apiPostTableExport(data, 'dataset/data/compound', callback)
     },
     getCompoundData: function (data, callback) {
       data.datasetIds = this.datasetIds

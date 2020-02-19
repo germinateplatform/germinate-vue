@@ -12,7 +12,7 @@
         <b-form-select :options="colorByOptions" v-model="colorBySelection" @change="onColorByChanged" />
 
         <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
-        <p>{{ $t('pageTrialsExportChartText') }}</p>
+        <p class="text-info">{{ $t('pageTrialsExportChartText') }}</p>
         <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedTraits.length > 2" experimentType="trials" />
         <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedTraits[0].displayName" :y="selectedTraits[1].displayName" experimentType="trials" v-else />
       </b-col>

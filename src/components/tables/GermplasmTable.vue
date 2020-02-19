@@ -17,16 +17,16 @@
     </template>
 
     <template v-slot:cell(germplasmId)="data">
-      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmId }}</router-link>
+      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
     </template>
     <template v-slot:cell(germplasmName)="data">
-      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmName }}</router-link>
+      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
     </template>
     <template v-slot:cell(germplasmGid)="data">
-      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmGid }}</router-link>
+      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
     </template>
     <template v-slot:cell(germplasmNumber)="data">
-      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmNumber }}</router-link>
+      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmNumber }}</router-link>
     </template>
     <template v-slot:cell(entityTypeName)="data">
       <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityTypeName].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityTypeName].color()};`" /> {{ entityTypes[data.item.entityTypeName].text() }}</span>

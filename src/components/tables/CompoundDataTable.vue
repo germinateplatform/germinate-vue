@@ -6,13 +6,13 @@
             ref="compoundDataTable"
             v-on="$listeners">
     <template v-slot:cell(germplasmId)="data">
-      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmId }}</router-link>
+      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
     </template>
     <template v-slot:cell(germplasmName)="data">
-      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmName }}</router-link>
+      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
     </template>
     <template v-slot:cell(germplasmGid)="data">
-      <router-link :to="'/data/germplasm/' + data.item.germplasmId">{{ data.item.germplasmGid }}</router-link>
+      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
     </template>
     <template v-slot:cell(entityType)="data">
       <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityType].color()};`" /> {{ entityTypes[data.item.entityType].text() }}</span>
@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     refresh: function () {
-      this.$refs.climateDataTable.refresh()
+      this.$refs.compoundDataTable.refresh()
     }
   }
 }

@@ -44,7 +44,7 @@
                   <b-card-text v-html="project.newsContent" />
                 </b-card-body>
 
-                <b-button variant="primary" :href="project.newsHyperlink" v-if="project.newsHyperlink">Read more</b-button>
+                <b-button variant="primary" :href="project.newsHyperlink" v-if="project.newsHyperlink">{{ $t('pageNewsReadMore') }}</b-button>
               </b-card>
             </b-col>
           </b-row>
@@ -77,19 +77,19 @@ export default {
       selectedNews: null,
       newsTypes: {
         'Projects': {
-          text: () => 'Related project',
+          text: () => this.$t('widgetNewsTypeRelatedProject'),
           icon: 'mdi-newspaper-variant-outline'
         },
         'Data': {
-          text: () => 'Data changes',
+          text: () => this.$t('widgetNewsTypeDataChanges'),
           icon: 'mdi-database'
         },
         'Updates': {
-          text: () => 'General updates',
+          text: () => this.$t('widgetNewsTypeGeneralUpdates'),
           icon: 'mdi-refresh'
         },
         'General': {
-          text: () => 'General news',
+          text: () => this.$t('widgetNewsTypeGeneralNews'),
           icon: 'mdi-newspaper'
         }
       }

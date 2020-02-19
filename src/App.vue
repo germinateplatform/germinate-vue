@@ -6,6 +6,7 @@
     <b-modal ref="loadingModal" :title="$t('modalTitleLoading')" hide-footer no-close-on-backdrop no-close-on-esc hide-header-close>
       <div class="text-center">
         <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+        <p class="text-muted mt-3" v-if="$t('modalTextLoading')">{{ $t('modalTextLoading') }}</p>
       </div>
     </b-modal>
   </div>

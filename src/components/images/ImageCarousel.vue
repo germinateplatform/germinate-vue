@@ -64,5 +64,6 @@ export default {
 .image-carousel img {
   min-height: 300px;
   object-fit: cover;
+  border-radius: .25rem;
 }
 </style>
