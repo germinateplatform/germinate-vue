@@ -20,10 +20,10 @@
       <h1>{{ $t('pageAboutGerminateTitle') }}<small> - {{ $t('pageAboutGerminateSubtitle') }}</small></h1>
     </div>
     <b-row class="about-banners" v-if="banners">
-      <b-col cols=12 sm=6 xl=3 v-for="(banner, index) in banners" :key="'about-banners-' + banner.key">
+      <b-col cols=12 sm=6 xl=3 v-for="banner in banners" :key="'about-banners-' + banner.key">
         <a target="_blank" :href="banner.link">
-          <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
-            <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
+          <b-card no-body :class="banner.key">
+            <b-card-body>
               <b-row>
                 <b-col cols=8 class="align-self-center">
                   <h5 class="mb-0">{{ banner.text() }}</h5>
@@ -50,6 +50,10 @@
         <a v-for="(link, j) in member.links" target="_blank" :title="link.title" :href="link.href" :key="`about-team-${i}-${j}`" class="px-1"><i :class="`mdi mdi-24px ${link.icon}`" /></a>
       </b-col>
     </b-row>
+
+    <h2>{{ $t('pageAboutGerminateLocationTitle') }}<small> - {{ $t('pageAboutGerminateLocationSubtitle') }}</small></h2>
+    <LocationMap :locations="[getLocation()]" :showLinks="false" class="mb-5" />
+
     <h2>{{ $t('pageAboutGerminateFundersTitle') }}<small> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>
     <p>{{ $t('pageAboutGerminateFundersText') }}</p>
     <b-row class="funders">
@@ -78,6 +82,8 @@
 </template>
 
 <script>
+import LocationMap from '@/components/map/LocationMap'
+
 export default {
   data: function () {
     return {
@@ -147,9 +153,9 @@ export default {
         },
         {
           name: 'Paul Shaw',
-          job: 'Principal Investigator',
+          job: 'Project Lead',
           img: 'team/paul-shaw.jpg',
-          about: 'Paul looks after the Germinate project at a high level and ensures the funding stream doesn\'t dry up.',
+          about: 'Paul has worked on Germinate since 2005 and is responsible for the day to day management of the project and its promotion around the world.',
           links: [{
             icon: 'mdi-twitter',
             title: 'Twitter',
@@ -201,17 +207,44 @@ export default {
           name: 'The Scottish Government',
           href: 'https://www.gov.scot/',
           logo: 'funders/scottish-government.svg'
+        },
+        {
+          name: 'Scottish Environment, Food and Agriculture Research Institutes',
+          href: 'https://sefari.scot/',
+          logo: 'funders/sefari.svg'
+        },
+        {
+          name: 'James Hutton Limited',
+          href: 'https://huttonltd.com/',
+          logo: 'funders/huttonltd.svg'
+        },
+        {
+          name: 'UKRI Innovate UK',
+          href: 'https://www.gov.uk/government/organisations/innovate-uk',
+          logo: 'funders/innovate-uk.svg'
+        },
+        {
+          name: 'International Barley Hub',
+          href: 'http://www.barleyhub.org/',
+          logo: 'funders/ibh.svg'
         }
       ]
     }
   },
+  components: {
+    LocationMap
+  },
   methods: {
-    getColor: function (index) {
-      if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
-        return '#00acef'
-      } else {
-        const colors = this.serverSettings.colorsTemplate
-        return colors[index % colors.length]
+    getLocation: function () {
+      return {
+        locationId: -1,
+        locationLatitude: 56.4574,
+        locationLongitude: -3.0686,
+        locationName: this.$t('pageAboutGerminateLocationText'),
+        locationType: null,
+        countryName: null,
+        countryCode2: 'GB',
+        countryCode3: 'GBR'
       }
     }
   }
@@ -230,6 +263,45 @@ export default {
 }
 .about-banners .card-footer i.mdi {
   vertical-align: sub;
+}
+.about-banners .card-body {
+  color: white;
+}
+.about-banners .homepage {
+  border: 1px solid #ff9e15;
+}
+.about-banners .homepage .card-body {
+  background-color: #ff9e15;
+}
+.about-banners .homepage .card-body i {
+  color: #ffc87a;
+}
+.about-banners .github {
+  border: 1px solid #799900;
+}
+.about-banners .github .card-body {
+  background-color: #799900;
+}
+.about-banners .github .card-body i {
+  color: #c8ff00;
+}
+.about-banners .publication {
+  border: 1px solid #00748c;
+}
+.about-banners .publication .card-body {
+  background-color: #00748c;
+}
+.about-banners .publication .card-body i {
+  color: #00c8f0;
+}
+.about-banners .documentation {
+  border: 1px solid #853175;
+}
+.about-banners .documentation .card-body {
+  background-color: #853175;
+}
+.about-banners .documentation .card-body i {
+  color: #c25baf;
 }
 .about-logo {
   display: inline-block;

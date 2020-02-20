@@ -2,8 +2,8 @@
   <b-card no-body>
     <b-card-header header-tag="header" class="p-2 collapse-header" role="tab" @click="toggle">
       <div class="d-flex flex-row">
-        <i :class="`collapse-expand-status mdi mdi-18px fix-alignment mdi-chevron-right ${getStyle()}`" />&nbsp;
-        <strong><i :class="`mdi mdi-18px ${icon} fix-alignment text-primary`" v-if="icon"/> {{ title }}</strong>
+        <i :class="`collapse-expand-status mdi mdi-18px mdi-chevron-right ${getStyle()}`" />&nbsp;
+        <strong><i :class="`mdi mdi-18px ${icon} text-primary`" v-if="icon"/> {{ title }}</strong>
         <span class="ml-auto">
           <b-badge :variant="count > 0 ? 'primary' : null" v-if="!loading && count !== undefined">{{ count }}</b-badge>
           <b-progress :value="100" height="20px" class="collapse-loading" variant="primary" striped animated v-if="loading" />

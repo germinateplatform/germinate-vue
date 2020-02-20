@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="germplasm">
-      <b-navbar sticky class="scrollspy-sticky" type="dark" variant="primary" v-b-scrollspy="scrollSpyConfig" ref="scrollSpy" v-if="!isPopup">
+      <b-navbar sticky class="scrollspy-sticky d-none d-sm-block" type="dark" variant="primary" v-b-scrollspy="scrollSpyConfig" ref="scrollSpy" v-if="!isPopup">
         <b-navbar-nav>
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
@@ -13,6 +13,9 @@
           <b-nav-item href="#entity" @click="scrollIntoView">{{ $t('pagePassportEntityTitle') }}</b-nav-item>
           <b-nav-item href="#attributes" @click="scrollIntoView">{{ $t('pagePassportAttributeTitle') }}</b-nav-item>
           <b-nav-item href="#comments" @click="scrollIntoView" v-if="serverSettings && serverSettings.commentsEnabled === true">{{ $t('pagePassportCommentTitle') }}</b-nav-item>
+          <b-nav-item class="ml-auto">
+            <i :class="'mdi mdi-18px fix-alignment text-white ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover.bottom :title="$t('tooltipGermplasmMarkedItem')"/>
+          </b-nav-item>
         </b-navbar-nav>
       </b-navbar>
       <div id="nav-scroller">
@@ -391,7 +394,7 @@ export default {
   position: sticky;
   top: 65px;
   align-self: flex-start;
-  z-index: 500;
+  z-index: 1040;
 }
 .scrollspy-sticky > .navbar-nav {
   flex-wrap: wrap;

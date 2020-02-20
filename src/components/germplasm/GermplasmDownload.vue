@@ -121,7 +121,7 @@ export default {
       this.apiExportPassport(request, result => {
         this.downloadBlob({
           blob: result,
-          filename: 'germplasm',
+          filename: `germplasm-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
           extension: 'zip'
         })
         EventBus.$emit('show-loading', false)
@@ -136,7 +136,7 @@ export default {
       this.apiPostPedigreeExport(request, result => {
         this.downloadBlob({
           blob: result,
-          filename: 'pedigree',
+          filename: `pedigree-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
           extension: 'helium'
         })
         EventBus.$emit('show-loading', false)

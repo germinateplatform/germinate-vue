@@ -163,7 +163,9 @@ export default {
       this.$store.dispatch('ON_COOKIES_ACCEPTED', decision)
     },
     search: function () {
-      if (this.searchTerm && this.searchTerm.length > 0) {
+      if (this.searchTerm === '💩') {
+        // TODO: Easteregg goes here...
+      } else if (this.searchTerm && this.searchTerm.length > 0) {
         this.$router.push({ name: 'search-query', params: { searchTerm: this.searchTerm } })
       } else {
         this.$router.push({ name: 'search' })
@@ -306,6 +308,12 @@ export default {
               identifiers: ['datasets'],
               url: '/data/datasets',
               icon: 'mdi mdi-18px mdi-database'
+            },
+            {
+              name: this.$t('menuExperiments'),
+              identifiers: ['experiments'],
+              url: '/data/experiments',
+              icon: 'mdi mdi-18px mdi-folder-table'
             },
             {
               name: this.$t('menuDataStatistics'),
