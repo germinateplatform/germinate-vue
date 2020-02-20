@@ -31,7 +31,7 @@
           {{ $t('widgetRegisterGatekeeperAccount') }} <i class="mdi mdi-help-circle" v-b-tooltip.hover :title="$t('tooltipRegisterGatekeeper')" />
         </b-form-checkbox>
 
-        <b-form @submit.prevent.stop="register" class="mt-3">
+        <b-form @submit.prevent.stop="register" class="mt-3" :validated="errorMessage !== null">
           <template v-if="hasGatekeeper">
             <div class="mb-3">{{ $t('widgetRegisterExistingAccountText') }}</div>
             <b-form-group
@@ -64,11 +64,13 @@
               :label="$t('formLabelInstitution')"
               label-for="institution">
               <b-form-select id="institution" v-model="selectedInstitution" :options="institutions" trim required />
-              <a href="#" @click.prevent.stop slot="description" v-b-modal.institutionModal>Your institution isn't in the list? Add it here!</a>
+              <a href="#" @click.prevent.stop slot="description" v-b-modal.institutionModal>{{ $t('widgetRegisterInstitutionText') }}</a>
             </b-form-group>
           </template>
         </b-form>
       </div>
+
+      <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
     </b-modal>
     <b-modal id="institutionModal"
              ok-only
@@ -100,11 +102,13 @@
 <script>
 import PasswordInput from '@/components/util/PasswordInput'
 import miscApi from '@/mixins/api/misc.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
     return {
       currentStep: 0,
+      errorMessage: null,
       registrationSteps: [{
         text: () => this.$t('widgetRegisterStepTerms'),
         value: 0
@@ -158,8 +162,16 @@ export default {
 
         delete newRequest.user.userPasswordConfirm
 
+        EventBus.$emit('show-loading', true)
         this.apiPostGatekeeperNew(newRequest, result => {
           console.log(result)
+          EventBus.$emit('show-loading', false)
+          // TODO: Close dialog and show success or failure
+        }).catch(error => {
+          if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
+            this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
+            EventBus.$emit('show-loading', false)
+          }
         })
       } else {
         var existingRequest = {
@@ -168,8 +180,16 @@ export default {
           password: this.user.userPassword
         }
 
+        EventBus.$emit('show-loading', true)
         this.apiPostGatekeeperExisting(existingRequest, result => {
           console.log(result)
+          EventBus.$emit('show-loading', false)
+          // TODO: Close dialog and show success or failure
+        }).catch(error => {
+          if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
+            this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
+            EventBus.$emit('show-loading', false)
+          }
         })
       }
     },

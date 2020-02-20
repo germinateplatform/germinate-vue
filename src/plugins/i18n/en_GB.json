@@ -855,6 +855,7 @@
   "widgetRegisterExistingAccountText": "Enter your Gatekeeper username and password to register for this version of Germinate.",
   "widgetRegisterGatekeeperAccount": "Do you already have a Gatekeeper account?",
   "widgetRegisterNewAccountText": "Fill in all fields to complete your registration.",
+  "widgetRegisterInstitutionText": "Your institution isn't in the list? Add it here!",
   "widgetRegisterStepDetails": "About you",
   "widgetRegisterStepTerms": "Terms & Conditions",
   "widgetRegisterText": "You can request access to Germinate by completing a form.",

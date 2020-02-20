@@ -2,25 +2,6 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 import { EventBus } from '@/plugins/event-bus.js'
 
-const gatekeeperErrors = {
-  'BAD_REQUEST_MISSING_FIELDS': 'gatekeeperErrorBadRequestMissingField',
-  'CONFLICT_USER_ALREADY_HAS_ACCESS': 'gatekeeperErrorConflictUserAlreadyHasAccess',
-  'CONFLICT_USER_ALREADY_REQUESTED_ACCESS': 'gatekeeperErrorConflictUserAlreadyRequestedAccess',
-  'CONFLICT_USERNAME_EMAIL_ALREADY_IN_USE': 'gatekeeperErrorConflictUsernameEmailAlreadyInUse',
-  'FORBIDDEN_ACCESS_TO_OTHER_USER': 'gatekeeperErrorForbiddenAccessToOtherUser',
-  'FORBIDDEN_INSUFFICIENT_PERMISSIONS': 'gatekeeperErrorForbiddenInsufficientPermissions',
-  'FORBIDDEN_INVALID_CREDENTIALS': 'gatekeeperErrorForbiddenInvalidCredentials',
-  'NOT_FOUND_ACTIVATION_KEY': 'gatekeeperErrorNotFoundActivationKey',
-  'NOT_FOUND_ACTIVATION_REQUEST': 'gatekeeperErrorNotFoundActivationRequest',
-  'NOT_FOUND_ID': 'gatekeeperErrorNotFoundId',
-  'NOT_FOUND_ID_OR_PAYLOAD': 'gatekeeperErrorNotFoundIdOrPayload',
-  'NOT_FOUND_INSTITUTION': 'gatekeeperErrorNotFoundInstitution',
-  'NOT_FOUND_PAYLOAD': 'gatekeeperErrorNotFoundPayload',
-  'NOT_FOUND_TOKEN': 'gatekeeperErrorNotFoundToken',
-  'NOT_FOUND_USER': 'gatekeeperErrorNotFoundUser',
-  'UNAVAILABLE_EMAIL': 'gatekeeperErrorUnavailableEmail'
-}
-
 export default {
   computed: {
     ...mapGetters([
@@ -44,6 +25,24 @@ export default {
   data: function () {
     return {
       MAX_JAVA_INTEGER: 2147483647,
+      gatekeeperErrors: {
+        'BAD_REQUEST_MISSING_FIELDS': 'gatekeeperErrorBadRequestMissingField',
+        'CONFLICT_USER_ALREADY_HAS_ACCESS': 'gatekeeperErrorConflictUserAlreadyHasAccess',
+        'CONFLICT_USER_ALREADY_REQUESTED_ACCESS': 'gatekeeperErrorConflictUserAlreadyRequestedAccess',
+        'CONFLICT_USERNAME_EMAIL_ALREADY_IN_USE': 'gatekeeperErrorConflictUsernameEmailAlreadyInUse',
+        'FORBIDDEN_ACCESS_TO_OTHER_USER': 'gatekeeperErrorForbiddenAccessToOtherUser',
+        'FORBIDDEN_INSUFFICIENT_PERMISSIONS': 'gatekeeperErrorForbiddenInsufficientPermissions',
+        'FORBIDDEN_INVALID_CREDENTIALS': 'gatekeeperErrorForbiddenInvalidCredentials',
+        'NOT_FOUND_ACTIVATION_KEY': 'gatekeeperErrorNotFoundActivationKey',
+        'NOT_FOUND_ACTIVATION_REQUEST': 'gatekeeperErrorNotFoundActivationRequest',
+        'NOT_FOUND_ID': 'gatekeeperErrorNotFoundId',
+        'NOT_FOUND_ID_OR_PAYLOAD': 'gatekeeperErrorNotFoundIdOrPayload',
+        'NOT_FOUND_INSTITUTION': 'gatekeeperErrorNotFoundInstitution',
+        'NOT_FOUND_PAYLOAD': 'gatekeeperErrorNotFoundPayload',
+        'NOT_FOUND_TOKEN': 'gatekeeperErrorNotFoundToken',
+        'NOT_FOUND_USER': 'gatekeeperErrorNotFoundUser',
+        'UNAVAILABLE_EMAIL': 'gatekeeperErrorUnavailableEmail'
+      },
       operators: {
         and: {
           text: () => this.$t('operatorsAnd'),
@@ -433,8 +432,8 @@ export default {
       var title = this.$t('genericError')
       var message = error.statusText
 
-      if (error.data && error.data.reasonPhrase && gatekeeperErrors[error.data.reasonPhrase]) {
-        message = this.$t(gatekeeperErrors[error.data.reasonPhrase])
+      if (error.data && error.data.reasonPhrase && this.gatekeeperErrors[error.data.reasonPhrase]) {
+        message = this.$t(this.gatekeeperErrors[error.data.reasonPhrase])
       } else {
         switch (error.status) {
           case 400:
@@ -658,6 +657,8 @@ export default {
             console.error(err)
           }
         }
+
+        throw err
       })
 
       return promise
