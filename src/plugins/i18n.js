@@ -2,11 +2,13 @@ import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import axios from 'axios'
 
+import deDE from '@/plugins/i18n/de_DE.json'
 import enGB from '@/plugins/i18n/en_GB.json'
 
 Vue.use(VueI18n)
 
 var messages = {
+  de_DE: deDE,
   en_GB: enGB
 }
 

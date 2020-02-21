@@ -1,0 +1,17 @@
+{
+  "pageAboutGerminateCardDocumentationText": "Germinate's Dokumentation lesen",
+  "pageAboutGerminateCardGithubText": "Germinate's Quellcode auf GitHub ansehen",
+  "pageAboutGerminateCardHomepageText": "Germinate's Homepage besuchen",
+  "pageAboutGerminateCardPublicationText": "Germinate's Veröffentlichung zitieren oder ansehen",
+  "pageAboutGerminateFundersSubtitle": "Organisationen die Germinate unterstützen - Damals und Heute",
+  "pageAboutGerminateFundersText": "Wir sind sehr dankbar für die Finanzierung, die Germinate im Laufe der Jahre erhalten hat. Nachstehend finden Sie eine Liste unserer wichtigsten Geldgeber, mit denen wir bei der Entwicklung von Germinate eng zusammengearbeitet haben.",
+  "pageAboutGerminateFundersTitle": "Förderer",
+  "pageAboutGerminateLocationSubtitle": "Das schöne Schottland",
+  "pageAboutGerminateLocationText": "The James Hutton Institute<br/>Errol Road<br/>Dundee DD2 5DA",
+  "pageAboutGerminateLocationTitle": "Wo wir zu finden sind",
+  "pageAboutGerminateSubtitle": "Die generische Datenbank für pflanzengenetische Ressourcen",
+  "pageAboutGerminateTeamSubtitle": "Die Menschen hinter Germinate",
+  "pageAboutGerminateTeamTitle": "Team",
+  "pageAboutGerminateText": "<p>Germinate ist eine Open-Source-Pflanzendatenbankplattform, auf der komplexe Daten aus Sammlungen genetischer Ressourcen gespeichert, abgefragt und visualisiert werden können, wobei gemeinsame, wiederverwendbare Programmierkomponenten verwendet werden. Germinate verwendet aktuelle Web- und Datenbankstandards, um sowohl eine Standard-Datenspeicherarchitektur als auch eine hochleistungsfähige webbasierte Benutzeroberfläche bereitzustellen. Germinate bietet Speicherplatz für genotypische, phänotypische und Ausweisdaten-Daten, sowie Stammbaum- und Bilddaten. Germinate ermöglicht nicht nur die effiziente Speicherung und Visualisierung von Daten, sondern bietet auch Werkzeuge für den Export von Daten in einer wachsenden Zahl von Datenformaten, darunter Stammbaumdaten im Helium-Format, genotypische Daten, die nativ in das Flapjack-Format exportiert werden können, und Standard-Textformate.</p><p>Germinate wurde als erweiterbare Plattform entwickelt, um eine Standardlösung für die Speicherung von Daten zu genetischen Ressourcen anzubieten. Wir ermutigen die Gemeinschaft aktiv dazu, zu ihrer Entwicklung beizutragen und mit uns darüber zu sprechen, welche Funktionen und Werkzeuge ihrer Meinung nach einen Wert für die Plattform darstellen würden. Alle neuen Funktionen und Komponenten auf GitHub werden der Gemeinschaft sofort zur Verfügung gestellt, so dass jeder davon profitieren kann.</p><p>Für weitere Informationen besuchen Sie bitte unsere GitHub-Seite. Das gesamte Team dankt Ihnen für die Nutzung und den Beitrag zu dieser Ressource.</p>",
+  "pageAboutGerminateTitle": "Germinate"
+}

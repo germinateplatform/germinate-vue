@@ -141,6 +141,7 @@ export default {
   methods: {
     register: function () {
       if (!this.hasGatekeeper) {
+        this.errorMessage = null
         this.user.userUsername = this.user.userEmailAddress
 
         if (!this.selectedInstitution.id) {
@@ -164,9 +165,19 @@ export default {
 
         EventBus.$emit('show-loading', true)
         this.apiPostGatekeeperNew(newRequest, result => {
-          console.log(result)
           EventBus.$emit('show-loading', false)
-          // TODO: Close dialog and show success or failure
+
+          if (result === true) {
+            this.$bvToast.toast(this.$t('widgetRegisterToastSuccessfulNewText'), {
+              title: this.$t('widgetRegisterToastSuccessfulNewTitle'),
+              variant: 'success',
+              autoHideDelay: 10000,
+              appendToast: true
+            })
+            this.hide()
+          } else {
+            this.errorMessage = this.$t('widgetRegisterUnsuccessful')
+          }
         }).catch(error => {
           if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
             this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
@@ -182,9 +193,19 @@ export default {
 
         EventBus.$emit('show-loading', true)
         this.apiPostGatekeeperExisting(existingRequest, result => {
-          console.log(result)
           EventBus.$emit('show-loading', false)
-          // TODO: Close dialog and show success or failure
+
+          if (result === true) {
+            this.$bvToast.toast(this.$t('widgetRegisterToastSuccessfulExistingText'), {
+              title: this.$t('widgetRegisterToastSuccessfulExistingTitle'),
+              variant: 'success',
+              autoHideDelay: 10000,
+              appendToast: true
+            })
+            this.hide()
+          } else {
+            this.errorMessage = this.$t('widgetRegisterUnsuccessful')
+          }
         }).catch(error => {
           if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
             this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])

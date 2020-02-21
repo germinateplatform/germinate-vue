@@ -74,6 +74,8 @@
                        :groupToEdit="groupToEdit"
                        :groupTypeSelect="groupTypeSelect"
                        v-on:ok="onEditGroup" />
+    <GroupUploadModal ref="groupUploadModal"
+                      v-on:ok="uploadContent" />
   </div>
 </template>
 
@@ -83,10 +85,12 @@ import GroupTable from '@/components/tables/GroupTable'
 import LocationTable from '@/components/tables/LocationTable'
 import MarkerTable from '@/components/tables/MarkerTable'
 import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
+import GroupUploadModal from '@/components/modals/GroupUploadModal'
 import groupApi from '@/mixins/api/group.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
@@ -134,9 +138,11 @@ export default {
               ids: selectedIds,
               isAddition: false
             }
+            EventBus.$emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
+              EventBus.$emit('show-loading', false)
             })
           }
         },
@@ -146,7 +152,7 @@ export default {
           variant: null,
           disabled: () => false,
           icon: 'mdi mdi-18px mdi-upload',
-          callback: (selectedIds) => console.log('upload')
+          callback: (selectedIds) => this.$refs.groupUploadModal.show()
         },
         {
           id: 2,
@@ -160,9 +166,11 @@ export default {
               ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: true
             }
+            EventBus.$emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
+              EventBus.$emit('show-loading', false)
             })
           }
         },
@@ -178,9 +186,11 @@ export default {
               ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: false
             }
+            EventBus.$emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
+              EventBus.$emit('show-loading', false)
             })
           }
         }
@@ -217,11 +227,53 @@ export default {
     GermplasmTable,
     GroupTable,
     GroupEditAddModal,
+    GroupUploadModal,
     LocationTable,
     MarkerTable
   },
   mixins: [ groupApi, germplasmApi, genotypeApi, locationApi ],
   methods: {
+    uploadContent: function (content) {
+      if (content && content.length > 0) {
+        var type = this.groupTypes[this.group.groupType]
+
+        const query = {
+          page: 1,
+          limit: this.MAX_JAVA_INTEGER,
+          filter: [{
+            column: type.nameColumn,
+            comparator: 'inSet',
+            operator: 'and',
+            values: content
+          }]
+        }
+
+        EventBus.$emit('show-loading', true)
+        const callback = result => {
+          const data = {
+            ids: result.data,
+            isAddition: true
+          }
+          this.apiPatchGroupMembers(this.group.groupId, type.apiName, data, r => {
+            this.$refs.groupmembersTable.refresh()
+            this.$refs.groupsTable.refresh()
+            EventBus.$emit('show-loading', false)
+          })
+        }
+
+        switch (type.apiName) {
+          case 'germplasm':
+            this.apiPostGermplasmTableIds(query, callback)
+            break
+          case 'marker':
+            this.apiPostMarmerTableIds(query, callback)
+            break
+          case 'location':
+            this.apiPostLocationTableIds(query, callback)
+            break
+        }
+      }
+    },
     setGroupType: function (groupType) {
       if (this.selectedGroupType && groupType && this.selectedGroupType.id === groupType.id) {
         this.selectedGroupType = null

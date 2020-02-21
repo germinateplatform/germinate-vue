@@ -166,6 +166,8 @@ export default {
           icon: 'mdi-sprout',
           apiName: 'germplasm',
           itemType: 'germplasm',
+          idColumn: 'germplasmId',
+          nameColumn: 'germplasmName',
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeGerminatebase')
         },
@@ -173,6 +175,8 @@ export default {
           icon: 'mdi-dna',
           apiName: 'marker',
           itemType: 'markers',
+          idColumn: 'markerId',
+          nameColumn: 'markerName',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeMarker')
         },
@@ -180,6 +184,8 @@ export default {
           icon: 'mdi-map-marker',
           apiName: 'location',
           itemType: 'locations',
+          idColumn: 'locationId',
+          nameColumn: 'locationName',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('groupTypeLocation')
         }

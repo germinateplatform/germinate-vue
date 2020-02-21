@@ -113,7 +113,7 @@
                       :variant="action.variant"
                       :disabled="action.disabled()"
                       @click="action.callback(selectedItems)"
-                      v-b-tooltip.hover
+                      v-b-tooltip.hover.bottom
                       :title="action.text">
               <i :class="action.icon" v-if="action.icon" />
               <span v-else>{{ action.text }}</span>
