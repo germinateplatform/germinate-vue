@@ -828,6 +828,7 @@
   "widgetDatasetDownloadMetadataText": "You can download all metadata about the selected datasets by clicking the button below.",
   "widgetDatasetDownloadMetadataTitle": "Download metadata",
   "widgetDropFileDefaultPlaceholder": "Drop file here...",
+  "widgetDropFileGroupUploadPlaceholder": "Type in item names or drop a .txt file containing item names into this box. Item names should be one per row/line.",
   "widgetDropFileErrorFileTooLarge": "The selected file is too large. Please reduce the size or split it into multiple files and repeat the process.",
   "widgetDropFileErrorWrongFileType": "Wrong file type selected. Only .txt files are supported.",
   "widgetGdprNotificationButtonAccept": "Allow cookies",

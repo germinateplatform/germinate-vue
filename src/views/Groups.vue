@@ -126,7 +126,7 @@ export default {
           id: 0,
           text: this.$t('buttonDeleteSelected'),
           variant: null,
-          disabled: () => false,
+          disabled: (selectedItems) => !selectedItems || selectedItems.length < 1,
           icon: 'mdi mdi-18px mdi-delete',
           callback: (selectedIds) => {
             if (!selectedIds || selectedIds.length < 1) {
@@ -266,7 +266,7 @@ export default {
             this.apiPostGermplasmTableIds(query, callback)
             break
           case 'marker':
-            this.apiPostMarmerTableIds(query, callback)
+            this.apiPostMarkerTableIds(query, callback)
             break
           case 'location':
             this.apiPostLocationTableIds(query, callback)

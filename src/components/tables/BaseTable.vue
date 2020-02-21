@@ -111,7 +111,7 @@
             <b-button v-for="action in tableActions"
                       :key="`base-table-action-${action.id}`"
                       :variant="action.variant"
-                      :disabled="action.disabled()"
+                      :disabled="action.disabled(selectedItems)"
                       @click="action.callback(selectedItems)"
                       v-b-tooltip.hover.bottom
                       :title="action.text">
@@ -300,6 +300,7 @@ export default {
     },
     refresh: function () {
       this.pagination.totalCount = -1
+      this.selectedItems = []
       this.$refs.table.refresh()
     },
     setSelectedItems: function (toSelect) {

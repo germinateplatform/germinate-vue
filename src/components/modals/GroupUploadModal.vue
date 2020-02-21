@@ -4,8 +4,9 @@
     :title="$t('modalTitleGroupUpload')"
     :ok-title="$t('buttonUpload')"
     :cancel-title="$t('buttonCancel')"
+    @shown="$refs.itemList.focus()"
     @ok="okPressed">
-    <DropFilePreview ref="itemList" />
+    <DropFilePreview ref="itemList" placeholder="widgetDropFileGroupUploadPlaceholder" />
   </b-modal>
 </template>
 

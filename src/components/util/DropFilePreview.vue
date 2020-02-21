@@ -47,6 +47,9 @@ export default {
     },
     getContent: function () {
       return this.fileContent ? this.fileContent.split('\n') : null
+    },
+    focus: function () {
+      this.$refs.dropZone.focus()
     }
   }
 }
