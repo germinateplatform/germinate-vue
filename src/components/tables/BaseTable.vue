@@ -17,12 +17,13 @@
                    :texts="options.headings"
                    :tableName="options.tableName"
                    :filterOn="filterOn"
+                   divClass="order-1 order-sm-0"
                    ref="tableFilter"
                    v-if="filterEnabled"
                    v-on:filter-changed="onFilterChanged"
                    v-on:help-clicked="$refs.tableTour.start()"/>
 
-      <div class="flex-grow-1">
+      <div class="flex-grow-1 order-0 order-sm-1">
         <div class="d-flex flex-row justify-content-between">
           <div class="d-none d-sm-flex align-items-end mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
             <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
@@ -37,7 +38,7 @@
         <div v-else style="height: 6px;" />
       </div>
 
-      <b-button-group class="per-page-dropdown" v-if="!showAllItems">
+      <b-button-group class="per-page-dropdown order-2 order-sm-2" v-if="!showAllItems">
         <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')" id="table-page-size-dropdown" right>
           <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
           <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
@@ -66,7 +67,7 @@
       <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope"><slot :name="slot" v-bind="scope"/></template>
 
       <template v-slot:head(selected)="data">
-        <div v-if="(columns.map(c => c.key).indexOf('selected') !== -1) && (getIds !== null)">
+        <div v-if="(columns.map(c => c.key).indexOf('selected') !== -1) && (getIds !== null) && selectionMode == 'multi'">
           <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
         </div>
       </template>
@@ -99,7 +100,7 @@
 
     <div class="d-flex flex-wrap-reverse justify-content-between align-items-end">
       <div class="table-bottom-left">
-        <template v-if="columns.map(c => c.key).indexOf('selected') !== -1">
+        <template v-if="columns.map(c => c.key).indexOf('selected') !== -1 && selectionMode === 'multi'">
           <div>
             <i class="mdi mdi-18px mdi-arrow-up-bold ml-1"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
           </div>
@@ -225,6 +226,10 @@ export default {
     getIds: {
       type: Function,
       default: null
+    },
+    selectionMode: {
+      type: String,
+      default: 'multi'
     }
   },
   data: function () {
@@ -258,7 +263,13 @@ export default {
       this.$nextTick(() => this.$refs.table.refresh())
     },
     selectedItems: function (newValue, oldValue) {
-      this.$emit('selection-changed', newValue)
+      if (this.selectionMode !== 'multi' && newValue && newValue.length > 1) {
+        this.$nextTick(() => {
+          this.selectedItems = [newValue[newValue.length - 1]]
+        })
+      } else {
+        this.$emit('selection-changed', newValue)
+      }
     }
   },
   computed: {

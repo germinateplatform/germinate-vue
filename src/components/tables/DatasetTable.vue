@@ -119,6 +119,10 @@ export default {
     clickHandler: {
       type: Function,
       default: null
+    },
+    selectionMode: {
+      type: String,
+      default: 'multi'
     }
   },
   data: function () {

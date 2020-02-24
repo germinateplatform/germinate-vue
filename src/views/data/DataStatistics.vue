@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Data statistics<small> - A summary of all the data in Germinate</small></h1>
+    <h1>{{ $t('pageStatisticsTitle') }}<small> - {{ $t('pageStatisticsSubtitle') }}</small></h1>
     <hr />
     <b-row>
       <b-col cols=12 sm=6>

@@ -18,6 +18,10 @@ export default {
       delete queryData.orderBy
       delete queryData.ascending
       return this.authAjax({ url: 'dataset/data/compound/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostCompoundDatasetTable: function (compoundId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `compound/${compoundId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

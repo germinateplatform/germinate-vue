@@ -412,6 +412,11 @@ export default {
         return v.toString(16)
       })
     },
+    getHighContrastTextColor: function (backgroundColor) {
+      const rgb = this.hexToRgb(backgroundColor)
+      var o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000)
+      return (o > 125) ? 'black' : 'white'
+    },
     getPaginationTexts () {
       return {
         count: this.$t('paginationCount'),

@@ -8,8 +8,8 @@
         <b-col xs=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('equal')}`" no-body>
             <b-card-body>
-              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-justify mdi-rotate-90 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningEqualTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningEqualTitle')" /></h5>
-              <b-form-group label="Number of bins" for="nrOfBins">
+              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-justify mdi-rotate-90 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningEqualTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningEqualText')" /></h5>
+              <b-form-group :label="$t('formLabelAllelefreqNrOfBins')" for="nrOfBins">
                 <b-input min="2" max="20" id="nrOfBins" type="number" v-model.number="equalBins"/>
               </b-form-group>
             </b-card-body>
@@ -21,13 +21,13 @@
           <b-card :class="`bg-light card-radio h-100 ${getStyle('split')}`" no-body>
             <b-card-body>
               <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-indent-increase mdi-rotate-270 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningSplitTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningSplitText')" /></h5>
-              <b-form-group label="Bins to the left" for="nrOfLeftBins">
+              <b-form-group :label="$t('formLabelAllelefreqNrOfBinsLeft')" for="nrOfLeftBins">
                 <b-input min="1" max="10" id="nrOfLeftBins" type="number" v-model.number="splitLeftBins"/>
               </b-form-group>
-              <b-form-group label="Split point" for="splitPoint">
+              <b-form-group :label="$t('formLabelAllelefreqSplitPoint')" for="splitPoint">
                 <b-input id="splitPoint" type="number" v-model.number="splitPoint"/>
               </b-form-group>
-              <b-form-group label="Bins to the right" for="nrOfRightBins">
+              <b-form-group :label="$t('formLabelAllelefreqNrOfBinsRight')" for="nrOfRightBins">
                 <b-input min="1" max="10" id="nrOfRightBins" type="number" v-model.number="splitRightBins"/>
               </b-form-group>
             </b-card-body>
@@ -39,7 +39,7 @@
           <b-card :class="`bg-light card-radio h-100 ${getStyle('auto')}`" no-body>
             <b-card-body>
               <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-left mdi-rotate-270 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningAutoTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningAutoText')" /></h5>
-              <b-form-group label="Number of bins" for="nrOfBins">
+              <b-form-group :label="$t('formLabelAllelefreqNrOfBins')" for="nrOfBins">
                 <b-input min="2" max="20" id="nrOfBins" type="number" v-model.number="autoBins"/>
               </b-form-group>
             </b-card-body>

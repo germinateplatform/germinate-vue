@@ -14,9 +14,9 @@
         </b-badge>
       </div>
     </b-card-body>
-    <b-button :style="`color: white; background-color: ${imageTypes[image.imageRefTable].color()}; border: 1px solid ${imageTypes[image.imageRefTable].color()};`">
+    <div disabled class="btn" :style="`color: white; background-color: ${imageTypes[image.imageRefTable].color()}; border: 1px solid ${imageTypes[image.imageRefTable].color()};`">
       <i :class="`mdi mdi-18px ${imageTypes[image.imageRefTable].icon} fix-alignment`" /> {{ image.referenceName }}
-    </b-button>
+    </div>
   </b-card>
 </template>
 

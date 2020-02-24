@@ -13,6 +13,7 @@
             class="d-block mb-3"
             v-model="passportSelection"
             :options="selectionOptions"
+            button-variant="outline-primary"
             buttons />
 
           <b-form-select
@@ -40,6 +41,7 @@
             class="d-block mb-3"
             v-model="pedigreeSelection"
             :options="selectionOptions"
+            button-variant="outline-primary"
             buttons />
 
           <b-form-select

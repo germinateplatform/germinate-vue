@@ -89,6 +89,13 @@ export function pedigreeChart(dagreD3) {
         .append("g");
 			var inner = gEnter.append("g");
 
+			// Set up zoom support
+			var zoom = d3.behavior.zoom().on('zoom', function () {
+				inner.attr('transform', 'translate(' + d3.event.translate + ')' +
+					'scale(' + d3.event.scale + ')');
+			});
+			// svg.call(zoom);
+
 			// Create the renderer
 			var render = new dagreD3.render();
 
@@ -97,9 +104,29 @@ export function pedigreeChart(dagreD3) {
 
       inner.selectAll("g.node").on("click", onClick);
       
-      var xCenterOffset = (s.attr("width") - graph.graph().width) / 2;
-      gEnter.attr("transform", "translate(" + xCenterOffset + ", 20)");
-      s.attr("height", graph.graph().height + 40);
+			// Center the dag
+			var zoomScale = 1;
+			// Get Dagre Graph dimensions
+			var graphWidth = graph.graph().width + 80;
+			var graphHeight = graph.graph().height + 80;
+			// Get SVG dimensions
+
+			// Calculate applicable scale for zoom
+			zoomScale = Math.max( Math.min(width / graphWidth, height / graphHeight));
+
+			var translate = [(width/2) - ((graphWidth*zoomScale)/2), 0];
+			zoom.translate(translate);
+			zoom.scale(zoomScale);
+			zoom.event(inner);
+
+			// Handle zooming only when the SVG has focus, otherwise don't zoom.
+			svg.on("focus", function (e) {
+				svg.call(zoom);
+			});
+
+			svg.on("blur", function (e) {
+				svg.on('.zoom', null);
+			});
 		});
 	}
 

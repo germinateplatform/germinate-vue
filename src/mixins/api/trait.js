@@ -18,6 +18,10 @@ export default {
         datasetIds: datasetIds
       }
       return this.authAjax({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostTraitDatasetTable: function (traitId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `trait/${traitId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

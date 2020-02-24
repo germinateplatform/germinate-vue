@@ -6,8 +6,8 @@
     <b-badge v-for="(tag, name) in tags"
              :key="`export-format-tag-${name}`"
              class="dispay-inline mr-2"
-             :variant="name === selectedTag ? 'primary' : 'light'"
              :to="{ name: 'about-export-formats-specific', params: { format: name } }"
+             :style="`background: ${getBackgroundColor(name)}; color: ${getTextColor(name)}`"
              event=""
              @click.prevent="selectTag(name)">
       <i class="mdi mdi-tag " /> {{ tag.text() }}
@@ -28,11 +28,12 @@
               {{ format.text() }}
             </b-card-text>
             <div>
-              <b-badge v-for="tag in format.tags" :key="`export-format-tag-individual-${tag}`" class="dispay-inline mr-2" variant="light"><i class="mdi mdi-tag " /> {{ tags[tag].text() }}</b-badge>
+              <b-badge v-for="(tag, index) in format.tags" :key="`export-format-tag-individual-${index}`" class="dispay-inline mr-2" variant="light" :style="`background: ${getBackgroundColor(tag)}; color: ${getTextColor(tag)}`">
+                <i class="mdi mdi-tag " /> {{ tags[tag].text() }}
+              </b-badge>
             </div>
-
-            <b-button :href="format.link" target="_blank" variant="primary" class="mt-auto"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
           </b-card-body>
+          <b-button :href="format.link" target="_blank" variant="primary" class="mt-auto card-button"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
         </b-card>
       </b-col>
     </b-row>
@@ -63,7 +64,21 @@ export default {
       }
     }
   },
+  props: {
+    tag: {
+      type: String,
+      default: null
+    }
+  },
   methods: {
+    getBackgroundColor: function (tag) {
+      const index = Object.keys(this.tags).indexOf(tag)
+      return this.serverSettings.colorsTemplate[index % this.serverSettings.colorsTemplate.length]
+    },
+    getTextColor: function (tag) {
+      const color = this.getBackgroundColor(tag)
+      return this.getHighContrastTextColor(color)
+    },
     getExportFormats: function () {
       if (this.selectedTag && this.selectedTag !== 'all') {
         return Object.keys(this.exportFormats)
@@ -73,16 +88,25 @@ export default {
         return this.exportFormats
       }
     },
-    selectTag: function (tag) {
-      if (tag) {
-        // Change the URL according to the user selection
-        window.history.replaceState({}, null, this.$router.resolve({ name: 'about-export-formats-specific', params: { format: tag } }).href)
-        this.selectedTag = tag
+    selectTag: function (newTag) {
+      if (newTag) {
+        // Change the URL according to the user selection only if this component hasn't been called with a specific tag
+        if (this.tag === null) {
+          window.history.replaceState({}, null, this.$router.resolve({ name: 'about-export-formats-specific', params: { format: newTag } }).href)
+        }
+        this.selectedTag = newTag
       }
     }
   },
   mounted: function () {
-    this.selectTag(this.$route.params.format)
+    var toSelect = this.tag
+
+    // Prefer URL parameters
+    if (this.$route.params.format) {
+      toSelect = this.$route.params.format
+    }
+
+    this.selectTag(toSelect)
   }
 }
 </script>
@@ -93,5 +117,9 @@ export default {
   height: 300px;
   object-fit: contain;
   padding: 2em;
+}
+.export-format .card-button {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 </style>

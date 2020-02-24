@@ -42,7 +42,7 @@
                        :disabled="userCanEdit === false"
                        :unchecked-value="false"
                        @change="onUpdateGroupVisibility">
-        {{ group.groupVisibility === 1 ? $t('genericYes') : $t('genericNo') }}
+        {{ group.groupVisibility === true ? $t('genericYes') : $t('genericNo') }}
       </b-form-checkbox>
 
       <h3>{{ $t('pageGroupsMembersTitle') }}</h3>
@@ -347,6 +347,9 @@ export default {
       } else {
         this.apiPutGroup(group, result => {
           this.$refs.groupsTable.refresh()
+
+          // Select the newly created group
+          this.onGroupSelected(result)
         })
       }
     },

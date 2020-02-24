@@ -24,7 +24,7 @@
 
       <template v-slot:cell(tags)="data">
         <div v-if="data.item.tags">
-          <b-badge v-for="(tag, index) in data.item.tags" :key="`image-tag-${data.item.imageId}-${index}`" class="mr-1" href="#" @click.native.prevent="$emit('tag-clicked', tag)" :style="`background-color: ${getColor(tag)};`">
+          <b-badge v-for="(tag, index) in data.item.tags" :key="`image-tag-${data.item.imageId}-${index}`" class="mr-1" href="#" @click.native.prevent="$emit('tag-clicked', tag)" :style="`background-color: ${getColor(tag)}; color: ${getTextColor(tag)}`">
             {{ tag.tagName }}
           </b-badge>
         </div>
@@ -125,6 +125,11 @@ export default {
           image.className = 'rotate180'
         }
       })
+    },
+    getTextColor: function (tag) {
+      const color = this.getColor(tag)
+
+      return this.getHighContrastTextColor(color)
     },
     getColor: function (tag) {
       var index = this.tags.indexOf(tag.tagName)

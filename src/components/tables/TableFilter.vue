@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="divClass">
     <div>
       <b-button-group class="table-filter">
         <b-button @click="$emit('help-clicked')" class="mdi mdi-18px mdi-help-circle-outline" v-b-tooltip.hover :title="$t('tooltipTableHelp')" />
@@ -99,6 +99,10 @@ export default {
     filterOn: {
       type: Array,
       default: null
+    },
+    divClass: {
+      type: String,
+      default: ''
     }
   },
   data: function () {

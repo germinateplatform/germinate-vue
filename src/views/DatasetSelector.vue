@@ -2,8 +2,8 @@
   <div>
     <div v-if="datasetType">
       <h1>{{ datasetTypes[datasetType].text() }}</h1>
-      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" class="mb-3" ref="datasetTable"/>
-      <b-button variant="primary" @click="checkLicenses" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonNext') }}</b-button>
+      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" :selectionMode="getSelectionMode()" class="mb-3" ref="datasetTable" v-on:selection-changed="updateButtonState"/>
+      <b-button variant="primary" @click="checkLicenses" :disabled="buttonDisabled" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonNext') }}</b-button>
     </div>
     <div v-else>
       <h1>Invalid experiment type</h1>
@@ -25,7 +25,8 @@ export default {
   data: function () {
     return {
       filterOn: null,
-      datasetType: null
+      datasetType: null,
+      buttonDisabled: true
     }
   },
   components: {
@@ -33,6 +34,12 @@ export default {
   },
   mixins: [ datasetApi ],
   methods: {
+    updateButtonState: function (selectedIds) {
+      this.buttonDisabled = !selectedIds || selectedIds.length < 1
+    },
+    getSelectionMode: function () {
+      return this.datasetType === 'allelefreq' ? 'single' : 'multi'
+    },
     checkLicenses: function () {
       var selectedIds = this.$refs.datasetTable.getSelected()
 

@@ -41,7 +41,7 @@
           <b-form-checkbox v-model="generateFlapjackProject" switch>
             {{ generateFlapjackProject === true ? $t('genericYes') : $t('genericNo') }}
           </b-form-checkbox>
-          <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
+          <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
         </b-col>
       </b-row>
       <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ datasetType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
@@ -55,11 +55,16 @@
       <p>{{ $t('widgetDatasetDownloadMetadataText') }}</p>
       <b-button @click="downloadMetadata"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownload') }}</b-button>
     </template>
+
+    <b-modal id="exportFormatModal" size=xl hide-footer>
+      <ExportFormats tag="genotype" />
+    </b-modal>
   </div>
 </template>
 
 <script>
 import { EventBus } from '@/plugins/event-bus.js'
+import ExportFormats from '@/views/about/ExportFormats'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 import GenotypeDatasetTable from '@/components/tables/GenotypeDatasetTable'
 import datasetApi from '@/mixins/api/dataset.js'
@@ -96,6 +101,7 @@ export default {
     }
   },
   components: {
+    ExportFormats,
     ExportGroupSelection,
     GenotypeDatasetTable
   },

@@ -22,6 +22,7 @@
       <h2>{{ $t('pageCompoundDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageCompoundDetailsStatsText') }}</p>
       <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" xType="compounds" ref="compoundDetailsChart" />
+      <DatasetTable :getData="getDatasetData" />
 
       <div v-show="showAdditionalDatasets">
         <DatasetsWithUnacceptedLicense datasetType="compound" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
@@ -34,6 +35,7 @@
 <script>
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import CompoundDataTable from '@/components/tables/CompoundDataTable'
+import DatasetTable from '@/components/tables/DatasetTable'
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import ImageGallery from '@/components/images/ImageGallery'
 import miscApi from '@/mixins/api/misc.js'
@@ -52,11 +54,15 @@ export default {
   components: {
     BoxplotChart,
     CompoundDataTable,
+    DatasetTable,
     DatasetsWithUnacceptedLicense,
     ImageGallery
   },
   mixins: [ compoundApi, miscApi ],
   methods: {
+    getDatasetData: function (data, callback) {
+      return this.apiPostCompoundDatasetTable(this.compoundId, data, callback)
+    },
     onImageTagClicked: function (tag) {
       this.imageTag = tag
       this.$nextTick(() => this.$refs.imageGallery.refresh())

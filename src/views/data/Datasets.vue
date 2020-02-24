@@ -1,7 +1,11 @@
 <template>
   <div>
     <h1>{{ $t('pageDatasetsTitle') }}</h1>
+    <h2>{{ $t('pageDatasetsInternalTitle') }}</h2>
+    <p>{{ $t('pageDatasetsInternalText') }}</p>
     <DatasetTable :getData="getData" :filterOn="getFilter(0)"/>
+    <h2>{{ $t('pageDatasetsExternalTitle') }}</h2>
+    <p>{{ $t('pageDatasetsExternalText') }}</p>
     <DatasetTable :getData="getData" :filterOn="getFilter(1)"/>
   </div>
 </template>

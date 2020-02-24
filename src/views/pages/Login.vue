@@ -27,6 +27,11 @@
         <b-col lg=4>
           <div id="svg-logo" class="d-flex justify-content-center align-items-center h-100 py-3"/>
         </b-col>
+        <b-col lg=7>
+          <b-card no-body class="p-4 mt-3">
+            <b-img :src="this.baseUrl + 'image/src-svg/logo-horizontal.svg'" id="logo-horizontal" />
+          </b-card>
+        </b-col>
       </b-row>
     </div>
     <RegistrationModal ref="registrationModal"/>
@@ -159,5 +164,9 @@ export default {
 #svg-logo > svg {
   max-width: 300px;
   max-height: 300px;
+}
+#logo-horizontal {
+  width: 100%;
+  height: auto;
 }
 </style>

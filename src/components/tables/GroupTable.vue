@@ -124,7 +124,7 @@ export default {
         columns.push({
           key: 'actions',
           type: undefined,
-          sortable: true,
+          sortable: false,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'actions')}`,
           label: ''
         })

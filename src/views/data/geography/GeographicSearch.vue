@@ -9,6 +9,9 @@
           <template v-slot:title>
             <i class="mdi mdi-18px mdi-crosshairs-gps" /> {{ $t('pageGeographicSearchPointSearchTitle') }}
           </template>
+          <b-card-body>
+            <div>{{ $t('pageGeographicSearchPointSearchText') }}</div>
+          </b-card-body>
           <PointSearchMap ref="pointMap" v-on:map-loaded="updatePolygonMap" />
           <b-card-body v-if="point">
             <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
@@ -27,6 +30,9 @@
           <template v-slot:title>
             <i class="mdi mdi-18px mdi-vector-polygon" /> {{ $t('pageGeographicSearchPolygonSearchTitle') }}
           </template>
+          <b-card-body>
+            <div>{{ $t('pageGeographicSearchPolygonSearchText') }}</div>
+          </b-card-body>
           <LocationMap selectionMode="polygon" :locations="polygonLocations" ref="polygonMap" />
           <b-card-body v-if="polygons && polygons.length > 0">
             <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body class="my-2">

@@ -126,6 +126,8 @@ export default {
     downloadSource: function () {
       var request = this.sourceFile()
 
+      request.filename = request.filename + '-' + window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')
+
       if (!request.extension) {
         request.extension = 'txt'
       }
@@ -143,9 +145,9 @@ export default {
       this.$refs.chartModal.hide()
 
       if (this.imageType === 'svg') {
-        this.downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename)
+        this.downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename + '-' + window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss'))
       } else if (this.imageType === 'png') {
-        this.$plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename })
+        this.$plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss') })
       }
     }
   }

@@ -7,6 +7,7 @@
             hover
             outlined
             show-empty
+            head-variant="dark"
             :empty-text="$t('paginationNoResult')"
             ref="table">
       <template v-slot:head(selected)="data">
@@ -18,7 +19,7 @@
       </template>
     </b-table>
     <b-button-group>
-      <b-button v-b-tooltip.hover
+      <b-button v-b-tooltip.hover.bottom
                 :title="isAdd ? $t('genericAdd') : $t('genericRemove')"
                 @click="$emit('action-clicked', selectedItems)">
         <i :class="`mdi mdi-18px ${isAdd ? 'mdi-plus-box' : 'mdi-delete'}`" />

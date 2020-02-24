@@ -22,6 +22,7 @@
       <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageTraitDetailsStatsText') }}</p>
       <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" />
+      <DatasetTable :getData="getDatasetData" />
 
       <div v-show="showAdditionalDatasets">
         <DatasetsWithUnacceptedLicense datasetType="trials" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
@@ -33,6 +34,7 @@
 
 <script>
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
+import DatasetTable from '@/components/tables/DatasetTable'
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import ImageGallery from '@/components/images/ImageGallery'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
@@ -51,11 +53,15 @@ export default {
   },
   components: {
     DatasetsWithUnacceptedLicense,
+    DatasetTable,
     BoxplotChart,
     ImageGallery,
     TrialsDataTable
   },
   methods: {
+    getDatasetData: function (data, callback) {
+      return this.apiPostTraitDatasetTable(this.traitId, data, callback)
+    },
     onImageTagClicked: function (tag) {
       this.imageTag = tag
       this.$nextTick(() => this.$refs.imageGallery.refresh())

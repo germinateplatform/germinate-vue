@@ -394,7 +394,7 @@ export default {
   position: sticky;
   top: 65px;
   align-self: flex-start;
-  z-index: 1040;
+  z-index: 1019;
 }
 .scrollspy-sticky > .navbar-nav {
   flex-wrap: wrap;

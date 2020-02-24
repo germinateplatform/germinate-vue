@@ -46,13 +46,13 @@ const router = new Router({
     {
       path: '/g8',
       redirect: '/g8/login',
-      name: 'login',
+      name: 'login-container',
       component: () => import('@/containers/DefaultPublic'),
       children: [
         {
           path: 'login',
           name: 'login',
-          component: () => import(/* webpackChunkName: "login" */ '@/views/pages/Login.vue')
+          component: () => import('@/views/pages/Login.vue')
         }
       ]
     },
@@ -439,7 +439,7 @@ const router = new Router({
         },
         {
           path: '*',
-          name: '404',
+          name: 'fallback',
           component: () => import('@/views/pages/Page404.vue')
         }
       ]
