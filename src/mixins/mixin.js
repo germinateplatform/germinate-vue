@@ -287,6 +287,18 @@ export default {
     }
   },
   methods: {
+    userIsAtLeast: function (userType, atLeast) {
+      switch (atLeast) {
+        case 'Administrator':
+          return userType === 'Administrator'
+        case 'Data Curator':
+          return userType === 'Administrator' || userType === 'Data Curator'
+        case 'Regular User':
+          return userType === 'Administrator' || userType === 'Data Curator' || userType === 'Regular User'
+      }
+
+      return false
+    },
     getWindowWidth: function () {
       return Math.max(
         document.body.scrollWidth,

@@ -14,7 +14,7 @@
 
     <b-row v-if="images && images.length > 0" class="image-grid mb-3">
       <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId">
-        <ImageNode :image="image" :ref="`image-${index}`" class="h-100" />
+        <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" v-on:tags-changed="onTagsChanged" />
       </b-col>
     </b-row>
     <h3 v-else>{{ $t('headingNoData') }}</h3>
@@ -90,6 +90,10 @@ export default {
         EventBus.$emit('show-loading', false)
       })
     },
+    onTagsChanged: function () {
+      this.getPage(this.currentPage)
+      this.updateTags()
+    },
     getPage: function (page) {
       this.getImages({
         limit: this.imagesPerPage,
@@ -103,7 +107,7 @@ export default {
           baguetteBox.run('.image-grid', {
             captions: 'true',
             fullScreen: false,
-            filter: /.*/i,
+            filter: /.*\/image.*/i,
             afterShow: () => {
               const overlays = document.querySelectorAll('#baguetteBox-overlay img')
 
@@ -136,16 +140,19 @@ export default {
     refresh: function () {
       this.currentPage = 1
       this.getPage(this.currentPage)
+    },
+    updateTags: function () {
+      this.apiGetImageTags(result => {
+        if (result) {
+          this.imageTags = result.data
+        }
+      })
     }
   },
   mounted: function () {
     this.getPage(this.currentPage)
 
-    this.apiGetImageTags(result => {
-      if (result) {
-        this.imageTags = result.data
-      }
-    })
+    this.updateTags()
   }
 }
 </script>

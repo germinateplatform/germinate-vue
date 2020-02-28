@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="germplasm">
-      <b-navbar sticky class="scrollspy-sticky d-none d-sm-block" type="dark" variant="primary" v-b-scrollspy="scrollSpyConfig" ref="scrollSpy" v-if="!isPopup">
+      <b-navbar sticky class="scrollspy-sticky d-none d-sm-block passport-navbar" type="dark" variant="dark" v-b-scrollspy="scrollSpyConfig" ref="scrollSpy" v-if="!isPopup">
         <b-navbar-nav>
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
@@ -192,7 +192,7 @@ export default {
       const el = href ? document.querySelector(href) : null
       if (el) {
         el.scrollIntoView(true)
-        window.scrollBy(0, -55 - this.$refs.scrollSpy.offsetHeight)
+        window.scrollBy(0, -65 - this.$refs.scrollSpy.offsetHeight)
       }
     },
     showPdciModal: function () {
@@ -381,6 +381,10 @@ export default {
 <style scoped>
 .passport-checkbox:hover {
   cursor: pointer;
+}
+.passport-navbar {
+  margin-left: -30px;
+  margin-right: -30px;
 }
 .no-bullet-list {
   padding-inline-start: 0;

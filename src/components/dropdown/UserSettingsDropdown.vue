@@ -79,6 +79,8 @@ export default {
         } else {
           this.$router.push('/home')
         }
+
+        this.$ga.event('login', 'logout')
       }, {
         codes: [],
         callback: function () {
@@ -88,7 +90,6 @@ export default {
       })
     },
     showLogin: function () {
-      console.log(this.$refs)
       this.$nextTick(() => this.$refs.signInModal.show())
     }
   },

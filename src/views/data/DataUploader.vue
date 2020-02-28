@@ -63,7 +63,7 @@ export default {
         MCPD_INVALID_SAMPSTAT: () => this.$t('importStatusMcpdInvalidSampstat'),
         MCPD_INVALID_COLLSRC: () => this.$t('importStatusMcpdInvalidCollsrc'),
         MCPD_INVALID_STORAGE: () => this.$t('importStatusMcpdInvalidStorage'),
-        MCPD_INVALID_NUMBER: () => this.$t('importStatusMcpdInvalidNumber'),
+        GENERIC_INVALID_NUMBER: () => this.$t('importStatusMcpdInvalidNumber'),
         MCPD_INVALID_ENTITY_TYPE: () => this.$t('importStatusMcpdInvalidEntityType'),
         MCPD_INVALID_ENTITY_PARENT_ACCENUMB: () => this.$t('importStatusMcpdInvalidEntityParentAccenumb'),
         MCPD_MISSING_ACCENUMB: () => this.$t('importStatusMcpdMissingAccenumb')

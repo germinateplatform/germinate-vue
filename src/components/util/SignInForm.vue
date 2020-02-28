@@ -41,6 +41,7 @@ export default {
   methods: {
     login: function () {
       if (this.enabled) {
+        this.$ga.event('login', 'login')
         this.$emit('login', this.user)
       }
     }

@@ -42,6 +42,9 @@ export default {
     apiGetImageTags: function (onSuccess, onError) {
       return this.authAjax({ url: 'imagetag', success: onSuccess, error: onError })
     },
+    apiPutImageTags: function (imageId, data, onSuccess, onError) {
+      return this.authAjax({ url: `image/${imageId}/tag`, method: 'PUT', data: data, success: onSuccess, error: onError })
+    },
     apiPostNewsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
