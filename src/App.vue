@@ -36,7 +36,7 @@ export default {
   },
   created: async function () {
     await this.apiGetSettings(result => {
-      if (result && result.googleAnalyticsKey) {
+      if (result) {
         Vue.use(VueAnalytics, {
           id: result.googleAnalyticsKey,
           router: this.$router

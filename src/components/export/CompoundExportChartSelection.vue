@@ -9,7 +9,7 @@
       <b-col cols=12 v-if="plotData">
         <h3 class="mt-3">{{ $t('pageCompoundExportColorByTitle') }}</h3>
         <p>{{ $t('pageCompoundExportColorByText') }}</p>
-        <b-form-select :options="colorByOptions" v-model="colorBySelection" @change="onColorByChanged" />
+        <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
 
         <h3 class="mt-3">{{ $t('pageCompoundExportChartTitle') }}</h3>
         <p>{{ $t('pageCompoundExportChartText') }}</p>
@@ -68,19 +68,10 @@ export default {
   },
   data: function () {
     return {
-      colorByOptions: [{
-        text: this.$t('widgetChartColoringNoColoring'),
-        value: null
-      }, {
-        text: this.$t('widgetChartColoringByDataset'),
-        value: 'dataset_name'
-      }, {
-        text: this.$t('widgetChartColoringByYear'),
-        value: 'year'
-      }],
       colorBySelection: null,
       plotData: null,
-      selectedCompounds: null
+      selectedCompounds: null,
+      colorByGroupEnabled: false
     }
   },
   components: {
@@ -90,7 +81,30 @@ export default {
   },
   mixins: [ datasetApi ],
   methods: {
+    colorByOptions: function () {
+      var result = [{
+        text: this.$t('widgetChartColoringNoColoring'),
+        value: null
+      }, {
+        text: this.$t('widgetChartColoringByDataset'),
+        value: 'dataset_name'
+      }, {
+        text: this.$t('widgetChartColoringByYear'),
+        value: 'year'
+      }]
+
+      if (this.colorByGroupEnabled) {
+        result.push({
+          text: this.$t('widgetChartColoringByGroup'),
+          value: 'group_ids'
+        })
+      }
+
+      return result
+    },
     plot: function (query, selectedCompounds) {
+      this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
+
       this.plotData = null
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport('compound', query, result => {

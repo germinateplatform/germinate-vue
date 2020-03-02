@@ -842,6 +842,7 @@
   "widgetChartColoringByTreatment": "Treatment",
   "widgetChartColoringByTrialSite": "Trial site",
   "widgetChartColoringByYear": "Year",
+  "widgetChartColoringByGroup": "Group",
   "widgetChartColoringNoColoring": "No coloring",
   "widgetChartMarkSelectedItems": "Mark selected items",
   "widgetChartUnmarkSelectedItems": "Unmark selected items",

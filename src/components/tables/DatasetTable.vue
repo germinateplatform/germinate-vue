@@ -373,8 +373,9 @@ export default {
                   generateFlapjackProject: value
                 }
                 EventBus.$emit('show-loading', true)
+                this.$ga.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))
                 this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
-                  this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
+                  result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
                   EventBus.$emit('toggle-aside')
 

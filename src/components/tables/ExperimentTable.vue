@@ -23,15 +23,15 @@
           <span> {{ data.item.genotypeCount }}</span>
         </router-link>
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'compound')" v-if="data.item.compoundCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()">
-          <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()" />
+          <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" />
           <span> {{ data.item.compoundCount }}</span>
         </router-link>
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'allelefreq')" v-if="data.item.alleleFreqCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()">
-          <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()" />
+          <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" />
           <span> {{ data.item.alleleFreqCount }}</span>
         </router-link>
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'climate')" v-if="data.item.climateCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.climate.text()">
-          <i :class="`mdi mdi-18px ${datasetTypes.climate.icon}`" :style="`color: ${datasetTypes.climate.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.climate.text()" />
+          <i :class="`mdi mdi-18px ${datasetTypes.climate.icon}`" :style="`color: ${datasetTypes.climate.color()};`" />
           <span> {{ data.item.climateCount }}</span>
         </router-link>
       </template>

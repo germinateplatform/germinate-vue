@@ -9,7 +9,7 @@
       <b-col cols=12 v-if="plotData">
         <h3 class="mt-3">{{ $t('pageTrialsExportColorByTitle') }}</h3>
         <p>{{ $t('pageTrialsExportColorByText') }}</p>
-        <b-form-select :options="colorByOptions" v-model="colorBySelection" @change="onColorByChanged" />
+        <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
 
         <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
         <p class="text-info">{{ $t('pageTrialsExportChartText') }}</p>
@@ -68,7 +68,21 @@ export default {
   },
   data: function () {
     return {
-      colorByOptions: [{
+      colorBySelection: null,
+      plotData: null,
+      selectedTraits: null,
+      colorByGroupEnabled: false
+    }
+  },
+  components: {
+    ExportSelection,
+    MatrixChart,
+    ScatterChart
+  },
+  mixins: [ datasetApi ],
+  methods: {
+    colorByOptions: function () {
+      var result = [{
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
       }, {
@@ -83,20 +97,20 @@ export default {
       }, {
         text: this.$t('widgetChartColoringByTrialSite'),
         value: 'trial_site'
-      }],
-      colorBySelection: null,
-      plotData: null,
-      selectedTraits: null
-    }
-  },
-  components: {
-    ExportSelection,
-    MatrixChart,
-    ScatterChart
-  },
-  mixins: [ datasetApi ],
-  methods: {
+      }]
+
+      if (this.colorByGroupEnabled) {
+        result.push({
+          text: this.$t('widgetChartColoringByGroup'),
+          value: 'group_ids'
+        })
+      }
+
+      return result
+    },
     plot: function (query, selectedTraits) {
+      this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
+
       this.plotData = null
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport('trial', query, result => {
