@@ -8,7 +8,7 @@ import { EventBus } from '@/plugins/event-bus.js'
 Vue.use(Router)
 
 function requireAuth (to, from, next) {
-  var authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'FULL'
+  var authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'NONE'
   var token = store.getters.token
 
   EventBus.$emit('show-loading', false)

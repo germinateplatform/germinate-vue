@@ -22,7 +22,7 @@
       <h2>{{ $t('pageCompoundDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageCompoundDetailsStatsText') }}</p>
       <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" xType="compounds" ref="compoundDetailsChart" />
-      <DatasetTable :getData="getDatasetData" />
+      <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 
       <div v-show="showAdditionalDatasets">
         <DatasetsWithUnacceptedLicense datasetType="compound" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
@@ -129,6 +129,7 @@ export default {
     update: function () {
       this.$refs.compoundDetailsTable.refresh()
       this.$refs.compoundDetailsChart.redraw()
+      this.$refs.datasetTable.refresh()
     }
   },
   mounted: function () {

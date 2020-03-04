@@ -100,6 +100,7 @@ export default {
   /* Import Flag Icons Set */
   @import '~flag-icon-css/css/flag-icon.min.css';
   @import '~@mdi/font/css/materialdesignicons.min.css';
+  @import '~vue-context/dist/css/vue-context.css';
   /* Import Bootstrap Vue Styles */
   @import '~bootstrap-vue/dist/bootstrap-vue.css';
   // Import Main styles for this application

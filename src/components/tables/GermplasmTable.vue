@@ -140,22 +140,22 @@ export default {
         tableName: 'germplasm',
         additionalMarkingOptions: [{
           key: 'mark-parents',
-          text: () => 'Mark entity parents',
+          text: () => this.$t('tableContextMarkEntityParents'),
           icon: 'mdi-chevron-up-box',
           callback: (item) => this.markParents(item)
         }, {
           key: 'unmark-parents',
-          text: () => 'Unark entity parents',
+          text: () => this.$t('tableContextUnmarkEntityParents'),
           icon: 'mdi-chevron-up-box-outline',
           callback: (item) => this.unmarkParents(item)
         }, {
           key: 'mark-children',
-          text: () => 'Mark entity children',
+          text: () => this.$t('tableContextMarkEntityChildren'),
           icon: 'mdi-chevron-down-box',
           callback: (item) => this.markChildren(item)
         }, {
           key: 'unmark-children',
-          text: () => 'Unark entity children',
+          text: () => this.$t('tableContextUnmarkEntityChildren'),
           icon: 'mdi-chevron-down-box-outline',
           callback: (item) => this.unmarkChildren(item)
         }],
@@ -306,8 +306,8 @@ export default {
           label: this.$t('tableColumnGermplasmDataTypes')
         }, {
           key: 'imageCount',
-          type: Number,
-          sortable: true,
+          type: undefined,
+          sortable: false,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'imageCount')}`,
           label: this.$t('tableColumnGermplasmImageCount')
         }, {

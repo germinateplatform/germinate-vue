@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseChart :width="() => 1280"
-               :height="() => 1280"
+               :height="getHeight"
                :id="id"
                :sourceFile="getSourceFile"
                :filename="getFilename"
@@ -34,6 +34,7 @@ export default {
     return {
       id: id,
       chartSelection: [],
+      distinctChromosomes: null,
       sourceFile: null,
       additionalMenuItems: [{
         icon: 'mdi-checkbox-marked',
@@ -101,6 +102,13 @@ export default {
   },
   mixins: [ genotypeApi ],
   methods: {
+    getHeight: function () {
+      if (this.distinctChromosomes === null || this.distinctChromosomes < 1) {
+        return 1280
+      } else {
+        return this.distinctChromosomes * 100
+      }
+    },
     getSourceFile: function () {
       return {
         blob: this.sourceFile,
@@ -192,6 +200,11 @@ export default {
                   range: [Math.floor(start), Math.ceil(end)]
                 })
                 this.$emit('points-selected', chromosome, start, end)
+              })
+              .onDistinctChromosomes(d => {
+                if (d && d.length > 0) {
+                  this.distinctChromosomes = d.length
+                }
               })
               .onSelectionCleared(() => {
                 this.chartSelection = []

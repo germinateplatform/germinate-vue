@@ -2,7 +2,7 @@
   <div class="animated fadeIn">
     <b-row class="dashboard-stats" v-if="stats">
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.key">
-        <router-link :to="{ name: category.link }" :title="`${category.text()}: ${stats[category.key]}`">
+        <router-link :to="{ name: category.link }" :title="`${category.text()}: ${$options.filters.toThousandSeparators(stats[category.key])}`">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
@@ -38,6 +38,7 @@
 import ImageCarousel from '@/components/images/ImageCarousel'
 import NewsSection from '@/components/news/NewsSection'
 import statsApi from '@/mixins/api/stats.js'
+import { mapFilters } from '@/plugins/map-filters.js'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -107,6 +108,7 @@ export default {
   },
   mixins: [ statsApi ],
   methods: {
+    ...mapFilters(['toThousandSeparators']),
     startIntroduction: function () {
       EventBus.$emit('show-introduction')
     },

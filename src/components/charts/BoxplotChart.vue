@@ -134,7 +134,8 @@ export default {
 
       var layout = {
         xaxis: {
-          zeroline: false
+          zeroline: false,
+          side: 'top'
         },
         height: this.getHeight(),
         margin: { autoexpand: true },

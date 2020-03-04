@@ -111,6 +111,11 @@ export default {
     plot: function (query, selectedTraits) {
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
 
+      // If coloring by group is no longer available, but it's still selected, remove selection
+      if (!this.colorByGroupEnabled && this.colorBySelection === 'group_ids') {
+        this.colorBySelection = null
+      }
+
       this.plotData = null
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport('trial', query, result => {

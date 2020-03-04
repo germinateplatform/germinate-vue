@@ -35,7 +35,11 @@ export default {
   },
   methods: {
     getFlag: function (code3) {
-      return countries.alpha3ToAlpha2(code3).toLowerCase()
+      if (code3 && countries.alpha3ToAlpha2(code3)) {
+        return countries.alpha3ToAlpha2(code3).toLowerCase()
+      } else {
+        return code3
+      }
     },
     getCountry: function (code3) {
       return countries.getName(code3, 'en')

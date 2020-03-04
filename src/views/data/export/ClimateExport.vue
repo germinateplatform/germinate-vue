@@ -4,9 +4,7 @@
     <template v-if="datasets && datasets.length > 0">
       <hr />
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
-      <ul>
-        <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
-      </ul>
+      <DatasetOverview :datasets="datasets" />
       <b-row class="climate-tabs" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'climate-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
@@ -52,6 +50,7 @@
 import BoxplotSelection from '@/components/export/BoxplotSelection'
 import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import ClimateExportChartSelection from '@/components/export/ClimateExportChartSelection'
+import DatasetOverview from '@/components/export/DatasetOverview'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 import climateApi from '@/mixins/api/climate.js'
@@ -119,6 +118,7 @@ export default {
     BoxplotSelection,
     ClimateDataTable,
     ClimateExportChartSelection,
+    DatasetOverview,
     ExportDownloadSelection
   },
   mixins: [ climateApi, datasetApi, miscApi ],

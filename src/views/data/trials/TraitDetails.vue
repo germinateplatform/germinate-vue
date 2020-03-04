@@ -22,7 +22,7 @@
       <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageTraitDetailsStatsText') }}</p>
       <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" />
-      <DatasetTable :getData="getDatasetData" />
+      <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 
       <div v-show="showAdditionalDatasets">
         <DatasetsWithUnacceptedLicense datasetType="trials" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
@@ -128,6 +128,7 @@ export default {
     update: function () {
       this.$refs.traitDetailsTable.refresh()
       this.$refs.traitDetailsChart.redraw()
+      this.$refs.datasetTable.refresh()
     }
   },
   mixins: [ miscApi, traitApi ],

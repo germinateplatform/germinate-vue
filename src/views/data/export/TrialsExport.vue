@@ -4,9 +4,7 @@
     <template v-if="datasets && datasets.length > 0">
       <hr />
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
-      <ul>
-        <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
-      </ul>
+      <DatasetOverview :datasets="datasets" />
       <b-row class="trials-tabs" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
@@ -50,6 +48,7 @@
 
 <script>
 import BoxplotSelection from '@/components/export/BoxplotSelection'
+import DatasetOverview from '@/components/export/DatasetOverview'
 import TraitExportChartSelection from '@/components/export/TraitExportChartSelection'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
@@ -117,6 +116,7 @@ export default {
   },
   components: {
     BoxplotSelection,
+    DatasetOverview,
     ExportDownloadSelection,
     TraitExportChartSelection,
     TrialsDataTable
