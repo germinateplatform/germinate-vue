@@ -1,6 +1,6 @@
 <template>
   <div class="aside-scroll">
-    <b-tabs>
+    <b-tabs v-model="tabIndex">
       <b-tab>
         <template slot="title">
           <i class="mdi mdi-18px mdi-download" />
@@ -33,7 +33,7 @@
           </b-list-group-item>
         </b-list-group>
       </b-tab>
-      <template v-if="token && token.userType && userIsAtLeast(token.userType, 'Data Curator')">
+      <template v-if="token && token.userType && userIsAtLeast(token.userType, 'Data Curator') && serverSettings.dataImportMode !== 'NONE'">
         <b-tab>
           <template slot="title">
             <i class="mdi mdi-18px mdi-upload" />
@@ -54,7 +54,7 @@
             <div v-if="job.status === 'completed'">
               <div v-if="job.feedback">
                 <span class="text-danger" v-if="job.feedback.length > 0"><i class="mdi mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
-                <span class="text-success" v-else><i class="mdi mdi-check-circle" />&nbsp;<a href="#">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
+                <span class="text-success" v-else-if="serverSettings.dataImportMode === 'IMPORT'"><i class="mdi mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
               </div>
             </div>
             <div :class="`text-${status[job.status].color}`" v-else>
@@ -86,6 +86,7 @@ export default {
       asyncExportJobs: null,
       asyncImportJobs: null,
       isUpdating: false,
+      tabIndex: 0,
       selectedImportJob: null,
       status: {
         running: {
@@ -121,10 +122,26 @@ export default {
   },
   mixins: [ datasetApi, miscApi ],
   methods: {
+    showTab: function (tab) {
+      if (tab === 'upload') {
+        this.tabIndex = 1
+      } else if (tab === 'download') {
+        this.tabIndex = 0
+      }
+    },
     showFeedback: function (job) {
       this.selectedImportJob = job
 
       this.$nextTick(() => this.$refs.uploadStatusModal.show())
+    },
+    startActualImport: function (job) {
+      this.apiGetDataAsyncImportStart(job.uuid, result => {
+        if (result) {
+          result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+        }
+
+        this.updateAsyncJobs()
+      })
     },
     deleteExportJob: function (job) {
       this.$bvModal.msgBoxConfirm(this.$t('modalTextDeleteAsyncJob'), {
@@ -184,12 +201,7 @@ export default {
     },
     updateInternal: function () {
       this.$nextTick(() => {
-        const exportJobs = this.apiPostDatasetAsyncExport(this.asyncJobUuids, null, {
-          codes: [],
-          callback: () => {
-            // We do nothing here. It either works or it doesn't.
-          }
-        })
+        const exportJobs = this.apiPostDatasetAsyncExport(this.asyncJobUuids)
         const importJobs = this.apiPostDataAsyncImport(this.asyncJobUuids, null, {
           codes: [],
           callback: () => {

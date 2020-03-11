@@ -377,7 +377,7 @@ export default {
                 this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
                   result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
-                  EventBus.$emit('toggle-aside')
+                  EventBus.$emit('toggle-aside', 'download')
 
                   EventBus.$emit('show-loading', false)
                 })

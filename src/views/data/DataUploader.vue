@@ -79,12 +79,16 @@ export default {
           result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
         }
 
-        EventBus.$emit('toggle-aside')
+        EventBus.$emit('toggle-aside', 'upload')
         EventBus.$emit('show-loading', false)
       })
     }
   },
   created: function () {
+    if (this.serverSettings.dataImportMode === 'NONE') {
+      this.$router.push({ name: '403' })
+    }
+
     const type = this.$route.params.templateType
 
     if (type) {

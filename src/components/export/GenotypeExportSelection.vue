@@ -184,7 +184,7 @@ export default {
             result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
           }
 
-          EventBus.$emit('toggle-aside')
+          EventBus.$emit('toggle-aside', 'download')
           EventBus.$emit('show-loading', false)
           this.exportStarted = true
         })
@@ -195,7 +195,7 @@ export default {
           this.apiPostAlleleFrequencyDatasetExport(query, result => {
             this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
 
-            EventBus.$emit('toggle-aside')
+            EventBus.$emit('toggle-aside', 'download')
             EventBus.$emit('show-loading', false)
             this.exportStarted = true
           })

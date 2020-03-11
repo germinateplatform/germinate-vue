@@ -67,6 +67,9 @@ export default {
     },
     apiDeleteDataAsyncImport: function (uuid, onSuccess, onError) {
       return this.authAjax({ url: `import/template/${uuid}`, method: 'DELETE', success: onSuccess, error: onError })
+    },
+    apiGetDataAsyncImportStart: function (uuid, onSuccess, onError) {
+      return this.authAjax({ url: `import/template/${uuid}/import`, success: onSuccess, error: onError })
     }
   }
 }

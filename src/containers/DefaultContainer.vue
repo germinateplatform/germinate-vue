@@ -408,9 +408,10 @@ export default {
         this.$store.dispatch('ON_SIDEBAR_STATE_CHANGED', state)
       })
     },
-    toggleAside: function () {
+    toggleAside: function (upOrDown) {
       if (!document.body.classList.contains('aside-menu-show')) {
         this.$refs.asideToggler.toggle()
+        this.$refs.aside.showTab(upOrDown)
         this.$root.$emit('bv::show::popover', 'aside-popover-trigger')
 
         setTimeout(() => this.$root.$emit('bv::hide::popover', 'aside-popover-trigger'), 5000)
