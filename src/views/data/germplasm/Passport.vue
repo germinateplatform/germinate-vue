@@ -1,22 +1,25 @@
 <template>
-  <div v-if="germplasm" class="passport">
-    <template v-if="germplasm.entityparentid">
-      <b-tabs active-nav-item-class="text-primary" v-model="tabIndex">
-        <b-tab active @click="updateChildMap">
-          <template v-slot:title>
-            <i class="mdi mdi-18px mdi-arrow-down-bold-box-outline" /> {{ germplasm.accenumb }}
-          </template>
-          <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" ref="child"/>
-        </b-tab>
-        <b-tab @click="updateParentMap">
-          <template v-slot:title>
-            <i class="mdi mdi-18px mdi-arrow-up-bold-box-outline" /> {{ germplasm.entityparentaccenumb }}
-          </template>
-          <SpecificPassport :germplasmId="germplasm.entityparentid" :isPopup="isPopup" v-if="germplasm.entityparentid" ref="parent"/>
-        </b-tab>
-      </b-tabs>
-    </template>
-    <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" v-else/>
+  <div>
+    <h3 v-if="noGermplasmFound">{{ $t('headingNoData') }}</h3>
+    <div v-else-if="germplasm" class="passport">
+      <template v-if="germplasm.entityparentid">
+        <b-tabs active-nav-item-class="text-primary" v-model="tabIndex">
+          <b-tab active @click="updateChildMap">
+            <template v-slot:title>
+              <i class="mdi mdi-18px mdi-arrow-down-bold-box-outline" /> {{ germplasm.accenumb }}
+            </template>
+            <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" ref="child"/>
+          </b-tab>
+          <b-tab @click="updateParentMap">
+            <template v-slot:title>
+              <i class="mdi mdi-18px mdi-arrow-up-bold-box-outline" /> {{ germplasm.entityparentaccenumb }}
+            </template>
+            <SpecificPassport :germplasmId="germplasm.entityparentid" :isPopup="isPopup" v-if="germplasm.entityparentid" ref="parent"/>
+          </b-tab>
+        </b-tabs>
+      </template>
+      <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" v-else/>
+    </div>
   </div>
 </template>
 
@@ -28,6 +31,8 @@ export default {
   data: function () {
     return {
       currentGermplasmId: null,
+      noGermplasmFound: false,
+      urlParam: null,
       germplasm: null,
       tabIndex: 0
     }
@@ -56,6 +61,7 @@ export default {
     getGermplasm: function () {
       this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
         this.germplasm = result
+        this.noGermplasmFound = result === null
       })
     },
     getGermplasmIdByName: function (name) {
@@ -73,19 +79,21 @@ export default {
         if (result && result.data && result.data.length > 0) {
           this.currentGermplasmId = result.data[0].germplasmId
           this.getGermplasm()
+        } else {
+          this.noGermplasmFound = true
         }
       })
     }
   },
   created: function () {
-    var urlParam = this.$route.params.germplasmId
+    this.urlParam = this.$route.params.germplasmId
 
-    if (urlParam) {
-      const int = parseInt(urlParam)
+    if (this.urlParam) {
+      const int = parseInt(this.urlParam)
 
       // If it's not a number, try and check if there's an accession with this name
       if (isNaN(int)) {
-        this.getGermplasmIdByName(urlParam)
+        this.getGermplasmIdByName(this.urlParam)
       } else {
         this.currentGermplasmId = int
       }

@@ -241,6 +241,33 @@ export default {
           text: () => this.$t('locationTypeDataset')
         }
       },
+      templateImportTypes: {
+        mcpd: {
+          icon: 'mdi-passport',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypeMcpd')
+        },
+        genotype: {
+          icon: 'mdi-dna',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypeGenotype')
+        },
+        trial: {
+          icon: 'mdi-shovel',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypeTrial')
+        },
+        compound: {
+          icon: 'mdi-flask',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypeCompound')
+        },
+        pedigree: {
+          icon: 'mdi-tournament mdi-rotate-90',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypePedigree')
+        }
+      },
       datasetTypes: {
         allelefreq: {
           id: 4,

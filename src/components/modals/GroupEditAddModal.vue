@@ -12,7 +12,7 @@
         :label="$t('formLabelGroupType')"
         label-for="groupType"
         :description="groupToEdit.id === null ? $t('formDescriptionGroupType') : $t('formDescriptionGroupTypeDisabled')">
-        <b-form-select id="groupType" :options="groupTypeSelect" v-model="groupToEdit.groupTypeId" :disabled="groupToEdit.groupId !== null" required autofocus/>
+        <b-form-select id="groupType" :options="groupTypeSelect" v-model="groupToEdit.groupTypeId" :disabled="groupToEdit.groupTypeId !== null" required autofocus/>
       </b-form-group>
       <b-form-group
         :label="$t('formLabelGroupName')"

@@ -26,7 +26,7 @@
                 v-on:on-group-edit-clicked="onGroupEditClicked"
                 v-on:on-group-delete-clicked="onGroupDeleteClicked" />
 
-    <div v-if="group">
+    <div v-if="group" ref="groupDetails">
       <hr />
       <h2>{{ group.groupName }} <small>{{ groupTypes[group.groupType].text() }}</small></h2>
       <template v-if="group.groupDescription">
@@ -249,11 +249,13 @@ export default {
         }
 
         EventBus.$emit('show-loading', true)
+        // Define the callback
         const callback = result => {
           const data = {
             ids: result.data,
             isAddition: true
           }
+          // Add the ids to the group
           this.apiPatchGroupMembers(this.group.groupId, type.apiName, data, r => {
             this.$refs.groupmembersTable.refresh()
             this.$refs.groupsTable.refresh()
@@ -261,6 +263,7 @@ export default {
           })
         }
 
+        // Get the ids for the correct group type
         switch (type.apiName) {
           case 'germplasm':
             this.apiPostGermplasmTableIds(query, callback)
@@ -407,6 +410,7 @@ export default {
         var prevGroupType = this.group ? this.group.groupType : null
         this.apiPostGroupTable(queryParams, result => {
           if (result && result.data && result.data.length > 0) {
+            // Update the URL to reflect the newly selected group
             window.history.replaceState({}, null, this.$router.resolve({ name: 'group-details', params: { groupId: this.groupId } }).href)
             this.group = result.data[0]
 
@@ -415,6 +419,17 @@ export default {
             if (prevGroupType === this.group.groupType) {
               this.$nextTick(() => this.$refs.groupmembersTable.refresh())
             }
+
+            // Scroll down to the group details section
+            this.$nextTick(() => {
+              const rect = this.$refs.groupDetails.getBoundingClientRect()
+
+              window.scrollTo({
+                left: 0,
+                top: rect.top,
+                behavior: 'smooth'
+              })
+            })
           }
         })
       }

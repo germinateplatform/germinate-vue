@@ -26,11 +26,8 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'gatekeeper/institution', method: 'GET', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostDataUpload: function (formData, onSuccess, onError) {
-      return this.authForm({ url: 'import/template/mcpd', formData: formData, success: onSuccess, error: onError })
-    },
-    apiGetDataUploadStatus: function (uuid, onSuccess, onError) {
-      return this.authAjax({ url: `import/template/${uuid}/status`, success: onSuccess, error: onError })
+    apiPostDataUpload: function (formData, templateType, onSuccess, onError) {
+      return this.authForm({ url: `import/template/file?type=${templateType}`, formData: formData, success: onSuccess, error: onError })
     },
     apiPostImages: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -61,6 +58,15 @@ export default {
     },
     apiPostLinks: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'link/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostDataAsyncImport: function (uuids, onSuccess, onError) {
+      var queryData = {
+        uuids: uuids
+      }
+      return this.authAjax({ url: 'import/template', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiDeleteDataAsyncImport: function (uuid, onSuccess, onError) {
+      return this.authAjax({ url: `import/template/${uuid}`, method: 'DELETE', success: onSuccess, error: onError })
     }
   }
 }

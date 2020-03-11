@@ -1,37 +1,37 @@
 <template>
   <div>
-    <h1>Data uploader</h1>
-    <b-alert variant="danger" :show="error !== null">{{ error }}</b-alert>
-    <b-form-file
-      v-model="file"
-      :state="Boolean(file)"
-      placeholder="Choose a file or drop it here..."
-      accept=".xlsx"
-      drop-placeholder="Drop file here..." />
-    <div class="mt-3">Selected file: {{ file ? file.name : '' }}</div>
+    <h1>{{ $t('pageDataUploadTitle') }}</h1>
+    <span v-html="$t('pageDataUploadText')" />
+    <b-row class="template-tabs">
+      <b-col sm=1 />
+      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" xs=6 sm=2 >
+        <a href="#" @click.prevent="templateType = name">
+          <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(name)};`">
+            <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
+              <b-row>
+                <b-col cols=12 class="text-center">
+                  <i :class="`mdi mdi-48px ${type.icon}`" />
+                </b-col>
+              </b-row>
+            </b-card-body>
+            <b-card-footer :style="`color: ${getColor(index)}`">
+              <i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ type.text() }}</span>
+            </b-card-footer>
+          </b-card>
+        </a>
+      </b-col>
+      <b-col sm=1 />
+    </b-row>
 
-    <b-button variant="success" v-if="file" @click="onSubmit"><i class="mdi mdi-18px fix-alignment mdi-upload" /> Upload</b-button>
-    <p class="text-muted" v-if="status">{{ status }}</p>
+    <template v-if="templateType">
+      <b-form-file
+        v-model="file"
+        :state="Boolean(file)"
+        :placeholder="$t('pageDataUploadFilePlaceholder')"
+        accept=".xlsx" />
+      <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 
-    <template v-if="response && response.length">
-      <hr />
-      <h2>Status report</h2>
-      <p class="text-warning">This table only shows the first error of each type. Please note that there may be many more errors in your file.</p>
-      <b-table :fields="columns"
-               :items="response"
-               striped
-               responsive
-               hover
-               outlined
-               show-empty
-               sort-by="rowIndex">
-        <template v-slot:cell(icon)="data">
-          <i :class="`mdi mdi-18px ${getIconAndVariant(data.item.status)}`" />
-        </template>
-        <template v-slot:cell(status)="data">
-          <span>{{ statusOptions[data.item.status]() }}</span>
-        </template>
-      </b-table>
+      <b-button variant="success" :disabled="!file" class="mt-3" @click="onSubmit"><i class="mdi mdi-18px fix-alignment mdi-upload" /> {{ $t('pageDataUploadCheckFileButton') }}</b-button>
     </template>
   </div>
 </template>
@@ -44,92 +44,70 @@ export default {
   data: function () {
     return {
       file: null,
-      uuid: null,
-      response: [],
-      timer: '',
-      error: null,
-      status: null,
-      statusOptions: {
-        OK: () => this.$t('importStatusOk'),
-        GENERIC_DUPLICATE_COLUMN: () => this.$t('importStatusGenericDuplicateColumn'),
-        GENERIC_IO_ERROR: () => this.$t('importStatusGenericIOError'),
-        GENERIC_MISSING_EXCEL_SHEET: () => this.$t('importStatusGenericMissingExcelSheet'),
-        GENERIC_MISSING_COLUMN: () => this.$t('importStatusGenericMissingColumn'),
-        GENERIC_MISSING_DB_ITEM_UPDATE: () => this.$t('importStatusMissingDbItemUpdate'),
-        MCPD_DUPLICATE_ACCENUMB: () => this.$t('importStatusMcpdDuplicateAccenumb'),
-        MCPD_INVALID_COUNTRY_CODE: () => this.$t('importStatusMcpdInvalidCountryCode'),
-        MCPD_INVALID_DATE: () => this.$t('importStatusMcpdInvalidDate'),
-        MCPD_MISSING_FIELD: () => this.$t('importStatusMcpdMissingField'),
-        MCPD_INVALID_SAMPSTAT: () => this.$t('importStatusMcpdInvalidSampstat'),
-        MCPD_INVALID_COLLSRC: () => this.$t('importStatusMcpdInvalidCollsrc'),
-        MCPD_INVALID_STORAGE: () => this.$t('importStatusMcpdInvalidStorage'),
-        GENERIC_INVALID_NUMBER: () => this.$t('importStatusMcpdInvalidNumber'),
-        MCPD_INVALID_ENTITY_TYPE: () => this.$t('importStatusMcpdInvalidEntityType'),
-        MCPD_INVALID_ENTITY_PARENT_ACCENUMB: () => this.$t('importStatusMcpdInvalidEntityParentAccenumb'),
-        MCPD_MISSING_ACCENUMB: () => this.$t('importStatusMcpdMissingAccenumb')
-      }
+      uuids: null,
+      templateType: null
     }
   },
-  computed: {
-    columns: function () {
-      return [
-        {
-          key: 'icon',
-          label: ''
-        }, {
-          key: 'status'
-        }, {
-          key: 'rowIndex'
-        }, {
-          key: 'message'
-        }
-      ]
+  watch: {
+    templateType: function (newValue, oldValue) {
+      this.file = null
+      window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload-type', params: { templateType: newValue } }).href)
     }
   },
   mixins: [ miscApi ],
   methods: {
-    getIconAndVariant: function (status) {
-      if (status === 'OK') {
-        return 'text-success mdi-check-circle-outline'
-      } else {
-        return 'text-danger mdi-alert-circle-outline'
-      }
+    getFilter: function (type) {
+      return type === this.templateType ? '' : 'brightness(75%)'
     },
-    checkStatus: function () {
-      this.apiGetDataUploadStatus(this.uuid, result => {
-        if (result) {
-          EventBus.$emit('show-loading', false)
-          clearInterval(this.timer)
-
-          this.response = result
-          this.status = null
-        }
-      }, error => {
-        EventBus.$emit('show-loading', false)
-        clearInterval(this.timer)
-        this.status = null
-        this.error = error
-      })
+    getColor: function (index) {
+      if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
+        return '#00acef'
+      } else {
+        const colors = this.serverSettings.colorsTemplate
+        return colors[index % colors.length]
+      }
     },
     onSubmit: function () {
       let formData = new FormData()
       formData.append('fileToUpload', this.file)
 
-      this.status = 'Uploading file...'
       EventBus.$emit('show-loading', true)
-      this.apiPostDataUpload(formData, result => {
-        this.uuid = result
-        this.status = 'Checking file, don\'t leave this page...'
-        this.timer = setInterval(this.checkStatus, 1000)
+      this.apiPostDataUpload(formData, this.templateType, result => {
+        this.uuids = result
+
+        if (result) {
+          result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+        }
+
+        EventBus.$emit('toggle-aside')
+        EventBus.$emit('show-loading', false)
       })
     }
   },
-  beforeDestroy: function () {
-    clearTimeout(this.timer)
+  created: function () {
+    const type = this.$route.params.templateType
+
+    if (type) {
+      const matches = Object.keys(this.templateImportTypes)
+        .filter(t => t === type)
+
+      if (matches && matches.length > 0) {
+        this.templateType = type
+      }
+    }
   }
 }
 </script>
 
 <style>
-
+.template-tabs *:hover {
+  text-decoration: none;
+}
+.template-tabs .card-footer i.mdi {
+  vertical-align: sub;
+}
+.template-tabs .card,
+.template-tabs .card * {
+  transition: filter 0.15s;
+}
 </style>

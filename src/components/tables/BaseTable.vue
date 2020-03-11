@@ -439,13 +439,15 @@ export default {
         createdBy: this.newGroup.userId
       }
 
+      EventBus.$emit('show-loading', true)
       this.apiPutGroup(group, result => {
         const data = {
           ids: this.markedIds[this.itemType],
           isAddition: true
         }
         const groupId = result
-        this.apiPatchGroupMembers(groupId, this.itemType, data, result => {
+        var type = this.groupTypes[this.itemType].apiName
+        this.apiPatchGroupMembers(groupId, type, data, result => {
           this.$root.$bvToast.toast(this.$t('toastGroupCreateWithMembers', { count: result }), {
             title: this.$t('genericSuccess'),
             variant: 'success',
@@ -453,6 +455,7 @@ export default {
             appendToast: true
           })
 
+          EventBus.$emit('show-loading', false)
           this.$router.push({ name: 'group-details', params: { groupId: groupId } })
         })
       })

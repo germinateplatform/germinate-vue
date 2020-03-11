@@ -7,6 +7,19 @@ import { EventBus } from '@/plugins/event-bus.js'
 
 Vue.use(Router)
 
+function userIsAtLeast (userType, atLeast) {
+  switch (atLeast) {
+    case 'Administrator':
+      return userType === 'Administrator'
+    case 'Data Curator':
+      return userType === 'Administrator' || userType === 'Data Curator'
+    case 'Regular User':
+      return userType === 'Administrator' || userType === 'Data Curator' || userType === 'Regular User'
+  }
+
+  return false
+}
+
 function requireAuth (to, from, next) {
   var authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'NONE'
   var token = store.getters.token
@@ -22,17 +35,12 @@ function requireAuth (to, from, next) {
       }
       next({ path: '/g8/login' })
       return
-    } else if (to.meta && to.meta.requiresAdmin && token.userType !== 'Administrator') {
+    } else if (to.meta && to.meta.minUserType && (!token || !userIsAtLeast(token.userType, to.meta.minUserType))) {
       next({ path: '/403' })
       return
     }
-  } else if (authMode === 'SELECTIVE' && to.meta && to.meta.requiresAdmin && (!token || token.userType !== 'Administrator')) {
-    if (from.name) {
-      EventBus.$emit('on-show-login-form')
-    } else {
-      next({ path: '/home' })
-    }
-    return
+  } else if (authMode === 'SELECTIVE' && to.meta && to.meta.minUserType && (!token || !userIsAtLeast(token.userType, to.meta.minUserType))) {
+    next({ path: '/403' })
   }
 
   next()
@@ -83,16 +91,9 @@ const router = new Router({
           },
           children: [
             {
-              path: 'settings',
-              name: 'admin-settings',
-              meta: { requiresAdmin: true },
-              component: () => import('@/views/admin/Settings.vue'),
-              beforeEnter: requireAuth
-            },
-            {
               path: 'user-permissions',
               name: 'user-permissions',
-              meta: { requireAdmin: true },
+              meta: { minUserType: 'Administrator' },
               component: () => import('@/views/admin/UserPermissions.vue'),
               beforeEnter: requireAuth
             }
@@ -348,6 +349,14 @@ const router = new Router({
             {
               path: 'data-upload',
               name: 'import-upload',
+              meta: { minUserType: 'Data Curator' },
+              component: () => import('@/views/data/DataUploader.vue'),
+              beforeEnter: requireAuth
+            },
+            {
+              path: 'data-upload/:templateType',
+              name: 'import-upload-type',
+              meta: { minUserType: 'Data Curator' },
               component: () => import('@/views/data/DataUploader.vue'),
               beforeEnter: requireAuth
             }
@@ -431,6 +440,11 @@ const router = new Router({
               component: () => import('@/views/about/ExportFormats.vue')
             }
           ]
+        },
+        {
+          path: '403',
+          name: '403',
+          component: () => import('@/views/pages/Page403.vue')
         },
         {
           path: '404',

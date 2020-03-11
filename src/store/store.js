@@ -98,6 +98,10 @@ const storeState = {
         Vue.set(state.userStates, newToken.id, JSON.parse(JSON.stringify(userState)))
       }
 
+      if (newToken === null) {
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+      }
+
       state.token = newToken
     },
     ON_BASE_URL_CHANGED_MUTATION: function (state, newBaseUrl) {

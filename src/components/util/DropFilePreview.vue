@@ -26,9 +26,12 @@ export default {
 
       this.errorMessage = null
 
+      // Check the dropped file
       if (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        // Only the first one, we don't support multi-drop
         const file = e.dataTransfer.files[0]
 
+        // Only plain text files are supported
         if (file.type === 'text/plain' && file.name.endsWith('.txt')) {
           if (file.size < 1000000) {
             // Restrict to 1MB
