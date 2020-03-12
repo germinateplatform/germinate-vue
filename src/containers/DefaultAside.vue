@@ -52,9 +52,12 @@
               <template v-if="job.originalFilename"><i class="mdi fix-alignment mdi-file" /><small> {{ job.originalFilename }}</small></template>
             </div>
             <div v-if="job.status === 'completed'">
+              <!-- If there is feedback -->
               <div v-if="job.feedback">
+                <!-- Show a button to view the feedback -->
                 <span class="text-danger" v-if="job.feedback.length > 0"><i class="mdi mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
-                <span class="text-success" v-else-if="serverSettings.dataImportMode === 'IMPORT'"><i class="mdi mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
+                <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
+                <span class="text-success" v-else-if="serverSettings.dataImportMode === 'IMPORT' && job.imported === false"><i class="mdi mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
               </div>
             </div>
             <div :class="`text-${status[job.status].color}`" v-else>

@@ -4,8 +4,8 @@
     <span v-html="$t('pageDataUploadText')" />
     <b-row class="template-tabs">
       <b-col sm=1 />
-      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" xs=6 sm=2 >
-        <a href="#" @click.prevent="templateType = name">
+      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" xs=6 sm=2 v-b-tooltip="type.disabled ? $t('tooltipFeatureDisabled') : null">
+        <a :href="type.disabled ? null : '#'" @click.prevent="onTemplateTypeSelected(type, name)">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(name)};`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
@@ -56,6 +56,11 @@ export default {
   },
   mixins: [ miscApi ],
   methods: {
+    onTemplateTypeSelected: function (type, name) {
+      if (!type.disabled) {
+        this.templateType = name
+      }
+    },
     getFilter: function (type) {
       return type === this.templateType ? '' : 'brightness(75%)'
     },
@@ -81,6 +86,8 @@ export default {
 
         EventBus.$emit('toggle-aside', 'upload')
         EventBus.$emit('show-loading', false)
+
+        this.file = null
       })
     }
   },
@@ -95,8 +102,10 @@ export default {
       const matches = Object.keys(this.templateImportTypes)
         .filter(t => t === type)
 
-      if (matches && matches.length > 0) {
+      if (matches && matches.length > 0 && !this.templateImportTypes[matches[0]].disabled) {
         this.templateType = type
+      } else {
+        window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload' }).href)
       }
     }
   }

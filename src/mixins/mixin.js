@@ -244,26 +244,31 @@ export default {
       templateImportTypes: {
         mcpd: {
           icon: 'mdi-passport',
+          disabled: false,
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeMcpd')
         },
         genotype: {
           icon: 'mdi-dna',
+          disabled: true,
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeGenotype')
         },
         trial: {
           icon: 'mdi-shovel',
+          disabled: false,
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeTrial')
         },
         compound: {
           icon: 'mdi-flask',
+          disabled: true,
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeCompound')
         },
         pedigree: {
           icon: 'mdi-tournament mdi-rotate-90',
+          disabled: true,
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypePedigree')
         }
