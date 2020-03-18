@@ -689,9 +689,9 @@ export default {
             }
           } else if (error && error.callback) {
             if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
-              error.callback(err.response)
+              return error.callback(err.response)
             } else {
-              vm.handleError(err.response)
+              return vm.handleError(err.response)
             }
           } else if (process.env.NODE_ENV === 'development') {
             console.error(error)

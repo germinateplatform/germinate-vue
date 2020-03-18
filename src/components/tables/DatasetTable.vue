@@ -19,13 +19,16 @@
         <span v-else>{{ data.item.datasetId }}</span>
       </template>
       <template v-slot:cell(datasetName)="data">
-        <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetName }}</a>
-        <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" :href="data.item.hyperlink">{{ data.item.datasetName }} </a><i class="mdi mdi-open-in-new" /></span>
-        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetName }}</router-link>
-        <span v-else>{{ data.item.datasetName }}</span>
+        <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</a>
+        <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" :href="data.item.hyperlink" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }} </a><i class="mdi mdi-open-in-new" /></span>
+        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item))" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</router-link>
+        <span v-else :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</span>
+      </template>
+      <template v-slot:cell(datasetDescription)="data">
+        <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ data.item.datasetDescription | truncateAfterWords(20) }}</span>
       </template>
       <template v-slot:cell(experimentName)="data">
-        {{ data.item.experimentName }}
+        {{ data.item.experimentName | truncateAfterWords(10) }}
         <router-link :to="{ name: 'experiment-details', params: { experimentId: data.item.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
           <i class="mdi mdi-18px fix-alignment mdi-information-outline" />
         </router-link>

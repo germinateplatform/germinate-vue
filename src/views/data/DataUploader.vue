@@ -4,7 +4,7 @@
     <span v-html="$t('pageDataUploadText')" />
     <b-row class="template-tabs">
       <b-col sm=1 />
-      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" xs=6 sm=2 v-b-tooltip="type.disabled ? $t('tooltipFeatureDisabled') : null">
+      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" cols=6 sm=2 v-b-tooltip="type.disabled ? $t('tooltipFeatureDisabled') : null">
         <a :href="type.disabled ? null : '#'" @click.prevent="onTemplateTypeSelected(type, name)">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(name)};`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">

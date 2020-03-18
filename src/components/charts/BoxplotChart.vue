@@ -143,6 +143,9 @@ export default {
         boxmode: 'group',
         yaxis: {
           automargin: true
+        },
+        legend: {
+          orientation: 'h'
         }
       }
 

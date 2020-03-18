@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :width="() => 600" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename">
+    <BaseChart :width="() => 720" :height="() => 720" :sourceFile="getSourceFile" :filename="getFilename">
       <div slot="chart" id="taxonomy-chart" ref="taxonomyChart" class="chart-taxonomy text-center" />
     </BaseChart>
   </div>

@@ -42,30 +42,35 @@
             <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
           </b-button>
 
-          <b-list-group-item v-for="job in asyncImportJobs"
-                                :key="job.id"
-                                :class="`list-group-item-accent-${(job.feedback && job.feedback.length) > 0 ? 'danger' : status[job.status].color} list-group-item-divider`">
-            <a href="#" class="text-muted" @click.prevent="deleteImportJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
-            <div><strong>{{ getTemplateType(job.datatype) }}</strong></div>
-            <div class="text-muted">
-              <i class="mdi fix-alignment mdi-calendar-clock" /><small> {{ job.updatedOn | toDateTime }}</small><br/>
-              <template v-if="job.originalFilename"><i class="mdi fix-alignment mdi-file" /><small> {{ job.originalFilename }}</small></template>
-            </div>
-            <div v-if="job.status === 'completed'">
-              <!-- If there is feedback -->
-              <div v-if="job.feedback">
-                <!-- Show a button to view the feedback -->
-                <span class="text-danger" v-if="job.feedback.length > 0"><i class="mdi mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
-                <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
-                <span class="text-success" v-else-if="serverSettings.dataImportMode === 'IMPORT' && job.imported === false"><i class="mdi mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
+          <b-list-group class="list-group-accent">
+            <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
+              {{ $t('widgetAsyncImportJobPanelTitle') }}
+            </b-list-group-item>
+            <b-list-group-item v-for="job in asyncImportJobs"
+                                  :key="job.id"
+                                  :class="`list-group-item-accent-${(job.feedback && job.feedback.length) > 0 ? 'danger' : status[job.status].color} list-group-item-divider`">
+              <a href="#" class="text-muted" @click.prevent="deleteImportJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
+              <div><strong>{{ getTemplateType(job.datatype) }}</strong></div>
+              <div class="text-muted">
+                <i class="mdi fix-alignment mdi-calendar-clock" /><small> {{ job.updatedOn | toDateTime }}</small><br/>
+                <template v-if="job.originalFilename"><i class="mdi fix-alignment mdi-file" /><small> {{ job.originalFilename }}</small></template>
               </div>
-            </div>
-            <div :class="`text-${status[job.status].color}`" v-else>
-              <b-spinner variant="info" small v-if="job.status === 'running'" />
-              <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`" v-else />
-              <small> {{ status[job.status].text() }}</small>
-            </div>
-          </b-list-group-item>
+              <div v-if="job.status === 'completed'">
+                <!-- If there is feedback -->
+                <div v-if="job.feedback">
+                  <!-- Show a button to view the feedback -->
+                  <span class="text-danger" v-if="job.feedback.length > 0"><i class="mdi mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
+                  <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
+                  <span class="text-success" v-else-if="serverSettings.dataImportMode === 'IMPORT' && job.imported === false"><i class="mdi mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
+                </div>
+              </div>
+              <div :class="`text-${status[job.status].color}`" v-else>
+                <b-spinner variant="info" small v-if="job.status === 'running'" />
+                <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`" v-else />
+                <small> {{ status[job.status].text() }}</small>
+              </div>
+            </b-list-group-item>
+          </b-list-group>
         </b-tab>
       </template>
     </b-tabs>
@@ -210,7 +215,7 @@ export default {
           callback: () => {
             // We do nothing here. It either works or it doesn't.
           }
-        })
+        }).catch(() => null)
 
         axios.all([exportJobs, importJobs]).then(results => {
           this.asyncExportJobs = results[0].data

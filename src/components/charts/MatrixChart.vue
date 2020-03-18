@@ -1,7 +1,7 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280"
-               :height="() => 1280"
+    <BaseChart :width="() => 1920"
+               :height="() => 1920"
                :sourceFile="getSourceFile"
                :filename="getFilename"
                :supportsSvgDownload="false"

@@ -91,6 +91,16 @@ Vue.filter('toDateTime', value => {
   return moment.format(i18n.t('formatDateTime'))
 })
 
+Vue.filter('truncateAfterWords', (str, words) => {
+  const parts = str.split(' ')
+
+  if (parts.length > words) {
+    return parts.splice(0, words).join(' ') + '...'
+  } else {
+    return str
+  }
+})
+
 // Set base URL
 var baseUrl = 'http://localhost:8080/germinate/v4.0.0/api/'
 

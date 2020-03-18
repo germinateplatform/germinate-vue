@@ -64,7 +64,7 @@ export function plotlyScatterMatrix() {
 				data.push({
 					type: 'splom',
 					showupperhalf: false,
-					diagonal: {visible: false},
+					diagonal: {visible: true},
 					dimensions: dims.map(function (k) {
 						return {
 							label: k,

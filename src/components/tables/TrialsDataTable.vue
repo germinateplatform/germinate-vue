@@ -11,6 +11,9 @@
     <template v-slot:cell(germplasmName)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
     </template>
+    <template v-slot:cell(datasetName)="data">
+      <span :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</span>
+    </template>
     <template v-slot:cell(germplasmGid)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
     </template>

@@ -3,15 +3,14 @@
     <h1>{{ $t('pageGenotypesExportTitle') }}</h1>
     <template v-if="datasets && datasets.length > 0">
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
-      <ul>
-        <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
-      </ul>
+      <DatasetOverview :datasets="datasets" />
       <GenotypeExportSelection :datasetIds="datasetIds" datasetType="genotype" />
     </template>
   </div>
 </template>
 
 <script>
+import DatasetOverview from '@/components/export/DatasetOverview'
 import GenotypeExportSelection from '@/components/export/GenotypeExportSelection'
 import datasetApi from '@/mixins/api/dataset.js'
 
@@ -23,6 +22,7 @@ export default {
     }
   },
   components: {
+    DatasetOverview,
     GenotypeExportSelection
   },
   mixins: [ datasetApi ],

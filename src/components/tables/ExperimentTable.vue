@@ -10,7 +10,10 @@
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToDatasets(data.item)">{{ data.item.experimentId }}</router-link>
       </template>
       <template v-slot:cell(experimentName)="data">
-        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToDatasets(data.item)">{{ data.item.experimentName }}</router-link>
+        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToDatasets(data.item)" :title="data.item.experimentName">{{ data.item.experimentName | truncateAfterWords(10) }}</router-link>
+      </template>
+      <template v-slot:cell(experimentDescription)="data">
+        <span :title="data.item.experimentDescription">{{ data.item.experimentDescription | truncateAfterWords(20) }}</span>
       </template>
 
       <template v-slot:cell(dataTypes)="data">

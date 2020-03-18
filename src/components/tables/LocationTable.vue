@@ -6,9 +6,9 @@
               ref="locationTable"
               v-on="$listeners">
     <template v-slot:cell(locationName)="data">
-      <router-link to="/data/datasets" @click.native="navigateToDatasets(data.item)" event="" v-if="data.item.locationType === 'datasets'">{{ data.item.locationName }}</router-link>
-      <router-link to="/data/germplasm" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'">{{ data.item.locationName }}</router-link>
-      <span v-else>{{ data.item.locationName }}</span>
+      <router-link to="/data/datasets" @click.native="navigateToDatasets(data.item)" event="" v-if="data.item.locationType === 'datasets'" :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</router-link>
+      <router-link to="/data/germplasm" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'" :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</router-link>
+      <span v-else :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</span>
     </template>
 
     <template v-slot:cell(locationLatitude)="data">
