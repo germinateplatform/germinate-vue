@@ -23,6 +23,9 @@
     <template v-slot:cell(countryName)="data">
       <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
     </template>
+    <template v-slot:cell(traitValue)="data">
+      <span v-if="data.item.traitValue">{{ isNaN(data.item.traitValue) ? data.item.traitValue : parseFloat(data.item.traitValue).toFixed(2) }}</span>
+    </template>
   </BaseTable>
 </template>
 

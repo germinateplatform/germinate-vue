@@ -92,6 +92,10 @@ Vue.filter('toDateTime', value => {
 })
 
 Vue.filter('truncateAfterWords', (str, words) => {
+  if (!str) {
+    return str
+  }
+
   const parts = str.split(' ')
 
   if (parts.length > words) {

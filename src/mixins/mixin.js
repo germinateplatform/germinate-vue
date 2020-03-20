@@ -262,7 +262,7 @@ export default {
         },
         compound: {
           icon: 'mdi-flask',
-          disabled: true,
+          disabled: false,
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeCompound')
         },
@@ -348,18 +348,17 @@ export default {
         return ''
       }
     },
-    getNumberWithSuffix: function (value, decimals = 2) {
+    getNumberWithSuffix: function (value, decimals = 2, k = 1000, separator = '') {
       if (value === undefined || value === null || value === 0) {
         return '0'
       }
 
-      const k = 1000
       const dm = decimals < 0 ? 0 : decimals
       const sizes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
 
       const i = Math.floor(Math.log(value) / Math.log(k))
 
-      return parseFloat((value / Math.pow(k, i)).toFixed(dm)) + sizes[i]
+      return parseFloat((value / Math.pow(k, i)).toFixed(dm)) + separator + sizes[i]
     },
     createColorGradient: function (one, two, steps) {
       var oneRgb = this.hexToRgb(one)

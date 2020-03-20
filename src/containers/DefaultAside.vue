@@ -27,8 +27,14 @@
               <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`" v-else />
               <small> {{ status[job.status].text() }}</small>
             </div>
-            <div v-if="job.status === 'completed'">
-              <i class="mdi fix-alignment mdi-download" />&nbsp;<a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs">{{ $t('buttonDownload') }}</a>
+            <div v-if="job.status === 'completed'" class="d-flex flex-row align-items-start">
+              <i class="mdi fix-alignment mdi-download" />
+              <div class="d-inline-block ml-1">
+                <a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs">{{ $t('buttonDownload') }}</a>
+                <div v-if="job.resultSize">
+                  <small class="text-muted">{{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}B</small>
+                </div>
+              </div>
             </div>
           </b-list-group-item>
         </b-list-group>
@@ -209,7 +215,12 @@ export default {
     },
     updateInternal: function () {
       this.$nextTick(() => {
-        const exportJobs = this.apiPostDatasetAsyncExport(this.asyncJobUuids)
+        const exportJobs = this.apiPostDatasetAsyncExport(this.asyncJobUuids, null, {
+          codes: [],
+          callback: () => {
+            this.$store.dispatch('ON_TOKEN_CHANGED', null)
+          }
+        }).catch(() => null)
         const importJobs = this.apiPostDataAsyncImport(this.asyncJobUuids, null, {
           codes: [],
           callback: () => {
