@@ -57,8 +57,8 @@
     <h2>{{ $t('pageAboutGerminateFundersTitle') }}<small> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>
     <p>{{ $t('pageAboutGerminateFundersText') }}</p>
     <b-row class="funders">
-      <b-col cols=12 sm=6 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
-        <div class="px-5 pt-5 pb-3 img-container d-flex justify-content-center">
+      <b-col cols=6 sm=4 xl=2 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
+        <div class="p-3 img-container d-flex justify-content-center">
           <a :href="funder.href" :title="funder.name" target="_blank" class="align-self-center" v-if="funder.href">
             <b-img :src="`./img/${funder.logo}`" fluid />
           </a>
@@ -227,6 +227,26 @@ export default {
           name: 'International Barley Hub',
           href: 'http://www.barleyhub.org/',
           logo: 'funders/ibh.svg'
+        },
+        {
+          name: 'CRP Maize',
+          href: 'https://maize.org/',
+          logo: 'funders/crp-maize.svg'
+        },
+        {
+          name: 'CRP Wheat',
+          href: 'https://wheat.org/',
+          logo: 'funders/crp-wheat.svg'
+        },
+        {
+          name: 'International Wheat Yield Partnership',
+          href: 'https://iwyp.org/',
+          logo: 'funders/iwyp.svg'
+        },
+        {
+          name: 'Secretaría de Agricultura y Desarrollo Rural',
+          href: 'https://www.gob.mx/agricultura',
+          logo: 'funders/sader.svg'
         }
       ]
     }

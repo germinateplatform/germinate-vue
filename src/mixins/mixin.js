@@ -268,7 +268,7 @@ export default {
         },
         pedigree: {
           icon: 'mdi-tournament mdi-rotate-90',
-          disabled: true,
+          disabled: false,
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypePedigree')
         }
