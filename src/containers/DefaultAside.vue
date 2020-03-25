@@ -67,7 +67,10 @@
                   <!-- Show a button to view the feedback -->
                   <span class="text-danger" v-if="job.feedback.length > 0"><i class="mdi mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
                   <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
-                  <span class="text-success" v-else-if="serverSettings.dataImportMode === 'IMPORT' && job.imported === false"><i class="mdi mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
+                  <template v-else-if="job.imported === false">
+                    <span class="text-success" v-if="serverSettings.dataImportMode === 'IMPORT'"><i class="mdi mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
+                    <span class="text-success" v-else><i class="mdi mdi-check-circle" />&nbsp;{{ $t('widgetAsyncJobPanelImportDisabled') }}</span>
+                  </template>
                 </div>
               </div>
               <div :class="`text-${status[job.status].color}`" v-else>
