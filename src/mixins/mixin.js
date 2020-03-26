@@ -592,7 +592,7 @@ export default {
               vm.handleError(err.response)
             }
           } else if (process.env.NODE_ENV === 'development') {
-            console.error(error)
+            console.error(err)
           }
         } else if (err.request) {
           // The request was made but no response was received `err.request` is an instance of XMLHttpRequest in the browser
@@ -693,7 +693,7 @@ export default {
               return vm.handleError(err.response)
             }
           } else if (process.env.NODE_ENV === 'development') {
-            console.error(error)
+            console.error(err)
           }
         } else if (err.request) {
           // The request was made but no response was received `err.request` is an instance of XMLHttpRequest in the browser

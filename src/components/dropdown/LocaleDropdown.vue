@@ -27,10 +27,6 @@ export default {
         locale: 'en_GB',
         flag: 'gb',
         name: 'British English'
-      }, {
-        locale: 'de_DE',
-        flag: 'de',
-        name: 'Deutsch - Deutschland'
       }]
     }
   },

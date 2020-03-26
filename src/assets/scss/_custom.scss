@@ -23,6 +23,11 @@ body {
   right: unset;
 }
 
+// Hide images that 404
+img[src="null"] {
+  display: none;
+}
+
 // Image rotation based on EXIF information
 img.rotate90 {
   -webkit-transform: rotate(90deg);

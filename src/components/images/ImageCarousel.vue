@@ -10,7 +10,11 @@
       v-for="image in images[locale]"
       :key="`dashboard-carousel-${image.name}`"
       :caption-html="image.text"
-      :img-src="image.src" />
+      :img-src="image.src" >
+      <template v-slot:img>
+        <b-img class="rounded w-100" :src="image.src" />
+      </template>
+    </b-carousel-slide>
   </b-carousel>
 </template>
 
@@ -52,6 +56,11 @@ export default {
       this.images = result
 
       this.images.en_GB.forEach((image, index) => this.setImagePath(index))
+    }, {
+      codes: [404],
+      callback: () => {
+        // Do nothing here, it just means there is no carousel file
+      }
     })
   }
 }
@@ -64,6 +73,5 @@ export default {
 .image-carousel img {
   min-height: 300px;
   object-fit: cover;
-  border-radius: .25rem;
 }
 </style>

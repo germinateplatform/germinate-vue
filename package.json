@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git@github.com:sebastian-raubach/germinate-vue.git"
+    "url": "git@github.com:germinateplatform/germinate-vue.git"
   },
   "scripts": {
     "serve": "vue-cli-service serve",

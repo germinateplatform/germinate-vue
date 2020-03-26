@@ -1,12 +1,12 @@
 # Germinate - The generic plant genetic resources database
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sebastian-raubach/germinate-vue/master/public/img/germinate-square.svg?sanitize=true" width="200" alt="Logo">
+  <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/germinate-square.svg?sanitize=true" width="200" alt="Logo">
 </p>
 
-![GitHub](https://img.shields.io/github/license/sebastian-raubach/germinate-vue)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/sebastian-raubach/germinate-vue)
-![GitHub last commit](https://img.shields.io/github/last-commit/sebastian-raubach/germinate-vue)
+![GitHub](https://img.shields.io/github/license/germinateplatform/germinate-vue)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/germinateplatform/germinate-vue)
+![GitHub last commit](https://img.shields.io/github/last-commit/germinateplatform/germinate-vue)
 
 Germinate is an open source plant database infrastructure and application programming platform
 on which complex data from genetic resource collections can be stored, queried and visualized
@@ -26,6 +26,6 @@ which brings focus and facilitates community building into research communities.
 
 
 
-<img src="https://raw.githubusercontent.com/sebastian-raubach/germinate-vue/master/public/img/hutton-black.svg?sanitize=true" height="150" alt="The James Hutton Institute logo">
+<img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/hutton-black.svg?sanitize=true" height="150" alt="The James Hutton Institute logo">
 <br />
-<img src="https://raw.githubusercontent.com/sebastian-raubach/germinate-vue/master/public/img/ics-sdg-black.svg?sanitize=true" height="150" alt="Software Development Group logo">
+<img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/ics-sdg-black.svg?sanitize=true" height="150" alt="Software Development Group logo">

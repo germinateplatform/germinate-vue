@@ -76,6 +76,7 @@ export default {
               behavior: 'smooth'
             })
           } else {
+            this.popoverShow = true
             this.currentIndex++
           }
         } else {

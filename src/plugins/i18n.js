@@ -8,7 +8,6 @@ import enGB from '@/plugins/i18n/en_GB.json'
 Vue.use(VueI18n)
 
 var messages = {
-  de_DE: deDE,
   en_GB: enGB
 }
 
@@ -59,6 +58,10 @@ export function loadLanguageAsync (lang) {
       delete m.data.pageAboutGerminateFundersText
     }
 
+    if (lang === 'de_DE') {
+      // We do have some default text for de_DE, so load this here
+      messages[lang] = deDE
+    }
     if (!messages[lang]) {
       messages[lang] = {}
     }

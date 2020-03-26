@@ -29,7 +29,7 @@
         </b-col>
         <b-col lg=7>
           <b-card no-body class="p-4 mt-3">
-            <b-img :src="this.baseUrl + 'image/src-svg/logo-horizontal.svg'" id="logo-horizontal" />
+            <b-img :src="this.baseUrl + 'image/src-svg/logo-horizontal.svg'" id="logo-horizontal" onerror="this.onerror=null;this.src='null';" />
           </b-card>
         </b-col>
       </b-row>

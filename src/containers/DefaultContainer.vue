@@ -48,7 +48,7 @@
       <main class="main">
         <div class="container-fluid mb-4">
           <div class="mb-3 d-flex align-items-center my-4">
-            <b-img width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`"></b-img>
+            <b-img width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" onerror="this.onerror=null;this.src='null';"></b-img>
             <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
           </div>
           <hr />
@@ -449,6 +449,10 @@ export default {
     img.src = this.baseUrl + 'image/src-svg/logo.svg'
     img.classList.add('brand-logo')
     img.classList.add('p-3')
+    img.onerror = function () {
+      img.onerror = null
+      img.src = 'null'
+    }
     sb.appendChild(img)
   }
 }
