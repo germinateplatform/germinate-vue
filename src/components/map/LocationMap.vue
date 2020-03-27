@@ -17,7 +17,7 @@
       </template>
     </l-map>
     <ColorGradient :colors="gradientColors" v-if="mapType === 'heatmap'" ref="gradient" />
-    <div v-if="location" ref="popupContent">
+    <div v-if="location" ref="popupContent" class="p-3">
       <dl class="row">
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8">
@@ -344,5 +344,19 @@ export default {
   padding: 5px;
   pointer-events: none;
   z-index: 1000;
+}
+
+.leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 3px;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  width: 300px!important;
+}
+
+.location-map dl.row {
+  margin-bottom: 0;
 }
 </style>
