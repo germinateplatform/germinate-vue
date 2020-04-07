@@ -5,16 +5,19 @@
                v-bind="$props"
                ref="compoundTable"
                v-on="$listeners">
-      <!-- LINKS -->
+      <!-- Compound id link -->
       <template v-slot:cell(compoundId)="data">
         <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.compoundId } }">{{ data.item.compoundId }}</router-link>
       </template>
+      <!-- Compound name link -->
       <template v-slot:cell(compoundName)="data">
         <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.compoundId } }">{{ data.item.compoundName }}</router-link>
       </template>
+      <!-- Compound description link -->
       <template v-slot:cell(compoundDescription)="data">
         <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.compoundId } }">{{ data.item.compoundDescription }}</router-link>
       </template>
+      <!-- Compound synonyms -->
       <template v-slot:cell(synonyms)="data">
         <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
       </template>

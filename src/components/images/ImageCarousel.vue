@@ -12,6 +12,7 @@
       :caption-html="image.text"
       :img-src="image.src" >
       <template v-slot:img>
+        <!-- Add rounded corners to image -->
         <b-img class="rounded w-100" :src="image.src" />
       </template>
     </b-carousel-slide>
@@ -45,6 +46,7 @@ export default {
   },
   mixins: [ miscApi ],
   mounted: function () {
+    // Get carousel configuration file
     this.apiGetSettingsFile({
       'file-type': 'carousel'
     }, result => {

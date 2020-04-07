@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Hutton banner -->
     <div class="row hutton-header mb-3">
       <div id="hutton-banner-hunger" class="col"></div>
       <div id="hutton-banner-education" class="col"></div>
@@ -12,13 +13,16 @@
       <div id="hutton-banner-climate" class="col"></div>
       <div id="hutton-banner-land" class="col"></div>
       <div id="hutton-banner-partnership" class="col"></div>
-      </div>
+    </div>
+    <!-- Logo -->
     <div class="text-center py-3">
       <b-img src="./img/germinate-square.svg" fluid class="about-header-logo"/>
     </div>
+    <!-- Title -->
     <div class="text-center">
       <h1>{{ $t('pageAboutGerminateTitle') }}<small> - {{ $t('pageAboutGerminateSubtitle') }}</small></h1>
     </div>
+    <!-- Banner buttons -->
     <b-row class="about-banners" v-if="banners">
       <b-col cols=12 sm=6 xl=3 v-for="banner in banners" :key="'about-banners-' + banner.key">
         <a target="_blank" :href="banner.link">
@@ -37,7 +41,10 @@
         </a>
       </b-col>
     </b-row>
+    <!-- Text -->
     <div v-html="$t('pageAboutGerminateText')" />
+
+    <!-- Team -->
     <h2>{{ $t('pageAboutGerminateTeamTitle') }}<small> - {{ $t('pageAboutGerminateTeamSubtitle') }}</small></h2>
     <b-row class="team-members">
       <b-col cols=12 sm=6 xl=3 v-for="(member, i) in team" :key="'about-team-' + i" class="text-center pb-5">
@@ -51,9 +58,11 @@
       </b-col>
     </b-row>
 
+    <!-- Location -->
     <h2>{{ $t('pageAboutGerminateLocationTitle') }}<small> - {{ $t('pageAboutGerminateLocationSubtitle') }}</small></h2>
     <LocationMap :locations="[getLocation()]" :showLinks="false" class="mb-5" />
 
+    <!-- Funders -->
     <h2>{{ $t('pageAboutGerminateFundersTitle') }}<small> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>
     <p>{{ $t('pageAboutGerminateFundersText') }}</p>
     <b-row class="funders">
@@ -66,6 +75,8 @@
         </div>
       </b-col>
     </b-row>
+
+    <!-- Footer -->
     <b-row class="about-footer bg-dark px-3">
       <b-col cols=12 sm=6 xl=4 class="about-logo">
         <b-img src="./img/germinate-square.svg" fluid class="my-5" />

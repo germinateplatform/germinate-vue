@@ -1,8 +1,9 @@
 <template>
   <div>
     <div v-if="germplasm">
+      <!-- Scrollspy navigation bar -->
       <b-navbar sticky class="scrollspy-sticky d-none d-sm-block passport-navbar" type="dark" variant="dark" v-b-scrollspy="scrollSpyConfig" ref="scrollSpy" v-if="!isPopup">
-        <b-navbar-nav>
+        <b-navbar-nav class="align-items-center">
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
           <b-nav-item href="#datasets" @click="scrollIntoView">{{ $t('pagePassportDatasetTitle') }}</b-nav-item>
@@ -14,14 +15,15 @@
           <b-nav-item href="#attributes" @click="scrollIntoView">{{ $t('pagePassportAttributeTitle') }}</b-nav-item>
           <b-nav-item href="#comments" @click="scrollIntoView" v-if="serverSettings && serverSettings.commentsEnabled === true">{{ $t('pagePassportCommentTitle') }}</b-nav-item>
           <b-nav-item class="ml-auto">
+            <!-- Marked item checkbox -->
             <i :class="'mdi mdi-18px fix-alignment text-white ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover.bottom :title="$t('tooltipGermplasmMarkedItem')"/>
           </b-nav-item>
         </b-navbar-nav>
       </b-navbar>
       <div id="nav-scroller">
         <h1 class="mt-3">{{ $t('pagePassportTitle') }}</h1>
-
         <hr />
+        <!-- Heading -->
         <h2 class="mdi-heading" id="mcpd">
           <span>{{ getTitle() }}</span>
           <small v-if="germplasm.entitytype"> {{ germplasm.entitytype }} </small>
@@ -29,18 +31,20 @@
         </h2>
         <p v-html="$t('pagePassportText')" />
 
+        <!-- PDCI -->
         <template v-if="germplasmTableData && germplasmTableData.pdci">
           <hr />
           <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-chart-donut text-primary" /> <span> {{ $t('pagePassportPdciTitle') }} </span><small><a href="#" @click.prevent="showPdciModal"><i class="mdi mdi-18px mdi-help-circle"/></a></small></h2>
           <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasmTableData.pdci.toFixed(2) }) }}</strong></p>
         </template>
-
         <hr />
         <b-row>
           <b-col cols=12 lg=6>
+            <!-- MCPD -->
             <Mcpd :germplasm="germplasm"/>
           </b-col>
           <b-col cols=12 lg=6>
+            <!-- Synonyms -->
             <template v-if="germplasmTableData && germplasmTableData.synonyms">
               <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-tag-text-outline"/><span> {{ $t('pagePassportSynonymsTitle') }}</span></h2>
               <ul>
@@ -50,6 +54,7 @@
               </ul>
             </template>
 
+            <!-- Institution -->
             <Institution :institutionId="germplasmTableData && germplasmTableData.institutionId" id="institution"/>
           </b-col>
         </b-row>
@@ -57,20 +62,24 @@
         <hr />
         <h2 class="mdi-heading" id="links"><i class="mdi mdi-36px text-primary mdi-link-variant"/><span> {{ $t('pagePassportLinksTitle') }}</span></h2>
         <p v-html="$t('pagePassportLinksText')" />
+        <!-- Links -->
         <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
 
         <hr />
         <h2 class="mdi-heading" id="datasets"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
         <p v-html="$t('pagePassportDatasetText')" />
+        <!-- Datasets containing this germplasm -->
         <DatasetTable :getData="getDatasetData" />
 
         <hr />
         <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-tournament mdi-rotate-90 text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
         <p v-html="$t('pagePassportPedigreeText')" />
+        <!-- Pedigree table -->
         <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
-
+        <!-- Pedigree chart -->
         <PedigreeChart :germplasmId="germplasmId" />
 
+        <!-- Location map -->
         <template v-if="germplasm.declatitude && germplasm.declongitude">
           <hr />
           <h2 class="mdi-heading" id="location"><i class="mdi mdi-36px mdi-map-marker text-primary" /> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
@@ -81,11 +90,13 @@
         <hr />
         <h2 class="mdi-heading" id="images"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
         <p v-html="$t('pagePassportImageText')" />
+        <!-- Image gallery -->
         <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="germplasm.accenumb" v-on:tag-clicked="onImageTagClicked" ref="imageGallery" />
 
         <hr />
         <h2 class="mdi-heading" id="groups"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
         <p v-html="$t('pagePassportGroupText')" />
+        <!-- Groups containing this germplasm -->
         <GroupTable :getData="getGroupData" />
 
         <hr />
@@ -100,24 +111,29 @@
             </ul>
           </ul>
         </ul>
+        <!-- Entity data table -->
         <EntityTable :getData="getEntityData" :filterOn="entityFilter" />
 
         <hr />
         <h2 class="mdi-heading" id="attributes"><i class="mdi mdi-36px text-primary mdi-playlist-plus"/><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
         <p v-html="$t('pagePassportAttributeText')" />
+        <!-- Germplasm attributes -->
         <GermplasmAttributeTable :getData="getGermplasmAttributeData" />
 
         <template v-if="serverSettings && serverSettings.commentsEnabled === true">
           <hr />
           <h2 class="mdi-heading" id="comments"><i class="mdi mdi-36px text-primary mdi-comment-account-outline"/><span> {{ $t('pagePassportCommentTitle') }}</span></h2>
           <p v-html="$t('pagePassportCommentText')" />
+          <!-- Comments  (if enabled) -->
           <CommentTable :getData="getCommentData" ref="commentTable" :commentTypeId="1" :referenceId="currentGermplasmId" />
         </template>
       </div>
     </div>
+    <!-- Loading indicator -->
     <div class="text-center" v-else>
       <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
     </div>
+    <!-- Information about PDCI -->
     <b-modal :title="$t('pagePassportPdciTitle')" ok-only ref="pdciModal">
       <div v-html="$t('pagePassportPdciModal')" />
     </b-modal>
@@ -217,6 +233,7 @@ export default {
       return this.apiPostPedigreeTable(data, callback)
     },
     downloadImages: function (callback) {
+      // Set up images query
       const data = {
         filter: [{
           column: 'imageForeignId',
@@ -232,6 +249,7 @@ export default {
       }
 
       if (this.imageTag) {
+        // Optionally add the selected tag
         data.filter.push({
           column: 'tags',
           comparator: 'contains',
@@ -243,6 +261,7 @@ export default {
       this.apiPostImagesExport(data, callback)
     },
     getImages: function (data, onSuccess, onError) {
+      // Set up images query
       data.filter = [{
         column: 'imageForeignId',
         comparator: 'equals',
@@ -256,6 +275,7 @@ export default {
       }]
 
       if (this.imageTag) {
+        // Optionally add the selected tag
         data.filter.push({
           column: 'tags',
           comparator: 'contains',
@@ -312,6 +332,7 @@ export default {
       this.currentGermplasmId = parseInt(urlParam)
     }
 
+    // Set up the pedigree filter
     this.pedigreeFilter = [{
       column: {
         name: 'parentId',
@@ -332,6 +353,7 @@ export default {
       canBeChanged: false
     }]
 
+    // Set up the entity data filter
     this.entityFilter = [{
       column: {
         name: 'entityParentId',
@@ -353,10 +375,12 @@ export default {
     }]
   },
   mounted: function () {
+    // Get the germplasm MCPD based on the id
     this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
       this.germplasm = result
     })
 
+    // Request information based on id
     var request = {
       page: 1,
       limit: 1,

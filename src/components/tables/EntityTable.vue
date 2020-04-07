@@ -5,27 +5,35 @@
                v-bind="$props"
                ref="entityTable"
                v-on="$listeners">
+      <!-- Entity parent id link -->
       <template v-slot:cell(entityParentId)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentId }}</router-link>
       </template>
+      <!-- Entity parent GID link -->
       <template v-slot:cell(entityParentGid)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentGid }}</router-link>
       </template>
+      <!-- Entity parent name link -->
       <template v-slot:cell(entityParentName)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentName }}</router-link>
       </template>
+      <!-- Entity child id link -->
       <template v-slot:cell(entityChildId)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildId }}</router-link>
       </template>
+      <!-- Entity child GID link -->
       <template v-slot:cell(entityChildGid)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildGid }}</router-link>
       </template>
+      <!-- Entity child name link -->
       <template v-slot:cell(entityChildName)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildName }}</router-link>
       </template>
+      <!-- Entity parent type -->
       <template v-slot:cell(entityParentType)="data">
         <span class="text-nowrap" v-if="data.item.entityParentType"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityParentType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityParentType].color()};`" /> {{ entityTypes[data.item.entityParentType].text() }}</span>
       </template>
+      <!-- Entity child type -->
       <template v-slot:cell(entityChildType)="data">
         <span class="text-nowrap" v-if="data.item.entityChildType"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityChildType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityChildType].color()};`" /> {{ entityTypes[data.item.entityChildType].text() }}</span>
       </template>

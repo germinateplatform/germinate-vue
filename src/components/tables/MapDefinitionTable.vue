@@ -6,6 +6,7 @@
                itemType="markers"
                ref="mapDefinitionTable"
                v-on="$listeners">
+      <!-- Synonyms -->
       <template v-slot:cell(synonyms)="data">
         <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
       </template>

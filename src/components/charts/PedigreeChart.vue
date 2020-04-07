@@ -3,7 +3,9 @@
     <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false">
       <div slot="chart" ref="pedigreeChart" />
     </BaseChart>
+    <!-- Export button -->
     <b-button @click="downloadPedigree()"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownloadForHelium') }}</b-button>
+    <!-- Information about the export formats -->
     <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'pedigree' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
   </div>
 </template>
@@ -17,7 +19,6 @@ import germplasmApi from '@/mixins/api/germplasm.js'
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 const d3Shape = require('d3-shape')
-// const d3 = require('d3')
 const dagreD3 = require('dagre-d3')
 
 export default {
@@ -56,9 +57,10 @@ export default {
         if (this.plotData) {
           var reader = new FileReader()
           reader.onload = () => {
+            // Remove the first row (Helium header)
             var dirtyTsv = reader.result
             var firstEOL = dirtyTsv.indexOf('\n')
-            var parsedTsv = d3Dsv.tsvParse(dirtyTsv.substring(firstEOL + 1))// Remove the first row (Helium header)
+            var parsedTsv = d3Dsv.tsvParse(dirtyTsv.substring(firstEOL + 1))
 
             var nodes = {}
             var connections = []
@@ -120,6 +122,7 @@ export default {
       })
     },
     navigateToPassportPage: function (germplasmName) {
+      // Send a query to get the germplasm id
       var request = {
         page: 1,
         limit: 1,
@@ -132,6 +135,7 @@ export default {
       }
       this.apiPostGermplasmTable(request, result => {
         if (result && result.data && result.data.length > 0) {
+          // Then navigate to the passport page
           this.$router.push({ name: 'passport', params: { germplasmId: result.data[0].germplasmId } })
         }
       })

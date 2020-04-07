@@ -46,8 +46,9 @@ export default {
         this.$plotly.d3.select(this.$refs.taxonomyChart)
           .datum(data)
           .call(plotlyPieChart()
-            .labels(rows => this.unpackAndJoin(rows, ['genus', 'species', 'subtaxa']))
+            .labels(rows => this.unpackAndJoin(rows, ['genus', 'species', 'subtaxa']))// Join the genus, species and subtaxa into a single description
             .custom(rows => {
+              // Store some custom information per data point, so we can use this later
               return rows.map(r => {
                 return {
                   genus: r.genus,
@@ -57,9 +58,11 @@ export default {
               })
             })
             .onSliceClicked(selection => {
+              // When a slice is clicked, retrieve the custom information
               const index = selection.points[0].i
               const custom = selection.points[0].data.custom[index]
 
+              // Then store a filter using genus, species and subtaxa
               var query = [{
                 column: {
                   name: 'genus',
@@ -93,6 +96,7 @@ export default {
                 })
               }
 
+              // Navigate to the germplasm page
               this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', query)
               this.$router.push({ name: 'germplasm' })
             })

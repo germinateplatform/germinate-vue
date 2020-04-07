@@ -6,27 +6,29 @@
                ref="table"
                v-bind="$props"
                v-on="$listeners">
-
+      <!-- Group id link -->
       <template v-slot:cell(groupId)="data">
         <router-link v-if="isEditable === true" :to="`/groups/${data.item.groupId}`" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupId }}</router-link>
         <router-link v-else :to="`/groups/${data.item.groupId}`">{{ data.item.groupId }}</router-link>
       </template>
+      <!-- Group name link -->
       <template v-slot:cell(groupName)="data">
         <router-link v-if="isEditable === true" :to="`/groups/${data.item.groupId}`" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupName }}</router-link>
         <router-link v-else :to="`/groups/${data.item.groupId}`">{{ data.item.groupName }}</router-link>
       </template>
+      <!-- Group description link -->
       <template v-slot:cell(groupDescription)="data">
         <router-link v-if="isEditable === true" :to="`/groups/${data.item.groupId}`" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupDescription }}</router-link>
         <router-link v-else :to="`/groups/${data.item.groupId}`">{{ data.item.groupDescription }}</router-link>
       </template>
-
+      <!-- Group type icon -->
       <template v-slot:cell(groupType)="data">
         <span><i :class="`mdi mdi-18px ${groupTypes[data.item.groupType].icon} fix-alignment`" :style="`color: ${groupTypes[data.item.groupType].color()};`" /> {{ groupTypes[data.item.groupType].text() }}</span>
       </template>
 
       <!-- Only show if authentication enabled -->
-      <template v-slot:cell(actions)="data" v-if="isEditable">
-        <b-button-group v-if="token && token.id === data.item.userId">
+      <template v-slot:cell(actions)="data">
+        <b-button-group v-if="isEditable && token && (token.id === data.item.userId)">
           <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('on-group-edit-clicked', data.item)"><i class="mdi mdi-18px mdi-rename-box" /></b-button>
           <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('on-group-delete-clicked', data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
         </b-button-group>

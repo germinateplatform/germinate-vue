@@ -5,7 +5,8 @@
     :ok-title="$t('buttonUpload')"
     :cancel-title="$t('buttonCancel')"
     @shown="$refs.itemList.focus()"
-    @ok="okPressed">
+    @ok="$emit('ok', $refs.itemList.getContent())">
+    <!-- Drop file to upload to group -->
     <DropFilePreview ref="itemList" placeholder="widgetDropFileGroupUploadPlaceholder" />
   </b-modal>
 </template>
@@ -18,9 +19,6 @@ export default {
     DropFilePreview
   },
   methods: {
-    okPressed: function () {
-      this.$emit('ok', this.$refs.itemList.getContent())
-    },
     show: function () {
       this.$refs.groupUploadModal.show()
     },

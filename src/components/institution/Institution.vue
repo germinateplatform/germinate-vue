@@ -33,6 +33,7 @@ export default {
   mixins: [ miscApi ],
   methods: {
     navigateToGermplasm: function (institutionId) {
+      // Navigate to the germplasm overview page and filter based on institution
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
           name: 'institutionId',
@@ -47,6 +48,7 @@ export default {
   },
   mounted: function () {
     if (this.institutionId) {
+      // Get institution data based on the provided id
       const queryData = {
         column: 'institutionId',
         comparator: 'equals',

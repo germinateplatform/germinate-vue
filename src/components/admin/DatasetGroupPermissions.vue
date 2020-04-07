@@ -6,11 +6,13 @@
       <b-col sm=6>
         <h3>{{ $t('pageUserPermissionsGroupPermissionsCurrentTitle') }}</h3>
         <p>{{ $t('pageUserPermissionsGroupPermissionsCurrentText') }}</p>
+        <!-- Shows the user groups that currently have access to the dataset -->
         <UserGroupTable :hideDefaultActions="true" :getData="getUserGroups" :getIds="getUserGroupIds" :selectable="true" :tableActions="deleteActions" ref="currentGroupTable" />
       </b-col>
       <b-col sm=6>
         <h3>{{ $t('pageUserPermissionsGroupPermissionsNewTitle') }}<small> - {{ $t('pageUserPermissionsTableSearchHint') }}</small></h3>
         <p>{{ $t('pageUserPermissionsGroupPermissionsNewText') }}</p>
+        <!-- Shows all user groups -->
         <UserGroupTable :hideDefaultActions="true" :getData="getAllGroups" :getIds="getAllGroupIds" :selectable="true" :tableActions="addActions" ref="allGroupTable" />
       </b-col>
     </b-row>

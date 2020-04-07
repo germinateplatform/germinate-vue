@@ -1,5 +1,6 @@
 <template>
   <div v-if="(images && images.length > 0) || selectedTag !== null">
+    <!-- Show the available image tags -->
     <div v-if="imageTags && imageTags.length" class="mb-3">
       <h3>{{ $t('widgetImageTagsTitle') }}</h3>
       <b-badge class="mr-3" href="#" @click.native.prevent="onTagClicked(null)" variant="danger" v-if="selectedTag">
@@ -12,6 +13,7 @@
       </b-badge>
     </div>
 
+    <!-- Show each image node -->
     <b-row v-if="images && images.length > 0" class="image-grid mb-3">
       <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId">
         <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" v-on:tags-changed="onTagsChanged" />
@@ -103,6 +105,7 @@ export default {
         this.images = result.data
         this.imageCount = result.count
 
+        // Enable the baguettebox popup
         this.$nextTick(() => {
           baguetteBox.run('.image-grid', {
             captions: 'true',
@@ -113,9 +116,11 @@ export default {
 
               overlays.forEach(n => {
                 if (n.complete && n.naturalHeight !== 0) {
+                  // Rotate the image on load based on EXIF information
                   this.rotateBasedOnExif(n)
                 } else {
                   n.addEventListener('load', () => {
+                    // Rotate the image on load based on EXIF information
                     this.rotateBasedOnExif(n)
                   })
                 }
@@ -126,6 +131,7 @@ export default {
       })
     },
     rotateBasedOnExif: function (image) {
+      // Read the EXIF information and then add a rotation class
       EXIF.getData(image, function () {
         var orientation = EXIF.getTag(this, 'Orientation')
         if (orientation === 6) {

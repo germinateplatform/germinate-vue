@@ -3,16 +3,15 @@
     <p class="text-info"><i class="mdi mdi-18px fix-alignment mdi-information-outline" /> {{ $t('pageMapExportOptionDescription') }}</p>
     <b-card no-body v-if="chromosomes && chromosomes.length > 0">
       <b-tabs card v-model="tabIndex">
-        <!-- CHROMOSOMES -->
+        <!-- Chromosomes -->
         <b-tab :title="$t('pageMapExportOptionChromosomes')">
           <b-form-group
             :label="$t('formLabelMapExportChromosomeSelection')"
             label-for="chromosomes">
             <b-form-select v-model="selectedChromosomes" :options="chromosomes" :select-size="7" multiple />
-            <!-- <b-form-checkbox-group id="chromosomes" v-model="selectedChromosomes" :options="chromosomes" stacked/> -->
           </b-form-group>
         </b-tab>
-        <!-- REGIONS -->
+        <!-- Regions -->
         <b-tab :title="$t('pageMapExportOptionRegions')" class="base-table">
           <p>{{ $t('pageMapExportRegionDescription') }}</p>
           <b-table :fields="columns"
@@ -38,7 +37,7 @@
           </b-table>
           <b-button @click="addRegion()" v-b-tooltip.hover :title="$t('tooltipMapExportRegionAdd')"><i class="mdi mdi-18px mdi-table-row-plus-after" /></b-button>
         </b-tab>
-        <!-- MARKER INTERVAL -->
+        <!-- Marker interval -->
         <b-tab :title="$t('pageMapExportOptionMarkerInterval')">
           <p>{{ $t('pageMapExportMarkerIntervalDescription') }}</p>
           <b-row>
@@ -58,7 +57,7 @@
             </b-col>
           </b-row>
         </b-tab>
-        <!-- MARKER RADIUS -->
+        <!-- Marker radius -->
         <b-tab :title="$t('pageMapExportOptionMarkerRadius')">
           <p>{{ $t('pageMapExportMarkerRadiusDescription') }}</p>
           <b-row>

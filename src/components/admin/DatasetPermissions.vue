@@ -5,8 +5,10 @@
     <div v-if="dataset" class="mt-3">
       <hr />
       <h2>{{ dataset.datasetName }}</h2>
+      <!-- Shows the specific user permissions for this dataset -->
       <DatasetUserPermissions :dataset="dataset" v-if="dataset" v-on:permissions-changed="$refs.datasetTable.refresh()" class="mt-3" ref="userPermissions"/>
       <hr />
+      <!-- Shows the user group permissions for this dataset -->
       <DatasetGroupPermissions :dataset="dataset" v-if="dataset" v-on:permissions-changed="$refs.datasetTable.refresh()" class="mt-3" ref="groupPermissions" />
     </div>
   </div>

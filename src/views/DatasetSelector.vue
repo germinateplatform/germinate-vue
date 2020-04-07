@@ -2,12 +2,14 @@
   <div>
     <div v-if="datasetType">
       <h1>{{ datasetTypes[datasetType].text() }}</h1>
+      <!-- Table showing all datasets of the type -->
       <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" :selectionMode="getSelectionMode()" class="mb-3" ref="datasetTable" v-on:selection-changed="updateButtonState"/>
+      <!-- Continue button -->
       <b-button variant="primary" @click="checkLicenses" :disabled="buttonDisabled" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonNext') }}</b-button>
     </div>
     <div v-else>
-      <h1>Invalid experiment type</h1>
-      <p>Are you looking for any of these?</p>
+      <h1>{{ $t('pageDatasetSelectorInvalidTypeTitle') }}</h1>
+      <p>{{ $t('pageDatasetSelectorInvalidTypeText') }}</p>
       <ul>
         <li v-for="(datasetType, name) in getDatasetTypes()" :key="`experiment-type-${name}`">
           <router-link :to="{ name: 'export', params: { datasetType: name } }">{{ datasetType.text() }}</router-link>
@@ -38,6 +40,7 @@ export default {
       this.buttonDisabled = !selectedIds || selectedIds.length < 1
     },
     getSelectionMode: function () {
+      // Only single selection for allele frequency data
       return this.datasetType === 'allelefreq' ? 'single' : 'multi'
     },
     checkLicenses: function () {
@@ -97,6 +100,7 @@ export default {
             this.navigateToExportPage(selectedIds)
           }
         } else {
+          // Navigate to the export page
           this.navigateToExportPage(selectedIds)
         }
       })
@@ -133,6 +137,7 @@ export default {
       return this.apiPostDatasetTableIds(data, callback)
     },
     adjustData: function (data) {
+      // Always filter for just the current dataset type
       var additional = [{
         column: 'datasetType',
         comparator: 'equals',

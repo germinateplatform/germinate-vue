@@ -1,37 +1,47 @@
 <template>
   <div class="aside-scroll">
     <b-tabs v-model="tabIndex">
+      <!-- Download jobs -->
       <b-tab>
         <template slot="title">
           <i class="mdi mdi-18px mdi-download" />
         </template>
+        <!-- Update button -->
         <b-button @click="updateAsyncJobs" class="w-100 refresh-button" variant="info">
           <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
         </b-button>
-
         <b-list-group class="list-group-accent">
+          <!-- Heading -->
           <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
             {{ $t('widgetAsyncJobPanelTitle') }}
           </b-list-group-item>
+          <!-- List of jobs -->
           <b-list-group-item v-for="job in asyncExportJobs"
                               :key="job.id"
                               :class="`list-group-item-accent-${status[job.status].color} list-group-item-divider`">
+            <!-- Delete job -->
             <a href="#" class="text-muted" @click.prevent="deleteExportJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
+            <!-- Job type -->
             <div><strong>{{ getDatasetType(job.datasettypeId) }}</strong></div>
+            <!-- Dataset ids -->
             <div v-if="job.datasetIds" class="text-muted">{{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</div>
+            <!-- Date time -->
             <div class="text-muted">
               <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ job.updatedOn | toDateTime }}</small>
             </div>
+            <!-- Status -->
             <div :class="`text-${status[job.status].color}`">
               <b-spinner variant="info" small v-if="job.status === 'running'" />
               <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`" v-else />
               <small> {{ status[job.status].text() }}</small>
             </div>
+            <!-- Download link -->
             <div v-if="job.status === 'completed'" class="d-flex flex-row align-items-start">
               <i class="mdi fix-alignment mdi-download" />
               <div class="d-inline-block ml-1">
                 <a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs">{{ $t('buttonDownload') }}</a>
                 <div v-if="job.resultSize">
+                  <!-- File size -->
                   <small class="text-muted">{{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}B</small>
                 </div>
               </div>
@@ -39,28 +49,36 @@
           </b-list-group-item>
         </b-list-group>
       </b-tab>
+
+      <!-- Upload jobs -->
       <template v-if="token && token.userType && userIsAtLeast(token.userType, 'Data Curator') && serverSettings.dataImportMode !== 'NONE'">
         <b-tab>
           <template slot="title">
             <i class="mdi mdi-18px mdi-upload" />
           </template>
+          <!-- Update button -->
           <b-button @click="updateAsyncJobs" class="w-100 refresh-button" variant="info">
             <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
           </b-button>
-
           <b-list-group class="list-group-accent">
+            <!-- Heading -->
             <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
               {{ $t('widgetAsyncImportJobPanelTitle') }}
             </b-list-group-item>
+            <!-- List of jobs -->
             <b-list-group-item v-for="job in asyncImportJobs"
                                   :key="job.id"
                                   :class="`list-group-item-accent-${(job.feedback && job.feedback.length) > 0 ? 'danger' : status[job.status].color} list-group-item-divider`">
+              <!-- Delete job -->
               <a href="#" class="text-muted" @click.prevent="deleteImportJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
+              <!-- Template type -->
               <div><strong>{{ getTemplateType(job.datatype) }}</strong></div>
+              <!-- Date time and filename -->
               <div class="text-muted">
                 <i class="mdi fix-alignment mdi-calendar-clock" /><small> {{ job.updatedOn | toDateTime }}</small><br/>
                 <template v-if="job.originalFilename"><i class="mdi fix-alignment mdi-file" /><small> {{ job.originalFilename }}</small></template>
               </div>
+              <!-- Status -->
               <div v-if="job.status === 'completed'">
                 <!-- If there is feedback -->
                 <div v-if="job.feedback">
@@ -84,6 +102,7 @@
       </template>
     </b-tabs>
 
+    <!-- Modal showing the issues with the selected upload job -->
     <b-modal ref="uploadStatusModal" :title="$t('widgetImportStatusTitle')" :ok-title="$t('buttonClose')" ok-only size="xl">
       <UploadStatusTable :job="selectedImportJob" />
     </b-modal>

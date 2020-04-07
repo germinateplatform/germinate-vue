@@ -11,9 +11,10 @@
     <div v-if="itemType">
       <h2>{{ itemType.text() }}</h2>
 
+      <!-- Depending on the selected type, show the corresponding table here -->
       <GermplasmTable v-show="itemType === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" ref="germplasmTable" />
-      <MarkerTable    v-show="itemType === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"    ref="markerTable" />
-      <LocationTable  v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  ref="locationTable" />
+      <MarkerTable    v-show="itemType === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"    :downloadTable="downloadMarkers"   ref="markerTable" />
+      <LocationTable  v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  :downloadTable="downloadLocations" ref="locationTable" />
     </div>
     <h2 v-else>Unknown item type</h2>
   </div>
@@ -37,6 +38,7 @@ export default {
   },
   watch: {
     itemType: function (newValue, oldValue) {
+      // Update the URL
       if (newValue === this.markedItemTypes.germplasm) {
         window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'germplasm' } }).href)
       } else if (newValue === this.markedItemTypes.markers) {
@@ -46,6 +48,7 @@ export default {
       }
     },
     markedIds: {
+      // Refresh the table
       handler: function (newValue, oldValue) {
         if (this.itemType === this.markedItemTypes.germplasm) {
           this.$refs.germplasmTable.refresh()
@@ -85,6 +88,10 @@ export default {
       data = this.adjustFilter(data, 'markerId', 'markers')
       return this.apiPostMarkerTableIds(data, callback)
     },
+    downloadMarkers: function (data, callback) {
+      data = this.adjustFilter(data, 'markerId', 'markers')
+      return this.apiPostTableExport(data, 'marker', callback)
+    },
     getLocationData: function (data, callback) {
       data = this.adjustFilter(data, 'locationId', 'locations')
       return this.apiPostLocationTable(data, callback)
@@ -92,6 +99,10 @@ export default {
     getLocationIds: function (data, callback) {
       data = this.adjustFilter(data, 'locationId', 'locations')
       return this.apiPostLocationTableIds(data, callback)
+    },
+    downloadLocations: function (data, callback) {
+      data = this.adjustFilter(data, 'locationId', 'locations')
+      return this.apiPostTableExport(data, 'location', callback)
     },
     adjustFilter: function (data, id, type) {
       const newData = JSON.parse(JSON.stringify(data))

@@ -2,6 +2,7 @@
   <div>
     <h1>{{ $t('pageLocationsTitle') }}</h1>
     <p>{{ $t('pageLocationsText') }}</p>
+    <!-- All locations in a table -->
     <LocationTable :getData="getData"
                     :getIds="getIds"
                     v-on:data-changed="onDataChanged" />
@@ -12,6 +13,7 @@
     <template v-if="climates && climates.length > 0">
       <h3>{{ $t('pageLocationsMapsClimateOverlaysTitle') }}</h3>
       <p>{{ $t('pageLocationsMapsClimateOverlaysText') }}</p>
+      <!-- Possible climate overlays for the maps -->
       <b-form-select v-model="climate" :options="climateOptions" class="mb-3" />
     </template>
 
@@ -19,11 +21,13 @@
       <b-col cols=12 xl=6>
         <h3>{{ $t('pageLocationsMapsClusteredTitle') }}</h3>
         <p>{{ $t('pageLocationsMapsClusteredText') }}</p>
+        <!-- Clustered location map -->
         <LocationMap v-if="locations && locations.length > 0" :imageOverlays="climateImageOverlays" :locations="locations" mapType="cluster" class="mb-3" v-on:map-loaded="map => { clusteredMap = map }" />
       </b-col>
       <b-col cols=12 xl=6>
         <h3>{{ $t('pageLocationsMapsHeatmappedTitle') }}</h3>
         <p>{{ $t('pageLocationsMapsHeatmappedText') }}</p>
+        <!-- Heatmapped location map -->
         <LocationMap v-if="locations && locations.length > 0" :imageOverlays="climateImageOverlays" :locations="locations" mapType="heatmap" class="mb-3" v-on:map-loaded="map => { heatmappedMap = map }" />
       </b-col>
     </b-row>
@@ -56,6 +60,7 @@ export default {
   },
   watch: {
     clusteredMap: function (oldValue, newValue) {
+      // Synchronize the maps
       if (this.synced === false && this.clusteredMap && this.heatmappedMap) {
         this.synced = true
         this.clusteredMap.sync(this.heatmappedMap)
@@ -63,6 +68,7 @@ export default {
       }
     },
     heatmappedMap: function (oldValue, newValue) {
+      // Synchronize the maps
       if (this.synced === false && this.clusteredMap && this.heatmappedMap) {
         this.synced = true
         this.heatmappedMap.sync(this.clusteredMap)
@@ -70,6 +76,7 @@ export default {
       }
     },
     climate: function (oldValue, newValue) {
+      // When a climate is selected, get the overlays and show them on the map
       if (this.climate !== null) {
         const queryData = {
           filter: [{
@@ -125,6 +132,7 @@ export default {
     },
     onDataChanged: function (request, data) {
       const sameAsBefore = isEqual(request.filter, this.tableFilter)
+      // If something changed, we're going to only show the locations in the table on the map
       if (!this.locations || !sameAsBefore) {
         this.tableFilter = JSON.parse(JSON.stringify(request.filter))
 

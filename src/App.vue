@@ -1,6 +1,9 @@
 <template>
   <div>
+    <!-- Main view -->
     <router-view :class="printContent ? 'd-print-none' : ''"></router-view>
+
+    <!-- Print view for printable content -->
     <div ref="printer-view" class="d-none d-print-block" v-html="printContent" v-if="printContent"></div>
 
     <b-modal ref="loadingModal" :title="$t('modalTitleLoading')" hide-footer no-close-on-backdrop no-close-on-esc hide-header-close>
@@ -56,11 +59,15 @@ export default {
   mixins: [ miscApi, statsApi ],
   methods: {
     print: function (newContent) {
+      // Set the print content
       this.printContent = newContent
 
+      // Wait a bit
       this.$nextTick(() => {
+        // Ask the browser to print
         window.print()
         this.$nextTick(() => {
+          // Hide the print content
           this.printContent = null
         })
       })

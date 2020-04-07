@@ -1,0 +1,1023 @@
+commit 94f3c37c68e9042677e2d0658f9db35653d9859c
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Mar 27 17:08:19 2020 +0000
+
+    - CHG: Changed layout of leaflet popup.
+
+commit a9391bb63e07758591a8a3bb66a3869ba002d3b6
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Mar 26 15:20:52 2020 +0000
+
+    - CHG: Updated readme and documentation to reflect migration of repository.
+    - CHG: Added styling to hide unavailable images (404'd).
+
+commit d22c3d0a8b15e865242f816129e0c92872ed8d96
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Mar 25 15:36:28 2020 +0000
+
+    - CHG: Added information about data template upload when only verification is enabled, not importing.
+
+commit 4eac183bac395634cc1b293af35cfde250ef2f64
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Mar 23 17:24:28 2020 +0000
+
+    - ADD: Added more funder logos.
+    - ADD: Enabled pedigree importer.
+
+commit a4be5a5f3174a4010a0ab4a26acfbfadfc73f2a4
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Mar 20 17:38:31 2020 +0000
+
+    - ADD: Added async export result file size.
+    - CHG: Enabled chemical compound data upload.
+
+commit 437c6126ae4d109a55de422ae013bd0e3ea7b253
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Mar 18 18:11:24 2020 +0000
+
+    - CHG: Adjusted chart PNG download sizes.
+    - CHG: Truncated text in some database columns. Where truncation takes place, a tooltip will reveal the full text.
+
+commit 6419505463dc40c2ca61410d0383d43c0f22b0af
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Mar 17 15:18:08 2020 +0000
+
+    - CHG: Enabled genotypic data uploads.
+
+commit 7ec4e31bb9fb627b608aa4b8f51674452f51b61b
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Mar 12 18:27:02 2020 +0000
+
+    - ADD: Added more import status feedback.
+
+commit e2fb5f0658e68352980c1f86067718d9afa559f8
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Mar 11 15:40:59 2020 +0000
+
+    - FIX: Fixed an issue with bootstrap dropdowns.
+    - CHG: Updated bootstrap-vue.
+    - ADD: Added data import functionality once file has been checked successfully.
+
+commit 50b29fce0b0a3dcbb5b0b2739c44de9b2802289b
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Mar 11 09:59:47 2020 +0000
+
+    - ADD: Added 403 page.
+    - CHG: Changed the way data uploads work. They are now run asynchronously, same as exports and are accessed the same way.
+    - FIX: Fixed passport page showing blank for unknown identifier.
+
+commit 2acb3c3d2c5913b3212784f09934a9cdc8d2b690
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Mar 4 17:44:37 2020 +0000
+
+    - ADD: Added the option to color trials, compound and climate data by groups.
+    - FIX: Fixed error in MCPD widget.
+    - FIX: Context menu not showing up in germplasm table.
+    - FIX: Fixed map chart height issues.
+    - CHG: Changed dataset list on export page to more detailed card views.
+
+commit b1acc0e7b400d3bf3a9039ce5b048676b1dd38aa
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Mar 2 10:05:29 2020 +0000
+
+    - FIX: Fixed small issues around GA tracking and async data downloads.
+    - ADD: Added option to color by group to trials/compound/climate charts.
+
+commit 77488e62aba7ec666997c45ec9d9c88de44b4924
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Feb 28 10:24:03 2020 +0000
+
+    - ADD: Added functionality to add/remove image tags.
+    - ADD: Added more GA tracking.
+
+commit 783d8e087660b6cf7e6f6cda994ee54c1c7b885d
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Feb 24 15:46:48 2020 +0000
+
+    - ADD: Added missing i18n.
+    - ADD: Added more datetimes to download files.
+    - FIX: Removed multi dataset selection for allele frequency data.
+    - ADD: Added zoom functionality to pedigree chart and fixed sizing issues on mobile devices.
+
+commit 88f3f754338d5cdb87055ddd006ba0dc9d3ef476
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Feb 21 16:13:15 2020 +0000
+
+    - ADD: Added autofocus to group upload textarea.
+    - ADD: Added placeholder to group upload textarea.
+    - FIX: Fixed issue with selected items that are deleted from a table causing issues with the selection state of the whole table.
+
+commit dd809861213ab829a7e2b06c22527e7abfea62b4
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Feb 21 14:51:02 2020 +0000
+
+    - ADD: Added more funder logos.
+    - ADD: Added group upload functionality.
+    - ADD: Improved user registration error feedback.
+
+commit b513d63c9193559edb52f911b4dc22e18c6b97fe
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Feb 20 16:32:15 2020 +0000
+
+    - CHG: Added error handling to registration form.
+
+commit 85eed938979fa0e8aa027d5d041c85416c6aba3c
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Feb 20 14:54:59 2020 +0000
+
+    - ADD: Added more funder logos.
+    - ADD: Added marking checkbox to scrollspy on passport page.
+    - CHG: Updated about Germinate page.
+
+commit 31ddedc4a6a77c04248b7da186412c00951e5fff
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Feb 19 16:19:58 2020 +0000
+
+    - CHG: Lots of changes to accommodate the change of experiment types to dataset types.
+    - ADD: Added dedicated experiments page.
+
+commit f98389e32ffa931df2742645cf1e6122be6860e8
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Feb 19 09:35:12 2020 +0000
+
+    - ADD: More i18n.
+    - FIX: Fixed an error on compounds and trials export pages where non-existant $refs were used.
+
+commit 1074363ba768243a9f81a3770821ea8bc290eb2a
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Feb 18 14:14:58 2020 +0000
+
+    - CHG: Refactored maps chart into its own file.
+    - FIX: Fixed issue where tooltip wouldn't disappear when the corresponding button was disabled.
+    - FIX: Fixed an error in the news section where link to external page was shown even if it wasn;'t a valid link.
+
+commit b5962a7c319bcd4ea2a14d0ab38e922494505092
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Feb 18 10:07:33 2020 +0000
+
+    - CHG: Redirect to groups page after group creation.
+    - ADD: More i18n.
+
+commit 04e3c1d091342c7d0813cbb23ca6f333f985c1a7
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Feb 17 17:17:58 2020 +0000
+
+    - ADD: Added tooltips to chart buttons.
+    - ADD: Added tour to matrix and scatter chart.
+    - FIX: Fixed duplicate data display in scatter chart.
+    - ADD: Added dataset metadata download to genotypic and allelefreq data export.
+    - ADD: Added timestamp to download file names.
+
+commit 546457ff79ae54b86f6f2ce5ff6c1b2a35544e7e
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Feb 14 17:05:13 2020 +0000
+
+    - ADD: i18n of allele export page.
+    - FIX: Removed sorting from some columns that can't be sorted by.
+
+commit 929309fae5e42f5b078dcde60df3c8a81b7b8174
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Feb 14 11:46:07 2020 +0000
+
+    - FIX: Fixed footer on the login page not spanning the whole width after logout.
+    - FIX: Updated some dependencies because of vulnerabilities.
+
+commit ff4f1d4dbe9e443f0dc05ffba61821369fa76d9f
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Feb 13 09:07:41 2020 +0000
+
+    - FIX: Fixed automatic redirect to requested page after login.
+    - ADD: Added support for marker names in URL in addition to their ids.
+
+commit 7484c49a8b4c201f2f8c505405a9f74d32eb619c
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Feb 12 16:25:39 2020 +0000
+
+    - ADD: Added new background SVG to login page.
+
+commit 3f08524caaa32d9ffd41fc9d236b735b02e3cb1a
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Feb 11 16:10:19 2020 +0000
+
+    - CHG: Hide locale dropdown if there's only one language to choose from.
+    - ADD: More i18n.
+
+commit ab12c530a36341ad5ee3f35e2c9a1ba3c8f3ffde
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Feb 11 14:46:51 2020 +0000
+
+    - FIX: Fixed a change in MDI icon naming.
+    - FIX: Fixed pedigree download section showing up if there isn't any pedigree data.
+    - FIX: Fixed image carousel not handling HTML content.
+    - FIX: Fixed location map not working with locations that don't have lat/lng data.
+    - CHG: Moved pie chart legend to the side rather than the bottom.
+    - ADD: Added an image section to the dashboard banner sections.
+
+commit a63e3b69b4ec2240c0315e712cb16504cac6bceb
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Feb 10 11:29:06 2020 +0000
+
+    - ADD: Added exif-js to automatically rotate images according to their EXIF information.
+
+commit 114059533bdaac4c8a320ee5a03a0b72097c19ad
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Jan 31 15:40:50 2020 +0000
+
+    - ADD: Added image tags to image table and image gallery. Filtering on those tags is possible.
+    - CHG: Changed the way dataset locations are handled and displayed.
+    - FIX: Fixed an issue with recursive JSON in the state by removing the router's path.
+
+commit 98ffc67208ee6479e333475bc084036a0113116d
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Jan 30 09:45:24 2020 +0000
+
+    - FIX: Fixed tables sticking out the side on mobile devices.
+
+commit 044c8688e6254edeb9fc46d607b376fccd68caed
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Jan 30 09:25:35 2020 +0000
+
+    - FIX: Attempt at fixing an x overflow caused by large tables. No idea why this is happening, but a hidden overflow-x on the body fixes it.
+
+commit a1b1821897e177da01ede2e6e730674c11129a5f
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Jan 29 11:50:09 2020 +0000
+
+    - FIX: Fixed responsive layout issues.
+
+commit b5f41e643c7a4ccf234de0a5abf42f2d42b0ae62
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Jan 27 13:46:37 2020 +0000
+
+    - FIX: Fixed login modal not showing up.
+
+commit bce97a714917b35c2bbb06bf2dcf2eb50844bee4
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Jan 27 13:22:36 2020 +0000
+
+    - ADD: Added climates page and climate details page.
+
+commit fae40ff45a8c81e8a6b5c5e1e04223701b34409d
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Jan 27 11:36:07 2020 +0000
+
+    - ADD: Added links widget to germplasm, trait and compound details page.
+    - ADD: Added image download button to all ImageGalleries.
+    - ADD: Added version number to footer.
+
+commit 455b7721dc11eb124b21a7aeb8780025016cc8bc
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Jan 24 19:32:41 2020 +0000
+
+    - CHG: Increased top navbar height.
+    - CHG: Changed datasets table to allow association of more than one location. A map will be shown with the locations on click on the marker icon.
+    - ADD: Added synonyms, unit and description to traits and compounds.
+
+commit 3f4c6a37fd56c27bef98c3b32de2ceec0340be5c
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Jan 23 09:04:29 2020 +0000
+
+    - FIX: Attempt to fix relative path issue in production.
+
+commit 205a925803f090991c64ac2833cf683603709f23
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Jan 22 16:35:11 2020 +0000
+
+    - ADD: Added keyboard navigation to Tour component.
+
+commit a27932ad86ce75a175a3664f79bc2931a6224c29
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Jan 22 15:37:24 2020 +0000
+
+    - FIX: Fixed more absolute paths to relative paths.
+
+commit 360eb9a30dcf5780cef309c86b709cef62bf4c5f
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Jan 22 14:51:51 2020 +0000
+
+    - CHG: Hide user menu in public mode.
+    - ADD: Added backdrop to tour.
+    - FIX: Fixed issue where 404 page was shown on main page after login.
+    - FIX: Fixed an issue with relative paths when Germinate is sitting behind a proxy.
+
+commit f067553a79c9fc164af13f547b6338d6c2cb5a98
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Jan 21 16:14:32 2020 +0000
+
+    - CHG: Updated 404 page.
+    - ADD: Added 404 image from unDraw.co.
+    - ADD: Added more i18n.
+    - ADD: Added user information to group upload page.
+    - CHG: Made sure that any invalid URL leads to the 404 page.
+
+commit 8e6ebe5a7c8352fdb8ee9d3073fdbbecb78d7be9
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Jan 21 14:37:18 2020 +0000
+
+    - FIX: Fixed top navigation layout on mobile devices.
+    - ADD: Added synonyms list to germplasm passport page.
+    - ADD: Added popover-based tour to tables.
+    - ADD: More i18n.
+    - FIX: Fixed bug where users weren't redirected to requested page after login.
+    - ADD: Added marker details page.
+
+commit e71955ab20abd0970bb2bcba6d3c46316379e640
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Jan 17 20:15:56 2020 +0000
+
+    - ADD: Added functionality to download images as a zip file.
+
+commit ffbc74a970338df2b756c371d77a4e7f5fc571bb
+Merge: 8105a1c be2175f
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Sat Jan 11 13:38:57 2020 +0000
+
+    Merge branch 'master' of https://github.com/sebastian-raubach/germinate-vue
+
+commit 8105a1c5b1ad46690def4aa1793cbb2c777e89ed
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Sat Jan 11 13:38:27 2020 +0000
+
+    - FIX: Fixed Dockerfile based on the new Gradle setup.
+
+commit be2175fe3714c26f9212d31bd62ac92c9aa5de33
+Author: Sebastian Raubach <sebastian-raubach@users.noreply.github.com>
+Date:   Thu Jan 9 19:05:01 2020 +0000
+
+    - FIX: Fixed location of the client/dist folder.
+
+commit a3dcc8e49f6012e7712f19c9261d373788734e50
+Author: Sebastian Raubach <sebastian-raubach@users.noreply.github.com>
+Date:   Thu Jan 9 18:36:17 2020 +0000
+
+    - FIX: Removed remnants of webpack-bundle-analyzer
+
+commit dc1adbcff47cf99b0f8edf39eb1979ee1673b75b
+Author: Sebastian Raubach <sebastian-raubach@users.noreply.github.com>
+Date:   Thu Jan 9 18:02:19 2020 +0000
+
+    - FIX: "Fixed" package-lock.json being out of sync with package.json
+
+commit 306553577f27779cde6c04b5ee627034b8e74636
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Jan 9 17:29:19 2020 +0000
+
+    - DEL: Removed webpack-bundle-analyzer, because it was stalling the automated build on Dockerhub.
+
+commit 4275a9c321743c46c1184cc5dfa8e3d18bf97366
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Jan 9 16:25:16 2020 +0000
+
+    - FIX: Fixed typo in Dockerfile.
+
+commit ed94c80b9d0773f30428fa63b0fca810c20dc3dd
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Jan 9 12:49:43 2020 +0000
+
+    - CHG: Changed a few dependencies to only include the required parts of those libraries.
+    - CHG: zxcvbn only imported in PasswordInput component.
+    - CHG: Only specific methods of lodash are imported.
+    - CHG: Plotly only imports used sub-libraries.
+    - FIX: Fixed relative path on deploy.
+    - CHG: Adjusted Dockerfile to represent changes in the build process of the server code.
+
+commit 9d2307e59c4404d77b261b4c60dac92bf4719b32
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Jan 6 11:07:11 2020 +0000
+
+    - DEL: Removed default German translation of Germinate, because not everybody will want a German version.
+    - FIX: Fixed an issue with the loading of remote translations.
+
+commit 3bf9101a6694dcf62d21f09adfa47a266d25d3f4
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Dec 20 20:05:11 2019 +0000
+
+    - FIX: Fixed image height of carousel on dashboard.
+    - ADD: Added download/export feature to marker and location group tables.
+
+commit 31ea3b008e69bfb389e842bc7db5f28096ab0f1a
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Dec 19 11:51:19 2019 +0000
+
+    - ADD: Added comments feature back in.
+    - ADD: Added climate overlays to locations page. (TODO: Add them to the climate export page as well).
+    - ADD: Added introduction tour to dashboard.
+    - ADD: Added animated Germinate logo to the login page along with a gradient background.
+
+commit 5af343d6a75f8bd4fb4f095ebff42675c6de2c99
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Dec 13 16:11:05 2019 +0000
+
+    - CHG: Migrated away from vue-tables-2 to just use bootstrap-vue's b-table. Significant changes were necessary to make everything work as expected again.
+    - CHG: Split up api mixin into individual mixins. Each component now only imports the mixin it requires.
+    - FIX: Fixed issues with boxplots showing the wrong data.
+    - CHG: Restructured the passport page. Moved datasets further up.
+    - CHG: Moved google analytics init code to App rather than store.
+
+commit dc5cab26a11479063c8e72a35b408624a4c5e475
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Dec 10 16:27:58 2019 +0000
+
+    - ADD: Added i18n to advanced germplasm/pedigree download.
+
+commit 28c014f406b3a73315875fa252cd1636c5d8ee94
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Dec 10 14:52:30 2019 +0000
+
+    - ADD: Added number of items to the top of the table as well.
+    - ADD: Added Google Analytics page, exception and download event tracking.
+
+commit 01419e37fd6a103496d3ce5ab6a21a15de648e6e
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Dec 9 16:02:15 2019 +0000
+
+    - CHG: Changed persistant store to support settings for multiple users. This allows Germinate to remember settings like marked item lists per user.
+
+commit 8cd7cba31a3934bdc871333dbe5d3a2b62f45de6
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Dec 6 18:28:08 2019 +0000
+
+    - ADD: Added germplasm download options.
+    - ADD: Added GDPR notification after login.
+    - ADD: Added markers page.
+
+commit 1d5334a755e74e399844eaef582872880b86598f
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Dec 4 16:18:52 2019 +0000
+
+    - ADD: Added entity parent name and gid columns to germplasm table.
+
+commit 2ff3e3abe24fbed0b92d41ffe2e8ec6a263941b2
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Dec 4 11:47:51 2019 +0000
+
+    - CHG: Completed the user permissions page.
+
+commit c665223f4a49c6f590a668bc11a56848b6c20ff0
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Dec 3 17:32:45 2019 +0000
+
+    - ADD: Added more user group and dataset permission functionality.
+
+commit 5d4facb320ebbf560588171a8ef1d894c499db8c
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Nov 29 17:21:14 2019 +0000
+
+    - ADD: Added column to germplasm table that shows what data is available for each germplasm.
+
+commit 15ed44ecee4c0a6a1cc80be29ff68d908f421847
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Nov 25 16:21:44 2019 +0000
+
+    - CHG: Minor i18n addition.
+
+commit 76ad4a3d477465ebcf3d3bde4efa89a02304c8c5
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Nov 22 15:50:53 2019 +0000
+
+    - ADD: Finalised user registration.
+    - ADD: Added popover to aside menu toggler to let the user know how to close it.
+    - ADD: Added Gatekeeper error handling.
+    - ADD: Added passport page linking via its name from external websites.
+    - ADD: Added group upload preview page based on CurlyWhirly uploads.
+
+commit 0b677d33dc8113d795a4b34ed233de3f3e843e6e
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Nov 21 16:19:54 2019 +0000
+
+    - ADD: Added user group members table and page.
+    - FIX: Fixed issues with unmarking marked items on the marked items page.
+    - FIX: Fixed issue with deleting groups.
+
+commit 51f179a76a86e82fb77f0c7ed510ed5d054f1757
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Nov 21 09:16:21 2019 +0000
+
+    - FIX: Fixed issues with plots if multiple datasets were selected and the chart was colored by something then missing values would force plotly.js to change the dimensions to be categorical rather than numeric. Returning NaN for empty values fixes this.
+
+commit 955d4eb8fbea9fc1368a510b2fff0a3ac07fdf8a
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Nov 19 16:19:29 2019 +0000
+
+    - ADD: Added initial version of registration component.
+    - ADD: Added about project page.
+
+commit 8c49cded8c7128b9015486cba48bb258aee42419
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Nov 18 16:22:08 2019 +0000
+
+    - ADD: Added dataset attribute download section to experiment details page.
+
+commit adf9e445242c480abbb3edcb27072bd62b32ecb8
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Nov 18 15:36:42 2019 +0000
+
+    - FIX: Fixed max zoom level on geographic point search map.
+    - ADD: Added experiment details page.
+
+commit e26e74ca976eea7af11b2233cf5a05e47213ac49
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Nov 18 11:38:22 2019 +0000
+
+    - CHG: Automatically de-select items that have either no germplasm or no markers during the genotypic data export.
+
+commit 88a59d966d30b0f0f37c96393460af3778869a83
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Nov 18 11:02:50 2019 +0000
+
+    - ADD: Added mechanism to export multiple genotypic datasets at the same time.
+    - ADD: Added mechanism to show number of germplasm and markers per genotypic dataset if multiple datasets are selected. Users can then make the decision which ones to export.
+
+commit ee9b0ae1994d851a4d420cbe0b2a0dc228eea119
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Nov 13 18:36:05 2019 +0000
+
+    - ADD: Added dataset table selection handler.
+    - ADD: Added ability to add/delete user groups.
+
+commit b3853ef16992dba76da3685dbb0e7c958d14a0e2
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Nov 12 18:53:23 2019 +0000
+
+    - ADD: Added dataset permissions table.
+    - ADD: Added news and projects section to dashboard.
+
+commit fe4cc20ccfd21f953d2648c524769a9936857cf5
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Nov 11 16:18:12 2019 +0000
+
+    - CHG: Unified a lot of the export page content for trials, compounds and climates. They reuse a lot (but not all) of the same component now.
+    - ADD: Added initial user permissions page with a user groups table.
+    - ADD: Added gradient to location heatmap.
+    - ADD: Added an indicator that lets the users know that the tables can be filtered.
+    - ADD: Added download button for climate data to datasets table.
+    - ADD: Added data download section to climate data export page.
+
+commit a23805ba35c7cfc4e10f6b8d2668509deb2f67a2
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Nov 8 17:56:44 2019 +0000
+
+    - CHG: Increased width of the sidebar.
+    - ADD: Added loading indicator to tables. This is also shown on sort between the filter and marking information.
+    - CHG: Changed beforeTable content to use flex-box rather than bootstrap columns.
+    - ADD: Added climate data table to climate export page.
+    - ADD: Added number formatting (thousand separators) to some places.
+    - ADD: Added different data point shapes to scatter and matrix plots.
+    - ADD: Added badges/shields to README.
+    - CHG: Upgraded materialdesignicons to the latest version.
+
+commit 8e830ea55f88015f94cdd4b6d4eb28e098418f37
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Nov 7 16:08:17 2019 +0000
+
+    - ADD: Added group/id selection to box plots.
+    - ADD: Added climate export page.
+    - ADD: Added initial climate charts.
+    - CHG: Unified data export selection code.
+    - FIX: Fixed issues with bootstrap-vue select boxes and vue-tables-2 by downgrading the latter.
+
+commit 95204ab1663faeb563cc73a29f33b91251972f37
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Nov 6 16:27:31 2019 +0000
+
+    - ADD: Added some text explaining how to close the advanced map export options.
+
+commit 9aabd623f1f53e5e98ad218eca9aec8dd585b680
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Nov 5 16:05:48 2019 +0000
+
+    - DEL: Removed no longer required properties from German translation.
+
+commit 5d64a237f05940a37e9835a77ded2e0789d5e4d6
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Nov 5 15:25:25 2019 +0000
+
+    - ADD: Added more team members to about Germinate page.
+    - ADD: Added bar chart component.
+    - ADD: Added choropleth chart component.
+    - ADD: Added taxonomy pie chart component.
+    - FIX: Fixed issue with table filter, where changing the column wouldn't not change the current comparator to a valid one.
+    - ADD: Added data statistics page.
+
+commit a7bf11d301d7c10f780417550ee204aa312c35ab
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Nov 4 18:18:18 2019 +0000
+
+    - ADD: Added loading indicator to data import page.
+
+commit 4aea46b2a6cad6c8e73de86eb6a8d6ead3aede60
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Nov 1 17:09:42 2019 +0000
+
+    - ADD: Added map export download.
+    - ADD: Added advance map export options.
+    - ADD: Added map region selection to map histogram chart.
+    - CHG: Updated bootstrap-vue and vue-tables-2.
+
+commit ba34e2950bbf9aaf7e996dd9b909d2ed9a1b35c4
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Oct 31 17:56:36 2019 +0000
+
+    - ADD: Added funders to about page.
+    - ADD: Added initial team members to about page.
+    - ADD: Added PDCI modal to passport page.
+    - ADD: Added initial marker name autocomplete box.
+
+commit 13b911299608770ad3b1225341447f6e1050317e
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Oct 30 18:28:00 2019 +0000
+
+    - CHG: Changed boxplot, matrix and scatter charts to be usable by both trait and compound export.
+    - ADD: Added compound page, compound details page and compound export page.
+
+commit 6622cb6a6b2b4f0872917aa7d66e312242197f99
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Oct 30 08:32:20 2019 +0000
+
+    - ADD: Added Dockerfile.
+
+commit e837c6606fac51b79ec8e6e4f4877d150598d7f9
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Oct 29 16:14:46 2019 +0000
+
+    - CHG: Updated favicon.
+    - FIX: Fixed overlapping issues in top navbar.
+    - ADD: Added Germinate text to the side of the logo.
+
+commit 0c339f76288c6d7beafe6a86ffad3b32e214fced
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Oct 29 15:03:42 2019 +0000
+
+    - FIX: Fixed chart download dropdown positioning.
+    - CHG: Made TraitBoxplotChart work with data where you have only one trait across datasets.
+    - ADD: Added trait data download tab.
+    - ADD: Added trait dataset attribute download button.
+    - ADD: Added support for group types to table filtering.
+    - ADD: Added trait details page.
+    - ADD: Added table that shows datasets with unaccepted licenses to trait details page.
+    - ADD: Added box plot per dataset to trait details page.
+    - ADD: Added group type selector to the top of the groups page for easier navigation between types.
+
+commit 9c98f4818f948a51e8d4e0406029571326666701
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Oct 25 17:34:48 2019 +0100
+
+    - ADD: Added chart download code for D3.js charts.
+    - ADD: Added pedigree chart.
+    - ADD: Added export format information page and added links from export pages to the new format page.
+    - ADD: Added ScrollSpy to passport page.
+    - ADD: Added institutions information to passport page. Clicking on the button will show all accessions from this institution.
+    - ADD: Added expand/collapse indicator to Collapse component.
+
+commit da09343a7dc5eeff9e7b8328f166b773564a7bb0
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Oct 22 10:22:58 2019 -0500
+
+    - ADD: Added loading indicator to BaseChart that implementing charts can trigger.
+    - FIX: Added missing germplasm GID column to germplasm table.
+    - CHG: Updated readme.
+
+commit 4714ce11dc29060a3bcc220500b6ad100f17b41f
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Oct 18 14:33:28 2019 +0100
+
+    - FIX: Fixed issue with MCPD not showing up if entries are missing.
+    - ADD: Added tabs to passport page if the germplasm is not a top level accession.
+    - ADD: Added timezone specific date and time display.
+    - ADD: Added sidebar state restoring on page refresh.
+
+commit 32270b0b5ad3b7c6ff8fbc4eda2103b96414806f
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Oct 18 09:18:35 2019 +0100
+
+    - FIX: Fixed async job count issue for logged in users.
+    - CHG: Changed where the sidebar logo is positioned to make it part of the scrollable area.
+
+commit 919bd38863d8bca6301cebea88c604879c4d9f33
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Oct 17 16:20:03 2019 +0100
+
+    - ADD: Added allele frequency chart.
+    - ADD: Added allele frequency async data export.
+    - ADD: Added whole table selection to dataset table.
+
+commit 6b5686b6cca3ca60227ee461fbf4a26319bc2209
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Oct 15 18:09:36 2019 +0100
+
+    - CHG: Improved feedback on sign in form.
+    - ADD: Added group creation mechanism to markable tables.
+
+commit 6e470515f4923c269e2477a6c29563e3a605d5ab
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Oct 15 13:38:49 2019 +0100
+
+    - ADD: Added initial linking from dataset tables to individual export pages.
+    - ADD: Added handling of cases where people get redirected to export pages, but don't have access to any of the selected datasets.
+
+commit f7d240b2d6299e43ae4d461bd589cb7e02c56962
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Oct 15 11:57:06 2019 +0100
+
+    - FIX: Fixed deprecated formatting of dates in tables.
+    - ADD: Added code that loads client locale configuration from the server.
+    - ADD: Added direct download of allele frequency data form datasets table.
+    - FIX: Fixed template SVG image loading on main template and login templage.
+    - ADD: Added code that respects the server requirements for which pages should be hidden from the interface.
+
+commit 0758146f6ee0d318bd4bdfb69d4f904cbdd54623
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Oct 14 19:40:18 2019 +0100
+
+    - ADD: Added Dublin Core download to dataset attribute modal.
+    - CHG: Cleanup and unification of table props.
+    - ADD: Added compound data table.
+    - ADD: Added direct download links to dataset table.
+    - ADD: Added links to pedigree table.
+    - ADD: Added functionality to global search bar.
+    - ADD: Added map definitions table to search page.
+    - ADD: Added locations table to search page.
+    - ADD: Added pedigree table to search page.
+    - ADD: Added trials data table to search page.
+    - CHG: Cleanup of search page code.
+
+commit f8a1c5b18f0144e94df46d20872e9979cfb6ea8b
+Author: Sebastian Raubach <Sebastian.Raubach@hutton.ac.uk>
+Date:   Fri Oct 11 21:35:17 2019 +0100
+
+    - ADD: Added data filtering type support for global table searches that aren't added via the UI.
+    - ADD: Added germplasm, germplasm attributes, dataset and dataset attribute tables to the search page.
+
+commit f8e16c003d452565b6fccbb05cace58efcb5e1ee
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Oct 10 16:19:32 2019 +0100
+
+    - ADD: Added a collapse widget that can house tables and display their load progress.
+    - ADD: Added initial search page.
+    - ADD: Added germplasm tables to geographic search page.
+
+commit 0100320c0fce07c61cfb0ebef5a10dc9fc8ad5cc
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Oct 9 16:13:27 2019 +0100
+
+    - CHG: Updated bootstrap-vue.
+    - ADD: Added geographic search page with point and polygon search.
+    - ADD: Added custom page styling based on stylesheet provided by the server.
+    - ADD: Added Flapjack enable/disable switch to genotype export page.
+    - ADD: Added download link to async job view.
+
+commit 62b2320e56541bc69b194f27c3b0bab1eb86ae43
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Oct 4 18:42:50 2019 +0100
+
+    - ADD: Added reusable component for group selection.
+    - ADD: Added genotype data export page.
+    - ADD: Added date to image node.
+    - ADD: Added asynchronous data export for genotypic data.
+    - ADD: Added refresh widget for async aside.
+    - ADD: Added async task count badge.
+
+commit 9010f6e20d5e161ba135265a82ebb58a05690ae8
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Oct 2 22:03:30 2019 +0100
+
+    - ADD: Added additional options to base chart so that extending components can specify these.
+    - ADD: Added item marking to matrix and scatter plot.
+    - ADD: Added initial version of an image table in addition to the gallery.
+    - ADD: Added branded crop icon, logo and name of the database.
+
+commit 1d8649fb130126020a81003b32ef9d3e09114bc8
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Oct 1 18:30:33 2019 +0100
+
+    - CHG: Updated Plotly.js library.
+    - ADD: Added plotly chart centering based on bootstrap's 'text-center' class.
+    - ADD: Added simple scatter plot to trials export page if only two traits are selected.
+    - ADD: Added passport page popup to matrix and scatter plot.
+    - ADD: Added box plot chart to trials export page to show the statistics about traits.
+    - FIX: Fixed an issue with the entity data table where it wouldn't show data if an entity type was missing.
+
+commit b2cf32033bf3a4d5cba48e940c4273196d6b3d59
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Sep 26 20:43:06 2019 +0100
+
+    - ADD: Added entity type switch element above germplasm table. Unavailable entity types are disabled.
+    - ADD: Added coloring to matrix chart.
+    - ADD: Added germplasm group selection to trials data export.
+    - ADD: Added trials overview stats widget with boxplots.
+    - ADD: Added attribute table to datasets modal.
+    - ADD: Added download button to base table.
+    - ADD: Added entity table to passport page.
+    - ADD: Added germplasm attributes table to passport page.
+    - ADD: Added pedigree table to passport page.
+    - ADD: Added trials data table to export page.
+    - ADD: Added async export progress information to Aside menu.
+
+commit 821c834ec4bfa0d294d817eef6467cad28be6a13
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Sep 13 18:36:40 2019 +0100
+
+    - CHG: Changed indentation of menu items.
+    - ADD: Added text-overflow to menu items in the collapsed menu.
+    - ADD: Added initial trials export selection dialog.
+
+commit e7a7c63e2bb465cc2d975aa6746b371aadc4701e
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Sep 12 18:21:00 2019 +0100
+
+    - ADD: Added styling for side menu to add indentation to sub-items.
+    - ADD: Added a plotly matrix chart component.
+    - ADD: Added a dataset attribute modal. TODO: Add attributes in addition to dublin core.
+    - ADD: Added collaborators modal to datasets table.
+    - ADD: Added an initial version of the trials data export page.
+
+commit a33444616208fda99e41bfce8cad297b86b9bf92
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Sep 10 18:34:54 2019 +0100
+
+    - ADD: Added a base chart component that adds the download functionality to the charts.
+    - ADD: Added a traits table.
+
+commit 5d75a1bcafff6f1779abcddaa7b7b3ef93955886
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Sep 9 19:05:18 2019 +0100
+
+    - ADD: Added loading dialog to germplasm table marking.
+    - DEL: Removed additional table options for locationa s they don't apply to all rows.
+    - ADD: Added confirm dialog to marked item clearing.
+    - FIX: Fixed issues with table filtering where non-removable filter options are present.
+    - ADD: Added a page to show the marked items.
+
+commit 0b87a4bcac3b5cfecb6e5d640910dcb09906e0f7
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Sep 9 15:54:10 2019 +0100
+
+    - ADD: Added baguettebox library for lightbox effect image previews.
+    - ADD: Added content to about Germinate page.
+    - ADD: Added links from location maps to details pages.
+    - ADD: Added context menu to base table for marked items.
+    - ADD: Added entity marking for items in the germplasm table.
+
+commit fc0d096afa8295519bca0ee0e78fee38337486a9
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Sep 6 15:49:13 2019 +0100
+
+    - ADD: Added filter preview above table.
+    - ADD: Added link from locations table to datasets page filtered by location.
+    - CHG: Replaced Vue marker clusterer with plain JS clsusterer.
+
+commit e45012a4cc2fc1f81e013532d671afdea76ed4b9
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Sep 5 16:02:21 2019 +0100
+
+    - CHG: Updated favicons and logo.
+    - ADD: Added modal as a loading indicator.
+    - ADD: Added tile layer switcher to maps.
+    - CHG: Synchronized maps on locations page.
+    - ADD: Added marking column header to base table. Calls getIds of all implementing tables.
+
+commit 578f2abb27f30aa6ceccfdccd682a2e164627193
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Sep 4 18:46:02 2019 +0100
+
+    - ADD: Added locations page with clustered and heatmapped locations. The maps reflect the filtering of the table.
+    - CHG: Updated favicons.
+    - CHG: Moved vuex state parameter availability to the Mixin so that they are available everywhere.
+    - ADD: Added a group add/edit dialog for updating groups and adding new ones (TODO).
+    - ADD: Added table actions panel to  BaseTable.
+    - ADD: Added item selection (not marking) across pages of all tables.
+    - ADD: Added a marker table to the groups page.
+    - FIX: Fixed table filtering.
+    - ADD: Added more data types to the table filter.
+    - ADD: Added a dataset selection widget.
+    - ADD: Added group members tables to groups page.
+    - ADD: Added functionality to delete items from groups.
+
+commit 86258b29ecd263689ac381fa15b521a008532ca4
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Sep 2 17:26:13 2019 +0100
+
+    - CHG: Changed square logo.
+    - ADD: Added new authentication mode: SELECTIVE where users CAN, but don't HAVE to sign in to get access to more features.
+    - ADD: Added calls to edit and delete a group.
+    - ADD: Added a call to upload a template spreadsheet and check it on the server. Then show the status report on a dedicated page.
+
+commit 8b28385b1a3487f2b7b63341af8917a1e9c5da16
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Aug 30 18:01:39 2019 +0100
+
+    - FIX: Fixed carousel text sizing issue.
+    - ADD: Added groups table.
+    - ADD: Added data types to table filters. The input types will change based on the data type.
+    - FIX: Fixed issue where sidebar nav wasn't changing locale when the page was.
+    - ADD: Added more comparators to table filtering.
+
+commit cff424c77479ff5f14ae7aa342e0110abd9c01f9
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Aug 29 17:24:50 2019 +0100
+
+    - ADD: Added favicon.
+    - FIX: Fixed page layout on mobile phones.
+    - ADD: Added groups page and table.
+    - ADD: Added help content handling.
+
+commit bd019a0f44d0af881288c713941cfe7502d056ba
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Aug 28 14:44:28 2019 +0100
+
+    - ADD: Added leaflet as a dependency and a map to the passport page.
+    - ADD: Added fallback locale strings to the client. These are used if the server doesn't provide any. If the server does, the client defaults will be overwritten with the (potentially partial) server strings.
+
+commit 72e3d5bfbcdbff794285544ff2140637839201dc
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Aug 27 18:51:28 2019 +0100
+
+    - ADD: Added client settings call.
+    - ADD: Added image carousel.
+    - ADD: Added overview statistics to dashboard.
+
+commit 09853aec6b87b124b904d2742766ac4942fca7ab
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Aug 26 18:50:24 2019 +0100
+
+    - CHG: Moved client locale strings to server and added code to get them on demand. Closes #1.
+    - CHG: Added baseUrl to axios defaults.
+    - ADD: Added MCPD widget to passport page.
+    - ADD: Added marking checkbox to passport page.
+    - ADD: Added code to redirect the user to the originally requested page after login. Closes #2.
+
+commit cc98ee1023931ba0808084a9498935f158b5bcaf
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Aug 23 18:57:05 2019 +0100
+
+    - ADD: Added dataset license download as HTML.
+
+commit fffcdb1448d5abe526075a26ff09da03433ee4fa
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Aug 23 18:21:47 2019 +0100
+
+    - ADD: Added header to login page.
+    - ADD: Added multi-selection hint to tables.
+    - ADD: Added license modal to datasets table.
+    - ADD: Added license printing functionality.
+
+commit ba9602c3b78fda283f05be71e626953b0f2079cb
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Aug 14 19:21:58 2019 +0100
+
+    - ADD: Added working selection box to base table.
+    - ADD: Added i18n to dataset table.
+    - FIX: Fixed table filter if first column doesn't have text.
+
+commit 833fa2aeab88113c3e9996f345527b317455a5fa
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Wed Aug 14 15:03:24 2019 +0100
+
+    - ADD: Added Germinate logo.
+    - ADD: Added a locale dropdown for switching locales.
+    - ADD: Added user settings dropdown.
+    - ADD: Added selection column to base table. (Needs work).
+    - ADD: Added a datasets table.
+    - CHG: Moved i18n functionality into base table.
+
+commit 528aaf734656fb19a9b530a3f2da13c09d59c97d
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Tue Aug 13 15:56:08 2019 +0100
+
+    - ADD: Added map details table.
+    - ADD: Added map histogram.
+    - ADD: Added resize observer for plotly charts.
+
+commit 849805f39a9f0c65edf674c3fc4fdd5a8806e903
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Mon Aug 12 18:56:17 2019 +0100
+
+    - DEL: Removed jQuery and Peity.js. Replaced with custom SVG.
+    - ADD: Added dropdown to top navigation for marked items.
+    - CHG: Integrated per page into table options.
+    - ADD: Added links to germplasm table.
+    - ADD: Added initial maps table.
+    - CHG: Completely sitched to Axios.
+    - ADD: Added initial passport page.
+
+commit ba2e91b6f09c53a1367ae73e2c8db26cd4075b77
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Fri Aug 9 16:14:09 2019 +0100
+
+    - ADD: Added moment for time formatting.
+    - ADD: Restructured BaseTable so other tables no longer extend it. Instead they use composition and are still able to override scoped slots.
+    - ADD: Added all columns to germplasm table.
+    - ADD: Added filtering to tables.
+    - ADD: Added Object.assign polyfill.
+
+commit d49a847f16e34febde02b448128fb7c63ec03246
+Author: sebastian-raubach <sebastian.raubach@hutton.ac.uk>
+Date:   Thu Aug 8 20:45:59 2019 +0100
+
+    - ADD: Initial import of code.
+
+commit abed48b5a003890da436e9e2dca57976a6958278
+Author: Sebastian Raubach <sebastian-raubach@users.noreply.github.com>
+Date:   Thu Aug 8 20:44:25 2019 +0100
+
+    Initial commit

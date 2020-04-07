@@ -10,6 +10,7 @@
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
       <b-navbar-nav class="ml-auto align-items-stretch top-nav">
         <b-nav-form @submit.prevent="search" class="d-none d-sm-inline">
+          <!-- Search box -->
           <b-input-group class="mr-sm-2">
             <b-form-input size="sm" v-model="searchTerm" :placeholder="$t('inputPlaceholderSearch')"></b-form-input>
             <b-input-group-append>
@@ -17,21 +18,27 @@
             </b-input-group-append>
           </b-input-group>
         </b-nav-form>
+        <!-- Help information -->
         <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()" id="top-nav-help" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
+        <!-- Locale dropdown -->
         <LocaleDropdown class="top-nav-locale d-flex align-self-center"/>
+        <!-- Marked items -->
         <MarkedItemDropdown class="d-flex align-self-center" />
+        <!-- User dropdown -->
         <UserSettingsDropdown class="d-flex align-self-center" />
       </b-navbar-nav>
       <div>
         <AsideToggler class="d-block aside-toggler" :display="'xs'" ref="asideToggler" @click.native="updateAside" v-b-popover="asidePopoverConfig" />
+        <!-- Indicate how many jobs are running -->
         <b-badge pill variant="info" class="async-badge" v-if="asyncJobCount !== null && asyncJobCount > 0">{{ asyncJobCount }}</b-badge>
       </div>
     </AppHeader>
 
+    <!-- GDPR notification -->
     <b-popover target="app-header" show placement="bottom" variant="info" v-if="serverSettings && serverSettings.showGdprNotification === true && cookiesAccepted === null">
       <template v-slot:title>{{ $t('widgetGdprNotificationTitle') }}</template>
       <p>{{ $t('widgetGdprNotificationText') }}</p>
-      <p>{{ $t('widgetGdprNotificationReadMore') }}</p>
+      <p><router-link :to="{ name: 'cookies' }">{{ $t('widgetGdprNotificationReadMore') }}</router-link></p>
       <div class="d-flex flex-row">
         <b-button variant="success" class="flex-fill mr-2" @click="acceptCookies(true)">{{ $t('widgetGdprNotificationButtonAccept') }}</b-button>
         <b-button variant="secondary" class="flex-fill text-muted" v-b-tooltip:hover :title="$t('tooltipGdprNotificationButtonReject')" @click="acceptCookies(false)">{{ $t('widgetGdprNotificationButtonDecline') }}</b-button>
@@ -52,6 +59,7 @@
             <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
           </div>
           <hr />
+          <!-- Child content goes here -->
           <router-view :key="$route.path"></router-view>
         </div>
       </main>
@@ -69,16 +77,19 @@
       </div>
     </TheFooter>
 
+    <!-- Help modal -->
     <b-modal :title="$t('widgetHelpTitle')" v-if="helpKey" ref="helpModal" ok-only size="lg">
       <p v-html="$t(this.helpKey)" />
     </b-modal>
 
+    <!-- Introduction tour -->
     <Tour :steps="popoverContent" ref="introductionTour" />
   </div>
 </template>
 
 <script>
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter } from '@coreui/vue'
+import Cookies from '@/views/pages/Cookies'
 import DefaultAside from './DefaultAside'
 import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
 import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
@@ -93,6 +104,7 @@ export default {
     AppHeader,
     AppSidebar,
     AppAside,
+    Cookies,
     TheFooter,
     DefaultAside,
     LocaleDropdown,
@@ -143,14 +155,6 @@ export default {
         trigger: 'manual',
         variant: 'info'
       }
-    }
-  },
-  computed: {
-    name () {
-      return this.$route.name
-    },
-    list () {
-      return this.$route.matched.filter((route) => route.name || route.meta.label)
     }
   },
   watch: {
@@ -443,7 +447,7 @@ export default {
       })
     }
 
-    // Since we can't add the logos to the nav sidebar in any way that CoreUI provided, we have to insert it manually.
+    // Since we can't add the logos to the nav sidebar in any way that CoreUI provided, we have to insert them manually.
     var sb = this.$refs.sidebarNav.$el.querySelector('section')
     var img = document.createElement('img')
     img.src = this.baseUrl + 'image/src-svg/logo.svg'

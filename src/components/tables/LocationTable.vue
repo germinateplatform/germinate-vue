@@ -5,24 +5,32 @@
               itemType="locations"
               ref="locationTable"
               v-on="$listeners">
+    <!-- Location name link -->
     <template v-slot:cell(locationName)="data">
+      <!-- Dataset location -->
       <router-link to="/data/datasets" @click.native="navigateToDatasets(data.item)" event="" v-if="data.item.locationType === 'datasets'" :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</router-link>
+      <!-- Collecting site -->
       <router-link to="/data/germplasm" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'" :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</router-link>
+      <!-- Anything else -->
       <span v-else :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</span>
     </template>
-
+    <!-- Location latitude -->
     <template v-slot:cell(locationLatitude)="data">
       <span v-if="data.item.locationLatitude !== undefined">{{ data.item.locationLatitude.toFixed(2) }}</span>
     </template>
+    <!-- Location longitude -->
     <template v-slot:cell(locationLongitude)="data">
       <span v-if="data.item.locationLongitude !== undefined">{{ data.item.locationLongitude.toFixed(2) }}</span>
     </template>
+    <!-- Location elevation -->
     <template v-slot:cell(locationElevation)="data">
       <span v-if="data.item.locationElevation !== undefined">{{ data.item.locationElevation.toFixed(2) }}</span>
     </template>
+    <!-- Country name -->
     <template v-slot:cell(countryName)="data">
       <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
     </template>
+    <!-- Location type -->
     <template v-slot:cell(locationType)="data">
       <span><i :class="`mdi mdi-18px ${locationTypes[data.item.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[data.item.locationType].color()};`" /> {{ locationTypes[data.item.locationType].text() }}</span>
     </template>
@@ -152,6 +160,7 @@ export default {
   },
   methods: {
     navigateToGermplasm: function (location) {
+      // Set up the filter
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
           name: 'location',
@@ -161,9 +170,11 @@ export default {
         operator: 'and',
         values: [location.locationName]
       }])
-      this.$router.push({ path: '/data/germplasm' })
+      // Redirect to germplasm page filtered by location
+      this.$router.push({ name: 'germplasm' })
     },
     navigateToDatasets: function (location) {
+      // Set up the filter
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
           name: 'locations',
@@ -173,7 +184,8 @@ export default {
         operator: 'and',
         values: [location.locationName]
       }])
-      this.$router.push({ path: '/data/datasets' })
+      // Redirect to datasets page filtered by location
+      this.$router.push({ name: 'datasets' })
     },
     refresh: function () {
       this.$refs.locationTable.refresh()

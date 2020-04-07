@@ -1,17 +1,17 @@
 <template>
   <div v-if="experiment">
-    <h1>Experiment details <small>{{ experiment.name }}</small></h1>
+    <h1>{{ $t('pageExperimentDetailsTitle') }} <small>{{ experiment.name }}</small></h1>
+    <!-- Table showing all datasets within this experiment -->
     <DatasetTable :getData="getData" :filterOn="getFilter()" />
 
-    <h2 class="mt-4">Download metadata</h2>
-    <p>Something here</p>
-    <b-button @click="downloadMetadata"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownload') }}</b-button>
+    <!-- Metadata download -->
+    <DatasetMetadataDownload :experimentId="experimentId" />
   </div>
 </template>
 
 <script>
+import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import DatasetTable from '@/components/tables/DatasetTable'
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
@@ -22,6 +22,7 @@ export default {
     }
   },
   components: {
+    DatasetMetadataDownload,
     DatasetTable
   },
   mixins: [ datasetApi ],
@@ -40,22 +41,6 @@ export default {
         values: [this.experimentId],
         canChange: false
       }]
-    },
-    downloadMetadata: function () {
-      EventBus.$emit('show-loading', true)
-      const request = {
-        experimentId: this.experimentId
-      }
-      this.apiPostDatasetAttributeExport(request, result => {
-        var downloadRequext = {
-          blob: result,
-          filename: 'experiment-metadata-' + this.experimentId,
-          extension: 'txt'
-        }
-
-        this.downloadBlob(downloadRequext)
-        EventBus.$emit('show-loading', false)
-      })
     }
   },
   mounted: function () {
@@ -66,6 +51,7 @@ export default {
     }
 
     if (this.experimentId) {
+      // Prepare the query
       const query = {
         page: 1,
         limit: 1,
@@ -76,6 +62,7 @@ export default {
           values: [this.experimentId]
         }]
       }
+      // Run against API
       this.apiPostExperimentTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           this.experiment = result.data[0]

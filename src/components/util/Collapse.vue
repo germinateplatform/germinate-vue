@@ -1,9 +1,12 @@
 <template>
   <b-card no-body>
+    <!-- Header click toggles the collapse -->
     <b-card-header header-tag="header" class="p-2 collapse-header" role="tab" @click="toggle">
       <div class="d-flex flex-row">
+        <!-- Icon and name to the left -->
         <i :class="`collapse-expand-status mdi mdi-18px mdi-chevron-right ${getStyle()}`" />&nbsp;
         <strong><i :class="`mdi mdi-18px ${icon} text-primary`" v-if="icon"/> {{ title }}</strong>
+        <!-- Count and progress to the right -->
         <span class="ml-auto">
           <b-badge :variant="count > 0 ? 'primary' : null" v-if="!loading && count !== undefined">{{ count }}</b-badge>
           <b-progress :value="100" height="20px" class="collapse-loading" variant="primary" striped animated v-if="loading" />
@@ -11,6 +14,7 @@
       </div>
     </b-card-header>
     <b-collapse :id="id" :visible="contentVisible" :accordion="`accordion-${id}`" role="tabpanel">
+      <!-- This is where the content goes, it can trigger the 'update' event to let this component know something happened -->
       <template v-if="noBody">
         <slot v-bind:update="update"/>
       </template>

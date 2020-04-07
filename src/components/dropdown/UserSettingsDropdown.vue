@@ -5,16 +5,22 @@
         <i class="mdi mdi-18px mdi-account" />
       </template>
       <template slot="dropdown">
+        <!-- Administrators get to see additional items -->
         <template v-if="token && token.userType === 'Administrator'">
           <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettingsAdvancedSettings') }}</strong></b-dropdown-header>
           <b-dropdown-item :to="{ name: 'user-permissions' }"><i class="mdi mdi-18px mdi-account-key text-warning" /> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
           <b-dropdown-item :to="{ name: 'import-upload-type', params: { templateType: 'mcpd' } }"><i class="mdi mdi-18px mdi-upload text-warning" /> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
         </template>
+        <!-- Settings -->
         <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettings') }}</strong></b-dropdown-header>
+        <!-- Logout -->
         <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> {{ $t('dropdownUserSettingsLogout') }}</b-dropdown-item>
+        <!-- Login -->
         <b-dropdown-item @click="showLogin" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> {{ $t('dropdownUserSettingsLogin') }}</b-dropdown-item>
       </template>
     </AppHeaderDropdown>
+
+    <!-- Modal containing the sign in form -->
     <b-modal ref="signInModal" :title="$t('widgetSignInTitle')" hide-footer>
       <SignInForm v-on:login="signIn" :enabled="enabled" />
       <p class="text-danger mt-3" v-if="response">{{ response }}</p>

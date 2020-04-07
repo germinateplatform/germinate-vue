@@ -3,6 +3,7 @@
     <template v-if="(projects && projects.length > 0) || (news && news.length > 0)">
       <b-row>
         <b-col xs=12 sm=6 v-if="news && news.length > 0">
+          <!-- News -->
           <h2>{{ $t('pageNewsLatestNewsTitle') }}</h2>
           <b-list-group class="news-items">
             <b-list-group-item button class="d-flex flex-row align-items-center" v-for="newsItem in news" :key="'news-' + newsItem.newsId" @click="selectedNews = newsItem">
@@ -26,12 +27,14 @@
             v-show="newsTotalCount > newsCount"
             @change="updateNews" />
 
+          <!-- Modal containing news details -->
           <b-modal ref="newsModal" :title="selectedNews.newsTitle" scrollable size="xl" v-if="selectedNews" ok-only :ok-title="$t('buttonClose')">
             <div v-html="selectedNews.newsContent" />
             <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" class="mt-3" :href="selectedNews.newsHyperlink" target="_blank">{{ $t('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
           </b-modal>
         </b-col>
         <b-col xs=12 sm=6 v-if="projects && projects.length > 0">
+          <!-- Projects -->
           <h2>{{ $t('pageNewsRelatedProjectsTitle') }}</h2>
           <b-row>
             <b-col xs=12 xl=6 v-for="project in projects" :key="'project-' + project.newsId" class="mb-3">

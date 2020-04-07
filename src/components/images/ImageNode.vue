@@ -1,5 +1,6 @@
 <template>
   <b-card no-body class="image-card" v-if="image">
+    <!-- The image -->
     <a :href="getSrc('large')" class="baguettebox" @click.prevent :data-caption="image.imageDescription">
       <div>
         <img :src="getSrc('small')" class="card-img" style="height: 300px"/>
@@ -9,6 +10,7 @@
       <div class="mb-2">{{ image.imageDescription }}</div>
       <div class="text-muted mb-2" v-if="image.createdOn"><i class="mdi mdi-18px fix-alignment mdi-calendar-clock" /> {{ image.createdOn | toDateTime }}</div>
       <div>
+        <!-- Show tags -->
         <template v-if="image.tags">
           <b-badge v-for="(tag, index) in image.tags" :key="`image-tag-${image.imageId}-${index}`" class="mr-1">
             {{ tag.tagName }}
@@ -22,6 +24,7 @@
                       :title="$t('tooltipTagEdit')" >
               <i class="mdi mdi-18px mdi-pencil" />
             </b-badge>
+            <!-- Add/edit tag modal -->
             <EditTagModal :imageId="image.imageId"
                           :allTags="allTags"
                           :prefilledTags="image.tags"

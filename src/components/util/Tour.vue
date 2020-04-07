@@ -1,6 +1,8 @@
 <template>
   <div v-if="popoverShow">
+    <!-- The backdrop prevents input on the background -->
     <div class="backdrop" />
+    <!-- The popover appears next to the element -->
     <b-popover :target="popoverTarget" :placement="steps[currentIndex].position" ref="popover" :show="popoverShow" variant="secondary">
       <template v-slot:title>
         <b-button @click="popoverShow = false" size="sm" class="ml-1 close" aria-label="Close">
@@ -9,11 +11,16 @@
         <span>{{ steps[currentIndex].title() }}</span>
       </template>
       <div>
+        <!-- Step content text -->
         <p v-html="steps[currentIndex].text()" />
 
+        <!-- Buttons -->
         <b-button-group class="d-flex">
+          <!-- Back button -->
           <b-button variant="secondary" @click="currentIndex = currentIndex - 1" :disabled="currentIndex < 1" v-if="steps.length > 1"><i class="mdi mdi-18px fix-alignment mdi-chevron-left" /> {{ $t('buttonBack') }}</b-button>
+          <!-- Next button -->
           <b-button variant="success" @click="currentIndex = currentIndex + 1" v-if="currentIndex < steps.length - 1">{{ $t('buttonNext') }} <i class="mdi mdi-18px fix-alignment mdi-chevron-right" /></b-button>
+          <!-- Finish button -->
           <b-button variant="success" @click="resetPopover" v-else>{{ $t('buttonClose') }} <i class="mdi mdi-18px fix-alignment mdi-check" /></b-button>
         </b-button-group>
       </div>

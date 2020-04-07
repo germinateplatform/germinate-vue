@@ -1,5 +1,6 @@
 <template>
   <b-modal :ref="`collaboratorModal-${id}`" size="xl" :title="$t('modalTitleCollaborators')" ok-only :ok-title="$t('buttonClose')">
+    <!-- Modal showing collaborator information -->
     <CollaboratorTable :getData="getData" />
   </b-modal>
 </template>

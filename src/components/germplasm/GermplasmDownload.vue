@@ -9,6 +9,7 @@
           </b-card-title>
           <b-card-sub-title class="mb-2">{{ $t('pageGermplasmDownloadTabGermplasmSubtitle') }}</b-card-sub-title>
           <b-card-text>{{ $t('pageGermplasmDownloadTabGermplasmText') }}</b-card-text>
+          <!-- Germplasm selection options (groups, marked items, all) -->
           <b-form-radio-group
             class="d-block mb-3"
             v-model="passportSelection"
@@ -16,12 +17,14 @@
             button-variant="outline-primary"
             buttons />
 
+          <!-- Germplasm groups -->
           <b-form-select
             class="mb-3"
             v-model="passportGroup"
             :options="groups"
             v-if="passportSelection === 'group'" />
 
+          <!-- Export attributes? -->
           <b-form-checkbox class="mb-3" v-model="passportIncludeAttributes" switch>{{ $t('pageGermplasmDownloadTabIncludeAttributes') }}</b-form-checkbox>
 
           <template v-slot:footer>
@@ -37,6 +40,7 @@
           <b-card-sub-title class="mb-2">{{ $t('pageGermplasmDownloadTabPedigreeSubtitle') }}</b-card-sub-title>
 
           <b-card-text>{{ $t('pageGermplasmDownloadTabPedigreeText') }}</b-card-text>
+          <!-- Germplasm selection options (groups, marked items, all) -->
           <b-form-radio-group
             class="d-block mb-3"
             v-model="pedigreeSelection"
@@ -44,6 +48,7 @@
             button-variant="outline-primary"
             buttons />
 
+          <!-- Germplasm groups -->
           <b-form-select
             class="mb-3"
             v-model="pedigreeGroup"
@@ -153,6 +158,7 @@ export default {
   mounted: function () {
     this.updateSelectionOptions()
 
+    // Get germplasm groups
     const query = {
       page: 1,
       limit: this.JAVA_MAX_INTEGER,
@@ -177,11 +183,11 @@ export default {
       this.updateSelectionOptions()
     })
 
+    // Check if there's pedigree data. Only get one row to keep load on server low.
     const pedigreeQuery = {
       page: 1,
       limit: 1
     }
-
     this.apiPostPedigreeTable(pedigreeQuery, result => {
       if (result && result.count) {
         this.hasPedigreeData = result.count > 0

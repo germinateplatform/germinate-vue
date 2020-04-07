@@ -3,6 +3,7 @@
     <h1>{{ $t('pageSearchTitle') }}</h1>
     <b-form @submit.prevent="search">
       <b-row>
+        <!-- Search data types -->
         <b-col xs=12 sm=6>
           <b-form-group
             :label="$t('formLabelSearchType')"
@@ -12,6 +13,7 @@
             </b-input-group>
           </b-form-group>
         </b-col>
+        <!-- Search term and comparator -->
         <b-col xs=12 sm=6>
           <b-form-group
             :label="$t('formLabelSearchTerm')"
@@ -41,56 +43,65 @@
     </b-form>
     <template v-if="showResults">
       <h2>{{ $t('pageSearchResultTitle') }} <small>"{{ searchTerm }}"</small></h2>
-      <p class="text-muted">Click on a section to expand it and see the results for that category.</p>
+      <p class="text-muted">{{ $t('pageSearchResultText') }}</p>
 
+      <!-- Germplasm -->
       <Collapse icon="mdi-sprout" :title="$t('pageSearchResultSectionGermplasm')" :visible="false" class="mb-2" no-body ref="collapseGermplasm" v-if="isSearchType('germplasm')">
         <template v-slot:default="slotProps">
           <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" :filterOn="getFilter('TABLE_COLUMNS_GERMPLASM_SEARCHABLE')" ref="tableGermplasm" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
+      <!-- Germplasm attributes -->
       <Collapse icon="mdi-playlist-plus" :title="$t('pageSearchResultSectionGermplasmAttributes')" :visible="false" class="mb-2" no-body ref="collapseGermplasmAttributes"  v-if="isSearchType('germplasmAttributes')">
         <template v-slot:default="slotProps">
           <GermplasmAttributeTable :getData="getGermplasmAttributeData" :downloadTable="downloadGermplasmAttributes" :filterOn="getFilter('TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE')" ref="tableGermplasmAttributes" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
+      <!-- Trials data -->
       <Collapse icon="mdi-shovel" :title="$t('pageSearchResultSectionTrialsData')" :visible="false" class="mb-2" no-body ref="collapseTrials"  v-if="isSearchType('trials')">
         <template v-slot:default="slotProps">
           <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsData" :filterOn="getFilter('TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE')" ref="tableTrials" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
+      <!-- Chemical compound data -->
       <Collapse icon="mdi-flask" :title="$t('pageSearchResultSectionCompoundData')" :visible="false" class="mb-2" no-body ref="collapseCompoundData" v-if="isSearchType('compounds')">
         <template v-slot:default="slotProps">
           <CompoundDataTable :getData="getCompoundData" :downloadTable="downloadCompoundData" :filterOn="getFilter('TABLE_COLUMNS_COMPOUND_DATA_SEARCHABLE')" ref="tableCompoundData" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
+      <!-- Map definition data -->
       <Collapse icon="mdi-dna" :title="$t('pageSearchResultSectionMapDefinitionData')" :visible="false" class="mb-2" no-body ref="collapseMapDefinitionData"  v-if="isSearchType('mapdefinitions')">
         <template v-slot:default="slotProps">
           <MapDefinitionTable :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" :downloadTable="downloadMapDefinitionData" :filterOn="getFilter('TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE')" ref="tableMapDefinitionData" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
+      <!-- Datasets -->
       <Collapse icon="mdi-database" :title="$t('pageSearchResultSectionDatasets')" :visible="false" class="mb-2" no-body ref="collapseDatasets"  v-if="isSearchType('datasets')">
         <template v-slot:default="slotProps">
           <DatasetTable :getData="getDatasetData" :downloadTable="downloadDatasets" :filterOn="getFilter('TABLE_COLUMNS_DATASET_SEARCHABLE')" ref="tableDatasets" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
+      <!-- Dataset attributes -->
       <Collapse icon="mdi-playlist-plus" :title="$t('pageSearchResultSectionDatasetAttributes')" :visible="false" class="mb-2" no-body ref="collapseDatasetAttributes"  v-if="isSearchType('datasetAttributes')">
         <template v-slot:default="slotProps">
           <DatasetAttributeTable :getData="getDatasetAttributeData" :downloadTable="downloadDatasetAttributes" :filterOn="getFilter('TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE')" ref="tableDatasetAttributes" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
+      <!-- PEdigree data -->
       <Collapse icon="mdi-sitemap" :title="$t('pageSearchResultSectionPedigreeData')" :visible="false" class="mb-2" no-body ref="collapsePedigree" v-if="isSearchType('pedigrees')">
         <template v-slot:default="slotProps">
           <PedigreeTable :getData="getPedigreeData" :downloadTable="downloadPedigrees" :filterOn="getFilter('TABLE_COLUMNS_PEDIGREE_SEARCHABLE')" ref="tablePedigree" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
+      <!-- Location data -->
       <Collapse icon="mdi-map" :title="$t('pageSearchResultSectionLocationData')" :visible="false" class="mb-2" no-body ref="collapseLocationData" v-if="isSearchType('locations')">
         <template v-slot:default="slotProps">
           <LocationTable :getData="getLocationData" :getIds="getLocationIds" :downloadTable="downloadLocations" :filterOn="getFilter('TABLE_COLUMNS_LOCATION_SEARCHABLE')" ref="tableLocations" v-on:data-changed="slotProps.update"/>

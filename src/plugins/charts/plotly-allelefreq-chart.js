@@ -1,19 +1,3 @@
-/*
- *  Copyright 2019 Information and Computational Sciences,
- *  The James Hutton Institute.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 /* eslint-disable */
 export function plotlyAlleleFreqChart() {
 	var width = null,
@@ -32,6 +16,7 @@ export function plotlyAlleleFreqChart() {
 
 			var max = 0;
 
+			// Get the maximum frequency
 			for (var j = 0; j < freqs.length; j++) {
 				max = Math.max(max, freqs[j]);
 			}
@@ -46,12 +31,13 @@ export function plotlyAlleleFreqChart() {
 			var sum = 0;
 			for (var i = 0; i < widths.length; i++) {
 				sum += widths[i];
-				ys.push(widths[i]/100);
-				barColors.push((sum/100).toFixed(4));
+				ys.push(widths[i] / 100);
+				barColors.push((sum / 100).toFixed(4));
 				heights.push(-(max / 40));
 				barWidths.push(max / 20);
 
 				if (i > 0) {
+					// Bin label
 					text.push(barColors[i-1] + ' - ' + barColors[i]);
 				} else {
 					text.push('0 - ' + ys[i].toFixed(4));

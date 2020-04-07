@@ -5,24 +5,31 @@
             itemType="germplasm"
             ref="trialsDataTable"
             v-on="$listeners">
+    <!-- Germplasm id link -->
     <template v-slot:cell(germplasmId)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
     </template>
+    <!-- Germplasm name link -->
     <template v-slot:cell(germplasmName)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
     </template>
+    <!-- Dataset name -->
     <template v-slot:cell(datasetName)="data">
       <span :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</span>
     </template>
+    <!-- Germplasm GID link -->
     <template v-slot:cell(germplasmGid)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
     </template>
+    <!-- Entity type -->
     <template v-slot:cell(entityType)="data">
       <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityType].color()};`" /> {{ entityTypes[data.item.entityType].text() }}</span>
     </template>
+    <!-- Country flag -->
     <template v-slot:cell(countryName)="data">
       <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
     </template>
+    <!-- Trait value -->
     <template v-slot:cell(traitValue)="data">
       <span v-if="data.item.traitValue">{{ isNaN(data.item.traitValue) ? data.item.traitValue : parseFloat(data.item.traitValue).toFixed(2) }}</span>
     </template>

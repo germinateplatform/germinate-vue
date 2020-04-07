@@ -6,33 +6,41 @@
               class="experiment-table"
               ref="experimentTable"
               v-on="$listeners">
+      <!-- Experiment id link -->
       <template v-slot:cell(experimentId)="data">
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToDatasets(data.item)">{{ data.item.experimentId }}</router-link>
       </template>
+      <!-- Experiment name link -->
       <template v-slot:cell(experimentName)="data">
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToDatasets(data.item)" :title="data.item.experimentName">{{ data.item.experimentName | truncateAfterWords(10) }}</router-link>
       </template>
+      <!-- Experiment description link -->
       <template v-slot:cell(experimentDescription)="data">
         <span :title="data.item.experimentDescription">{{ data.item.experimentDescription | truncateAfterWords(20) }}</span>
       </template>
-
+      <!-- Experiment dataset types -->
       <template v-slot:cell(dataTypes)="data">
+        <!-- Trials datasets -->
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'trials')" v-if="data.item.trialsCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()">
           <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" />
           <span> {{ data.item.trialsCount }}</span>
         </router-link>
+        <!-- Genotype datasets -->
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'genotype')" v-if="data.item.genotypeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()">
           <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" />
           <span> {{ data.item.genotypeCount }}</span>
         </router-link>
+        <!-- Compound datasets -->
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'compound')" v-if="data.item.compoundCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()">
           <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" />
           <span> {{ data.item.compoundCount }}</span>
         </router-link>
+        <!-- Allelefreq datasets -->
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'allelefreq')" v-if="data.item.alleleFreqCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()">
           <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" />
           <span> {{ data.item.alleleFreqCount }}</span>
         </router-link>
+        <!-- Climate datasets -->
         <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'climate')" v-if="data.item.climateCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.climate.text()">
           <i :class="`mdi mdi-18px ${datasetTypes.climate.icon}`" :style="`color: ${datasetTypes.climate.color()};`" />
           <span> {{ data.item.climateCount }}</span>
@@ -106,6 +114,7 @@ export default {
   mixins: [ datasetApi ],
   methods: {
     redirectToExport: function (experiment, datasetType) {
+      // Set up the filter
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
           name: 'experimentId',
@@ -115,9 +124,11 @@ export default {
         operator: 'and',
         values: [experiment.experimentId]
       }])
+      // Then redirect to the export page
       this.$router.push({ name: 'export', params: { datasetType: datasetType } })
     },
     redirectToDatasets: function (experiment) {
+      // Set up the filter
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
           name: 'experimentId',
@@ -127,6 +138,7 @@ export default {
         operator: 'and',
         values: [experiment.experimentId]
       }])
+      // Then redirect to the datasets page
       this.$router.push({ name: 'datasets' })
     },
     refresh: function () {

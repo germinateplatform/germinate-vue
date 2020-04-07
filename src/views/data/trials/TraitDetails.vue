@@ -4,10 +4,11 @@
       <h1>{{ trait.traitName }} <small v-if="trait.unitName">{{ trait.unitName }}</small></h1>
       <p v-if="trait.traitDescription">{{ trait.traitDescription }}</p>
 
+      <!-- Image gallery with representative images for this trait -->
       <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="trait.traitName" v-on:tag-clicked="onImageTagClicked" ref="imageGallery"/>
-
       <hr/>
 
+      <!-- Synonyms -->
       <template v-if="trait.synonyms">
         <h2>{{ $t('genericSynonyms') }}</h2>
         <ul>
@@ -17,14 +18,18 @@
 
       <h2>{{ $t('pageTraitDetailsDataTitle') }}</h2>
       <p>{{ $t('pageTraitDetailsDataText') }}</p>
+      <!-- Table showing all data points for this trait -->
       <TrialsDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="traitDetailsTable" />
 
       <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageTraitDetailsStatsText') }}</p>
+      <!-- Boxplot for this trait -->
       <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" />
+      <!-- Table showing all datasets this trait is scored in -->
       <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 
       <div v-show="showAdditionalDatasets">
+        <!-- Any additional datasets this trait is part of for which the license hasn't been accepted yet -->
         <DatasetsWithUnacceptedLicense datasetType="trials" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
       </div>
     </div>

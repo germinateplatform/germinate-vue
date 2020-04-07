@@ -108,17 +108,20 @@ export default {
 
       var y = []
 
+      // Are we plotting datasets and grouping by trait/compound/climate?
       const isInverted = this.chartMode === 'datasetByItem'
 
       if (isInverted) {
         for (var dataset in this.plotData.datasets) {
           for (var i = 0; i < 6; i++) {
+            // If so, datasets are our Ys
             y.push(this.plotData.datasets[dataset].datasetName)
           }
         }
       } else {
         for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
           for (var j = 0; j < 6; j++) {
+            // Else, use this complicated thing to extract the trait/compound/climate name
             y.push(this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey])
           }
         }
@@ -169,7 +172,7 @@ export default {
           var itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
 
           if (itemData && itemData.min !== itemData.max) {
-            // This trait/dataset combination is available, add all the information
+            // This trait/compound/climate by dataset combination is available, add all the information
             x.push(itemData.min)
             x.push(itemData.q1)
             x.push(itemData.median)
@@ -177,7 +180,7 @@ export default {
             x.push(itemData.q3)
             x.push(itemData.max)
           } else {
-            // This trait isn't available in this dataset, fill everything with NaN to not show anything
+            // This trait/compound/climate isn't available in this dataset, fill everything with NaN to not show anything
             x.push(NaN)
             x.push(NaN)
             x.push(NaN)
@@ -211,7 +214,7 @@ export default {
           var datasetData = this.plotData.stats.filter(s => s.xId === itemId && s.datasetId === datasetId)[0]
 
           if (datasetData && datasetData.min !== datasetData.max) {
-            // This trait/dataset combination is available, add all the information
+            // This dataset by trait/compound/climate combination is available, add all the information
             x.push(datasetData.min)
             x.push(datasetData.q1)
             x.push(datasetData.median)
@@ -219,7 +222,7 @@ export default {
             x.push(datasetData.q3)
             x.push(datasetData.max)
           } else {
-            // This trait isn't available in this dataset, fill everything with NaN to not show anything
+            // This dataset isn't available in this dataset, fill everything with NaN to not show anything
             x.push(NaN)
             x.push(NaN)
             x.push(NaN)

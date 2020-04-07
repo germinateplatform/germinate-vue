@@ -29,12 +29,15 @@ let axiosDefaults = require('axios/lib/defaults')
 Vue.mixin(mixin)
 Vue.use(BootstrapVue)
 Vue.use(Autocomplete)
+
+// Register leaflet components
 Vue.component('l-map', LMap)
 Vue.component('l-tile-layer', LTileLayer)
 Vue.component('l-marker', LMarker)
 Vue.component('l-popup', LPopup)
 Vue.component('l-image-overlay', LImageOverlay)
 
+// Set the leaflet marker icon
 delete Icon.Default.prototype._getIconUrl
 Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -44,13 +47,16 @@ Icon.Default.mergeOptions({
 
 Vue.use({
   install: function (Vue) {
+    // Make moment.js available
     Vue.prototype.$moment = require('moment')
     window.moment = Vue.prototype.$moment
+    // Make custom plotly available
     Vue.prototype.$plotly = require('@/plugins/charts/custom-plotly')
     window.Plotly = Vue.prototype.$plotly
   }
 })
 
+// Add thousand separators
 Vue.filter('toThousandSeparators', value => {
   if (value === null || value === undefined) {
     return null
@@ -65,6 +71,7 @@ Vue.filter('toThousandSeparators', value => {
   }
 })
 
+// Date formatting
 Vue.filter('toDate', value => {
   if (value === null || value === undefined) {
     return null
@@ -78,6 +85,7 @@ Vue.filter('toDate', value => {
   return moment.format(i18n.t('formatDate'))
 })
 
+// Date time formatting
 Vue.filter('toDateTime', value => {
   if (value === null || value === undefined) {
     return null
@@ -91,6 +99,7 @@ Vue.filter('toDateTime', value => {
   return moment.format(i18n.t('formatDateTime'))
 })
 
+// Truncate a string after this many words
 Vue.filter('truncateAfterWords', (str, words) => {
   if (!str) {
     return str

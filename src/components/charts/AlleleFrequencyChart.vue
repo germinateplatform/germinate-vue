@@ -50,15 +50,16 @@
 
       <h2>{{ $t('pageAlleleFrequencyBinningChartTitle') }}</h2>
       <p>{{ $t('pageAlleleFrequencyBinningChartText') }}</p>
+      <!-- Plotly.js bar chart -->
       <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename">
         <div slot="chart" id="allelefreq-chart" ref="allelefreqChart" />
       </BaseChart>
-
       <p>{{ $t('pageAlleleFrequencyBinningChartColors') }}</p>
 
       <h2>{{ $t('pageAlleleFrequencyBinningExportTitle') }}</h2>
       <p>{{ $t('pageAlleleFrequencyBinningExportText') }}</p>
-      <b-button variant="primary" @click="triggerExport"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonExport') }}</b-button>
+      <!-- Export button -->
+      <b-button variant="primary" @click="$emit('trigger-export', getExportSettings())"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonExport') }}</b-button>
     </div>
     <h3 class="mt-3" v-else>{{ $t('headingNoData') }}</h3>
   </div>
@@ -107,6 +108,7 @@ export default {
       this.redraw()
     },
     widths: function (newValue, oldValue) {
+      // If the widths change, update the gradient
       if (!this.currentWidths || this.currentWidths.length !== newValue.length) {
         this.updateGradient()
       }
@@ -115,10 +117,12 @@ export default {
   },
   methods: {
     parseFile: function () {
+      // Read the file
       var reader = new FileReader()
       reader.onload = () => {
         this.serverFileBinning = this.$plotly.d3.tsv.parse(reader.result)
         this.serverFileBinning.forEach(d => {
+          // Parse the content
           d.position = parseFloat(d.position)
           d.count = parseInt(d.count)
         })
@@ -143,6 +147,7 @@ export default {
           this.splitLeftBins = this.adjustBinCount(this.splitLeftBins)
           this.splitRightBins = this.adjustBinCount(this.splitRightBins)
           this.splitPoint = Math.min(0.99, Math.max(0.01, this.splitPoint))
+          // Create width arrays for left and right
           const left = new Array(this.splitLeftBins).fill(this.splitPoint / this.splitLeftBins * 100)
           const right = new Array(this.splitRightBins).fill((1 - this.splitPoint) / this.splitRightBins * 100)
           this.widths = left.concat(right)
@@ -151,13 +156,13 @@ export default {
         case 'auto':
           this.autoBins = this.adjustBinCount(this.autoBins)
 
+          // Using the input file, compute the bins so that each contains roughly the same number of data points
           var total = 0
           this.serverFileBinning.forEach(d => {
             total += d.count
           })
 
           const cutoff = total / this.autoBins
-
           var binWidths = []
           var current = 0
           var start = 0
@@ -183,9 +188,6 @@ export default {
       }
       this.redraw()
     },
-    triggerExport: function () {
-      this.$emit('trigger-export', this.getExportSettings())
-    },
     getExportSettings: function () {
       switch (this.binning) {
         case 'equal':
@@ -209,8 +211,10 @@ export default {
     },
     adjustBinCount: function (value) {
       if (this.binning === 'split') {
+        // Restrict to (min/2, max/2) and round
         return Math.min(this.maxBins / 2, Math.max(this.minBins / 2, Math.round(value)))
       } else {
+        // Restrict to (min, max) and round
         return Math.min(this.maxBins, Math.max(this.minBins, Math.round(value)))
       }
     },
@@ -218,6 +222,7 @@ export default {
       this.gradient = this.createColorGradient('#ff7878', '#78fd78', this.widths.length)
     },
     getSourceFile: function () {
+      // Return config to parent
       return {
         blob: this.sourceFile,
         filename: this.getFilename()
@@ -228,6 +233,7 @@ export default {
     },
     redraw: function () {
       if (this.$refs.allelefreqChart) {
+        // Purge existing plot
         this.$plotly.purge(this.$refs.allelefreqChart)
       }
 
@@ -250,6 +256,7 @@ export default {
               colors.push(this.gradient[index - 1])
             })
 
+            // Plot the chart
             this.$plotly.d3.select(this.$refs.allelefreqChart)
               .datum(data)
               .call(plotlyAlleleFreqChart()

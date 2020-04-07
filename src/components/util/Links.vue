@@ -36,11 +36,13 @@ export default {
   },
   methods: {
     update: function () {
+      // Set up the query
       const query = {
         targetTable: this.targetTable,
         foreignId: this.foreignId
       }
 
+      // Query the API
       this.apiPostLinks(query, result => {
         this.links = result
       })

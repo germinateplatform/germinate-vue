@@ -3,6 +3,7 @@
     <h1>{{ $t('pageGenotypesExportTitle') }}</h1>
     <template v-if="datasets && datasets.length > 0">
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
+      <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
       <GenotypeExportSelection :datasetIds="datasetIds" datasetType="genotype" />
     </template>
@@ -48,6 +49,7 @@ export default {
     }
   },
   mounted: function () {
+    // Set up the dataset request based on the provided ids
     const request = {
       page: 1,
       limit: this.JAVA_MAX_INTEGER,
@@ -71,6 +73,7 @@ export default {
 
     this.apiPostDatasetTable(request, result => {
       this.datasets = result.data.filter(d => {
+        // Exclude the ones where a license exists, but hasn't been accepted
         return (!d.licenseName || this.isAccepted(d))
       })
 

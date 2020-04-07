@@ -3,8 +3,11 @@
     <b-form-group
       :label="label"
       label-for="password">
+      <!-- The password input field -->
       <b-form-input id="password" :value="value" name="password" type="password" trim class="no-border-radius-bottom" autocomplete="password" @keyup="updateScore" required/>
+      <!-- The progress is used to indicate the strength of the password -->
       <b-progress :value="percent" :max="100" height="5px" :variant="variant" class="password-score" id="progress"></b-progress>
+      <!-- The tooltip gives feedback on the strength of the password -->
       <b-tooltip target="progress" placement="bottom">
         {{ message }}
       </b-tooltip>

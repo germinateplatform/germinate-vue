@@ -4,8 +4,10 @@
       <template v-if="dataset">
         <h2>{{ $t('modalTitleDatasetAttributes') }}</h2>
         <p>{{ $t('modalTextDatasetAttributes') }}</p>
+        <!-- Dataset attribute table -->
         <DatasetAttributeTable :getData="getAttributeData" :downloadTable="downloadAttributes" />
       </template>
+      <!-- Dublin core -->
       <div v-if="dataset && dataset.dublinCore" class="mt-3">
         <h2>{{ $t('modalTitleDatasetDublinCore') }}</h2>
         <p>{{ $t('modalTextDatasetDublinCore') }}</p>

@@ -17,6 +17,7 @@
       </b-button>
     </b-button-group>
 
+    <!-- Table showing all groups -->
     <GroupTable ref="groupsTable"
                 :getData="getGroupData"
                 :filterOn="filterOn"
@@ -26,14 +27,18 @@
                 v-on:on-group-edit-clicked="onGroupEditClicked"
                 v-on:on-group-delete-clicked="onGroupDeleteClicked" />
 
+    <!-- Group details -->
     <div v-if="group" ref="groupDetails">
       <hr />
+      <!-- Name -->
       <h2>{{ group.groupName }} <small>{{ groupTypes[group.groupType].text() }}</small></h2>
+      <!-- Description -->
       <template v-if="group.groupDescription">
         <h3>{{ $t('pageGroupsDescriptionTitle') }}</h3>
         <p>{{ group.groupDescription }}</p>
       </template>
 
+      <!-- Visibility -->
       <h3>{{ $t('pageGroupsVisibilityTitle') }}</h3>
       <span>{{ $t('pageGroupsVisibilityText') }}</span>
       <b-form-checkbox switch
@@ -70,10 +75,12 @@
                      :tableActions="userCanEdit ? groupTableActions : null"/>
     </div>
 
+    <!-- Group add/edit modal -->
     <GroupEditAddModal ref="groupDetailsModal"
                        :groupToEdit="groupToEdit"
                        :groupTypeSelect="groupTypeSelect"
                        v-on:ok="onEditGroup" />
+    <!-- Group upload modal -->
     <GroupUploadModal ref="groupUploadModal"
                       v-on:ok="uploadContent" />
   </div>
@@ -204,10 +211,12 @@ export default {
   },
   watch: {
     token: function (newValue, oldValue) {
+      // On login/logout, deselect the current group
       this.group = null
       this.groupId = null
     },
     selectedGroupType: function (newValue, oldValue) {
+      // Change filter based on selected group type
       if (!newValue) {
         this.filterOn = []
       } else {
@@ -237,6 +246,7 @@ export default {
       if (content && content.length > 0) {
         var type = this.groupTypes[this.group.groupType]
 
+        // Filter based on the NAME of the currently selected group item (germplasm name, location name, marker name)
         const query = {
           page: 1,
           limit: this.MAX_JAVA_INTEGER,

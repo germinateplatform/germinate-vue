@@ -4,6 +4,7 @@
     <hr />
     <p>{{ $t('pageUserPermissionsText') }}</p>
     <b-card no-body>
+      <!-- Tabs -->
       <b-tabs card
               active-nav-item-class="text-primary"
               v-model="tabIndex">
@@ -12,6 +13,7 @@
             <i class="mdi mdi-18px mdi-account-group" /> {{ $t('pageUserPermissionsTabUserGroups') }}
           </template>
           <p>{{ $t('pageUserPermissionsUserGroupsText') }}</p>
+          <!-- User groups -->
           <UserGroups v-on:groups-changed="$refs.datasetPermissions.refresh()"/>
         </b-tab>
         <b-tab title="Tab 2">
@@ -19,6 +21,7 @@
             <i class="mdi mdi-18px mdi-database-lock" /> {{ $t('pageUserPermissionsTabDatasetPermissions') }}
           </template>
           <p>{{ $t('pageUserPermissionsDatasetsText') }}</p>
+          <!-- Dataset permissions -->
           <DatasetPermissions ref="datasetPermissions" />
         </b-tab>
       </b-tabs>

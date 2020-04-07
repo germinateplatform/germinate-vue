@@ -2,22 +2,28 @@
   <div>
     <h3 v-if="noGermplasmFound">{{ $t('headingNoData') }}</h3>
     <div v-else-if="germplasm" class="passport">
+      <!-- If there is a parent entity, show both as tabs -->
       <template v-if="germplasm.entityparentid">
         <b-tabs active-nav-item-class="text-primary" v-model="tabIndex">
+          <!-- Entity child -->
           <b-tab active @click="updateChildMap">
             <template v-slot:title>
               <i class="mdi mdi-18px mdi-arrow-down-bold-box-outline" /> {{ germplasm.accenumb }}
             </template>
+            <!-- Passport -->
             <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" ref="child"/>
           </b-tab>
+          <!-- Entity parent -->
           <b-tab @click="updateParentMap">
             <template v-slot:title>
               <i class="mdi mdi-18px mdi-arrow-up-bold-box-outline" /> {{ germplasm.entityparentaccenumb }}
             </template>
+            <!-- Passport -->
             <SpecificPassport :germplasmId="germplasm.entityparentid" :isPopup="isPopup" v-if="germplasm.entityparentid" ref="parent"/>
           </b-tab>
         </b-tabs>
       </template>
+      <!-- Else, just show this one individually -->
       <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" v-else/>
     </div>
   </div>

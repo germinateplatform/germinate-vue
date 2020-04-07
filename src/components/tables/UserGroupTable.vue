@@ -6,22 +6,28 @@
                ref="table"
                v-bind="$props"
                v-on="$listeners">
+      <!-- User group id -->
       <template v-slot:cell(userGroupId)="data">
         <a v-if="hideDefaultActions !== true" href="#" @click.prevent="$emit('group-selected', data.item)">{{ data.item.userGroupId }}</a>
         <span v-else>{{ data.item.userGroupId }}</span>
       </template>
+      <!-- User group name -->
       <template v-slot:cell(userGroupName)="data">
         <a v-if="hideDefaultActions !== true" href="#" @click.prevent="$emit('group-selected', data.item)">{{ data.item.userGroupName }}</a>
         <span v-else>{{ data.item.userGroupName }}</span>
       </template>
+      <!-- User group description -->
       <template v-slot:cell(userGroupDescription)="data">
         <a v-if="hideDefaultActions !== true" href="#" @click.prevent="$emit('group-selected', data.item)">{{ data.item.userGroupDescription }}</a>
         <span v-else>{{ data.item.userGroupDescription }}</span>
       </template>
 
+      <!-- Additional action buttons -->
       <template v-slot:cell(actions)="data">
         <b-button-group v-if="hideDefaultActions !== true && token && token.userType === 'Administrator'">
+          <!-- Edit group -->
           <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('edit-group-clicked', data.item)"><i class="mdi mdi-18px mdi-rename-box" /></b-button>
+          <!-- Delete group -->
           <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('delete-group-clicked', data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
         </b-button-group>
       </template>

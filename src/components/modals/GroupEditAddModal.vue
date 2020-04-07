@@ -7,6 +7,7 @@
     :ok-disabled="!canContinue()"
     @ok="okPressed"
     v-if="groupToEdit">
+    <!-- Modal showing group edit/add form -->
     <b-form @submit.stop.prevent>
       <b-form-group
         :label="$t('formLabelGroupType')"
@@ -47,7 +48,6 @@ export default {
       return this.groupToEdit.groupName && this.groupToEdit.groupTypeId
     },
     okPressed: function () {
-      // TODO: Verify that required fields are set
       this.$emit('ok')
     },
     show: function () {

@@ -6,13 +6,18 @@
 
       <h2>{{ $t('pageClimateDetailsDataTitle') }}</h2>
       <p>{{ $t('pageClimateDetailsDataText') }}</p>
+      <!-- Climate data table -->
       <ClimateDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="climateDetailsTable" />
 
       <h2>{{ $t('pageClimateDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageClimateDetailsStatsText') }}</p>
+      <!-- Box plot for this climate -->
       <BoxplotChart chartMode="datasetByItem" :xIds="[climateId]" xType="climates" ref="climateDetailsChart" />
+      <!-- Table showing datasets containing this climate -->
+      <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 
       <div v-show="showAdditionalDatasets">
+        <!-- Any other datasets containing data for this climate, where the license hasn't been accepted yet -->
         <DatasetsWithUnacceptedLicense datasetType="climate" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
       </div>
     </div>
@@ -24,6 +29,7 @@
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import ClimateDataTable from '@/components/tables/ClimateDataTable'
+import DatasetTable from '@/components/tables/DatasetTable'
 import miscApi from '@/mixins/api/misc.js'
 import climateApi from '@/mixins/api/climate.js'
 
@@ -37,11 +43,15 @@ export default {
     }
   },
   components: {
+    DatasetTable,
     DatasetsWithUnacceptedLicense,
     BoxplotChart,
     ClimateDataTable
   },
   methods: {
+    getDatasetData: function (data, callback) {
+      return this.apiPostClimateDatasetTable(this.climateId, data, callback)
+    },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
     },

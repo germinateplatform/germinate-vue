@@ -6,12 +6,15 @@
                itemType="markers"
                ref="markerTable"
                v-on="$listeners">
+      <!-- Marker id link -->
       <template v-slot:cell(markerId)="data">
         <router-link :to="{name: 'marker', params: { markerId: data.item.markerId }}">{{ data.item.markerId }}</router-link>
       </template>
+      <!-- Marker name link -->
       <template v-slot:cell(markerName)="data">
         <router-link :to="{name: 'marker', params: { markerId: data.item.markerId }}">{{ data.item.markerName }}</router-link>
       </template>
+      <!-- Synonyms -->
       <template v-slot:cell(markerSynonyms)="data">
         <span v-if="data.item.markerSynonyms">{{ data.item.markerSynonyms.join(', ') }}</span>
       </template>

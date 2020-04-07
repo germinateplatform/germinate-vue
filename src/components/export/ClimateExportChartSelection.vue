@@ -9,12 +9,15 @@
       <b-col cols=12 v-if="plotData">
         <h3 class="mt-3">{{ $t('pageClimateExportColorByTitle') }}</h3>
         <p>{{ $t('pageClimateExportColorByText') }}</p>
+        <!-- Color by -->
         <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
 
         <h3 class="mt-3">{{ $t('pageClimateExportChartTitle') }}</h3>
         <p>{{ $t('pageClimateExportChartText') }}</p>
-        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="locations" v-if="selectedClimates.length > 2" datasetType="climate" />
-        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="locations" :x="selectedClimates[0].displayName" :y="selectedClimates[1].displayName" datasetType="climate" v-else />
+        <!-- Show the matrix chart if there are more than 2 traits/compounds/climates -->
+        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="locations" v-if="selectedItems.length > 2" datasetType="climate" />
+        <!-- Otherwise, show the simple scatter plot -->
+        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="locations" :x="selectedItems[0].displayName" :y="selectedItems[1].displayName" datasetType="climate" v-else />
       </b-col>
     </b-row>
   </div>
@@ -70,7 +73,7 @@ export default {
     return {
       colorBySelection: null,
       plotData: null,
-      selectedClimates: null,
+      selectedItems: null,
       colorByGroupEnabled: false
     }
   },
@@ -102,7 +105,7 @@ export default {
 
       return result
     },
-    plot: function (query, selectedClimates) {
+    plot: function (query, selectedItems) {
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
 
       // If coloring by group is no longer available, but it's still selected, remove selection
@@ -113,7 +116,7 @@ export default {
       this.plotData = null
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport('climate', query, result => {
-        this.selectedClimates = selectedClimates
+        this.selectedItems = selectedItems
         this.plotData = result
         this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection))
         EventBus.$emit('show-loading', false)

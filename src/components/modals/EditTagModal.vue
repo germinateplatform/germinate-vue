@@ -7,6 +7,7 @@
            @ok="handleOk"
            @shown="focus">
     <p>{{ $t('modalTextEditTags') }}</p>
+    <!-- Tags input with autocomplete -->
     <VueTagsInput
       v-model="tempInput"
       :tags="newTags"
@@ -88,6 +89,7 @@ export default {
 
       const data = this.newTags.map(t => t.text)
 
+      // Add new tags
       this.apiPutImageTags(this.imageId, data, result => {
         this.$refs.editTagModal.hide()
         this.$emit('tags-changed')

@@ -22,16 +22,19 @@
       <hr/>
       <h3>{{ $t('pageMarkerDetailsDatasetsTitle') }}</h3>
       <p>{{ $t('pageMarkerDetailsDatasetsText') }}</p>
+      <!-- Datasets this marker is part of -->
       <DatasetTable :getData="getDatasetData" />
 
       <hr/>
       <h3>{{ $t('pageMarkerDetailsMapsTitle') }}</h3>
       <p>{{ $t('pageMarkerDetailsMapsText') }}</p>
+      <!-- Maps this marker is on -->
       <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" />
 
       <hr />
       <h3>{{ $t('pageMarkerDetailsGroupsTitle') }}</h3>
       <p>{{ $t('pageMarkerDetailsGroupsText') }}</p>
+      <!-- Groups this marker is in -->
       <GroupTable :getData="getGroupData" />
     </template>
     <h3 v-else-if="noData === true">{{ $t('pageMarkerDetailsNoMarkerWithIdFound', { markerId: currentMarkerId }) }}</h3>

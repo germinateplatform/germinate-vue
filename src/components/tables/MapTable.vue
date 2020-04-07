@@ -4,14 +4,19 @@
                :columns="columns"
                v-bind="$props"
                v-on="$listeners">
+      <!-- Map id link -->
       <template v-slot:cell(mapId)="data">
-        <router-link :to="`/data/genotypes/maps/${data.item.mapId}`" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapId }}</router-link>
+        <router-link :to="{ name: 'map-details', params: { mapId: data.item.mapId } }" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapId }}</router-link>
       </template>
+      <!-- Map name link -->
       <template v-slot:cell(mapName)="data">
-        <router-link :to="`/data/genotypes/maps/${data.item.mapId}`" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapName }}</router-link>
+        <router-link :to="{ name: 'map-details', params: { mapId: data.item.mapId } }" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapName }}</router-link>
       </template>
+      <!-- Map description -->
       <template v-slot:cell(mapDescription)="data">
+        <!-- If the description is HTML and contains a link, just show it -->
         <div v-if="isLink(data.item)"> <span v-html="data.item.mapDescription" />&nbsp;<i class="mdi mdi-open-in-new" /></div>
+        <!-- Otherwise display the description as text -->
         <span v-else>{{ data.item.mapDescription }}</span>
       </template>
     </BaseTable>
@@ -77,6 +82,7 @@ export default {
       } else {
         return map.mapDescription.indexOf('https://') !== -1 ||
                map.mapDescription.indexOf('http://') !== -1 ||
+               map.mapDescription.indexOf('sftp://') !== -1 ||
                map.mapDescription.indexOf('ftp://') !== -1
       }
     }

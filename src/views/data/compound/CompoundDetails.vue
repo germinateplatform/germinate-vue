@@ -4,10 +4,12 @@
       <h1>{{ compound.compoundName }} <small v-if="compound.unitName">{{ compound.unitName }}</small></h1>
       <p v-if="compound.compoundDescription">{{ compound.compoundDescription }}</p>
 
+      <!-- Images, e.g. chemical structure -->
       <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="compound.compoundName" v-on:tag-clicked="onImageTagClicked" ref="imageGallery"/>
 
       <hr/>
 
+      <!-- Synonyms -->
       <template v-if="compound.synonyms">
         <h2>{{ $t('genericSynonyms') }}</h2>
         <ul>
@@ -17,14 +19,18 @@
 
       <h2>{{ $t('pageCompoundDetailsDataTitle') }}</h2>
       <p>{{ $t('pageCompoundDetailsDataText') }}</p>
+      <!-- Compound data table -->
       <CompoundDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="compoundDetailsTable"/>
 
       <h2>{{ $t('pageCompoundDetailsStatsTitle') }}</h2>
       <p>{{ $t('pageCompoundDetailsStatsText') }}</p>
+      <!-- Box plot for this compound -->
       <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" xType="compounds" ref="compoundDetailsChart" />
+      <!-- Table showing datasets containing this compound -->
       <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 
       <div v-show="showAdditionalDatasets">
+        <!-- Any other datasets containing data for this compound, where the license hasn't been accepted yet -->
         <DatasetsWithUnacceptedLicense datasetType="compound" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
       </div>
     </div>

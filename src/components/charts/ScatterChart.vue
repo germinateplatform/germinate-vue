@@ -4,10 +4,13 @@
       <div slot="chart" id="scatter-chart" ref="scatterChart" class="text-center" />
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
     </BaseChart>
+
+    <!-- Modal to show passport page on data point click -->
     <b-modal size="xl" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null" ok-only hide-header :ok-title="$t('buttonClose')">
       <Passport :germplasmId="germplasmId" :isPopup="true" />
     </b-modal>
 
+    <!-- Tour to explain the chart -->
     <Tour :steps="popoverContent" ref="tour" />
   </div>
 </template>
@@ -148,10 +151,11 @@ export default {
 
       var reader = new FileReader()
       reader.onload = () => {
+        // Remove the first row (Flapjack header)
         var dirtyTsv = reader.result
         var firstEOL = dirtyTsv.indexOf('\r\n')
         var tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
-        var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
+        var data = this.$plotly.d3.tsv.parse(tsv)
 
         this.$plotly.d3.select(this.$refs.scatterChart)
           .datum(data)
@@ -160,6 +164,7 @@ export default {
             .xCategory(this.x)
             .yCategory(this.y)
             .onPointClicked(p => {
+              // For trials and compounds, we show the passport page on click
               if (this.datasetType === 'trials' || this.datasetType === 'compounds') {
                 this.germplasmId = p
                 this.$nextTick(() => this.$refs.passportModal.show())

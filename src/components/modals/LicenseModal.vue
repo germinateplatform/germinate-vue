@@ -6,12 +6,15 @@
     </div>
     <div slot="modal-footer">
       <b-button-group>
+        <!-- Options to download the license -->
         <b-dropdown>
           <template slot="button-content"><i class="mdi mdi-18px mdi-download"/> {{ $t('buttonDownload') }}</template>
           <b-dropdown-item @click="onPrint"><i class="mdi mdi-18px mdi-printer" /> {{ $t('buttonPrint') }}</b-dropdown-item>
           <b-dropdown-item @click="onDownload"><i class="mdi mdi-18px mdi-file-code" /> {{ $t('buttonHtml') }}</b-dropdown-item>
         </b-dropdown>
+        <!-- Close the dialog -->
         <b-button v-if="isAccepted" @click="hide"><i class="mdi mdi-18px mdi-cancel" /> {{ $t('buttonClose') }}</b-button>
+        <!-- Accept/decline the license -->
         <template v-else>
           <b-button variant="success" @click="accept"><i class="mdi mdi-18px mdi-check" /> {{ $t('buttonAccept') }}</b-button>
           <b-button variant="danger" @click="hide"><i class="mdi mdi-18px mdi-cancel" /> {{ $t('buttonDecline') }}</b-button>

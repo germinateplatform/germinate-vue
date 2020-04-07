@@ -5,18 +5,23 @@
                v-bind="$props"
                ref="traitTable"
                v-on="$listeners">
+      <!-- Trait id link -->
       <template v-slot:cell(traitId)="data">
         <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitId }}</router-link>
       </template>
+      <!-- Trait name link -->
       <template v-slot:cell(traitName)="data">
         <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitName }}</router-link>
       </template>
+      <!-- Trait short name link -->
       <template v-slot:cell(traitNameShort)="data">
         <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitNameShort }}</router-link>
       </template>
+      <!-- Trait description link -->
       <template v-slot:cell(traitDescription)="data">
         <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitDescription }}</router-link>
       </template>
+      <!-- Synonyms -->
       <template v-slot:cell(synonyms)="data">
         <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
       </template>

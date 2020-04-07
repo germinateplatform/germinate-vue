@@ -1,10 +1,10 @@
 <template>
   <div class="app page-login flex-row align-items-center">
     <div class="container">
-      <!-- <b-row class="justify-content-center"> -->
       <b-row>
         <b-col lg=7>
           <b-card-group>
+            <!-- Login -->
             <b-card no-body class="p-4">
               <b-card-body>
                 <h2>{{ $t('widgetSignInTitle') }}</h2>
@@ -12,6 +12,7 @@
                 <p class="text-danger mt-3" v-if="response">{{ response }}</p>
               </b-card-body>
             </b-card>
+            <!-- Registration -->
             <b-card no-body class="text-white bg-primary py-5" v-if="serverSettings && serverSettings.registrationEnabled">
               <b-card-body class="text-center">
                 <div>
@@ -23,10 +24,13 @@
             </b-card>
           </b-card-group>
         </b-col>
+        <!-- Spacing -->
         <b-col lg=1 class="d-none d-lg-block"></b-col>
+        <!-- Germinate logo -->
         <b-col lg=4>
           <div id="svg-logo" class="d-flex justify-content-center align-items-center h-100 py-3"/>
         </b-col>
+        <!-- Horizontal logos below, same width as login+registration -->
         <b-col lg=7>
           <b-card no-body class="p-4 mt-3">
             <b-img :src="this.baseUrl + 'image/src-svg/logo-horizontal.svg'" id="logo-horizontal" onerror="this.onerror=null;this.src='null';" />
@@ -34,6 +38,8 @@
         </b-col>
       </b-row>
     </div>
+
+    <!-- Registration modal -->
     <RegistrationModal ref="registrationModal"/>
   </div>
 </template>
@@ -87,8 +93,10 @@ export default {
       })
     },
     animateLogo: function () {
+      // Get the container
       const s = new Snap('#svg-logo svg')
 
+      // Specify all elements of the SVG to animate
       const elements = [{
         id: '#sh',
         opacity: 0.29200003
@@ -124,6 +132,7 @@ export default {
         opacity: 1
       }]
 
+      // Hide them all
       s.selectAll('path').forEach(e => {
         e.stop()
         e.attr({
@@ -131,6 +140,7 @@ export default {
         })
       })
 
+      // Hide them all
       elements.forEach(e => {
         const el = s.select(e.id)
         el.stop()
@@ -139,18 +149,22 @@ export default {
         })
       })
 
+      // Show them one after the other
       elements.reverse().forEach((e, i) => {
         setTimeout(() => s.select(e.id).animate({ opacity: e.opacity }, 500, window.mina.linear), i * 65)
       })
     }
   },
   mounted: function () {
-    // TODO: Check this works in production on a subdirectory of a domain rather than top-level
+    // Load the SVG
     Snap.load('./img/germinate-square.svg', data => {
+      // Attach to container
       new Snap('#svg-logo').append(data)
 
+      // Start animation
       this.animateLogo()
 
+      // On click, animate again
       new Snap('#svg-logo svg').click(e => this.animateLogo())
     })
   }

@@ -5,15 +5,19 @@
             itemType="germplasm"
             ref="compoundDataTable"
             v-on="$listeners">
+    <!-- Germplasm id link -->
     <template v-slot:cell(germplasmId)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
     </template>
+    <!-- Germplasm name link -->
     <template v-slot:cell(germplasmName)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
     </template>
+    <!-- Germplasm GID link -->
     <template v-slot:cell(germplasmGid)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
     </template>
+    <!-- Entity type icon -->
     <template v-slot:cell(entityType)="data">
       <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityType].color()};`" /> {{ entityTypes[data.item.entityType].text() }}</span>
     </template>
@@ -111,6 +115,7 @@ export default {
         }
       ]
 
+      // Add the selection column if requested
       if (this.selectable === true) {
         result.unshift({
           key: 'selected',

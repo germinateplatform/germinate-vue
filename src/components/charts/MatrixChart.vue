@@ -10,12 +10,16 @@
                :loading="loading"
                :id="id">
       <div slot="chart" id="matrix-chart" ref="matrixChart" />
+      <!-- Badge that shows how many data points are selected -->
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
     </BaseChart>
+
+    <!-- Modal to show the passport page on data point click -->
     <b-modal size="xl" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null" scrollable ok-only hide-header :ok-title="$t('buttonClose')">
       <Passport :germplasmId="germplasmId" :isPopup="true" />
     </b-modal>
 
+    <!-- Show the tour explaining the chart -->
     <Tour :steps="popoverContent" ref="tour" />
   </div>
 </template>
@@ -150,10 +154,11 @@ export default {
 
       var reader = new FileReader()
       reader.onload = () => {
+        // Remove the first row (Flapjack header)
         var dirtyTsv = reader.result
         var firstEOL = dirtyTsv.indexOf('\r\n')
         var tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
-        var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
+        var data = this.$plotly.d3.tsv.parse(tsv)
 
         this.loading = false
 
@@ -163,6 +168,7 @@ export default {
             .colorBy(colorBy)
             .columnsToIgnore(['name', 'puid', 'entity_parent_name', 'entity_parent_general_identifier', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'treatments_description', 'year', 'group_ids'])
             .onPointClicked(p => {
+              // For trials and compounds we show the passport page on click
               if (this.datasetType === 'trials' || this.datasetType === 'compounds') {
                 this.germplasmId = p
                 this.$nextTick(() => this.$refs.passportModal.show())

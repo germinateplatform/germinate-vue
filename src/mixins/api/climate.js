@@ -25,6 +25,10 @@ export default {
       delete queryData.orderBy
       delete queryData.ascending
       return this.authAjax({ url: 'dataset/data/climate/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostClimateDatasetTable: function (climateId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: `climate/${climateId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

@@ -7,8 +7,7 @@
                v-bind="$props"
                ref="datasetTable"
                v-on="$listeners"
-               v-on:loaded="onLoaded">
-    </BaseTable>
+               v-on:loaded="onLoaded" />
   </div>
 </template>
 
@@ -105,6 +104,7 @@ export default {
       var selected = this.getSelected()
 
       if (selected && data && data.data && data.data.data) {
+        // Select all items by default
         selected = data.data.data.filter(r => selected.indexOf(r.datasetId) !== -1)
           .filter(r => r.dataObjectCount && r.dataObjectCount.value && r.dataPointCount && r.dataPointCount.value)
           .map(r => r.datasetId)

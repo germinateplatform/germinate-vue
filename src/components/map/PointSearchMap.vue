@@ -7,6 +7,7 @@
       @click="setMarker"
       :zoom="zoom">
     </l-map>
+    <!-- Marker popup content -->
     <div v-if="markerPosition" ref="popupContent">
       <dl class="row">
         <dt class="col-4 text-right">Latitude</dt><dd class="col-8">{{ markerPosition.lat.toFixed(4) }}</dd>
@@ -62,6 +63,7 @@ export default {
   },
   mounted: function () {
     this.$nextTick(() => {
+      // Use OSM as the default layer
       var openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         id: 'OpenStreetMap',
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -69,9 +71,9 @@ export default {
       })
 
       var map = this.$refs.map.mapObject
-
       map.addLayer(openstreetmap)
 
+      // Add the satellite layer as an additional one
       var satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         id: 'Esri WorldImagery',
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'

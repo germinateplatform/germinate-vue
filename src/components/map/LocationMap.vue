@@ -1,22 +1,28 @@
 <template>
   <div>
+    <!-- The map itself -->
     <l-map
       class="location-map"
       :center="center"
       ref="map"
       :maxZoom="maxZoom"
       :zoom="zoom">
+      <!-- Add overlays if available -->
       <template v-if="imageOverlays && imageOverlays.length > 0">
+        <!-- Legend -->
         <div class="location-map-legend">
           <img :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" />
         </div>
+        <!-- Overlays -->
         <l-image-overlay v-for="image in getOverlays(false)"
                         :key="`map-overlay-${image.id}`"
                         :url="image.url"
                         :bounds="image.bounds" />
       </template>
     </l-map>
+    <!-- Add color gradient for heatmapping -->
     <ColorGradient :colors="gradientColors" v-if="mapType === 'heatmap'" ref="gradient" />
+    <!-- Popup content -->
     <div v-if="location" ref="popupContent" class="p-3">
       <dl class="row">
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
@@ -117,6 +123,7 @@ export default {
       }
     },
     navigateToGermplasm: function (location) {
+      // Navigate to the germplasm overview page and filter on location
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
           name: 'location',
@@ -126,9 +133,10 @@ export default {
         operator: 'and',
         values: [location.locationName]
       }])
-      this.$router.push({ path: '/data/germplasm' })
+      this.$router.push({ name: 'germplasm' })
     },
     navigateToDatasets: function (location) {
+      // Navigate to the datasets page and filter on location
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
           name: 'locationIds',
@@ -138,7 +146,7 @@ export default {
         operator: 'and',
         values: [location.locationId]
       }])
-      this.$router.push({ path: '/data/datasets' })
+      this.$router.push({ name: 'datasets' })
     },
     getFlag: function (country) {
       if (country.countryCode2) {
@@ -161,6 +169,7 @@ export default {
     updateMap: function () {
       var map = this.$refs.map.mapObject
 
+      // Remove existing markers
       if (this.markers && this.markers.length > 0) {
         this.markers.forEach(m => map.removeLayer(m))
       }
@@ -175,6 +184,7 @@ export default {
           marker.on('click', e => {
             var popup = e.target.getPopup()
             this.location = this.location
+            // Set the popup content on click
             this.$nextTick(() => popup.setContent(this.$refs.popupContent))
           })
           marker.addTo(map)
@@ -250,6 +260,7 @@ export default {
     this.gradientColors.push(this.serverSettings.colorsCharts[0])
 
     this.$nextTick(() => {
+      // Add OSM as the default
       var openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         id: 'OpenStreetMap',
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -257,9 +268,9 @@ export default {
       })
 
       var map = this.$refs.map.mapObject
-
       map.addLayer(openstreetmap)
 
+      // Add an additional satellite layer
       var satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         id: 'Esri WorldImagery',
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'

@@ -1,4 +1,5 @@
 <template>
+  <!-- This is the SVG that goes in the background. It's filled in the code below. -->
   <svg ref="background" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
 </template>
 
@@ -14,6 +15,7 @@ export default {
   },
   methods: {
     updateBackground: function () {
+      // Magic happens in this method
       const svg = this.$refs.background
 
       if (!svg) {

@@ -9,6 +9,7 @@
             @ok.prevent="next"
             @cancel.prevent="prev"
             ref="registrationModal">
+      <!-- Registration step indicator -->
       <b-button-group
         class="registration-steps mb-4">
         <b-button v-for="step in registrationSteps" :key="`registration-step-${step.value}`" :variant="step.value === currentStep ? 'primary' : 'secondary'">
@@ -16,6 +17,7 @@
         </b-button>
       </b-button-group>
       <div v-if="currentStep === 0">
+        <!-- Registration disclaimer -->
         <blockquote class="blockquote p-2">
           <div v-html="$t('widgetRegisterDisclaimer')" />
         </blockquote>
@@ -25,12 +27,14 @@
         </b-form-checkbox>
       </div>
       <div v-else-if="currentStep === 1">
+        <!-- GDPR information -->
         <div v-html="$t('widgetRegisterGdpr')"/>
         <hr />
         <b-form-checkbox v-model="hasGatekeeper" switch>
           {{ $t('widgetRegisterGatekeeperAccount') }} <i class="mdi mdi-help-circle" v-b-tooltip.hover :title="$t('tooltipRegisterGatekeeper')" />
         </b-form-checkbox>
 
+        <!-- Registration form -->
         <b-form @submit.prevent.stop="register" class="mt-3" :validated="errorMessage !== null">
           <template v-if="hasGatekeeper">
             <div class="mb-3">{{ $t('widgetRegisterExistingAccountText') }}</div>
@@ -72,6 +76,8 @@
 
       <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
     </b-modal>
+
+    <!-- Institution modal -->
     <b-modal id="institutionModal"
              ok-only
              @ok="addInstitution"
@@ -119,7 +125,7 @@ export default {
       selectedInstitution: null,
       institutions: [],
       disclaimerAccepted: false,
-      hasGatekeeper: true,
+      hasGatekeeper: false,
       user: {
         userUsername: null,
         userPassword: null,
@@ -144,6 +150,7 @@ export default {
         this.errorMessage = null
         this.user.userUsername = this.user.userEmailAddress
 
+        // If the institution doesn't exist (no id), set information
         if (!this.selectedInstitution.id) {
           delete this.user.institutionId
           this.user.institutionName = this.selectedInstitution.name
@@ -164,10 +171,12 @@ export default {
         delete newRequest.user.userPasswordConfirm
 
         EventBus.$emit('show-loading', true)
+        // Register the new user
         this.apiPostGatekeeperNew(newRequest, result => {
           EventBus.$emit('show-loading', false)
 
           if (result === true) {
+            // Show toast
             this.$bvToast.toast(this.$t('widgetRegisterToastSuccessfulNewText'), {
               title: this.$t('widgetRegisterToastSuccessfulNewTitle'),
               variant: 'success',
@@ -176,15 +185,18 @@ export default {
             })
             this.hide()
           } else {
+            // Show error message
             this.errorMessage = this.$t('widgetRegisterUnsuccessful')
           }
         }).catch(error => {
+          // Show error message
           if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
             this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
             EventBus.$emit('show-loading', false)
           }
         })
       } else {
+        // Existing user, new request
         var existingRequest = {
           locale: this.locale,
           username: this.user.userUsername,
@@ -196,6 +208,7 @@ export default {
           EventBus.$emit('show-loading', false)
 
           if (result === true) {
+            // Show toast
             this.$bvToast.toast(this.$t('widgetRegisterToastSuccessfulExistingText'), {
               title: this.$t('widgetRegisterToastSuccessfulExistingTitle'),
               variant: 'success',
@@ -204,9 +217,11 @@ export default {
             })
             this.hide()
           } else {
+            // Show error
             this.errorMessage = this.$t('widgetRegisterUnsuccessful')
           }
         }).catch(error => {
+          // Show error
           if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
             this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
             EventBus.$emit('show-loading', false)
@@ -270,6 +285,7 @@ export default {
       page: 1,
       limit: this.MAX_JAVA_INTEGER
     }
+    // Get all existing institutions
     this.apiGetGatekeeperInstitutions(query, result => {
       if (result && result.data) {
         var tempInst = []

@@ -4,7 +4,9 @@
     <template v-if="datasets && datasets.length > 0">
       <hr />
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
+      <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
+      <!-- Banner buttons -->
       <b-row class="climate-tabs" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'climate-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
@@ -23,6 +25,7 @@
           </a>
         </b-col>
       </b-row>
+      <!-- Boxplot section -->
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
                         xType="climates"
@@ -30,12 +33,15 @@
                         :texts="textsChart"
                         :getItems="getClimates"
                         v-show="currentTab === 'overview'" />
+      <!-- Climate matrix chart section -->
       <ClimateExportChartSelection :datasetIds="datasetIds"
                                    v-bind="config"
                                    :texts="textsChart"
                                    :getItems="getClimates"
                                    v-show="currentTab === 'matrix'"/>
+      <!-- Climate data table section -->
       <ClimateDataTable :getData="getClimateData" :getIds="getClimateDataIds" :downloadTable="downloadClimateDataTable" v-show="currentTab === 'table'" />
+      <!-- Export section -->
       <ExportDownloadSelection :datasetIds="datasetIds"
                                v-bind="config"
                                :texts="textsExport"
@@ -171,6 +177,7 @@ export default {
       }
     },
     getDatasets: function () {
+      // Set up the dataset request based on the provided ids
       const request = {
         page: 1,
         limit: this.JAVA_MAX_INTEGER,
@@ -194,6 +201,7 @@ export default {
 
       this.apiPostDatasetTable(request, result => {
         this.datasets = result.data.filter(d => {
+          // Exclude the ones where a license exists, but hasn't been accepted
           return (!d.licenseName || this.isAccepted(d))
         })
 

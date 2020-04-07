@@ -4,6 +4,7 @@
     <span v-html="$t('pageDataUploadText')" />
     <b-row class="template-tabs">
       <b-col sm=1 />
+      <!-- Data template banner buttons -->
       <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" cols=6 sm=2 v-b-tooltip="type.disabled ? $t('tooltipFeatureDisabled') : null">
         <a :href="type.disabled ? null : '#'" @click.prevent="onTemplateTypeSelected(type, name)">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(name)};`">
@@ -24,13 +25,16 @@
     </b-row>
 
     <template v-if="templateType">
+      <!-- File input -->
       <b-form-file
         v-model="file"
         :state="Boolean(file)"
         :placeholder="$t('pageDataUploadFilePlaceholder')"
         accept=".xlsx" />
+      <!-- Selected file -->
       <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 
+      <!-- Submit -->
       <b-button variant="success" :disabled="!file" class="mt-3" @click="onSubmit"><i class="mdi mdi-18px fix-alignment mdi-upload" /> {{ $t('pageDataUploadCheckFileButton') }}</b-button>
     </template>
   </div>
@@ -50,7 +54,9 @@ export default {
   },
   watch: {
     templateType: function (newValue, oldValue) {
+      // Reset the selected file
       this.file = null
+      // Update the URL
       window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload-type', params: { templateType: newValue } }).href)
     }
   },

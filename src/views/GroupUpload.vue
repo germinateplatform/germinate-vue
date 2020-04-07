@@ -2,6 +2,7 @@
   <div>
     <h1>{{ $t('pageGroupUploadTitle') }}</h1>
     <p>{{ $t('pageGroupUploadText') }}</p>
+    <!-- Show Germplasm sent from CurlyWhirly -->
     <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" />
   </div>
 </template>

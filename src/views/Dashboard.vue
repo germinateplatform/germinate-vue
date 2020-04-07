@@ -1,6 +1,7 @@
 <template>
   <div class="animated fadeIn">
     <b-row class="dashboard-stats" v-if="stats">
+      <!-- Banner buttons -->
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.key">
         <router-link :to="{ name: category.link }" :title="`${category.text()}: ${$options.filters.toThousandSeparators(stats[category.key])}`">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
@@ -22,14 +23,18 @@
         </router-link>
       </b-col>
     </b-row>
+
+    <!-- Images -->
     <ImageCarousel class="mb-4" />
 
     <h1>{{ $t('pageDashboardTitle') }}</h1>
     <p v-html="$t('pageDashboardText')" />
 
+    <!-- Introduction tour -->
     <b-button variant="primary" @click="startIntroduction"><i class="mdi mdi-18px fix-alignment mdi-presentation-play" /> {{ $t('widgetIntroTourButtonText') }}</b-button>
 
     <hr />
+    <!-- News -->
     <NewsSection :projectCount="3" :newsCount="6" />
   </div>
 </template>

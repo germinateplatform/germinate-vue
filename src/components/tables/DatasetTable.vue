@@ -6,91 +6,116 @@
               class="dataset-table"
               ref="datasetTable"
               v-on="$listeners">
+      <!-- HEAD: Database object count -->
       <template v-slot:head(dataObjectCount)="data">
         <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataObjects')"/>
       </template>
+      <!-- HEAD: Data point count -->
       <template v-slot:head(dataPointCount)="data">
         <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataPoints')"/>
       </template>
 
+      <!-- Dataset id -->
       <template v-slot:cell(datasetId)="data">
+        <!-- If clickHandler is provided, just let it handle clicks -->
         <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetId }}</a>
+        <!-- Else, if we can link to the target page, let's do so -->
         <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetId }}</router-link>
+        <!-- If neither is true, just show the id -->
         <span v-else>{{ data.item.datasetId }}</span>
       </template>
+      <!-- Dataset name -->
       <template v-slot:cell(datasetName)="data">
+        <!-- If clickHandler is provided, just let it handle clicks -->
         <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</a>
+        <!-- Else, if there's a hyperlink for an external dataset, show that -->
         <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" :href="data.item.hyperlink" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }} </a><i class="mdi mdi-open-in-new" /></span>
+        <!-- Else, if we can link to the target page, let's do so -->
         <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item))" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</router-link>
+        <!-- If none are true, just show the id -->
         <span v-else :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</span>
       </template>
+      <!-- Dataset description -->
       <template v-slot:cell(datasetDescription)="data">
         <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ data.item.datasetDescription | truncateAfterWords(20) }}</span>
       </template>
+      <!-- Experiment name -->
       <template v-slot:cell(experimentName)="data">
         {{ data.item.experimentName | truncateAfterWords(10) }}
+        <!-- Append a link that takes the user to the experiment details page -->
         <router-link :to="{ name: 'experiment-details', params: { experimentId: data.item.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
           <i class="mdi mdi-18px fix-alignment mdi-information-outline" />
         </router-link>
       </template>
-
-      <!-- Country flags -->
+      <!-- Dataset location country flag -->
       <template v-slot:cell(countries)="data">
         <span v-for="country in getCountries(data.item.locations)" :key="`country-flag-${country}`" class="table-country text-nowrap" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'flag-icon flag-icon-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
       </template>
+      <!-- Display the number of locations associated with this dataset -->
       <template v-slot:cell(locations)="data">
         <a href="#" class="text-decoration-none text-nowrap" v-if="data.item.locations && data.item.locations.length > 0" @click.prevent="showLocations(data)">
           <i class="mdi mdi-18px mdi-map-marker align-middle" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')" />
           <span>{{ data.item.locations.length }}</span>
         </a>
       </template>
-
+      <!-- Dataset type icon -->
       <template v-slot:cell(datasetType)="data">
         <span><i :class="`mdi mdi-18px ${datasetTypes[data.item.datasetType].icon} fix-alignment`" :style="`color: ${datasetTypes[data.item.datasetType].color()};`" /> {{ datasetTypes[data.item.datasetType].text() }}</span>
       </template>
+      <!-- Data point count -->
       <template v-slot:cell(dataPointCount)="data">
         <span v-if="data.item.dataPointCount !== undefined && data.item.dataPointCount.value">{{ getDataPointCount(data.item) }}</span>
       </template>
-
+      <!-- Dataset license -->
       <template v-slot:cell(licenseName)="data">
         <div v-if="data.item.licenseName">
+          <!-- Show the license modal -->
           <a href="#" @click.prevent="onLicenseClicked(data.item)" class="text-nowrap">
             <span>{{ data.item.licenseName }} </span>
           </a>
+          <!-- Show the status -->
           <i class="mdi mdi-18px mdi-check fix-alignment text-success" v-if="isAccepted(data.item)" />
           <i class="mdi mdi-18px mdi-new-box fix-alignment text-danger" v-else />
         </div>
       </template>
+      <!-- Dataset state -->
       <template v-slot:cell(datasetState)="data">
         <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" />
       </template>
+      <!-- External dataset? -->
       <template v-slot:cell(isExternal)="data">
-        <i :class="`mdi mdi-18px ${getInternalExternalClass(data.item)}`" v-if="data.item.isExternal !== undefined" v-b-tooltip.hover :title="data.item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
+        <i :class="`mdi mdi-18px ${data.item.isExternal ? 'mdi-link-box-variant-outline' : 'mdi-file-document-box-outline'}`" v-if="data.item.isExternal !== undefined" v-b-tooltip.hover :title="data.item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
       </template>
-
+      <!-- Show collaborators -->
       <template v-slot:cell(collaborators)="data">
         <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showCollaborators(data.item)">
           <i class="mdi mdi-18px mdi-account-multiple" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')" />
         </a>
       </template>
+      <!-- Show attributes -->
       <template v-slot:cell(attributes)="data">
         <a href="#" class="text-decoration-none" v-if="(data.item.attributes !== 0 || data.item.dublinCore) && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="showAttributes(data.item)">
           <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
         </a>
       </template>
+      <!-- Download the dataset -->
       <template v-slot:cell(download)="data">
         <a href="#" class="text-decoration-none" v-if="!data.item.isExternal && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="downloadDataset(data.item)">
           <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
         </a>
       </template>
 
+      <!-- Row details is where the dataset locations are shown on a map -->
       <template v-slot:row-details="data">
         <LocationMap :locations="locations" v-if="dataset && dataset.datasetId === data.item.datasetId && locations && locations.length > 0" :showLinks="false"/>
       </template>
-
     </BaseTable>
-    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted"/>
+
+    <!-- License modal -->
+    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted" />
+    <!-- Collaborators modal -->
     <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
+    <!-- Attribute modal -->
     <AttributeModal :dataset="dataset" v-if="dataset && (dataset.dublinCore !== undefined || dataset.attributes !== 0)" ref="attributeModal" />
   </div>
 </template>
@@ -339,9 +364,6 @@ export default {
       result += this.toThousandSeparators(dataset.dataPointCount.value)
       return result
     },
-    getInternalExternalClass: function (dataset) {
-      return dataset.isExternal ? 'mdi-link-box-variant-outline' : 'mdi-file-document-box-outline'
-    },
     downloadDataset: function (dataset) {
       switch (dataset.datasetType) {
         case 'trials':
@@ -354,6 +376,7 @@ export default {
           this.initDownload(dataset, 'climate')
           break
         case 'allelefreq':
+          // For allelefreq data, just request the underlying data file
           this.apiGetDatasetSourceFile(dataset.datasetId, result => {
             this.downloadBlob({
               filename: `allelefreq-${dataset.datasetId}-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
@@ -363,6 +386,7 @@ export default {
           })
           break
         case 'genotype':
+          // For genotypic data, ask for confirmation regarding Flapjack format
           this.$bvModal.msgBoxConfirm(this.$t('pageGenotypesExportEnableFlapjackTitle'), {
             okVariant: 'success',
             okTitle: this.$t('genericYes'),
@@ -371,6 +395,7 @@ export default {
           })
             .then(value => {
               if (value !== null) {
+                // Then export
                 var genotypeQuery = {
                   datasetIds: [dataset.datasetId],
                   generateFlapjackProject: value
@@ -380,8 +405,8 @@ export default {
                 this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
                   result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
+                  // Show the sidebar
                   EventBus.$emit('toggle-aside', 'download')
-
                   EventBus.$emit('show-loading', false)
                 })
               }
@@ -390,6 +415,7 @@ export default {
       }
     },
     initDownload: function (dataset, type) {
+      // Request data export for all columns and rows for this current dataset
       var query = {
         xGroupIds: null,
         xIds: null,
@@ -415,11 +441,13 @@ export default {
       this.$nextTick(() => this.$refs.collaboratorModal.show())
     },
     showLocations: function (data) {
+      // If the user clicked on the same row again, just toggle it
       if (this.previousDetailsRow && (this.previousDetailsRow.item.datasetId === data.item.datasetId)) {
         data.toggleDetails()
         return
       }
 
+      // Otherwise, request the data and then show the map
       const dataset = data.item
       this.dataset = dataset
       var query = {

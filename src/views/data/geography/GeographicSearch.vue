@@ -5,6 +5,7 @@
       <b-tabs card
               active-nav-item-class="text-primary"
               v-model="tabIndex">
+        <!-- Point search -->
         <b-tab active @click="updatePointMap">
           <template v-slot:title>
             <i class="mdi mdi-18px mdi-crosshairs-gps" /> {{ $t('pageGeographicSearchPointSearchTitle') }}
@@ -12,20 +13,24 @@
           <b-card-body>
             <div>{{ $t('pageGeographicSearchPointSearchText') }}</div>
           </b-card-body>
+          <!-- Point search map -->
           <PointSearchMap ref="pointMap" v-on:map-loaded="updatePolygonMap" />
           <b-card-body v-if="point">
             <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:default="slotProps">
+                <!-- Locations ordered by distance -->
                 <LocationTable tableMode="distance" :getData="getLocationData" :getIds="getLocationIds" ref="locationPointTable" orderBy="distance" v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
             <Collapse icon="mdi-sprout" :title="$t('pageGeographicSearchPointGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
               <template v-slot:default="slotProps">
+                <!-- Germplasm ordered by distance -->
                 <GermplasmTable tableMode="distance" :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPointTable" orderBy="distance"  v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
           </b-card-body>
         </b-tab>
+        <!-- Polygon search -->
         <b-tab @click="updatePolygonMap">
           <template v-slot:title>
             <i class="mdi mdi-18px mdi-vector-polygon" /> {{ $t('pageGeographicSearchPolygonSearchTitle') }}
@@ -33,21 +38,25 @@
           <b-card-body>
             <div>{{ $t('pageGeographicSearchPolygonSearchText') }}</div>
           </b-card-body>
+          <!-- Polygon map -->
           <LocationMap selectionMode="polygon" :locations="polygonLocations" ref="polygonMap" />
           <b-card-body v-if="polygons && polygons.length > 0">
             <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:default="slotProps">
+                <!-- Locations inside the polygons -->
                 <LocationTable :getData="getLocationData" :getIds="getLocationIds" ref="locationPolygonTable"  v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
             <Collapse icon="mdi-sprout" :title="$t('pageGeographicSearchPolygonGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
               <template v-slot:default="slotProps">
+                <!-- Germplasm inside the polygons -->
                 <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPolygonTable" v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
           </b-card-body>
         </b-tab>
         <template v-slot:tabs-end>
+          <!-- Search button -->
           <b-nav-item href="#" @click="query" class="ml-auto text-primary bg-primary"><span class="text-white"><i class="mdi mdi-18px mdi-arrow-right-box" /> {{ $t('pageGeographicSearchButtonRun') }}</span></b-nav-item>
         </template>
       </b-tabs>

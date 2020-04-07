@@ -2,18 +2,25 @@
   <div :class="divClass">
     <div>
       <b-button-group class="table-filter">
+        <!-- Help information -->
         <b-button @click="$emit('help-clicked')" class="mdi mdi-18px mdi-help-circle-outline" v-b-tooltip.hover :title="$t('tooltipTableHelp')" />
+        <!-- Column visibility dropdown -->
         <b-dropdown left v-if="columns && columns.length > 0" class="overflow-dropdown" id="column-selector" v-b-tooltip.hover :title="$t('tooltipTableColumnSelector')">
           <template slot="button-content"><i class="mdi mdi-18px mdi-view-column"/></template>
           <b-dropdown-form>
             <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.key" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
           </b-dropdown-form>
         </b-dropdown>
+        <!-- Toggle filter -->
         <b-button :variant="(filter && filter.length > 0) ? 'success' : ''" v-b-modal="'table-filter-modal-' + id" class="mdi mdi-18px mdi-filter" id="filter-toggle" v-b-tooltip.hover :title="$t('tooltipTableFilter')" />
+        <!-- Clear filter -->
         <b-button v-if="filter && filter.length > 0" variant="danger" class="mdi mdi-18px mdi-delete" @click="clearFilter" v-b-tooltip.hover :title="$t('tooltipTableClearFilter')"/>
       </b-button-group>
+
+      <!-- Filter modal -->
       <b-modal :id="'table-filter-modal-' + id" ref="tableFilterModal" :title="$t('modalTitleTableFilter')" size="lg" @ok="setFilter(false, true)" @show="init">
         <b-form v-on:submit.prevent="setFilter(true, true)">
+          <!-- Each row -->
           <div v-for="(f, index) in tempFilter" :key="'filter-' + f.column.name + '-' + index">
             <b-form-group :disabled="f.canBeChanged === false">
               <b-input-group class="mb-3">
@@ -26,7 +33,7 @@
                       {{ getText(column) }}
                     </b-dropdown-item>
                   </b-dropdown>
-                  <!-- comparator selector -->
+                  <!-- Comparator selector -->
                   <b-dropdown :text="comparators[f.comparator].text()" class="overflow-dropdown">
                     <b-dropdown-item v-for="(value, name) in comparators"
                                     :disabled="isDisabled(f.column.type, name)"
@@ -36,37 +43,49 @@
                     </b-dropdown-item>
                   </b-dropdown>
                 </b-input-group-prepend>
+
+                <!-- JSON columns -->
                 <template v-if="isType(f, String) || isType(f, 'json')">
                   <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()"/>
                   <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                 </template>
+                <!-- Number columns -->
                 <template v-else-if="isType(f, Number)">
                   <b-form-input v-model="f.values[0]" type="number" @focus.native="$event.target.select()"/>
                   <b-form-input v-model="f.values[1]" type="number" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                 </template>
+                <!-- Date columns -->
                 <template v-else-if="isType(f, Date)">
                   <b-form-input v-model="f.values[0]" type="date" @focus.native="$event.target.select()"/>
                   <b-form-input v-model="f.values[1]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                 </template>
+                <!-- Boolean columns -->
                 <template v-else-if="isType(f, Boolean)">
                   <b-form-select :options="[{value: 0, text: $t('genericFalse')}, {value: 1, text: $t('genericTrue')}]" v-model="f.values[0]" />
                 </template>
+                <!-- Location type columns -->
                 <template v-else-if="isType(f, 'locationType')">
                   <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" />
                 </template>
+                <!-- Entity type columns -->
                 <template v-else-if="isType(f, 'entityType')">
                   <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" />
                 </template>
+                <!-- Data type columns -->
                 <template v-else-if="isType(f, 'dataType')">
                   <b-form-select :options="getDataTypeOptions()" v-model="f.values[0]" />
                 </template>
+                <!-- Group type columns -->
                 <template v-else-if="isType(f, 'groupType')">
                   <b-form-select :options="getGroupTypeOptions()" v-model="f.values[0]" />
                 </template>
+
+                <!-- Delete button -->
                 <b-input-group-append>
                   <b-button variant="danger" class="mdi mdi-18px mdi-delete" :disabled="index === 0" @click="tempFilter.splice(index, 1)"/>
                 </b-input-group-append>
               </b-input-group>
+              <!-- AND / OR operator -->
               <b-form-radio-group
                 :options="localOperators"
                 button-variant="outline-secondary"
@@ -151,8 +170,10 @@ export default {
     },
     isValidFilter: function (filter) {
       if (filter.column.type === Number) {
+        // Check if it's a number
         return filter.values.filter(v => isNaN(v)).length === 0
       } else if (filter.column.type === Date) {
+        // Check if it's a date
         return filter.values.filter(v => isNaN(new Date(v).getTime())).length === 0
       } else {
         return true
@@ -209,6 +230,7 @@ export default {
         f.values = [null, null]
       }
 
+      // Check if the currently/previously selected comparator is also valid for the new data type
       if (this.validComparatorsForType[column.type]) {
         if (this.validComparatorsForType[column.type].indexOf(f.comparator) === -1) {
           f.comparator = this.validComparatorsForType[column.type][0]

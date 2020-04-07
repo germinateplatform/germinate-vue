@@ -3,11 +3,13 @@
     <b-col cols=12 md=6 v-if="items && items.length > 0">
       <h2>{{ $t(texts.exportTitle) }}</h2>
       <p>{{ $t(texts.exportText) }}</p>
+      <!-- Selected trait/compound/climate -->
       <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 />
       <p class="text-danger" v-if="max !== null && selectedItems.length > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
       <p class="text-info" v-if="min !== null && selectedItems.length < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
     </b-col>
     <b-col cols=12 md=6>
+      <!-- Selected germplasm/location groups -->
       <ExportGroupSelection :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
     </b-col>
     <b-col cols=12>
@@ -113,16 +115,19 @@ export default {
 
       var settings = this.$refs.groupSelection.getSettings()
 
+      // If the "Marked items" item is selected, set the individual ids
       var markedSelected = settings.selectedGroups.filter(g => g.isMarkedItem === true)
       if (settings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
         query.yIds = this.markedIds.germplasm
       }
 
+      // Set the selected group ids
       var groups = settings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
       if (settings.specialGroupSelection !== 'all' && groups.length > 0) {
         query.yGroupIds = groups
       }
 
+      // Set selected trait/compound/climate ids
       if (this.selectedItems.length > 0) {
         query.xIds = this.selectedItems.map(t => t[this.idKey])
       }
@@ -158,6 +163,7 @@ export default {
         groupType: this.groupType,
         datasetType: this.datasetType
       }
+      // Get groups
       this.apiPostDatasetGroups(request, result => {
         this.groups = result
       })

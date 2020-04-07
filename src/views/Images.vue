@@ -2,6 +2,7 @@
   <div>
     <h1>{{ $t('pageImagesTitle') }}</h1>
     <p>{{ $t('pageImagesText') }}</p>
+    <!-- Table showing all images -->
     <ImageTable :getData="getData" :downloadTable="downloadImages" :filterOn="filterOn" ref="imageTable" v-on:tag-clicked="tagClicked" />
   </div>
 </template>
@@ -19,6 +20,7 @@ export default {
   },
   watch: {
     tag: function (newValue, oldValue) {
+      // Filter based on selected tag
       if (!newValue) {
         this.filterOn = []
       } else {

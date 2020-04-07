@@ -19,8 +19,10 @@
       </b-button>
     </b-button-group>
 
+    <!-- Table showing all germplasm -->
     <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" :downloadTable="downloadTable"  ref="germplasmTable" />
 
+    <!-- Germplasm download options -->
     <GermplasmDownload />
   </div>
 </template>

@@ -7,6 +7,7 @@
                v-bind="$props"
                ref="commentTable"
                v-on="$listeners">
+      <!-- Additional actions column holding the delete button -->
       <template v-slot:cell(actions)="data">
         <div v-if="token && token.id === data.item.userId">
           <b-button size="sm" variant="outline-danger" v-b-tooltip:hover :title="$t('tooltipDelete')" @click="deleteComment(data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
@@ -14,6 +15,7 @@
       </template>
     </BaseTable>
 
+    <!-- Modal containing the input field for new comments -->
     <b-modal ref="commentModal"
              v-if="token"
              :title="$t('modalTitleAddComment')"
@@ -161,6 +163,7 @@ export default {
       this.$refs.commentTable.refresh()
     },
     deleteComment: function (comment) {
+      // Ask for confirmation
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
         okVariant: 'danger',
         okTitle: this.$t('genericYes'),
@@ -168,6 +171,7 @@ export default {
       })
         .then(value => {
           if (value) {
+            // Delete the comment
             this.apiDeleteComment(comment.commentId, result => {
               this.refresh()
             })
@@ -176,6 +180,7 @@ export default {
     },
     addNewComment: function () {
       if (this.newComment && this.newComment.length > 0) {
+        // Submit the new comment
         const data = {
           commenttypeId: this.commentTypeId,
           userId: this.token ? this.token.id : null,

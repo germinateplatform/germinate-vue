@@ -6,11 +6,13 @@
       <b-col sm=6>
         <h3>{{ $t('pageUserPermissionsUserPermissionsCurrentTitle') }}</h3>
         <p>{{ $t('pageUserPermissionsUserPermissionsCurrentText') }}</p>
+        <!-- Shows the specific users that currently have access to the selected dataset -->
         <UserTable :users="usersForDataset" :isAdd="false" v-on:action-clicked="(ids) => patchUserPermission(ids, false)" />
       </b-col>
       <b-col sm=6>
         <h3>{{ $t('pageUserPermissionsUserPermissionsNewTitle') }}<small> - {{ $t('pageUserPermissionsTableSearchHint') }}</small></h3>
         <p>{{ $t('pageUserPermissionsUserPermissionsNewText') }}</p>
+        <!-- Shows all users -->
         <UserTable :users="users" :isAdd="true" v-on:action-clicked="(ids) => patchUserPermission(ids, true)" />
       </b-col>
     </b-row>

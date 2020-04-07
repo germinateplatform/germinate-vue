@@ -3,15 +3,18 @@
     <h1>{{ $t('pageMapsTitle') }}</h1>
     <hr />
     <p>{{ $t('pageMapsText') }}</p>
+    <!-- Table showing all maps -->
     <MapTable :getData="getMapData" v-on:map-selected="onMapSelected" />
 
     <div v-if="map">
       <h2>{{ $t('pageMapsDetailsTitle') }} <small>{{ map.name }}</small></h2>
       <p>{{ $t('pageMapsDetailsText') }}</p>
+      <!-- Markers and their positions on the map -->
       <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" ref="mapDefinitionTable" />
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
+      <!-- Map chromosome histogram -->
       <MapChart :mapId="mapId" ref="mapChart" v-on:points-selected="onPointsSelected" />
 
       <h2>{{ $t('pageMapExportDownloadTitle') }}</h2>
@@ -22,14 +25,17 @@
           {{ useAdvancedExportOptions ? $t('genericYes') : $t('genericNo') }}
         </b-form-checkbox>
       </b-form-group>
+      <!-- Advanced export options -->
       <MapExportSelection :mapId="mapId" v-show="useAdvancedExportOptions" ref="exportOptions" />
 
+      <!-- Download -->
       <h4>{{ $t('pageMapExportDownloadFormatTitle') }}</h4>
       <b-list-group class="d-inline-block">
         <b-list-group-item button @click="exportMap('flapjack')"><img :src="`./img/${exportFormats.flapjack.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadFlapjackFormat') }}</b-list-group-item>
         <b-list-group-item button @click="exportMap('strudel')"><img :src="`./img/${exportFormats.strudel.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadStrudelFormat') }}</b-list-group-item>
       </b-list-group>
 
+      <!-- Export format information -->
       <p><span class="text-muted" v-html="$t('pageExportFormatsGenotypeText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
     </div>
   </div>
@@ -111,9 +117,11 @@ export default {
       if (this.mapId) {
         this.apiGetMap(mapId, result => {
           if (result && result.data && result.data.length > 0) {
+            // Update the window URL to reflect map change
             window.history.replaceState({}, null, this.$router.resolve({ name: 'map-details', params: { mapId: this.mapId } }).href)
             this.map = result.data[0]
             this.$nextTick(() => {
+              // Update table and chart
               this.$refs.mapChart.redraw()
               this.$refs.mapDefinitionTable.refresh()
             })
@@ -125,6 +133,7 @@ export default {
       this.useAdvancedExportOptions = true
 
       this.$nextTick(() => {
+        // Add the region to the export options.
         this.$refs.exportOptions.addRegion({
           chromosome: chromosome,
           start: Math.floor(start),

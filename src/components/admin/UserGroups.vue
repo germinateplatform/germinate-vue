@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Shows all user groups -->
     <UserGroupTable :getData="getUserGroups"
                     :tableActions="userGroupActions"
                     :hideDefaultActions="false"
@@ -8,8 +9,10 @@
                     v-on:group-selected="selectGroup"
                     ref="userGroupTable" />
 
+    <!-- If a group is selected, show the group members -->
     <UserGroupMembers :group="selectedGroup" v-if="selectedGroup" v-on:groups-changed="updateTable" class="mt-3" ref="userGroupMembers" />
 
+    <!-- Modal to create a new user group -->
     <b-modal id="add-user-group"
              :title="$t('modalTitleAddUserGroup')"
              ref="newGroupModal"

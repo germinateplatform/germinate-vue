@@ -9,9 +9,11 @@
               outlined
               show-empty
               sort-by="rowIndex">
+      <!-- Import status icon -->
       <template v-slot:cell(icon)="data">
         <i :class="`mdi mdi-18px ${getIconAndVariant(data.item.status)}`" />
       </template>
+      <!-- Import status message -->
       <template v-slot:cell(status)="data">
         <span v-if="statusOptions[data.item.status]">{{ statusOptions[data.item.status]() }}</span>
       </template>

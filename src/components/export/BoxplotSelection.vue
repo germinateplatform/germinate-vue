@@ -37,6 +37,10 @@ export default {
       type: String,
       default: 'germinatebase'
     },
+    itemType: {
+      type: String,
+      default: 'germplasm'
+    },
     datasetType: {
       type: String,
       default: null

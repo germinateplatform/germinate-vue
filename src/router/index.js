@@ -83,6 +83,11 @@ const router = new Router({
           beforeEnter: requireAuth
         },
         {
+          path: 'cookies',
+          name: 'cookies',
+          component: () => import('@/views/pages/Cookies')
+        },
+        {
           path: 'admin',
           redirect: '/admin/settings',
           name: '',

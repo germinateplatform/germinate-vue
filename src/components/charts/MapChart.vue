@@ -132,6 +132,8 @@ export default {
       if (this.chartSelection && this.chartSelection.length > 0) {
         var counter = 0
 
+        // For each selection, i.e. for each selected area per chromosome, do this individually.
+        // The boolean logic the filter uses isn't powerful enough to run the complex query in one go.
         this.chartSelection.forEach(s => {
           const query = {
             page: 1,
@@ -155,6 +157,7 @@ export default {
           }
 
           counter = counter + 1
+          // Show loading indicator
           EventBus.$emit('show-loading', true)
           // Get the ids of the markers in the requested regions
           this.apiPostMapdefinitionTableIds(query, result => {
@@ -167,7 +170,7 @@ export default {
             }
 
             counter = counter - 1
-
+            // If this is the last one to finish, hide the loading indicator
             if (counter < 1) {
               EventBus.$emit('show-loading', false)
             }
@@ -185,10 +188,11 @@ export default {
         this.sourceFile = result
         var reader = new FileReader()
         reader.onload = () => {
+          // Remove the first row (Flapjack header)
           var dirtyTsv = reader.result
           var firstEOL = dirtyTsv.indexOf('\r\n')
           var tsv = 'markerName\tchromosome\tposition\r\n' + dirtyTsv.substring(firstEOL + 2)
-          var data = this.$plotly.d3.tsv.parse(tsv) // Remove the first row (Flapjack header)
+          var data = this.$plotly.d3.tsv.parse(tsv)
 
           this.$plotly.d3.select(this.$refs.mapChart)
             .datum(data)

@@ -1,5 +1,6 @@
 <template>
   <b-form @submit.prevent :validated="errorMessage === null">
+    <!-- Text area for manual input as well as drag and drop file handling -->
     <b-textarea ref="dropZone" rows="10" v-on:drop="handleDrop" :placeholder="$t(placeholder)" v-model="fileContent" :state="errorMessage === null" />
     <p v-if="errorMessage" class="text-danger">{{ $t(errorMessage) }}</p>
   </b-form>

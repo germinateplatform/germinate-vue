@@ -5,10 +5,11 @@
             itemType="locations"
             ref="climateDataTable"
             v-on="$listeners">
-
+    <!-- Country name represented by a flag icon -->
     <template v-slot:cell(countryName)="data">
       <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
     </template>
+    <!-- Location type with icon -->
     <template v-slot:cell(locationType)="data">
       <span><i :class="`mdi mdi-18px ${locationTypes[data.item.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[data.item.locationType].color()};`" /> {{ locationTypes[data.item.locationType].text() }}</span>
     </template>

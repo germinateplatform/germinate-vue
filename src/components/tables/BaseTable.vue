@@ -1,18 +1,23 @@
 <template>
   <div class="base-table" :id="id">
     <div>
+      <!-- Filter -->
       <div v-if="filter" class="mb-2">
         <span v-for="(f, index) in filter" :key="f.column.name">
+          <!-- Comparison -->
           <b-badge :variant="isValidFilter(f) ? 'info' : 'danger'" class="mr-2" v-b-tooltip="isValidFilter(f) ? null : $t('tooltipTableFilterInvalid')" >
             {{ "'" + columns.filter(fs => fs.key === f.column)[0].label + "' " + comparators[f.comparator].text() + " '" + f.values.filter(f => f !== null).join(", ") + "'" }}
           </b-badge>
+          <!-- Operator -->
           <b-badge v-if="index < filter.length - 1" class="mr-2">
             {{ Object.keys(operators).filter(o => operators[o].value === f.operator).map(o => operators[o])[0].text() }}
           </b-badge>
         </span>
       </div>
     </div>
+    <!-- Table container -->
     <div class="d-flex flex-row flex-wrap justify-content-between align-items-end">
+      <!-- Table filter mechanism including column selector -->
       <TableFilter :columns="columns"
                    :texts="options.headings"
                    :tableName="options.tableName"
@@ -23,29 +28,37 @@
                    v-on:filter-changed="onFilterChanged"
                    v-on:help-clicked="$refs.tableTour.start()"/>
 
+      <!-- Content in the middle -->
       <div class="flex-grow-1 order-0 order-sm-1">
         <div class="d-flex flex-row justify-content-between">
+          <!-- Table filtering info -->
           <div class="d-none d-sm-flex align-items-end mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
             <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
           </div>
           <div v-else />
+          <!-- Row count -->
           <template v-if="currentRequestData !== null && pagination.totalCount >= 0">
             <div v-if="showAllItems !== true" class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: $options.filters.toThousandSeparators(currentRequestData.page * currentRequestData.limit + 1), to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)), count: $options.filters.toThousandSeparators(pagination.totalCount) }) }}</div>
             <div v-else class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: 1, to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)), count: $options.filters.toThousandSeparators(pagination.totalCount) }) }}</div>
           </template>
         </div>
+        <!-- Progress bar below it all that indicates the loading state -->
         <b-progress :value="100" height="6px" variant="primary" v-b-tooltip.hover :title="$t('tooltipTableLoadingIndicator')" striped animated v-if="isLoading" class="table-loading-indicator" />
         <div v-else style="height: 6px;" />
       </div>
 
+      <!-- Item per page dropdown -->
       <b-button-group class="per-page-dropdown order-2 order-sm-2" v-if="!showAllItems">
         <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')" id="table-page-size-dropdown" right>
           <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
           <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value">{{ value }}</b-dropdown-item>
         </b-dropdown>
+        <!-- Item marking mechanism -->
         <MarkedItems :itemType="itemType" />
       </b-button-group>
     </div>
+
+    <!-- Actual table -->
     <b-table :items="getDataLocal"
             :fields="columns"
             striped
@@ -66,6 +79,7 @@
       <!-- Pass on all scoped slots -->
       <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope"><slot :name="slot" v-bind="scope"/></template>
 
+      <!-- Selected column (first checkbox) -->
       <template v-slot:head(selected)="data">
         <div v-if="(columns.map(c => c.key).indexOf('selected') !== -1) && (getIds !== null) && selectionMode == 'multi'">
           <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
@@ -75,6 +89,7 @@
         <b-form-checkbox :value="data.item[options.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.key).indexOf('selected') !== -1"/>
       </template>
 
+      <!-- Marked item column -->
       <template v-slot:head(marked)="data">
         <b-dropdown size="sm" dropleft variant="outline-primary" boundary="window">
           <template slot="button-content">
@@ -92,23 +107,30 @@
         </b-dropdown>
       </template>
       <template v-slot:cell(marked)="data">
+        <!-- Context menu -->
         <div @contextmenu.prevent="contextMenu($event, data.item)">
+          <!-- Marking checkbox -->
           <b-form-checkbox :checked="isMarked(data.item)" @change="markItem(data.item[options.idColumn], $event)" v-if="itemType"/>
         </div>
       </template>
     </b-table>
 
+    <!-- Container below the table -->
     <div class="d-flex flex-wrap-reverse justify-content-between align-items-end">
       <div class="table-bottom-left">
+        <!-- Information about selecting multiple items in the table -->
         <template v-if="columns.map(c => c.key).indexOf('selected') !== -1 && selectionMode === 'multi'">
           <div>
             <i class="mdi mdi-18px mdi-arrow-up-bold ml-1"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
           </div>
         </template>
 
+        <!-- Any additional actions and the download button -->
         <b-button-group v-if="tableActions || downloadTable">
+          <!-- Download button -->
           <b-button class="table-download" v-if="downloadTable !== null" @click="onDownloadTableClicked" id="table-download" v-b-tooltip.hover.bottom :title="$t('buttonDownload')"><i class="mdi mdi-18px fix-alignment mdi-download" /></b-button>
           <template v-if="tableActions">
+            <!-- Table actions -->
             <b-button v-for="action in tableActions"
                       :key="`base-table-action-${action.id}`"
                       :variant="action.variant"
@@ -123,6 +145,7 @@
         </b-button-group>
       </div>
 
+      <!-- Page indicator and pagination -->
       <div class="d-flex">
         <b-button-group class="table-pagination" v-show="pagination.totalCount > tablePerPage">
           <b-button variant="outline-secondary" class="text-primary" @click="showJumpToPage" id="table-jump-to-page"><i class="mdi mdi-book-open-page-variant" /> {{ $t('paginationPageCustom', { from: pagination.currentPage, to: maxPage }) }}</b-button>
@@ -134,6 +157,7 @@
       </div>
     </div>
 
+    <!-- Context menu -->
     <vue-context ref="menu" v-if="options.additionalMarkingOptions">
       <template slot-scope="child">
         <li v-for="item in options.additionalMarkingOptions" :key="item.key">
@@ -142,8 +166,10 @@
       </template>
     </vue-context>
 
+    <!-- Group edit/add modal -->
     <GroupEditAddModal v-if="token && markedIds[itemType] && markedIds[itemType].length > 0" :groupToEdit="newGroup" :groupTypeSelect="groupTypeSelect" ref="groupAddModal" v-on:ok="putGroup"/>
 
+    <!-- Jump to page modal -->
     <b-modal :title="$t('modalTitleJumpToPage')"
              @shown="$refs.pageNumberInput.select()"
              @ok="$refs.jumpToPageForm.submit()"
@@ -166,6 +192,7 @@
       </b-form>
     </b-modal>
 
+    <!-- Tour showing how to use the table -->
     <Tour ref="tableTour" :steps="tableTourSteps" />
   </div>
 </template>
@@ -360,6 +387,7 @@ export default {
       this.$store.dispatch('ON_TABLE_PER_PAGE_CHANGED', value)
     },
     getDataLocal: function (ctx) {
+      // Set the API pagination information fields
       var localCtx = JSON.parse(JSON.stringify(ctx))
       localCtx.page = this.pagination.currentPage
       localCtx.limit = this.tablePerPage
@@ -368,6 +396,7 @@ export default {
       localCtx.ascending = localCtx.sortBy.length > 0 ? (localCtx.sortDesc ? 0 : 1) : null
       localCtx.filter = this.filter
 
+      // Delete fields that the bootstrap-vue table sets itself
       delete localCtx.sortBy
       delete localCtx.sortDesc
       delete localCtx.apiUrl
@@ -392,6 +421,7 @@ export default {
           } else {
             this.pagination.totalCount = 0
           }
+          // Notify that the data has changed
           this.$emit('data-changed', this.currentRequestData, {
             data: localResult,
             count: this.pagination.totalCount
@@ -425,13 +455,12 @@ export default {
         this.newGroup.groupTypeId = groupType.id
         this.newGroup.groupType = groupType.targetTable
 
-        this.$nextTick(() => {
-          this.$refs.groupAddModal.show()
-        })
+        this.$nextTick(() => this.$refs.groupAddModal.show())
       })
     },
     putGroup: function () {
-      var group = {
+      // The new group to create
+      const group = {
         name: this.newGroup.groupName,
         description: this.newGroup.groupDescription,
         grouptypeId: this.newGroup.groupTypeId,
@@ -447,6 +476,7 @@ export default {
         }
         const groupId = result
         var type = this.groupTypes[this.itemType].apiName
+        // Now add the group members
         this.apiPatchGroupMembers(groupId, type, data, result => {
           this.$root.$bvToast.toast(this.$t('toastGroupCreateWithMembers', { count: result }), {
             title: this.$t('genericSuccess'),
@@ -464,12 +494,14 @@ export default {
       this.filter = filter.filter
       this.pagination.totalCount = -1
 
+      // Trigger an update on the table
       if (filter.triggerUpdate) {
         this.$refs.table.refresh()
       }
     },
     onDownloadTableClicked: function () {
       if (this.downloadTable !== null) {
+        // Warn user that it's a lot of data and it'll take a while
         if (this.pagination.totalCount > 100000) {
           this.$bvModal.msgBoxConfirm(this.$t('modalTextWarningLargeAmountOfData', { size: this.toThousandSeparators(this.pagination.totalCount) }), {
             title: this.$t('modalTitleWarning'),
@@ -490,6 +522,7 @@ export default {
     onSelectionHeaderClicked: function (value) {
       if (value && this.getIds) {
         EventBus.$emit('show-loading', true)
+        // Get all ids in the current table
         this.getIds(this.currentRequestData, result => {
           this.selectedItems = result.data
           EventBus.$emit('show-loading', false)
@@ -500,6 +533,7 @@ export default {
     },
     requestDownload: function () {
       EventBus.$emit('show-loading', true)
+      // Download the current table data
       this.downloadTable(this.currentRequestData, result => {
         this.downloadBlob({
           blob: result,

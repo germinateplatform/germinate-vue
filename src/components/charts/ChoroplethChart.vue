@@ -52,14 +52,14 @@ export default {
       reader.onload = () => {
         var rows = this.$plotly.d3.tsv.parse(reader.result)
 
-        const colors = this.serverSettings.colorsCharts
+        const color = (this.serverSettings.colorsCharts && this.serverSettings.colorsCharts.length > 0) ? this.serverSettings.colorsCharts[0] : '#00acef'
 
         var data = [{
           type: 'choropleth',
           locations: this.unpack(rows, 'code'),
           z: this.unpack(rows, 'count'),
           text: this.unpack(rows, 'country'),
-          colorscale: [[0, this.hexToRgbA(colors[0], 0.1)], [1, this.hexToRgbA(colors[0], 1)]],
+          colorscale: [[0, this.hexToRgbA(color, 0.1)], [1, this.hexToRgbA(color, 1)]],
           autocolorscale: false,
           reversescale: false,
           marker: {
@@ -105,13 +105,14 @@ export default {
 
         chart.on('plotly_click', data => {
           if (data && data.points && data.points.length > 0) {
-            this.navigateToGermplasm(data.points[0].text)
+            this.navigateToGermplasmPageFilteredByCountry(data.points[0].text)
           }
         })
       }
       reader.readAsText(this.sourceFile)
     },
-    navigateToGermplasm: function (countryName) {
+    navigateToGermplasmPageFilteredByCountry: function (countryName) {
+      // Store the filter
       this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
         column: {
           name: 'countryName',
@@ -121,6 +122,7 @@ export default {
         operator: 'and',
         values: [countryName]
       }])
+      // Then navigate
       this.$router.push({ name: 'germplasm' })
     }
   },

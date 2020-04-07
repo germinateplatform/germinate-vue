@@ -3,11 +3,11 @@
     <h1>{{ $t('pageAlleleFrequencyExportTitle') }}</h1>
     <template v-if="datasets && datasets.length > 0">
       <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
-      <ul>
-        <li v-for="dataset in datasets" :key="`dataset-list-${dataset.datasetId}`">{{ dataset.datasetId + ' - ' + dataset.datasetName }}</li>
-      </ul>
+      <!-- Selected datasets -->
+      <DatasetOverview :datasets="datasets" />
       <GenotypeExportSelection :datasetIds="datasetIds" datasetType="allelefreq" v-on:on-file-loaded="onFileLoaded" ref="exportSelection">
         <template slot="optionalContent">
+          <!-- Place the chart inside the export selection -->
           <AlleleFrequencyChart :datasetIds="datasetIds" :sourceFile="chartFile" v-if="chartFile" v-on:trigger-export="triggerExport" />
         </template>
       </GenotypeExportSelection>
@@ -17,6 +17,7 @@
 
 <script>
 import AlleleFrequencyChart from '@/components/charts/AlleleFrequencyChart'
+import DatasetOverview from '@/components/export/DatasetOverview'
 import GenotypeExportSelection from '@/components/export/GenotypeExportSelection'
 import datasetApi from '@/mixins/api/dataset.js'
 
@@ -30,6 +31,7 @@ export default {
   },
   components: {
     AlleleFrequencyChart,
+    DatasetOverview,
     GenotypeExportSelection
   },
   mixins: [ datasetApi ],
@@ -54,6 +56,7 @@ export default {
     }
   },
   mounted: function () {
+    // Set up the dataset request based on the provided ids
     const request = {
       page: 1,
       limit: this.JAVA_MAX_INTEGER,
@@ -77,6 +80,7 @@ export default {
 
     this.apiPostDatasetTable(request, result => {
       this.datasets = result.data.filter(d => {
+        // Exclude the ones where a license exists, but hasn't been accepted
         return (!d.licenseName || this.isAccepted(d))
       })
 

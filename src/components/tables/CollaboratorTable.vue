@@ -5,9 +5,11 @@
                v-bind="$props"
                ref="collaboratorTable"
                v-on="$listeners">
+      <!-- Collaborator email link -->
       <template v-slot:cell(collaboratorEmail)="data">
         <a :href="`mailto:${data.item.collaboratorEmail}`" v-if="data.item.collaboratorEmail">{{ data.item.collaboratorEmail }}</a>
       </template>
+      <!-- Collaborator country represented by a flag icon -->
       <template v-slot:cell(countryName)="data">
         <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
       </template>

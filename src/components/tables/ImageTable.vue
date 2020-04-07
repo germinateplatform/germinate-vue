@@ -5,23 +5,28 @@
                v-bind="$props"
                ref="table"
                @loaded="update">
+      <!-- Reference table -->
       <template v-slot:cell(imageRefTable)="data">
         <span><i :class="`mdi mdi-18px ${imageTypes[data.item.imageRefTable].icon} fix-alignment`" :style="`color: ${imageTypes[data.item.imageRefTable].color()};`" /> {{ imageTypes[data.item.imageRefTable].text() }}</span>
       </template>
-
+      <!-- Image -->
       <template v-slot:cell(image)="data">
         <a :href="getSrc(data.item, 'large')" class="baguettebox" @click.prevent>
           <img :src="getSrc(data.item, 'small')" class="table-image" />
         </a>
       </template>
-
+      <!-- Reference name -->
       <template v-slot:cell(referenceName)="data">
+        <!-- Germplasm -->
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.imageForeignId } }" v-if="data.item.imageRefTable === 'germinatebase'">{{ data.item.referenceName }}</router-link>
+        <!-- Trait -->
         <router-link :to="{ name: 'trait-details', params: { traitId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'phenotypes'">{{ data.item.referenceName }}</router-link>
+        <!-- Compound -->
         <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'compounds'">{{ data.item.referenceName }}</router-link>
+        <!-- Anything else -->
         <span v-else>{{ data.item.referenceName }}</span>
       </template>
-
+      <!-- Tags -->
       <template v-slot:cell(tags)="data">
         <div v-if="data.item.tags">
           <b-badge v-for="(tag, index) in data.item.tags" :key="`image-tag-${data.item.imageId}-${index}`" class="mr-1" href="#" @click.native.prevent="$emit('tag-clicked', tag)" :style="`background-color: ${getColor(tag)}; color: ${getTextColor(tag)}`">

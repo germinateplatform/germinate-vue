@@ -5,6 +5,7 @@
                v-bind="$props"
                ref="germplasmAttributeTable"
                v-on="$listeners">
+      <!-- Attribute type -->
       <template v-slot:cell(attributeType)="data">
         <span v-if="data.item.attributeType">
           <i :class="'mdi mdi-18px fix-alignment ' + dataTypes[data.item.attributeType].icon" :style="`color: ${dataTypes[data.item.attributeType].color()};`"/>

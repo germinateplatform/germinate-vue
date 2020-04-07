@@ -4,12 +4,16 @@
     <p v-if="text">{{ $t(text) }}</p>
     <div class="select-with-options">
       <div :id="`group-selection-${uuid}`" :class="groups === null ? 'loading-select' : ''">
+        <!-- Loading indicator -->
         <b-progress :value="100" height="5px" variant="primary" striped animated v-if="groups === null" />
+        <!-- Group select -->
         <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
       </div>
+      <!-- Tooltip shown when group selection is disabled -->
       <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll()">
         {{ specialGroupSelection !== 'selection' ? $t(tooltip) : null }}
       </b-tooltip>
+      <!-- Group selection options -->
       <b-button-group>
         <b-form-radio-group
           v-model="specialGroupSelection"
@@ -85,7 +89,7 @@ export default {
         this.groups.forEach(g => this.allGroups.push(g))
         this.allGroups.unshift({
           groupId: -1,
-          groupName: 'Marked items',
+          groupName: this.$t('pageExportSelectMarkedItems'),
           isMarkedItem: true,
           count: this.markedIds[this.itemType].length
         })

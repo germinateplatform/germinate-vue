@@ -1,8 +1,10 @@
 <template>
   <div>
     <b-button-group class="marked-items" v-if="itemType && markedIds && markedIds[itemType]">
+      <!-- Button to clear the marked items -->
       <b-button @click="clear" class="mdi mdi-18px mdi-delete" :disabled="markedIds[itemType].length < 1" id="marked-items-clear" v-b-tooltip.hover :title="$t('tooltipTableMarkedItemsClear')"/>
-      <b-button @click="navigate" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')"><b-badge pill variant="light">{{ markedIds[itemType].length }}</b-badge></b-button>
+      <!-- Button to navigate to the  -->
+      <b-button :to="{ name: 'marked-items-type', params: { itemType: itemType } }" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')"><b-badge pill variant="light">{{ markedIds[itemType].length }}</b-badge></b-button>
     </b-button-group>
   </div>
 </template>
@@ -16,10 +18,8 @@ export default {
     }
   },
   methods: {
-    navigate: function () {
-      this.$router.push({ path: `/marked-items/${this.itemType}` })
-    },
     clear: function () {
+      // Ask for confirmation
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
         okVariant: 'danger',
         okTitle: this.$t('genericYes'),

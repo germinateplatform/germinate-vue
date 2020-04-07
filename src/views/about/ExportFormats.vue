@@ -3,6 +3,7 @@
     <h1>{{ $t('pageExportFormatsTitle') }}</h1>
     <p>{{ $t('pageExportFormatsText') }}</p>
 
+    <!-- Badges for the types -->
     <b-badge v-for="(tag, name) in tags"
              :key="`export-format-tag-${name}`"
              class="dispay-inline mr-2"
@@ -13,6 +14,7 @@
       <i class="mdi mdi-tag " /> {{ tag.text() }}
     </b-badge>
 
+    <!-- Format cards -->
     <b-row class="mt-3">
       <b-col xs=12 sm=6 md=4 xl=3 v-for="format in getExportFormats()" :key="`export-format-${format.name}`" class="export-format mb-4">
         <b-card
@@ -33,6 +35,7 @@
               </b-badge>
             </div>
           </b-card-body>
+          <!-- Download button -->
           <b-button :href="format.link" target="_blank" variant="primary" class="mt-auto card-button"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
         </b-card>
       </b-col>

@@ -9,12 +9,15 @@
       <b-col cols=12 v-if="plotData">
         <h3 class="mt-3">{{ $t('pageCompoundExportColorByTitle') }}</h3>
         <p>{{ $t('pageCompoundExportColorByText') }}</p>
+        <!-- Color by -->
         <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
 
         <h3 class="mt-3">{{ $t('pageCompoundExportChartTitle') }}</h3>
         <p>{{ $t('pageCompoundExportChartText') }}</p>
-        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedCompounds.length > 2" datasetType="compound" />
-        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedCompounds[0].displayName" :y="selectedCompounds[1].displayName" datasetType="compound" v-else />
+        <!-- Show the matrix chart if there are more than 2 traits/compounds/climates -->
+        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedItems.length > 2" datasetType="compound" />
+        <!-- Otherwise, show the simple scatter plot -->
+        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedItems[0].displayName" :y="selectedItems[1].displayName" datasetType="compound" v-else />
       </b-col>
     </b-row>
   </div>
@@ -70,7 +73,7 @@ export default {
     return {
       colorBySelection: null,
       plotData: null,
-      selectedCompounds: null,
+      selectedItems: null,
       colorByGroupEnabled: false
     }
   },
@@ -102,7 +105,7 @@ export default {
 
       return result
     },
-    plot: function (query, selectedCompounds) {
+    plot: function (query, selectedItems) {
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
 
       // If coloring by group is no longer available, but it's still selected, remove selection
@@ -113,7 +116,7 @@ export default {
       this.plotData = null
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport('compound', query, result => {
-        this.selectedCompounds = selectedCompounds
+        this.selectedItems = selectedItems
         this.plotData = result
         this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection))
         EventBus.$emit('show-loading', false)

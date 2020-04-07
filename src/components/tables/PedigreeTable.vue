@@ -5,28 +5,33 @@
                v-bind="$props"
                ref="pedigreeTable"
                v-on="$listeners">
-      <template v-slot:cell(parentId)="data">
-        <router-link :to="'/data/germplasm/' + data.item.parentId">{{ data.item.parentId }}</router-link>
-      </template>
-      <template v-slot:cell(parentGid)="data">
-        <router-link :to="'/data/germplasm/' + data.item.parentId">{{ data.item.parentGid }}</router-link>
-      </template>
-      <template v-slot:cell(parentName)="data">
-        <router-link :to="'/data/germplasm/' + data.item.parentId">{{ data.item.parentName }}</router-link>
-      </template>
-      <template v-slot:cell(childId)="data">
-        <router-link :to="'/data/germplasm/' + data.item.childId">{{ data.item.childId }}</router-link>
-      </template>
-      <template v-slot:cell(childGid)="data">
-        <router-link :to="'/data/germplasm/' + data.item.childId">{{ data.item.childGid }}</router-link>
-      </template>
-      <template v-slot:cell(childName)="data">
-        <router-link :to="'/data/germplasm/' + data.item.childId">{{ data.item.childName }}</router-link>
-      </template>
-
-      <!-- HEADERS -->
+      <!-- HEAD: Relationship type -->
       <template v-slot:head(relationshipType)="data">
         <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipPedigreeRelationshipType')"/>
+      </template>
+      <!-- Parent id link -->
+      <template v-slot:cell(parentId)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.parentId } }">{{ data.item.parentId }}</router-link>
+      </template>
+      <!-- Parent GID link -->
+      <template v-slot:cell(parentGid)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.parentId } }">{{ data.item.parentGid }}</router-link>
+      </template>
+      <!-- Parent name link -->
+      <template v-slot:cell(parentName)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.parentId } }">{{ data.item.parentName }}</router-link>
+      </template>
+      <!-- Child id link -->
+      <template v-slot:cell(childId)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.childId } }">{{ data.item.childId }}</router-link>
+      </template>
+      <!-- Child GID link -->
+      <template v-slot:cell(childGid)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.childId } }">{{ data.item.childGid }}</router-link>
+      </template>
+      <!-- Child name link -->
+      <template v-slot:cell(childName)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.childId } }">{{ data.item.childName }}</router-link>
       </template>
     </BaseTable>
   </div>

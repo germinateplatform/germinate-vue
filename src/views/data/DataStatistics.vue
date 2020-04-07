@@ -6,11 +6,13 @@
       <b-col cols=12 sm=6>
         <h2>{{ $t('pageStatisticsTaxonomyTitle') }}</h2>
         <p>{{ $t('pageStatisticsTaxonomyText') }}</p>
+        <!-- Taxonomy pie chart -->
         <TaxonomyPieChart />
       </b-col>
       <b-col cols=12 sm=6>
         <h2>{{ $t('pageStatisticsBiologicalStatusTitle') }}</h2>
         <p>{{ $t('pageStatisticsBiologicalStatusText') }}</p>
+        <!-- Biological status chart -->
         <BarChart xColumn="biologicalstatus"
                   :xTitle="$t('pageStatisticsBiologicalStatusXAxis')"
                   :yTitle="$t('genericCount')"
@@ -21,6 +23,7 @@
     </b-row>
     <h2>{{ $t('pageStatisticsPdciTitle') }}</h2>
     <p v-html="$t('pagePassportPdciModal')" />
+    <!-- PDCI chart -->
     <BarChart xColumn="bin"
               xTitle="PDCI"
               :yTitle="$t('genericCount')"
@@ -30,10 +33,12 @@
 
     <h2>{{ $t('pageStatisticsLocationsTitle') }}</h2>
     <p>{{ $t('pageStatisticsLocationsText') }}</p>
+    <!-- Choropleth for locations -->
     <ChoroplethChart />
 
     <h2>{{ $t('pageStatisticsDatasetTitle') }}</h2>
     <p>{{ $t('pageStatisticsDatasetText') }}</p>
+    <!-- Data points per dataset type and year -->
     <BarChart xColumn="DatasetType"
               xTitle="Experiment type"
               yTitle="Data points"

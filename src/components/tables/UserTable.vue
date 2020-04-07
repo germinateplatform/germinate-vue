@@ -10,14 +10,17 @@
             head-variant="dark"
             :empty-text="$t('paginationNoResult')"
             ref="table">
+      <!-- HEAD: Selected checkbox -->
       <template v-slot:head(selected)="data">
         <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
       </template>
 
+      <!-- Selected checkbox -->
       <template v-slot:cell(selected)="data">
         <b-form-checkbox :value="data.item.id" v-model="selectedItems" />
       </template>
     </b-table>
+    <!-- Action buttons -->
     <b-button-group>
       <b-button v-b-tooltip.hover.bottom
                 :title="isAdd ? $t('genericAdd') : $t('genericRemove')"

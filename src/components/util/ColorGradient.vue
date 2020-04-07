@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- This is the gradient canvas -->
     <canvas class="gradient-canvas" ref="canvas" />
     <b-row>
       <b-col class="text-left">

@@ -2,6 +2,7 @@
   <div>
     <b-row>
       <b-col cols=12 md=6 >
+        <!-- Germplasm group selection -->
         <ExportGroupSelection title="pageGenotypesExportSelectGermplasmGroupTitle"
                               text="pageGenotypesExportSelectGermplasmGroupText"
                               tooltip="pageExportSelectGroupTooltip"
@@ -11,6 +12,7 @@
                               @change="updateGenotypeDatasetTable"/>
       </b-col>
       <b-col cols=12 md=6 >
+        <!-- Marker group selection -->
         <ExportGroupSelection title="pageGenotypesExportSelectMarkerGroupTitle"
                               text="pageGenotypesExportSelectMarkerGroupText"
                               tooltip="pageExportSelectGroupTooltip"
@@ -23,12 +25,14 @@
     <template v-if="datasetType === 'genotype' && datasetIds && datasetIds.length > 1">
       <h2 class="mt-3">{{ $t('pageGenotypesExportMultipleSubselectTitle') }}</h2>
       <p>{{ $t('pageGenotypesExportMultipleSubselectText') }}</p>
+      <!-- Table showing the dataset summary table -->
       <GenotypeDatasetTable :getData="getGenotypeSummaryData" :getIds="null" :selectable="true" v-on:selection-changed="onSelectionChanged" ref="genotypeDatasetTable" />
     </template>
     <template v-if="(datasetIds && datasetIds.length === 1) || selectedDatasetIds.length > 0 || datasetType !== 'genotype'">
       <b-row class="mt-3">
         <b-col cols=12 md=6>
           <h2>{{ $t('pageGenotypesExportSelectMapTitle') }}</h2>
+          <!-- Maps -->
           <b-form-group
               :label="$t('pageGenotypesExportSelectMapText')"
               label-for="map-selection">
@@ -38,6 +42,7 @@
         <b-col cols=12 md=6>
           <h2>{{$t('pageGenotypesExportEnableFlapjackTitle') }}</h2>
           <p v-html="$t('pageGenotypesExportEnableFlapjackText')" />
+          <!-- Export Flapjack file? -->
           <b-form-checkbox v-model="generateFlapjackProject" switch>
             {{ generateFlapjackProject === true ? $t('genericYes') : $t('genericNo') }}
           </b-form-checkbox>
@@ -46,16 +51,16 @@
       </b-row>
       <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ datasetType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
     </template>
-    <h2 class="text-info" v-if="datasetType === 'genotype' && selectedDatasetIds.length < 1">Please select at least one dataset in the table above to continue.</h2>
+    <h2 class="text-info" v-if="datasetType === 'genotype' && selectedDatasetIds.length < 1">{{ $t('widgetGenotypeDatasetSelectionSelect') }}</h2>
 
+    <!-- Optional content goes here -->
     <slot name="optionalContent" />
 
     <template v-if="exportStarted">
-      <h2 class="mt-4">{{ $t('widgetDatasetDownloadMetadataTitle') }}</h2>
-      <p>{{ $t('widgetDatasetDownloadMetadataText') }}</p>
-      <b-button @click="downloadMetadata"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownload') }}</b-button>
+      <DatasetMetadataDownload :datasetIds="selectedDatasetIds" datasetType="genotype" />
     </template>
 
+    <!-- Modal showing information about export formats -->
     <b-modal id="exportFormatModal" size=xl hide-footer>
       <ExportFormats tag="genotype" />
     </b-modal>
@@ -64,6 +69,7 @@
 
 <script>
 import { EventBus } from '@/plugins/event-bus.js'
+import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import ExportFormats from '@/views/about/ExportFormats'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 import GenotypeDatasetTable from '@/components/tables/GenotypeDatasetTable'
@@ -101,6 +107,7 @@ export default {
     }
   },
   components: {
+    DatasetMetadataDownload,
     ExportFormats,
     ExportGroupSelection,
     GenotypeDatasetTable
