@@ -109,7 +109,7 @@ export default {
           key: 'github',
           text: () => this.$t('pageAboutGerminateCardGithubText'),
           icon: 'mdi-github-circle',
-          link: 'https://github.com/germinateplatform/germinate'
+          link: 'https://github.com/germinateplatform/germinate-vue'
         },
         {
           key: 'publication',
@@ -121,7 +121,7 @@ export default {
           key: 'documentation',
           text: () => this.$t('pageAboutGerminateCardDocumentationText'),
           icon: 'mdi-glasses',
-          link: 'https://github.com/germinateplatform/germinate/wiki'
+          link: 'https://germinateplatform.github.io/germinate-server'
         }
       ],
       team: [
