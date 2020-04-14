@@ -82,6 +82,12 @@ export default {
           link: 'locations'
         },
         {
+          key: 'datasets',
+          text: () => this.$t('dashboardBannerDatasets'),
+          icon: 'mdi-database',
+          link: 'datasets'
+        },
+        {
           key: 'groups',
           text: () => this.$t('dashboardBannerGroups'),
           icon: 'mdi-group',

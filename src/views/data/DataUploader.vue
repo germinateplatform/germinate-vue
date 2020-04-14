@@ -34,6 +34,17 @@
       <!-- Selected file -->
       <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 
+      <div v-if="templateType === 'mcpd'">
+        <hr />
+        <b-form-radio-group
+          v-model="isUpdate"
+          button-variant="outline-primary"
+          :options="updateOptions"
+          buttons />
+        <p class="text-muted" v-if="isUpdate">{{ $t('pageDataUploadUpdateExplanationInsert') }}</p>
+        <p class="text-muted" v-else>{{ $t('pageDataUploadUpdateExplanationUpdate') }}</p>
+      </div>
+
       <!-- Submit -->
       <b-button variant="success" :disabled="!file" class="mt-3" @click="onSubmit"><i class="mdi mdi-18px fix-alignment mdi-upload" /> {{ $t('pageDataUploadCheckFileButton') }}</b-button>
     </template>
@@ -49,7 +60,12 @@ export default {
     return {
       file: null,
       uuids: null,
-      templateType: null
+      isUpdate: false,
+      templateType: null,
+      updateOptions: [
+        { text: this.$t('pageDataUploadUpdateOptionInsert'), value: false },
+        { text: this.$t('pageDataUploadUpdateOptionUpdate'), value: true }
+      ]
     }
   },
   watch: {
@@ -83,7 +99,7 @@ export default {
       formData.append('fileToUpload', this.file)
 
       EventBus.$emit('show-loading', true)
-      this.apiPostDataUpload(formData, this.templateType, result => {
+      this.apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, result => {
         this.uuids = result
 
         if (result) {

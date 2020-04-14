@@ -70,12 +70,15 @@ export default {
         this.enabled = true
         const originalTarget = this.originalTarget
         // If it's successful, finally store them
-        this.$store.dispatch('ON_TOKEN_CHANGED', result)
         if (originalTarget) {
           var path = originalTarget
           this.$store.commit('ON_ORIGINAL_TARGET_CHANGED_MUTATION', null)
+          // Do this after resetting the original target, so it's changed in the correct place (no user)
+          this.$store.commit('ON_TOKEN_CHANGED_MUTATION', result)
           this.$router.push(path)
         } else {
+          // Do this here as well
+          this.$store.commit('ON_TOKEN_CHANGED_MUTATION', result)
           this.$router.push('/')
         }
       }, {

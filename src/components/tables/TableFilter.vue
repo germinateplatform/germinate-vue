@@ -8,7 +8,7 @@
         <b-dropdown left v-if="columns && columns.length > 0" class="overflow-dropdown" id="column-selector" v-b-tooltip.hover :title="$t('tooltipTableColumnSelector')">
           <template slot="button-content"><i class="mdi mdi-18px mdi-view-column"/></template>
           <b-dropdown-form>
-            <b-form-checkbox v-for="column in getColumns" :key="'table-filter-' + column.key" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
+            <b-form-checkbox v-for="column in getColumnsToToggle" :key="'table-filter-' + column.key" @change="toggleColumn($event, column)" class="my-2" :checked="getValue(column)">{{ getText(column) }}</b-form-checkbox>
           </b-dropdown-form>
         </b-dropdown>
         <!-- Toggle filter -->
@@ -149,11 +149,19 @@ export default {
     }
   },
   computed: {
-    // Only get the columns that have a text that isn't empty
+    // Only get the columns that have a text that isn't empty and that have a valid type
     getColumns: function () {
       return this.columns.filter(c => {
         var show = c.label ? (c.label !== '') : false
         show = show && c.type !== undefined
+        show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
+        return show
+      })
+    },
+    // Only get the columns that have a text that isn't empty
+    getColumnsToToggle: function () {
+      return this.columns.filter(c => {
+        var show = c.label ? (c.label !== '') : false
         show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
         return show
       })
