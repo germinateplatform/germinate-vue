@@ -44,40 +44,45 @@
                   </b-dropdown>
                 </b-input-group-prepend>
 
-                <!-- JSON columns -->
-                <template v-if="isType(f, String) || isType(f, 'json')">
+                <template v-if="f.comparator === 'inSet'">
                   <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()"/>
-                  <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                 </template>
-                <!-- Number columns -->
-                <template v-else-if="isType(f, Number)">
-                  <b-form-input v-model="f.values[0]" type="number" @focus.native="$event.target.select()"/>
-                  <b-form-input v-model="f.values[1]" type="number" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
-                </template>
-                <!-- Date columns -->
-                <template v-else-if="isType(f, Date)">
-                  <b-form-input v-model="f.values[0]" type="date" @focus.native="$event.target.select()"/>
-                  <b-form-input v-model="f.values[1]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
-                </template>
-                <!-- Boolean columns -->
-                <template v-else-if="isType(f, Boolean)">
-                  <b-form-select :options="[{value: 0, text: $t('genericFalse')}, {value: 1, text: $t('genericTrue')}]" v-model="f.values[0]" />
-                </template>
-                <!-- Location type columns -->
-                <template v-else-if="isType(f, 'locationType')">
-                  <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" />
-                </template>
-                <!-- Entity type columns -->
-                <template v-else-if="isType(f, 'entityType')">
-                  <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" />
-                </template>
-                <!-- Data type columns -->
-                <template v-else-if="isType(f, 'dataType')">
-                  <b-form-select :options="getDataTypeOptions()" v-model="f.values[0]" />
-                </template>
-                <!-- Group type columns -->
-                <template v-else-if="isType(f, 'groupType')">
-                  <b-form-select :options="getGroupTypeOptions()" v-model="f.values[0]" />
+                <template v-else>
+                  <!-- JSON columns -->
+                  <template v-if="isType(f, String) || isType(f, 'json')">
+                    <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()"/>
+                    <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+                  </template>
+                  <!-- Number columns -->
+                  <template v-else-if="isType(f, Number)">
+                    <b-form-input v-model="f.values[0]" type="number" @focus.native="$event.target.select()"/>
+                    <b-form-input v-model="f.values[1]" type="number" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+                  </template>
+                  <!-- Date columns -->
+                  <template v-else-if="isType(f, Date)">
+                    <b-form-input v-model="f.values[0]" type="date" @focus.native="$event.target.select()"/>
+                    <b-form-input v-model="f.values[1]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
+                  </template>
+                  <!-- Boolean columns -->
+                  <template v-else-if="isType(f, Boolean)">
+                    <b-form-select :options="[{value: 0, text: $t('genericFalse')}, {value: 1, text: $t('genericTrue')}]" v-model="f.values[0]" />
+                  </template>
+                  <!-- Location type columns -->
+                  <template v-else-if="isType(f, 'locationType')">
+                    <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" />
+                  </template>
+                  <!-- Entity type columns -->
+                  <template v-else-if="isType(f, 'entityType')">
+                    <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" />
+                  </template>
+                  <!-- Data type columns -->
+                  <template v-else-if="isType(f, 'dataType')">
+                    <b-form-select :options="getDataTypeOptions()" v-model="f.values[0]" />
+                  </template>
+                  <!-- Group type columns -->
+                  <template v-else-if="isType(f, 'groupType')">
+                    <b-form-select :options="getGroupTypeOptions()" v-model="f.values[0]" />
+                  </template>
                 </template>
 
                 <!-- Delete button -->
@@ -132,7 +137,9 @@ export default {
         dataType: ['equals'],
         locationType: ['equals'],
         entityType: ['equals'],
-        json: ['contains']
+        json: ['contains'],
+        Number: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'inSet'],
+        Date: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals']
       },
       filter: null,
       tempFilter: [],
@@ -178,8 +185,12 @@ export default {
     },
     isValidFilter: function (filter) {
       if (filter.column.type === Number) {
-        // Check if it's a number
-        return filter.values.filter(v => isNaN(v)).length === 0
+        if (filter.comparator !== 'inSet') {
+          // Check if it's a number
+          return filter.values.filter(v => isNaN(v)).length === 0
+        } else {
+          return true
+        }
       } else if (filter.column.type === Date) {
         // Check if it's a date
         return filter.values.filter(v => isNaN(new Date(v).getTime())).length === 0
@@ -266,7 +277,7 @@ export default {
           values: f.values
         }
 
-        if (f.column.type === 'datatype') {
+        if (f.column.type === 'dataType') {
           newFilter.values = newFilter.values.filter(v => v !== null).map(v => {
             if (this.dataTypes[v].databaseValue) {
               return this.dataTypes[v].databaseValue
