@@ -166,7 +166,7 @@ export default {
       previousDetailsRow: null,
       datasetStates: {
         public: {
-          icon: 'mdi-lock-open-outline',
+          icon: 'mdi-lock-open-variant-outline',
           text: () => this.$t('datasetStatePublic')
         },
         private: {
