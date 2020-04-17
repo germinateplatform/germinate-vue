@@ -60,7 +60,7 @@ export default {
       }, {
         icon: 'mdi-checkbox-blank-outline',
         disabled: () => !this.selectedIds || this.selectedIds.length < 1,
-        text: () => this.$t('widgetChartUnarkSelectedItems'),
+        text: () => this.$t('widgetChartUnmarkSelectedItems'),
         callback: () => this.toggleItems(false)
       }],
       additionalButtons: [{

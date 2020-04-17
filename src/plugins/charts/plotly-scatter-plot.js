@@ -11,14 +11,7 @@ export function plotlyScatterPlot() {
 
 	function chart(selection) {
 		selection.each(function (rows) {
-			var symbolList = Plotly.PlotSchema.get()
-				.traces
-				.scatter
-				.attributes
-				.marker
-				.symbol
-				.values
-				.filter(s => typeof s === 'string')
+			var symbolList = [ "circle", "square", "diamond", "cross", "x", "triangle-up", "triangle-down", "triangle-left", "triangle-right", "triangle-ne", "triangle-se", "triangle-sw", "triangle-nw", "pentagon", "hexagon", "hexagon2", "octagon", "star", "hexagram", "star-triangle-up", "star-triangle-down", "star-square", "star-diamond", "diamond-tall", "diamond-wide", "hourglass", "bowtie" ]
 
 			var categories = new Set();
 
@@ -47,7 +40,7 @@ export function plotlyScatterPlot() {
 					y: y,
 					marker: {
 						color: colors[i % colors.length],
-						symbol: symbolList[(i * 4) % symbolList.length],
+						symbol: symbolList[i % symbolList.length],
 						size: 6,
 						opacity: 0.7
 					},

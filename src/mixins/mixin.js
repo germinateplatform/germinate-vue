@@ -251,26 +251,32 @@ export default {
         genotype: {
           icon: 'mdi-dna',
           disabled: false,
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeGenotype')
         },
         trial: {
           icon: 'mdi-shovel',
           disabled: false,
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeTrial')
         },
         compound: {
           icon: 'mdi-flask',
           disabled: false,
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeCompound')
         },
         pedigree: {
           icon: 'mdi-tournament mdi-rotate-90',
           disabled: false,
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypePedigree')
+        },
+        groups: {
+          icon: 'mdi-group',
+          disabled: false,
+          color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypeGroups')
         }
       },
       datasetTypes: {

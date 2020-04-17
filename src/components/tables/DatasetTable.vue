@@ -41,7 +41,7 @@
       </template>
       <!-- Experiment name -->
       <template v-slot:cell(experimentName)="data">
-        {{ data.item.experimentName | truncateAfterWords(10) }}
+        <span :title="data.item.experimentName" v-if="data.item.experimentName">{{ data.item.experimentName | truncateAfterWords(10) }}</span>
         <!-- Append a link that takes the user to the experiment details page -->
         <router-link :to="{ name: 'experiment-details', params: { experimentId: data.item.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
           <i class="mdi mdi-18px fix-alignment mdi-information-outline" />

@@ -81,6 +81,18 @@ export default {
           sortable: true,
           label: this.$t('tableColumnEntityType')
         }, {
+          key: 'entityParentGeneralIdentifier',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentGeneralIdentifier')}`,
+          sortable: true,
+          label: this.$t('tableColumnEntityParentGid')
+        }, {
+          key: 'entityParentName',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentName')}`,
+          sortable: true,
+          label: this.$t('tableColumnEntityParentName')
+        }, {
           key: 'datasetName',
           type: String,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,

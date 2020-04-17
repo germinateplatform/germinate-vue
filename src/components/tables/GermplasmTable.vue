@@ -93,7 +93,7 @@
     </template>
     <!-- PDCI -->
     <template v-slot:cell(pdci)="data">
-      <div v-if="data.item.pdci" class="table-pdci">
+      <div v-if="data.item.pdci !== undefined" class="table-pdci">
         <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg); vertical-align: text-bottom;">
           <g>
             <circle id="circle" style="stroke-dasharray: 44; stroke-dashoffset: 0;" r="7" cy="9" cx="9" stroke-width="4" stroke="#ccc" fill="none"/>

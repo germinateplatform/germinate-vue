@@ -3,25 +3,23 @@
     <h1>{{ $t('pageDataUploadTitle') }}</h1>
     <span v-html="$t('pageDataUploadText')" />
     <b-row class="template-tabs">
-      <b-col sm=1 />
       <!-- Data template banner buttons -->
       <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" cols=6 sm=2 v-b-tooltip="type.disabled ? $t('tooltipFeatureDisabled') : null">
         <a :href="type.disabled ? null : '#'" @click.prevent="onTemplateTypeSelected(type, name)">
-          <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(name)};`">
-            <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
+          <b-card no-body :style="`border: 1px solid ${type.color()}; filter: ${getFilter(name)};`">
+            <b-card-body :style="`background-color: ${type.color()}; color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
                   <i :class="`mdi mdi-48px ${type.icon}`" />
                 </b-col>
               </b-row>
             </b-card-body>
-            <b-card-footer :style="`color: ${getColor(index)}`">
+            <b-card-footer :style="`color: ${type.color()}`">
               <i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ type.text() }}</span>
             </b-card-footer>
           </b-card>
         </a>
       </b-col>
-      <b-col sm=1 />
     </b-row>
 
     <template v-if="templateType">
@@ -85,14 +83,6 @@ export default {
     },
     getFilter: function (type) {
       return type === this.templateType ? '' : 'brightness(75%)'
-    },
-    getColor: function (index) {
-      if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
-        return '#00acef'
-      } else {
-        const colors = this.serverSettings.colorsTemplate
-        return colors[index % colors.length]
-      }
     },
     onSubmit: function () {
       let formData = new FormData()
