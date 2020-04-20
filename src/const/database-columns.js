@@ -187,6 +187,9 @@ export default {
       name: 'traitName',
       type: String
     }, {
+      name: 'treatment',
+      type: String
+    }, {
       name: 'unitName',
       type: String
     }, {

@@ -123,6 +123,12 @@ export default {
           sortable: true,
           label: this.$t('tableColumnTraitName')
         }, {
+          key: 'treatment',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'treatment')}`,
+          sortable: true,
+          label: this.$t('tableColumnTraitTreatment')
+        }, {
           key: 'unitName',
           type: String,
           class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,
