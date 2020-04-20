@@ -40,8 +40,6 @@ export function plotlyScatterMatrix() {
 				});
 				var names = cats[i] ? unpackConditional(rows, 'name', colorBy, cats[i]) : unpack(rows, 'name');
 
-				console.log(cats[i], symbolList[i % symbolList.length])
-
 				data.push({
 					type: 'splom',
 					showupperhalf: false,
@@ -162,12 +160,16 @@ export function plotlyScatterMatrix() {
 			if (row[key] === '') {
 				return NaN
 			} else {
-				var value = parseFloat(row[key])
-
-				if (isNaN(value)) {
+				if (key === 'Date') {
 					return row[key];
 				} else {
-					return value;
+					var value = parseFloat(row[key])
+
+					if (isNaN(value)) {
+						return row[key];
+					} else {
+						return value;
+					}
 				}
 			}
 		})

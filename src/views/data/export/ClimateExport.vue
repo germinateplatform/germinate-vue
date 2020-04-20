@@ -8,7 +8,9 @@
       <DatasetOverview :datasets="datasets" />
       <!-- Banner buttons -->
       <b-row class="climate-tabs" v-if="tabs">
-        <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'climate-tabs-' + tab.key">
+        <!-- Left padding if there are 5 tabs, because 5 doesn't work well with 12 columns -->
+        <b-col class="d-none d-xl-block" sm=1 v-if="tabs.length === 5"/>
+        <b-col cols=12 sm=6 :xl="tabs.length === 5 ? 2 : 3" v-for="(tab, index) in tabs" :key="'climate-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
             <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
               <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
@@ -24,6 +26,8 @@
             </b-card>
           </a>
         </b-col>
+        <!-- Left padding if there are 5 tabs, because 5 doesn't work well with 12 columns -->
+        <b-col class="d-none d-xl-block" sm=1 v-if="tabs.length === 5"/>
       </b-row>
       <!-- Boxplot section -->
       <BoxplotSelection :datasetIds="datasetIds"
@@ -47,6 +51,8 @@
                                :texts="textsExport"
                                :getItems="getClimates"
                                v-show="currentTab === 'export'" />
+
+      <ClimateOverlayMap v-show="currentTab === 'overlays'" ref="overlayMap" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
@@ -56,6 +62,7 @@
 import BoxplotSelection from '@/components/export/BoxplotSelection'
 import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import ClimateExportChartSelection from '@/components/export/ClimateExportChartSelection'
+import ClimateOverlayMap from '@/components/map/ClimateOverlayMap'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import { EventBus } from '@/plugins/event-bus.js'
@@ -117,13 +124,20 @@ export default {
         text: () => this.$t('pageDataExportTabDataExport'),
         icon: 'mdi-file-download-outline',
         onSelection: () => this.tabSelected('export')
-      }]
+      }],
+      overlayTab: {
+        key: 'overlays',
+        text: () => this.$t('pageDataExportTabClimateOverlays'),
+        icon: 'mdi-map-plus',
+        onSelection: () => this.tabSelected('overlays')
+      }
     }
   },
   components: {
     BoxplotSelection,
     ClimateDataTable,
     ClimateExportChartSelection,
+    ClimateOverlayMap,
     DatasetOverview,
     ExportDownloadSelection
   },
@@ -145,6 +159,10 @@ export default {
     },
     tabSelected: function (tab) {
       this.currentTab = tab
+
+      if (this.currentTab === 'overlays') {
+        this.$nextTick(() => this.$refs.overlayMap.invalidateSize())
+      }
     },
     getFilter: function (index) {
       return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
@@ -220,6 +238,12 @@ export default {
     EventBus.$emit('show-loading', true)
     this.apiPostDatasetClimates(this.datasetIds, result => {
       this.climates = result
+
+      const hasOverlays = result.filter(c => c.overlays > 0).length > 0
+
+      if (hasOverlays) {
+        this.tabs.push(this.overlayTab)
+      }
 
       this.getDatasets()
       EventBus.$emit('show-loading', false)

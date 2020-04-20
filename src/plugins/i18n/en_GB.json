@@ -401,6 +401,7 @@
   "pageDataExportTabDataMatrix": "Data matrix",
   "pageDataExportTabDataStatistics": "Data statistics",
   "pageDataExportTabDataTable": "Data table",
+  "pageDataExportTabClimateOverlays": "Map overlays",
   "pageExperimentsTitle": "Experiments",
   "pageExperimentsText": "This page shows all the experiments stored in Germinate. An experiment is a meaningful grouping of datasets. These datasets can be of different types, e.g., an experiment can contain genotypic and phenotypic datasets. The table shows information about each experiment as well as how many datasets of each type are contained. The links take you to the corresponding dataset pages.",
   "pageExperimentDetailsTitle": "Experiment details",
