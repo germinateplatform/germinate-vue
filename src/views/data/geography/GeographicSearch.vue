@@ -14,7 +14,7 @@
             <div>{{ $t('pageGeographicSearchPointSearchText') }}</div>
           </b-card-body>
           <!-- Point search map -->
-          <PointSearchMap ref="pointMap" v-on:map-loaded="updatePolygonMap" />
+          <LocationMap :locations="[]" selectionMode="point" v-on:map-loaded="updatePolygonMap" ref="pointMap" />
           <b-card-body v-if="point">
             <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:default="slotProps">
@@ -68,7 +68,6 @@
 import Collapse from '@/components/util/Collapse'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import LocationTable from '@/components/tables/LocationTable'
-import PointSearchMap from '@/components/map/PointSearchMap'
 import LocationMap from '@/components/map/LocationMap'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import locationApi from '@/mixins/api/location.js'
@@ -86,7 +85,6 @@ export default {
     Collapse,
     GermplasmTable,
     LocationTable,
-    PointSearchMap,
     LocationMap
   },
   mixins: [ germplasmApi, locationApi ],
@@ -135,14 +133,16 @@ export default {
     },
     query: function () {
       if (this.tabIndex === 0) {
-        this.point = this.$refs.pointMap.markAndGetCenter()
+        const latlngs = this.$refs.pointMap.getLatLngs()
 
-        if (this.point !== null) {
+        if (latlngs !== null && latlngs.length > 0) {
+          this.point = latlngs[0]
           this.$nextTick(() => {
             this.$refs.locationPointTable.refresh()
             this.$refs.germplasmPointTable.refresh()
           })
         } else {
+          this.point = null
           this.$bvToast.toast(this.$t('toastGeographicSearchSelectPointText'), {
             title: this.$t('toastGeographicSearchSelectPointTitle'),
             variant: 'info',

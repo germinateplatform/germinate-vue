@@ -60,7 +60,7 @@
 
     <!-- Location -->
     <h2>{{ $t('pageAboutGerminateLocationTitle') }}<small> - {{ $t('pageAboutGerminateLocationSubtitle') }}</small></h2>
-    <LocationMap :locations="[getLocation()]" :showLinks="false" class="mb-5" />
+    <LocationMap :locations="[getLocation()]" :showLinks="false" :climateOverlaysDisabled="true" class="mb-5" />
 
     <!-- Funders -->
     <h2>{{ $t('pageAboutGerminateFundersTitle') }}<small> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>

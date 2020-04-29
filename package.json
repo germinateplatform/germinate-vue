@@ -44,6 +44,7 @@
     "imports-loader": "~0.8.0",
     "leaflet": "~1.6.0",
     "leaflet-draw": "~1.0.4",
+    "leaflet-easybutton": "^2.4.0",
     "leaflet.heat": "~0.2.0",
     "leaflet.markercluster": "~1.4.1",
     "leaflet.sync": "~0.2.4",

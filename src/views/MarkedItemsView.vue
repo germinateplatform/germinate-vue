@@ -9,14 +9,19 @@
         button-variant="outline-primary"
         buttons />
     <div v-if="itemType">
-      <h2>{{ itemType.text() }}</h2>
+      <h2 class="mt-3">{{ itemType.text() }}</h2>
 
       <!-- Depending on the selected type, show the corresponding table here -->
       <GermplasmTable v-show="itemType === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" ref="germplasmTable" />
       <MarkerTable    v-show="itemType === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"    :downloadTable="downloadMarkers"   ref="markerTable" />
       <LocationTable  v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  :downloadTable="downloadLocations" ref="locationTable" />
+
+      <template v-if="(itemType === markedItemTypes.germplasm) && externalIdentifiers && (externalIdentifiers.length > 0)">
+        <h3 class="mt-3">{{ $t('pageMarkedGermplasmExportTitle') }}</h3>
+        <a :href="externalLink" >{{ $t('pageMarkedGermplasmExportText') }}</a> <i class="mdi mdi-open-in-new" />
+      </template>
     </div>
-    <h2 v-else>Unknown item type</h2>
+    <h2 v-else>{{ $t('pageMarkedItemsUnknownType') }}</h2>
   </div>
 </template>
 
@@ -33,7 +38,8 @@ export default {
   data: function () {
     return {
       itemType: null,
-      options: []
+      options: [],
+      externalIdentifiers: null
     }
   },
   watch: {
@@ -52,6 +58,8 @@ export default {
       handler: function (newValue, oldValue) {
         if (this.itemType === this.markedItemTypes.germplasm) {
           this.$refs.germplasmTable.refresh()
+
+          this.updateExternalIdentifiers()
         } else if (this.itemType === this.markedItemTypes.markers) {
           this.$refs.markerTable.refresh()
         } else if (this.itemType === this.markedItemTypes.locations) {
@@ -59,6 +67,11 @@ export default {
         }
       },
       deep: true
+    }
+  },
+  computed: {
+    externalLink: function () {
+      return encodeURI(this.serverSettings.externalLinkTemplate.replace('{identifiers}', this.externalIdentifiers.join(',')))
     }
   },
   components: {
@@ -118,6 +131,19 @@ export default {
       })
 
       return newData
+    },
+    updateExternalIdentifiers: function () {
+      if (this.serverSettings && this.serverSettings.externalLinkIdentifier && this.serverSettings.externalLinkTemplate) {
+        const ids = this.markedIds.germplasm
+
+        if (this.serverSettings.externalLinkIdentifier !== 'id') {
+          this.apiPostExternalLinkIdentifiers(ids, result => {
+            this.externalIdentifiers = result
+          })
+        } else {
+          this.externalIdentifiers = ids
+        }
+      }
     }
   },
   mounted: function () {
@@ -133,6 +159,8 @@ export default {
       value: this.markedItemTypes.locations,
       text: this.markedItemTypes.locations.text()
     }]
+
+    this.updateExternalIdentifiers()
   }
 }
 </script>

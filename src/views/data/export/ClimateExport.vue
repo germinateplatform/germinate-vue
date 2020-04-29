@@ -52,7 +52,7 @@
                                :getItems="getClimates"
                                v-show="currentTab === 'export'" />
 
-      <ClimateOverlayMap v-show="currentTab === 'overlays'" ref="overlayMap" />
+      <LocationMap :locations="[]" v-show="currentTab === 'overlays'" ref="overlayMap" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
@@ -62,7 +62,7 @@
 import BoxplotSelection from '@/components/export/BoxplotSelection'
 import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import ClimateExportChartSelection from '@/components/export/ClimateExportChartSelection'
-import ClimateOverlayMap from '@/components/map/ClimateOverlayMap'
+import LocationMap from '@/components/map/LocationMap'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import { EventBus } from '@/plugins/event-bus.js'
@@ -137,7 +137,7 @@ export default {
     BoxplotSelection,
     ClimateDataTable,
     ClimateExportChartSelection,
-    ClimateOverlayMap,
+    LocationMap,
     DatasetOverview,
     ExportDownloadSelection
   },

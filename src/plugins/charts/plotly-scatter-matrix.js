@@ -95,6 +95,11 @@ export function plotlyScatterMatrix() {
 					tickfont: {size: 10},
 					titlefont: {size: 10}
 				};
+
+				if (d === 'Date') {
+					layout['xaxis' + id].type = 'date'
+					layout['yaxis' + id].type = 'date'
+				}
 			});
 
 			var config = {

@@ -2,11 +2,13 @@
   <div>
     <!-- The map itself -->
     <l-map
-      class="location-map"
+      :class="`location-map ${selectionMode === 'point' ? 'point-search' : ''}`"
       :center="center"
       ref="map"
+      @click="onClick"
       :maxZoom="maxZoom"
       :zoom="zoom">
+
       <!-- Add overlays if available -->
       <template v-if="imageOverlays && imageOverlays.length > 0">
         <!-- Legend -->
@@ -17,6 +19,7 @@
         <l-image-overlay v-for="image in getOverlays(false)"
                         :key="`map-overlay-${image.id}`"
                         :url="image.url"
+                        :opacity="imageOverlayOpacity"
                         :bounds="image.bounds" />
       </template>
     </l-map>
@@ -41,15 +44,19 @@
         <template v-if="location.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ location.locationElevation.toFixed(2) }}</dd></template>
       </dl>
     </div>
+    <ClimateOverlayModal v-if="(climateOverlaysDisabled === false) && climates" :climates="climates" ref="climateOverlayModal" v-on:overlay-changed="updateOverlays" />
   </div>
 </template>
 
 <script>
+import ClimateOverlayModal from '@/components/modals/ClimateOverlayModal'
 import ColorGradient from '@/components/util/ColorGradient'
 import L from 'leaflet'
+import climateApi from '@/mixins/api/climate.js'
 require('leaflet.heat')
 require('leaflet.sync')
 require('leaflet.markercluster')
+require('leaflet-easybutton')
 var countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
@@ -64,7 +71,12 @@ export default {
       markerClusterer: null,
       editableLayers: null,
       gradientColors: [],
-      markers: []
+      markers: [],
+      climates: [],
+      imageOverlayClimateId: null,
+      imageOverlays: [],
+      imageOverlayOpacity: 1,
+      internalLocations: []
     }
   },
   props: {
@@ -80,24 +92,108 @@ export default {
       type: String,
       default: 'none'
     },
-    imageOverlays: {
-      type: Array,
-      default: () => []
-    },
     showLinks: {
       type: Boolean,
       default: true
+    },
+    climateOverlaysDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
     locations: function (newValue, oldValue) {
+      this.internalLocations = newValue
       this.updateMap()
+    },
+    climates: function (newValue, oldValue) {
+      var map = this.$refs.map.mapObject
+
+      if (this.climates && this.climates.length > 0) {
+        L.easyButton('<i class="mdi mdi-weather-snowy-rainy mdi-18px"/>', (button, map) => {
+          this.$refs.climateOverlayModal.show()
+        }, 'Toggle overlays', 'settings-button', { position: 'topright' }).addTo(map)
+      }
     }
   },
   components: {
+    ClimateOverlayModal,
     ColorGradient
   },
+  mixins: [ climateApi ],
   methods: {
+    getLatLngs: function () {
+      return this.internalLocations.map(l => {
+        return L.latLng(l.locationLatitude, l.locationLongitude)
+      })
+    },
+    onClick: function (e) {
+      if (this.selectionMode === 'point') {
+        const map = this.$refs.map.mapObject
+        const markerPosition = e.latlng
+        this.internalLocations = [{
+          locationId: -1,
+          locationName: 'Query',
+          locationLatitude: markerPosition.lat,
+          locationLongitude: markerPosition.lng
+        }]
+
+        map.panTo(markerPosition)
+
+        this.updateMap()
+      }
+    },
+    updateOverlays: function (overlay) {
+      // If a climate was selected
+      if (overlay.climateId !== null) {
+        // If it's a different climate, go get the overlays
+        if (this.imageOverlayClimateId !== overlay.climateId) {
+          const queryData = {
+            filter: [{
+              column: 'climateId',
+              comparator: 'equals',
+              operator: 'and',
+              values: [overlay.climateId]
+            }],
+            page: 1,
+            limit: this.MAX_JAVA_INTEGER
+          }
+          this.apiPostClimateOverlays(queryData, result => {
+            var array = []
+
+            if (result && result.data) {
+              result.data.forEach(i => {
+                var path = ''
+
+                var params = {
+                  token: this.token ? this.token.imageToken : null
+                }
+                var paramString = this.toUrlString(params)
+
+                path = this.baseUrl + `climate/overlay/${i.climateOverlayId}/src?` + paramString
+
+                array.push({
+                  id: i.climateOverlayId,
+                  url: path,
+                  isLegend: i.isLegend,
+                  bounds: [[i.bottomLeftLatitude, i.bottomLeftLongitude], [i.topRightLatitude, i.topRightLongitude]]
+                })
+              })
+            }
+
+            this.imageOverlayOpacity = overlay.opacity / 100.0
+            this.imageOverlays = array
+          })
+        } else {
+          // Else, just change the opacity
+          this.imageOverlayOpacity = overlay.opacity / 100.0
+        }
+      } else {
+        // Otherwise, just set everything to their default values
+        this.imageOverlayOpacity = 1
+        this.imageOverlays = []
+      }
+    },
     getOverlays: function (isLegend) {
       return this.imageOverlays.filter(i => i.isLegend === isLegend)
     },
@@ -174,10 +270,10 @@ export default {
         this.markers.forEach(m => map.removeLayer(m))
       }
 
-      if (this.locations && this.locations.length > 0) {
-        if (this.locations.length === 1) {
+      if (this.internalLocations && this.internalLocations.length > 0) {
+        if (this.internalLocations.length === 1) {
           // If there's just one location, center it and open the popup
-          this.location = this.locations[0]
+          this.location = this.internalLocations[0]
           this.center = [this.location.locationLatitude, this.location.locationLongitude]
 
           var marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
@@ -191,11 +287,11 @@ export default {
           marker.fire('click')
 
           this.markers.push(marker)
-        } else if (this.locations.length > 1) {
+        } else if (this.internalLocations.length > 1) {
           // If there are multiple locations, fit them into view
           var latLngBounds = L.latLngBounds()
 
-          this.locations.filter(l => l.locationLatitude && l.locationLongitude)
+          this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .forEach(l => latLngBounds.extend([l.locationLatitude, l.locationLongitude]))
 
           this.$refs.map.fitBounds(latLngBounds.pad(0.1))
@@ -210,7 +306,7 @@ export default {
             this.markerClusterer = L.markerClusterGroup()
             map.addLayer(this.markerClusterer)
           }
-          this.locations.filter(l => l.locationLatitude && l.locationLongitude)
+          this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .forEach(l => {
               var marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
               marker.on('click', e => {
@@ -221,7 +317,7 @@ export default {
               this.markerClusterer.addLayer(marker)
             })
         } else if (this.mapType === 'heatmap') {
-          var ls = this.locations.filter(l => l.locationLatitude && l.locationLongitude)
+          var ls = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .map(l => [l.locationLatitude, l.locationLongitude, 1])
           if (this.heat) {
             // If it exists, just set it
@@ -252,6 +348,8 @@ export default {
     }
   },
   mounted: function () {
+    this.internalLocations = this.locations
+
     if (this.selectionMode === 'polygon') {
       require('leaflet-draw')
     }
@@ -335,6 +433,23 @@ export default {
       })
 
       this.$emit('map-loaded', map)
+
+      if (this.climateOverlaysDisabled === false) {
+        const queryData = {
+          filter: [{
+            column: 'overlays',
+            comparator: 'greaterThan',
+            operator: 'and',
+            values: [0]
+          }]
+        }
+
+        this.apiPostClimates(queryData, result => {
+          if (result && result.data) {
+            this.climates = result.data
+          }
+        })
+      }
     })
   }
 }
@@ -369,5 +484,12 @@ export default {
 
 .location-map dl.row {
   margin-bottom: 0;
+}
+.location-map #settings-button {
+  width: 28px;
+  height: 28px;
+}
+.location-map.point-search {
+  cursor: crosshair;
 }
 </style>

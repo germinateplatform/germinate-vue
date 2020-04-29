@@ -18,7 +18,7 @@ export function plotlyMapChart() {
 
 			var data = [];
 			var layout = {
-				height: distinctChromosomes.length * 100,
+				height: distinctChromosomes.length * 100 + 200,
 				margin: {autoexpand: true},
 				autosize: true,
 				selectdirection: 'h',
@@ -51,7 +51,7 @@ export function plotlyMapChart() {
 				var datum = {
 					x: x,
 					type: 'histogram',
-					name: 'Chr ' + c,
+					name: c,
 					marker: {
 						color: colors[i % colors.length]
 					},
@@ -66,7 +66,7 @@ export function plotlyMapChart() {
 				data.push(datum);
 
 				layout['yaxis' + axisIndex] = {
-					title: 'Chr ' + c
+					title: c
 				}
 
 				layout.grid.subplots.push(['xy' + axisIndex]);
