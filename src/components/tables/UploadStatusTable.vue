@@ -32,6 +32,13 @@ export default {
   data: function () {
     return {
       statusOptions: {
+        GENERIC_INVALID_MARKER: () => this.$t('importStatusGenericInvalidMarker'),
+        GENERIC_INVALID_LOCATION: () => this.$t('importStatusGenericInvalidLocation'),
+        GROUP_INVALID_GROUP_VISIBILITY: () => this.$t('importStatusGroupInvalidGroupVisibility'),
+        GROUP_INVALID_CELL_VALUE: () => this.$t('importStatusGroupInvalidCellValue'),
+        GROUP_HEADER_MISMATCH: () => this.$t('importStatusGroupHeaderMismatch'),
+        GENOTYPE_MISSING_ROW: () => this.$t('importStatusGenotypeMissingRow'),
+        GENOTYPE_HEADER_LENGTH_MISMATCH: () => this.$t('importStatusGenotypeHeaderLenghtMismatch'),
         GENERIC_MISSING_REQUIRED_VALUE: () => this.$t('importStatusGenericMissingValue'),
         GENERIC_VALUE_TOO_LONG: () => this.$t('importStatusValueTooLong'),
         GENERIC_INVALID_COUNTRY_CODE: () => this.$t('importStatusMcpdInvalidCountryCode'),
@@ -41,7 +48,7 @@ export default {
         GENERIC_INVALID_GERMPLASM: () => this.$t('importStatusGenericInvalidGermplasm'),
         TRIALS_DATA_DATE_HEADER_MISMATCH: () => this.$t('importStatusTrialsSheetHeaderMismatch'),
         TRIALS_DATA_DATE_IDENTIFIER_MISMATCH: () => this.$t('importStatusTrialsIdentifierMismatch'),
-        COMPOUND_MISSING_TRAIT_DECLARATION: () => this.$t('importStatusCompoundMissingCompoundDeclaration'),
+        COMPOUND_MISSING_COMPOUND_DECLARATION: () => this.$t('importStatusCompoundMissingCompoundDeclaration'),
         COMPOUND_DATA_DATE_HEADER_MISMATCH: () => this.$t('importStatusCompoundSheetHeaderMismatch'),
         COMPOUND_DATA_DATE_IDENTIFIER_MISMATCH: () => this.$t('importStatusCompoundIdentifierMismatch'),
         GENERIC_DUPLICATE_COLUMN: () => this.$t('importStatusGenericDuplicateColumn'),

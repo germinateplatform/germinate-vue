@@ -145,7 +145,8 @@ nav:not(.nav-tabs):not(.sidebar-nav) .nav-item i.mdi,
 .v-context i.mdi,
 i.mdi-36px,
 i.mdi.fix-alignment {
-  vertical-align: sub;
+  line-height: 1.5;
+  vertical-align: middle;
 }
 
 .table thead th * {
@@ -328,5 +329,9 @@ img.mime-icon {
   .sidebar-lg-show.sidebar-fixed .app.public .app-footer,
   .sidebar-show.sidebar-fixed .app.public .app-footer {
     margin-left: 0;
+  }
+  /* Increase width of collapsed brand logo to make it align with non-collapsed version */
+  .brand-minimized .app-header .navbar-brand {
+    width: 71px;
   }
 }

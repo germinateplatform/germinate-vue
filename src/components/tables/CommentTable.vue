@@ -7,6 +7,10 @@
                v-bind="$props"
                ref="commentTable"
                v-on="$listeners">
+      <!-- Comment type -->
+      <template v-slot:cell(commentType)="data">
+        <span class="text-nowrap"><i :class="`mdi mdi-18px ${commentTypes[data.item.commentType].icon} fix-alignment`" :style="`color: ${commentTypes[data.item.commentType].color()};`" /> {{ commentTypes[data.item.commentType].text() }}</span>
+      </template>
       <!-- Additional actions column holding the delete button -->
       <template v-slot:cell(actions)="data">
         <div v-if="token && token.id === data.item.userId">

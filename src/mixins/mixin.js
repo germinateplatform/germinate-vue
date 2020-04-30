@@ -279,6 +279,18 @@ export default {
           text: () => this.$t('templateImportTypeGroups')
         }
       },
+      commentTypes: {
+        germinatebase: {
+          icon: 'mdi-sprout',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          text: () => 'Germplasm'
+        },
+        locations: {
+          icon: 'mdi-marker',
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          text: () => 'Location'
+        }
+      },
       datasetTypes: {
         allelefreq: {
           id: 4,
