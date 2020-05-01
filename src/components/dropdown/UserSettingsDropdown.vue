@@ -12,7 +12,7 @@
           <b-dropdown-item :to="{ name: 'import-upload' }"><i class="mdi mdi-18px mdi-upload text-warning" /> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
         </template>
         <!-- Settings -->
-        <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettings') }}</strong></b-dropdown-header>
+        <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettings') }}<span v-if="token">: {{ token.username }}</span></strong></b-dropdown-header>
         <!-- Logout -->
         <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> {{ $t('dropdownUserSettingsLogout') }}</b-dropdown-item>
         <!-- Login -->
