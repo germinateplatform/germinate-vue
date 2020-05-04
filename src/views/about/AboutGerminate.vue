@@ -58,6 +58,9 @@
       </b-col>
     </b-row>
 
+    <h3>{{ $t('pageAboutGerminateTeamOthersTitle') }}<small> - {{ $t('pageAboutGerminateTeamOthersSubtitle') }}</small></h3>
+    <div v-html="$t('pageAboutGerminateTeamOthersText')" />
+
     <!-- Location -->
     <h2>{{ $t('pageAboutGerminateLocationTitle') }}<small> - {{ $t('pageAboutGerminateLocationSubtitle') }}</small></h2>
     <LocationMap :locations="[getLocation()]" :showLinks="false" :climateOverlaysDisabled="true" class="mb-5" />

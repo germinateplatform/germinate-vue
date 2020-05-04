@@ -12,7 +12,7 @@
       <!-- Add overlays if available -->
       <template v-if="imageOverlays && imageOverlays.length > 0">
         <!-- Legend -->
-        <div class="location-map-legend">
+        <div class="location-map-legend" v-if="getOverlays(true).length > 0">
           <img :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" />
         </div>
         <!-- Overlays -->
@@ -31,8 +31,8 @@
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8">
           <template v-if="showLinks">
-            <router-link to="/data/datasets" v-if="location.locationType === 'datasets' && $route.name !== 'datasets'" @click.native="navigateToDatasets(location)" event="">{{ location.locationName }}</router-link>
-            <router-link to="/data/germplasm" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
+            <router-link :to="{ name: 'datasets' }" v-if="location.locationType === 'datasets' && $route.name !== 'datasets'" @click.native="navigateToDatasets(location)" event="">{{ location.locationName }}</router-link>
+            <router-link :to="{ name: 'germplasm' }" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
             <span v-else>{{ location.locationName }}</span>
           </template>
           <span v-else v-html="location.locationName" />
