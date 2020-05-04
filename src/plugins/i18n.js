@@ -51,6 +51,9 @@ export function loadLanguageAsync (lang) {
       delete m.data.pageAboutGerminateCardDocumentationText
       delete m.data.pageAboutGerminateTeamTitle
       delete m.data.pageAboutGerminateTeamSubtitle
+      delete m.data.pageAboutGerminateTeamOthersTitle
+      delete m.data.pageAboutGerminateTeamOthersSubtitle
+      delete m.data.pageAboutGerminateTeamOthersText
       delete m.data.pageAboutGerminateLocationTitle
       delete m.data.pageAboutGerminateLocationSubtitle
       delete m.data.pageAboutGerminateFundersTitle
