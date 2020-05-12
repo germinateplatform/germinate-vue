@@ -55,7 +55,7 @@
             </template>
 
             <!-- Institution -->
-            <Institution :institutionId="germplasmTableData && germplasmTableData.institutionId" id="institution"/>
+            <Institution v-if="germplasmTableData" :institutionId="germplasmTableData.institutionId" id="institution"/>
           </b-col>
         </b-row>
 

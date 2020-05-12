@@ -8,7 +8,7 @@ export default {
       return this.authAjax({ url: `dataset/export/${datasetType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetAttributeExport: function (queryData, onSuccess, onError) {
-      return this.authAjax({ url: 'dataset/attribute/export', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+      return this.authAjax({ url: 'dataset/attribute/table/export', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiGetDatasetSourceFile: function (datasetId, onSuccess, onError) {
       return this.authAjax({ url: `dataset/${datasetId}/download-source?random=${this.uuidv4()}`, dataType: 'blob', success: onSuccess, error: onError })
@@ -27,7 +27,7 @@ export default {
       return this.authAjax({ url: 'dataset/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetAttributeTableExport: function (datasetId, queryData, onSuccess, onError) {
-      var url = datasetId !== null ? `dataset/${datasetId}/attribute/export` : 'dataset/attribute/export'
+      var url = datasetId !== null ? `dataset/${datasetId}/attribute/export` : 'dataset/attribute/table/export'
       return this.authAjax({ url: url, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetAsyncExport: function (uuids, onSuccess, onError) {
@@ -41,7 +41,7 @@ export default {
     },
     apiPostDatasetAttributeTable: function (datasetId, queryData, onSuccess, onError) {
       queryData.page -= 1
-      var url = datasetId !== null ? `dataset/${datasetId}/attribute` : 'dataset/attribute'
+      var url = datasetId !== null ? `dataset/${datasetId}/attribute` : 'dataset/attribute/table'
       return this.authAjax({ url: url, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostTraitCompoundStats: function (statsType, queryData, onSuccess, onError) {

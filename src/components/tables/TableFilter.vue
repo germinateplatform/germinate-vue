@@ -50,38 +50,46 @@
                 <template v-else>
                   <!-- JSON columns -->
                   <template v-if="isType(f, String) || isType(f, 'json')">
-                    <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()"/>
+                    <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values > 0"/>
+                    <b-form-input disabled v-else />
                     <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                   </template>
                   <!-- Number columns -->
                   <template v-else-if="isType(f, Number)">
-                    <b-form-input v-model="f.values[0]" type="number" @focus.native="$event.target.select()"/>
+                    <b-form-input v-model="f.values[0]" type="number" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values > 0"/>
+                    <b-form-input disabled v-else />
                     <b-form-input v-model="f.values[1]" type="number" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                   </template>
                   <!-- Date columns -->
                   <template v-else-if="isType(f, Date)">
-                    <b-form-input v-model="f.values[0]" type="date" @focus.native="$event.target.select()"/>
+                    <b-form-input v-model="f.values[0]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values > 0"/>
+                    <b-form-input disabled v-else />
                     <b-form-input v-model="f.values[1]" type="date" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
                   </template>
                   <!-- Boolean columns -->
                   <template v-else-if="isType(f, Boolean)">
-                    <b-form-select :options="[{value: 0, text: $t('genericFalse')}, {value: 1, text: $t('genericTrue')}]" v-model="f.values[0]" />
+                    <b-form-select :options="[{value: 0, text: $t('genericFalse')}, {value: 1, text: $t('genericTrue')}]" v-model="f.values[0]" v-if="comparators[f.comparator].values > 0" />
+                    <b-form-select disabled v-else />
                   </template>
                   <!-- Location type columns -->
                   <template v-else-if="isType(f, 'locationType')">
-                    <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" />
+                    <b-form-select :options="getLocationTypeOptions()" v-model="f.values[0]" v-if="comparators[f.comparator].values > 0" />
+                    <b-form-select disabled v-else />
                   </template>
                   <!-- Entity type columns -->
                   <template v-else-if="isType(f, 'entityType')">
-                    <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" />
+                    <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" v-if="comparators[f.comparator].values > 0" />
+                    <b-form-select disabled v-else />
                   </template>
                   <!-- Data type columns -->
                   <template v-else-if="isType(f, 'dataType')">
-                    <b-form-select :options="getDataTypeOptions()" v-model="f.values[0]" />
+                    <b-form-select :options="getDataTypeOptions()" v-model="f.values[0]" v-if="comparators[f.comparator].values > 0" />
+                    <b-form-select disabled v-else />
                   </template>
                   <!-- Group type columns -->
                   <template v-else-if="isType(f, 'groupType')">
-                    <b-form-select :options="getGroupTypeOptions()" v-model="f.values[0]" />
+                    <b-form-select :options="getGroupTypeOptions()" v-model="f.values[0]" v-if="comparators[f.comparator].values > 0" />
+                    <b-form-select disabled v-else />
                   </template>
                 </template>
 
@@ -133,13 +141,13 @@ export default {
     return {
       id: this.uuidv4(),
       validComparatorsForType: {
-        Boolean: ['equals'],
-        dataType: ['equals'],
-        locationType: ['equals'],
-        entityType: ['equals'],
+        Boolean: ['equals', 'isNull'],
+        dataType: ['equals', 'isNull'],
+        locationType: ['equals', 'isNull'],
+        entityType: ['equals', 'isNull'],
         json: ['contains'],
-        Number: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'inSet'],
-        Date: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals']
+        Number: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'inSet', 'isNull'],
+        Date: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'isNull']
       },
       filter: null,
       tempFilter: [],
@@ -265,7 +273,11 @@ export default {
     },
     setFilter: function (hideModal, trigger) {
       this.filter = this.tempFilter.filter(f => {
-        return f.values.length > 0 && f.values[0] !== undefined
+        if (this.comparators[f.comparator].value > 0) {
+          return f.values.length > 0 && f.values[0] !== undefined
+        } else {
+          return true
+        }
       })
       this.targetFilter = []
 

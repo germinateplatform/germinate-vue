@@ -63,15 +63,29 @@ export default {
               const custom = selection.points[0].data.custom[index]
 
               // Then store a filter using genus, species and subtaxa
-              var query = [{
-                column: {
-                  name: 'genus',
-                  type: String
-                },
-                comparator: 'equals',
-                operator: 'and',
-                values: [custom.genus]
-              }]
+              var query
+
+              if (custom.genus && custom.genus !== 'N/A') {
+                query = [{
+                  column: {
+                    name: 'genus',
+                    type: String
+                  },
+                  comparator: 'equals',
+                  operator: 'and',
+                  values: [custom.genus]
+                }]
+              } else {
+                query = [{
+                  column: {
+                    name: 'genus',
+                    type: String
+                  },
+                  comparator: 'isNull',
+                  operator: 'and',
+                  values: []
+                }]
+              }
 
               if (custom.species) {
                 query.push({

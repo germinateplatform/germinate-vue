@@ -30,6 +30,25 @@ export default {
       institution: null
     }
   },
+  watch: {
+    institution: {
+      immediate: true,
+      handler: function (newValue) {
+        // Get institution data based on the provided id
+        const queryData = {
+          column: 'institutionId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue]
+        }
+        this.apiPostInstitutionTable(queryData, result => {
+          if (result && result.data && result.data.length > 0) {
+            this.institution = result.data[0]
+          }
+        })
+      }
+    }
+  },
   mixins: [ miscApi ],
   methods: {
     navigateToGermplasm: function (institutionId) {
@@ -44,22 +63,6 @@ export default {
         values: [institutionId]
       }])
       this.$router.push({ name: 'germplasm' })
-    }
-  },
-  mounted: function () {
-    if (this.institutionId) {
-      // Get institution data based on the provided id
-      const queryData = {
-        column: 'institutionId',
-        comparator: 'equals',
-        operator: 'and',
-        values: [this.institutionId]
-      }
-      this.apiPostInstitutionTable(queryData, result => {
-        if (result && result.data && result.data.length > 0) {
-          this.institution = result.data[0]
-        }
-      })
     }
   }
 }

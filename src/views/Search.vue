@@ -94,7 +94,7 @@
         </template>
       </Collapse>
 
-      <!-- PEdigree data -->
+      <!-- Pedigree data -->
       <Collapse icon="mdi-sitemap" :title="$t('pageSearchResultSectionPedigreeData')" :visible="false" class="mb-2" no-body ref="collapsePedigree" v-if="isSearchType('pedigrees')">
         <template v-slot:default="slotProps">
           <PedigreeTable :getData="getPedigreeData" :downloadTable="downloadPedigrees" :filterOn="getFilter('TABLE_COLUMNS_PEDIGREE_SEARCHABLE')" ref="tablePedigree" v-on:data-changed="slotProps.update"/>
@@ -263,7 +263,7 @@ export default {
       return this.apiPostDatasetAttributeTable(null, data, callback)
     },
     downloadDatasetAttributes: function (data, callback) {
-      return this.apiPostDatasetAttributeTableExport(null, data, callback)
+      return this.apiPostDatasetAttributeExport(data, callback)
     },
     // DATASETS
     getDatasetData: function (data, callback) {

@@ -62,6 +62,10 @@ export default {
           text: () => this.$t('comparatorsEqual'),
           values: 1
         },
+        isNull: {
+          text: () => this.$t('comparatorsIsNull'),
+          value: 0
+        },
         between: {
           text: () => this.$t('comparatorsBetween'),
           values: 2

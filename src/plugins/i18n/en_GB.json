@@ -45,6 +45,7 @@
   "comparatorsGreaterThan": "Greater than",
   "comparatorsGreaterThanOrEquals": "Greater than or equals",
   "comparatorsInSet": "In set",
+  "comparatorsIsNull": "Is null/missing",
   "comparatorsLessThan": "Less than",
   "comparatorsLessThanOrEquals": "Less than or equals",
   "dashboardBannerCompounds": "Compounds",
