@@ -69,8 +69,8 @@
     <h2>{{ $t('pageAboutGerminateFundersTitle') }}<small> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>
     <p>{{ $t('pageAboutGerminateFundersText') }}</p>
     <b-row class="funders">
-      <b-col cols=6 sm=4 xl=2 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
-        <div class="p-3 img-container d-flex justify-content-center">
+      <b-col cols=6 sm=4 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
+        <div class="p-3 p-xl-4 img-container d-flex justify-content-center">
           <a :href="funder.href" :title="funder.name" target="_blank" class="align-self-center" v-if="funder.href">
             <b-img :src="`./img/${funder.logo}`" fluid />
           </a>
@@ -86,10 +86,10 @@
         <b-img src="./img/germinate-text.svg" fluid class="my-5 germinate-text"/>
       </b-col>
       <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img src="./img/hutton.svg" fluid class="my-5" />
+        <b-img src="./img/ics-sdg.svg" fluid class="my-5" />
       </b-col>
       <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img src="./img/ics-sdg.svg" fluid class="my-5" />
+        <b-img src="./img/hutton.svg" fluid class="my-5" />
       </b-col>
     </b-row>
   </div>

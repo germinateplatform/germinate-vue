@@ -5,6 +5,12 @@
                v-bind="$props"
                ref="entityTable"
                v-on="$listeners">
+      <template v-slot:thead-top>
+        <b-tr>
+          <b-th :colspan="parentSpan" class="text-center border-right" v-if="parentSpan > 0">{{ $t('tableColumnEntityParentHeader') }}</b-th>
+          <b-th :colspan="childSpan" class="text-center" v-if="childSpan > 0">{{ $t('tableColumnEntityChildHeader') }}</b-th>
+        </b-tr>
+      </template>
       <!-- Entity parent id link -->
       <template v-slot:cell(entityParentId)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentId }}</router-link>
@@ -55,7 +61,9 @@ export default {
       options: {
         idColumn: 'entityParentId',
         tableName: 'entities'
-      }
+      },
+      parentColumns: ['entityParentId', 'entityParentGid', 'entityParentName', 'entityParentType'],
+      childColumns: ['entityChildId', 'entityChildGid', 'entityChildName', 'entityChildType']
     }
   },
   computed: {
@@ -83,7 +91,7 @@ export default {
           key: 'entityParentType',
           type: 'entityType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentType')}`,
+          class: `border-right ${this.isTableColumnHidden(this.options.tableName, 'entityParentType')}`,
           label: this.$t('tableColumnEntityParentType')
         }, {
           key: 'entityChildId',
@@ -111,6 +119,16 @@ export default {
           label: this.$t('tableColumnEntityChildType')
         }
       ]
+    },
+    parentSpan: function () {
+      return this.parentColumns.map(c => {
+        return this.isTableColumnHidden(this.options.tableName, c) === 'd-none' ? 0 : 1
+      }).reduce((a, b) => a + b, 0)
+    },
+    childSpan: function () {
+      return this.childColumns.map(c => {
+        return this.isTableColumnHidden(this.options.tableName, c) === 'd-none' ? 0 : 1
+      }).reduce((a, b) => a + b, 0)
     }
   },
   components: {

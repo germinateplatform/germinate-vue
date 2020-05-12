@@ -366,7 +366,6 @@ export default {
       if (this.hiddenColumns[tableName]) {
         return (this.hiddenColumns[tableName].indexOf(columnKey) !== -1) ? 'd-none' : ''
       } else {
-        console.log(tableName, columnKey)
         return ''
       }
     },
