@@ -31,7 +31,7 @@ export default {
     }
   },
   watch: {
-    institution: {
+    institutionId: {
       immediate: true,
       handler: function (newValue) {
         // Get institution data based on the provided id

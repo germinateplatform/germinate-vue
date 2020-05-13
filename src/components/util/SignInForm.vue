@@ -16,8 +16,8 @@
         <b-col cols="6">
           <b-button variant="primary" class="px-4" @click="login" :disabled="!enabled" type="submit"><b-spinner small type="grow" v-if="!enabled" /> {{ $t('buttonSignIn') }}</b-button>
         </b-col>
-        <b-col cols="6" class="text-right">
-          <b-button variant="link" class="px-0">{{ $t('widgetSignInForgotPassword') }}</b-button>
+        <b-col cols="6" class="d-flex justify-content-end align-items-center" v-if="serverSettings && serverSettings.gatekeeperUrl">
+          <a :href="serverSettings.gatekeeperUrl" class="px-0">{{ $t('widgetSignInForgotPassword') }}</a>
         </b-col>
       </b-row>
     </b-form>

@@ -35,15 +35,15 @@
         </b-form-checkbox>
 
         <!-- Registration form -->
-        <b-form @submit.prevent.stop="register" class="mt-3" :validated="errorMessage !== null">
+        <b-form @submit.prevent.stop="register" class="mt-3" :validated="formValidated">
           <template v-if="hasGatekeeper">
             <div class="mb-3">{{ $t('widgetRegisterExistingAccountText') }}</div>
             <b-form-group
               :label="$t('formLabelUsername')"
               label-for="username">
-              <b-form-input id="username" name="username" autocomplete="username" v-model="user.userUsername" type="text" trim required />
+              <b-form-input id="username" name="username" autocomplete="username" @blur="validateForm" :state="formState.userEmailAddress" v-model="user.userUsername" type="text" trim required />
             </b-form-group>
-            <PasswordInput v-model="user.userPassword" :label="$t('formLabelPassword')" ref="passwordInput" />
+            <PasswordInput v-model="user.userPassword" @blur="validateForm" :state="formState.userPassword" :label="$t('formLabelPassword')" ref="passwordInput" />
           </template>
 
           <template v-else>
@@ -51,23 +51,23 @@
             <b-form-group
               :label="$t('formLabelEmail')"
               label-for="email">
-              <b-form-input id="email" name="email" autocomplete="email" v-model="user.userEmailAddress" type="email" trim required />
+              <b-form-input id="email" name="email" autocomplete="email" @blur="validateForm" :state="formState.userEmailAddress" v-model="user.userEmailAddress" type="email" trim required />
             </b-form-group>
-            <PasswordInput v-model="user.userPassword" :label="$t('formLabelPassword')" ref="passwordInput" />
+            <PasswordInput v-model="user.userPassword" @blur="validateForm" :state="formState.userPassword" :label="$t('formLabelPassword')" ref="passwordInput" />
             <b-form-group
               :label="$t('formLabelPasswordConfirm')"
               label-for="passwordConfirm">
-              <b-form-input id="passwordConfirm" name="password-confirm" autocomplete="password-confirm" v-model="user.userPasswordConfirm" type="password" trim required />
+              <b-form-input id="passwordConfirm" name="password-confirm" @blur="validateForm" :state="formState.userPasswordConfirm" autocomplete="password-confirm" v-model="user.userPasswordConfirm" type="password" trim required />
             </b-form-group>
             <b-form-group
               :label="$t('formLabelFullName')"
               label-for="name">
-              <b-form-input id="name" name="name" autocomplete="name" v-model="user.userFullName" type="text" trim required />
+              <b-form-input id="name" name="name" autocomplete="name" @blur="validateForm" :state="formState.userFullName" v-model="user.userFullName" type="text" trim required />
             </b-form-group>
             <b-form-group
               :label="$t('formLabelInstitution')"
               label-for="institution">
-              <b-form-select id="institution" v-model="selectedInstitution" :options="institutions" trim required />
+              <b-form-select id="institution" v-model="selectedInstitution" @blur="validateForm" :state="formState.userInstitution" :options="institutions" trim required />
               <a href="#" @click.prevent.stop slot="description" v-b-modal.institutionModal>{{ $t('widgetRegisterInstitutionText') }}</a>
             </b-form-group>
           </template>
@@ -126,6 +126,14 @@ export default {
       institutions: [],
       disclaimerAccepted: false,
       hasGatekeeper: false,
+      formValidated: false,
+      formState: {
+        userEmailAddress: null,
+        userPassword: null,
+        userPasswordConfirm: null,
+        userFullName: null,
+        userInstitution: null
+      },
       user: {
         userUsername: null,
         userPassword: null,
@@ -145,6 +153,20 @@ export default {
   },
   mixins: [ miscApi ],
   methods: {
+    validateForm: function () {
+      this.formValidated = true
+
+      if (this.hasGatekeeper) {
+        this.formState.userEmailAddress = this.user.userUsername !== null
+        this.formState.userPassword = this.user.userPassword !== null
+      } else {
+        this.formState.userEmailAddress = this.user.userEmailAddress !== null
+        this.formState.userPassword = this.user.userPassword !== null
+        this.formState.userPasswordConfirm = this.user.userPasswordConfirm !== null && (this.user.userPassword === this.user.userPasswordConfirm)
+        this.formState.userFullName = this.user.userFullName !== null
+        this.formState.userInstitution = this.selectedInstitution !== null
+      }
+    },
     register: function () {
       if (!this.hasGatekeeper) {
         this.errorMessage = null
@@ -300,6 +322,11 @@ export default {
         if (this.institutions.length > 0) {
           this.selectedInstitution = this.institutions[0].value
         }
+      }
+    }, {
+      codes: [503],
+      callback: function () {
+        // Ignore this, it means registration isn't available.
       }
     })
   }
