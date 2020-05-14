@@ -2,7 +2,7 @@ FROM arm32v7/tomcat:8-jre8
 
 LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 
-COPY ./qemu-arm-static /usr/bin/qemu-arm-static
+COPY qemu-arm-static /usr/bin/qemu-arm-static
 
 # Clone the Germinate server code and client code
 RUN git clone https://github.com/germinateplatform/germinate-server.git /opt/germinate-server && \
