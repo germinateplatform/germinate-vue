@@ -5,7 +5,9 @@ LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 COPY qemu-arm-static /usr/bin/qemu-arm-static
 
 # Clone the Germinate server code and client code
-RUN git clone https://github.com/germinateplatform/germinate-server.git /opt/germinate-server && \
+RUN apt-get update && \
+    apt-get install -y git && \
+    git clone https://github.com/germinateplatform/germinate-server.git /opt/germinate-server && \
     git clone https://github.com/germinateplatform/germinate-vue.git /opt/germinate-client
 
 # Install node.js
