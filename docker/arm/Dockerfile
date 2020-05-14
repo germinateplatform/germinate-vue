@@ -1,10 +1,12 @@
-FROM tomcat:8-jdk8
+FROM arm32v7/tomcat:8-jre8
 
 LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 
+COPY qemu-arm-static /usr/bin/qemu-arm-static
+
 # Clone the Germinate server code and client code
-RUN git clone https://github.com/sebastian-raubach/germinate-server.git /opt/germinate-server && \
-    git clone https://github.com/sebastian-raubach/germinate-vue.git /opt/germinate-client
+RUN git clone https://github.com/germinateplatform/germinate-server.git /opt/germinate-server && \
+    git clone https://github.com/germinateplatform/germinate-vue.git /opt/germinate-client
 
 # Install node.js
 RUN apt-get update && \
