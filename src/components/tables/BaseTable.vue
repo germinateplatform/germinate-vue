@@ -475,7 +475,8 @@ export default {
           isAddition: true
         }
         const groupId = result
-        var type = this.groupTypes[this.itemType].apiName
+        const groupTypeLocal = Object.keys(this.groupTypes).filter(i => this.groupTypes[i].itemType === this.itemType)[0]
+        const type = this.groupTypes[groupTypeLocal].apiName
         // Now add the group members
         this.apiPatchGroupMembers(groupId, type, data, result => {
           this.$root.$bvToast.toast(this.$t('toastGroupCreateWithMembers', { count: result }), {

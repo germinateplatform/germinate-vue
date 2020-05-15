@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git@github.com:germinateplatform/germinate-vue.git"
+    "url": "https://github.com/germinateplatform/germinate-vue.git"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -50,7 +50,7 @@
     "leaflet.sync": "~0.2.4",
     "lodash": "~4.17.15",
     "moment": "~2.24.0",
-    "plotly.js": "~1.52.3",
+    "plotly.js": "^1.54.1",
     "simple-line-icons": "~2.4.1",
     "simplex-noise": "~2.4.0",
     "snapsvg": "~0.5.1",
