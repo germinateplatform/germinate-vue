@@ -28,7 +28,9 @@ RUN apt-get install -y build-essential && \
     cp -a /opt/germinate-client/dist/. /opt/germinate-server/client/
 
 # Download Gradle and build the server code
-RUN wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/ && \
+RUN apt-get update && \
+    apt-get install -y wget openjdk-8-jdk && \
+    wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/ && \
     unzip /tmp/gradle-6.0.1-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
