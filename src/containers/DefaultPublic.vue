@@ -12,7 +12,7 @@
     <div class="app-body flex-column">
       <div class="container-fluid page-header">
         <div class="mb-3 d-flex align-items-center justify-content-center my-4">
-          <b-img width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`"></b-img>
+          <b-img-lazy width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" />
           <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
         </div>
         <hr class="mb-0"/>

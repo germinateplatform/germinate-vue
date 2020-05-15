@@ -13,7 +13,7 @@
       <template v-if="imageOverlays && imageOverlays.length > 0">
         <!-- Legend -->
         <div class="location-map-legend" v-if="getOverlays(true).length > 0">
-          <img :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" />
+          <b-img-lazy :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" />
         </div>
         <!-- Overlays -->
         <l-image-overlay v-for="image in getOverlays(false)"

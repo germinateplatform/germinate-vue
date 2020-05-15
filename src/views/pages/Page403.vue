@@ -4,7 +4,7 @@
       <b-row class="justify-content-center mt-4">
         <b-col md=2 />
         <b-col md=8 class="text-center">
-          <img class="image-403" src="img/403.svg" alt="403" title="Image from https://undraw.co/">
+          <b-img-lazy class="image-403" src="img/403.svg" alt="403" title="Image from https://undraw.co/" />
 
           <b-row class="mt-3">
             <b-col cols=5>

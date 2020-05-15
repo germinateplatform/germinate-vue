@@ -4,8 +4,9 @@
     <p>{{ $t('pageLocationsText') }}</p>
     <!-- All locations in a table -->
     <LocationTable :getData="getData"
-                    :getIds="getIds"
-                    v-on:data-changed="onDataChanged" />
+                   :getIds="getIds"
+                   :downloadTable="downloadData"
+                   v-on:data-changed="onDataChanged" />
 
     <h2>{{ $t('pageLocationsMapsTitle') }}</h2>
     <p class="text-info">{{ $t('pageLocationsMapsText') }}</p>
@@ -32,6 +33,7 @@ import { isEqual } from 'lodash'
 import LocationMap from '@/components/map/LocationMap'
 import LocationTable from '@/components/tables/LocationTable'
 import locationApi from '@/mixins/api/location.js'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   data: function () {
@@ -65,10 +67,13 @@ export default {
     LocationMap,
     LocationTable
   },
-  mixins: [ locationApi ],
+  mixins: [ locationApi, miscApi ],
   methods: {
     getData: function (data, callback) {
       return this.apiPostLocationTable(data, callback)
+    },
+    downloadData: function (data, callback) {
+      return this.apiPostTableExport(data, 'location', callback)
     },
     getIds: function (data, callback) {
       return this.apiPostLocationTableIds(data, callback)

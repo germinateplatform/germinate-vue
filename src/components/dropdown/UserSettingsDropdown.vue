@@ -55,6 +55,7 @@ export default {
         this.enabled = true
         this.$store.dispatch('ON_TOKEN_CHANGED', result)
         this.$refs.signInModal.hide()
+        window.location.reload()
       }, {
         codes: [],
         callback: error => {

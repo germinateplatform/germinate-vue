@@ -31,8 +31,8 @@
       <!-- Download -->
       <h4>{{ $t('pageMapExportDownloadFormatTitle') }}</h4>
       <b-list-group class="d-inline-block">
-        <b-list-group-item button @click="exportMap('flapjack')"><img :src="`./img/${exportFormats.flapjack.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadFlapjackFormat') }}</b-list-group-item>
-        <b-list-group-item button @click="exportMap('strudel')"><img :src="`./img/${exportFormats.strudel.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadStrudelFormat') }}</b-list-group-item>
+        <b-list-group-item button @click="exportMap('flapjack')"><b-img-lazy :src="`./img/${exportFormats.flapjack.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadFlapjackFormat') }}</b-list-group-item>
+        <b-list-group-item button @click="exportMap('strudel')"><b-img-lazy :src="`./img/${exportFormats.strudel.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadStrudelFormat') }}</b-list-group-item>
       </b-list-group>
 
       <!-- Export format information -->

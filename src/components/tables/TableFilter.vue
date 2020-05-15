@@ -176,7 +176,7 @@ export default {
         dataType: ['equals', 'isNull'],
         locationType: ['equals', 'isNull'],
         entityType: ['equals', 'isNull'],
-        json: ['contains'],
+        json: ['contains', 'isNull'],
         Number: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'inSet', 'isNull'],
         Date: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'isNull']
       },

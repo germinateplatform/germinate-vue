@@ -8,7 +8,7 @@ export default {
       return this.authAjax({ url: `dataset/export/${datasetType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostDatasetAttributeExport: function (queryData, onSuccess, onError) {
-      return this.authAjax({ url: 'dataset/attribute/table/export', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+      return this.authAjax({ url: 'dataset/attribute/export', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiGetDatasetSourceFile: function (datasetId, onSuccess, onError) {
       return this.authAjax({ url: `dataset/${datasetId}/download-source?random=${this.uuidv4()}`, dataType: 'blob', success: onSuccess, error: onError })

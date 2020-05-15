@@ -50,7 +50,7 @@
     "leaflet.sync": "~0.2.4",
     "lodash": "~4.17.15",
     "moment": "~2.24.0",
-    "plotly.js": "^1.54.1",
+    "plotly.js": "1.52.3",
     "simple-line-icons": "~2.4.1",
     "simplex-noise": "~2.4.0",
     "snapsvg": "~0.5.1",
@@ -79,7 +79,8 @@
     "https-proxy-agent": "^2.2.4",
     "node-sass": "^4.13.1",
     "sass-loader": "^7.3.1",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack-bundle-analyzer": "^3.7.0"
   },
   "browserslist": [
     "> 1%",

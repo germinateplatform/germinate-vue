@@ -12,7 +12,7 @@
       <!-- Image -->
       <template v-slot:cell(image)="data">
         <a :href="getSrc(data.item, 'large')" class="baguettebox" @click.prevent>
-          <img :src="getSrc(data.item, 'small')" class="table-image" />
+          <b-img-lazy :src="getSrc(data.item, 'small')" class="table-image" />
         </a>
       </template>
       <!-- Reference name -->

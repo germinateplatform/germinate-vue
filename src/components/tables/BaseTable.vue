@@ -1,7 +1,7 @@
 <template>
-  <div class="base-table" :id="id">
+  <div class="base-table mb-3" :id="id">
     <div>
-      <!-- Filter -->
+      <!-- Filter display -->
       <div v-if="filter" class="mb-2">
         <span v-for="(f, index) in filter" :key="f.column.name">
           <!-- Comparison -->
@@ -332,7 +332,7 @@ export default {
     },
     notifyLoaded: function () {
       this.$emit('loaded', {
-        data: this.$refs.table.value,
+        data: this.$refs.table.paginatedItems,
         count: this.pagination.totalCount
       })
     },

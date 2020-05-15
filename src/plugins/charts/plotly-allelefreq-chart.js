@@ -79,8 +79,7 @@ export function plotlyAlleleFreqChart() {
 			});
 
 			var config = {
-				modeBarButtonsToRemove: ['toImage'],
-				displayModeBar: true,
+				displayModeBar: false,
 				responsive: true,
 				displaylogo: false
 			};
@@ -88,6 +87,7 @@ export function plotlyAlleleFreqChart() {
 			var layout = {
 				height: height,
 				margin: {autoexpand: true},
+				dragmode: false,
 				autosize: true,
 				hovermode: 'closest',
 				barmode: 'stacked',
