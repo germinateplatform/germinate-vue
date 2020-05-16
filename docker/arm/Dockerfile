@@ -32,6 +32,7 @@ RUN apt-get update && \
     apt-get install -y wget openjdk-8-jdk gradle && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
+    echo "org.gradle.jvmargs=-Xmx1280m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" >> /opt/germinate-server/gradle.properties && \
     gradle --debug --stacktrace -p /opt/germinate-server war && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
