@@ -30,8 +30,7 @@ RUN apt-get install -y build-essential && \
 COPY build.gradle /opt/germinate-server/
 
 # Download Gradle and build the server code
-RUN kill -9 $(ps aux | grep '\snode\s' | awk '{print $2}') && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y wget openjdk-8-jdk gradle && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
