@@ -27,8 +27,6 @@ RUN apt-get install -y build-essential && \
     mkdir /opt/germinate-server/client/ && \
     cp -a /opt/germinate-client/dist/. /opt/germinate-server/client/
 
-COPY build.gradle /opt/germinate-server/
-
 # Download Gradle and build the server code
 RUN apt-get update && \
     apt-get install -y wget openjdk-8-jdk && \
