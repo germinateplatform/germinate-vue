@@ -31,7 +31,9 @@ COPY build.gradle /opt/germinate-server/
 
 # Download Gradle and build the server code
 RUN apt-get update && \
-    apt-get install -y wget openjdk-8-jdk gradle && \
+    apt-get install -y wget openjdk-8-jdk && \
+    wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/ && \
+    unzip /tmp/gradle-6.0.1-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
     echo "org.gradle.jvmargs=-Xmx1536m -Xms512m -XX:+HeapDumpOnOutOfMemoryError" >> /opt/germinate-server/gradle.properties && \
@@ -39,5 +41,10 @@ RUN apt-get update && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
     cp /opt/germinate-server/build/libs/germinate-4.0.0.war /usr/local/tomcat/webapps/ROOT.war
+
+RUN rm -rf /opt/germinate-server/ && \
+    rm -rf /opt/germinate-client/ && \
+    apt-get purge -y nodejs git && \
+    apt-get autoremove -y
 
 WORKDIR /

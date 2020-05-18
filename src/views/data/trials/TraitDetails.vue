@@ -21,10 +21,12 @@
       <!-- Table showing all data points for this trait -->
       <TrialsDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="traitDetailsTable" />
 
-      <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
-      <p>{{ $t('pageTraitDetailsStatsText') }}</p>
-      <!-- Boxplot for this trait -->
-      <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" />
+      <template v-if="trait.dataType !== 'char_'">
+        <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
+        <p>{{ $t('pageTraitDetailsStatsText') }}</p>
+        <!-- Boxplot for this trait -->
+        <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" />
+      </template>
       <!-- Table showing all datasets this trait is scored in -->
       <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 

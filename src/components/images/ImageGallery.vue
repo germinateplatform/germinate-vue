@@ -15,7 +15,7 @@
 
     <!-- Show each image node -->
     <b-row v-if="images && images.length > 0" class="image-grid mb-3">
-      <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId">
+      <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId" class="mb-3">
         <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" v-on:tags-changed="onTagsChanged" />
       </b-col>
     </b-row>

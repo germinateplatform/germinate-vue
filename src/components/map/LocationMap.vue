@@ -9,6 +9,12 @@
       :maxZoom="maxZoom"
       :zoom="zoom">
 
+      <!-- Map loading indicator -->
+      <div class="location-map-loading-indicator d-flex justify-content-center h-100 align-items-center" v-if="loading === true">
+        <b-progress class="mt-2" max="100">
+          <b-progress-bar :value="loadingProgress" animated variant="primary"></b-progress-bar>
+        </b-progress>
+      </div>
       <!-- Add overlays if available -->
       <template v-if="imageOverlays && imageOverlays.length > 0">
         <!-- Legend -->
@@ -63,6 +69,8 @@ countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 export default {
   data: function () {
     return {
+      loading: false,
+      loadingProgress: 0,
       zoom: 3,
       maxZoom: 18,
       center: [22.5937, 2.1094],
@@ -298,24 +306,33 @@ export default {
         }
 
         if (this.mapType === 'cluster') {
+          this.loading = true
+          this.loadingProgress = 0
           if (this.markerClusterer) {
             // If it exists, clear all layers
             this.markerClusterer.clearLayers()
           } else {
             // If it doesn't create it
-            this.markerClusterer = L.markerClusterGroup()
+            this.markerClusterer = L.markerClusterGroup({
+              chunkedLoading: true,
+              chunkProgress: (processed, total, elapsed, layersArray) => {
+                this.loading = processed !== total
+                this.loadingProgress = Math.round(processed / total * 100)
+              }
+            })
             map.addLayer(this.markerClusterer)
           }
-          this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
-            .forEach(l => {
+          const clusterMarker = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
+            .map(l => {
               var marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
               marker.on('click', e => {
                 var popup = e.target.getPopup()
                 this.location = l
                 this.$nextTick(() => popup.setContent(this.$refs.popupContent))
               })
-              this.markerClusterer.addLayer(marker)
+              return marker
             })
+          this.markerClusterer.addLayers(clusterMarker)
         } else if (this.mapType === 'heatmap') {
           var ls = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .map(l => [l.locationLatitude, l.locationLongitude, 1])
@@ -491,5 +508,18 @@ export default {
 }
 .location-map.point-search {
   cursor: crosshair;
+}
+.location-map .location-map-loading-indicator {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.6);
+  pointer-events: none;
+  z-index: 1000;
+}
+.location-map .location-map-loading-indicator > .progress {
+  width: 50%;
 }
 </style>

@@ -1,8 +1,10 @@
 <template>
   <ul v-if="links && links.length > 0">
-    <li v-for="(link, index) in links" :key="`link-widget-${index}`">
-      <a :href="link.hyperlink" target="_blank">{{ link.linktypeDescription }}</a>&nbsp;<i class="mdi mdi-open-in-new" />
-    </li>
+    <template v-for="(link, index) in links">
+      <li :key="`link-widget-${index}`" v-if="link.hyperlink">
+        <a :href="link.hyperlink" target="_blank">{{ link.linktypeDescription }}</a>&nbsp;<i class="mdi mdi-open-in-new" />
+      </li>
+    </template>
   </ul>
 </template>
 
