@@ -1,2 +1,0 @@
-#!/bin/bash
-docker build --network=host -f $DOCKERFILE_PATH -t $IMAGE_NAME .
