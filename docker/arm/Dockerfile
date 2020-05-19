@@ -35,7 +35,7 @@ RUN apt-get update && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
     echo "org.gradle.jvmargs=-Xmx1536m -Xms512m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap" >> /opt/germinate-server/gradle.properties && \
-    gradle --no-rebuild --max-workers=1 -p /opt/germinate-server war && \
+    /opt/gradle-6.0.1/bin/gradle --no-rebuild --max-workers=1 -p /opt/germinate-server war && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
     cp /opt/germinate-server/build/libs/germinate-4.0.0.war /usr/local/tomcat/webapps/ROOT.war
