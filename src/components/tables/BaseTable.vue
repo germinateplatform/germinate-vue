@@ -121,7 +121,7 @@
         <!-- Information about selecting multiple items in the table -->
         <template v-if="columns.map(c => c.key).indexOf('selected') !== -1 && selectionMode === 'multi'">
           <div>
-            <i class="mdi mdi-18px mdi-arrow-up-bold ml-1"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
+            <i class="mdi mdi-18px mdi-arrow-up-bold ml-2"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
           </div>
         </template>
 

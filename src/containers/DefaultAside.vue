@@ -7,9 +7,14 @@
           <i class="mdi mdi-18px mdi-download" />
         </template>
         <!-- Update button -->
-        <b-button @click="updateAsyncJobs" class="w-100 refresh-button" variant="info">
-          <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
-        </b-button>
+        <b-button-group class="w-100 action-buttons" >
+          <b-button @click="updateAsyncJobs" variant="info">
+            <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
+          </b-button>
+          <b-button @click="clearExportJobs" :disabled="!asyncExportJobs || asyncExportJobs.length < 1">
+            <i class="mdi mdi-delete" /> {{ $t('genericClear') }}
+          </b-button>
+        </b-button-group>
         <b-list-group class="list-group-accent">
           <!-- Heading -->
           <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
@@ -57,9 +62,14 @@
             <i class="mdi mdi-18px mdi-upload" />
           </template>
           <!-- Update button -->
-          <b-button @click="updateAsyncJobs" class="w-100 refresh-button" variant="info">
-            <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
-          </b-button>
+          <b-button-group class="w-100 action-buttons">
+            <b-button @click="updateAsyncJobs" variant="info">
+              <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
+            </b-button>
+            <b-button @click="clearImportJobs" :disabled="!asyncImportJobs || asyncImportJobs.length < 1">
+              <i class="mdi mdi-delete" /> {{ $t('genericClear') }}
+            </b-button>
+          </b-button-group>
           <b-list-group class="list-group-accent">
             <!-- Heading -->
             <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
@@ -158,6 +168,47 @@ export default {
   },
   mixins: [ datasetApi, miscApi ],
   methods: {
+    clearExportJobs: function () {
+      if (this.asyncExportJobs) {
+        this.$bvModal.msgBoxConfirm(this.$t('modalTextDeleteAsyncJob'), {
+          title: this.$t('modalTitleSure'),
+          okVariant: 'danger',
+          okTitle: this.$t('genericYes'),
+          cancelTitle: this.$t('genericNo')
+        }).then(value => {
+          if (value) {
+            this.asyncExportJobs.forEach(job => {
+              this.apiDeleteDatasetAsyncExport(job.uuid, result => {
+                // Delete from the store
+                this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
+                this.updateAsyncJobs()
+              })
+            })
+          }
+        })
+      }
+    },
+    clearImportJobs: function () {
+      if (this.asyncImportJobs) {
+        this.$bvModal.msgBoxConfirm(this.$t('modalTextDeleteAsyncJob'), {
+          title: this.$t('modalTitleSure'),
+          okVariant: 'danger',
+          okTitle: this.$t('genericYes'),
+          cancelTitle: this.$t('genericNo')
+        }).then(value => {
+          if (value) {
+            // Delete from the database
+            this.asyncImportJobs.forEach(job => {
+              this.apiDeleteDataAsyncImport(job.uuid, result => {
+                // Delete from the store
+                this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
+                this.updateAsyncJobs()
+              })
+            })
+          }
+        })
+      }
+    },
     showTab: function (tab) {
       if (tab === 'upload') {
         this.tabIndex = 1
@@ -296,7 +347,7 @@ export default {
   height: 100%;
 }
 
-.refresh-button {
+.action-buttons .btn {
   border-radius: 0;
 }
 </style>

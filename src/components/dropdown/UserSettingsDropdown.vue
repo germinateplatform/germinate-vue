@@ -6,9 +6,9 @@
       </template>
       <template slot="dropdown">
         <!-- Administrators get to see additional items -->
-        <template v-if="token && token.userType === 'Administrator'">
+        <template v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
           <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettingsAdvancedSettings') }}</strong></b-dropdown-header>
-          <b-dropdown-item :to="{ name: 'user-permissions' }"><i class="mdi mdi-18px mdi-account-key text-warning" /> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
+          <b-dropdown-item :to="{ name: 'user-permissions' }" v-if="userIsAtLeast(token.userType, 'Administrator')"><i class="mdi mdi-18px mdi-account-key text-warning" /> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
           <b-dropdown-item :to="{ name: 'import-upload' }"><i class="mdi mdi-18px mdi-upload text-warning" /> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
         </template>
         <!-- Settings -->

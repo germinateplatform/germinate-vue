@@ -12,8 +12,8 @@
       <b-form-group
         :label="$t('formLabelGroupType')"
         label-for="groupType"
-        :description="groupToEdit.id === null ? $t('formDescriptionGroupType') : $t('formDescriptionGroupTypeDisabled')">
-        <b-form-select id="groupType" :options="groupTypeSelect" v-model="groupToEdit.groupTypeId" :disabled="groupToEdit.groupTypeId !== null" required autofocus/>
+        :description="canChangeType === true ? $t('formDescriptionGroupType') : $t('formDescriptionGroupTypeDisabled')">
+        <b-form-select id="groupType" :options="groupTypeSelect" v-model="groupToEdit.groupTypeId" :disabled="canChangeType === false" required autofocus/>
       </b-form-group>
       <b-form-group
         :label="$t('formLabelGroupName')"
@@ -34,6 +34,10 @@
 <script>
 export default {
   props: {
+    canChangeType: {
+      type: Boolean,
+      default: false
+    },
     groupToEdit: {
       type: Object,
       default: null

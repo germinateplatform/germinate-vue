@@ -259,7 +259,8 @@ export default {
             })
           })
 
-          this.map = result[0].mapId
+          // Pre-select the map with the highest number of markers
+          this.map = result.reduce((max, map) => max.markerCount > map.markerCount ? max : map).mapId
         }
       })
     }

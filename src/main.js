@@ -82,7 +82,7 @@ Vue.filter('toDate', value => {
   } else {
     moment = window.moment(value, 'MMM D, YYYY')
   }
-  return moment.utcOffset(0).format(i18n.t('formatDate'))
+  return moment.format(i18n.t('formatDate'))
 })
 
 // Date time formatting
@@ -96,7 +96,7 @@ Vue.filter('toDateTime', value => {
   } else {
     moment = window.moment(value, 'MMM D, YYYY')
   }
-  return moment.utcOffset(0).format(i18n.t('formatDateTime'))
+  return moment.format(i18n.t('formatDateTime'))
 })
 
 // Truncate a string after this many words

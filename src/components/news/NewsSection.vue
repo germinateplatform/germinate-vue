@@ -189,6 +189,6 @@ export default {
   border-top-right-radius: 0;
 }
 .news-items .list-group-item-action:last-child {
-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 </style>

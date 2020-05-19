@@ -77,6 +77,7 @@
 
     <!-- Group add/edit modal -->
     <GroupEditAddModal ref="groupDetailsModal"
+                       :canChangeType="groupToEdit && (groupToEdit.groupId === null)"
                        :groupToEdit="groupToEdit"
                        :groupTypeSelect="groupTypeSelect"
                        v-on:ok="onEditGroup" />
