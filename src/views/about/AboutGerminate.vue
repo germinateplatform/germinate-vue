@@ -261,6 +261,11 @@ export default {
           name: 'Secretaría de Agricultura y Desarrollo Rural',
           href: 'https://www.gob.mx/agricultura',
           logo: 'funders/sader.svg'
+        },
+        {
+          name: 'DivSeek International Network',
+          href: 'https://divseekintl.org/',
+          logo: 'funders/divseek.png'
         }
       ]
     }
@@ -346,6 +351,7 @@ export default {
 .about-logo img {
   height: 150px;
   width: auto;
+  object-fit: contain;
 }
 .about-footer {
   margin-left: -30px;
