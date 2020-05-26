@@ -40,6 +40,7 @@ export function plotlyPieChart() {
 
 			var layout = {
 				height: height,
+				
 				xaxis: {
 					automargin: true
 				},
@@ -48,7 +49,7 @@ export function plotlyPieChart() {
 				},
 				barmode: 'group',
 				legend: {
-					orientation: 'v'
+					orientation: 'h'
 				}
 			};
 

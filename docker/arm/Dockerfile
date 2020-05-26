@@ -4,6 +4,8 @@ LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 
 COPY qemu-arm-static /usr/bin/qemu-arm-static
 
+# Force docker to not cache the next line
+ADD https://api.github.com/repos/sebastian-raubach/frickl-web/git/refs/heads/master version.json
 # Clone the Germinate server code and client code
 RUN apt-get update && \
     apt-get install -y git && \
@@ -38,7 +40,7 @@ RUN apt-get update && \
     /opt/gradle-6.0.1/bin/gradle --no-rebuild --max-workers=1 -p /opt/germinate-server war && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
-    cp /opt/germinate-server/build/libs/germinate-4.0.0.war /usr/local/tomcat/webapps/ROOT.war
+    cp /opt/germinate-server/build/libs/germinate-4.0.1.war /usr/local/tomcat/webapps/ROOT.war
 
 RUN rm -rf /opt/germinate-server/ && \
     rm -rf /opt/germinate-client/ && \

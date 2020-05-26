@@ -35,8 +35,10 @@
           <!-- Maps -->
           <b-form-group
               :label="$t('pageGenotypesExportSelectMapText')"
-              label-for="map-selection">
-            <b-form-select id="map-selection" v-model="map" :options="maps" />
+              label-for="map-selection"
+              :class="maps === null ? 'loading-select' : ''">
+            <b-progress :value="100" height="5px" variant="primary" striped animated v-if="maps === null" />
+            <b-form-select id="map-selection" v-model="map" :options="mapOptions" />
           </b-form-group>
         </b-col>
         <b-col cols=12 md=6>
@@ -92,7 +94,8 @@ export default {
     return {
       markerGroups: null,
       germplasmGroups: null,
-      maps: [],
+      maps: null,
+      mapOptions: [],
       map: null,
       generateFlapjackProject: false,
       selectedDatasetIds: [],
@@ -169,9 +172,9 @@ export default {
       }
 
       var markerSettings = this.$refs.markerGroups.getSettings()
-      var markedSelected = markerSettings.selectedGroups.filter(g => g.isMarkedItem === true)
-      if (markerSettings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
-        query.xIds = this.markedIds.germplasm
+      var markedSelectedMarkers = markerSettings.selectedGroups.filter(g => g.isMarkedItem === true)
+      if (markerSettings.specialGroupSelection !== 'all' && markedSelectedMarkers.length > 0) {
+        query.xIds = this.markedIds.markers
       }
       var markerGroups = markerSettings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
       if (markerSettings.specialGroupSelection !== 'all' && markerGroups.length > 0) {
@@ -242,7 +245,8 @@ export default {
         limit: this.MAX_JAVA_INTEGER
       }
       this.apiPostDatasetMapTable(request, result => {
-        this.maps = []
+        this.maps = result
+        this.mapOptions = []
         this.map = null
 
         if (result && result.length > 0) {
@@ -253,7 +257,7 @@ export default {
               name += ` (${m.markerCount})`
             }
 
-            this.maps.push({
+            this.mapOptions.push({
               text: name,
               value: m.mapId
             })
@@ -279,6 +283,14 @@ export default {
 </script>
 
 <style>
+.loading-select > div > *:first-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.loading-select > div > *:last-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 .group-select > option:first-child {
   border-bottom: 1px solid;
 }

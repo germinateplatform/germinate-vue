@@ -12,7 +12,7 @@
                   <p>{{ category.text() }}</p>
                 </b-col>
                 <b-col cols=6 class="text-right">
-                  <i :class="`mdi mdi-48px ${category.icon}`" />
+                  <i :class="`mdi mdi-48px fix-alignment ${category.icon}`" />
                 </b-col>
               </b-row>
             </b-card-body>
@@ -146,8 +146,5 @@ export default {
 }
 .dashboard-stats *:hover {
   text-decoration: none;
-}
-.dashboard-stats .card-footer i.mdi {
-  vertical-align: sub;
 }
 </style>

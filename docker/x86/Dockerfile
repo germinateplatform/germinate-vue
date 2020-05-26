@@ -2,6 +2,8 @@ FROM tomcat:8-jdk8
 
 LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 
+# Force docker to not cache the next line
+ADD https://api.github.com/repos/sebastian-raubach/frickl-web/git/refs/heads/master version.json
 # Clone the Germinate server code and client code
 RUN git clone https://github.com/germinateplatform/germinate-server.git /opt/germinate-server && \
     git clone https://github.com/germinateplatform/germinate-vue.git /opt/germinate-client
@@ -31,7 +33,7 @@ RUN wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/
     /opt/gradle-6.0.1/bin/gradle -p /opt/germinate-server war && \
     mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT && \
-    cp /opt/germinate-server/build/libs/germinate-4.0.0.war /usr/local/tomcat/webapps/ROOT.war
+    cp /opt/germinate-server/build/libs/germinate-4.0.1.war /usr/local/tomcat/webapps/ROOT.war
 
 RUN rm -rf /opt/germinate-server/ && \
     rm -rf /opt/germinate-client/ && \
