@@ -37,7 +37,7 @@
       </template>
       <!-- Dataset description -->
       <template v-slot:cell(datasetDescription)="data">
-        <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ data.item.datasetDescription | truncateAfterWords(20) }}</span>
+        <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ data.item.datasetDescription | truncateAfterWords(10) }}</span>
       </template>
       <!-- Experiment name -->
       <template v-slot:cell(experimentName)="data">

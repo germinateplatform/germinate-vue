@@ -55,13 +55,15 @@ export default {
           type: String,
           sortable: false,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
-          label: this.$t('tableColumnDatasetName')
+          label: this.$t('tableColumnDatasetName'),
+          formatter: value => this.$options.filters.truncateAfterWords(value, 10)
         }, {
           key: 'datasetDescription',
           type: String,
           sortable: false,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
-          label: this.$t('tableColumnDatasetDescription')
+          label: this.$t('tableColumnDatasetDescription'),
+          formatter: value => this.$options.filters.truncateAfterWords(value, 10)
         }, {
           key: 'dataObjectCount',
           type: Number,
