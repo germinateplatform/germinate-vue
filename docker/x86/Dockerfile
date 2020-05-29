@@ -7,9 +7,10 @@ ARG BRANCH=master
 # Force docker to not cache the next line
 ADD https://api.github.com/repos/sebastian-raubach/frickl-web/git/refs/heads/master version.json
 # Clone the Germinate server code and client code
+RUN echo "Pulling GitHub branch: $BRANCH"
 RUN apk add --no-cache git && \
-    git clone -b '$BRANCH' --single-branch --depth 1 https://github.com/germinateplatform/germinate-server.git /opt/germinate-server && \
-    git clone -b '$BRANCH' --single-branch --depth 1 https://github.com/germinateplatform/germinate-vue.git /opt/germinate-client
+    git clone -b "$BRANCH" --single-branch --depth 1 https://github.com/germinateplatform/germinate-server.git /opt/germinate-server && \
+    git clone -b "$BRANCH" --single-branch --depth 1 https://github.com/germinateplatform/germinate-vue.git /opt/germinate-client
 
 # Build the client code
 WORKDIR /opt/germinate-client
