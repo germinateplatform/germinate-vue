@@ -5,7 +5,7 @@ LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 ARG BRANCH=master
 
 # Force docker to not cache the next line
-ADD https://api.github.com/repos/sebastian-raubach/frickl-web/git/refs/heads/master version.json
+ADD https://api.github.com/repos/germinateplatform/germinate-vue/git/refs/heads/master version.json
 # Clone the Germinate server code and client code
 RUN echo "Pulling GitHub branch: $BRANCH"
 RUN apk add --no-cache git && \
