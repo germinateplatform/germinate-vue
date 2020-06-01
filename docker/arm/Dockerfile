@@ -42,6 +42,6 @@ COPY qemu-arm-static /usr/bin/qemu-arm-static
 RUN mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT
 
-COPY --from=build /opt/germinate-server/build/libs/germinate-4.0.1.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build /opt/germinate-server/build/libs/germinate-*.war /usr/local/tomcat/webapps/ROOT.war
 
 WORKDIR /usr/local/tomcat/
