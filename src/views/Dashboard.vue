@@ -35,7 +35,7 @@
 
     <hr />
     <!-- News -->
-    <NewsSection :projectCount="3" :newsCount="6" />
+    <NewsSection :projectCount="4" :newsCount="6" />
   </div>
 </template>
 

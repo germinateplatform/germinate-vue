@@ -7,6 +7,14 @@
                ref="mapDefinitionTable"
                v-on="$listeners">
       <!-- Synonyms -->
+      <!-- Marker id link -->
+      <template v-slot:cell(markerId)="data">
+        <router-link :to="{name: 'marker', params: { markerId: data.item.markerId }}">{{ data.item.markerId }}</router-link>
+      </template>
+      <!-- Marker name link -->
+      <template v-slot:cell(markerName)="data">
+        <router-link :to="{name: 'marker', params: { markerId: data.item.markerId }}">{{ data.item.markerName }}</router-link>
+      </template>
       <template v-slot:cell(synonyms)="data">
         <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
       </template>

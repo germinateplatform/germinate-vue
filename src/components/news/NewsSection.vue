@@ -54,10 +54,15 @@
         </b-col>
       </b-row>
     </template>
+    <div v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
+      <b-button @click="$refs.addNewsModal.show()">{{ $t('buttonAddNews') }}</b-button>
+      <AddNewsModal ref="addNewsModal" v-on:news-added="update()" />
+    </div>
   </div>
 </template>
 
 <script>
+import AddNewsModal from '@/components/modals/AddNewsModal'
 import miscApi from '@/mixins/api/misc.js'
 
 export default {
@@ -80,18 +85,22 @@ export default {
       selectedNews: null,
       newsTypes: {
         'Projects': {
+          id: 4,
           text: () => this.$t('widgetNewsTypeRelatedProject'),
           icon: 'mdi-newspaper-variant-outline'
         },
         'Data': {
+          id: 3,
           text: () => this.$t('widgetNewsTypeDataChanges'),
           icon: 'mdi-database'
         },
         'Updates': {
+          id: 2,
           text: () => this.$t('widgetNewsTypeGeneralUpdates'),
           icon: 'mdi-refresh'
         },
         'General': {
+          id: 1,
           text: () => this.$t('widgetNewsTypeGeneralNews'),
           icon: 'mdi-newspaper'
         }
@@ -102,6 +111,9 @@ export default {
     selectedNews: function (newValue, oldValue) {
       this.$nextTick(() => this.$refs.newsModal.show())
     }
+  },
+  components: {
+    AddNewsModal
   },
   mixins: [ miscApi ],
   methods: {
@@ -140,6 +152,8 @@ export default {
       var newsQuery = {
         page: page,
         limit: this.newsCount ? this.newsCount : this.MAX_JAVA_INTEGER,
+        orderBy: 'updatedOn',
+        ascending: 0,
         filter: [{
           column: 'newstypeName',
           comparator: 'inSet',
@@ -151,24 +165,27 @@ export default {
         this.news = result.data
         this.newsTotalCount = result.count
       })
+    },
+    update: function () {
+      var projectQuery = {
+        page: 1,
+        limit: this.projectCount ? this.projectCount : this.MAX_JAVA_INTEGER,
+        filter: [{
+          column: 'newstypeName',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['Projects']
+        }]
+      }
+      this.apiPostNewsTable(projectQuery, result => {
+        this.projects = result.data
+      })
+
+      this.updateNews(1)
     }
   },
   mounted: function () {
-    var projectQuery = {
-      page: 1,
-      limit: this.projectCount ? this.projectCount : this.MAX_JAVA_INTEGER,
-      filter: [{
-        column: 'newstypeName',
-        comparator: 'equals',
-        operator: 'and',
-        values: ['Projects']
-      }]
-    }
-    this.apiPostNewsTable(projectQuery, result => {
-      this.projects = result.data
-    })
-
-    this.updateNews(1)
+    this.update()
   }
 }
 </script>
@@ -178,12 +195,14 @@ export default {
   width: 100%;
   object-fit: cover;
   transition: transform .2s ease-in-out;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 .news-card .btn {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
-.news-pagination .page-link {
+.news-pagination .page-item .page-link {
   border-top: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;

@@ -46,6 +46,9 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostNews: function (newsItem, onSuccess, onError) {
+      return this.authAjax({ url: 'news', method: 'POST', data: newsItem, success: onSuccess, error: onError })
+    },
     apiPostCommentsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'comment/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

@@ -280,6 +280,11 @@ img.mime-icon {
   width: 24px;
 }
 
+.b-form-file .custom-file-label {
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
 @media (min-width: 576px) {
   .carousel-caption h3 {
     font-size: 1rem;
