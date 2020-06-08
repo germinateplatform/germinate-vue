@@ -30,7 +30,10 @@
           <!-- Modal containing news details -->
           <b-modal ref="newsModal" :title="selectedNews.newsTitle" scrollable size="xl" v-if="selectedNews" ok-only :ok-title="$t('buttonClose')">
             <div v-html="selectedNews.newsContent" />
-            <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" class="mt-3" :href="selectedNews.newsHyperlink" target="_blank">{{ $t('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
+            <b-button-group class="mt-3">
+              <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" :href="selectedNews.newsHyperlink" target="_blank">{{ $t('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
+              <b-button v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="deleteNewsItem(selectedNews.newsId)" variant="danger"><i class="mdi mdi-delete"/> {{ $t('buttonDelete') }}</b-button>
+            </b-button-group>
           </b-modal>
         </b-col>
         <b-col xs=12 sm=6 v-if="projects && projects.length > 0">
@@ -47,7 +50,10 @@
                   <b-card-text v-html="project.newsContent" />
                 </b-card-body>
 
-                <b-button variant="primary" :href="project.newsHyperlink" v-if="project.newsHyperlink">{{ $t('pageNewsReadMore') }}</b-button>
+                <b-button-group>
+                  <b-button variant="primary" :href="project.newsHyperlink" v-if="project.newsHyperlink">{{ $t('pageNewsReadMore') }}</b-button>
+                  <b-button v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="deleteNewsItem(project.newsId)" variant="danger"><i class="mdi mdi-delete"/> {{ $t('buttonDelete') }}</b-button>
+                </b-button-group>
               </b-card>
             </b-col>
           </b-row>
@@ -117,6 +123,20 @@ export default {
   },
   mixins: [ miscApi ],
   methods: {
+    deleteNewsItem: function (id) {
+      if (id) {
+        this.apiDeleteNews(id, result => {
+          if (result) {
+            this.updateNews()
+            this.update()
+
+            if (this.$refs.newsModal) {
+              this.$refs.newsModal.hide()
+            }
+          }
+        })
+      }
+    },
     getContent: function (item) {
       if (item.newsContent) {
         return this.getWordsUntil(item.newsContent.replace(/(<([^>]+)>)/ig, ' '), 100)

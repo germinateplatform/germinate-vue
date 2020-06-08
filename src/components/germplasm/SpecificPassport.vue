@@ -77,7 +77,7 @@
         <!-- Pedigree table -->
         <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
         <!-- Pedigree chart -->
-        <PedigreeChart :germplasmId="germplasmId" />
+        <PedigreeChart :germplasm="germplasm" v-if="germplasm" />
 
         <!-- Location map -->
         <template v-if="germplasm.declatitude && germplasm.declongitude">

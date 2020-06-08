@@ -23,8 +23,8 @@ const dagreD3 = require('dagre-d3')
 
 export default {
   props: {
-    germplasmId: {
-      type: Number,
+    germplasm: {
+      type: Object,
       default: null
     }
   },
@@ -46,7 +46,7 @@ export default {
       }
     },
     getFilename: function () {
-      return 'pedigree-' + this.germplasmId
+      return 'pedigree-' + this.germplasm.id
     },
     update: function () {
       this.$nextTick(() => {
@@ -97,8 +97,10 @@ export default {
 
             for (var node in nodes) {
               if (nodes.hasOwnProperty(node)) {
+                console.log(node, this.germplasm.accenumb)
                 data.push({
-                  label: node
+                  label: node,
+                  class: node === this.germplasm.accenumb ? 'node-primary' : null
                 })
               }
             }
@@ -143,7 +145,7 @@ export default {
     downloadPedigree: function () {
       EventBus.$emit('show-loading', true)
       const request = {
-        individualIds: [this.germplasmId],
+        individualIds: [this.germplasm.id],
         levelsUp: 3,
         levelsDown: 3
       }
@@ -164,7 +166,7 @@ export default {
   },
   mounted: function () {
     const request = {
-      individualIds: [this.germplasmId]
+      individualIds: [this.germplasm.id]
     }
     this.apiPostPedigreeExport(request, result => {
       this.plotData = result
@@ -186,5 +188,8 @@ export default {
 .node polygon:hover {
   cursor: pointer;
   fill: lightgray !important  ;
+}
+.node-primary circle {
+  fill: var(--primary) !important;
 }
 </style>

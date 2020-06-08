@@ -45,6 +45,7 @@ export function pedigreeChart(dagreD3) {
 			data.forEach(function (state) {
 				graph.setNode(state.label, {
 					label: substring(state.label),
+					class: state.class,
 					labelStyle: "font-size: 8pt; pointer-events: none;",
 					object: state,
 					style: 'stroke: #333; fill: #fff; rx: 5px; ry: 5px;',

@@ -49,6 +49,9 @@ export default {
     apiPostNews: function (newsItem, onSuccess, onError) {
       return this.authAjax({ url: 'news', method: 'POST', data: newsItem, success: onSuccess, error: onError })
     },
+    apiDeleteNews: function (newsId, onSuccess, onError) {
+      return this.authAjax({ url: `news/${newsId}`, method: 'DELETE', success: onSuccess, error: onError })
+    },
     apiPostCommentsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'comment/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

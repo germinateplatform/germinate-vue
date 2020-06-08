@@ -83,11 +83,10 @@ export default {
       return this.newsTitle && this.newsContent && this.newsTypeId
     },
     okPressed: async function () {
-      // TODO
       let imageBase64 = null
       if (this.newsTypeId !== 4) {
         this.imageFile = null
-      } else {
+      } else if (this.imageFile) {
         imageBase64 = await this.toBase64(this.imageFile)
       }
 
