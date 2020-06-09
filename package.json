@@ -1,6 +1,6 @@
 {
   "name": "germinate",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Germinate is an open source plant database infrastructure and application programming platform on which complex data from genetic resource collections can be stored, queried and visualized",
   "author": "Sebastian Raubach",
   "homepage": "https://ics.hutton.ac.uk/get-germinate",
