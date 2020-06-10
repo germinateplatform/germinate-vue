@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>{{ $t('widgetAdditionalDatasetsTitle') }}</h2>
-    <p>{{ $t('widgetAdditionalDatasetsText', { type: datasetTypes[datasetType].text() }) }}</p>
+    <p>{{ $t('widgetAdditionalDatasetsText', { type: datasetType ? datasetTypes[datasetType].text() : '' }) }}</p>
     <!-- This table will show all datasets of the requested type for which the use hasn't accepted the license yet. -->
     <DatasetTable :getData="getData" :filterOn="filterOn" :selectable="false" v-on:license-accepted="onLicenseAccepted" v-on:data-changed="emitDataChanged" />
   </div>
@@ -19,8 +19,10 @@ export default {
     }
   },
   data: function () {
-    return {
-      filterOn: [{
+    let filterOn = null
+
+    if (this.datasetType !== null) {
+      filterOn = [{
         column: {
           name: 'datasetType',
           type: String
@@ -30,6 +32,10 @@ export default {
         values: [this.datasetType],
         canBeChanged: false
       }]
+    }
+
+    return {
+      filterOn: filterOn
     }
   },
   components: {

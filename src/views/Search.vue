@@ -107,6 +107,10 @@
           <LocationTable :getData="getLocationData" :getIds="getLocationIds" :downloadTable="downloadLocations" :filterOn="getFilter('TABLE_COLUMNS_LOCATION_SEARCHABLE')" ref="tableLocations" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
+
+      <template v-if="showAdditionalDatasets">
+        <DatasetsWithUnacceptedLicense v-on:license-accepted="search" v-on:data-changed="checkNumbers"/>
+      </template>
     </template>
   </div>
 </template>
@@ -122,6 +126,7 @@ import LocationTable from '@/components/tables/LocationTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import PedigreeTable from '@/components/tables/PedigreeTable'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 
 import ColumnsMixin from '@/const/database-columns.js'
 import compoundApi from '@/mixins/api/compound.js'
@@ -135,6 +140,7 @@ import traitApi from '@/mixins/api/trait.js'
 export default {
   data: function () {
     return {
+      showAdditionalDatasets: true,
       searchTerm: null,
       tempSearchTerm: null,
       showResults: false,
@@ -171,6 +177,7 @@ export default {
     CompoundDataTable,
     DatasetTable,
     DatasetAttributeTable,
+    DatasetsWithUnacceptedLicense,
     GermplasmTable,
     GermplasmAttributeTable,
     LocationTable,
@@ -180,6 +187,9 @@ export default {
   },
   mixins: [ compoundApi, datasetApi, germplasmApi, genotypeApi, locationApi, miscApi, traitApi ],
   methods: {
+    checkNumbers: function (requestData, data) {
+      this.showAdditionalDatasets = data && data.count > 0
+    },
     isSearchType: function (requested) {
       return this.searchType === 'all' || this.searchType === requested
     },
