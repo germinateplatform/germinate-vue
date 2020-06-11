@@ -126,6 +126,13 @@ export default {
           text: () => this.$t('pageExportFormatsExcelText'),
           tags: ['genotype', 'phenotype'],
           link: 'https://products.office.com/excel'
+        },
+        tassel: {
+          name: 'Tassel',
+          logo: 'tools/tassel.png',
+          text: () => this.$t('pageExportFormatsTasselText'),
+          tags: ['genotype'],
+          link: 'https://www.maizegenetics.net/tassel'
         }
       },
       dataTypes: {

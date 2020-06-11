@@ -42,13 +42,20 @@
           </b-form-group>
         </b-col>
         <b-col cols=12 md=6>
+          <!-- Export Flapjack file? -->
           <h2>{{$t('pageGenotypesExportEnableFlapjackTitle') }}</h2>
           <p v-html="$t('pageGenotypesExportEnableFlapjackText')" />
-          <!-- Export Flapjack file? -->
           <b-form-checkbox v-model="generateFlapjackProject" switch>
             {{ generateFlapjackProject === true ? $t('genericYes') : $t('genericNo') }}
           </b-form-checkbox>
           <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
+          <template v-if="datasetType === 'genotype'">
+            <h2>{{$t('pageGenotypesExportEnableHapmapTitle') }}</h2>
+            <p><span v-html="$t('pageGenotypesExportEnableHapmapText')" /> &nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link></p>
+            <b-form-checkbox v-model="generateHapMap" switch>
+              {{ generateHapMap === true ? $t('genericYes') : $t('genericNo') }}
+            </b-form-checkbox>
+          </template>
         </b-col>
       </b-row>
       <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ datasetType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
@@ -98,6 +105,7 @@ export default {
       mapOptions: [],
       map: null,
       generateFlapjackProject: false,
+      generateHapMap: false,
       selectedDatasetIds: [],
       exportStarted: false
     }
@@ -158,7 +166,8 @@ export default {
         yIds: null,
         datasetIds: isFinal ? this.selectedDatasetIds : this.datasetIds,
         mapId: this.map,
-        generateFlapjackProject: this.generateFlapjackProject
+        generateFlapjackProject: this.generateFlapjackProject,
+        generateHapMap: this.generateHapMap
       }
 
       var germplasmSettings = this.$refs.germplasmGroups.getSettings()

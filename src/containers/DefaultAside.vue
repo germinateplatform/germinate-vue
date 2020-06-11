@@ -291,7 +291,7 @@ export default {
         const exportJobs = this.apiPostDatasetAsyncExport(this.asyncJobUuids, null, {
           codes: [],
           callback: () => {
-            this.$store.dispatch('ON_TOKEN_CHANGED', null)
+            // We do nothing here. It either works or it doesn't.
           }
         }).catch(() => null)
         const importJobs = this.apiPostDataAsyncImport(this.asyncJobUuids, null, {
