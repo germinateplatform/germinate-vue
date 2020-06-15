@@ -320,6 +320,12 @@ export default {
               icon: 'mdi mdi-18px mdi-folder-table'
             },
             {
+              name: this.$t('menuDataResources'),
+              identifiers: ['data-resources'],
+              url: '/data/data-resources',
+              icon: 'mdi mdi-18px mdi-file-download'
+            },
+            {
               name: this.$t('menuDataStatistics'),
               identifiers: ['statistics'],
               url: '/data/statistics',

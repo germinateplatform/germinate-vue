@@ -59,7 +59,7 @@ export default {
     },
     toggle: function () {
       this.contentVisible = !this.contentVisible
-      this.check()
+      this.$emit('toggle', this.contentVisible)
     },
     setLoading: function (loading) {
       this.loading = loading
@@ -72,11 +72,6 @@ export default {
         this.count = null
         this.loading = true
       }
-    },
-    check: function () {
-      this.$nextTick(() => {
-        console.log(this.$slots.content)
-      })
     }
   },
   mounted: function () {

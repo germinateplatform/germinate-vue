@@ -340,6 +340,12 @@ const router = new Router({
                   datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
                 }
               }
+            },
+            {
+              path: 'data-resources',
+              name: 'data-resources',
+              component: () => import('@/views/data/DataResources.vue'),
+              beforeEnter: requireAuth
             }
           ]
         },

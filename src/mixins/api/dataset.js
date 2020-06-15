@@ -53,6 +53,13 @@ export default {
     },
     apiGetAcceptLicense: function (licenseId, onSuccess, onError) {
       return this.authAjax({ url: `license/${licenseId}/accept`, success: onSuccess, error: onError })
+    },
+    apiPostFileResourceTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAjax({ url: 'fileresource/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiGetFileResourceTypes: function (onSuccess, onError) {
+      return this.authAjax({ url: 'fileresourcetype', success: onSuccess, error: onError })
     }
   }
 }
