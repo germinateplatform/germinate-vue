@@ -60,6 +60,21 @@ export default {
     },
     apiGetFileResourceTypes: function (onSuccess, onError) {
       return this.authAjax({ url: 'fileresourcetype', success: onSuccess, error: onError })
+    },
+    apiPostFileresourceType: function (data, onSuccess, onError) {
+      return this.authAjax({ url: 'fileresourcetype', method: 'POST', data: data, success: onSuccess, error: onError })
+    },
+    apiPostFileresourceFile: function (formData, onSuccess, onError) {
+      return this.authForm({ url: 'fileresource', formData: formData, success: onSuccess, error: onError })
+    },
+    apiPutFileresource: function (data, onSuccess, onError) {
+      return this.authAjax({ url: 'fileresource', method: 'PUT', data: data, success: onSuccess, error: onError })
+    },
+    apiDeleteFileresource: function (id, onSuccess, onError) {
+      return this.authAjax({ url: `fileresource/${id}`, method: 'DELETE', success: onSuccess, error: onError })
+    },
+    apiDeleteFileresourceType: function (id, onSuccess, onError) {
+      return this.authAjax({ url: `fileresourcetype/${id}`, method: 'DELETE', success: onSuccess, error: onError })
     }
   }
 }

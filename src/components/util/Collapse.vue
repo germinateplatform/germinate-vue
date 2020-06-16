@@ -2,12 +2,12 @@
   <b-card no-body>
     <!-- Header click toggles the collapse -->
     <b-card-header header-tag="header" class="p-2 collapse-header" role="tab" @click="toggle">
-      <div class="d-flex flex-row">
+      <div class="d-flex flex-row align-items-center">
         <!-- Icon and name to the left -->
         <i :class="`collapse-expand-status mdi mdi-18px mdi-chevron-right ${getStyle()}`" />&nbsp;
-        <strong><i :class="`mdi mdi-18px ${icon} text-primary`" v-if="icon"/> {{ title }}</strong>
+        <strong class="d-flex flex-row align-items-center"><i :class="`mdi mdi-18px ${icon} text-primary mr-1`" v-if="icon"/> {{ title }}</strong>
         <!-- Count and progress to the right -->
-        <span class="ml-auto">
+        <span class="ml-auto d-flex flex-row align-items-center">
           <b-badge :variant="count > 0 ? 'primary' : null" v-if="!loading && count !== undefined">{{ count }}</b-badge>
           <b-progress :value="100" height="20px" class="collapse-loading" variant="primary" striped animated v-if="loading" />
         </span>
@@ -16,10 +16,10 @@
     <b-collapse :id="id" :visible="contentVisible" :accordion="`accordion-${id}`" role="tabpanel">
       <!-- This is where the content goes, it can trigger the 'update' event to let this component know something happened -->
       <template v-if="noBody">
-        <slot v-bind:update="update"/>
+        <slot name="content" v-bind:update="update"/>
       </template>
       <b-card-body v-else>
-        <slot v-bind:update="update"/>
+        <slot name="content" v-bind:update="update"/>
       </b-card-body>
     </b-collapse>
   </b-card>
@@ -60,6 +60,9 @@ export default {
     toggle: function () {
       this.contentVisible = !this.contentVisible
       this.$emit('toggle', this.contentVisible)
+    },
+    close: function () {
+      this.contentVisible = false
     },
     setLoading: function (loading) {
       this.loading = loading

@@ -290,8 +290,11 @@ export default {
       this.$nextTick(() => {
         const exportJobs = this.apiPostDatasetAsyncExport(this.asyncJobUuids, null, {
           codes: [],
-          callback: () => {
-            // We do nothing here. It either works or it doesn't.
+          callback: (error) => {
+            if (error && error.status === 403) {
+              // Log the user out if we get here
+              this.$store.dispatch('ON_TOKEN_CHANGED', null)
+            }
           }
         }).catch(() => null)
         const importJobs = this.apiPostDataAsyncImport(this.asyncJobUuids, null, {
