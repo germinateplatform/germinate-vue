@@ -4,7 +4,7 @@
   "description": "Germinate is an open source plant database infrastructure and application programming platform on which complex data from genetic resource collections can be stored, queried and visualized",
   "author": "Sebastian Raubach",
   "homepage": "https://ics.hutton.ac.uk/get-germinate",
-  "copyright": "Copyright 2019 The James Hutton Institute",
+  "copyright": "Copyright 2020 The James Hutton Institute",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
