@@ -108,6 +108,24 @@ export default {
   @import '~flag-icon-css/css/flag-icon.min.css';
   @import '~@mdi/font/css/materialdesignicons.min.css';
   @import '~vue-context/dist/css/vue-context.css';
+
+  $container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1140px,
+    xxl: 1400px
+  );
+
+  $grid-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1500px
+  );
+
   /* Import Bootstrap Vue Styles */
   @import '~bootstrap-vue/dist/bootstrap-vue.css';
   // Import Main styles for this application

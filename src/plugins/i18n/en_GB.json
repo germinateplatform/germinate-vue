@@ -58,6 +58,7 @@
   "dashboardBannerLocations": "Locations",
   "dashboardBannerMarkers": "Markers",
   "dashboardBannerTraits": "Traits",
+  "dashboardBannerFileResources": "File resources",
   "datasetExternal": "External datasets are not held inside of Germinate.",
   "datasetInternal": "Internal datasets can be browsed and exported through Germinate.",
   "datasetStateHidden": "Hidden",

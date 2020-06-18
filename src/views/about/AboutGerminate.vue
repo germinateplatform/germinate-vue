@@ -69,7 +69,7 @@
     <h2>{{ $t('pageAboutGerminateFundersTitle') }}<small> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>
     <p>{{ $t('pageAboutGerminateFundersText') }}</p>
     <b-row class="funders">
-      <b-col cols=6 sm=4 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5">
+      <b-col cols=6 sm=4 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5 col-xxl-2">
         <div class="p-3 p-xl-4 img-container d-flex justify-content-center">
           <a :href="funder.href" :title="funder.name" target="_blank" class="align-self-center" v-if="funder.href">
             <b-img-lazy :src="`./img/${funder.logo}`" fluid />

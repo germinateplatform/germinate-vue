@@ -104,6 +104,12 @@ export default {
           text: () => this.$t('dashboardBannerImages'),
           icon: 'mdi-image-multiple',
           link: 'images'
+        },
+        {
+          key: 'fileresources',
+          text: () => this.$t('dashboardBannerFileResources'),
+          icon: 'mdi-file-download',
+          link: 'data-resources'
         }
       ]
     }
