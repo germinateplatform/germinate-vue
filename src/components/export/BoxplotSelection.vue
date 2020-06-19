@@ -7,7 +7,7 @@
                      :max="null"
                      :onlyNumeric="true"
                      v-on:button-clicked="plot" />
-    <BoxplotChart :datasetIds="datasetIds" :yIds="yIds" :xIds="xIds" :yGroupIds="yGroupIds" :xType="xType" v-if="showPlot" ref="boxplot"/>
+    <BoxplotChart :datasetIds="datasetIds" :yIds="yIds" :xIds="xIds" :yGroupIds="yGroupIds" :chartMode="(this.yGroupIds !== null && this.yGroupIds.length > 0) ? 'itemByGroup' : 'itemByDataset'" :xType="xType" v-if="showPlot" ref="boxplot"/>
   </div>
 </template>
 

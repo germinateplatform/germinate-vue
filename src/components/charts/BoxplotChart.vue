@@ -83,7 +83,19 @@ export default {
       }
     },
     getHeight: function () {
-      return 200 + this.plotData[this.xTypes[this.xType].itemKey].length * 30 * this.plotData.datasets.length
+      if (this.chartMode === 'itemByGroup') {
+        let groups = []
+
+        this.plotData.stats.forEach(s => {
+          if (groups.indexOf(s.groupIds) === -1) {
+            groups.push(s.groupIds)
+          }
+        })
+
+        return 200 + this.plotData[this.xTypes[this.xType].itemKey].length * 30 * groups.length
+      } else {
+        return 200 + this.plotData[this.xTypes[this.xType].itemKey].length * 30 * this.plotData.datasets.length
+      }
     },
     redraw: function () {
       this.loading = true
@@ -109,16 +121,14 @@ export default {
       var y = []
 
       // Are we plotting datasets and grouping by trait/compound/climate?
-      const isInverted = this.chartMode === 'datasetByItem'
-
-      if (isInverted) {
+      if (this.chartMode === 'datasetByItem') {
         for (var dataset in this.plotData.datasets) {
           for (var i = 0; i < 6; i++) {
             // If so, datasets are our Ys
             y.push(this.plotData.datasets[dataset].datasetName)
           }
         }
-      } else {
+      } else if (this.chartMode === 'itemByDataset' || this.chartMode === 'itemByGroup') {
         for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
           for (var j = 0; j < 6; j++) {
             // Else, use this complicated thing to extract the trait/compound/climate name
@@ -129,10 +139,12 @@ export default {
 
       var traces = []
 
-      if (isInverted) {
+      if (this.chartMode === 'datasetByItem') {
         traces = this.getInvertedData(y)
-      } else {
+      } else if (this.chartMode === 'itemByDataset') {
         traces = this.getData(y)
+      } else if (this.chartMode === 'itemByGroup') {
+        traces = this.getGroupData(y)
       }
 
       var layout = {
@@ -160,6 +172,57 @@ export default {
       }
 
       this.$plotly.newPlot(div, traces, layout, config)
+    },
+    getGroupData: function (y) {
+      var traces = []
+
+      let groups = []
+
+      this.plotData.stats.forEach(s => {
+        if (groups.indexOf(s.groupIds) === -1) {
+          groups.push(s.groupIds)
+        }
+      })
+
+      groups.forEach((group, index) => {
+        var x = []
+
+        for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
+          var itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
+          var itemData = this.plotData.stats.filter(s => s.groupIds === group && s.xId === itemId)[0]
+
+          if (itemData && itemData.min !== itemData.max) {
+            // This trait/compound/climate by group combination is available, add all the information
+            x.push(itemData.min)
+            x.push(itemData.q1)
+            x.push(itemData.median)
+            x.push(itemData.median)
+            x.push(itemData.q3)
+            x.push(itemData.max)
+          } else {
+            // This trait/compound/climate isn't available in this group, fill everything with NaN to not show anything
+            x.push(NaN)
+            x.push(NaN)
+            x.push(NaN)
+            x.push(NaN)
+            x.push(NaN)
+            x.push(NaN)
+          }
+        }
+
+        traces.push({
+          x: x,
+          y: y,
+          name: group,
+          marker: { color: this.serverSettings.colorsCharts[index] },
+          type: 'box',
+          boxmean: false,
+          boxpoints: false,
+          orientation: 'h'
+        })
+      })
+
+      return traces
     },
     getData: function (y) {
       var traces = []
