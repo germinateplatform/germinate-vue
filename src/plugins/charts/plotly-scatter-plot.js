@@ -1,6 +1,7 @@
 /* eslint-disable */
 export function plotlyScatterPlot() {
 	var colorBy = '',
+		markedIdsForColoring = null,
 		colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"],
 		height = null,
 		width = null,
@@ -23,18 +24,34 @@ export function plotlyScatterPlot() {
 			var data = [];
 
 			var cats = [];
-			categories.forEach(function (c) {
-				cats.push(c);
-			});
+			if (markedIdsForColoring === null) {
+				categories.forEach(function (c) {
+					cats.push(c);
+				});
+
+				cats.sort()
+			} else {
+				cats = ['Unmarked', 'Marked']
+			}
 
 			for (var i = 0; i < cats.length; i++) {
-				var x = unpackConditional(rows, xCategory, colorBy, cats[i]);
-				var y = unpackConditional(rows, yCategory, colorBy, cats[i]);
-				var ids = unpackConditional(rows, 'dbId', colorBy, cats[i]);
+				var x, y, ids, names;
+
+				if (markedIdsForColoring === null) {
+					x = unpackConditional(rows, xCategory, colorBy, cats[i]);
+					y = unpackConditional(rows, yCategory, colorBy, cats[i]);
+					ids = unpackConditional(rows, 'dbId', colorBy, cats[i]);
+					names = unpackConditional(rows, 'name', colorBy, cats[i]);
+				} else {
+					x = unpackConditionalMarked(rows, xCategory, markedIdsForColoring, cats[i] === 'Marked');
+					y = unpackConditionalMarked(rows, yCategory, markedIdsForColoring, cats[i] === 'Marked');
+					ids = unpackConditionalMarked(rows, 'dbId', markedIdsForColoring, cats[i] === 'Marked');
+					names = unpackConditionalMarked(rows, 'name', markedIdsForColoring, cats[i] === 'Marked');
+				}
+
 				ids = ids.map(function (i) {
 					return i + "-" + uuidv4();
 				});
-				var names = unpackConditional(rows, 'name', colorBy, cats[i]);
 				data.push({
 					x: x,
 					y: y,
@@ -164,6 +181,29 @@ export function plotlyScatterPlot() {
 		});
 	}
 
+	function unpackConditionalMarked(rows, key, markedIds, isMarked) {
+		return rows.filter(function (row) {
+			const isDataPointMarked = markedIds.indexOf(parseInt(row.dbId)) !== -1
+			return isMarked ? isDataPointMarked : !isDataPointMarked;
+		}).map(function (row) {
+			if (row[key] === '') {
+				return NaN
+			} else {
+				if (key === 'Date') {
+					return row[key];
+				} else {
+					var value = parseFloat(row[key])
+
+					if (isNaN(value)) {
+						return row[key];
+					} else {
+						return value;
+					}
+				}
+			}
+		})
+	}
+
 	function unpackConditional(rows, key, referenceColumn, referenceValue) {
 		return rows.filter(function (row) {
 			return row[referenceColumn] === referenceValue;
@@ -234,6 +274,12 @@ export function plotlyScatterPlot() {
 	chart.onPointsSelected = function (_) {
 		if (!arguments.length) return onPointsSelected;
 		onPointsSelected = _;
+		return chart;
+	};
+
+	chart.markedIdsForColoring = function (_) {
+		if (!arguments.length) return markedIdsForColoring;
+		markedIdsForColoring = _;
 		return chart;
 	};
 

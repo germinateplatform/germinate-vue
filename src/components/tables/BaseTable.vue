@@ -80,7 +80,7 @@
       <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope"><slot :name="slot" v-bind="scope"/></template>
 
       <!-- Selected column (first checkbox) -->
-      <template v-slot:head(selected)="data">
+      <template v-slot:head(selected)>
         <div v-if="(columns.map(c => c.key).indexOf('selected') !== -1) && (getIds !== null) && selectionMode == 'multi'">
           <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
         </div>
@@ -90,7 +90,7 @@
       </template>
 
       <!-- Marked item column -->
-      <template v-slot:head(marked)="data">
+      <template v-slot:head(marked)>
         <b-dropdown size="sm" dropleft variant="outline-primary" boundary="window">
           <template slot="button-content">
             <i class="mdi mdi-18px mdi-check-box-multiple-outline" />

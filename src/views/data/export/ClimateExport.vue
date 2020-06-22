@@ -32,6 +32,7 @@
       <!-- Boxplot section -->
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
+                        :groups="groups"
                         xType="climates"
                         datasetType="climate"
                         :texts="textsChart"
@@ -40,6 +41,7 @@
       <!-- Climate matrix chart section -->
       <ClimateExportChartSelection :datasetIds="datasetIds"
                                    v-bind="config"
+                                   :groups="groups"
                                    :texts="textsChart"
                                    :getItems="getClimates"
                                    v-show="currentTab === 'matrix'"/>
@@ -48,6 +50,7 @@
       <!-- Export section -->
       <ExportDownloadSelection :datasetIds="datasetIds"
                                v-bind="config"
+                               :groups="groups"
                                :texts="textsExport"
                                :getItems="getClimates"
                                v-show="currentTab === 'export'" />
@@ -68,6 +71,7 @@ import ExportDownloadSelection from '@/components/export/ExportDownloadSelection
 import { EventBus } from '@/plugins/event-bus.js'
 import climateApi from '@/mixins/api/climate.js'
 import datasetApi from '@/mixins/api/dataset.js'
+import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 
 export default {
@@ -76,6 +80,7 @@ export default {
     return {
       datasets: null,
       climates: null,
+      groups: null,
       config: {
         idKey: 'climateId',
         nameKey: 'climateName',
@@ -133,6 +138,14 @@ export default {
       }
     }
   },
+  watch: {
+    markedIds: {
+      deep: true,
+      handler: function () {
+        this.updateGroups()
+      }
+    }
+  },
   components: {
     BoxplotSelection,
     ClimateDataTable,
@@ -141,8 +154,19 @@ export default {
     DatasetOverview,
     ExportDownloadSelection
   },
-  mixins: [ climateApi, datasetApi, miscApi ],
+  mixins: [ climateApi, datasetApi, groupApi, miscApi ],
   methods: {
+    updateGroups: function () {
+      const request = {
+        datasetIds: this.datasetIds,
+        groupType: 'locations',
+        datasetType: 'climate'
+      }
+      // Get groups
+      this.apiPostDatasetGroups(request, result => {
+        this.groups = result
+      })
+    },
     getClimates: function (callback) {
       callback(this.climates)
     },
@@ -246,6 +270,7 @@ export default {
       }
 
       this.getDatasets()
+      this.updateGroups()
       EventBus.$emit('show-loading', false)
     })
   }

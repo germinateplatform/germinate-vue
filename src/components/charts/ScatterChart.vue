@@ -144,8 +144,9 @@ export default {
     getFilename: function () {
       return this.datasetType + '-' + this.datasetIds.join('-')
     },
-    redraw: function (result, colorBy) {
+    redraw: function (result, colorBy, markedIds) {
       this.sourceFile = result
+      this.selectedIds = []
 
       this.$plotly.purge(this.$refs.scatterChart)
 
@@ -161,6 +162,7 @@ export default {
           .datum(data)
           .call(plotlyScatterPlot()
             .colorBy(colorBy)
+            .markedIdsForColoring(markedIds)
             .xCategory(this.x)
             .yCategory(this.y)
             .onPointClicked(p => {

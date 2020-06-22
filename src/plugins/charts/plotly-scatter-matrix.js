@@ -1,6 +1,7 @@
 /* eslint-disable */
 export function plotlyScatterMatrix() {
 	var colorBy = '',
+		markedIdsForColoring = null,
 		colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"],
 		height = null,
 		width = null,
@@ -27,39 +28,75 @@ export function plotlyScatterMatrix() {
 			var data = [];
 
 			var cats = [];
-			categories.forEach(function (c) {
-				cats.push(c);
-			});
 
-			cats.sort()
-
-			for (var i = 0; i < cats.length; i++) {
-				var ids = cats[i] ? unpackConditional(rows, 'dbId', colorBy, cats[i]) : unpack(rows, 'dbId');
-				ids = ids.map(function (i) {
-					return i + "-" + uuidv4();
+			if (markedIdsForColoring === null) {
+				categories.forEach(function (c) {
+					cats.push(c);
 				});
-				var names = cats[i] ? unpackConditional(rows, 'name', colorBy, cats[i]) : unpack(rows, 'name');
 
-				data.push({
-					type: 'splom',
-					showupperhalf: false,
-					diagonal: {visible: true},
-					dimensions: dims.map(function (k) {
-						return {
-							label: k,
-							values: unpackConditional(rows, k, colorBy, cats[i])
+				cats.sort()
+			} else {
+				cats = ['Unmarked', 'Marked']
+			}
+
+			if (markedIdsForColoring === null) {
+				for (var i = 0; i < cats.length; i++) {
+					var ids = cats[i] ? unpackConditional(rows, 'dbId', colorBy, cats[i]) : unpack(rows, 'dbId');
+					ids = ids.map(function (i) {
+						return i + "-" + uuidv4();
+					});
+					var names = cats[i] ? unpackConditional(rows, 'name', colorBy, cats[i]) : unpack(rows, 'name');
+
+					data.push({
+						type: 'splom',
+						showupperhalf: false,
+						diagonal: {visible: true},
+						dimensions: dims.map(function (k) {
+							return {
+								label: k,
+								values: unpackConditional(rows, k, colorBy, cats[i])
+							}
+						}),
+						name: cats[i],
+						text: names,
+						ids: ids,
+						marker: {
+							color: colors[i % colors.length],
+							symbol: symbolList[i % symbolList.length],
+							opacity: 0.7,
+							size: 6
 						}
-					}),
-					name: cats[i],
-					text: names,
-					ids: ids,
-					marker: {
-						color: colors[i % colors.length],
-						symbol: symbolList[i % symbolList.length],
-						opacity: 0.7,
-						size: 6
-					}
-				});
+					});
+				}
+			} else {
+				for (var i = 0; i < cats.length; i++) {
+					var ids = unpackConditionalMarked(rows, 'dbId', markedIdsForColoring, cats[i] === 'Marked');
+					ids = ids.map(function (i) {
+						return i + "-" + uuidv4();
+					});
+					var names = unpackConditionalMarked(rows, 'name', markedIdsForColoring, cats[i] === 'Marked');
+
+					data.push({
+						type: 'splom',
+						showupperhalf: false,
+						diagonal: {visible: true},
+						dimensions: dims.map(function (k) {
+							return {
+								label: k,
+								values: unpackConditionalMarked(rows, k, markedIdsForColoring, cats[i] === 'Marked')
+							}
+						}),
+						name: cats[i],
+						text: names,
+						ids: ids,
+						marker: {
+							color: colors[i % colors.length],
+							symbol: symbolList[i % symbolList.length],
+							opacity: 0.7,
+							size: 6
+						}
+					});
+				}
 			}
 
 			var layout = {
@@ -158,6 +195,29 @@ export function plotlyScatterMatrix() {
 		});
 	}
 
+	function unpackConditionalMarked(rows, key, markedIds, isMarked) {
+		return rows.filter(function (row) {
+			const isDataPointMarked = markedIds.indexOf(parseInt(row.dbId)) !== -1
+			return isMarked ? isDataPointMarked : !isDataPointMarked;
+		}).map(function (row) {
+			if (row[key] === '') {
+				return NaN
+			} else {
+				if (key === 'Date') {
+					return row[key];
+				} else {
+					var value = parseFloat(row[key])
+
+					if (isNaN(value)) {
+						return row[key];
+					} else {
+						return value;
+					}
+				}
+			}
+		})
+	}
+
 	function unpackConditional(rows, key, referenceColumn, referenceValue) {
 		return rows.filter(function (row) {
 			return row[referenceColumn] === referenceValue;
@@ -226,6 +286,12 @@ export function plotlyScatterMatrix() {
 	chart.columnsToIgnore = function (_) {
 		if (!arguments.length) return columnsToIgnore;
 		columnsToIgnore = _;
+		return chart;
+	};
+
+	chart.markedIdsForColoring = function (_) {
+		if (!arguments.length) return markedIdsForColoring;
+		markedIdsForColoring = _;
 		return chart;
 	};
 

@@ -53,6 +53,10 @@ export default {
     nameKey: {
       type: String,
       default: null
+    },
+    groups: {
+      type: Array,
+      default: null
     }
   },
   components: {

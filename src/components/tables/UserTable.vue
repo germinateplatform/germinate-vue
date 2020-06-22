@@ -11,7 +11,7 @@
             :empty-text="$t('paginationNoResult')"
             ref="table">
       <!-- HEAD: Selected checkbox -->
-      <template v-slot:head(selected)="data">
+      <template v-slot:head(selected)>
         <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
       </template>
 

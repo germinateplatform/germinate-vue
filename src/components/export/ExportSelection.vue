@@ -20,7 +20,6 @@
 
 <script>
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
-import groupApi from '@/mixins/api/group.js'
 
 export default {
   props: {
@@ -31,14 +30,6 @@ export default {
     itemType: {
       type: String,
       default: 'germplasm'
-    },
-    groupType: {
-      type: String,
-      default: 'germinatebase'
-    },
-    datasetType: {
-      type: String,
-      default: null
     },
     datasetIds: {
       type: Array,
@@ -67,26 +58,27 @@ export default {
     getItems: {
       type: Function,
       default: () => []
+    },
+    groups: {
+      type: Array,
+      default: null
     }
   },
   data: function () {
     return {
       items: [],
       selectedItems: [],
-      itemOptions: [],
-      groups: null
+      itemOptions: []
     }
   },
   watch: {
     datasetIds: function (newValue, oldValue) {
       this.updateItems()
-      this.updateGroups()
     }
   },
   components: {
     ExportGroupSelection
   },
-  mixins: [ groupApi ],
   methods: {
     buttonDisabled: function () {
       if (this.$refs.groupSelection) {
@@ -156,23 +148,11 @@ export default {
           }
         })
       })
-    },
-    updateGroups: function () {
-      const request = {
-        datasetIds: this.datasetIds,
-        groupType: this.groupType,
-        datasetType: this.datasetType
-      }
-      // Get groups
-      this.apiPostDatasetGroups(request, result => {
-        this.groups = result
-      })
     }
   },
   mounted: function () {
     if (this.datasetIds) {
       this.updateItems()
-      this.updateGroups()
     }
   }
 }

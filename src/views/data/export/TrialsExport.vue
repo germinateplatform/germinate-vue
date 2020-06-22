@@ -29,13 +29,14 @@
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
                         xTypes="traits"
-                        datasetType="trials"
+                        :groups="groups"
                         :texts="textsChart"
                         :getItems="getTraits"
                         v-show="currentTab === 'overview'" />
       <!-- Trait matrix chart section -->
       <TraitExportChartSelection :datasetIds="datasetIds"
                                  v-bind="config"
+                                 :groups="groups"
                                  :texts="textsChart"
                                  :getItems="getTraits"
                                  v-show="currentTab === 'matrix'"/>
@@ -44,6 +45,7 @@
       <!-- Export section -->
       <ExportDownloadSelection :datasetIds="datasetIds"
                                v-bind="config"
+                               :groups="groups"
                                :texts="textsExport"
                                :getItems="getTraits"
                                v-show="currentTab === 'export'" />
@@ -60,6 +62,7 @@ import ExportDownloadSelection from '@/components/export/ExportDownloadSelection
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset.js'
+import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
 
@@ -69,6 +72,7 @@ export default {
     return {
       datasets: null,
       traits: null,
+      groups: null,
       config: {
         idKey: 'traitId',
         nameKey: 'traitName',
@@ -120,6 +124,14 @@ export default {
       }]
     }
   },
+  watch: {
+    markedIds: {
+      deep: true,
+      handler: function () {
+        this.updateGroups()
+      }
+    }
+  },
   components: {
     BoxplotSelection,
     DatasetOverview,
@@ -127,8 +139,19 @@ export default {
     TraitExportChartSelection,
     TrialsDataTable
   },
-  mixins: [ datasetApi, miscApi, traitApi ],
+  mixins: [ datasetApi, groupApi, miscApi, traitApi ],
   methods: {
+    updateGroups: function () {
+      const request = {
+        datasetIds: this.datasetIds,
+        groupType: 'germinatebase',
+        datasetType: 'trials'
+      }
+      // Get groups
+      this.apiPostDatasetGroups(request, result => {
+        this.groups = result
+      })
+    },
     getTraits: function (callback) {
       callback(this.traits)
     },
@@ -222,6 +245,7 @@ export default {
       this.traits = result
 
       this.getDatasets()
+      this.updateGroups()
       EventBus.$emit('show-loading', false)
     })
   }

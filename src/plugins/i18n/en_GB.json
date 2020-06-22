@@ -942,6 +942,7 @@
   "widgetAsyncJobPanelImport": "Import data",
   "widgetAsyncJobPanelImportDisabled":" Your data is valid, but data import is disabled.",
   "widgetChartColoringByDataset": "Dataset",
+  "widgetChartColoringByMarkedItems": "Marked items",
   "widgetChartColoringByTreatment": "Treatment",
   "widgetChartColoringByTrialSite": "Trial site",
   "widgetChartColoringByYear": "Year",

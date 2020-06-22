@@ -29,13 +29,14 @@
       <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
                         xType="compounds"
-                        datasetType="compound"
+                        :groups="groups"
                         :texts="textsChart"
                         :getItems="getCompounds"
                         v-show="currentTab === 'overview'" />
       <!-- Compound matrix chart section -->
       <CompoundExportChartSelection :datasetIds="datasetIds"
                                     v-bind="config"
+                                    :groups="groups"
                                     :texts="textsChart"
                                     :getItems="getCompounds"
                                     v-show="currentTab === 'matrix'"/>
@@ -44,6 +45,7 @@
       <!-- Export section -->
       <ExportDownloadSelection :datasetIds="datasetIds"
                                v-bind="config"
+                               :groups="groups"
                                :texts="textsExport"
                                :getItems="getCompounds"
                                v-show="currentTab === 'export'" />
@@ -61,6 +63,7 @@ import ExportDownloadSelection from '@/components/export/ExportDownloadSelection
 import { EventBus } from '@/plugins/event-bus.js'
 import compoundApi from '@/mixins/api/compound.js'
 import datasetApi from '@/mixins/api/dataset.js'
+import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 
 export default {
@@ -69,6 +72,7 @@ export default {
     return {
       datasets: null,
       compounds: null,
+      groups: null,
       config: {
         idKey: 'compoundId',
         nameKey: 'compoundName',
@@ -120,6 +124,14 @@ export default {
       }]
     }
   },
+  watch: {
+    markedIds: {
+      deep: true,
+      handler: function () {
+        this.updateGroups()
+      }
+    }
+  },
   components: {
     BoxplotSelection,
     CompoundDataTable,
@@ -127,8 +139,19 @@ export default {
     DatasetOverview,
     ExportDownloadSelection
   },
-  mixins: [ datasetApi, compoundApi, miscApi ],
+  mixins: [ datasetApi, compoundApi, groupApi, miscApi ],
   methods: {
+    updateGroups: function () {
+      const request = {
+        datasetIds: this.datasetIds,
+        groupType: 'germinatebase',
+        datasetType: 'compound'
+      }
+      // Get groups
+      this.apiPostDatasetGroups(request, result => {
+        this.groups = result
+      })
+    },
     getCompounds: function (callback) {
       callback(this.compounds)
     },
@@ -222,6 +245,7 @@ export default {
       this.compounds = result
 
       this.getDatasets()
+      this.updateGroups()
       EventBus.$emit('show-loading', false)
     })
   }

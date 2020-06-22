@@ -46,7 +46,7 @@ export default {
     },
     itemType: {
       type: String,
-      default: 'germplasm'
+      default: 'locations'
     },
     groupType: {
       type: String,
@@ -67,6 +67,10 @@ export default {
     nameKey: {
       type: String,
       default: null
+    },
+    groups: {
+      type: Array,
+      default: null
     }
   },
   data: function () {
@@ -75,6 +79,16 @@ export default {
       plotData: null,
       selectedItems: null,
       colorByGroupEnabled: false
+    }
+  },
+  watch: {
+    markedIds: {
+      deep: true,
+      handler: function () {
+        if (this.colorBySelection === 'marked_items') {
+          this.onColorByChanged()
+        }
+      }
     }
   },
   components: {
@@ -94,6 +108,9 @@ export default {
       }, {
         text: this.$t('widgetChartColoringByYear'),
         value: 'year'
+      }, {
+        text: this.$t('widgetChartColoringByMarkedItems'),
+        value: 'marked_items'
       }]
 
       if (this.colorByGroupEnabled) {
@@ -118,13 +135,13 @@ export default {
       this.apiPostDatasetExport('climate', query, result => {
         this.selectedItems = selectedItems
         this.plotData = result
-        this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection))
+        this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection, this.colorBySelection === 'marked_items' ? this.markedIds.locations : null))
         EventBus.$emit('show-loading', false)
       })
     },
     onColorByChanged: function () {
       if (this.plotData) {
-        this.$refs.chart.redraw(this.plotData, this.colorBySelection)
+        this.$refs.chart.redraw(this.plotData, this.colorBySelection, this.colorBySelection === 'marked_items' ? this.markedIds.locations : null)
       }
     }
   }

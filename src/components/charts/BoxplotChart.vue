@@ -191,7 +191,7 @@ export default {
           var itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
           var itemData = this.plotData.stats.filter(s => s.groupIds === group && s.xId === itemId)[0]
 
-          if (itemData && itemData.min !== itemData.max) {
+          if (itemData) {
             // This trait/compound/climate by group combination is available, add all the information
             x.push(itemData.min)
             x.push(itemData.q1)
@@ -234,7 +234,7 @@ export default {
           var itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
           var itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
 
-          if (itemData && itemData.min !== itemData.max) {
+          if (itemData) {
             // This trait/compound/climate by dataset combination is available, add all the information
             x.push(itemData.min)
             x.push(itemData.q1)

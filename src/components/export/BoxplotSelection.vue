@@ -33,17 +33,9 @@ export default {
       type: String,
       default: 'traits'
     },
-    groupType: {
-      type: String,
-      default: 'germinatebase'
-    },
     itemType: {
       type: String,
       default: 'germplasm'
-    },
-    datasetType: {
-      type: String,
-      default: null
     },
     downloadKey: {
       type: String,
@@ -55,6 +47,10 @@ export default {
     },
     nameKey: {
       type: String,
+      default: null
+    },
+    groups: {
+      type: Array,
       default: null
     }
   },
