@@ -27,7 +27,7 @@
       <!-- Box plot for this compound -->
       <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" xType="compounds" ref="compoundDetailsChart" />
       <!-- Table showing datasets containing this compound -->
-      <DatasetTable :getData="getDatasetData" ref="datasetTable" />
+      <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
 
       <div v-show="showAdditionalDatasets">
         <!-- Any other datasets containing data for this compound, where the license hasn't been accepted yet -->
@@ -136,6 +136,8 @@ export default {
       this.$refs.compoundDetailsTable.refresh()
       this.$refs.compoundDetailsChart.redraw()
       this.$refs.datasetTable.refresh()
+
+      this.checkNumbers()
     }
   },
   mounted: function () {

@@ -21,14 +21,20 @@
       <!-- Table showing all data points for this trait -->
       <TrialsDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="traitDetailsTable" />
 
-      <template v-if="trait.dataType !== 'char_'">
-        <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
-        <p>{{ $t('pageTraitDetailsStatsText') }}</p>
-        <!-- Boxplot for this trait -->
-        <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" />
-      </template>
+      <h2>{{ $t('pageTraitDetailsStatsTitle') }}</h2>
+      <p>{{ $t('pageTraitDetailsStatsText') }}</p>
+      <BarChart xColumn="phenotype_value"
+                :xTitle="trait.traitName"
+                :yTitle="$t('genericCount')"
+                :height="700"
+                :downloadName="trait.traitName"
+                :sourceFile="categoricalTraitFile"
+                v-if="trait.dataType === 'char_'"/>
+      <!-- Boxplot for this trait -->
+      <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" v-else />
+
       <!-- Table showing all datasets this trait is scored in -->
-      <DatasetTable :getData="getDatasetData" ref="datasetTable" />
+      <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
 
       <div v-show="showAdditionalDatasets">
         <!-- Any additional datasets this trait is part of for which the license hasn't been accepted yet -->
@@ -40,11 +46,13 @@
 </template>
 
 <script>
+import BarChart from '@/components/charts/BarChart'
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import DatasetTable from '@/components/tables/DatasetTable'
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import ImageGallery from '@/components/images/ImageGallery'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import datasetApi from '@/mixins/api/dataset.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
 
@@ -55,10 +63,12 @@ export default {
       trait: null,
       tableFilter: null,
       showAdditionalDatasets: true,
-      imageTag: null
+      imageTag: null,
+      categoricalTraitFile: null
     }
   },
   components: {
+    BarChart,
     DatasetsWithUnacceptedLicense,
     DatasetTable,
     BoxplotChart,
@@ -134,11 +144,23 @@ export default {
     },
     update: function () {
       this.$refs.traitDetailsTable.refresh()
-      this.$refs.traitDetailsChart.redraw()
       this.$refs.datasetTable.refresh()
+
+      if (this.$refs.traitDetailsChart) {
+        this.$refs.traitDetailsChart.redraw()
+      } else if (this.$refs.traitCategoryChart) {
+        this.updateCategoryChart()
+      }
+
+      this.checkNumbers()
+    },
+    updateCategoryChart: function () {
+      this.apiGetTraitCompoundClimateCategoricalFile('trait', this.traitId, result => {
+        this.categoricalTraitFile = result
+      })
     }
   },
-  mixins: [ miscApi, traitApi ],
+  mixins: [ datasetApi, miscApi, traitApi ],
   mounted: function () {
     if (this.$route.params.traitId) {
       this.traitId = parseInt(this.$route.params.traitId)
@@ -167,6 +189,10 @@ export default {
       this.apiPostTraitTable(request, result => {
         if (result && result.data && result.data.length > 0) {
           this.trait = result.data[0]
+
+          if (this.trait.dataType === 'char_') {
+            this.updateCategoryChart()
+          }
         }
       })
     }

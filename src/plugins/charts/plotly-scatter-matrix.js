@@ -201,7 +201,7 @@ export function plotlyScatterMatrix() {
 			return isMarked ? isDataPointMarked : !isDataPointMarked;
 		}).map(function (row) {
 			if (row[key] === '') {
-				return NaN
+				return null
 			} else {
 				if (key === 'Date') {
 					return row[key];
@@ -223,7 +223,7 @@ export function plotlyScatterMatrix() {
 			return row[referenceColumn] === referenceValue;
 		}).map(function (row) {
 			if (row[key] === '') {
-				return NaN
+				return null
 			} else {
 				if (key === 'Date') {
 					return row[key];

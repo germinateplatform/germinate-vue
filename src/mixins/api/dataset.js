@@ -47,6 +47,9 @@ export default {
     apiPostTraitCompoundStats: function (statsType, queryData, onSuccess, onError) {
       return this.authAjax({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiGetTraitCompoundClimateCategoricalFile: function (itemType, id, onSuccess, onError) {
+      return this.authAjax({ url: `${itemType}/${id}/categorical`, dataType: 'blob', success: onSuccess, error: onError })
+    },
     apiPostLicenseTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAjax({ url: 'license/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

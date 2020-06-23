@@ -34,6 +34,10 @@ export default {
     sourceFile: {
       type: Blob,
       default: null
+    },
+    height: {
+      type: Number,
+      default: 500
     }
   },
   components: {
@@ -65,7 +69,7 @@ export default {
           this.$plotly.d3.select(this.$refs.barChart)
             .datum(data)
             .call(plotlyBarChart()
-              .height(500)
+              .height(this.height)
               .colors(this.serverSettings.colorsCharts)
               .x(this.xColumn)
               .xCategory(this.xTitle)

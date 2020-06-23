@@ -14,7 +14,7 @@
       <!-- Box plot for this climate -->
       <BoxplotChart chartMode="datasetByItem" :xIds="[climateId]" xType="climates" ref="climateDetailsChart" />
       <!-- Table showing datasets containing this climate -->
-      <DatasetTable :getData="getDatasetData" ref="datasetTable" />
+      <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
 
       <div v-show="showAdditionalDatasets">
         <!-- Any other datasets containing data for this climate, where the license hasn't been accepted yet -->
@@ -64,6 +64,8 @@ export default {
     update: function () {
       this.$refs.climateDetailsTable.refresh()
       this.$refs.climateDetailsChart.redraw()
+
+      this.checkNumbers()
     }
   },
   mixins: [ miscApi, climateApi ],
