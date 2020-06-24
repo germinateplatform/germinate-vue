@@ -372,7 +372,7 @@ export default {
     }
 
     this.gradientColors.push('#ffffff')
-    this.gradientColors.push(this.serverSettings.colorsCharts[0])
+    this.gradientColors.push(this.getColor(0))
 
     this.$nextTick(() => {
       // Add OSM as the default

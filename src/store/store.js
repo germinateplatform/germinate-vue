@@ -61,7 +61,8 @@ const userState = {
   asyncJobUuids: [],
   asyncJobCount: 0,
   tableFiltering: null,
-  cookiesAccepted: null
+  cookiesAccepted: null,
+  customChartColors: null
 }
 
 const storeState = {
@@ -89,7 +90,8 @@ const storeState = {
     asyncJobUuids: (state, getters) => state.userStates[getters.userId].asyncJobUuids,
     asyncJobCount: (state, getters) => state.userStates[getters.userId].asyncJobCount,
     cookiesAccepted: (state, getters) => state.userStates[getters.userId].cookiesAccepted,
-    sidebarState: (state, getters) => state.userStates[getters.userId].sidebarState
+    sidebarState: (state, getters) => state.userStates[getters.userId].sidebarState,
+    customChartColors: (state, getters) => state.userStates[getters.userId].customChartColors
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
@@ -206,6 +208,9 @@ const storeState = {
           Vue.$ga.disable()
         }
       }
+    },
+    ON_CUSTOM_CHART_COLORS_CHANGED_MUTATION: function (state, newCustomChartColors) {
+      state.userStates[state.token ? state.token.id : null].customChartColors = newCustomChartColors
     }
   },
   actions: {
@@ -268,6 +273,9 @@ const storeState = {
     },
     ON_COOKIES_ACCEPTED: function ({ commit }, cookiesAccepted) {
       commit('ON_COOKIES_ACCEPTED_MUTATION', cookiesAccepted)
+    },
+    ON_CUSTOM_CHART_COLORS_CHANGED: function ({ commit }, customChartColors) {
+      commit('ON_CUSTOM_CHART_COLORS_CHANGED_MUTATION', customChartColors)
     }
   },
   plugins: [

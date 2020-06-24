@@ -6,7 +6,8 @@
                :sourceFile="getSourceFile"
                :filename="getFilename"
                :additionalMenuItems="additionalMenuItems"
-               :additionalButtons="additionalButtons">
+               :additionalButtons="additionalButtons"
+               v-on:force-redraw="redraw">
       <div slot="chart" id="map-chart" ref="mapChart" />
     </BaseChart>
 
@@ -197,7 +198,7 @@ export default {
           this.$plotly.d3.select(this.$refs.mapChart)
             .datum(data)
             .call(plotlyMapChart()
-              .colors(this.serverSettings.colorsCharts)
+              .colors(this.getColors())
               .onPointsSelected((chromosome, start, end) => {
                 this.chartSelection.push({
                   chromosome: chromosome,

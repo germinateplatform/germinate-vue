@@ -12,6 +12,7 @@
           <b-dropdown-item @click="getFilename('png')" v-if="supportsPngDownload"><i class="mdi mdi-18px mdi-file-image"/> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
           <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><i class="mdi mdi-18px mdi-file-code"/> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
           <b-dropdown-item @click="downloadSource()"><i class="mdi mdi-18px mdi-file-document"/> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
+          <b-dropdown-item @click="$refs.customChartColorModal.show()" v-if="canChangeColors"><i class="mdi mdi-18px mdi-palette" /> {{ $t('buttonChangeChartColors') }}</b-dropdown-item>
           <!-- Additional options -->
           <template v-if="additionalMenuItems && additionalMenuItems.length > 0">
             <b-dropdown-divider />
@@ -53,11 +54,17 @@
         <b-form-input v-model="userFilename" autofocus />
       </b-form>
     </b-modal>
+
+    <CustomChartColorModal ref="customChartColorModal" v-on:colors-changed="onColorsChanged" />
   </div>
 </template>
 
 <script>
 import ResizeObserver from '@/components/ResizeObserver'
+import CustomChartColorModal from '@/components/modals/CustomChartColorModal'
+
+import { EventBus } from '@/plugins/event-bus.js'
+
 export default {
   data: function () {
     return {
@@ -105,12 +112,20 @@ export default {
     chartType: {
       type: String,
       default: 'plotly'
+    },
+    canChangeColors: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
+    CustomChartColorModal,
     ResizeObserver
   },
   methods: {
+    onColorsChanged: function () {
+      EventBus.$emit('chart-colors-changed')
+    },
     handleResize: function () {
       if (this.chartType === 'plotly') {
         if (this.$slots.chart[0].elm) {
@@ -149,7 +164,16 @@ export default {
       } else if (this.imageType === 'png') {
         this.$plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss') })
       }
+    },
+    chartColorsChangedHandler: function () {
+      this.$emit('force-redraw')
     }
+  },
+  mounted: function () {
+    EventBus.$on('chart-colors-changed', this.chartColorsChangedHandler)
+  },
+  destroyed: function () {
+    EventBus.$off('chart-colors-changed', this.chartColorsChangedHandler)
   }
 }
 </script>

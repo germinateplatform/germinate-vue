@@ -51,7 +51,7 @@
       <h2>{{ $t('pageAlleleFrequencyBinningChartTitle') }}</h2>
       <p>{{ $t('pageAlleleFrequencyBinningChartText') }}</p>
       <!-- Plotly.js bar chart -->
-      <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename">
+      <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" :canChangeColors="false" v-on:force-redraw="redraw">
         <div slot="chart" id="allelefreq-chart" ref="allelefreqChart" />
       </BaseChart>
       <p>{{ $t('pageAlleleFrequencyBinningChartColors') }}</p>

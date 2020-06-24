@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" :additionalMenuItems="additionalMenuItems" :additionalButtons="additionalButtons">
+    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" :additionalMenuItems="additionalMenuItems" :additionalButtons="additionalButtons" v-on:force-redraw="redraw">
       <div slot="chart" id="scatter-chart" ref="scatterChart" class="text-center" />
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
     </BaseChart>
@@ -175,7 +175,7 @@ export default {
             .onPointsSelected(ps => {
               this.selectedIds = ps
             })
-            .colors(this.serverSettings.colorsCharts))
+            .colors(this.getColors()))
       }
       reader.readAsText(result)
     }

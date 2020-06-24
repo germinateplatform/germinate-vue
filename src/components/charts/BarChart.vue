@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename">
+    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" v-on:force-redraw="redraw">
       <div slot="chart" id="bar-chart" ref="barChart" class="chart-bar text-center" />
     </BaseChart>
   </div>
@@ -70,7 +70,7 @@ export default {
             .datum(data)
             .call(plotlyBarChart()
               .height(this.height)
-              .colors(this.serverSettings.colorsCharts)
+              .colors(this.getColors())
               .x(this.xColumn)
               .xCategory(this.xTitle)
               .yCategory(this.yTitle)

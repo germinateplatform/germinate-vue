@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :width="() => 720" :height="() => 720" :sourceFile="getSourceFile" :filename="getFilename">
+    <BaseChart :width="() => 720" :height="() => 720" :sourceFile="getSourceFile" :filename="getFilename" v-on:force-redraw="redraw(sourceFile)">
       <div slot="chart" id="taxonomy-chart" ref="taxonomyChart" class="chart-taxonomy text-center" />
     </BaseChart>
   </div>
@@ -115,7 +115,7 @@ export default {
               this.$router.push({ name: 'germplasm' })
             })
             .height(500)
-            .colors(this.serverSettings.colorsCharts))
+            .colors(this.getColors()))
       }
       reader.readAsText(result)
     }

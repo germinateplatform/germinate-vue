@@ -8,7 +8,8 @@
                :additionalMenuItems="additionalMenuItems"
                :additionalButtons="additionalButtons"
                :loading="loading"
-               :id="id">
+               :id="id"
+               v-on:force-redraw="redraw">
       <div slot="chart" id="matrix-chart" ref="matrixChart" />
       <!-- Badge that shows how many data points are selected -->
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
@@ -179,7 +180,7 @@ export default {
             .onPointsSelected(ps => {
               this.selectedIds = ps
             })
-            .colors(this.serverSettings.colorsCharts))
+            .colors(this.getColors()))
       }
       reader.readAsText(result)
     }

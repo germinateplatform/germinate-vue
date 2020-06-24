@@ -1,6 +1,6 @@
 <template>
   <div v-if="plotData">
-    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false">
+    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false"  v-on:force-redraw="update">
       <div slot="chart" ref="pedigreeChart" />
     </BaseChart>
     <!-- Export button -->

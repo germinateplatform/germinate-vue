@@ -1,5 +1,5 @@
 <template>
-  <BaseChart :width="() => 1280" :height="() => getHeight()" :sourceFile="getSourceFile" :filename="getFilename" :loading="loading">
+  <BaseChart :width="() => 1280" :height="() => getHeight()" :sourceFile="getSourceFile" :filename="getFilename" :loading="loading" v-on:force-redraw="redraw">
     <div slot="chart" ref="chart" />
   </BaseChart>
 </template>
@@ -214,7 +214,7 @@ export default {
           x: x,
           y: y,
           name: group,
-          marker: { color: this.serverSettings.colorsCharts[index] },
+          marker: { color: this.getColors()[index] },
           type: 'box',
           boxmean: false,
           boxpoints: false,
@@ -257,7 +257,7 @@ export default {
           x: x,
           y: y,
           name: this.plotData.datasets[dataset].datasetName,
-          marker: { color: this.serverSettings.colorsCharts[dataset] },
+          marker: { color: this.getColors()[dataset] },
           type: 'box',
           boxmean: false,
           boxpoints: false,
@@ -299,7 +299,7 @@ export default {
           x: x,
           y: y,
           name: this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey],
-          marker: { color: this.serverSettings.colorsCharts[item] },
+          marker: { color: this.getColors()[item] },
           type: 'box',
           boxmean: false,
           boxpoints: false,

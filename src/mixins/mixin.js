@@ -9,6 +9,7 @@ export default {
       'asyncJobUuids',
       'baseUrl',
       'cookiesAccepted',
+      'customChartColors',
       'entityTypeStats',
       'helpKey',
       'hiddenColumns',
@@ -348,6 +349,22 @@ export default {
     }
   },
   methods: {
+    getColors: function () {
+      if (this.customChartColors && this.customChartColors.length > 0) {
+        return this.customChartColors
+      } else {
+        return this.serverSettings.colorsCharts
+      }
+    },
+    getColor: function (index) {
+      const colors = this.getColors()
+
+      if (colors) {
+        return colors[index % colors.length]
+      } else {
+        return '#00acef'
+      }
+    },
     userIsAtLeast: function (userType, atLeast) {
       switch (atLeast) {
         case 'Administrator':
@@ -485,7 +502,7 @@ export default {
     },
     getHighContrastTextColor: function (backgroundColor) {
       const rgb = this.hexToRgb(backgroundColor)
-      var o = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000)
+      var o = Math.round(((rgb.r * 299) + (rgb.g * 587) + (rgb.b * 114)) / 1000)
       return (o > 125) ? 'black' : 'white'
     },
     getPaginationTexts () {

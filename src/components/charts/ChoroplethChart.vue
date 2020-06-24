@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename">
+    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" v-on:force-redraw="redraw">
       <div slot="chart" id="choropleth-chart" ref="choroplethChart" class="chart-choropleth text-center" />
     </BaseChart>
   </div>
@@ -52,7 +52,7 @@ export default {
       reader.onload = () => {
         var rows = this.$plotly.d3.tsv.parse(reader.result)
 
-        const color = (this.serverSettings.colorsCharts && this.serverSettings.colorsCharts.length > 0) ? this.serverSettings.colorsCharts[0] : '#00acef'
+        const color = this.getColor(0)
 
         var data = [{
           type: 'choropleth',
