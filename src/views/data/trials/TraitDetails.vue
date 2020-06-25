@@ -29,6 +29,7 @@
                 :height="700"
                 :downloadName="trait.traitName"
                 :sourceFile="categoricalTraitFile"
+                ref="traitCategoryChart"
                 v-if="trait.dataType === 'char_'"/>
       <!-- Boxplot for this trait -->
       <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" v-else />
