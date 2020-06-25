@@ -132,6 +132,7 @@ import { mapFilters } from '@/plugins/map-filters.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
+import typesMixin from '@/mixins/types.js'
 
 var countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
@@ -329,7 +330,7 @@ export default {
     LocationMap,
     LicenseModal
   },
-  mixins: [ datasetApi, genotypeApi, locationApi ],
+  mixins: [ datasetApi, genotypeApi, locationApi, typesMixin ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     getCountries: function (locations) {

@@ -44,6 +44,9 @@
 </template>
 
 <script>
+import typesMixin from '@/mixins/types.js'
+import colorMixin from '@/mixins/colors.js'
+
 export default {
   data: function () {
     return {
@@ -73,6 +76,7 @@ export default {
       default: null
     }
   },
+  mixins: [ typesMixin, colorMixin ],
   methods: {
     getBackgroundColor: function (tag) {
       const index = Object.keys(this.tags).indexOf(tag)

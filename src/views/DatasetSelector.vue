@@ -22,6 +22,7 @@
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
 import datasetApi from '@/mixins/api/dataset.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   data: function () {
@@ -34,7 +35,7 @@ export default {
   components: {
     DatasetTable
   },
-  mixins: [ datasetApi ],
+  mixins: [ datasetApi, typesMixin ],
   methods: {
     updateButtonState: function (selectedIds) {
       this.buttonDisabled = !selectedIds || selectedIds.length < 1

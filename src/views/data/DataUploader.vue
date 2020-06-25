@@ -52,6 +52,7 @@
 <script>
 import { EventBus } from '@/plugins/event-bus.js'
 import miscApi from '@/mixins/api/misc.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   data: function () {
@@ -74,7 +75,7 @@ export default {
       window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload-type', params: { templateType: newValue } }).href)
     }
   },
-  mixins: [ miscApi ],
+  mixins: [ miscApi, typesMixin ],
   methods: {
     onTemplateTypeSelected: function (type, name) {
       if (!type.disabled) {

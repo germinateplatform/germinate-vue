@@ -67,6 +67,7 @@
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
+import colorMixin from '@/mixins/colors.js'
 import { plotlyAlleleFreqChart } from '@/plugins/charts/plotly-allelefreq-chart.js'
 
 export default {
@@ -115,6 +116,7 @@ export default {
       this.redraw()
     }
   },
+  mixins: [ colorMixin ],
   methods: {
     parseFile: function () {
       // Read the file

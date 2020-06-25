@@ -19,7 +19,7 @@
       <template v-if="imageOverlays && imageOverlays.length > 0">
         <!-- Legend -->
         <div class="location-map-legend" v-if="getOverlays(true).length > 0">
-          <b-img-lazy :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" />
+          <b-img-lazy :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" alt="Image overlay legend" />
         </div>
         <!-- Overlays -->
         <l-image-overlay v-for="image in getOverlays(false)"
@@ -59,6 +59,8 @@ import ClimateOverlayModal from '@/components/modals/ClimateOverlayModal'
 import ColorGradient from '@/components/util/ColorGradient'
 import L from 'leaflet'
 import climateApi from '@/mixins/api/climate.js'
+import typesMixin from '@/mixins/types.js'
+import colorMixin from '@/mixins/colors.js'
 require('leaflet.heat')
 require('leaflet.sync')
 require('leaflet.markercluster')
@@ -128,7 +130,7 @@ export default {
     ClimateOverlayModal,
     ColorGradient
   },
-  mixins: [ climateApi ],
+  mixins: [ climateApi, typesMixin, colorMixin ],
   methods: {
     getLatLngs: function () {
       return this.internalLocations.map(l => {

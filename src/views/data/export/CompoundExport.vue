@@ -65,6 +65,7 @@ import compoundApi from '@/mixins/api/compound.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
+import colorMixin from '@/mixins/colors.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -139,7 +140,7 @@ export default {
     DatasetOverview,
     ExportDownloadSelection
   },
-  mixins: [ datasetApi, compoundApi, groupApi, miscApi ],
+  mixins: [ datasetApi, compoundApi, groupApi, miscApi, colorMixin ],
   methods: {
     updateGroups: function () {
       const request = {

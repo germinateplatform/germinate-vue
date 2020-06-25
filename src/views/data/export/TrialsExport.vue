@@ -65,6 +65,7 @@ import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
+import colorMixin from '@/mixins/colors.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -139,7 +140,7 @@ export default {
     TraitExportChartSelection,
     TrialsDataTable
   },
-  mixins: [ datasetApi, groupApi, miscApi, traitApi ],
+  mixins: [ datasetApi, groupApi, miscApi, traitApi, colorMixin ],
   methods: {
     updateGroups: function () {
       const request = {

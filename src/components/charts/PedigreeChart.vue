@@ -97,7 +97,6 @@ export default {
 
             for (var node in nodes) {
               if (nodes.hasOwnProperty(node)) {
-                console.log(node, this.germplasm.accenumb)
                 data.push({
                   label: node,
                   class: node === this.germplasm.accenumb ? 'node-primary' : null

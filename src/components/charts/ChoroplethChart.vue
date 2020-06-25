@@ -9,6 +9,7 @@
 <script>
 import BaseChart from '@/components/charts/BaseChart'
 import statsApi from '@/mixins/api/stats.js'
+import colorMixin from '@/mixins/colors.js'
 
 export default {
   data: function () {
@@ -19,7 +20,7 @@ export default {
   components: {
     BaseChart
   },
-  mixins: [ statsApi ],
+  mixins: [ statsApi, colorMixin ],
   methods: {
     getSourceFile: function () {
       return {

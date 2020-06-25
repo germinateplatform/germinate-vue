@@ -19,6 +19,7 @@
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import genotypeApi from '@/mixins/api/genotype.js'
+import colorMixin from '@/mixins/colors.js'
 import { EventBus } from '@/plugins/event-bus.js'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
 
@@ -101,7 +102,7 @@ export default {
     BaseChart,
     Tour
   },
-  mixins: [ genotypeApi ],
+  mixins: [ genotypeApi, colorMixin ],
   methods: {
     getHeight: function () {
       if (this.distinctChromosomes === null || this.distinctChromosomes < 1) {

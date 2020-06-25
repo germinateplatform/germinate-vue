@@ -40,6 +40,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   name: 'GroupTable',
@@ -138,6 +139,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [ typesMixin ],
   methods: {
     refresh: function () {
       this.$refs.table.refresh()

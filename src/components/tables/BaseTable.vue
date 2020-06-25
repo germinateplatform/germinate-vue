@@ -206,6 +206,8 @@ import { VueContext } from 'vue-context'
 import { EventBus } from '@/plugins/event-bus.js'
 import { mapFilters } from '@/plugins/map-filters.js'
 import groupApi from '@/mixins/api/group.js'
+import searchMixin from '@/mixins/search.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   props: {
@@ -314,7 +316,7 @@ export default {
     Tour,
     VueContext
   },
-  mixins: [ groupApi ],
+  mixins: [ groupApi, searchMixin, typesMixin ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     jumpToPage: function () {

@@ -38,6 +38,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import miscApi from '@/mixins/api/misc.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   name: 'CompoundTable',
@@ -140,7 +141,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ miscApi ],
+  mixins: [ miscApi, typesMixin ],
   methods: {
     getFilter: function () {
       return [{

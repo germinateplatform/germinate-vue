@@ -98,6 +98,7 @@ import groupApi from '@/mixins/api/group.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
+import typesMixin from '@/mixins/types.js'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -241,7 +242,7 @@ export default {
     LocationTable,
     MarkerTable
   },
-  mixins: [ groupApi, germplasmApi, genotypeApi, locationApi ],
+  mixins: [ groupApi, germplasmApi, genotypeApi, locationApi, typesMixin ],
   methods: {
     uploadContent: function (content) {
       if (content && content.length > 0) {

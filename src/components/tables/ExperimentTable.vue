@@ -54,6 +54,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import datasetApi from '@/mixins/api/dataset.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   name: 'ExperimentTable',
@@ -111,7 +112,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ datasetApi ],
+  mixins: [ datasetApi, typesMixin ],
   methods: {
     redirectToExport: function (experiment, datasetType) {
       // Set up the filter

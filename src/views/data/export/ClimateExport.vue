@@ -73,6 +73,7 @@ import climateApi from '@/mixins/api/climate.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
+import colorMixin from '@/mixins/colors.js'
 
 export default {
   props: [ 'datasetIds' ],
@@ -154,7 +155,7 @@ export default {
     DatasetOverview,
     ExportDownloadSelection
   },
-  mixins: [ climateApi, datasetApi, groupApi, miscApi ],
+  mixins: [ climateApi, datasetApi, groupApi, miscApi, colorMixin ],
   methods: {
     updateGroups: function () {
       const request = {

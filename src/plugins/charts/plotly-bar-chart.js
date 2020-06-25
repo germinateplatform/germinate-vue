@@ -48,7 +48,11 @@ export function plotlyBarChart() {
 				yaxis: {
 					title: yCategory,
 					automargin: true
-				}};
+				},
+				legend: {
+					orientation: 'h'
+				}
+			};
 
 			Plotly.newPlot(this, data, layout, config);
 

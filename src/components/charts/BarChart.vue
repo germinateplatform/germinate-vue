@@ -9,6 +9,8 @@
 <script>
 import BaseChart from '@/components/charts/BaseChart'
 import { plotlyBarChart } from '@/plugins/charts/plotly-bar-chart.js'
+import colorMixin from '@/mixins/colors.js'
+
 export default {
   props: {
     xTitle: {
@@ -48,6 +50,7 @@ export default {
       this.redraw()
     }
   },
+  mixins: [ colorMixin ],
   methods: {
     getSourceFile: function () {
       return {

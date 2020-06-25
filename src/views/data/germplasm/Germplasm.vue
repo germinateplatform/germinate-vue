@@ -32,6 +32,7 @@ import GermplasmTable from '@/components/tables/GermplasmTable'
 import GermplasmDownload from '@/components/germplasm/GermplasmDownload'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import miscApi from '@/mixins/api/misc.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   data: function () {
@@ -61,7 +62,7 @@ export default {
       }
     }
   },
-  mixins: [ germplasmApi, miscApi ],
+  mixins: [ germplasmApi, miscApi, typesMixin ],
   methods: {
     setEntityType: function (entityType) {
       this.selectedEntityType = entityType

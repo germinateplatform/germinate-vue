@@ -29,6 +29,7 @@
 import BaseChart from '@/components/charts/BaseChart'
 import Passport from '@/views/data/germplasm/Passport'
 import Tour from '@/components/util/Tour'
+import colorMixin from '@/mixins/colors.js'
 import { plotlyScatterMatrix } from '@/plugins/charts/plotly-scatter-matrix.js'
 
 export default {
@@ -120,6 +121,7 @@ export default {
     Passport,
     Tour
   },
+  mixins: [ colorMixin ],
   methods: {
     showTour: function () {
       this.$refs.tour.start()

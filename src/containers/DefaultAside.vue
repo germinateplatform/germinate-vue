@@ -124,6 +124,7 @@ import UploadStatusTable from '@/components/tables/UploadStatusTable'
 import axios from 'axios'
 import datasetApi from '@/mixins/api/dataset.js'
 import miscApi from '@/mixins/api/misc.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   name: 'DefaultAside',
@@ -166,7 +167,7 @@ export default {
   components: {
     UploadStatusTable
   },
-  mixins: [ datasetApi, miscApi ],
+  mixins: [ datasetApi, miscApi, typesMixin ],
   methods: {
     clearExportJobs: function () {
       if (this.asyncExportJobs) {

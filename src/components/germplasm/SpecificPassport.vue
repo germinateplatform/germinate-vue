@@ -155,6 +155,7 @@ import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import miscApi from '@/mixins/api/misc.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   data: function () {
@@ -196,7 +197,7 @@ export default {
     PedigreeChart,
     PedigreeTable
   },
-  mixins: [ germplasmApi, miscApi ],
+  mixins: [ germplasmApi, miscApi, typesMixin ],
   methods: {
     onImageTagClicked: function (tag) {
       this.imageTag = tag

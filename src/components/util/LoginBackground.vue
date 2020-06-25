@@ -4,6 +4,8 @@
 </template>
 
 <script>
+import colorMixin from '@/mixins/colors.js'
+
 import SimplexNoise from 'simplex-noise'
 import { debounce } from 'lodash'
 
@@ -13,6 +15,7 @@ export default {
       backgroundColors: null
     }
   },
+  mixins: [ colorMixin ],
   methods: {
     updateBackground: function () {
       // Magic happens in this method

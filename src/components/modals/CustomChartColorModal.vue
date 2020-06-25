@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import colorMixin from '@/mixins/colors.js'
+
 export default {
   data: function () {
     return {
@@ -39,6 +41,7 @@ export default {
       colorValid: null
     }
   },
+  mixins: [ colorMixin ],
   methods: {
     removeColor: function (index) {
       this.colors.splice(index, 1)

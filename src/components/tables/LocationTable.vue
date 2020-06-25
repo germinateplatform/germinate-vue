@@ -40,6 +40,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   name: 'LocationTable',
@@ -158,6 +159,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [ typesMixin ],
   methods: {
     navigateToGermplasm: function (location) {
       // Set up the filter

@@ -10,6 +10,7 @@
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
 import datasetApi from '@/mixins/api/dataset.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   props: {
@@ -41,7 +42,7 @@ export default {
   components: {
     DatasetTable
   },
-  mixins: [ datasetApi ],
+  mixins: [ datasetApi, typesMixin ],
   methods: {
     emitDataChanged: function (request, data) {
       this.$emit('data-changed', request, data)

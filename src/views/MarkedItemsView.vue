@@ -33,6 +33,7 @@ import germplasmApi from '@/mixins/api/germplasm.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
 import miscApi from '@/mixins/api/misc.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   data: function () {
@@ -79,7 +80,7 @@ export default {
     LocationTable,
     MarkerTable
   },
-  mixins: [ germplasmApi, genotypeApi, locationApi, miscApi ],
+  mixins: [ germplasmApi, genotypeApi, locationApi, miscApi, typesMixin ],
   methods: {
     getGermplasmData: function (data, callback) {
       data = this.adjustFilter(data, 'germplasmId', 'germplasm')

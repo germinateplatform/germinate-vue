@@ -2,8 +2,8 @@
   <div class="app public">
     <AppHeader fixed>
       <b-link class="navbar-brand" to="/">
-        <img class="navbar-brand-full" src="img/germinate-square.svg" width="58" height="58" alt="Germinate">
-        <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="58" height="58" alt="Germinate">
+        <img class="navbar-brand-full" src="img/germinate-square.svg" width="58" height="58" alt="Germinate logo">
+        <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="58" height="58" alt="Germinate logo">
       </b-link>
       <b-navbar-nav class="ml-auto">
         <LocaleDropdown />
@@ -12,7 +12,7 @@
     <div class="app-body flex-column">
       <div class="container-fluid page-header">
         <div class="mb-3 d-flex align-items-center justify-content-center my-4">
-          <b-img-lazy width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" />
+          <b-img-lazy width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" alt="Crop logo" />
           <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
         </div>
         <hr class="mb-0"/>

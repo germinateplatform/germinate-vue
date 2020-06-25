@@ -29,6 +29,7 @@
                 :height="700"
                 :downloadName="trait.traitName"
                 :sourceFile="categoricalTraitFile"
+                v-on:bar-clicked="traitValueClicked"
                 ref="traitCategoryChart"
                 v-if="trait.dataType === 'char_'"/>
       <!-- Boxplot for this trait -->
@@ -77,6 +78,30 @@ export default {
     TrialsDataTable
   },
   methods: {
+    traitValueClicked: function (value) {
+      console.log(value)
+
+      this.tableFilter = [{
+        column: {
+          name: 'traitId',
+          type: Number
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.traitId],
+        canBeChanged: false
+      }, {
+        column: {
+          name: 'traitValue',
+          type: String
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [value]
+      }]
+
+      this.$nextTick(() => this.$refs.traitDetailsTable.refresh())
+    },
     getDatasetData: function (data, callback) {
       return this.apiPostTraitDatasetTable(this.traitId, data, callback)
     },

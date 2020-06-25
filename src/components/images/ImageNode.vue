@@ -3,7 +3,7 @@
     <!-- The image -->
     <a :href="getSrc('large')" class="baguettebox" @click.prevent :data-caption="image.imageDescription">
       <div>
-        <b-img-lazy :src="getSrc('small')" class="card-img" style="height: 300px"/>
+        <b-img-lazy :src="getSrc('small')" class="card-img" style="height: 300px" :alt="image.imageDescription" />
       </div>
     </a>
     <b-card-body class="card-image-details">
@@ -42,6 +42,7 @@
 
 <script>
 import EditTagModal from '@/components/modals/EditTagModal'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   props: {
@@ -63,6 +64,7 @@ export default {
   components: {
     EditTagModal
   },
+  mixins: [ typesMixin ],
   methods: {
     showTagEditModal: function () {
       this.$refs.editTagModal.show()

@@ -147,6 +147,9 @@
 </template>
 
 <script>
+import searchMixin from '@/mixins/search.js'
+import typesMixin from '@/mixins/types.js'
+
 export default {
   props: {
     columns: {
@@ -213,6 +216,7 @@ export default {
       })
     }
   },
+  mixins: [ searchMixin, typesMixin ],
   methods: {
     updateOperators: function () {
       this.localOperators = Object.keys(this.operators).map(o => {

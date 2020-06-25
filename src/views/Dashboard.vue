@@ -43,6 +43,7 @@
 import ImageCarousel from '@/components/images/ImageCarousel'
 import NewsSection from '@/components/news/NewsSection'
 import statsApi from '@/mixins/api/stats.js'
+import colorMixin from '@/mixins/colors.js'
 import { mapFilters } from '@/plugins/map-filters.js'
 import { EventBus } from '@/plugins/event-bus.js'
 
@@ -123,7 +124,7 @@ export default {
       }
     }
   },
-  mixins: [ statsApi ],
+  mixins: [ statsApi, colorMixin ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     startIntroduction: function () {

@@ -42,7 +42,7 @@
           <b-row>
             <b-col xs=12 xl=6 v-for="project in projects" :key="'project-' + project.newsId" class="mb-3">
               <b-card no-body class="news-card h-100">
-                <b-img-lazy :src="getImageSrc(project)" class="card-img" style="height: 200px" v-if="project.newsImage" />
+                <b-img-lazy :src="getImageSrc(project)" class="card-img" style="height: 200px" v-if="project.newsImage" :alt="project.newsTitle" />
 
                 <b-card-body>
                   <b-card-title>{{ project.newsTitle }}</b-card-title>

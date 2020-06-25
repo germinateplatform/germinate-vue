@@ -74,7 +74,7 @@
           placement="top"
           boundary="window"
           triggers="click blur">
-          <img :src="getSrc(data.item)" />
+          <img :src="getSrc(data.item)" alt="Germplasm image" />
         </b-popover>
       </div>
     </template>
@@ -120,6 +120,7 @@ import { EventBus } from '@/plugins/event-bus.js'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   name: 'GermplasmTable',
@@ -355,7 +356,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ germplasmApi ],
+  mixins: [ germplasmApi, typesMixin ],
   methods: {
     refresh: function () {
       this.$refs.germplasmTable.refresh()

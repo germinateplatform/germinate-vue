@@ -3,9 +3,9 @@
     <AppHeader fixed id="app-header">
       <SidebarToggler class="d-lg-none" display="md" mobile @click.native="toggleSidebar" />
       <b-link class="navbar-brand" to="/">
-        <b-img-lazy class="navbar-brand-full" src="img/germinate-square.svg" width="58" height="58" alt="Germinate" />
-        <b-img-lazy class="navbar-brand-minimized" src="img/germinate-square.svg" width="58" height="58" alt="Germinate" />
-        <b-img-lazy class="navbar-brand-full navbar-brand-text" src="img/germinate-text.svg" height="22" alt="Germinate" />
+        <b-img-lazy class="navbar-brand-full" src="img/germinate-square.svg" width="58" height="58" alt="Germinate logo" />
+        <b-img-lazy class="navbar-brand-minimized" src="img/germinate-square.svg" width="58" height="58" alt="Germinate logo" />
+        <b-img-lazy class="navbar-brand-full navbar-brand-text" src="img/germinate-text.svg" height="22" alt="Germinate logo" />
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
       <b-navbar-nav class="ml-auto align-items-stretch top-nav">
@@ -55,7 +55,7 @@
       <main class="main">
         <div class="container-fluid mb-4">
           <div class="mb-3 d-flex align-items-center my-4">
-            <b-img-lazy width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" onerror="this.onerror=null;this.src='null';" />
+            <b-img-lazy width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" onerror="this.onerror=null;this.src='null';" alt="Crop logo" />
             <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
           </div>
           <hr />
@@ -89,7 +89,6 @@
 
 <script>
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter } from '@coreui/vue'
-import Cookies from '@/views/pages/Cookies'
 import DefaultAside from './DefaultAside'
 import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
 import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
@@ -104,7 +103,6 @@ export default {
     AppHeader,
     AppSidebar,
     AppAside,
-    Cookies,
     TheFooter,
     DefaultAside,
     LocaleDropdown,
@@ -463,6 +461,7 @@ export default {
       img.onerror = null
       img.src = 'null'
     }
+    img.alt = 'Germinate logo'
     sb.appendChild(img)
   }
 }

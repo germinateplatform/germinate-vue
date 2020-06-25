@@ -12,7 +12,7 @@
       <!-- Image -->
       <template v-slot:cell(image)="data">
         <a :href="getSrc(data.item, 'large')" class="baguettebox" @click.prevent>
-          <b-img-lazy :src="getSrc(data.item, 'small')" class="table-image" />
+          <b-img-lazy :src="getSrc(data.item, 'small')" class="table-image" alt="Image" />
         </a>
       </template>
       <!-- Reference name -->
@@ -29,7 +29,7 @@
       <!-- Tags -->
       <template v-slot:cell(tags)="data">
         <div v-if="data.item.tags">
-          <b-badge v-for="(tag, index) in data.item.tags" :key="`image-tag-${data.item.imageId}-${index}`" class="mr-1" href="#" @click.native.prevent="$emit('tag-clicked', tag)" :style="`background-color: ${getColor(tag)}; color: ${getTextColor(tag)}`">
+          <b-badge v-for="(tag, index) in data.item.tags" :key="`image-tag-${data.item.imageId}-${index}`" class="mr-1" href="#" @click.native.prevent="$emit('tag-clicked', tag)" :style="`background-color: ${getTagColor(tag)}; color: ${getTextColor(tag)}`">
             {{ tag.tagName }}
           </b-badge>
         </div>
@@ -42,6 +42,8 @@
 import baguetteBox from 'baguettebox.js'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import typesMixin from '@/mixins/types.js'
+import colorMixin from '@/mixins/colors.js'
 import { EXIF } from 'exif-js'
 
 export default {
@@ -118,6 +120,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [ typesMixin, colorMixin ],
   methods: {
     rotateBasedOnExif: function (image) {
       EXIF.getData(image, function () {
@@ -132,11 +135,11 @@ export default {
       })
     },
     getTextColor: function (tag) {
-      const color = this.getColor(tag)
+      const color = this.getTagColor(tag)
 
       return this.getHighContrastTextColor(color)
     },
-    getColor: function (tag) {
+    getTagColor: function (tag) {
       var index = this.tags.indexOf(tag.tagName)
       if (index === -1) {
         this.tags.push(tag.tagName)

@@ -31,8 +31,8 @@
       <!-- Download -->
       <h4>{{ $t('pageMapExportDownloadFormatTitle') }}</h4>
       <b-list-group class="d-inline-block">
-        <b-list-group-item button @click="exportMap('flapjack')"><b-img-lazy :src="`./img/${exportFormats.flapjack.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadFlapjackFormat') }}</b-list-group-item>
-        <b-list-group-item button @click="exportMap('strudel')"><b-img-lazy :src="`./img/${exportFormats.strudel.logo}`" class="mime-icon" /> {{ $t('pageMapExportDownloadStrudelFormat') }}</b-list-group-item>
+        <b-list-group-item button @click="exportMap('flapjack')"><b-img-lazy :src="`./img/${exportFormats.flapjack.logo}`" class="mime-icon" alt="Flapjack logo" /> {{ $t('pageMapExportDownloadFlapjackFormat') }}</b-list-group-item>
+        <b-list-group-item button @click="exportMap('strudel')"><b-img-lazy :src="`./img/${exportFormats.strudel.logo}`" class="mime-icon" alt="Strudel logo" /> {{ $t('pageMapExportDownloadStrudelFormat') }}</b-list-group-item>
       </b-list-group>
 
       <!-- Export format information -->
@@ -48,6 +48,7 @@ import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import MapExportSelection from '@/components/export/MapExportSelection'
 import { EventBus } from '@/plugins/event-bus.js'
 import genotypeApi from '@/mixins/api/genotype.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   data: function () {
@@ -63,7 +64,7 @@ export default {
     MapDefinitionTable,
     MapExportSelection
   },
-  mixins: [ genotypeApi ],
+  mixins: [ genotypeApi, typesMixin ],
   methods: {
     exportMap: function (format) {
       var options = {

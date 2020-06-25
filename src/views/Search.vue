@@ -136,6 +136,7 @@ import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
+import searchMixin from '@/mixins/search.js'
 
 export default {
   data: function () {
@@ -185,7 +186,7 @@ export default {
     PedigreeTable,
     TrialsDataTable
   },
-  mixins: [ compoundApi, datasetApi, germplasmApi, genotypeApi, locationApi, miscApi, traitApi ],
+  mixins: [ compoundApi, datasetApi, germplasmApi, genotypeApi, locationApi, miscApi, traitApi, searchMixin ],
   methods: {
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
