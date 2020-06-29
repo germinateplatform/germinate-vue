@@ -23,7 +23,7 @@
     "@coreui/icons": "0.3.0",
     "@coreui/vue": "~2.1.2",
     "@johmun/vue-tags-input": "~2.1.0",
-    "@mdi/font": "~4.9.95",
+    "@mdi/font": "~5.3.45",
     "@trevoreyre/autocomplete-vue": "~2.0.4",
     "axios": "~0.19.0",
     "baguettebox.js": "~1.11.0",
