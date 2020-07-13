@@ -55,7 +55,8 @@ export default {
           type: undefined,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
-          label: this.$t('tableColumnAttributeGermplasmName')
+          label: this.$t('tableColumnAttributeGermplasmName'),
+          preferedSortingColumn: true
         }, {
           key: 'attributeName',
           type: String,

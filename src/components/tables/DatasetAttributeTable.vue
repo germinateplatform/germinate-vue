@@ -49,7 +49,8 @@ export default {
           type: undefined,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
-          label: this.$t('tableColumnAttributeDatasetName')
+          label: this.$t('tableColumnAttributeDatasetName'),
+          preferedSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: undefined,

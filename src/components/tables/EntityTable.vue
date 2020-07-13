@@ -87,7 +87,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentName')}`,
-          label: this.$t('tableColumnEntityParentName')
+          label: this.$t('tableColumnEntityParentName'),
+          preferedSortingColumn: true
         }, {
           key: 'entityParentType',
           type: 'entityType',

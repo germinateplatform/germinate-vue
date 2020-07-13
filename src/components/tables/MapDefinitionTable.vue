@@ -53,7 +53,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'markerName')}`,
-          label: this.$t('tableColumnMarkerName')
+          label: this.$t('tableColumnMarkerName'),
+          preferedSortingColumn: true
         }, {
           key: 'synonyms',
           type: 'json',

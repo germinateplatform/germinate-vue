@@ -55,7 +55,8 @@ export default {
         type: String,
         class: `${this.isTableColumnHidden(this.options.tableName, 'compoundName')}`,
         sortable: true,
-        label: this.$t('tableColumnCompoundName')
+        label: this.$t('tableColumnCompoundName'),
+        preferedSortingColumn: true
       }, {
         key: 'compoundDescription',
         type: String,

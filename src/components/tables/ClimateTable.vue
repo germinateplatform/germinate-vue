@@ -56,7 +56,8 @@ export default {
           type: String,
           class: `${this.isTableColumnHidden(this.options.tableName, 'climateName')}`,
           sortable: true,
-          label: this.$t('tableColumnClimateName')
+          label: this.$t('tableColumnClimateName'),
+          preferedSortingColumn: true
         }, {
           key: 'climateNameShort',
           type: String,

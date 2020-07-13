@@ -62,7 +62,8 @@ export default {
           type: String,
           class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmName')}`,
           sortable: true,
-          label: this.$t('tableColumnGermplasmName')
+          label: this.$t('tableColumnGermplasmName'),
+          preferedSortingColumn: true
         }, {
           key: 'entityType',
           type: 'entityTyp',

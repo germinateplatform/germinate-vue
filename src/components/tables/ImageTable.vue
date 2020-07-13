@@ -75,7 +75,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'referenceName')}`,
-          label: this.$t('tableColumnImageReferenceName')
+          label: this.$t('tableColumnImageReferenceName'),
+          preferedSortingColumn: true
         }, {
           key: 'imageRefTable',
           type: String,

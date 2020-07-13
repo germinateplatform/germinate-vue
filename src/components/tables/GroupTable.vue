@@ -74,7 +74,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'groupName')}`,
-          label: this.$t('tableColumnGroupName')
+          label: this.$t('tableColumnGroupName'),
+          preferedSortingColumn: true
         }, {
           key: 'groupDescription',
           type: String,

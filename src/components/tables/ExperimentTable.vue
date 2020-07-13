@@ -83,7 +83,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'experimentName')}`,
-          label: this.$t('tableColumnExperimentName')
+          label: this.$t('tableColumnExperimentName'),
+          preferedSortingColumn: true
         }, {
           key: 'experimentDescription',
           type: String,

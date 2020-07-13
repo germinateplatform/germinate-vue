@@ -82,7 +82,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'locationName')}`,
-          label: this.$t('tableColumnLocationName')
+          label: this.$t('tableColumnLocationName'),
+          preferedSortingColumn: true
         }, {
           key: 'locationRegion',
           type: String,

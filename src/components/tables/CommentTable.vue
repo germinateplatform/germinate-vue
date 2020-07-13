@@ -121,7 +121,8 @@ export default {
         type: 'json',
         class: `${this.isTableColumnHidden(this.options.tableName, 'commentContent')}`,
         sortable: true,
-        label: this.$t('tableColumnCommentContent')
+        label: this.$t('tableColumnCommentContent'),
+        preferedSortingColumn: true
       }, {
         key: 'updatedOn',
         type: Date,

@@ -195,7 +195,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
-          label: this.$t('tableColumnDatasetName')
+          label: this.$t('tableColumnDatasetName'),
+          preferedSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: String,

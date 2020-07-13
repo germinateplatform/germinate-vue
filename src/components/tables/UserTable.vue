@@ -67,7 +67,8 @@ export default {
         {
           key: 'username',
           sortable: true,
-          label: this.$t('tableColumnUserUsername')
+          label: this.$t('tableColumnUserUsername'),
+          preferedSortingColumn: true
         },
         {
           key: 'fullName',

@@ -75,7 +75,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'parentName')}`,
-          label: this.$t('tableColumnPedigreeParentName')
+          label: this.$t('tableColumnPedigreeParentName'),
+          preferedSortingColumn: true
         }, {
           key: 'childId',
           type: Number,

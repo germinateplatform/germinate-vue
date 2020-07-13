@@ -205,6 +205,14 @@ export default {
         show = show && c.type !== undefined
         show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
         return show
+      }).sort((a, b) => {
+        if (a.preferedSortingColumn === true && !b.preferedSortingColumn) {
+          return -1
+        } else if (!a.preferedSortingColumn && b.preferedSortingColumn === true) {
+          return 1
+        } else {
+          return 0
+        }
       })
     },
     // Only get the columns that have a text that isn't empty

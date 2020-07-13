@@ -183,7 +183,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmName')}`,
-          label: this.$t('tableColumnGermplasmName')
+          label: this.$t('tableColumnGermplasmName'),
+          preferedSortingColumn: true
         }, {
           key: 'germplasmGid',
           type: String,

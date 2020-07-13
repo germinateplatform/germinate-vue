@@ -56,7 +56,8 @@ export default {
           sortable: false,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           label: this.$t('tableColumnDatasetName'),
-          formatter: value => this.$options.filters.truncateAfterWords(value, 10)
+          formatter: value => this.$options.filters.truncateAfterWords(value, 10),
+          preferedSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: String,

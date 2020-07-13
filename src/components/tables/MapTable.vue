@@ -54,7 +54,8 @@ export default {
           type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'mapName')}`,
-          label: this.$t('tableColumnMapName')
+          label: this.$t('tableColumnMapName'),
+          preferedSortingColumn: true
         }, {
           key: 'mapDescription',
           type: String,

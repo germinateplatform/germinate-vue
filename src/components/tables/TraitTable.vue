@@ -60,7 +60,8 @@ export default {
           type: String,
           class: `${this.isTableColumnHidden(this.options.tableName, 'traitName')}`,
           sortable: true,
-          label: this.$t('tableColumnTraitName')
+          label: this.$t('tableColumnTraitName'),
+          preferedSortingColumn: true
         }, {
           key: 'traitNameShort',
           type: String,
