@@ -162,6 +162,8 @@ export default {
   mounted: function () {
     if (this.currentMarkerId) {
       this.getMarker()
+
+      this.$store.dispatch('ON_RECENT_IDS_PUSH', { type: 'markers', id: this.currentMarkerId })
     }
   }
 }

@@ -4,6 +4,8 @@
     <hr />
     <p v-html="$t('pageGermplasmText')" />
 
+    <RecentItems itemType="germinatebase" />
+
     <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
     <b-button-group>
       <b-button @click="setEntityType(null)" :pressed="selectedEntityType === null" variant="outline-primary">
@@ -30,6 +32,7 @@
 <script>
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import GermplasmDownload from '@/components/germplasm/GermplasmDownload'
+import RecentItems from '@/components/util/RecentItems'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import miscApi from '@/mixins/api/misc.js'
 import typesMixin from '@/mixins/types.js'
@@ -43,7 +46,8 @@ export default {
   },
   components: {
     GermplasmTable,
-    GermplasmDownload
+    GermplasmDownload,
+    RecentItems
   },
   watch: {
     selectedEntityType: function (newValue, oldValue) {

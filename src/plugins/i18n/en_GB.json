@@ -1004,6 +1004,7 @@
   "widgetNewsTypeDataChanges": "Data changes",
   "widgetNewsTypeGeneralUpdates": "General updates",
   "widgetNewsTypeGeneralNews": "General news",
+  "widgetRecentItemsTitle": "Recently viewed items",
   "widgetRegisterDisclaimerAccept": "Do you accept these terms?",
   "widgetRegisterExistingAccountText": "Enter your Gatekeeper username and password to register for this version of Germinate.",
   "widgetRegisterGatekeeperAccount": "Do you already have a Gatekeeper account?",

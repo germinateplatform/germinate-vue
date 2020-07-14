@@ -376,6 +376,8 @@ export default {
     }]
   },
   mounted: function () {
+    this.$store.dispatch('ON_RECENT_IDS_PUSH', { type: 'germplasm', id: this.currentGermplasmId })
+
     // Get the germplasm MCPD based on the id
     this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
       this.germplasm = result

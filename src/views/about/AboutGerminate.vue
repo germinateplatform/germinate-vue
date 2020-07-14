@@ -111,7 +111,7 @@ export default {
         {
           key: 'github',
           text: () => this.$t('pageAboutGerminateCardGithubText'),
-          icon: 'mdi-github-circle',
+          icon: 'mdi-github',
           link: 'https://github.com/germinateplatform/germinate-vue'
         },
         {

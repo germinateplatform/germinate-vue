@@ -35,6 +35,10 @@ const userState = {
     markers: [],
     locations: []
   },
+  recentIds: {
+    germplasm: [],
+    markers: []
+  },
   hiddenColumns: {
     germplasm: ['institutionId', 'institutionName', 'latitude', 'longitude', 'collDate'],
     germplasmAttributes: [],
@@ -83,6 +87,7 @@ const storeState = {
     tablePerPage: (state, getters) => state.userStates[getters.userId].tablePerPage,
     helpKey: (state, getters) => state.userStates[getters.userId].helpKey,
     markedIds: (state, getters) => state.userStates[getters.userId].markedIds,
+    recentIds: (state, getters) => state.userStates[getters.userId].recentIds,
     entityTypeStats: (state, getters) => state.userStates[getters.userId].entityTypeStats,
     hiddenColumns: (state, getters) => state.userStates[getters.userId].hiddenColumns,
     originalTarget: (state, getters) => state.userStates[getters.userId].originalTarget,
@@ -143,6 +148,21 @@ const storeState = {
     },
     ON_MARKED_IDS_CLEAR_MUTATION: function (state, type) {
       state.userStates[state.token ? state.token.id : null].markedIds[type] = []
+    },
+    ON_RECENT_IDS_PUSH_MUTATION: function (state, { type, id }) {
+      // If it's not on the list yet, add it.
+      if (state.userStates[state.token ? state.token.id : null].recentIds[type].indexOf(id) === -1) {
+        state.userStates[state.token ? state.token.id : null].recentIds[type].push(id)
+      }
+
+      // If there are more than we want to store
+      if (state.userStates[state.token ? state.token.id : null].recentIds[type].length > 10) {
+        // Remove the oldest element (first)
+        state.userStates[state.token ? state.token.id : null].recentIds[type].shift()
+      }
+    },
+    ON_RECENT_IDS_CLEAR_MUTATION: function (state, type) {
+      state.userStates[state.token ? state.token.id : null].recentIds[type] = []
     },
     ON_HIDDEN_COLUMNS_ADD_MUTATION: function (state, { type, columns }) {
       columns.forEach(id => {
@@ -234,6 +254,12 @@ const storeState = {
     },
     ON_MARKED_IDS_CLEAR: function ({ commit }, type) {
       commit('ON_MARKED_IDS_CLEAR_MUTATION', type)
+    },
+    ON_RECENT_IDS_PUSH: function ({ commit }, payload) {
+      commit('ON_RECENT_IDS_PUSH_MUTATION', payload)
+    },
+    ON_RECENT_IDS_CLEAR: function ({ commit }, type) {
+      commit('ON_RECENT_IDS_CLEAR_MUTATION', type)
     },
     ON_HIDDEN_COLUMNS_ADD: function ({ commit }, payload) {
       commit('ON_HIDDEN_COLUMNS_ADD_MUTATION', payload)

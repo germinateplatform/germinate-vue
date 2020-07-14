@@ -16,6 +16,7 @@ export default {
       'locale',
       'markedIds',
       'originalTarget',
+      'recentIds',
       'serverSettings',
       'sidebarState',
       'tableFiltering',
