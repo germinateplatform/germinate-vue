@@ -2,14 +2,14 @@
   <div v-if="institution">
     <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-city text-primary" /> <span> {{ $t('pagePassportInstitutionTitle') }} </span></h2>
     <dl class="row">
-      <dt class="col-3 text-right">{{ $t('tableColumnInstitutionId') }}</dt><dd class="col-9">{{ institution.institutionId }}</dd>
-      <dt class="col-3 text-right">{{ $t('tableColumnInstitutionName') }}</dt><dd class="col-9">{{ institution.institutionName }}</dd>
-      <dt class="col-3 text-right">{{ $t('tableColumnInstitutionAcronym') }}</dt><dd class="col-9">{{ institution.institutionAcronym }}</dd>
-      <dt class="col-3 text-right">{{ $t('tableColumnInstitutionAddress') }}</dt><dd class="col-9">{{ institution.institutionAddress }}</dd>
-      <dt class="col-3 text-right">{{ $t('tableColumnInstitutionEmail') }}</dt><dd class="col-9"><template v-if="institution.institutionEmail"><a :href="`mailto:${institution.institutionEmail}`">{{ institution.institutionEmail }}</a></template></dd>
-      <dt class="col-3 text-right">{{ $t('tableColumnInstitutionPhone') }}</dt><dd class="col-9">{{ institution.institutionPhone }}</dd>
-      <dt class="col-3 text-right">{{ $t('tableColumnInstitutionContact') }}</dt><dd class="col-9">{{ institution.institutionContact }}</dd>
-      <dt class="col-3 text-right">{{ $t('tableColumnInstitutionCountry') }}</dt><dd class="col-9"><template v-if="institution.countryCode"><i :class="'flag-icon flag-icon-' + institution.countryCode.toLowerCase()"/> {{ institution.countryName }}</template></dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionId') }}</dt><dd class="col-9">{{ institution.institutionId }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionName') }}</dt><dd class="col-9">{{ institution.institutionName }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionAcronym') }}</dt><dd class="col-9">{{ institution.institutionAcronym }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionAddress') }}</dt><dd class="col-9">{{ institution.institutionAddress }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionEmail') }}</dt><dd class="col-9"><template v-if="institution.institutionEmail"><a :href="`mailto:${institution.institutionEmail}`">{{ institution.institutionEmail }}</a></template></dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionPhone') }}</dt><dd class="col-9">{{ institution.institutionPhone }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionContact') }}</dt><dd class="col-9">{{ institution.institutionContact }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionCountry') }}</dt><dd class="col-9"><template v-if="institution.countryCode"><i :class="'flag-icon flag-icon-' + institution.countryCode.toLowerCase()"/> {{ institution.countryName }}</template></dd>
       <dt class="col-3"></dt><dd class="col-9"><b-button @click.prevent="navigateToGermplasm(institution.institutionId)"><i class="mdi mdi-18px fix-alignment mdi-sprout"/> {{ $t('widgetGermplasmInstitutionViewButton') }}</b-button></dd>
     </dl>
   </div>

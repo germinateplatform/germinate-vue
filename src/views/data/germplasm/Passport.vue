@@ -75,7 +75,12 @@ export default {
         filter: [{
           column: 'germplasmName',
           comparator: 'equals',
-          operator: 'and',
+          operator: 'or',
+          values: [name]
+        }, {
+          column: 'germplasmPuid',
+          comparator: 'equals',
+          operator: 'or',
           values: [name]
         }],
         page: 1,
@@ -95,13 +100,11 @@ export default {
     this.urlParam = this.$route.params.germplasmId
 
     if (this.urlParam) {
-      const int = parseInt(this.urlParam)
-
       // If it's not a number, try and check if there's an accession with this name
-      if (isNaN(int)) {
+      if (isNaN(this.urlParam)) {
         this.getGermplasmIdByName(this.urlParam)
       } else {
-        this.currentGermplasmId = int
+        this.currentGermplasmId = parseInt(this.urlParam)
       }
     } else {
       this.currentGermplasmId = this.germplasmId

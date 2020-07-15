@@ -995,6 +995,7 @@
   "widgetMcpdGenus": "Genus",
   "widgetMcpdSpecies": "Species",
   "widgetMcpdCropName": "Common crop name",
+  "widgetMcpdPuid": "Persistent unique identifier",
   "widgetMcpdSpeciesAuth": "Species authority",
   "widgetMcpdSubtaxon": "Subtaxon",
   "widgetMcpdSubtaxonAuth": "Subtaxon authority",
