@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" :additionalMenuItems="additionalMenuItems" :additionalButtons="additionalButtons" v-on:force-redraw="redraw">
+    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" :additionalMenuItems="additionalMenuItems" :additionalButtons="additionalButtons" v-on:force-redraw="() => redraw(sourceFile, colorBy, markedIdsForColoring)">>
       <div slot="chart" id="scatter-chart" ref="scatterChart" class="text-center" />
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
     </BaseChart>
@@ -52,6 +52,8 @@ export default {
       id: id,
       sourceFile: null,
       germplasmId: null,
+      colorBy: null,
+      markedIdsForColoring: null,
       selectedIds: [],
       additionalMenuItems: [{
         icon: 'mdi-checkbox-marked',
@@ -146,8 +148,10 @@ export default {
     getFilename: function () {
       return this.datasetType + '-' + this.datasetIds.join('-')
     },
-    redraw: function (result, colorBy, markedIds) {
+    redraw: function (result, colorBy, markedIdsForColoring) {
       this.sourceFile = result
+      this.colorBy = colorBy
+      this.markedIdsForColoring = markedIdsForColoring
       this.selectedIds = []
 
       this.$plotly.purge(this.$refs.scatterChart)
@@ -164,7 +168,7 @@ export default {
           .datum(data)
           .call(plotlyScatterPlot()
             .colorBy(colorBy)
-            .markedIdsForColoring(markedIds)
+            .markedIdsForColoring(markedIdsForColoring)
             .xCategory(this.x)
             .yCategory(this.y)
             .onPointClicked(p => {

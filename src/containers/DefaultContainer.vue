@@ -69,7 +69,7 @@
     </div>
     <TheFooter class="bg-dark">
       <div class="text-muted">
-        Version 4.0.3
+        Version 4.1.0
       </div>
       <div class="ml-auto">
         <a href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>
@@ -282,7 +282,7 @@ export default {
                   name: this.$t('menuClimateDataExport'),
                   identifiers: ['export-climates'],
                   url: '/data/export/climate',
-                  icon: 'mdi mdi-18px mdi-chart-snakey'
+                  icon: 'mdi mdi-18px mdi-chart-sankey'
                 }
               ]
             },

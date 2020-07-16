@@ -9,7 +9,7 @@
                :additionalButtons="additionalButtons"
                :loading="loading"
                :id="id"
-               v-on:force-redraw="redraw">
+               v-on:force-redraw="() => redraw(sourceFile, colorBy, markedIdsForColoring)">
       <div slot="chart" id="matrix-chart" ref="matrixChart" />
       <!-- Badge that shows how many data points are selected -->
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
@@ -54,6 +54,8 @@ export default {
       id: id,
       sourceFile: null,
       germplasmId: null,
+      colorBy: null,
+      markedIdsForColoring: null,
       loading: false,
       selectedIds: [],
       additionalMenuItems: [{
@@ -149,9 +151,11 @@ export default {
     getFilename: function () {
       return 'trials-' + this.datasetIds.join('-')
     },
-    redraw: function (result, colorBy, markedIds) {
+    redraw: function (result, colorBy, markedIdsForColoring) {
       this.loading = true
       this.sourceFile = result
+      this.colorBy = colorBy
+      this.markedIdsForColoring = markedIdsForColoring
       this.selectedIds = []
 
       this.$plotly.purge(this.$refs.matrixChart)
@@ -170,7 +174,7 @@ export default {
           .datum(data)
           .call(plotlyScatterMatrix()
             .colorBy(colorBy)
-            .markedIdsForColoring(markedIds)
+            .markedIdsForColoring(markedIdsForColoring)
             .columnsToIgnore(['name', 'puid', 'entity_parent_name', 'entity_parent_general_identifier', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'treatments_description', 'year', 'group_ids'])
             .onPointClicked(p => {
               // For trials and compounds we show the passport page on click
