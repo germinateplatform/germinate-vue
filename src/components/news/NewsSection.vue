@@ -11,8 +11,7 @@
               <div class="flex-column align-items-start flex-grow-1">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ newsItem.newsTitle }}</h5>
-                  <small class="text-nowrap" v-if="newsItem.updatedOn"><i class="mdi mdi-calendar-clock" /> {{ newsItem.updatedOn | toDate }}</small>
-                  <small class="text-nowrap" v-else-if="newsItem.createdOn"><i class="mdi mdi-calendar-clock" /> {{ newsItem.createdOn | toDate }}</small>
+                  <small class="text-nowrap" v-if="newsItem.createdOn"><i class="mdi mdi-calendar-clock" /> {{ newsItem.createdOn | toDate }}</small>
                 </div>
                 <p class="mb-1" v-if="newsItem.newsContent">{{ getContent(newsItem) }}</p>
                 <small class="text-muted">{{ newsTypes[newsItem.newstypeName].text() }}</small>
@@ -172,7 +171,7 @@ export default {
       var newsQuery = {
         page: page,
         limit: this.newsCount ? this.newsCount : this.MAX_JAVA_INTEGER,
-        orderBy: 'updatedOn',
+        orderBy: 'createdOn',
         ascending: 0,
         filter: [{
           column: 'newstypeName',
