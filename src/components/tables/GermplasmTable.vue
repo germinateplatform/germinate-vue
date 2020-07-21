@@ -56,7 +56,9 @@
     </template>
     <!-- Country flag -->
     <template v-slot:cell(countryName)="data">
-      <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span></span>
+        <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName">
+          <i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span>
+        </span>
     </template>
     <!-- Formatted colldate -->
     <template v-slot:cell(collDate)="data">
@@ -483,5 +485,8 @@ export default {
   width: 300px;
   height: 300px;
   object-fit: cover;
+}
+.table-cell-filter:hover {
+  cursor: pointer;
 }
 </style>

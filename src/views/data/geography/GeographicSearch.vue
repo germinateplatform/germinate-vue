@@ -17,13 +17,13 @@
           <LocationMap :locations="[]" selectionMode="point" v-on:map-loaded="updatePolygonMap" ref="pointMap" />
           <b-card-body v-if="point">
             <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
-              <template v-slot:default="slotProps">
+              <template v-slot:content="slotProps">
                 <!-- Locations ordered by distance -->
                 <LocationTable tableMode="distance" :getData="getLocationData" :getIds="getLocationIds" ref="locationPointTable" orderBy="distance" v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
             <Collapse icon="mdi-sprout" :title="$t('pageGeographicSearchPointGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
-              <template v-slot:default="slotProps">
+              <template v-slot:content="slotProps">
                 <!-- Germplasm ordered by distance -->
                 <GermplasmTable tableMode="distance" :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPointTable" orderBy="distance"  v-on:data-changed="slotProps.update"/>
               </template>
@@ -42,13 +42,13 @@
           <LocationMap selectionMode="polygon" :locations="polygonLocations" ref="polygonMap" />
           <b-card-body v-if="polygons && polygons.length > 0">
             <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body class="my-2">
-              <template v-slot:default="slotProps">
+              <template v-slot:content="slotProps">
                 <!-- Locations inside the polygons -->
                 <LocationTable :getData="getLocationData" :getIds="getLocationIds" ref="locationPolygonTable"  v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
             <Collapse icon="mdi-sprout" :title="$t('pageGeographicSearchPolygonGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
-              <template v-slot:default="slotProps">
+              <template v-slot:content="slotProps">
                 <!-- Germplasm inside the polygons -->
                 <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPolygonTable" v-on:data-changed="slotProps.update"/>
               </template>
@@ -140,8 +140,12 @@ export default {
         if (latlngs !== null && latlngs.length > 0) {
           this.point = latlngs[0]
           this.$nextTick(() => {
-            this.$refs.locationPointTable.refresh()
-            this.$refs.germplasmPointTable.refresh()
+            if (this.$refs.locationPointTable) {
+              this.$refs.locationPointTable.refresh()
+            }
+            if (this.$refs.germplasmPointTable) {
+              this.$refs.germplasmPointTable.refresh()
+            }
           })
         } else {
           this.point = null
@@ -157,8 +161,12 @@ export default {
 
         if (this.polygons !== null && this.polygons.length > 0) {
           this.$nextTick(() => {
-            this.$refs.locationPolygonTable.refresh()
-            this.$refs.germplasmPolygonTable.refresh()
+            if (this.$refs.locationPointTable) {
+              this.$refs.locationPointTable.refresh()
+            }
+            if (this.$refs.germplasmPointTable) {
+              this.$refs.germplasmPointTable.refresh()
+            }
           })
         } else {
           this.$bvToast.toast(this.$t('toastGeographicSearchSelectPolygonText'), {
