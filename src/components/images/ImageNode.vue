@@ -3,7 +3,9 @@
     <!-- The image -->
     <a :href="getSrc('large')" class="baguettebox" @click.prevent :data-caption="image.imageDescription">
       <div>
-        <b-img-lazy :src="getSrc('small')" class="card-img" style="height: 300px" :alt="image.imageDescription" />
+        <b-img :src="getSrc('small')" class="card-img" style="height: 300px" :alt="image.imageDescription" @load="() => imageLoaded = true" />
+        <b-progress class="image-load-progress" :value="100" striped animated height="6px" v-if="imageLoaded === false" />
+        <div style="height: 6px;" v-else />
       </div>
     </a>
     <b-card-body class="card-image-details">
@@ -58,7 +60,8 @@ export default {
   data: function () {
     return {
       src: null,
-      largeSrc: null
+      largeSrc: null,
+      imageLoaded: false
     }
   },
   components: {
@@ -93,5 +96,11 @@ export default {
 .image-card .btn {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+.image-load-progress {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 </style>
