@@ -5,14 +5,33 @@
                :sourceFile="getSourceFile"
                :filename="getFilename"
                :supportsSvgDownload="false"
-               :additionalMenuItems="additionalMenuItems"
-               :additionalButtons="additionalButtons"
                :loading="loading"
                :id="id"
                v-on:force-redraw="() => redraw(sourceFile, colorBy, markedIdsForColoring)">
       <div slot="chart" id="matrix-chart" ref="matrixChart" />
       <!-- Badge that shows how many data points are selected -->
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
+
+      <template slot="additionalMenuItems">
+        <b-dropdown-divider />
+        <b-dropdown-item :disabled="!selectedIds || selectedIds.length < 1"
+                         @click="toggleItems(true)">
+          <i class="mdi mdi-18px mdi-checkbox-marked" /> <span> {{ $t('widgetChartMarkSelectedItems') }}</span>
+        </b-dropdown-item>
+        <b-dropdown-item :disabled="!selectedIds || selectedIds.length < 1"
+                         @click="toggleItems(false)">
+          <i class="mdi mdi-18px mdi-checkbox-blank-outline" /> <span> {{ $t('widgetChartUnmarkSelectedItems') }}</span>
+        </b-dropdown-item>
+      </template>
+
+      <template slot="additionalButtons">
+        <b-button v-b-tooltip.hover
+                  :title="$t('chartTooltipMatrixTour')"
+                  @click="showTour()">
+          <i class="mdi mdi-18px mdi-help-circle-outline" />
+        </b-button>
+        <MarkedItems :itemType="itemType" />
+      </template>
     </BaseChart>
 
     <!-- Modal to show the passport page on data point click -->
@@ -27,6 +46,7 @@
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
+import MarkedItems from '@/components/tables/MarkedItems'
 import Passport from '@/views/data/germplasm/Passport'
 import Tour from '@/components/util/Tour'
 import colorMixin from '@/mixins/colors.js'
@@ -58,33 +78,6 @@ export default {
       markedIdsForColoring: null,
       loading: false,
       selectedIds: [],
-      additionalMenuItems: [{
-        icon: 'mdi-checkbox-marked',
-        disabled: () => !this.selectedIds || this.selectedIds.length < 1,
-        text: () => this.$t('widgetChartMarkSelectedItems'),
-        callback: () => this.toggleItems(true)
-      }, {
-        icon: 'mdi-checkbox-blank-outline',
-        disabled: () => !this.selectedIds || this.selectedIds.length < 1,
-        text: () => this.$t('widgetChartUnmarkSelectedItems'),
-        callback: () => this.toggleItems(false)
-      }],
-      additionalButtons: [{
-        html: () => '<i class="mdi mdi-18px mdi-help-circle-outline" />',
-        title: () => this.$t('chartTooltipMatrixTour'),
-        callback: () => this.showTour()
-      }, {
-        html: () => '<i class="mdi mdi-18px mdi-delete" />',
-        disabled: () => this.markedIds[this.itemType].length < 1,
-        title: () => this.$t('chartTooltipMarkedItemsClear'),
-        id: 'marked-items-delete',
-        callback: () => this.clearMarkedList()
-      }, {
-        html: () => `<span class="badge badge-pill badge-info">${this.markedIds[this.itemType].length}</span>`,
-        callback: () => this.redirectToList(),
-        title: () => this.$t('chartTooltipMarkedItemsCount'),
-        id: 'marked-items-count'
-      }],
       popoverContent: [{
         title: () => this.$t('popoverChartTourGenericOptionsTitle'),
         text: () => this.$t('popoverChartTourGenericOptionsText'),
@@ -108,7 +101,7 @@ export default {
       }, {
         title: () => this.$t('popoverChartTourMarkableClearTitle'),
         text: () => this.$t('popoverChartTourMarkableClearText'),
-        target: () => `#${id} #marked-items-delete`,
+        target: () => `#${id} #marked-items-clear`,
         position: 'bottom'
       }, {
         title: () => this.$t('popoverChartTourMarkableSelectionToggleTitle'),
@@ -120,6 +113,7 @@ export default {
   },
   components: {
     BaseChart,
+    MarkedItems,
     Passport,
     Tour
   },
@@ -130,7 +124,7 @@ export default {
     },
     clearMarkedList: function () {
       this.$store.dispatch('ON_MARKED_IDS_CLEAR', this.itemType)
-      this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-delete'))
+      this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-clear'))
     },
     redirectToList: function () {
       this.$router.push({ name: 'marked-items-type', params: { itemType: this.itemType } })

@@ -210,6 +210,7 @@ import searchMixin from '@/mixins/search.js'
 import typesMixin from '@/mixins/types.js'
 
 export default {
+  name: 'base-table',
   props: {
     showAllItems: {
       type: Boolean,

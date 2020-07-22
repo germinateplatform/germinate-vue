@@ -4,19 +4,19 @@
     <hr/>
     <p>{{ $t('pageMarkedItemsText') }}</p>
     <b-form-radio-group
-        v-model="itemType"
+        v-model="itemTypeLocal"
         :options="options"
         button-variant="outline-primary"
         buttons />
-    <div v-if="itemType">
-      <h2 class="mt-3">{{ itemType.text() }}</h2>
+    <div v-if="itemTypeLocal">
+      <h2 class="mt-3">{{ itemTypeLocal.text() }}</h2>
 
       <!-- Depending on the selected type, show the corresponding table here -->
-      <GermplasmTable v-show="itemType === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" ref="germplasmTable" />
-      <MarkerTable    v-show="itemType === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"    :downloadTable="downloadMarkers"   ref="markerTable" />
-      <LocationTable  v-show="itemType === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  :downloadTable="downloadLocations" ref="locationTable" />
+      <GermplasmTable v-show="itemTypeLocal === markedItemTypes.germplasm" :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" ref="germplasmTable" />
+      <MarkerTable    v-show="itemTypeLocal === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"    :downloadTable="downloadMarkers"   ref="markerTable" />
+      <LocationTable  v-show="itemTypeLocal === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  :downloadTable="downloadLocations" ref="locationTable" />
 
-      <template v-if="(itemType === markedItemTypes.germplasm) && externalIdentifiers && (externalIdentifiers.length > 0)">
+      <template v-if="(itemTypeLocal === markedItemTypes.germplasm) && externalIdentifiers && (externalIdentifiers.length > 0)">
         <h3 class="mt-3">{{ $t('pageMarkedGermplasmExportTitle') }}</h3>
         <a :href="externalLink" >{{ $t('pageMarkedGermplasmExportText') }}</a> <i class="mdi mdi-open-in-new" />
       </template>
@@ -36,34 +36,44 @@ import miscApi from '@/mixins/api/misc.js'
 import typesMixin from '@/mixins/types.js'
 
 export default {
+  name: 'marked-item-view',
   data: function () {
     return {
-      itemType: null,
+      itemTypeLocal: null,
       options: [],
-      externalIdentifiers: null
+      externalIdentifiers: null,
+      isPopup: false
+    }
+  },
+  props: {
+    itemType: {
+      type: String,
+      default: 'germplasm'
     }
   },
   watch: {
-    itemType: function (newValue, oldValue) {
+    itemTypeLocal: function (newValue, oldValue) {
       // Update the URL
-      if (newValue === this.markedItemTypes.germplasm) {
-        window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'germplasm' } }).href)
-      } else if (newValue === this.markedItemTypes.markers) {
-        window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'markers' } }).href)
-      } else if (newValue === this.markedItemTypes.locations) {
-        window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'locations' } }).href)
+      if (this.isPopup === false) {
+        if (newValue === this.markedItemTypes.germplasm) {
+          window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'germplasm' } }).href)
+        } else if (newValue === this.markedItemTypes.markers) {
+          window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'markers' } }).href)
+        } else if (newValue === this.markedItemTypes.locations) {
+          window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'locations' } }).href)
+        }
       }
     },
     markedIds: {
       // Refresh the table
       handler: function (newValue, oldValue) {
-        if (this.itemType === this.markedItemTypes.germplasm) {
+        if (this.itemTypeLocal === this.markedItemTypes.germplasm) {
           this.$refs.germplasmTable.refresh()
 
           this.updateExternalIdentifiers()
-        } else if (this.itemType === this.markedItemTypes.markers) {
+        } else if (this.itemTypeLocal === this.markedItemTypes.markers) {
           this.$refs.markerTable.refresh()
-        } else if (this.itemType === this.markedItemTypes.locations) {
+        } else if (this.itemTypeLocal === this.markedItemTypes.locations) {
           this.$refs.locationTable.refresh()
         }
       },
@@ -148,7 +158,15 @@ export default {
     }
   },
   mounted: function () {
-    this.itemType = this.markedItemTypes[this.$route.params.itemType]
+    const urlParam = this.$route.params.itemType
+
+    if (urlParam) {
+      this.itemTypeLocal = this.markedItemTypes[urlParam]
+      this.isPopup = false
+    } else if (this.itemType) {
+      this.itemTypeLocal = this.markedItemTypes[this.itemType]
+      this.isPopup = true
+    }
 
     this.options = [{
       value: this.markedItemTypes.germplasm,

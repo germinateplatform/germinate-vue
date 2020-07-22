@@ -5,10 +5,28 @@
                :id="id"
                :sourceFile="getSourceFile"
                :filename="getFilename"
-               :additionalMenuItems="additionalMenuItems"
-               :additionalButtons="additionalButtons"
                v-on:force-redraw="redraw">
       <div slot="chart" id="map-chart" ref="mapChart" />
+      <template slot="additionalMenuItems">
+        <b-dropdown-divider />
+        <b-dropdown-item :disabled="!chartSelection || chartSelection.length < 1"
+                         @click="toggleItems(true)">
+          <i class="mdi mdi-18px mdi-checkbox-marked" /> <span> {{ $t('widgetChartMarkSelectedItems') }}</span>
+        </b-dropdown-item>
+        <b-dropdown-item :disabled="!chartSelection || chartSelection.length < 1"
+                         @click="toggleItems(false)">
+          <i class="mdi mdi-18px mdi-checkbox-blank-outline" /> <span> {{ $t('widgetChartUnmarkSelectedItems') }}</span>
+        </b-dropdown-item>
+      </template>
+
+      <template slot="additionalButtons">
+        <b-button v-b-tooltip.hover
+                  :title="$t('chartTooltipMatrixTour')"
+                  @click="showTour()">
+          <i class="mdi mdi-18px mdi-help-circle-outline" />
+        </b-button>
+        <MarkedItems itemType="markers" />
+      </template>
     </BaseChart>
 
     <Tour :steps="popoverContent" ref="tour" />
@@ -16,6 +34,7 @@
 </template>
 
 <script>
+import MarkedItems from '@/components/tables/MarkedItems'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import genotypeApi from '@/mixins/api/genotype.js'
@@ -38,33 +57,6 @@ export default {
       chartSelection: [],
       distinctChromosomes: null,
       sourceFile: null,
-      additionalMenuItems: [{
-        icon: 'mdi-checkbox-marked',
-        disabled: () => !this.chartSelection || this.chartSelection.length < 1,
-        text: () => this.$t('widgetChartMarkSelectedItems'),
-        callback: () => this.toggleItems(true)
-      }, {
-        icon: 'mdi-checkbox-blank-outline',
-        disabled: () => !this.chartSelection || this.chartSelection.length < 1,
-        text: () => this.$t('widgetChartUnmarkSelectedItems'),
-        callback: () => this.toggleItems(false)
-      }],
-      additionalButtons: [{
-        html: () => '<i class="mdi mdi-18px mdi-help-circle-outline" />',
-        title: () => this.$t('chartTooltipMatrixTour'),
-        callback: () => this.showTour()
-      }, {
-        html: () => '<i class="mdi mdi-18px mdi-delete" />',
-        disabled: () => this.markedIds['markers'].length < 1,
-        title: () => this.$t('chartTooltipMarkedItemsClear'),
-        id: 'marked-items-delete',
-        callback: () => this.clearMarkedList()
-      }, {
-        html: () => `<span class="badge badge-pill badge-info">${this.markedIds['markers'].length}</span>`,
-        callback: () => this.redirectToList(),
-        title: () => this.$t('chartTooltipMarkedItemsCount'),
-        id: 'marked-items-count'
-      }],
       popoverContent: [{
         title: () => this.$t('popoverChartTourGenericOptionsTitle'),
         text: () => this.$t('popoverChartTourGenericOptionsText'),
@@ -88,7 +80,7 @@ export default {
       }, {
         title: () => this.$t('popoverChartTourMarkableClearTitle'),
         text: () => this.$t('popoverChartTourMarkableClearText'),
-        target: () => `#${id} #marked-items-delete`,
+        target: () => `#${id} #marked-items-clear`,
         position: 'bottom'
       }, {
         title: () => this.$t('popoverChartTourMarkableSelectionToggleTitle'),
@@ -100,6 +92,7 @@ export default {
   },
   components: {
     BaseChart,
+    MarkedItems,
     Tour
   },
   mixins: [ genotypeApi, colorMixin ],
@@ -125,7 +118,7 @@ export default {
     },
     clearMarkedList: function () {
       this.$store.dispatch('ON_MARKED_IDS_CLEAR', 'markers')
-      this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-delete'))
+      this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-clear'))
     },
     redirectToList: function () {
       this.$router.push({ name: 'marked-items-type', params: { itemType: 'markers' } })

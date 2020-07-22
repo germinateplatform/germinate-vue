@@ -28,6 +28,18 @@ img[src="null"] {
   display: none;
 }
 
+// Make sure the marked item widget border radii are set accordingly for tables and charts
+.base-table .marked-items .btn {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom: 0;
+}
+.base-chart .marked-items .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
 // Image rotation based on EXIF information
 img.rotate90 {
   -webkit-transform: rotate(90deg);

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="base-chart">
     <div class="text-right">
       <!-- Chart options -->
       <b-button-group>
@@ -14,28 +14,10 @@
           <b-dropdown-item @click="downloadSource()"><i class="mdi mdi-18px mdi-file-document"/> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
           <b-dropdown-item @click="$refs.customChartColorModal.show()" v-if="canChangeColors"><i class="mdi mdi-18px mdi-palette" /> {{ $t('buttonChangeChartColors') }}</b-dropdown-item>
           <!-- Additional options -->
-          <template v-if="additionalMenuItems && additionalMenuItems.length > 0">
-            <b-dropdown-divider />
-            <b-dropdown-item v-for="(item, index) in additionalMenuItems"
-                            :key="`additional-option-${index}`"
-                            :disabled="item.disabled()"
-                            @click="item.callback">
-              <i :class="`mdi mdi-18px ${item.icon}`" /> <span> {{ item.text() }}</span>
-            </b-dropdown-item>
-          </template>
+          <slot name="additionalMenuItems" />
         </b-dropdown>
         <!-- Additional buttons -->
-        <template v-if="additionalButtons && additionalButtons.length > 0">
-          <b-button v-for="(button, index) in additionalButtons"
-                    :key="`additional-button-${index}`"
-                    :disabled="button.disabled ? button.disabled() : false"
-                    v-b-tooltip.hover
-                    :title="button.title ? button.title() : null"
-                    :id="button.id ? button.id : null"
-                    @click="button.callback">
-            <span v-html="button.html()" />
-          </b-button>
-        </template>
+        <slot name="additionalButtons" />
       </b-button-group>
     </div>
 
@@ -96,14 +78,6 @@ export default {
     sourceFile: {
       type: Function,
       default: () => null
-    },
-    additionalMenuItems: {
-      type: Array,
-      default: null
-    },
-    additionalButtons: {
-      type: Array,
-      default: null
     },
     loading: {
       type: Boolean,
