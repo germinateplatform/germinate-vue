@@ -5,7 +5,7 @@
       <p v-if="trait.traitDescription">{{ trait.traitDescription }}</p>
 
       <!-- Image gallery with representative images for this trait -->
-      <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="trait.traitName" v-on:tag-clicked="onImageTagClicked" ref="imageGallery"/>
+      <ImageGallery :foreignId="trait.traitId" referenceTable="phenotypes" :downloadName="trait.traitName" />
       <hr/>
 
       <!-- Synonyms -->
@@ -65,7 +65,6 @@ export default {
       trait: null,
       tableFilter: null,
       showAdditionalDatasets: true,
-      imageTag: null,
       categoricalTraitFile: null
     }
   },
@@ -79,8 +78,6 @@ export default {
   },
   methods: {
     traitValueClicked: function (value) {
-      console.log(value)
-
       this.tableFilter = [{
         column: {
           name: 'traitId',
@@ -104,60 +101,6 @@ export default {
     },
     getDatasetData: function (data, callback) {
       return this.apiPostTraitDatasetTable(this.traitId, data, callback)
-    },
-    onImageTagClicked: function (tag) {
-      this.imageTag = tag
-      this.$nextTick(() => this.$refs.imageGallery.refresh())
-    },
-    getImages: function (data, onSuccess, onError) {
-      data.filter = [{
-        column: 'imageForeignId',
-        comparator: 'equals',
-        operator: 'and',
-        values: [this.traitId]
-      }, {
-        column: 'imageRefTable',
-        comparator: 'equals',
-        operator: 'and',
-        values: ['phenotypes']
-      }]
-
-      if (this.imageTag) {
-        data.filter.push({
-          column: 'tags',
-          comparator: 'contains',
-          operator: 'and',
-          values: [this.imageTag.tagName]
-        })
-      }
-
-      this.apiPostImages(data, onSuccess, onError)
-    },
-    downloadImages: function (callback) {
-      const data = {
-        filter: [{
-          column: 'imageForeignId',
-          comparator: 'equals',
-          operator: 'and',
-          values: [this.traitId]
-        }, {
-          column: 'imageRefTable',
-          comparator: 'equals',
-          operator: 'and',
-          values: ['phenotypes']
-        }]
-      }
-
-      if (this.imageTag) {
-        data.filter.push({
-          column: 'tags',
-          comparator: 'contains',
-          operator: 'and',
-          values: [this.imageTag.tagName]
-        })
-      }
-
-      this.apiPostImagesExport(data, callback)
     },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0

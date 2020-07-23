@@ -16,7 +16,7 @@
     <!-- Show each image node -->
     <b-row v-if="images && images.length > 0" class="image-grid mb-3">
       <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId" class="mb-3">
-        <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" v-on:tags-changed="onTagsChanged" />
+        <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" v-on:tags-changed="onTagsChanged" v-on:image-deleted="onImageDeleted" />
       </b-col>
     </b-row>
     <h3 v-else>{{ $t('headingNoData') }}</h3>
@@ -29,13 +29,19 @@
       @change="page => getPage(page)">
     </b-pagination>
 
-    <b-button class="mdi mdi-18px mdi-download" @click="download" v-if="downloadImages && images && images.length > 0"> {{ $t('buttonDownloadImages') }}</b-button>
+    <b-button-group>
+      <b-button class="mdi mdi-18px mdi-download" @click="download" v-if="images && images.length > 0"> {{ $t('buttonDownloadImages') }}</b-button>
+      <b-button class="mdi mdi-18px mdi-upload" @click="$refs.imageUploadModal.show()" v-if="token && userIsAtLeast(token.userType, 'Data Curator')"> {{ $t('buttonUpload') }}</b-button>
+    </b-button-group>
+
+    <ImageUploadModal :foreignId="foreignId" :referenceTable="referenceTable" v-on:images-updated="refresh()" ref="imageUploadModal" v-if="token && userIsAtLeast(token.userType, 'Data Curator')" />
   </div>
 </template>
 
 <script>
 import baguetteBox from 'baguettebox.js'
 import ImageNode from '@/components/images/ImageNode'
+import ImageUploadModal from '@/components/modals/ImageUploadModal'
 import miscApi from '@/mixins/api/misc.js'
 import { EXIF } from 'exif-js'
 import { EventBus } from '@/plugins/event-bus.js'
@@ -52,20 +58,13 @@ export default {
     }
   },
   props: {
-    getImages: {
-      type: Function,
-      default: () => {
-        return {
-          data: [],
-          count: 0
-        }
-      }
+    referenceTable: {
+      type: String,
+      default: 'germinatebase'
     },
-    downloadImages: {
-      type: Function,
-      default: () => {
-        return []
-      }
+    foreignId: {
+      type: Number,
+      default: null
     },
     downloadName: {
       type: String,
@@ -73,17 +72,44 @@ export default {
     }
   },
   components: {
-    ImageNode
+    ImageNode,
+    ImageUploadModal
   },
   mixins: [ miscApi ],
   methods: {
     onTagClicked: function (tag) {
       this.selectedTag = tag
-      this.$emit('tag-clicked', tag)
+      this.refresh()
     },
     download: function () {
       EventBus.$emit('show-loading', true)
-      this.downloadImages(result => {
+
+      // Set up images query
+      const data = {
+        filter: [{
+          column: 'imageForeignId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.foreignId]
+        }, {
+          column: 'imageRefTable',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.referenceTable]
+        }]
+      }
+
+      if (this.selectedTag) {
+        // Optionally add the selected tag
+        data.filter.push({
+          column: 'tags',
+          comparator: 'contains',
+          operator: 'and',
+          values: [this.selectedTag.tagName]
+        })
+      }
+
+      this.apiPostImagesExport(data, result => {
         this.downloadBlob({
           blob: result,
           filename: this.downloadName,
@@ -96,11 +122,40 @@ export default {
       this.getPage(this.currentPage)
       this.updateTags()
     },
+    onImageDeleted: function () {
+      this.refresh()
+    },
     getPage: function (page) {
-      this.getImages({
+      // Set up images query
+      let filter = [{
+        column: 'imageForeignId',
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.foreignId]
+      }, {
+        column: 'imageRefTable',
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.referenceTable]
+      }]
+
+      if (this.selectedTag) {
+        // Optionally add the selected tag
+        filter.push({
+          column: 'tags',
+          comparator: 'contains',
+          operator: 'and',
+          values: [this.selectedTag.tagName]
+        })
+      }
+
+      this.apiPostImages({
         limit: this.imagesPerPage,
         page: page,
-        prevCount: this.imageCount
+        orderBy: 'createdOn',
+        ascending: 0,
+        prevCount: this.imageCount,
+        filter: filter
       }, result => {
         this.images = result.data
         this.imageCount = result.count

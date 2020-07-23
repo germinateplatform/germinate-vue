@@ -91,7 +91,7 @@
         <h2 class="mdi-heading" id="images"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
         <p v-html="$t('pagePassportImageText')" />
         <!-- Image gallery -->
-        <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="germplasm.accenumb" v-on:tag-clicked="onImageTagClicked" ref="imageGallery" />
+        <ImageGallery :foreignId="germplasm.id" referenceTable="germinatebase" :downloadName="germplasm.accenumb" />
 
         <hr />
         <h2 class="mdi-heading" id="groups"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
@@ -165,7 +165,6 @@ export default {
       commentFilter: null,
       pedigreeFilter: null,
       entityFilter: null,
-      imageTag: null,
       currentGermplasmId: null,
       scrollSpyConfig: {
         offset: 112,
@@ -199,10 +198,6 @@ export default {
   },
   mixins: [ germplasmApi, miscApi, typesMixin ],
   methods: {
-    onImageTagClicked: function (tag) {
-      this.imageTag = tag
-      this.$nextTick(() => this.$refs.imageGallery.refresh())
-    },
     scrollIntoView: function (evt) {
       evt.preventDefault()
       const href = evt.target.getAttribute('href')
@@ -232,60 +227,6 @@ export default {
     },
     getPedigreeData: function (data, callback) {
       return this.apiPostPedigreeTable(data, callback)
-    },
-    downloadImages: function (callback) {
-      // Set up images query
-      const data = {
-        filter: [{
-          column: 'imageForeignId',
-          comparator: 'equals',
-          operator: 'and',
-          values: [this.currentGermplasmId]
-        }, {
-          column: 'imageRefTable',
-          comparator: 'equals',
-          operator: 'and',
-          values: ['germinatebase']
-        }]
-      }
-
-      if (this.imageTag) {
-        // Optionally add the selected tag
-        data.filter.push({
-          column: 'tags',
-          comparator: 'contains',
-          operator: 'and',
-          values: [this.imageTag.tagName]
-        })
-      }
-
-      this.apiPostImagesExport(data, callback)
-    },
-    getImages: function (data, onSuccess, onError) {
-      // Set up images query
-      data.filter = [{
-        column: 'imageForeignId',
-        comparator: 'equals',
-        operator: 'and',
-        values: [this.currentGermplasmId]
-      }, {
-        column: 'imageRefTable',
-        comparator: 'equals',
-        operator: 'and',
-        values: ['germinatebase']
-      }]
-
-      if (this.imageTag) {
-        // Optionally add the selected tag
-        data.filter.push({
-          column: 'tags',
-          comparator: 'contains',
-          operator: 'and',
-          values: [this.imageTag.tagName]
-        })
-      }
-
-      this.apiPostImages(data, onSuccess, onError)
     },
     getLocation: function () {
       return {

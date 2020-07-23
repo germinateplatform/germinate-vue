@@ -33,6 +33,9 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: 'image/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostImageForm: function (foreignId, referenceTable, form, onSuccess, onError) {
+      return this.authForm({ url: `image/${referenceTable}/${foreignId}`, formData: form, success: onSuccess, error: onError })
+    },
     apiPostImagesExport: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'image/table/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
     },
@@ -41,6 +44,12 @@ export default {
     },
     apiPutImageTags: function (imageId, data, onSuccess, onError) {
       return this.authAjax({ url: `image/${imageId}/tag`, method: 'PUT', data: data, success: onSuccess, error: onError })
+    },
+    apiDeleteImage: function (imageId, onSuccess, onError) {
+      return this.authAjax({ url: `image/${imageId}`, method: 'DELETE', success: onSuccess, error: onError })
+    },
+    apiPatchImage: function (image, onSuccess, onError) {
+      return this.authAjax({ url: `image/${image.imageId}`, method: 'PATCH', data: image, success: onSuccess, error: onError })
     },
     apiPostNewsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1

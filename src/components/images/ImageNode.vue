@@ -8,8 +8,15 @@
         <div style="height: 6px;" v-else />
       </div>
     </a>
+    <b-button class="position-absolute image-delete-button" variant="danger" v-b-tooltip="$t('buttonDelete')" @click="deleteImage" v-if="token && token.userType && userIsAtLeast(token.userType, 'Data Curator')"><i class="mdi mdi-18px mdi-delete" /></b-button>
     <b-card-body class="card-image-details">
-      <div class="mb-2">{{ image.imageDescription }}</div>
+      <b-input-group v-if="token && token.userType && userIsAtLeast(token.userType, 'Data Curator')" class="mb-2">
+        <b-textarea rows="3" max-rows="10" class="image-description" v-model="image.imageDescription"/>
+        <b-input-group-append>
+          <b-button variant="success" @click="updateImageDescription"><i class="mdi mdi-content-save mdi-18px" /></b-button>
+        </b-input-group-append>
+      </b-input-group>
+      <div class="mb-2" v-else>{{ image.imageDescription }}</div>
       <div class="text-muted mb-2" v-if="image.createdOn"><i class="mdi mdi-18px fix-alignment mdi-calendar-clock" /> {{ image.createdOn | toDateTime }}</div>
       <div>
         <!-- Show tags -->
@@ -17,23 +24,23 @@
           <b-badge v-for="(tag, index) in image.tags" :key="`image-tag-${image.imageId}-${index}`" class="mr-1">
             {{ tag.tagName }}
           </b-badge>
-          <div v-if="token && token.userType && userIsAtLeast(token.userType, 'Data Curator')">
-            <b-badge class="bg-info"
-                      v-b-tooltip.hover
-                      href="#"
-                      event=""
-                      @click="showTagEditModal"
-                      :title="$t('tooltipTagEdit')" >
-              <i class="mdi mdi-18px mdi-pencil" />
-            </b-badge>
-            <!-- Add/edit tag modal -->
-            <EditTagModal :imageId="image.imageId"
-                          :allTags="allTags"
-                          :prefilledTags="image.tags"
-                          v-on:tags-changed="$emit('tags-changed')"
-                          ref="editTagModal" />
-          </div>
         </template>
+        <div v-if="token && token.userType && userIsAtLeast(token.userType, 'Data Curator')">
+          <b-badge class="bg-info"
+                    v-b-tooltip.hover
+                    href="#"
+                    event=""
+                    @click="showTagEditModal"
+                    :title="$t('tooltipTagEdit')" >
+            <i class="mdi mdi-18px mdi-pencil" />
+          </b-badge>
+          <!-- Add/edit tag modal -->
+          <EditTagModal :imageId="image.imageId"
+                        :allTags="allTags"
+                        :prefilledTags="image.tags"
+                        v-on:tags-changed="$emit('tags-changed')"
+                        ref="editTagModal" />
+        </div>
       </div>
     </b-card-body>
     <div disabled class="btn" :style="`color: white; background-color: ${imageTypes[image.imageRefTable].color()}; border: 1px solid ${imageTypes[image.imageRefTable].color()};`">
@@ -45,6 +52,7 @@
 <script>
 import EditTagModal from '@/components/modals/EditTagModal'
 import typesMixin from '@/mixins/types.js'
+import miscApi from '@/mixins/api/misc.js'
 
 export default {
   props: {
@@ -67,10 +75,13 @@ export default {
   components: {
     EditTagModal
   },
-  mixins: [ typesMixin ],
+  mixins: [ miscApi, typesMixin ],
   methods: {
     showTagEditModal: function () {
       this.$refs.editTagModal.show()
+    },
+    updateImageDescription: function () {
+      this.apiPatchImage(this.image)
     },
     getSrc: function (size) {
       var params = {
@@ -82,6 +93,23 @@ export default {
       var paramString = this.toUrlString(params)
 
       return this.baseUrl + 'image/src?' + paramString
+    },
+    deleteImage: function () {
+      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
+        okVariant: 'danger',
+        okTitle: this.$t('genericYes'),
+        cancelTitle: this.$t('genericNo')
+      })
+        .then(value => {
+          if (value) {
+            // Delete the image
+            this.apiDeleteImage(this.image.imageId, result => {
+              if (result) {
+                this.$emit('image-deleted')
+              }
+            })
+          }
+        })
     }
   }
 }
@@ -102,5 +130,13 @@ export default {
   border-top-right-radius: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+}
+.image-delete-button {
+  right: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.image-description {
+  overflow-y: auto !important;
 }
 </style>

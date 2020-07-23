@@ -5,7 +5,7 @@
       <p v-if="compound.compoundDescription">{{ compound.compoundDescription }}</p>
 
       <!-- Images, e.g. chemical structure -->
-      <ImageGallery :getImages="getImages" :downloadImages="downloadImages" :downloadName="compound.compoundName" v-on:tag-clicked="onImageTagClicked" ref="imageGallery"/>
+      <ImageGallery :foreignId="compound.compoundId" :downloadName="compound.compoundName" referenceTable="compounds" />
 
       <hr/>
 
@@ -53,8 +53,7 @@ export default {
       compoundId: null,
       compound: null,
       tableFilter: null,
-      showAdditionalDatasets: true,
-      imageTag: null
+      showAdditionalDatasets: true
     }
   },
   components: {
@@ -68,60 +67,6 @@ export default {
   methods: {
     getDatasetData: function (data, callback) {
       return this.apiPostCompoundDatasetTable(this.compoundId, data, callback)
-    },
-    onImageTagClicked: function (tag) {
-      this.imageTag = tag
-      this.$nextTick(() => this.$refs.imageGallery.refresh())
-    },
-    getImages: function (data, onSuccess, onError) {
-      data.filter = [{
-        column: 'imageForeignId',
-        comparator: 'equals',
-        operator: 'and',
-        values: [this.compoundId]
-      }, {
-        column: 'imageRefTable',
-        comparator: 'equals',
-        operator: 'and',
-        values: ['compounds']
-      }]
-
-      if (this.imageTag) {
-        data.filter.push({
-          column: 'tags',
-          comparator: 'contains',
-          operator: 'and',
-          values: [this.imageTag.tagName]
-        })
-      }
-
-      this.apiPostImages(data, onSuccess, onError)
-    },
-    downloadImages: function (callback) {
-      const data = {
-        filter: [{
-          column: 'imageForeignId',
-          comparator: 'equals',
-          operator: 'and',
-          values: [this.compoundId]
-        }, {
-          column: 'imageRefTable',
-          comparator: 'equals',
-          operator: 'and',
-          values: ['compounds']
-        }]
-      }
-
-      if (this.imageTag) {
-        data.filter.push({
-          column: 'tags',
-          comparator: 'contains',
-          operator: 'and',
-          values: [this.imageTag.tagName]
-        })
-      }
-
-      this.apiPostImagesExport(data, callback)
     },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0

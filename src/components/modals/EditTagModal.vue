@@ -91,11 +91,22 @@ export default {
 
       // Add new tags
       this.apiPutImageTags(this.imageId, data, result => {
-        this.$refs.editTagModal.hide()
         this.$emit('tags-changed')
+
+        this.$nextTick(() => this.$refs.editTagModal.hide())
       })
     },
+    hide: function () {
+      this.$refs.editTagModal.hide()
+    },
     show () {
+      this.tempInput = ''
+      this.newTags = this.prefilledTags.map(t => {
+        return {
+          text: t.tagName,
+          classes: 'bg-primary'
+        }
+      })
       this.$nextTick(() => this.$refs.editTagModal.show())
     }
   },
