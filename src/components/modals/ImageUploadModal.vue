@@ -6,12 +6,13 @@
     ok-only
     @ok.prevent="uploadImage">
     <p>{{ $t('modalTextImageUpload') }}</p>
-    <b-img :src="imageData" v-if="imageData" fluid-grow rounded @load="clearMemory" />
+    <b-img v-for="(image, index) in imageData" :src="imageData[index]" :key="`image-preview-${index}`" fluid-grow rounded @load="clearMemory(index)" />
     <b-form @submit.prevent>
       <b-form-file
         class="mt-3"
-        v-model="imageFile"
-        :state="Boolean(imageFile)"
+        v-model="imageFiles"
+        multiple
+        :state="Boolean(imageFiles)"
         accept=".jpg, .jpeg, .png"/>
     </b-form>
   </b-modal>
@@ -34,36 +35,38 @@ export default {
   },
   data: function () {
     return {
-      imageFile: null,
-      imageData: null
+      imageFiles: [],
+      imageData: []
     }
   },
   watch: {
-    imageFile: function (newValue) {
-      this.imageData = URL.createObjectURL(newValue)
+    imageFiles: function (newValue) {
+      this.imageData = newValue.map(f => URL.createObjectURL(f))
     }
   },
   mixins: [ miscApi ],
   methods: {
-    clearMemory: function () {
-      URL.revokeObjectURL(this.imageData)
+    clearMemory: function (index) {
+      URL.revokeObjectURL(this.imageData[index])
     },
     show: function () {
-      this.imageFile = null
-      this.imageData = null
+      this.imageFiles = []
+      this.imageData = []
       this.$refs.imageUploadModal.show()
     },
     hide: function () {
       this.$refs.imageUploadModal.hide()
     },
     uploadImage: function () {
-      if (this.imageFile === null) {
+      if (this.imageFiles === null || this.imageFiles.length < 1) {
         // TODO feedback
         return
       }
 
       let formData = new FormData()
-      formData.append('imageFile', this.imageFile)
+      this.imageFiles.forEach(i => {
+        formData.append('imageFiles', i)
+      })
 
       EventBus.$emit('show-loading', true)
       this.apiPostImageForm(this.foreignId, this.referenceTable, formData, result => {
