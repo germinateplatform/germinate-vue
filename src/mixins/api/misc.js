@@ -42,6 +42,9 @@ export default {
     apiGetImageTags: function (onSuccess, onError) {
       return this.authAjax({ url: 'imagetag', success: onSuccess, error: onError })
     },
+    apiGetImageTagsForId: function (referenceTable, foreignId, onSuccess, onError) {
+      return this.authAjax({ url: `imagetag/${referenceTable}/${foreignId}`, success: onSuccess, error: onError })
+    },
     apiPutImageTags: function (imageId, data, onSuccess, onError) {
       return this.authAjax({ url: `image/${imageId}/tag`, method: 'PUT', data: data, success: onSuccess, error: onError })
     },

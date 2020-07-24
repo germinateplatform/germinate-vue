@@ -4,7 +4,8 @@
                :columns="columns"
                v-bind="$props"
                ref="table"
-               @loaded="update">
+               @loaded="update"
+               v-on="$listeners">
       <!-- Reference table -->
       <template v-slot:cell(imageRefTable)="data">
         <span><i :class="`mdi mdi-18px ${imageTypes[data.item.imageRefTable].icon} fix-alignment`" :style="`color: ${imageTypes[data.item.imageRefTable].color()};`" /> {{ imageTypes[data.item.imageRefTable].text() }}</span>

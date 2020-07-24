@@ -502,6 +502,8 @@ export default {
       if (filter.triggerUpdate) {
         this.$refs.table.refresh()
       }
+
+      this.$emit('filter-changed', filter)
     },
     onDownloadTableClicked: function () {
       if (this.downloadTable !== null) {
