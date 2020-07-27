@@ -47,7 +47,7 @@
     <!-- Team -->
     <h2>{{ $t('pageAboutGerminateTeamTitle') }}<small> - {{ $t('pageAboutGerminateTeamSubtitle') }}</small></h2>
     <b-row class="team-members">
-      <b-col cols=12 sm=6 xl=3 v-for="(member, i) in team" :key="'about-team-' + i" class="text-center pb-5">
+      <b-col cols=12 sm=6 xl=4 v-for="(member, i) in team" :key="'about-team-' + i" class="text-center pb-5">
         <div class="px-5 pt-5 pb-3">
           <b-img-lazy :src="`./img/${member.img}`" rounded="circle" fluid alt="Developer image" />
         </div>
@@ -58,7 +58,7 @@
       </b-col>
     </b-row>
 
-    <h3>{{ $t('pageAboutGerminateTeamOthersTitle') }}<small> - {{ $t('pageAboutGerminateTeamOthersSubtitle') }}</small></h3>
+    <h2>{{ $t('pageAboutGerminateTeamOthersTitle') }}<small> - {{ $t('pageAboutGerminateTeamOthersSubtitle') }}</small></h2>
     <div v-html="$t('pageAboutGerminateTeamOthersText')" />
 
     <!-- Location -->
@@ -141,17 +141,6 @@ export default {
             icon: 'mdi-earth',
             title: 'Website',
             href: 'http://www.hutton.ac.uk/staff/sebastian-raubach'
-          }]
-        },
-        {
-          name: 'Gordon Stephen',
-          job: 'BrAPI integrator',
-          img: 'team/gordon-stephen.jpg',
-          about: 'Gordon looks after the Plant Breeding API (BrAPI) part of Germinate. He attends the hackathons and updates the Germinate implementation of BrAPI accordingly.',
-          links: [{
-            icon: 'mdi-earth',
-            title: 'Website',
-            href: 'http://www.hutton.ac.uk/staff/gordon-stephen'
           }]
         },
         {

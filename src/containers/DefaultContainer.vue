@@ -20,6 +20,7 @@
         </b-nav-form>
         <!-- Help information -->
         <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()" id="top-nav-help" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
+        <b-nav-item @click="toggleDarkMode()" id="top-nav-darkmode" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-theme-light-dark ${darkMode === true ? 'text-info' : ''}`" /></b-nav-item>
         <!-- Locale dropdown -->
         <LocaleDropdown class="top-nav-locale d-flex align-self-center"/>
         <!-- Marked items -->

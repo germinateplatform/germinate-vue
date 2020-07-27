@@ -66,7 +66,8 @@ const userState = {
   asyncJobCount: 0,
   tableFiltering: null,
   cookiesAccepted: null,
-  customChartColors: null
+  customChartColors: null,
+  darkMode: false
 }
 
 const storeState = {
@@ -96,7 +97,8 @@ const storeState = {
     asyncJobCount: (state, getters) => state.userStates[getters.userId].asyncJobCount,
     cookiesAccepted: (state, getters) => state.userStates[getters.userId].cookiesAccepted,
     sidebarState: (state, getters) => state.userStates[getters.userId].sidebarState,
-    customChartColors: (state, getters) => state.userStates[getters.userId].customChartColors
+    customChartColors: (state, getters) => state.userStates[getters.userId].customChartColors,
+    darkMode: (state, getters) => state.userStates[getters.userId].darkMode
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
@@ -231,6 +233,9 @@ const storeState = {
     },
     ON_CUSTOM_CHART_COLORS_CHANGED_MUTATION: function (state, newCustomChartColors) {
       state.userStates[state.token ? state.token.id : null].customChartColors = newCustomChartColors
+    },
+    ON_DARK_MODE_CHANGED_MUTATION: function (state, newDarkMode) {
+      state.userStates[state.token ? state.token.id : null].darkMode = newDarkMode
     }
   },
   actions: {
@@ -302,6 +307,9 @@ const storeState = {
     },
     ON_CUSTOM_CHART_COLORS_CHANGED: function ({ commit }, customChartColors) {
       commit('ON_CUSTOM_CHART_COLORS_CHANGED_MUTATION', customChartColors)
+    },
+    ON_DARK_MODE_CHANGED: function ({ commit }, darkMode) {
+      commit('ON_DARK_MODE_CHANGED_MUTATION', darkMode)
     }
   },
   plugins: [

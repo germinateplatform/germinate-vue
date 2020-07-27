@@ -46,7 +46,6 @@ export default {
   mixins: [ miscApi ],
   methods: {
     onFilterChanged: function (filter) {
-      console.log(filter)
       if (filter === null || filter.filter == null || filter.filter.length === 0) {
         this.$refs.tags.selectTag(null)
       }

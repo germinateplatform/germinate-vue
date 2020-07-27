@@ -35,6 +35,9 @@ export default {
       this.apiGetEntityTypeStats(result => {
         this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
       })
+    },
+    darkMode: function (newValue) {
+      this.loadAndSetDarkMode()
     }
   },
   created: async function () {
@@ -58,6 +61,16 @@ export default {
   },
   mixins: [ miscApi, statsApi ],
   methods: {
+    loadAndSetDarkMode: function () {
+      import('darkreader')
+        .then(({ enable, disable }) => {
+          if (this.darkMode === true) {
+            enable()
+          } else {
+            disable()
+          }
+        })
+    },
     print: function (newContent) {
       // Set the print content
       this.printContent = newContent
@@ -94,6 +107,8 @@ export default {
     file.rel = 'stylesheet'
     file.href = this.baseUrl + 'settings/css'
     document.head.appendChild(file)
+
+    this.loadAndSetDarkMode()
   }
 }
 </script>

@@ -10,6 +10,7 @@ export default {
       'baseUrl',
       'cookiesAccepted',
       'customChartColors',
+      'darkMode',
       'entityTypeStats',
       'helpKey',
       'hiddenColumns',
@@ -48,6 +49,13 @@ export default {
     }
   },
   methods: {
+    toggleDarkMode: function () {
+      if (this.darkMode === true) {
+        this.$store.dispatch('ON_DARK_MODE_CHANGED', false)
+      } else {
+        this.$store.dispatch('ON_DARK_MODE_CHANGED', true)
+      }
+    },
     userIsAtLeast: function (userType, atLeast) {
       switch (atLeast) {
         case 'Administrator':
