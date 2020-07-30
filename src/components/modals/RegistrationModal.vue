@@ -19,7 +19,7 @@
       <div v-if="currentStep === 0">
         <!-- Registration disclaimer -->
         <blockquote class="blockquote p-2">
-          <div v-html="$t('widgetRegisterDisclaimer')" />
+          <div v-html="$t('widgetRegisterDisclaimer')" v-if="$t('widgetRegisterDisclaimer')" />
         </blockquote>
 
         <b-form-checkbox v-model="disclaimerAccepted" switch>
@@ -28,7 +28,7 @@
       </div>
       <div v-else-if="currentStep === 1">
         <!-- GDPR information -->
-        <div v-html="$t('widgetRegisterGdpr')"/>
+        <div v-html="$t('widgetRegisterGdpr')" v-if="$t('widgetRegisterGdpr')"/>
         <hr />
         <b-form-checkbox v-model="hasGatekeeper" switch>
           {{ $t('widgetRegisterGatekeeperAccount') }} <i class="mdi mdi-help-circle" v-b-tooltip.hover :title="$t('tooltipRegisterGatekeeper')" />

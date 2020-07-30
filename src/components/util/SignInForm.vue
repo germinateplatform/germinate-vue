@@ -1,5 +1,5 @@
 <template>
-  <b-form>
+  <div>
     <p class="text-muted" v-html="$t('widgetSignInText')" />
     <b-form @submit.prevent="login">
       <!-- Username and password input fields -->
@@ -16,15 +16,21 @@
         <b-col cols="6">
           <b-button variant="primary" class="px-4" @click="login" :disabled="!enabled" type="submit"><b-spinner small type="grow" v-if="!enabled" /> {{ $t('buttonSignIn') }}</b-button>
         </b-col>
-        <b-col cols="6" class="d-flex justify-content-end align-items-center" v-if="serverSettings && serverSettings.gatekeeperUrl">
-          <a :href="serverSettings.gatekeeperUrl" class="px-0">{{ $t('widgetSignInForgotPassword') }}</a>
+        <b-col cols="6" class="d-flex justify-content-end align-items-end flex-column" v-if="serverSettings && serverSettings.gatekeeperUrl">
+          <a :href="serverSettings.gatekeeperUrl">{{ $t('widgetSignInForgotPassword') }}</a>
+          <a href="#" @click.prevent="$refs.registrationModal.show()" v-if="showRegistration">{{ $t('buttonRegister') }}</a>
         </b-col>
       </b-row>
     </b-form>
-  </b-form>
+
+    <!-- Registration modal -->
+    <RegistrationModal ref="registrationModal" v-if="showRegistration" />
+  </div>
 </template>
 
 <script>
+import RegistrationModal from '@/components/modals/RegistrationModal'
+
 export default {
   data: function () {
     return {
@@ -38,7 +44,14 @@ export default {
     enabled: {
       type: Boolean,
       default: true
+    },
+    showRegistration: {
+      type: Boolean,
+      default: false
     }
+  },
+  components: {
+    RegistrationModal
   },
   methods: {
     login: function () {

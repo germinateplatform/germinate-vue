@@ -22,7 +22,7 @@
 
     <!-- Modal containing the sign in form -->
     <b-modal ref="signInModal" :title="$t('widgetSignInTitle')" hide-footer>
-      <SignInForm v-on:login="signIn" :enabled="enabled" />
+      <SignInForm v-on:login="signIn" :enabled="enabled" :showRegistration="serverSettings && serverSettings.registrationEnabled" />
       <p class="text-danger mt-3" v-if="response">{{ response }}</p>
     </b-modal>
   </div>

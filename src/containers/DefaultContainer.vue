@@ -20,7 +20,7 @@
         </b-nav-form>
         <!-- Help information -->
         <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()" id="top-nav-help" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
-        <b-nav-item @click="toggleDarkMode()" id="top-nav-darkmode" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-theme-light-dark ${darkMode === true ? 'text-info' : ''}`" /></b-nav-item>
+        <b-nav-item @click="toggleDarkMode()" id="top-nav-darkmode" class="d-flex align-self-center" v-b-tooltip:hover="$t('menuTopDarkModeToggle')"><i :class="`mdi mdi-18px mdi-theme-light-dark ${darkMode === true ? 'text-info' : ''}`" /></b-nav-item>
         <!-- Locale dropdown -->
         <LocaleDropdown class="top-nav-locale d-flex align-self-center"/>
         <!-- Marked items -->
@@ -70,7 +70,7 @@
     </div>
     <TheFooter class="bg-dark">
       <div class="text-muted">
-        Version 4.1.0
+        Version 4.1.1
       </div>
       <div class="ml-auto">
         <a href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>
@@ -134,6 +134,11 @@ export default {
         title: () => this.$t('widgetIntroTourTitleHelp'),
         text: () => this.$t('widgetIntroTourTextHelp'),
         target: () => '#top-nav-help',
+        position: 'bottom'
+      }, {
+        title: () => this.$t('widgetIntroTourTitleDarkMode'),
+        text: () => this.$t('widgetIntroTourTextDarkMode'),
+        target: () => '#top-nav-darkmode',
         position: 'bottom'
       }, {
         title: () => this.$t('widgetIntroTourTitleLanguage'),
