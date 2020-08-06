@@ -118,7 +118,7 @@
         <h2 class="mdi-heading" id="attributes"><i class="mdi mdi-36px text-primary mdi-playlist-plus"/><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
         <p v-html="$t('pagePassportAttributeText')" />
         <!-- Germplasm attributes -->
-        <GermplasmAttributeTable :getData="getGermplasmAttributeData" />
+        <GermplasmAttributeTable :filterOn="attributeFilter" :getData="getGermplasmAttributeData" />
 
         <template v-if="serverSettings && serverSettings.commentsEnabled === true">
           <hr />
@@ -197,6 +197,20 @@ export default {
     PedigreeTable
   },
   mixins: [ germplasmApi, miscApi, typesMixin ],
+  computed: {
+    attributeFilter: function () {
+      return [{
+        column: {
+          name: 'germplasmId',
+          type: Number
+        },
+        comparator: 'equals',
+        operator: 'or',
+        values: [this.currentGermplasmId],
+        canBeChanged: false
+      }]
+    }
+  },
   methods: {
     scrollIntoView: function (evt) {
       evt.preventDefault()
@@ -211,7 +225,7 @@ export default {
       this.$refs.pdciModal.show()
     },
     getGermplasmAttributeData: function (data, callback) {
-      return this.apiPostGermplasmAttributeTable(this.currentGermplasmId, data, callback)
+      return this.apiPostGermplasmAttributeTable(data, callback)
     },
     getCommentData: function (data, callback) {
       return this.apiPostCommentsTable(data, callback)

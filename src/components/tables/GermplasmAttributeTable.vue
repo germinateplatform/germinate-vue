@@ -40,19 +40,19 @@ export default {
       return [
         {
           key: 'germplasmId',
-          type: undefined,
+          type: String,
           sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
           label: this.$t('tableColumnAttributeGermplasmId')
         }, {
           key: 'germplasmGid',
-          type: undefined,
+          type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           label: this.$t('tableColumnAttributeGermplasmGid')
         }, {
           key: 'germplasmName',
-          type: undefined,
+          type: String,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
           label: this.$t('tableColumnAttributeGermplasmName'),

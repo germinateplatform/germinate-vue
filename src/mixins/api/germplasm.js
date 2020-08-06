@@ -59,9 +59,8 @@ export default {
       delete queryData.ascending
       return this.authAjax({ url: 'germplasm/polygon/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostGermplasmAttributeTableExport: function (germplasmId, queryData, onSuccess, onError) {
-      var url = germplasmId !== null ? `germplasm/${germplasmId}/attribute/export` : 'germplasm/attribute/export'
-      return this.authAjax({ url: url, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    apiPostGermplasmAttributeTableExport: function (queryData, onSuccess, onError) {
+      return this.authAjax({ url: 'germplasm/attribute/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
     },
     apiExportPassport: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'germplasm/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
@@ -74,10 +73,9 @@ export default {
       queryData.page -= 1
       return this.authAjax({ url: `germplasm/${germplasmId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostGermplasmAttributeTable: function (germplasmId, queryData, onSuccess, onError) {
+    apiPostGermplasmAttributeTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
-      var url = germplasmId !== null ? `germplasm/${germplasmId}/attribute` : 'germplasm/attribute'
-      return this.authAjax({ url: url, method: 'POST', data: queryData, success: onSuccess, error: onError })
+      return this.authAjax({ url: 'germplasm/attribute', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostEntityIds: function (ids, direction, onSuccess, onError) {
       return this.authAjax({ url: `germplasm/entity?direction=${direction}`, method: 'POST', data: ids, success: onSuccess, error: onError })

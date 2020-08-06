@@ -284,7 +284,9 @@ export default {
         if (this.internalLocations.length === 1) {
           // If there's just one location, center it and open the popup
           this.location = this.internalLocations[0]
-          this.center = [this.location.locationLatitude, this.location.locationLongitude]
+          this.$nextTick(() => {
+            this.center = [this.location.locationLatitude, this.location.locationLongitude]
+          })
 
           var marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
           marker.on('click', e => {

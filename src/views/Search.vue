@@ -48,63 +48,63 @@
       <!-- Germplasm -->
       <Collapse icon="mdi-sprout" :title="$t('pageSearchResultSectionGermplasm')" :visible="false" class="mb-2" no-body ref="collapseGermplasm" v-if="isSearchType('germplasm')">
         <template v-slot:content="slotProps">
-          <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" :filterOn="getFilter('TABLE_COLUMNS_GERMPLASM_SEARCHABLE')" ref="tableGermplasm" v-on:data-changed="slotProps.update"/>
+          <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" :filterOn="initialFilters['TABLE_COLUMNS_GERMPLASM_SEARCHABLE']" ref="tableGermplasm" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Germplasm attributes -->
       <Collapse icon="mdi-playlist-plus" :title="$t('pageSearchResultSectionGermplasmAttributes')" :visible="false" class="mb-2" no-body ref="collapseGermplasmAttributes"  v-if="isSearchType('germplasmAttributes')">
         <template v-slot:content="slotProps">
-          <GermplasmAttributeTable :getData="getGermplasmAttributeData" :downloadTable="downloadGermplasmAttributes" :filterOn="getFilter('TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE')" ref="tableGermplasmAttributes" v-on:data-changed="slotProps.update"/>
+          <GermplasmAttributeTable :getData="getGermplasmAttributeData" :downloadTable="downloadGermplasmAttributes" :filterOn="initialFilters['TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE']" ref="tableGermplasmAttributes" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Trials data -->
       <Collapse icon="mdi-shovel" :title="$t('pageSearchResultSectionTrialsData')" :visible="false" class="mb-2" no-body ref="collapseTrials"  v-if="isSearchType('trials')">
         <template v-slot:content="slotProps">
-          <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsData" :filterOn="getFilter('TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE')" ref="tableTrials" v-on:data-changed="slotProps.update"/>
+          <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsData" :filterOn="initialFilters['TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE']" ref="tableTrials" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Chemical compound data -->
       <Collapse icon="mdi-flask" :title="$t('pageSearchResultSectionCompoundData')" :visible="false" class="mb-2" no-body ref="collapseCompoundData" v-if="isSearchType('compounds')">
         <template v-slot:content="slotProps">
-          <CompoundDataTable :getData="getCompoundData" :downloadTable="downloadCompoundData" :filterOn="getFilter('TABLE_COLUMNS_COMPOUND_DATA_SEARCHABLE')" ref="tableCompoundData" v-on:data-changed="slotProps.update"/>
+          <CompoundDataTable :getData="getCompoundData" :downloadTable="downloadCompoundData" :filterOn="initialFilters['TABLE_COLUMNS_COMPOUND_DATA_SEARCHABLE']" ref="tableCompoundData" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Map definition data -->
       <Collapse icon="mdi-dna" :title="$t('pageSearchResultSectionMapDefinitionData')" :visible="false" class="mb-2" no-body ref="collapseMapDefinitionData"  v-if="isSearchType('mapdefinitions')">
         <template v-slot:content="slotProps">
-          <MapDefinitionTable :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" :downloadTable="downloadMapDefinitionData" :filterOn="getFilter('TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE')" ref="tableMapDefinitionData" v-on:data-changed="slotProps.update"/>
+          <MapDefinitionTable :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" :downloadTable="downloadMapDefinitionData" :filterOn="initialFilters['TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE']" ref="tableMapDefinitionData" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Datasets -->
       <Collapse icon="mdi-database" :title="$t('pageSearchResultSectionDatasets')" :visible="false" class="mb-2" no-body ref="collapseDatasets"  v-if="isSearchType('datasets')">
         <template v-slot:content="slotProps">
-          <DatasetTable :getData="getDatasetData" :downloadTable="downloadDatasets" :filterOn="getFilter('TABLE_COLUMNS_DATASET_SEARCHABLE')" ref="tableDatasets" v-on:data-changed="slotProps.update"/>
+          <DatasetTable :getData="getDatasetData" :downloadTable="downloadDatasets" :filterOn="initialFilters['TABLE_COLUMNS_DATASET_SEARCHABLE']" ref="tableDatasets" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Dataset attributes -->
       <Collapse icon="mdi-playlist-plus" :title="$t('pageSearchResultSectionDatasetAttributes')" :visible="false" class="mb-2" no-body ref="collapseDatasetAttributes"  v-if="isSearchType('datasetAttributes')">
         <template v-slot:content="slotProps">
-          <DatasetAttributeTable :getData="getDatasetAttributeData" :downloadTable="downloadDatasetAttributes" :filterOn="getFilter('TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE')" ref="tableDatasetAttributes" v-on:data-changed="slotProps.update"/>
+          <DatasetAttributeTable :getData="getDatasetAttributeData" :downloadTable="downloadDatasetAttributes" :filterOn="initialFilters['TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE']" ref="tableDatasetAttributes" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Pedigree data -->
       <Collapse icon="mdi-sitemap" :title="$t('pageSearchResultSectionPedigreeData')" :visible="false" class="mb-2" no-body ref="collapsePedigree" v-if="isSearchType('pedigrees')">
         <template v-slot:content="slotProps">
-          <PedigreeTable :getData="getPedigreeData" :downloadTable="downloadPedigrees" :filterOn="getFilter('TABLE_COLUMNS_PEDIGREE_SEARCHABLE')" ref="tablePedigree" v-on:data-changed="slotProps.update"/>
+          <PedigreeTable :getData="getPedigreeData" :downloadTable="downloadPedigrees" :filterOn="initialFilters['TABLE_COLUMNS_PEDIGREE_SEARCHABLE']" ref="tablePedigree" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Location data -->
       <Collapse icon="mdi-map" :title="$t('pageSearchResultSectionLocationData')" :visible="false" class="mb-2" no-body ref="collapseLocationData" v-if="isSearchType('locations')">
         <template v-slot:content="slotProps">
-          <LocationTable :getData="getLocationData" :getIds="getLocationIds" :downloadTable="downloadLocations" :filterOn="getFilter('TABLE_COLUMNS_LOCATION_SEARCHABLE')" ref="tableLocations" v-on:data-changed="slotProps.update"/>
+          <LocationTable :getData="getLocationData" :getIds="getLocationIds" :downloadTable="downloadLocations" :filterOn="initialFilters['TABLE_COLUMNS_LOCATION_SEARCHABLE']" ref="tableLocations" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
@@ -141,6 +141,7 @@ import searchMixin from '@/mixins/search.js'
 export default {
   data: function () {
     return {
+      tableColumns: ['TABLE_COLUMNS_GERMPLASM_SEARCHABLE', 'TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE', 'TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE', 'TABLE_COLUMNS_COMPOUND_DATA_SEARCHABLE', 'TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE', 'TABLE_COLUMNS_DATASET_SEARCHABLE', 'TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE', 'TABLE_COLUMNS_PEDIGREE_SEARCHABLE', 'TABLE_COLUMNS_LOCATION_SEARCHABLE'],
       showAdditionalDatasets: true,
       searchTerm: null,
       tempSearchTerm: null,
@@ -187,6 +188,24 @@ export default {
     TrialsDataTable
   },
   mixins: [ compoundApi, datasetApi, germplasmApi, genotypeApi, locationApi, miscApi, traitApi, searchMixin ],
+  computed: {
+    initialFilters: function () {
+      let result = {}
+
+      this.tableColumns.forEach(columnConst => {
+        result[columnConst] = ColumnsMixin[columnConst].map(c => {
+          return {
+            column: c,
+            comparator: this.comparator,
+            operator: 'or',
+            values: [this.searchTerm]
+          }
+        })
+      })
+
+      return result
+    }
+  },
   methods: {
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
@@ -196,6 +215,7 @@ export default {
     },
     // FILTER
     getFilter: function (columnConst) {
+      console.log('getFilter', columnConst)
       return ColumnsMixin[columnConst].map(c => {
         return {
           column: c,
@@ -257,10 +277,10 @@ export default {
     },
     // GERMPLASM ATTRIBUTES
     getGermplasmAttributeData: function (data, callback) {
-      return this.apiPostGermplasmAttributeTable(null, data, callback)
+      return this.apiPostGermplasmAttributeTable(data, callback)
     },
     downloadGermplasmAttributes: function (data, callback) {
-      return this.apiPostGermplasmAttributeTableExport(null, data, callback)
+      return this.apiPostGermplasmAttributeTableExport(data, callback)
     },
     // PEDIGREES
     getPedigreeData: function (data, callback) {
@@ -293,11 +313,19 @@ export default {
         // Refresh all tables
         Object.keys(this.$refs)
           .filter(r => r.startsWith('table'))
-          .forEach(t => this.$refs[t].refresh())
+          .forEach(t => {
+            if (this.$refs[t]) {
+              this.$refs[t].refresh()
+            }
+          })
         // Set loading status for all collapse elements
         Object.keys(this.$refs)
           .filter(r => r.startsWith('collapse'))
-          .forEach(t => this.$refs[t].setLoading(true))
+          .forEach(t => {
+            if (this.$refs[t]) {
+              this.$refs[t].setLoading(true)
+            }
+          })
         // Change window URL to reflect new search term
         window.history.replaceState({}, null, this.$router.resolve({ name: 'search-query', params: { searchTerm: this.searchTerm } }).href)
       })

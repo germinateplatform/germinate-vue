@@ -1,125 +1,153 @@
 <template>
-  <BaseTable v-bind="$props"
-              :columns="columns"
-              :options="options"
-              itemType="germplasm"
-              ref="germplasmTable"
-              v-on="$listeners">
-    <!-- HEAD: Germplasm PUID -->
-    <template v-slot:head(germplasmPuid)="data">
-      <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
-    </template>
-    <!-- HEAD Germplasm PDCI -->
-    <template v-slot:head(pdci)="data">
-      <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPdci')"/>
-    </template>
-    <!-- HEAD: Dataset types -->
-    <template v-slot:head(dataTypes)="data">
-      <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmDataTypes')"/>
-    </template>
+  <div>
+    <BaseTable v-bind="$props"
+                :columns="columns"
+                :options="options"
+                itemType="germplasm"
+                class="germplasm-table"
+                ref="germplasmTable"
+                v-on="$listeners">
+      <!-- HEAD: Germplasm PUID -->
+      <template v-slot:head(germplasmPuid)="data">
+        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
+      </template>
+      <!-- HEAD Germplasm PDCI -->
+      <template v-slot:head(pdci)="data">
+        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPdci')"/>
+      </template>
+      <!-- HEAD: Dataset types -->
+      <template v-slot:head(dataTypes)="data">
+        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmDataTypes')"/>
+      </template>
 
-    <!-- Germplasm id link -->
-    <template v-slot:cell(germplasmId)="data">
-      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
-    </template>
-    <!-- Germplasm name link -->
-    <template v-slot:cell(germplasmName)="data">
-      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
-    </template>
-    <!-- Germplasm GID link -->
-    <template v-slot:cell(germplasmGid)="data">
-      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
-    </template>
-    <!-- Germplasm number link -->
-    <template v-slot:cell(germplasmNumber)="data">
-      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmNumber }}</router-link>
-    </template>
-    <!-- Entity type -->
-    <template v-slot:cell(entityTypeName)="data">
-      <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityTypeName].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityTypeName].color()};`" /> {{ entityTypes[data.item.entityTypeName].text() }}</span>
-    </template>
-    <!-- Synonyms -->
-    <template v-slot:cell(synonyms)="data">
-      <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
-    </template>
-    <!-- Location elevation -->
-    <template v-slot:cell(elevation)="data">
-      <span v-if="data.item.elevation !== undefined">{{ data.item.elevation.toFixed(2) }}</span>
-    </template>
-    <!-- Location latitude -->
-    <template v-slot:cell(latitude)="data">
-      <span v-if="data.item.latitude !== undefined">{{ data.item.latitude.toFixed(2) }}</span>
-    </template>
-    <!-- Location longitude -->
-    <template v-slot:cell(longitude)="data">
-      <span v-if="data.item.longitude !== undefined">{{ data.item.longitude.toFixed(2) }}</span>
-    </template>
-    <!-- Country flag -->
-    <template v-slot:cell(countryName)="data">
-        <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName">
-          <i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span>
-        </span>
-    </template>
-    <!-- Formatted colldate -->
-    <template v-slot:cell(collDate)="data">
-      <span v-if="data.item.collDate">{{ data.item.collDate | toDate }}</span>
-    </template>
-    <!-- Image preview -->
-    <template v-slot:cell(imageCount)="data">
-      <div class="table-image" v-if="data.item.imageCount !== undefined && data.item.imageCount > 0">
-        <a href="#" class="text-dark" @click.prevent="" :id="`table-image-popover-${data.item.germplasmId}`" v-b-tooltip.hover :title="$t('tableTooltipGermplasmImage')">
-          <i class="mdi mdi-18px mdi-camera"/> <span> {{ data.item.imageCount }}</span>
+      <template v-slot:cell(preview)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }" event="" @click.native.prevent="selectGermplasm(data.item.germplasmId)" class="table-link">
+          <i class="mdi mdi-18px mdi-open-in-app" />
+        </router-link>
+      </template>
+      <!-- Germplasm id link -->
+      <template v-slot:cell(germplasmId)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
+      </template>
+      <!-- Germplasm name link -->
+      <template v-slot:cell(germplasmName)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
+      </template>
+      <!-- Germplasm GID link -->
+      <template v-slot:cell(germplasmGid)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
+      </template>
+      <!-- Germplasm number link -->
+      <template v-slot:cell(germplasmNumber)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmNumber }}</router-link>
+      </template>
+      <!-- Entity type -->
+      <template v-slot:cell(entityTypeName)="data">
+        <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityTypeName].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityTypeName].color()};`" /> {{ entityTypes[data.item.entityTypeName].text() }}</span>
+      </template>
+      <!-- Synonyms -->
+      <template v-slot:cell(synonyms)="data">
+        <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
+      </template>
+      <!-- Location name -->
+      <template v-slot:cell(location)="data">
+        <a href="#" @click.prevent="data.toggleDetails()" class="table-link">
+          <i class="mdi mdi-18px mdi-map-marker align-middle" v-b-tooltip.hover :title="$t('tableTooltipGermplasmLocation')" />
+          <span>{{ data.item.location }}</span>
         </a>
-        <b-popover
-          :target="`table-image-popover-${data.item.germplasmId}`"
-          custom-class="table-image-popover"
-          placement="top"
-          boundary="window"
-          triggers="click blur">
-          <img :src="getSrc(data.item)" alt="Germplasm image" />
-        </b-popover>
-      </div>
-    </template>
-    <!-- Biological status popover -->
-    <template v-slot:cell(biologicalStatusName)="data">
-      <div v-if="data.item.biologicalStatusName">
-        <span :id="`table-biostat-popover-${data.item.germplasmId}`">{{ data.item.biologicalStatusName.split(" (")[0] }}</span>
-        <b-popover
-          :target="`table-biostat-popover-${data.item.germplasmId}`"
-          placement="top"
-          boundary="window"
-          triggers="hover focus">
-          {{ data.item.biologicalStatusName }}
-        </b-popover>
-      </div>
-    </template>
-    <!-- PDCI -->
-    <template v-slot:cell(pdci)="data">
-      <div v-if="data.item.pdci !== undefined" class="table-pdci">
-        <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg); vertical-align: text-bottom;">
-          <g>
-            <circle id="circle" style="stroke-dasharray: 44; stroke-dashoffset: 0;" r="7" cy="9" cx="9" stroke-width="4" stroke="#ccc" fill="none"/>
-            <circle id="circle" :style="'stroke-dasharray: 44; stroke-dashoffset: ' + (44 - (data.item.pdci / 10 * 44)) + ';'" r="7" cy="9" cx="9" stroke-width="4" stroke="#2f353a" fill="none"/>
-          </g>
-        </svg>
-        <span> {{ data.item.pdci.toFixed(2) }}</span>
-      </div>
-    </template>
-    <!-- Dataset types -->
-    <template v-slot:cell(dataTypes)="data">
-      <span class="text-nowrap">
-        <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()" v-if="data.item.hasTrialsData" />
-        <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()" v-if="data.item.hasGenotypicData" />
-        <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()" v-if="data.item.hasCompoundData" />
-        <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()" v-if="data.item.hasAllelefreqData" />
-      </span>
-    </template>
-  </BaseTable>
+      </template>
+      <!-- Location elevation -->
+      <template v-slot:cell(elevation)="data">
+        <span v-if="data.item.elevation !== undefined">{{ data.item.elevation.toFixed(2) }}</span>
+      </template>
+      <!-- Location latitude -->
+      <template v-slot:cell(latitude)="data">
+        <span v-if="data.item.latitude !== undefined">{{ data.item.latitude.toFixed(2) }}</span>
+      </template>
+      <!-- Location longitude -->
+      <template v-slot:cell(longitude)="data">
+        <span v-if="data.item.longitude !== undefined">{{ data.item.longitude.toFixed(2) }}</span>
+      </template>
+      <!-- Country flag -->
+      <template v-slot:cell(countryName)="data">
+          <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName">
+            <i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span>
+          </span>
+      </template>
+      <!-- Formatted colldate -->
+      <template v-slot:cell(collDate)="data">
+        <span v-if="data.item.collDate">{{ data.item.collDate | toDate }}</span>
+      </template>
+      <!-- Image preview -->
+      <template v-slot:cell(imageCount)="data">
+        <div class="table-image" v-if="data.item.imageCount !== undefined && data.item.imageCount > 0">
+          <a href="#" class="text-dark" @click.prevent="" :id="`table-image-popover-${data.item.germplasmId}`" v-b-tooltip.hover :title="$t('tableTooltipGermplasmImage')">
+            <i class="mdi mdi-18px mdi-camera"/> <span> {{ data.item.imageCount }}</span>
+          </a>
+          <b-popover
+            :target="`table-image-popover-${data.item.germplasmId}`"
+            custom-class="table-image-popover"
+            placement="top"
+            boundary="window"
+            triggers="click blur">
+            <img :src="getSrc(data.item)" alt="Germplasm image" />
+          </b-popover>
+        </div>
+      </template>
+      <!-- Biological status popover -->
+      <template v-slot:cell(biologicalStatusName)="data">
+        <div v-if="data.item.biologicalStatusName">
+          <span :id="`table-biostat-popover-${data.item.germplasmId}`">{{ data.item.biologicalStatusName.split(" (")[0] }}</span>
+          <b-popover
+            :target="`table-biostat-popover-${data.item.germplasmId}`"
+            placement="top"
+            boundary="window"
+            triggers="hover focus">
+            {{ data.item.biologicalStatusName }}
+          </b-popover>
+        </div>
+      </template>
+      <!-- PDCI -->
+      <template v-slot:cell(pdci)="data">
+        <div v-if="data.item.pdci !== undefined" class="table-pdci">
+          <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg); vertical-align: text-bottom;">
+            <g>
+              <circle id="circle" style="stroke-dasharray: 44; stroke-dashoffset: 0;" r="7" cy="9" cx="9" stroke-width="4" stroke="#ccc" fill="none"/>
+              <circle id="circle" :style="'stroke-dasharray: 44; stroke-dashoffset: ' + (44 - (data.item.pdci / 10 * 44)) + ';'" r="7" cy="9" cx="9" stroke-width="4" stroke="#2f353a" fill="none"/>
+            </g>
+          </svg>
+          <span> {{ data.item.pdci.toFixed(2) }}</span>
+        </div>
+      </template>
+      <!-- Dataset types -->
+      <template v-slot:cell(dataTypes)="data">
+        <span class="text-nowrap">
+          <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()" v-if="data.item.hasTrialsData" />
+          <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()" v-if="data.item.hasGenotypicData" />
+          <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()" v-if="data.item.hasCompoundData" />
+          <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()" v-if="data.item.hasAllelefreqData" />
+        </span>
+      </template>
+
+      <!-- Row details is where the dataset locations are shown on a map -->
+      <template v-slot:row-details="data">
+        <LocationMap :locations="[{ locationName: data.item.location, locationLatitude: data.item.latitude, locationLongitude: data.item.longitude }]" v-if="data.item.latitude && data.item.longitude" :showLinks="false"/>
+      </template>
+    </BaseTable>
+
+    <!-- Modal to show the passport page on data point click -->
+    <b-modal size="xl" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null" scrollable ok-only hide-header :ok-title="$t('buttonClose')">
+      <Passport :germplasmId="germplasmId" :isPopup="true" />
+    </b-modal>
+
+  </div>
 </template>
 
 <script>
 import { EventBus } from '@/plugins/event-bus.js'
 import BaseTable from '@/components/tables/BaseTable'
+import LocationMap from '@/components/map/LocationMap'
+import Passport from '@/views/data/germplasm/Passport'
 import defaultProps from '@/const/table-props.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import typesMixin from '@/mixins/types.js'
@@ -143,6 +171,7 @@ export default {
   },
   data: function () {
     return {
+      germplasmId: null,
       options: {
         idColumn: 'germplasmId',
         tableName: 'germplasm',
@@ -174,6 +203,12 @@ export default {
   computed: {
     columns: function () {
       var result = [
+        {
+          key: 'preview',
+          type: undefined,
+          sortable: false,
+          label: ''
+        },
         {
           key: 'germplasmId',
           type: Number,
@@ -357,10 +392,16 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    LocationMap,
+    Passport
   },
   mixins: [ germplasmApi, typesMixin ],
   methods: {
+    selectGermplasm: function (id) {
+      this.germplasmId = id
+      this.$nextTick(() => this.$refs.passportModal.show())
+    },
     refresh: function () {
       this.$refs.germplasmTable.refresh()
     },
@@ -467,7 +508,8 @@ export default {
 .table-image:hover {
   cursor: pointer;
 }
-.table-image > a {
+.table-link:hover,
+.table-image > a:hover {
   text-decoration: none;
 }
 .pdci-table > svg {
@@ -488,5 +530,8 @@ export default {
 }
 .table-cell-filter:hover {
   cursor: pointer;
+}
+.germplasm-table .b-table-details td {
+  padding: 0;
 }
 </style>

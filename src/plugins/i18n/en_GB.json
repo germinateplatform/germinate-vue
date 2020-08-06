@@ -898,6 +898,7 @@
   "tableTooltipDatasetLocations": "Show locations",
   "tableTooltipExperimentDetailsLink": "Show all datasets for this experiment",
   "tableTooltipGermplasmImage": "Images available for this germplasm. Click to see an example.",
+  "tableTooltipGermplasmLocation": "Show location",
   "templateImportTypeMcpd": "MCPD",
   "templateImportTypeGenotype": "Genotype",
   "templateImportTypeGroups": "Groups",
