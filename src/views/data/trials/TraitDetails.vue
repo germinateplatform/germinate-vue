@@ -124,7 +124,12 @@ export default {
       this.checkNumbers()
     },
     updateCategoryChart: function () {
-      this.apiGetTraitCompoundClimateCategoricalFile('trait', this.traitId, result => {
+      const query = {
+        datasetIds: null,
+        xIds: [this.traitId]
+      }
+
+      this.apiPostTraitStatsCategorical(query, result => {
         this.categoricalTraitFile = result
       })
     }

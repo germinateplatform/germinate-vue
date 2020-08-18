@@ -62,27 +62,29 @@ export default {
       return this.downloadName
     },
     redraw: function () {
-      this.$plotly.purge(this.$refs.barChart)
-
       if (this.sourceFile) {
-        var reader = new FileReader()
-        reader.onload = () => {
-          var data = this.$plotly.d3.tsv.parse(reader.result)
+        this.$plotly.purge(this.$refs.barChart)
 
-          this.$plotly.d3.select(this.$refs.barChart)
-            .datum(data)
-            .call(plotlyBarChart()
-              .height(this.height)
-              .colors(this.getColors())
-              .x(this.xColumn)
-              .xCategory(this.xTitle)
-              .yCategory(this.yTitle)
-              .mode(this.mode)
-              .onPointClicked(data => {
-                this.$emit('bar-clicked', data)
-              }))
+        if (this.sourceFile) {
+          var reader = new FileReader()
+          reader.onload = () => {
+            var data = this.$plotly.d3.tsv.parse(reader.result)
+
+            this.$plotly.d3.select(this.$refs.barChart)
+              .datum(data)
+              .call(plotlyBarChart()
+                .height(this.height)
+                .colors(this.getColors())
+                .x(this.xColumn)
+                .xCategory(this.xTitle)
+                .yCategory(this.yTitle)
+                .mode(this.mode)
+                .onPointClicked(data => {
+                  this.$emit('bar-clicked', data)
+                }))
+          }
+          reader.readAsText(this.sourceFile)
         }
-        reader.readAsText(this.sourceFile)
       }
     }
   },

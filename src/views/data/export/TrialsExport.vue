@@ -26,13 +26,26 @@
         </b-col>
       </b-row>
       <!-- Boxplot section -->
-      <BoxplotSelection :datasetIds="datasetIds"
-                        v-bind="config"
-                        xTypes="traits"
-                        :groups="groups"
-                        :texts="textsChart"
-                        :getItems="getTraits"
-                        v-show="currentTab === 'overview'" />
+      <div v-show="currentTab === 'overview'">
+        <BoxplotSelection :datasetIds="datasetIds"
+                          v-bind="config"
+                          xTypes="traits"
+                          :groups="groups"
+                          :texts="textsChart"
+                          :getItems="getTraits"
+                          v-on:plot-clicked="updateCategoricalTraitCharts" />
+
+        <div v-for="(trait, i) in categoricalTraitsSelected" :key="`trait-bar-chart-${i}`">
+          <h3>{{ trait.traitName }}</h3>
+          <BarChart xColumn="phenotype_value"
+            :xTitle="trait.traitName"
+            :yTitle="$t('genericCount')"
+            :height="400"
+            :downloadName="trait.traitName"
+            :sourceFile="categoricalTraitFiles[trait.traitId]"
+            v-if="categoricalTraitFiles[trait.traitId]"/>
+        </div>
+      </div>
       <!-- Trait matrix chart section -->
       <TraitExportChartSelection :datasetIds="datasetIds"
                                  v-bind="config"
@@ -55,6 +68,7 @@
 </template>
 
 <script>
+import BarChart from '@/components/charts/BarChart'
 import BoxplotSelection from '@/components/export/BoxplotSelection'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import TraitExportChartSelection from '@/components/export/TraitExportChartSelection'
@@ -66,6 +80,7 @@ import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
 import colorMixin from '@/mixins/colors.js'
+import Vue from 'vue'
 
 export default {
   props: [ 'datasetIds' ],
@@ -74,6 +89,8 @@ export default {
       datasets: null,
       traits: null,
       groups: null,
+      categoricalTraitsSelected: [],
+      categoricalTraitFiles: {},
       config: {
         idKey: 'traitId',
         nameKey: 'traitName',
@@ -134,6 +151,7 @@ export default {
     }
   },
   components: {
+    BarChart,
     BoxplotSelection,
     DatasetOverview,
     ExportDownloadSelection,
@@ -142,6 +160,20 @@ export default {
   },
   mixins: [ datasetApi, groupApi, miscApi, traitApi, colorMixin ],
   methods: {
+    updateCategoricalTraitCharts: function (selectedTraits) {
+      this.categoricalTraitsSelected = selectedTraits.filter(t => t.dataType === 'char_')
+      this.categoricalTraitFiles = {}
+      this.categoricalTraitsSelected.forEach(t => {
+        const query = {
+          datasetIds: this.datasetIds,
+          xIds: [t.traitId]
+        }
+
+        this.apiPostTraitStatsCategorical(query, result => {
+          Vue.set(this.categoricalTraitFiles, t.traitId, result)
+        })
+      })
+    },
     updateGroups: function () {
       const request = {
         datasetIds: this.datasetIds,

@@ -1,7 +1,8 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-// import cssVars from 'css-vars-ponyfill'
-import 'es6-promise/auto'
+import 'core-js/es6/promise'
+import 'core-js/es6/string'
+import 'core-js/es7/array'
+import 'es6-object-assign/auto'
+import 'es6-set/implement'
 
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
@@ -11,42 +12,16 @@ import store from '@/store/store'
 import { i18n } from '@/plugins/i18n.js'
 import mixin from '@/mixins/mixin.js'
 // LEAFLET
-import { LMap, LTileLayer, LMarker, LPopup, LImageOverlay } from 'vue2-leaflet'
-import { Icon } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
 
-// require('core-js/es6/promise')
-require('core-js/es6/string')
-require('core-js/es7/array')
-require('es6-object-assign/auto')
-require('es6-set/implement')
-
 let axiosDefaults = require('axios/lib/defaults')
-
-// todo
-// cssVars()
 
 Vue.mixin(mixin)
 Vue.use(BootstrapVue)
 Vue.use(Autocomplete)
-
-// Register leaflet components
-Vue.component('l-map', LMap)
-Vue.component('l-tile-layer', LTileLayer)
-Vue.component('l-marker', LMarker)
-Vue.component('l-popup', LPopup)
-Vue.component('l-image-overlay', LImageOverlay)
-
-// Set the leaflet marker icon
-delete Icon.Default.prototype._getIconUrl
-Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-})
 
 Vue.use({
   install: function (Vue) {

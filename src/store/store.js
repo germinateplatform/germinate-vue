@@ -40,7 +40,7 @@ const userState = {
     markers: []
   },
   hiddenColumns: {
-    germplasm: ['institutionId', 'institutionName', 'latitude', 'longitude', 'collDate'],
+    germplasm: ['id', 'entityParentName', 'entityParentGeneralIdentifier', 'institutionId', 'institutionName', 'latitude', 'longitude', 'collDate'],
     germplasmAttributes: [],
     images: [],
     climates: [],

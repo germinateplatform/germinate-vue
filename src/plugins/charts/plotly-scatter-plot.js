@@ -186,16 +186,25 @@ export function plotlyScatterPlot() {
 			const isDataPointMarked = markedIds.indexOf(parseInt(row.dbId)) !== -1
 			return isMarked ? isDataPointMarked : !isDataPointMarked;
 		}).map(function (row) {
-			if (row[key] === '') {
+			const dataPoint = row[key]
+			if (dataPoint === '') {
 				return null
 			} else {
+				let isDate = false
+
 				if (key === 'Date') {
-					return row[key];
+					isDate = true
+				} else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
+					isDate = true
+				}
+
+				if (isDate) {
+					return dataPoint;
 				} else {
-					var value = parseFloat(row[key])
+					var value = parseFloat(dataPoint)
 
 					if (isNaN(value)) {
-						return row[key];
+						return dataPoint;
 					} else {
 						return value;
 					}
@@ -208,15 +217,28 @@ export function plotlyScatterPlot() {
 		return rows.filter(function (row) {
 			return row[referenceColumn] === referenceValue;
 		}).map(function (row) {
-			if (row[key] === '') {
+			const dataPoint = row[key]
+			if (dataPoint === '') {
 				return null
 			} else {
-				var value = parseFloat(row[key])
+				let isDate = false
 
-				if (isNaN(value)) {
-					return row[key];
+				if (key === 'Date') {
+					isDate = true
+				} else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
+					isDate = true
+				}
+
+				if (isDate) {
+					return dataPoint;
 				} else {
-					return value;
+					var value = parseFloat(dataPoint)
+
+					if (isNaN(value)) {
+						return dataPoint;
+					} else {
+						return value;
+					}
 				}
 			}
 		})

@@ -61,12 +61,21 @@ import L from 'leaflet'
 import climateApi from '@/mixins/api/climate.js'
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
+import { LMap, LImageOverlay } from 'vue2-leaflet'
 require('leaflet.heat')
 require('leaflet.sync')
 require('leaflet.markercluster')
 require('leaflet-easybutton')
 var countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
+
+// Set the leaflet marker icon
+delete L.Icon.Default.prototype._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+})
 
 export default {
   data: function () {
@@ -128,7 +137,9 @@ export default {
   },
   components: {
     ClimateOverlayModal,
-    ColorGradient
+    ColorGradient,
+    'l-map': LMap,
+    'l-image-overlay': LImageOverlay
   },
   mixins: [ climateApi, typesMixin, colorMixin ],
   methods: {

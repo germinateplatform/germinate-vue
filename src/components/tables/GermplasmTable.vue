@@ -21,7 +21,7 @@
       </template>
 
       <template v-slot:cell(preview)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }" event="" @click.native.prevent="selectGermplasm(data.item.germplasmId)" class="table-link">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }" event="" @click.native.prevent="selectGermplasm(data.item.germplasmId)" class="table-link" v-b-tooltip:hover="$t('tableTooltipGermplasmPreviewPassport')">
           <i class="mdi mdi-18px mdi-open-in-app" />
         </router-link>
       </template>

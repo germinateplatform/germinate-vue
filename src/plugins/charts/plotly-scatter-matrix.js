@@ -136,6 +136,8 @@ export function plotlyScatterMatrix() {
 				if (d === 'Date') {
 					layout['xaxis' + id].type = 'date'
 					layout['yaxis' + id].type = 'date'
+					layout['xaxis' + id].tickformat = '%Y-%m-%d'
+					layout['yaxis' + id].tickformat = '%Y-%m-%d'
 				}
 			});
 
@@ -200,16 +202,25 @@ export function plotlyScatterMatrix() {
 			const isDataPointMarked = markedIds.indexOf(parseInt(row.dbId)) !== -1
 			return isMarked ? isDataPointMarked : !isDataPointMarked;
 		}).map(function (row) {
-			if (row[key] === '') {
+			const dataPoint = row[key]
+			if (dataPoint === '') {
 				return null
 			} else {
+				let isDate = false
+
 				if (key === 'Date') {
-					return row[key];
+					isDate = true
+				} else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
+					isDate = true
+				}
+
+				if (isDate) {
+					return dataPoint;
 				} else {
-					var value = parseFloat(row[key])
+					var value = parseFloat(dataPoint)
 
 					if (isNaN(value)) {
-						return row[key];
+						return dataPoint;
 					} else {
 						return value;
 					}
@@ -222,16 +233,25 @@ export function plotlyScatterMatrix() {
 		return rows.filter(function (row) {
 			return row[referenceColumn] === referenceValue;
 		}).map(function (row) {
-			if (row[key] === '') {
+			const dataPoint = row[key]
+			if (dataPoint === '') {
 				return null
 			} else {
+				let isDate = false
+
 				if (key === 'Date') {
-					return row[key];
+					isDate = true
+				} else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
+					isDate = true
+				}
+
+				if (isDate) {
+					return dataPoint;
 				} else {
-					var value = parseFloat(row[key])
+					var value = parseFloat(dataPoint)
 
 					if (isNaN(value)) {
-						return row[key];
+						return dataPoint;
 					} else {
 						return value;
 					}

@@ -5,7 +5,7 @@
     <ExportSelection v-bind="$props"
                      :min="1"
                      :max="null"
-                     :onlyNumeric="true"
+                     :onlyNumeric="false"
                      v-on:button-clicked="plot" />
     <BoxplotChart :datasetIds="datasetIds" :yIds="yIds" :xIds="xIds" :yGroupIds="yGroupIds" :chartMode="(this.yGroupIds !== null && this.yGroupIds.length > 0) ? 'itemByGroup' : 'itemByDataset'" :xType="xType" v-if="showPlot" ref="boxplot"/>
   </div>
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     plot: function (query, selectedTraits) {
-      this.xIds = query.xIds
+      this.xIds = selectedTraits.filter(t => t.dataType !== 'char_').map(t => t[this.idKey])
       this.yIds = query.yIds
       this.yGroupIds = query.yGroupIds
 
@@ -78,6 +78,8 @@ export default {
         })
       }
       this.showPlot = true
+
+      this.$emit('plot-clicked', selectedTraits)
     }
   }
 }
