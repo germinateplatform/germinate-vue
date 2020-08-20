@@ -79,7 +79,7 @@ export default {
       }
       this.showPlot = true
 
-      this.$emit('plot-clicked', selectedTraits)
+      this.$emit('plot-clicked', query, selectedTraits)
     }
   }
 }

@@ -160,16 +160,18 @@ export default {
   },
   mixins: [ datasetApi, groupApi, miscApi, traitApi, colorMixin ],
   methods: {
-    updateCategoricalTraitCharts: function (selectedTraits) {
+    updateCategoricalTraitCharts: function (query, selectedTraits) {
       this.categoricalTraitsSelected = selectedTraits.filter(t => t.dataType === 'char_')
       this.categoricalTraitFiles = {}
       this.categoricalTraitsSelected.forEach(t => {
-        const query = {
+        const data = {
           datasetIds: this.datasetIds,
-          xIds: [t.traitId]
+          xIds: [t.traitId],
+          yIds: query.yIds,
+          yGroupIds: query.yGroupIds
         }
 
-        this.apiPostTraitStatsCategorical(query, result => {
+        this.apiPostTraitStatsCategorical(data, result => {
           Vue.set(this.categoricalTraitFiles, t.traitId, result)
         })
       })
