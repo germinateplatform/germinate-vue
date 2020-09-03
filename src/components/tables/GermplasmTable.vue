@@ -51,10 +51,13 @@
       </template>
       <!-- Location name -->
       <template v-slot:cell(location)="data">
-        <a href="#" @click.prevent="data.toggleDetails()" class="table-link">
-          <i class="mdi mdi-18px mdi-map-marker align-middle" v-b-tooltip.hover :title="$t('tableTooltipGermplasmLocation')" />
-          <span>{{ data.item.location }}</span>
-        </a>
+        <template v-if="data.item.location">
+          <a href="#" @click.prevent="data.toggleDetails()" class="table-link" v-if="data.item.latitude && data.item.longitude">
+            <i class="mdi mdi-18px mdi-map-marker align-middle" v-b-tooltip.hover :title="$t('tableTooltipGermplasmLocation')" />
+            <span>{{ data.item.location }}</span>
+          </a>
+          <span v-else>{{ data.item.location }}</span>
+        </template>
       </template>
       <!-- Location elevation -->
       <template v-slot:cell(elevation)="data">
