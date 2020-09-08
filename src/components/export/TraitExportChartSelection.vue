@@ -10,7 +10,16 @@
         <h3 class="mt-3">{{ $t('pageTrialsExportColorByTitle') }}</h3>
         <p>{{ $t('pageTrialsExportColorByText') }}</p>
         <!-- Color by -->
-        <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
+        <b-form @submit.prevent class="chart-form">
+          <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
+
+          <b-input-group v-if="colorBySelection === 'specified_names'">
+            <b-textarea v-model="germplasmNames" />
+            <b-input-group-append>
+              <b-button @click="onColorByChanged"><i class="mdi mdi-18px mdi-refresh" /></b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form>
 
         <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
         <p class="text-info">{{ $t('pageTrialsExportChartText') }}</p>
@@ -74,7 +83,17 @@ export default {
       colorBySelection: null,
       plotData: null,
       selectedItems: null,
-      colorByGroupEnabled: false
+      colorByGroupEnabled: false,
+      germplasmNames: null
+    }
+  },
+  computed: {
+    germplasmNamesSplit: function () {
+      if (this.germplasmNames) {
+        return this.germplasmNames.split('\n')
+      } else {
+        return null
+      }
     }
   },
   watch: {
@@ -113,6 +132,9 @@ export default {
       }, {
         text: this.$t('widgetChartColoringByMarkedItems'),
         value: 'marked_items'
+      }, {
+        text: this.$t('widgetChartColoringByGermplasmName'),
+        value: 'specified_names'
       }]
 
       if (this.colorByGroupEnabled) {
@@ -137,18 +159,37 @@ export default {
       this.apiPostDatasetExport('trial', query, result => {
         this.selectedItems = selectedItems
         this.plotData = result
-        this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection, this.colorBySelection === 'marked_items' ? this.markedIds.germplasm : null))
+        this.$nextTick(() => this.$refs.chart.redraw(result, {
+          column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
+          ids: this.colorBySelection === 'marked_items' ? this.markedIds.germplasm : null,
+          names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
+        }))
         EventBus.$emit('show-loading', false)
       })
     },
     onColorByChanged: function () {
       if (this.plotData) {
-        this.$refs.chart.redraw(this.plotData, this.colorBySelection, this.colorBySelection === 'marked_items' ? this.markedIds.germplasm : null)
+        if (this.colorBySelection !== 'specified_names' || (this.germplasmNamesSplit !== null && this.germplasmNamesSplit.length > 0)) {
+          this.$refs.chart.redraw(this.plotData, {
+            column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
+            ids: this.colorBySelection === 'marked_items' ? this.markedIds.germplasm : null,
+            names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
+          })
+        }
       }
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
+.chart-form > select:not(:only-child) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.chart-form > .input-group * {
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 </style>

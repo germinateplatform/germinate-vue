@@ -145,11 +145,10 @@ export default {
     getFilename: function () {
       return 'trials-' + this.datasetIds.join('-')
     },
-    redraw: function (result, colorBy, markedIdsForColoring) {
+    redraw: function (result, colorBy) {
       this.loading = true
       this.sourceFile = result
       this.colorBy = colorBy
-      this.markedIdsForColoring = markedIdsForColoring
       this.selectedIds = []
 
       this.$plotly.purge(this.$refs.matrixChart)
@@ -168,7 +167,6 @@ export default {
           .datum(data)
           .call(plotlyScatterMatrix()
             .colorBy(colorBy)
-            .markedIdsForColoring(markedIdsForColoring)
             .columnsToIgnore(['name', 'puid', 'entity_parent_name', 'entity_parent_general_identifier', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'treatments_description', 'year', 'group_ids'])
             .onPointClicked(p => {
               // For trials and compounds we show the passport page on click

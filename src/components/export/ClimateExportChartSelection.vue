@@ -10,7 +10,16 @@
         <h3 class="mt-3">{{ $t('pageClimateExportColorByTitle') }}</h3>
         <p>{{ $t('pageClimateExportColorByText') }}</p>
         <!-- Color by -->
-        <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
+        <b-form @submit.prevent class="chart-form">
+          <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
+
+          <b-input-group v-if="colorBySelection === 'specified_names'">
+            <b-textarea v-model="locationNames" />
+            <b-input-group-append>
+              <b-button @click="onColorByChanged"><i class="mdi mdi-18px mdi-refresh" /></b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form>
 
         <h3 class="mt-3">{{ $t('pageClimateExportChartTitle') }}</h3>
         <p>{{ $t('pageClimateExportChartText') }}</p>
@@ -78,7 +87,17 @@ export default {
       colorBySelection: null,
       plotData: null,
       selectedItems: null,
-      colorByGroupEnabled: false
+      colorByGroupEnabled: false,
+      locationNames: null
+    }
+  },
+  computed: {
+    locationNamesSplit: function () {
+      if (this.locationNames) {
+        return this.locationNames.split('\n')
+      } else {
+        return null
+      }
     }
   },
   watch: {
@@ -111,6 +130,9 @@ export default {
       }, {
         text: this.$t('widgetChartColoringByMarkedItems'),
         value: 'marked_items'
+      }, {
+        text: this.$t('widgetChartColoringByLocationName'),
+        value: 'specified_names'
       }]
 
       if (this.colorByGroupEnabled) {
@@ -135,13 +157,21 @@ export default {
       this.apiPostDatasetExport('climate', query, result => {
         this.selectedItems = selectedItems
         this.plotData = result
-        this.$nextTick(() => this.$refs.chart.redraw(result, this.colorBySelection, this.colorBySelection === 'marked_items' ? this.markedIds.locations : null))
+        this.$nextTick(() => this.$refs.chart.redraw(result, {
+          column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
+          ids: this.colorBySelection === 'marked_items' ? this.markedIds.locations : null,
+          names: this.colorBySelection === 'specified_names' ? this.locationNamesSplit : null
+        }))
         EventBus.$emit('show-loading', false)
       })
     },
     onColorByChanged: function () {
       if (this.plotData) {
-        this.$refs.chart.redraw(this.plotData, this.colorBySelection, this.colorBySelection === 'marked_items' ? this.markedIds.locations : null)
+        this.$refs.chart.redraw(this.plotData, {
+          column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
+          ids: this.colorBySelection === 'marked_items' ? this.markedIds.locations : null,
+          names: this.colorBySelection === 'specified_names' ? this.locationNamesSplit : null
+        })
       }
     }
   }
@@ -149,4 +179,13 @@ export default {
 </script>
 
 <style>
+.chart-form > select:not(:only-child) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.chart-form > .input-group * {
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 </style>

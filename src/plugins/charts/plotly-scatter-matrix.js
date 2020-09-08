@@ -1,7 +1,10 @@
 /* eslint-disable */
 export function plotlyScatterMatrix() {
-	var colorBy = '',
-		markedIdsForColoring = null,
+	var colorBy = {
+      column: null,
+      ids: null,
+      names: null
+    },
 		colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"],
 		height = null,
 		width = null,
@@ -13,12 +16,23 @@ export function plotlyScatterMatrix() {
 		selection.each(function (rows) {
 			var symbolList = [ "circle", "square", "diamond", "cross", "x", "triangle-up", "triangle-down", "triangle-left", "triangle-right", "triangle-ne", "triangle-se", "triangle-sw", "triangle-nw", "pentagon", "hexagon", "hexagon2", "octagon", "star", "hexagram", "star-triangle-up", "star-triangle-down", "star-square", "star-diamond", "diamond-tall", "diamond-wide", "hourglass", "bowtie" ]
 
-			var categories = new Set();
+      var cats = [];
+      if (colorBy.column !== null || (colorBy.column === null && colorBy.ids === null && colorBy.names === null)) {
+        var categories = new Set();
 
-			var unpacked = unpack(rows, colorBy);
-			for (i = 0; i < unpacked.length; i++) {
-				categories.add(unpacked[i])
-			}
+        var unpacked = unpack(rows, colorBy.column);
+        for (i = 0; i < unpacked.length; i++) {
+          categories.add(unpacked[i])
+        }
+
+        categories.forEach(function (c) {
+          cats.push(c);
+        });
+
+        cats.sort()
+      } else {
+        cats = ['Unmarked', 'Marked']
+      }
 
 			var dims = Object.keys(rows[0]);
 			dims = dims.filter(d => {
@@ -27,25 +41,13 @@ export function plotlyScatterMatrix() {
 
 			var data = [];
 
-			var cats = [];
-
-			if (markedIdsForColoring === null) {
-				categories.forEach(function (c) {
-					cats.push(c);
-				});
-
-				cats.sort()
-			} else {
-				cats = ['Unmarked', 'Marked']
-			}
-
-			if (markedIdsForColoring === null) {
+			if (colorBy.column !== null || (colorBy.column === null && colorBy.ids === null && colorBy.names === null)) {
 				for (var i = 0; i < cats.length; i++) {
-					var ids = cats[i] ? unpackConditional(rows, 'dbId', colorBy, cats[i]) : unpack(rows, 'dbId');
+					var ids = cats[i] ? unpackConditional(rows, 'dbId', colorBy.column, cats[i]) : unpack(rows, 'dbId');
 					ids = ids.map(function (i) {
 						return i + "-" + uuidv4();
 					});
-					var names = cats[i] ? unpackConditional(rows, 'name', colorBy, cats[i]) : unpack(rows, 'name');
+					var names = cats[i] ? unpackConditional(rows, 'name', colorBy.column, cats[i]) : unpack(rows, 'name');
 
 					data.push({
 						type: 'splom',
@@ -54,7 +56,7 @@ export function plotlyScatterMatrix() {
 						dimensions: dims.map(function (k) {
 							return {
 								label: k,
-								values: unpackConditional(rows, k, colorBy, cats[i])
+								values: unpackConditional(rows, k, colorBy.column, cats[i])
 							}
 						}),
 						name: cats[i],
@@ -68,13 +70,13 @@ export function plotlyScatterMatrix() {
 						}
 					});
 				}
-			} else {
+			} else if (colorBy.ids !== null) {
 				for (var i = 0; i < cats.length; i++) {
-					var ids = unpackConditionalMarked(rows, 'dbId', markedIdsForColoring, cats[i] === 'Marked');
+					var ids = unpackConditionalMarked(rows, 'dbId', colorBy.ids, cats[i] === 'Marked');
 					ids = ids.map(function (i) {
 						return i + "-" + uuidv4();
 					});
-					var names = unpackConditionalMarked(rows, 'name', markedIdsForColoring, cats[i] === 'Marked');
+					var names = unpackConditionalMarked(rows, 'name', colorBy.ids, cats[i] === 'Marked');
 
 					data.push({
 						type: 'splom',
@@ -83,7 +85,36 @@ export function plotlyScatterMatrix() {
 						dimensions: dims.map(function (k) {
 							return {
 								label: k,
-								values: unpackConditionalMarked(rows, k, markedIdsForColoring, cats[i] === 'Marked')
+								values: unpackConditionalMarked(rows, k, colorBy.ids, cats[i] === 'Marked')
+							}
+						}),
+						name: cats[i],
+						text: names,
+						ids: ids,
+						marker: {
+							color: colors[i % colors.length],
+							symbol: symbolList[i % symbolList.length],
+							opacity: 0.7,
+							size: 6
+						}
+					});
+				}
+			} else if (colorBy.names !== null) {
+				for (var i = 0; i < cats.length; i++) {
+					var ids = unpackConditionalByName(rows, 'dbId', colorBy.names, cats[i] === 'Marked');
+					ids = ids.map(function (i) {
+						return i + "-" + uuidv4();
+					});
+					var names = unpackConditionalByName(rows, 'name', colorBy.names, cats[i] === 'Marked');
+
+					data.push({
+						type: 'splom',
+						showupperhalf: false,
+						diagonal: {visible: true},
+						dimensions: dims.map(function (k) {
+							return {
+								label: k,
+								values: unpackConditionalByName(rows, k, colorBy.names, cats[i] === 'Marked')
 							}
 						}),
 						name: cats[i],
@@ -202,30 +233,7 @@ export function plotlyScatterMatrix() {
 			const isDataPointMarked = markedIds.indexOf(parseInt(row.dbId)) !== -1
 			return isMarked ? isDataPointMarked : !isDataPointMarked;
 		}).map(function (row) {
-			const dataPoint = row[key]
-			if (dataPoint === '') {
-				return null
-			} else {
-				let isDate = false
-
-				if (key === 'Date') {
-					isDate = true
-				} else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
-					isDate = true
-				}
-
-				if (isDate) {
-					return dataPoint;
-				} else {
-					var value = parseFloat(dataPoint)
-
-					if (isNaN(value)) {
-						return dataPoint;
-					} else {
-						return value;
-					}
-				}
-			}
+			return extractValue(row, key)
 		})
 	}
 
@@ -233,32 +241,45 @@ export function plotlyScatterMatrix() {
 		return rows.filter(function (row) {
 			return row[referenceColumn] === referenceValue;
 		}).map(function (row) {
-			const dataPoint = row[key]
-			if (dataPoint === '') {
-				return null
-			} else {
-				let isDate = false
+			return extractValue(row, key)
+		})
+  }
 
-				if (key === 'Date') {
-					isDate = true
-				} else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
-					isDate = true
-				}
-
-				if (isDate) {
-					return dataPoint;
-				} else {
-					var value = parseFloat(dataPoint)
-
-					if (isNaN(value)) {
-						return dataPoint;
-					} else {
-						return value;
-					}
-				}
-			}
+  function unpackConditionalByName(rows, key, names, isMarked) {
+		return rows.filter(function (row) {
+			const isDataPointMarked = names.indexOf(row.name.toUpperCase()) !== -1
+			return isMarked ? isDataPointMarked : !isDataPointMarked;
+		}).map(function (row) {
+			return extractValue(row, key)
 		})
 	}
+  
+  function extractValue(row, key) {
+    const dataPoint = row[key]
+    if (dataPoint === '') {
+      return null
+    } else {
+      let isDate = false
+
+      if (key === 'Date') {
+        isDate = true
+      } else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
+        isDate = true
+      }
+
+      if (isDate) {
+        return dataPoint;
+      } else {
+        var value = parseFloat(dataPoint)
+
+        if (isNaN(value)) {
+          return dataPoint;
+        } else {
+          return value;
+        }
+      }
+    }
+  }
 
 	function uuidv4() {
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -269,7 +290,12 @@ export function plotlyScatterMatrix() {
 
 	chart.colorBy = function (_) {
 		if (!arguments.length) return colorBy;
-		colorBy = _;
+    colorBy = _;
+    
+    if (colorBy.names) {
+      colorBy.names = colorBy.names.map(n => n.toUpperCase())
+    }
+
 		return chart;
 	};
 
@@ -306,12 +332,6 @@ export function plotlyScatterMatrix() {
 	chart.columnsToIgnore = function (_) {
 		if (!arguments.length) return columnsToIgnore;
 		columnsToIgnore = _;
-		return chart;
-	};
-
-	chart.markedIdsForColoring = function (_) {
-		if (!arguments.length) return markedIdsForColoring;
-		markedIdsForColoring = _;
 		return chart;
 	};
 

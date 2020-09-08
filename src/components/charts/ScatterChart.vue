@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" v-on:force-redraw="() => redraw(sourceFile, colorBy, markedIdsForColoring)">>
+    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" v-on:force-redraw="() => redraw(sourceFile, colorBy)">>
       <div slot="chart" id="scatter-chart" ref="scatterChart" class="text-center" />
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
 
@@ -75,7 +75,6 @@ export default {
       sourceFile: null,
       germplasmId: null,
       colorBy: null,
-      markedIdsForColoring: null,
       selectedIds: [],
       popoverContent: [{
         title: () => this.$t('popoverChartTourGenericOptionsTitle'),
@@ -144,10 +143,9 @@ export default {
     getFilename: function () {
       return this.datasetType + '-' + this.datasetIds.join('-')
     },
-    redraw: function (result, colorBy, markedIdsForColoring) {
+    redraw: function (result, colorBy) {
       this.sourceFile = result
       this.colorBy = colorBy
-      this.markedIdsForColoring = markedIdsForColoring
       this.selectedIds = []
 
       this.$plotly.purge(this.$refs.scatterChart)
@@ -164,7 +162,6 @@ export default {
           .datum(data)
           .call(plotlyScatterPlot()
             .colorBy(colorBy)
-            .markedIdsForColoring(markedIdsForColoring)
             .xCategory(this.x)
             .yCategory(this.y)
             .onPointClicked(p => {

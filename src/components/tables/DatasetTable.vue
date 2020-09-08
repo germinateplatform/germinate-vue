@@ -60,7 +60,7 @@
       </template>
       <!-- Dataset type icon -->
       <template v-slot:cell(datasetType)="data">
-        <span><i :class="`mdi mdi-18px ${datasetTypes[data.item.datasetType].icon} fix-alignment`" :style="`color: ${datasetTypes[data.item.datasetType].color()};`" /> {{ datasetTypes[data.item.datasetType].text() }}</span>
+        <b-badge :style="`color: ${getHighContrastTextColor(datasetTypes[data.item.datasetType].color())}; background-color: ${datasetTypes[data.item.datasetType].color()};`"><i :class="`mdi mdi-18px ${datasetTypes[data.item.datasetType].icon} fix-alignment`" /> {{ datasetTypes[data.item.datasetType].text() }}</b-badge>
       </template>
       <!-- Data point count -->
       <template v-slot:cell(dataPointCount)="data">
@@ -133,6 +133,7 @@ import datasetApi from '@/mixins/api/dataset.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
 import typesMixin from '@/mixins/types.js'
+import colorMixin from '@/mixins/colors.js'
 
 var countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
@@ -331,7 +332,7 @@ export default {
     LocationMap,
     LicenseModal
   },
-  mixins: [ datasetApi, genotypeApi, locationApi, typesMixin ],
+  mixins: [ colorMixin, datasetApi, genotypeApi, locationApi, typesMixin ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     getCountries: function (locations) {

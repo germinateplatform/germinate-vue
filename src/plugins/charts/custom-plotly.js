@@ -8,7 +8,8 @@ Plotly.register([
   require('plotly.js/lib/histogram'),
   require('plotly.js/lib/pie'),
   require('plotly.js/lib/splom'),
-  require('plotly.js/lib/scattergl')
+  require('plotly.js/lib/scattergl'),
+  require('plotly.js/lib/histogram2dcontour')
 ])
 
 module.exports = Plotly

@@ -958,6 +958,8 @@
   "widgetChartColoringByYear": "Year",
   "widgetChartColoringByGroup": "Group",
   "widgetChartColoringNoColoring": "No coloring",
+  "widgetChartColoringByGermplasmName": "Specific germplasm (one name per line)",
+  "widgetChartColoringByLocationName": "Specific location (one name per line)",
   "widgetChartMarkSelectedItems": "Mark selected items",
   "widgetChartUnmarkSelectedItems": "Unmark selected items",
   "widgetDatasetDownloadMetadataText": "You can download all metadata about the selected datasets by clicking the button below.",
