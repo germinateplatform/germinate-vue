@@ -42,7 +42,7 @@ export function plotlyScatterPlot() {
         y: unpackConditional(rows, yCategory, null, cats[i]),
         name: 'density',
         ncontours: 20,
-        colorscale: [[0, 'white'], [1, '#111111']],
+        colorscale: [[0, '#ffffff'], [1, '#000000']],
         reversescale: false,
         opacity: 0.5,
         showscale: false,
@@ -115,7 +115,28 @@ export function plotlyScatterPlot() {
 					xaxis: 'x2',
 					showlegend: false
 				})
-			}
+      }
+
+      var updatemenus = [
+        {
+          buttons: [
+            {
+              args: ['opacity', 0.5, [0]],
+              args2: ['opacity', 0, [0]],
+              label: 'Toggle contour',
+              method: 'restyle'
+            }
+          ],
+          direction: 'left',
+          pad: {'r': 10, 't': 10},
+          showactive: true,
+          type: 'buttons',
+          x: 0.1,
+          xanchor: 'left',
+          y: 1.1,
+          yanchor: 'top'
+        }
+      ]
 
 			var layout = {
 				autosize: true,
@@ -123,7 +144,8 @@ export function plotlyScatterPlot() {
 				width: width === null ? Math.min(this.offsetWidth, window.innerHeight) * 0.95 : width,
 				height: height === null ? Math.min(this.offsetWidth, window.innerHeight) * 0.95 : height,
 				hovermode: 'closest',
-				dragmode: 'select',
+        dragmode: 'select',
+        updatemenus: updatemenus,
 				margin: {t: 65, autoexpand: true},
 				xaxis: {
 					domain: [0, 0.95],

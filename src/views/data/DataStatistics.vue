@@ -6,8 +6,8 @@
       <b-col cols=12 sm=6>
         <h2>{{ $t('pageStatisticsTaxonomyTitle') }}</h2>
         <p>{{ $t('pageStatisticsTaxonomyText') }}</p>
-        <!-- Taxonomy pie chart -->
-        <TaxonomyPieChart />
+        <!-- Taxonomy sunburst chart -->
+        <TaxonomySunburst />
       </b-col>
       <b-col cols=12 sm=6>
         <h2>{{ $t('pageStatisticsBiologicalStatusTitle') }}</h2>
@@ -51,7 +51,7 @@
 <script>
 import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
-import TaxonomyPieChart from '@/components/charts/TaxonomyPieChart'
+import TaxonomySunburst from '@/components/charts/TaxonomySunburst'
 import { EventBus } from '@/plugins/event-bus.js'
 import statsApi from '@/mixins/api/stats.js'
 
@@ -66,7 +66,7 @@ export default {
   components: {
     BarChart,
     ChoroplethChart,
-    TaxonomyPieChart
+    TaxonomySunburst
   },
   mixins: [ statsApi ],
   methods: {
