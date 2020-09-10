@@ -21,7 +21,7 @@
               <div class="d-flex w-100 justify-content-between align-items-center">
                 <div class="d-flex justify-content-between align-items-center">
                   <!-- Heading and link to download -->
-                  <h5 class="mb-1"><a :href="`${baseUrl}fileresource/${resource.fileresourceId}`">{{ resource.fileresourceName }}</a></h5>
+                  <h5 class="mb-1"><a href="#" @click="downloadResource(resource)">{{ resource.fileresourceName }}</a></h5>
                   <i class="mdi mdi-download mdi-18px align-middle mx-1" />
                   <!-- File size -->
                   <small v-if="resource.fileresourceSize">({{ getNumberWithSuffix(resource.fileresourceSize, 2, 1024, ' ') }}B)</small>
@@ -54,6 +54,7 @@ import Collapse from '@/components/util/Collapse'
 import FileResourceModal from '@/components/modals/FileResourceModal'
 
 import datasetApi from '@/mixins/api/dataset'
+import miscApi from '@/mixins/api/misc'
 
 export default {
   data: function () {
@@ -72,8 +73,16 @@ export default {
     Collapse,
     FileResourceModal
   },
-  mixins: [ datasetApi ],
+  mixins: [ datasetApi, miscApi ],
   methods: {
+    downloadResource: function (resource) {
+      this.apiGetDataResource(resource.fileresourceId, result => {
+        this.downloadBlob({
+          blob: result,
+          filename: resource.fileresourcePath
+        })
+      })
+    },
     onDeleteResource: function (resource) {
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
         okVariant: 'danger',

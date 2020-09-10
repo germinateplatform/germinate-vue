@@ -88,6 +88,9 @@ export default {
     },
     apiGetDataAsyncImportStart: function (uuid, onSuccess, onError) {
       return this.authAjax({ url: `import/template/${uuid}/import`, success: onSuccess, error: onError })
+    },
+    apiGetDataResource: function (id, onSuccess, onError) {
+      return this.authAjax({ url: `fileresource/${id}`, dataType: 'blob', success: onSuccess, error: onError })
     }
   }
 }
