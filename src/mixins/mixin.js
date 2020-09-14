@@ -56,6 +56,9 @@ export default {
         this.$store.dispatch('ON_DARK_MODE_CHANGED', true)
       }
     },
+    toFixed: function (number, places) {
+      return parseFloat(Math.round(number + 'e+' + places) + 'e-' + places)
+    },
     userIsAtLeast: function (userType, atLeast) {
       switch (atLeast) {
         case 'Administrator':

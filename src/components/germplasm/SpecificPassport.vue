@@ -6,6 +6,8 @@
         <b-navbar-nav class="align-items-center">
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
+          <b-nav-item href="#links" @click="scrollIntoView">{{ $t('pagePassportLinksTitle') }}</b-nav-item>
+          <b-nav-item href="#performance" @click="scrollIntoView">{{ $t('pagePassportTraitStatsTitle') }}</b-nav-item>
           <b-nav-item href="#datasets" @click="scrollIntoView">{{ $t('pagePassportDatasetTitle') }}</b-nav-item>
           <b-nav-item href="#pedigree" @click="scrollIntoView">{{ $t('pagePassportPedigreeTitle') }}</b-nav-item>
           <b-nav-item href="#location" @click="scrollIntoView" v-if="germplasm.declatitude && germplasm.declongitude">{{ $t('pagePassportLocationTitle') }}</b-nav-item>
@@ -64,6 +66,14 @@
         <p v-html="$t('pagePassportLinksText')" />
         <!-- Links -->
         <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
+
+        <hr />
+        <h2 class="mdi-heading" id="performance"><i class="mdi mdi-36px text-primary mdi-speedometer" /><span> {{ $t('pagePassportTraitStatsTitle') }}</span></h2>
+        <p>{{ $t('pagePassportTraitStatsText') }}</p>
+        <b-button v-b-toggle.trait-collapse variant="primary">{{ $t('buttonToggle') }}</b-button>
+        <b-collapse id="trait-collapse" class="mt-2">
+          <GermplasmTraitStats :germplasmId="germplasmId" />
+        </b-collapse>
 
         <hr />
         <h2 class="mdi-heading" id="datasets"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
@@ -145,6 +155,7 @@ import CommentTable from '@/components/tables/CommentTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import EntityTable from '@/components/tables/EntityTable'
 import GermplasmAttributeTable from '@/components/tables/GermplasmAttributeTable'
+import GermplasmTraitStats from '@/components/germplasm/GermplasmTraitStats'
 import GroupTable from '@/components/tables/GroupTable'
 import Institution from '@/components/institution/Institution'
 import Mcpd from '@/components/germplasm/Mcpd'
@@ -167,7 +178,7 @@ export default {
       entityFilter: null,
       currentGermplasmId: null,
       scrollSpyConfig: {
-        offset: 112,
+        offset: 152,
         throttle: 100
       }
     }
@@ -187,6 +198,7 @@ export default {
     DatasetTable,
     EntityTable,
     GermplasmAttributeTable,
+    GermplasmTraitStats,
     GroupTable,
     ImageGallery,
     Institution,
@@ -217,8 +229,7 @@ export default {
       const href = evt.target.getAttribute('href')
       const el = href ? document.querySelector(href) : null
       if (el) {
-        el.scrollIntoView(true)
-        window.scrollBy(0, -65 - this.$refs.scrollSpy.offsetHeight)
+        window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - 65 - this.$refs.scrollSpy.$el.offsetHeight)
       }
     },
     showPdciModal: function () {

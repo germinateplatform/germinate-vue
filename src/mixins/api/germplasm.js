@@ -93,6 +93,9 @@ export default {
     },
     apiPostExternalLinkIdentifiers: function (queryData, onSuccess, onError) {
       return this.authAjax({ url: 'germplasm/external/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiGetGermplasmStatsTraits: function (germplasmId, onSuccess, onError) {
+      return this.authAjax({ url: `germplasm/${germplasmId}/stats/trait`, success: onSuccess, error: onError })
     }
   }
 }
