@@ -38,6 +38,8 @@ export default {
     update: function () {
       this.apiGetGermplasmStatsTraits(this.germplasmId, result => {
         this.stats = result
+
+        this.$emit('has-data', result && (result.length > 0))
       })
     }
   },

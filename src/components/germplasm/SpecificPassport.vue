@@ -7,7 +7,7 @@
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
           <b-nav-item href="#links" @click="scrollIntoView">{{ $t('pagePassportLinksTitle') }}</b-nav-item>
-          <b-nav-item href="#performance" @click="scrollIntoView">{{ $t('pagePassportTraitStatsTitle') }}</b-nav-item>
+          <b-nav-item href="#performance" @click="scrollIntoView" v-if="performanceDataAvailable">{{ $t('pagePassportTraitStatsTitle') }}</b-nav-item>
           <b-nav-item href="#datasets" @click="scrollIntoView">{{ $t('pagePassportDatasetTitle') }}</b-nav-item>
           <b-nav-item href="#pedigree" @click="scrollIntoView">{{ $t('pagePassportPedigreeTitle') }}</b-nav-item>
           <b-nav-item href="#location" @click="scrollIntoView" v-if="germplasm.declatitude && germplasm.declongitude">{{ $t('pagePassportLocationTitle') }}</b-nav-item>
@@ -67,19 +67,21 @@
         <!-- Links -->
         <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
 
-        <hr />
-        <h2 class="mdi-heading" id="performance"><i class="mdi mdi-36px text-primary mdi-speedometer" /><span> {{ $t('pagePassportTraitStatsTitle') }}</span></h2>
-        <p>{{ $t('pagePassportTraitStatsText') }}</p>
-        <b-button v-b-toggle.trait-collapse variant="primary">{{ $t('buttonToggle') }}</b-button>
-        <b-collapse id="trait-collapse" class="mt-2">
-          <GermplasmTraitStats :germplasmId="germplasmId" />
-        </b-collapse>
+        <div v-show="performanceDataAvailable">
+          <hr />
+          <h2 class="mdi-heading" id="performance"><i class="mdi mdi-36px text-primary mdi-speedometer" /><span> {{ $t('pagePassportTraitStatsTitle') }}</span></h2>
+          <p>{{ $t('pagePassportTraitStatsText') }}</p>
+          <b-button v-b-toggle.trait-collapse variant="primary">{{ $t('buttonToggle') }}</b-button>
+          <b-collapse id="trait-collapse" class="mt-2">
+            <GermplasmTraitStats :germplasmId="germplasmId" @has-data="result => performanceDataAvailable = result" ref="performanceData" />
+          </b-collapse>
+        </div>
 
         <hr />
         <h2 class="mdi-heading" id="datasets"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
         <p v-html="$t('pagePassportDatasetText')" />
         <!-- Datasets containing this germplasm -->
-        <DatasetTable :getData="getDatasetData" />
+        <DatasetTable :getData="getDatasetData" @license-accepted="$refs.performanceData.update()" />
 
         <hr />
         <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-tournament mdi-rotate-90 text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
@@ -180,7 +182,8 @@ export default {
       scrollSpyConfig: {
         offset: 152,
         throttle: 100
-      }
+      },
+      performanceDataAvailable: true
     }
   },
   props: {

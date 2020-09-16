@@ -1,17 +1,29 @@
 <template>
-  <div>
+  <div :id="`scale-${id}`">
     <h6 v-if="heading" class="scale-heading" :title="heading">{{ heading }}</h6>
-    <div class="d-flex my-2" :id="`scale-${id}`">
+    <div class="d-flex my-2">
       <div class="d-flex align-items-center scale-container w-100">
         <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: getColor(0) }" />
       </div>
     </div>
     <b-tooltip :target="`scale-${id}`" placement="bottom">
       <h6>{{ heading }}</h6>
-        <span class="d-block">Min: {{ toFixed(min, 4)}}</span>
-        <span class="d-block" :style="{ color: getColor(0) }">Avg: {{ toFixed(marker, 4) }}</span>
-        <span class="d-block">Max: {{ toFixed(max, 4) }}</span>
-        <span class="d-block">Count: {{ getNumberWithSuffix(count) }}</span>
+      <div class="d-flex justify-content-between">
+        <span class="d-block"><i class="mdi mdi-arrow-down-bold" /> {{ $t('widgetScaleMin') }} </span>
+        <span class="ml-2">{{ toFixed(min, 4)}}</span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <span class="d-block" :style="{ color: getColor(0) }"><i class="mdi mdi-diameter-variant" /> {{ $t('widgetScaleAvg') }} </span>
+        <span class="ml-2">{{ toFixed(marker, 4) }}</span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <span class="d-block"><i class="mdi mdi-arrow-up-bold" /> {{ $t('widgetScaleMax') }} </span>
+        <span class="ml-2">{{ toFixed(max, 4) }}</span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <span class="d-block"><i class="mdi mdi-numeric" /> {{ $t('widgetScaleCount') }} </span>
+        <span class="ml-2">{{ getNumberWithSuffix(count) }}</span>
+      </div>
     </b-tooltip>
   </div>
 </template>
