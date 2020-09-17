@@ -25,7 +25,7 @@ RUN rm -f .env && \
     cp -a /opt/germinate-client/dist/. /opt/germinate-server/client/
 
 # Download Gradle and build the server code
-RUN apk add --no-cache openjdk8 && \
+RUN apk add --no-cache openjdk11 && \
     wget https://services.gradle.org/distributions/gradle-6.0.1-bin.zip -P /tmp/ && \
     unzip /tmp/gradle-6.0.1-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
