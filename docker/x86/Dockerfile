@@ -31,7 +31,7 @@ RUN apk add --no-cache openjdk8 && \
     /opt/gradle-6.0.1/bin/gradle -p /opt/germinate-server war
 
 
-FROM tomcat:8-jdk8
+FROM tomcat:8-jdk11
 
 LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 
