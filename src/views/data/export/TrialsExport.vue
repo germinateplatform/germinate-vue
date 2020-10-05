@@ -161,7 +161,7 @@ export default {
   mixins: [ datasetApi, groupApi, miscApi, traitApi, colorMixin ],
   methods: {
     updateCategoricalTraitCharts: function (query, selectedTraits) {
-      this.categoricalTraitsSelected = selectedTraits.filter(t => t.dataType === 'char_')
+      this.categoricalTraitsSelected = selectedTraits.filter(t => t.dataType !== 'numeric')
       this.categoricalTraitFiles = {}
       this.categoricalTraitsSelected.forEach(t => {
         const data = {

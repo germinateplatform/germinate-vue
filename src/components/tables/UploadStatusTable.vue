@@ -44,6 +44,7 @@ export default {
         GENERIC_INVALID_COUNTRY_CODE: () => this.$t('importStatusMcpdInvalidCountryCode'),
         GENERIC_INVALID_DATE: () => this.$t('importStatusMcpdInvalidDate'),
         TRIALS_INVALID_TRAIT_DATATYPE: () => this.$t('importStatusTrialsInvalidDataType'),
+        TRIALS_INVALID_TRAIT_CATEGORIES: () => this.$t('importStatusTrialsInvalidCategories'),
         TRIALS_MISSING_TRAIT_DECLARATION: () => this.$t('importStatusTrialsMissingTraitDeclaration'),
         GENERIC_INVALID_GERMPLASM: () => this.$t('importStatusGenericInvalidGermplasm'),
         TRIALS_DATA_DATE_HEADER_MISMATCH: () => this.$t('importStatusTrialsSheetHeaderMismatch'),

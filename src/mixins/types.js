@@ -46,23 +46,25 @@ export default {
         }
       },
       dataTypes: {
-        'char_': {
-          text: () => this.$t('dataTypeChar'),
+        'numeric': {
+          text: () => this.$t('dataTypeNumeric'),
+          icon: 'mdi-numeric',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length]
+        },
+        'text': {
+          text: () => this.$t('dataTypeText'),
           icon: 'mdi-alphabetical',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
-          databaseValue: 'char'
+          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length]
         },
-        'int_': {
-          text: () => this.$t('dataTypeInt'),
-          icon: 'mdi-number',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
-          databaseValue: 'int'
+        'date': {
+          text: () => this.$t('dataTypeDate'),
+          icon: 'mdi-calendar',
+          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length]
         },
-        'float_': {
-          text: () => this.$t('dataTypeFloat'),
-          icon: 'mdi-decimal',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
-          databaseValue: 'float'
+        'categorical': {
+          text: () => this.$t('dataTypeCategorical'),
+          icon: 'mdi-tag-text',
+          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length]
         }
       },
       entityTypes: {

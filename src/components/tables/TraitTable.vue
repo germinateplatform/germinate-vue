@@ -21,6 +21,10 @@
       <template v-slot:cell(traitDescription)="data">
         <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitDescription }}</router-link>
       </template>
+      <!-- Dataset type icon -->
+      <template v-slot:cell(dataType)="data">
+        <span class="text-nowrap"><i :class="`mdi mdi-18px ${dataTypes[data.item.dataType].icon} fix-alignment`" :style="`color: ${dataTypes[data.item.dataType].color()};`" /> {{ dataTypes[data.item.dataType].text() }}</span>
+      </template>
       <!-- Synonyms -->
       <template v-slot:cell(synonyms)="data">
         <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
@@ -32,6 +36,8 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import colorMixin from '@/mixins/colors.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   name: 'TraitTable',
@@ -75,6 +81,12 @@ export default {
           sortable: true,
           label: this.$t('tableColumnTraitDescription')
         }, {
+          key: 'dataType',
+          type: 'dataType',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'dataType')}`,
+          label: this.$t('tableColumnTraitDataType')
+        }, {
           key: 'synonyms',
           type: 'json',
           class: `${this.isTableColumnHidden(this.options.tableName, 'synonyms')}`,
@@ -112,6 +124,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [ colorMixin, typesMixin ],
   methods: {
     refresh: function () {
       this.$refs.traitTable.refresh()

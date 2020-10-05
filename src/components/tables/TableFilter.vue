@@ -332,16 +332,6 @@ export default {
           values: f.values
         }
 
-        if (f.column.type === 'dataType') {
-          newFilter.values = newFilter.values.filter(v => v !== null).map(v => {
-            if (this.dataTypes[v] && this.dataTypes[v].databaseValue) {
-              return this.dataTypes[v].databaseValue
-            } else {
-              return v
-            }
-          })
-        }
-
         if (this.isValidFilter(f)) {
           this.targetFilter.push(newFilter)
         }

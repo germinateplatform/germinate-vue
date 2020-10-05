@@ -132,7 +132,7 @@ export default {
         this.itemOptions = []
         this.items.forEach(t => {
           // If we're only supposed to show numerics, exclude chars
-          if (!this.onlyNumeric || (t.dataType !== 'char_')) {
+          if (!this.onlyNumeric || (t.dataType === 'numeric')) {
             var itemName = t[this.nameKey]
 
             if (t.unitAbbreviation) {

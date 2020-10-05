@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     plot: function (query, selectedTraits) {
-      this.xIds = selectedTraits.filter(t => t.dataType !== 'char_').map(t => t[this.idKey])
+      this.xIds = selectedTraits.filter(t => t.dataType === 'numeric').map(t => t[this.idKey])
       this.yIds = query.yIds
       this.yGroupIds = query.yGroupIds
 

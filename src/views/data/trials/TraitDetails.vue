@@ -31,7 +31,7 @@
                 :sourceFile="categoricalTraitFile"
                 v-on:bar-clicked="traitValueClicked"
                 ref="traitCategoryChart"
-                v-if="trait.dataType === 'char_'"/>
+                v-if="trait.dataType !== 'numeric'"/>
       <!-- Boxplot for this trait -->
       <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" v-else />
 
@@ -164,7 +164,7 @@ export default {
         if (result && result.data && result.data.length > 0) {
           this.trait = result.data[0]
 
-          if (this.trait.dataType === 'char_') {
+          if (this.trait.dataType !== 'numeric') {
             this.updateCategoryChart()
           }
         }
