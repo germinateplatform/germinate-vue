@@ -64,7 +64,7 @@ export default {
         'categorical': {
           text: () => this.$t('dataTypeCategorical'),
           icon: 'mdi-tag-text',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length]
+          color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length]
         }
       },
       entityTypes: {
