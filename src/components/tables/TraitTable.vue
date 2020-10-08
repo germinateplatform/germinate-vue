@@ -25,6 +25,18 @@
       <template v-slot:cell(dataType)="data">
         <span class="text-nowrap"><i :class="`mdi mdi-18px ${dataTypes[data.item.dataType].icon} fix-alignment`" :style="`color: ${dataTypes[data.item.dataType].color()};`" /> {{ dataTypes[data.item.dataType].text() }}</span>
       </template>
+      <template v-slot:cell(traitRestrictions)="data">
+        <div v-if="data.item.traitRestrictions">
+          <span :id="`trait-restrictions-${data.item.traitId}`"><i class="mdi mdi-18px mdi-code-brackets text-primary" /></span>
+          <b-tooltip :target="`trait-restrictions-${data.item.traitId}`">
+            <div class="text-left">
+              <div v-if="data.item.traitRestrictions.min !== undefined && data.item.traitRestrictions.min !== null"><i class="mdi mdi-greater-than-or-equal" /> {{ data.item.traitRestrictions.min }}</div>
+              <div v-if="data.item.traitRestrictions.max !== undefined && data.item.traitRestrictions.max !== null"><i class="mdi mdi-less-than-or-equal" /> {{ data.item.traitRestrictions.max }}</div>
+              <div v-if="data.item.traitRestrictions.categories"><i class="mdi mdi-code-brackets" /> {{ data.item.traitRestrictions.categories.map(c => c.join(', ')).join(', ') }}</div>
+            </div>
+          </b-tooltip>
+        </div>
+      </template>
       <!-- Synonyms -->
       <template v-slot:cell(synonyms)="data">
         <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
@@ -86,6 +98,12 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'dataType')}`,
           label: this.$t('tableColumnTraitDataType')
+        }, {
+          key: 'traitRestrictions',
+          type: undefined,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'traitRestrictions')}`,
+          sortable: false,
+          label: this.$t('tableColumnTraitConstraints')
         }, {
           key: 'synonyms',
           type: 'json',

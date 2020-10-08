@@ -868,6 +868,7 @@
   "tableColumnTooltipGermplasmPdci": "Passport Data Completeness Index",
   "tableColumnTooltipGermplasmPuid": "Permanent Unique Identifier",
   "tableColumnTooltipPedigreeRelationshipType": "This can be 'F' (female), 'M' (male) or 'OTHER'.",
+  "tableColumnTraitConstraints": "Constraints",
   "tableColumnTraitDataType": "Data type",
   "tableColumnTraitDataPoints": "Data points",
   "tableColumnTraitDescription": "Trait description",

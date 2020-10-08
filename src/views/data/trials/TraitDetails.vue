@@ -1,8 +1,16 @@
 <template>
   <div>
     <div v-if="trait">
-      <h1>{{ trait.traitName }} <small v-if="trait.unitName">{{ trait.unitName }}</small></h1>
+      <h1 class="d-flex justify-content-between">
+        <span>{{ trait.traitName }} <small v-if="trait.unitName">{{ trait.unitName }}</small></span>
+        <span class="text-nowrap" v-if="trait.dataType"><i :class="`mdi mdi-36px ${dataTypes[trait.dataType].icon} fix-alignment`" :style="`color: ${dataTypes[trait.dataType].color()};`" /> {{ dataTypes[trait.dataType].text() }}</span>
+      </h1>
       <p v-if="trait.traitDescription">{{ trait.traitDescription }}</p>
+
+      <template v-if="trait.traitRestrictions">
+        <h2>Trait restrictions</h2>
+        {{ trait.traitRestrictions }}
+      </template>
 
       <!-- Image gallery with representative images for this trait -->
       <ImageGallery :foreignId="trait.traitId" referenceTable="phenotypes" :downloadName="trait.traitName" />
@@ -57,6 +65,8 @@ import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import datasetApi from '@/mixins/api/dataset.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
+import colorMixin from '@/mixins/colors.js'
+import typesMixin from '@/mixins/types.js'
 
 export default {
   data: function () {
@@ -134,7 +144,7 @@ export default {
       })
     }
   },
-  mixins: [ datasetApi, miscApi, traitApi ],
+  mixins: [ colorMixin, datasetApi, miscApi, traitApi, typesMixin ],
   mounted: function () {
     if (this.$route.params.traitId) {
       this.traitId = parseInt(this.$route.params.traitId)
