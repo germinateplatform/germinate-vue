@@ -615,6 +615,7 @@
   "pageStatisticsTaxonomyTitle": "Germplasm grouped by taxonomy",
   "pageTraitDetailsDataText": "The table below shows all data points for the selected trait across all datasets available to you. Use the table filtering to, e.g., search for specific value ranges. Table marking using the last column will add the corresponding germplasm to your list.",
   "pageTraitDetailsDataTitle": "Trait data across datasets",
+  "pageTraitDetailsRestrictionsTitle": "Trait restrictions",
   "pageTraitDetailsStatsText": "This diagram shows statistics for the selected trait across all datasets available to you. Hovering over the chart will highlight points of interest.",
   "pageTraitDetailsStatsTitle": "Trait statistics per dataset",
   "pageTraitsTitle": "Traits",

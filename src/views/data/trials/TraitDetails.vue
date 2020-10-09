@@ -8,8 +8,13 @@
       <p v-if="trait.traitDescription">{{ trait.traitDescription }}</p>
 
       <template v-if="trait.traitRestrictions">
-        <h2>Trait restrictions</h2>
-        {{ trait.traitRestrictions }}
+        <h2>{{ $t('pageTraitDetailsRestrictionsTitle') }}</h2>
+
+        <h4>
+          <b-badge class="mr-2" v-if="trait.traitRestrictions.min !== undefined && trait.traitRestrictions.min !== null"><i class="mdi mdi-greater-than-or-equal" /> {{ trait.traitRestrictions.min }}</b-badge>
+          <b-badge class="mr-2" v-if="trait.traitRestrictions.max !== undefined && trait.traitRestrictions.max !== null"><i class="mdi mdi-less-than-or-equal" /> {{ trait.traitRestrictions.max }}</b-badge>
+          <b-badge class="mr-2" v-if="trait.traitRestrictions.categories"><i class="mdi mdi-code-brackets" /> {{ trait.traitRestrictions.categories.map(c => c.join(', ')).join(', ') }}</b-badge>
+        </h4>
       </template>
 
       <!-- Image gallery with representative images for this trait -->
