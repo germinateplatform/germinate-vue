@@ -2,7 +2,6 @@
   <div>
     <h1>{{ $t('pageAlleleFrequencyExportTitle') }}</h1>
     <template v-if="datasets && datasets.length > 0">
-      <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
       <GenotypeExportSelection :datasetIds="datasetIds" datasetType="allelefreq" v-on:on-file-loaded="onFileLoaded" ref="exportSelection">

@@ -1,9 +1,11 @@
 <template>
   <div>
     <h1>{{ $t('pageCompoundExportTitle') }}</h1>
-    <template v-if="datasets && datasets.length > 0">
+    <div class="text-center" v-if="datasets === null">
+      <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+    </div>
+    <template v-else-if="datasets && datasets.length > 0">
       <hr />
-      <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
       <!-- Banner buttons -->

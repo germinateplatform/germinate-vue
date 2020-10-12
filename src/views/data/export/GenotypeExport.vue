@@ -1,8 +1,10 @@
 <template>
   <div>
     <h1>{{ $t('pageGenotypesExportTitle') }}</h1>
-    <template v-if="datasets && datasets.length > 0">
-      <h2>{{ $t('widgetSelectedDatasetsTitle') }}</h2>
+    <div class="text-center" v-if="datasets === null">
+      <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+    </div>
+    <template v-else-if="datasets && datasets.length > 0">
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
       <GenotypeExportSelection :datasetIds="datasetIds" datasetType="genotype" />

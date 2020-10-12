@@ -49,6 +49,7 @@ export default {
         GENERIC_INVALID_GERMPLASM: () => this.$t('importStatusGenericInvalidGermplasm'),
         TRIALS_DATA_DATE_HEADER_MISMATCH: () => this.$t('importStatusTrialsSheetHeaderMismatch'),
         TRIALS_DATA_DATE_IDENTIFIER_MISMATCH: () => this.$t('importStatusTrialsIdentifierMismatch'),
+        TRIALS_DATA_VIOLATES_RESTRICTION: () => this.$t('importStatusTrialsRestrictionViolation'),
         COMPOUND_MISSING_COMPOUND_DECLARATION: () => this.$t('importStatusCompoundMissingCompoundDeclaration'),
         COMPOUND_DATA_DATE_HEADER_MISMATCH: () => this.$t('importStatusCompoundSheetHeaderMismatch'),
         COMPOUND_DATA_DATE_IDENTIFIER_MISMATCH: () => this.$t('importStatusCompoundIdentifierMismatch'),
