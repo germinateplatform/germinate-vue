@@ -391,7 +391,7 @@ export default {
     },
     getDataLocal: function (ctx) {
       // Set the API pagination information fields
-      var localCtx = JSON.parse(JSON.stringify(ctx))
+      let localCtx = JSON.parse(JSON.stringify(ctx))
       localCtx.page = this.pagination.currentPage
       localCtx.limit = this.tablePerPage
       localCtx.prevCount = this.pagination.totalCount
@@ -411,7 +411,7 @@ export default {
       this.isLoading = true
       return new Promise((resolve, reject) => {
         this.getData(localCtx).then(result => {
-          var localResult = null
+          let localResult = null
           if (result && result.data && result.data.data) {
             this.pagination.totalCount = result.data.count
             localResult = result.data.data
@@ -550,7 +550,7 @@ export default {
       })
     },
     updateTableTour: function () {
-      var tableTourSteps = [
+      let tableTourSteps = [
         {
           title: () => this.$t('popoverTableTourColumnSelectorTitle'),
           text: () => this.$t('popoverTableTourColumnSelectorText'),

@@ -140,6 +140,20 @@ export default {
           class: 'text-right'
         }
       ]
+    },
+    method: function () {
+      switch (this.tabIndex) {
+        case 0:
+          return 'chromosomes'
+        case 1:
+          return 'regions'
+        case 2:
+          return 'markerIdInterval'
+        case 3:
+          return 'radius'
+        default:
+          return null
+      }
     }
   },
   components: {
@@ -168,23 +182,9 @@ export default {
     setIntervalMarkerTwo: function (marker) {
       this.intervalMarkerIdTwo = marker.markerId
     },
-    getMethod: function () {
-      switch (this.tabIndex) {
-        case 0:
-          return 'chromosomes'
-        case 1:
-          return 'regions'
-        case 2:
-          return 'markerIdInterval'
-        case 3:
-          return 'radius'
-        default:
-          return null
-      }
-    },
     getExportOptions: function () {
-      var result = {
-        method: this.getMethod()
+      let result = {
+        method: this.method
       }
 
       switch (result.method) {

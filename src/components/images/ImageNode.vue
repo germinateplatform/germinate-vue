@@ -84,13 +84,13 @@ export default {
       this.apiPatchImage(this.image)
     },
     getSrc: function (size) {
-      var params = {
+      const params = {
         name: this.image.imagePath,
         token: this.token ? this.token.imageToken : null,
         type: 'database',
         size: size
       }
-      var paramString = this.toUrlString(params)
+      const paramString = this.toUrlString(params)
 
       return this.baseUrl + 'image/src?' + paramString
     },

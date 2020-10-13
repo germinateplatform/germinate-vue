@@ -71,12 +71,11 @@ export default {
       })
     },
     signOut: function () {
-      var user = {
+      const user = {
         email: this.token.username,
         password: this.token.token
       }
 
-      var vm = this
       this.apiDeleteToken(user, result => {
         // If it's successful, delete token, then redirect
         this.$store.dispatch('ON_TOKEN_CHANGED', null)
@@ -90,9 +89,9 @@ export default {
         this.$ga.event('login', 'logout')
       }, {
         codes: [],
-        callback: function () {
+        callback: () => {
           // If they're wrong, remove
-          vm.$store.dispatch('ON_TOKEN_CHANGED', null)
+          this.$store.dispatch('ON_TOKEN_CHANGED', null)
         }
       })
     },

@@ -11,7 +11,7 @@
         <p>{{ $t('pageCompoundExportColorByText') }}</p>
         <!-- Color by -->
         <b-form @submit.prevent class="chart-form">
-          <b-form-select :options="colorByOptions()" v-model="colorBySelection" @change="onColorByChanged" />
+          <b-form-select :options="colorByOptions" v-model="colorBySelection" @change="onColorByChanged" />
 
           <b-input-group v-if="colorBySelection === 'specified_names'">
             <b-textarea v-model="germplasmNames" />
@@ -98,27 +98,9 @@ export default {
       } else {
         return null
       }
-    }
-  },
-  watch: {
-    markedIds: {
-      deep: true,
-      handler: function () {
-        if (this.colorBySelection === 'marked_items') {
-          this.onColorByChanged()
-        }
-      }
-    }
-  },
-  components: {
-    ExportSelection,
-    MatrixChart,
-    ScatterChart
-  },
-  mixins: [ datasetApi ],
-  methods: {
+    },
     colorByOptions: function () {
-      var result = [{
+      let result = [{
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
       }, {
@@ -143,7 +125,25 @@ export default {
       }
 
       return result
-    },
+    }
+  },
+  watch: {
+    markedIds: {
+      deep: true,
+      handler: function () {
+        if (this.colorBySelection === 'marked_items') {
+          this.onColorByChanged()
+        }
+      }
+    }
+  },
+  components: {
+    ExportSelection,
+    MatrixChart,
+    ScatterChart
+  },
+  mixins: [ datasetApi ],
+  methods: {
     plot: function (query, selectedItems) {
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
 

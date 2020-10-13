@@ -9,7 +9,7 @@ export default {
      * @returns A Promise
      */
     apiDeleteToken: function (user, onSuccess, onError) {
-      return this.authAjax({ url: 'token', method: 'DELETE', data: user, success: onSuccess, error: onError })
+      return this.authAxios({ url: 'token', method: 'DELETE', data: user, success: onSuccess, error: onError })
     },
     /**
      * Requests a token given the user details
@@ -20,7 +20,7 @@ export default {
      * @returns A Promise
      */
     apiPostToken: function (user, onSuccess, onError) {
-      return this.authAjax({ url: 'token', method: 'POST', data: user, success: onSuccess, error: onError })
+      return this.authAxios({ url: 'token', method: 'POST', data: user, success: onSuccess, error: onError })
     }
   }
 }

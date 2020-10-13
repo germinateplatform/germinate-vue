@@ -106,7 +106,7 @@ export default {
     }
   },
   mounted: function () {
-    var toSelect = this.tag
+    let toSelect = this.tag
 
     // Prefer URL parameters
     if (this.$route.params.format) {

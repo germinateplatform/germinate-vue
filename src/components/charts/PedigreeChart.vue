@@ -1,6 +1,6 @@
 <template>
   <div v-if="plotData">
-    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false"  v-on:force-redraw="update">
+    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false"  v-on:force-redraw="update">
       <div slot="chart" ref="pedigreeChart" />
     </BaseChart>
     <!-- Export button -->
@@ -33,21 +33,23 @@ export default {
       plotData: null
     }
   },
+  computed: {
+    baseSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: this.baseFilename,
+        extension: 'helium'
+      }
+    },
+    baseFilename: function () {
+      return 'pedigree-' + this.germplasm.id
+    }
+  },
   components: {
     BaseChart
   },
   mixins: [ germplasmApi ],
   methods: {
-    getSourceFile: function () {
-      return {
-        blob: this.plotData,
-        filename: this.getFilename(),
-        extension: 'helium'
-      }
-    },
-    getFilename: function () {
-      return 'pedigree-' + this.germplasm.id
-    },
     update: function () {
       this.$nextTick(() => {
         while (this.$refs.pedigreeChart.firstChild) {
@@ -55,15 +57,15 @@ export default {
         }
 
         if (this.plotData) {
-          var reader = new FileReader()
+          const reader = new FileReader()
           reader.onload = () => {
             // Remove the first row (Helium header)
-            var dirtyTsv = reader.result
-            var firstEOL = dirtyTsv.indexOf('\n')
-            var parsedTsv = d3Dsv.tsvParse(dirtyTsv.substring(firstEOL + 1))
+            const dirtyTsv = reader.result
+            const firstEOL = dirtyTsv.indexOf('\n')
+            const parsedTsv = d3Dsv.tsvParse(dirtyTsv.substring(firstEOL + 1))
 
-            var nodes = {}
-            var connections = []
+            let nodes = {}
+            let connections = []
 
             // First, add the parents (important for layout)
             parsedTsv.forEach(function (d) {
@@ -74,8 +76,8 @@ export default {
             parsedTsv.forEach(function (d) {
               nodes[d.LineName] = null
 
-              var edgeStyle = ''
-              var headStyle = ''
+              let edgeStyle = ''
+              let headStyle = ''
 
               if (d.ParentType === 'F') {
                 edgeStyle = 'stroke: #e74c3c;'
@@ -93,9 +95,9 @@ export default {
               })
             })
 
-            var data = []
+            let data = []
 
-            for (var node in nodes) {
+            for (let node in nodes) {
               if (nodes.hasOwnProperty(node)) {
                 data.push({
                   label: node,
@@ -124,7 +126,7 @@ export default {
     },
     navigateToPassportPage: function (germplasmName) {
       // Send a query to get the germplasm id
-      var request = {
+      const request = {
         page: 1,
         limit: 1,
         filter: [{

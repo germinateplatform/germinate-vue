@@ -1,25 +1,32 @@
 <template>
   <div>
-    <div v-if="climate">
-      <h1>{{ climate.climateName }} <small v-if="climate.unitName">{{ climate.unitName }}</small></h1>
-      <p v-if="climate.climateDescription">{{ climate.climateDescription }}</p>
+    <div v-if="climate !== null">
+      <template v-if="climate === undefined">
+        <div class="text-center">
+          <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+        </div>
+      </template>
+      <template v-else>
+        <h1>{{ climate.climateName }} <small v-if="climate.unitName">{{ climate.unitName }}</small></h1>
+        <p v-if="climate.climateDescription">{{ climate.climateDescription }}</p>
 
-      <h2>{{ $t('pageClimateDetailsDataTitle') }}</h2>
-      <p>{{ $t('pageClimateDetailsDataText') }}</p>
-      <!-- Climate data table -->
-      <ClimateDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="climateDetailsTable" />
+        <h2>{{ $t('pageClimateDetailsDataTitle') }}</h2>
+        <p>{{ $t('pageClimateDetailsDataText') }}</p>
+        <!-- Climate data table -->
+        <ClimateDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="climateDetailsTable" />
 
-      <h2>{{ $t('pageClimateDetailsStatsTitle') }}</h2>
-      <p>{{ $t('pageClimateDetailsStatsText') }}</p>
-      <!-- Box plot for this climate -->
-      <BoxplotChart chartMode="datasetByItem" :xIds="[climateId]" xType="climates" ref="climateDetailsChart" />
-      <!-- Table showing datasets containing this climate -->
-      <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
+        <h2>{{ $t('pageClimateDetailsStatsTitle') }}</h2>
+        <p>{{ $t('pageClimateDetailsStatsText') }}</p>
+        <!-- Box plot for this climate -->
+        <BoxplotChart chartMode="datasetByItem" :xIds="[climateId]" xType="climates" ref="climateDetailsChart" />
+        <!-- Table showing datasets containing this climate -->
+        <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
 
-      <div v-show="showAdditionalDatasets">
-        <!-- Any other datasets containing data for this climate, where the license hasn't been accepted yet -->
-        <DatasetsWithUnacceptedLicense datasetType="climate" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
-      </div>
+        <div v-show="showAdditionalDatasets">
+          <!-- Any other datasets containing data for this climate, where the license hasn't been accepted yet -->
+          <DatasetsWithUnacceptedLicense datasetType="climate" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
+        </div>
+      </template>
     </div>
     <h3 v-else>{{ $t('headingNoData') }}</h3>
   </div>
@@ -37,7 +44,7 @@ export default {
   data: function () {
     return {
       climateId: null,
-      climate: null,
+      climate: undefined,
       tableFilter: null,
       showAdditionalDatasets: true
     }
@@ -84,7 +91,7 @@ export default {
         canBeChanged: false
       }]
 
-      var request = {
+      const request = {
         page: 1,
         limit: 1,
         filter: [{
@@ -97,6 +104,8 @@ export default {
       this.apiPostClimateTable(request, result => {
         if (result && result.data && result.data.length > 0) {
           this.climate = result.data[0]
+        } else {
+          this.climate = null
         }
       })
     }

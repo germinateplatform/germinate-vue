@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" v-on:force-redraw="redraw">
+    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" v-on:force-redraw="redraw">
       <div slot="chart" id="choropleth-chart" ref="choroplethChart" class="chart-choropleth text-center" />
     </BaseChart>
   </div>
@@ -17,25 +17,27 @@ export default {
       sourceFile: null
     }
   },
+  computed: {
+    baseSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: this.baseFilename
+      }
+    },
+    baseFilename: function () {
+      return 'choropleth'
+    }
+  },
   components: {
     BaseChart
   },
   mixins: [ statsApi, colorMixin ],
   methods: {
-    getSourceFile: function () {
-      return {
-        blob: this.sourceFile,
-        filename: this.getFilename()
-      }
-    },
-    getFilename: function () {
-      return 'choropleth'
-    },
     unpack: function (rows, key) {
       return rows.map(r => r[key])
     },
     hexToRgbA: function (hex, a) {
-      var c
+      let c
       if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
         c = hex.substring(1).split('')
         if (c.length === 3) {
@@ -49,13 +51,13 @@ export default {
     redraw: function () {
       this.$plotly.purge(this.$refs.choroplethChart)
 
-      var reader = new FileReader()
+      let reader = new FileReader()
       reader.onload = () => {
-        var rows = this.$plotly.d3.tsv.parse(reader.result)
+        const rows = this.$plotly.d3.tsv.parse(reader.result)
 
         const color = this.getColor(0)
 
-        var data = [{
+        const data = [{
           type: 'choropleth',
           locations: this.unpack(rows, 'code'),
           z: this.unpack(rows, 'count'),
@@ -79,7 +81,7 @@ export default {
           }
         }]
 
-        var layout = {
+        const layout = {
           autosize: true,
           height: 800,
           geo: {
@@ -92,7 +94,7 @@ export default {
           }
         }
 
-        var config = {
+        const config = {
           modeBarButtonsToRemove: ['toImage'],
           displayModeBar: true,
           responsive: true,

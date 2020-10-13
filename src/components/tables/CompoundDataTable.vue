@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     columns: function () {
-      var result = [
+      let result = [
         {
           key: 'germplasmId',
           type: Number,

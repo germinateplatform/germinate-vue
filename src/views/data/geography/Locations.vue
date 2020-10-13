@@ -85,7 +85,7 @@ export default {
         this.tableFilter = JSON.parse(JSON.stringify(request.filter))
 
         // Create a custom request based on the one from the table, but change limit and page to get all the locations
-        var customRequest = Object.assign({}, request)
+        let customRequest = Object.assign({}, request)
         customRequest.limit = this.MAX_JAVA_INTEGER
         customRequest.page = 1
         this.apiPostLocationTable(customRequest, result => {

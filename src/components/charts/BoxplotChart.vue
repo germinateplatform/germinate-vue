@@ -1,5 +1,5 @@
 <template>
-  <BaseChart :width="() => 1280" :height="() => getHeight()" :sourceFile="getSourceFile" :filename="getFilename" :loading="loading" v-on:force-redraw="redraw">
+  <BaseChart :width="() => 1280" :height="() => getHeight()" :sourceFile="baseSourceFile" :filename="baseFilename" :loading="loading" v-on:force-redraw="redraw">
     <div slot="chart" ref="chart" />
   </BaseChart>
 </template>
@@ -65,16 +65,15 @@ export default {
       }
     }
   },
-  mixins: [ datasetApi, colorMixin ],
-  methods: {
-    getSourceFile: function () {
+  computed: {
+    baseSourceFile: function () {
       return {
         blob: new Blob([JSON.stringify(this.plotData)], { type: 'application/json' }),
-        filename: this.getFilename(),
+        filename: this.baseFilename,
         extension: 'json'
       }
     },
-    getFilename: function () {
+    baseFilename: function () {
       if (this.chartMode === 'itemByDataset') {
         return this.xTypes[this.xType].itemKey + '-boxplots-' + this.datasetIds.join('-')
       } else if (this.chartMode === 'datasetByItem') {
@@ -82,7 +81,10 @@ export default {
       } else {
         return this.xTypes[this.xType].itemKey + '-boxplots'
       }
-    },
+    }
+  },
+  mixins: [ datasetApi, colorMixin ],
+  methods: {
     getHeight: function () {
       if (this.chartMode === 'itemByGroup') {
         let groups = []
@@ -115,30 +117,30 @@ export default {
       })
     },
     chart: function () {
-      var div = this.$refs.chart
+      let div = this.$refs.chart
 
       this.$plotly.purge(div)
 
-      var y = []
+      let y = []
 
       // Are we plotting datasets and grouping by trait/compound/climate?
       if (this.chartMode === 'datasetByItem') {
-        for (var dataset in this.plotData.datasets) {
-          for (var i = 0; i < 6; i++) {
+        for (let dataset in this.plotData.datasets) {
+          for (let i = 0; i < 6; i++) {
             // If so, datasets are our Ys
             y.push(this.plotData.datasets[dataset].datasetName)
           }
         }
       } else if (this.chartMode === 'itemByDataset' || this.chartMode === 'itemByGroup') {
-        for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
-          for (var j = 0; j < 6; j++) {
+        for (let item in this.plotData[this.xTypes[this.xType].itemKey]) {
+          for (let j = 0; j < 6; j++) {
             // Else, use this complicated thing to extract the trait/compound/climate name
             y.push(this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey])
           }
         }
       }
 
-      var traces = []
+      let traces = []
 
       if (this.chartMode === 'datasetByItem') {
         traces = this.getInvertedData(y)
@@ -148,7 +150,7 @@ export default {
         traces = this.getGroupData(y)
       }
 
-      var layout = {
+      let layout = {
         xaxis: {
           zeroline: false,
           side: 'top'
@@ -165,7 +167,7 @@ export default {
         }
       }
 
-      var config = {
+      let config = {
         modeBarButtonsToRemove: ['toImage'],
         displayModeBar: true,
         responsive: true,
@@ -175,7 +177,7 @@ export default {
       this.$plotly.newPlot(div, traces, layout, config)
     },
     getGroupData: function (y) {
-      var traces = []
+      let traces = []
 
       let groups = []
 
@@ -186,11 +188,11 @@ export default {
       })
 
       groups.forEach((group, index) => {
-        var x = []
+        let x = []
 
-        for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
-          var itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
-          var itemData = this.plotData.stats.filter(s => s.groupIds === group && s.xId === itemId)[0]
+        for (let item in this.plotData[this.xTypes[this.xType].itemKey]) {
+          const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
+          const itemData = this.plotData.stats.filter(s => s.groupIds === group && s.xId === itemId)[0]
 
           if (itemData) {
             // This trait/compound/climate by group combination is available, add all the information
@@ -226,14 +228,14 @@ export default {
       return traces
     },
     getData: function (y) {
-      var traces = []
-      for (var dataset in this.plotData.datasets) {
-        var datasetId = this.plotData.datasets[dataset].datasetId
-        var x = []
+      let traces = []
+      for (let dataset in this.plotData.datasets) {
+        const datasetId = this.plotData.datasets[dataset].datasetId
+        let x = []
 
-        for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
-          var itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
-          var itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
+        for (let item in this.plotData[this.xTypes[this.xType].itemKey]) {
+          const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
+          const itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
 
           if (itemData) {
             // This trait/compound/climate by dataset combination is available, add all the information
@@ -268,14 +270,14 @@ export default {
       return traces
     },
     getInvertedData: function (y) {
-      var traces = []
-      for (var item in this.plotData[this.xTypes[this.xType].itemKey]) {
-        var itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
-        var x = []
+      let traces = []
+      for (let item in this.plotData[this.xTypes[this.xType].itemKey]) {
+        const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
+        let x = []
 
-        for (var d in this.plotData.datasets) {
-          var datasetId = this.plotData.datasets[d].datasetId
-          var datasetData = this.plotData.stats.filter(s => s.xId === itemId && s.datasetId === datasetId)[0]
+        for (let d in this.plotData.datasets) {
+          const datasetId = this.plotData.datasets[d].datasetId
+          const datasetData = this.plotData.stats.filter(s => s.xId === itemId && s.datasetId === datasetId)[0]
 
           if (datasetData && datasetData.min !== datasetData.max) {
             // This dataset by trait/compound/climate combination is available, add all the information

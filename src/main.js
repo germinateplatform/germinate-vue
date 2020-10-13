@@ -54,7 +54,7 @@ Vue.filter('toDate', value => {
   if (value === null || value === undefined) {
     return null
   }
-  var moment
+  let moment
   if (value.indexOf('-') !== -1) {
     moment = window.moment(value)
   } else {
@@ -68,7 +68,7 @@ Vue.filter('toDateTime', value => {
   if (value === null || value === undefined) {
     return null
   }
-  var moment
+  let moment
   if (value.indexOf('-') !== -1) {
     moment = window.moment(value)
   } else {
@@ -93,7 +93,7 @@ Vue.filter('truncateAfterWords', (str, words) => {
 })
 
 // Set base URL
-var baseUrl = 'http://localhost:8080/germinate/v4.0.0/api/'
+let baseUrl = 'http://localhost:8080/germinate/v4.0.0/api/'
 
 if (process.env.VUE_APP_BASE_URL) {
   baseUrl = process.env.VUE_APP_BASE_URL

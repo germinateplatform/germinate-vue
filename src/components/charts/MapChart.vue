@@ -3,8 +3,8 @@
     <BaseChart :width="() => 1280"
                :height="getHeight"
                :id="id"
-               :sourceFile="getSourceFile"
-               :filename="getFilename"
+               :sourceFile="baseSourceFile"
+               :filename="baseFilename"
                v-on:force-redraw="redraw">
       <div slot="chart" id="map-chart" ref="mapChart" />
       <template slot="additionalMenuItems">
@@ -90,6 +90,17 @@ export default {
       }]
     }
   },
+  computed: {
+    baseSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: this.baseFilename
+      }
+    },
+    baseFilename: function () {
+      return 'map-' + this.mapId
+    }
+  },
   components: {
     BaseChart,
     MarkedItems,
@@ -104,15 +115,6 @@ export default {
         return this.distinctChromosomes * 100
       }
     },
-    getSourceFile: function () {
-      return {
-        blob: this.sourceFile,
-        filename: this.getFilename()
-      }
-    },
-    getFilename: function () {
-      return 'map-' + this.mapId
-    },
     showTour: function () {
       this.$refs.tour.start()
     },
@@ -125,7 +127,7 @@ export default {
     },
     toggleItems: function (add) {
       if (this.chartSelection && this.chartSelection.length > 0) {
-        var counter = 0
+        let counter = 0
 
         // For each selection, i.e. for each selected area per chromosome, do this individually.
         // The boolean logic the filter uses isn't powerful enough to run the complex query in one go.
@@ -176,18 +178,18 @@ export default {
     redraw: function () {
       this.$plotly.purge(this.$refs.mapChart)
 
-      var request = {
+      const request = {
         format: 'flapjack'
       }
       this.apiPostMapExport(this.mapId, request, result => {
         this.sourceFile = result
-        var reader = new FileReader()
+        let reader = new FileReader()
         reader.onload = () => {
           // Remove the first row (Flapjack header)
-          var dirtyTsv = reader.result
-          var firstEOL = dirtyTsv.indexOf('\r\n')
-          var tsv = 'markerName\tchromosome\tposition\r\n' + dirtyTsv.substring(firstEOL + 2)
-          var data = this.$plotly.d3.tsv.parse(tsv)
+          const dirtyTsv = reader.result
+          const firstEOL = dirtyTsv.indexOf('\r\n')
+          const tsv = 'markerName\tchromosome\tposition\r\n' + dirtyTsv.substring(firstEOL + 2)
+          const data = this.$plotly.d3.tsv.parse(tsv)
 
           this.$plotly.d3.select(this.$refs.mapChart)
             .datum(data)

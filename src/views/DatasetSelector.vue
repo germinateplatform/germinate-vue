@@ -45,7 +45,7 @@ export default {
       return this.datasetType === 'allelefreq' ? 'single' : 'multi'
     },
     checkLicenses: function () {
-      var selectedIds = this.$refs.datasetTable.getSelected()
+      const selectedIds = this.$refs.datasetTable.getSelected()
 
       if (!selectedIds || selectedIds.length < 1) {
         this.$bvToast.toast(this.$t('toastSelectDatasetText'), {
@@ -75,8 +75,8 @@ export default {
       }
       this.apiPostLicenseTable(query, result => {
         if (result && result.data && result.data.length > 0) {
-          var toAccept = result.data.filter(l => {
-            var result = true
+          const toAccept = result.data.filter(l => {
+            let result = true
 
             if (l.acceptedBy !== undefined && l.acceptedBy !== null && l.acceptedBy.length > 0) {
               if (this.token && l.acceptedBy.indexOf(this.token.id) !== -1) {
@@ -126,7 +126,7 @@ export default {
       }
     },
     getDatasetTypes: function () {
-      var result = Object.assign({}, this.datasetTypes)
+      let result = Object.assign({}, this.datasetTypes)
       delete result.unknown
       return result
     },
@@ -139,7 +139,7 @@ export default {
     },
     adjustData: function (data) {
       // Always filter for just the current dataset type
-      var additional = [{
+      const additional = [{
         column: 'datasetType',
         comparator: 'equals',
         operator: 'and',
@@ -164,7 +164,7 @@ export default {
       this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', null)
     }
 
-    var datasetType = this.$route.params.datasetType
+    const datasetType = this.$route.params.datasetType
 
     if (this.datasetTypes[datasetType]) {
       this.datasetType = datasetType

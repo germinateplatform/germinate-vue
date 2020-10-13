@@ -58,7 +58,7 @@
             <dt class="col-sm-3 text-right">{{ $t('dublinCoreRights') }}</dt><dd class="col-sm-9" v-html="dataset.dublinCore.rights.join(', ')" />
           </template>
         </dl>
-        <a  class="btn btn-secondary" :href="getHref()" :download="`dataset-${dataset.datasetId}-dublin-core.json`" ><i class="mdi mdi-18px mdi-download" /></a>
+        <a  class="btn btn-secondary" :href="href" :download="`dataset-${dataset.datasetId}-dublin-core.json`" ><i class="mdi mdi-18px mdi-download" /></a>
       </div>
     </div>
   </b-modal>
@@ -80,14 +80,20 @@ export default {
       id: this.uuidv4()
     }
   },
+  computed: {
+    href: function () {
+      if (this.dataset && this.dataset.dublinCore) {
+        return 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.dataset.dublinCore))
+      } else {
+        return null
+      }
+    }
+  },
   components: {
     DatasetAttributeTable
   },
   mixins: [ datasetApi ],
   methods: {
-    getHref: function () {
-      return 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.dataset.dublinCore))
-    },
     getAttributeData: function (data, callback) {
       return this.apiPostDatasetAttributeTable(this.dataset.datasetId, data, callback)
     },

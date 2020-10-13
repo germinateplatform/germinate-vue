@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 const localStorage = window.localStorage
 
-var name = process.env.VUE_APP_INSTANCE_NAME
+let name = process.env.VUE_APP_INSTANCE_NAME
 
 if (!name) {
   name = 'germinate-' + window.location.pathname
@@ -142,7 +142,7 @@ const storeState = {
     },
     ON_MARKED_IDS_REMOVE_MUTATION: function (state, { type, ids }) {
       ids.forEach(id => {
-        var index = state.userStates[state.token ? state.token.id : null].markedIds[type].indexOf(id)
+        const index = state.userStates[state.token ? state.token.id : null].markedIds[type].indexOf(id)
         if (index !== -1) {
           state.userStates[state.token ? state.token.id : null].markedIds[type].splice(index, 1)
         }
@@ -175,7 +175,7 @@ const storeState = {
     },
     ON_HIDDEN_COLUMNS_REMOVE_MUTATION: function (state, { type, columns }) {
       columns.forEach(id => {
-        var index = state.userStates[state.token ? state.token.id : null].hiddenColumns[type].indexOf(id)
+        const index = state.userStates[state.token ? state.token.id : null].hiddenColumns[type].indexOf(id)
         if (index !== -1) {
           state.userStates[state.token ? state.token.id : null].hiddenColumns[type].splice(index, 1)
         }
@@ -213,7 +213,7 @@ const storeState = {
     },
     ON_ASYNC_JOB_UUID_REMOVE_MUTATION: function (state, uuid) {
       if (!state.token) {
-        var index = state.userStates[state.token ? state.token.id : null].asyncJobUuids.indexOf(uuid)
+        const index = state.userStates[state.token ? state.token.id : null].asyncJobUuids.indexOf(uuid)
 
         if (index !== -1) {
           state.userStates[state.token ? state.token.id : null].asyncJobUuids.splice(index, 1)
@@ -318,7 +318,7 @@ const storeState = {
       storage: {
         getItem: key => {
           // Get the value and parse it
-          var result = JSON.parse(localStorage.getItem(key))
+          let result = JSON.parse(localStorage.getItem(key))
 
           // If it exists and there is user state data
           if (result && result.userStates) {
@@ -340,7 +340,7 @@ const storeState = {
         removeItem: key => localStorage.removeItem(key)
       },
       reducer: (state, paths) => {
-        var result = {}
+        let result = {}
         try {
           result = JSON.parse(JSON.stringify(state))
         } catch (err) {
@@ -352,7 +352,7 @@ const storeState = {
         if (result.userStates && result.serverSettings && result.serverSettings.showGdprNotification) {
           // If so, for each user
           Object.keys(result.userStates).forEach(u => {
-            var currentUserState = result.userStates[u]
+            let currentUserState = result.userStates[u]
 
             // If they haven't accepted cookies, remove the keys that aren't flagged as "essential cookies"
             if (currentUserState.cookiesAccepted !== true) {

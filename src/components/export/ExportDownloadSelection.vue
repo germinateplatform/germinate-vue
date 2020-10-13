@@ -68,7 +68,7 @@ export default {
     downloadData: function (query) {
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport(this.downloadKey, query, result => {
-        var downloadRequest = {
+        const downloadRequest = {
           blob: result,
           filename: this.datasetType + '-dataset-' + this.datasetIds.join('-'),
           extension: 'txt'

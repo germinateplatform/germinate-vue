@@ -4,7 +4,7 @@
             :title="$t('modalTitleRegistration')"
             :cancel-title="$t('buttonBack')"
             :ok-title="currentStep === registrationSteps.length - 1 ? $t('buttonRegister') : $t('buttonNext')"
-            :ok-disabled="!canGoNext()"
+            :ok-disabled="!canGoNext"
             :ok-only="currentStep === 0"
             @ok.prevent="next"
             @cancel.prevent="prev"
@@ -148,6 +148,28 @@ export default {
       }
     }
   },
+  computed: {
+    canGoNext: function () {
+      switch (this.currentStep) {
+        case 0:
+          return this.disclaimerAccepted
+        case 1:
+          if (this.hasGatekeeper) {
+            return this.user.userUsername && this.user.userPassword
+          } else {
+            return this.user.userPassword &&
+              this.user.userPasswordConfirm &&
+              this.user.userPassword === this.user.userPasswordConfirm &&
+              this.user.userFullName &&
+              this.user.userEmailAddress &&
+              this.selectedInstitution !== null &&
+              this.$refs.passwordInput.getScore() >= 2
+          }
+      }
+
+      return false
+    }
+  },
   components: {
     PasswordInput
   },
@@ -185,7 +207,7 @@ export default {
           delete this.user.institutionAddress
         }
 
-        var newRequest = {
+        let newRequest = {
           locale: this.locale,
           user: this.user
         }
@@ -219,7 +241,7 @@ export default {
         })
       } else {
         // Existing user, new request
-        var existingRequest = {
+        const existingRequest = {
           locale: this.locale,
           username: this.user.userUsername,
           password: this.user.userPassword
@@ -267,24 +289,6 @@ export default {
     canAddInstitution: function () {
       return this.tempInstitution.name && this.tempInstitution.acronym
     },
-    canGoNext: function () {
-      switch (this.currentStep) {
-        case 0:
-          return this.disclaimerAccepted
-        case 1:
-          if (this.hasGatekeeper) {
-            return this.user.userUsername && this.user.userPassword
-          } else {
-            return this.user.userPassword &&
-              this.user.userPasswordConfirm &&
-              this.user.userPassword === this.user.userPasswordConfirm &&
-              this.user.userFullName &&
-              this.user.userEmailAddress &&
-              this.selectedInstitution !== null &&
-              this.$refs.passwordInput.getScore() >= 2
-          }
-      }
-    },
     prev: function () {
       this.currentStep = Math.max(0, this.currentStep - 1)
     },
@@ -310,7 +314,7 @@ export default {
     // Get all existing institutions
     this.apiGetGatekeeperInstitutions(query, result => {
       if (result && result.data) {
-        var tempInst = []
+        let tempInst = []
 
         result.data.forEach(i => tempInst.push({
           value: i,

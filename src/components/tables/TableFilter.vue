@@ -201,7 +201,7 @@ export default {
     // Only get the columns that have a text that isn't empty and that have a valid type
     getColumns: function () {
       return this.columns.filter(c => {
-        var show = c.label ? (c.label !== '') : false
+        let show = c.label ? (c.label !== '') : false
         show = show && c.type !== undefined
         show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
         return show
@@ -218,7 +218,7 @@ export default {
     // Only get the columns that have a text that isn't empty
     getColumnsToToggle: function () {
       return this.columns.filter(c => {
-        var show = c.label ? (c.label !== '') : false
+        let show = c.label ? (c.label !== '') : false
         show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
         return show
       })
@@ -275,8 +275,8 @@ export default {
     },
     getEntityTypeOptions: function () {
       return Object.keys(this.entityTypes).map(e => {
-        var stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
-        var enabled = stats && stats.length > 0 && stats[0].count > 0
+        const stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
+        const enabled = stats && stats.length > 0 && stats[0].count > 0
         return {
           value: e,
           disabled: !enabled,
@@ -285,7 +285,7 @@ export default {
       })
     },
     isDisabled: function (type, comparator) {
-      var name = (type instanceof Function) ? type.name : type
+      const name = (type instanceof Function) ? type.name : type
       if (this.validComparatorsForType[name]) {
         return this.validComparatorsForType[name].indexOf(comparator) === -1
       } else {
@@ -325,7 +325,7 @@ export default {
       this.targetFilter = []
 
       this.filter.forEach(f => {
-        var newFilter = {
+        const newFilter = {
           column: f.column.key || f.column.name,
           operator: f.operator,
           comparator: f.comparator,
@@ -347,7 +347,7 @@ export default {
       }
     },
     addFilter: function () {
-      var validColumns = this.getColumns
+      const validColumns = this.getColumns
       this.tempFilter.push({
         column: validColumns[0],
         comparator: 'equals',

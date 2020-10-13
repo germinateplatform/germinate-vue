@@ -21,8 +21,8 @@ function userIsAtLeast (userType, atLeast) {
 }
 
 function requireAuth (to, from, next) {
-  var authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'NONE'
-  var token = store.getters.token
+  const authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'NONE'
+  const token = store.getters.token
 
   EventBus.$emit('show-loading', false)
 
@@ -473,7 +473,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  var serverSettings = store.getters.serverSettings
+  const serverSettings = store.getters.serverSettings
 
   // Check if this page can be hidden
   const canBeHidden = !to.meta || to.meta.canBeHidden !== false

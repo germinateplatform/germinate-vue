@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :width="() => 720" :height="() => 720" :sourceFile="getSourceFile" :filename="getFilename" v-on:force-redraw="redraw(sourceFile)">
+    <BaseChart :width="() => 720" :height="() => 720" :sourceFile="baseSourceFile" :filename="baseFilename" v-on:force-redraw="redraw(sourceFile)">
       <div slot="chart" id="taxonomy-chart" ref="taxonomyChart" class="chart-taxonomy text-center" />
     </BaseChart>
   </div>
@@ -18,28 +18,30 @@ export default {
       sourceFile: null
     }
   },
+  computed: {
+    baseSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: this.baseFilename
+      }
+    },
+    baseFilename: function () {
+      return 'taxonomy-sunburst'
+    }
+  },
   components: {
     BaseChart
   },
   mixins: [ statsApi, colorMixin ],
   methods: {
-    getSourceFile: function () {
-      return {
-        blob: this.sourceFile,
-        filename: this.getFilename()
-      }
-    },
-    getFilename: function () {
-      return 'taxonomy-sunburst'
-    },
     redraw: function (result) {
       this.sourceFile = result
 
       this.$plotly.purge(this.$refs.taxonomyChart)
 
-      var reader = new FileReader()
+      const reader = new FileReader()
       reader.onload = () => {
-        var data = this.$plotly.d3.tsv.parse(reader.result)
+        const data = this.$plotly.d3.tsv.parse(reader.result)
 
         let sunburst = {}
 
@@ -91,7 +93,7 @@ export default {
             .height(500)
             .onLeafClicked(path => {
               // Then store a filter using genus, species and subtaxa
-              var query
+              let query
 
               if (path.length === 1 && path[0] === 'N/A') {
                 query = [{

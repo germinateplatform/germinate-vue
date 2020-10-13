@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     columns: function () {
-      var columns = [
+      let columns = [
         {
           key: 'groupId',
           type: Number,

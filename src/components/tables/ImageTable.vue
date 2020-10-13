@@ -126,7 +126,7 @@ export default {
   methods: {
     rotateBasedOnExif: function (image) {
       EXIF.getData(image, function () {
-        var orientation = EXIF.getTag(this, 'Orientation')
+        const orientation = EXIF.getTag(this, 'Orientation')
         if (orientation === 6) {
           image.className = 'rotate90'
         } else if (orientation === 8) {
@@ -142,7 +142,7 @@ export default {
       return this.getHighContrastTextColor(color)
     },
     getTagColor: function (tag) {
-      var index = this.tags.indexOf(tag.tagName)
+      let index = this.tags.indexOf(tag.tagName)
       if (index === -1) {
         this.tags.push(tag.tagName)
         index = this.tags.length
@@ -151,14 +151,14 @@ export default {
       return this.serverSettings.colorsTemplate[index % this.serverSettings.colorsTemplate.length]
     },
     getSrc: function (image, size) {
-      var params = {
+      const params = {
         name: image.imagePath,
         type: 'database',
         size: size,
         token: this.token ? this.token.imageToken : ''
       }
 
-      var paramString = this.toUrlString(params)
+      const paramString = this.toUrlString(params)
 
       return this.baseUrl + 'image/src?' + paramString
     },

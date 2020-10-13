@@ -4,7 +4,7 @@
     <b-card-header header-tag="header" class="p-2 collapse-header" role="tab" @click="toggle">
       <div class="d-flex flex-row align-items-center">
         <!-- Icon and name to the left -->
-        <i :class="`collapse-expand-status mdi mdi-18px mdi-chevron-right ${getStyle()}`" />&nbsp;
+        <i :class="`collapse-expand-status mdi mdi-18px mdi-chevron-right ${style}`" />&nbsp;
         <strong class="d-flex flex-row align-items-center"><i :class="`mdi mdi-18px ${icon} text-primary mr-1`" v-if="icon"/> {{ title }}</strong>
         <!-- Count and progress to the right -->
         <span class="ml-auto d-flex flex-row align-items-center">
@@ -53,10 +53,12 @@ export default {
       contentVisible: false
     }
   },
-  methods: {
-    getStyle: function () {
+  computed: {
+    style: function () {
       return this.contentVisible ? 'mdi-rotate-90' : ''
-    },
+    }
+  },
+  methods: {
     toggle: function () {
       this.contentVisible = !this.contentVisible
       this.$emit('toggle', this.contentVisible)

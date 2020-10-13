@@ -67,7 +67,7 @@ export default {
     },
     onDownload: function () {
       this.htmlData = 'data:application/octet-stream;base64,' + btoa(unescape(encodeURIComponent(this.license.licenseContent)))
-      var filename = this.license.licenseName.replace(' ', '-') + '.html'
+      let filename = this.license.licenseName.replace(' ', '-') + '.html'
       if (this.dataset) {
         filename = this.dataset.datasetId + '-' + filename
       }

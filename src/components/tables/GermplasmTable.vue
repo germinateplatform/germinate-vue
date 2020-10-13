@@ -205,7 +205,7 @@ export default {
   },
   computed: {
     columns: function () {
-      var result = [
+      let result = [
         {
           key: 'preview',
           type: undefined,
@@ -409,24 +409,24 @@ export default {
       this.$refs.germplasmTable.refresh()
     },
     getSrc: function (germplasm) {
-      var params = {
+      const params = {
         name: germplasm.firstImagePath,
         type: 'database',
         size: 'small',
         token: this.token ? this.token.imageToken : ''
       }
 
-      var paramString = this.toUrlString(params)
+      const paramString = this.toUrlString(params)
 
       return this.baseUrl + 'image/src?' + paramString
     },
     markParents: function (item) {
       if (item) {
-        var parentId = item.entityParentId
+        const parentId = item.entityParentId
         this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [parentId] })
       } else {
         EventBus.$emit('show-loading', true)
-        var requestData = this.$refs.germplasmTable.getCurrentRequestData()
+        const requestData = this.$refs.germplasmTable.getCurrentRequestData()
         // First request all ids for the current table items
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
@@ -440,14 +440,14 @@ export default {
     markChildren: function (item) {
       if (item) {
         EventBus.$emit('show-loading', true)
-        var id = item.germplasmId
+        const id = item.germplasmId
         this.apiPostEntityIds([id], 'down', result => {
           this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
           EventBus.$emit('show-loading', false)
         })
       } else {
         EventBus.$emit('show-loading', true)
-        var requestData = this.$refs.germplasmTable.getCurrentRequestData()
+        const requestData = this.$refs.germplasmTable.getCurrentRequestData()
         // First request all ids for the current table items
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
@@ -460,11 +460,11 @@ export default {
     },
     unmarkParents: function (item) {
       if (item) {
-        var parentId = item.entityParentId
+        const parentId = item.entityParentId
         this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [parentId] })
       } else {
         EventBus.$emit('show-loading', true)
-        var requestData = this.$refs.germplasmTable.getCurrentRequestData()
+        const requestData = this.$refs.germplasmTable.getCurrentRequestData()
         // First request all ids for the current table items
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
@@ -478,14 +478,14 @@ export default {
     unmarkChildren: function (item) {
       if (item) {
         EventBus.$emit('show-loading', true)
-        var id = item.germplasmId
+        const id = item.germplasmId
         this.apiPostEntityIds([id], 'down', result => {
           this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
           EventBus.$emit('show-loading', false)
         })
       } else {
         EventBus.$emit('show-loading', true)
-        var requestData = this.$refs.germplasmTable.getCurrentRequestData()
+        const requestData = this.$refs.germplasmTable.getCurrentRequestData()
         // First request all ids for the current table items
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents

@@ -179,7 +179,7 @@ export default {
     rotateBasedOnExif: function (image) {
       // Read the EXIF information and then add a rotation class
       EXIF.getData(image, function () {
-        var orientation = EXIF.getTag(this, 'Orientation')
+        const orientation = EXIF.getTag(this, 'Orientation')
         if (orientation === 6) {
           image.className = 'rotate90'
         } else if (orientation === 8) {

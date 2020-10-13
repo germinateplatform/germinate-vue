@@ -72,12 +72,12 @@ export default {
       default: true
     },
     filename: {
-      type: Function,
+      type: String,
       default: null
     },
     sourceFile: {
-      type: Function,
-      default: () => null
+      type: Object,
+      default: null
     },
     loading: {
       type: Boolean,
@@ -113,7 +113,7 @@ export default {
       }
     },
     downloadSource: function () {
-      var request = this.sourceFile()
+      let request = this.sourceFile
 
       request.filename = request.filename + '-' + window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')
 
@@ -126,7 +126,7 @@ export default {
     getFilename: function (imageType) {
       this.imageType = imageType
       if (this.filename) {
-        this.userFilename = this.filename()
+        this.userFilename = this.filename
       }
       this.$refs.chartModal.show()
     },

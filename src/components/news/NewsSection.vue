@@ -124,16 +124,25 @@ export default {
   methods: {
     deleteNewsItem: function (id) {
       if (id) {
-        this.apiDeleteNews(id, result => {
-          if (result) {
-            this.updateNews()
-            this.update()
-
-            if (this.$refs.newsModal) {
-              this.$refs.newsModal.hide()
-            }
-          }
+        this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
+          okVariant: 'danger',
+          okTitle: this.$t('genericYes'),
+          cancelTitle: this.$t('genericNo')
         })
+          .then(value => {
+            if (value) {
+              this.apiDeleteNews(id, result => {
+                if (result) {
+                  this.updateNews()
+                  this.update()
+
+                  if (this.$refs.newsModal) {
+                    this.$refs.newsModal.hide()
+                  }
+                }
+              })
+            }
+          })
       }
     },
     getContent: function (item) {
@@ -157,18 +166,18 @@ export default {
       }
     },
     getImageSrc: function (item) {
-      var params = {
+      const params = {
         name: item.newsImage,
         token: this.token ? this.token.imageToken : null,
         type: 'news',
         size: 'small'
       }
-      var paramString = this.toUrlString(params)
+      const paramString = this.toUrlString(params)
 
       return this.baseUrl + 'image/src?' + paramString
     },
     updateNews: function (page) {
-      var newsQuery = {
+      const newsQuery = {
         page: page,
         limit: this.newsCount ? this.newsCount : this.MAX_JAVA_INTEGER,
         orderBy: 'createdOn',
@@ -186,7 +195,7 @@ export default {
       })
     },
     update: function () {
-      var projectQuery = {
+      const projectQuery = {
         page: 1,
         limit: this.projectCount ? this.projectCount : this.MAX_JAVA_INTEGER,
         filter: [{

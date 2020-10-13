@@ -13,7 +13,7 @@
       <ExportGroupSelection :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
     </b-col>
     <b-col cols=12>
-      <b-btn variant="primary" @click="buttonPressed" :disabled="buttonDisabled()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t(texts.exportButton) }}</b-btn>
+      <b-btn variant="primary" @click="buttonPressed" :disabled="getButtonDisabled()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t(texts.exportButton) }}</b-btn>
     </b-col>
   </b-row>
 </template>
@@ -80,11 +80,11 @@ export default {
     ExportGroupSelection
   },
   methods: {
-    buttonDisabled: function () {
+    getButtonDisabled: function () {
       if (this.$refs.groupSelection) {
-        var settings = this.$refs.groupSelection.getSettings()
+        const settings = this.$refs.groupSelection.getSettings()
 
-        var disabled = this.min !== null && this.selectedItems.length < this.min
+        let disabled = this.min !== null && this.selectedItems.length < this.min
 
         if (settings.specialGroupSelection === 'selection') {
           disabled = disabled || settings.selectedGroups.length < 1
@@ -96,7 +96,7 @@ export default {
       }
     },
     buttonPressed: function () {
-      var query = {
+      let query = {
         xGroupIds: null,
         xIds: null,
         yGroupIds: null,
@@ -105,16 +105,16 @@ export default {
         datasetIds: this.datasetIds
       }
 
-      var settings = this.$refs.groupSelection.getSettings()
+      const settings = this.$refs.groupSelection.getSettings()
 
       // If the "Marked items" item is selected, set the individual ids
-      var markedSelected = settings.selectedGroups.filter(g => g.isMarkedItem === true)
+      const markedSelected = settings.selectedGroups.filter(g => g.isMarkedItem === true)
       if (settings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
         query.yIds = this.markedIds.germplasm
       }
 
       // Set the selected group ids
-      var groups = settings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
+      const groups = settings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
       if (settings.specialGroupSelection !== 'all' && groups.length > 0) {
         query.yGroupIds = groups
       }
@@ -133,7 +133,7 @@ export default {
         this.items.forEach(t => {
           // If we're only supposed to show numerics, exclude chars
           if (!this.onlyNumeric || (t.dataType === 'numeric')) {
-            var itemName = t[this.nameKey]
+            let itemName = t[this.nameKey]
 
             if (t.unitAbbreviation) {
               itemName += ` [${t.unitAbbreviation}]`

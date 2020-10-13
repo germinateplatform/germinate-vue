@@ -31,7 +31,7 @@ export default {
       return this.apiPostDatasetTable(data, callback)
     },
     getFilter: function (isExternal) {
-      var filter = [{
+      let filter = [{
         column: {
           name: 'isExternal',
           type: Boolean

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <DatasetTable :getData="getDatasets" :filterOn="getFilter()" :clickHandler="d => { dataset = d }" ref="datasetTable" />
+    <DatasetTable :getData="getDatasets" :filterOn="filter" :clickHandler="d => { dataset = d }" ref="datasetTable" />
 
     <div v-if="dataset" class="mt-3">
       <hr />
@@ -23,7 +23,17 @@ import datasetApi from '@/mixins/api/dataset.js'
 export default {
   data: function () {
     return {
-      dataset: null
+      dataset: null,
+      filter: [{
+        column: {
+          name: 'isExternal',
+          type: Boolean
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [0],
+        canBeChanged: false
+      }]
     }
   },
   components: {
@@ -43,18 +53,6 @@ export default {
     },
     getDatasets: function (query, callback) {
       return this.apiPostDatasetTable(query, callback)
-    },
-    getFilter: function () {
-      return [{
-        column: {
-          name: 'isExternal',
-          type: Boolean
-        },
-        comparator: 'equals',
-        operator: 'and',
-        values: [0],
-        canBeChanged: false
-      }]
     }
   }
 }

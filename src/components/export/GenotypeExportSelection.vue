@@ -134,7 +134,7 @@ export default {
       }
     },
     getGenotypeSummaryData: function (query, callback) {
-      var combinedQuery = Object.assign({}, query, this.getQuery(false))
+      const combinedQuery = Object.assign({}, query, this.getQuery(false))
 
       return this.apiPostGenotypeDatasetSummary(combinedQuery, result => {
         if (this.$refs.genotypeDatasetTable) {
@@ -148,7 +148,7 @@ export default {
         datasetIds: this.selectedDatasetIds
       }
       this.apiPostDatasetAttributeExport(request, result => {
-        var downloadRequext = {
+        const downloadRequext = {
           blob: result,
           filename: this.datasetType + '-dataset-metadata-' + this.selectedDatasetIds.join('-'),
           extension: 'txt'
@@ -159,7 +159,7 @@ export default {
       })
     },
     getQuery: function (isFinal) {
-      var query = {
+      let query = {
         xGroupIds: null,
         xIds: null,
         yGroupIds: null,
@@ -170,22 +170,22 @@ export default {
         generateHapMap: this.generateHapMap
       }
 
-      var germplasmSettings = this.$refs.germplasmGroups.getSettings()
-      var markedSelectedGermplasm = germplasmSettings.selectedGroups.filter(g => g.isMarkedItem === true)
+      const germplasmSettings = this.$refs.germplasmGroups.getSettings()
+      const markedSelectedGermplasm = germplasmSettings.selectedGroups.filter(g => g.isMarkedItem === true)
       if (germplasmSettings.specialGroupSelection !== 'all' && markedSelectedGermplasm.length > 0) {
         query.yIds = this.markedIds.germplasm
       }
-      var germplasmGroups = germplasmSettings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
+      const germplasmGroups = germplasmSettings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
       if (germplasmSettings.specialGroupSelection !== 'all' && germplasmGroups.length > 0) {
         query.yGroupIds = germplasmGroups
       }
 
-      var markerSettings = this.$refs.markerGroups.getSettings()
-      var markedSelectedMarkers = markerSettings.selectedGroups.filter(g => g.isMarkedItem === true)
+      const markerSettings = this.$refs.markerGroups.getSettings()
+      const markedSelectedMarkers = markerSettings.selectedGroups.filter(g => g.isMarkedItem === true)
       if (markerSettings.specialGroupSelection !== 'all' && markedSelectedMarkers.length > 0) {
         query.xIds = this.markedIds.markers
       }
-      var markerGroups = markerSettings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
+      const markerGroups = markerSettings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
       if (markerSettings.specialGroupSelection !== 'all' && markerGroups.length > 0) {
         query.xGroupIds = markerGroups
       }
@@ -260,7 +260,7 @@ export default {
 
         if (result && result.length > 0) {
           result.forEach(m => {
-            var name = m.mapName
+            let name = m.mapName
 
             if (m.markerCount) {
               name += ` (${m.markerCount})`

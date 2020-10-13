@@ -71,7 +71,7 @@ export default {
         const originalTarget = this.originalTarget
         // If it's successful, finally store them
         if (originalTarget) {
-          var path = originalTarget
+          const path = originalTarget
           this.$store.commit('ON_ORIGINAL_TARGET_CHANGED_MUTATION', null)
           // Do this after resetting the original target, so it's changed in the correct place (no user)
           this.$store.commit('ON_TOKEN_CHANGED_MUTATION', result)

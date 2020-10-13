@@ -142,7 +142,7 @@ export default {
               return
             }
 
-            var type = this.groupTypes[this.group.groupType].apiName
+            const type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: selectedIds,
               isAddition: false
@@ -170,7 +170,7 @@ export default {
           disabled: () => this.markedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
           icon: 'mdi mdi-18px mdi-expand-all',
           callback: (selectedIds) => {
-            var type = this.groupTypes[this.group.groupType].apiName
+            const type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: true
@@ -190,7 +190,7 @@ export default {
           disabled: () => this.markedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
           icon: 'mdi mdi-18px mdi-collapse-all',
           callback: (selectedIds) => {
-            var type = this.groupTypes[this.group.groupType].apiName
+            const type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: false
@@ -246,7 +246,7 @@ export default {
   methods: {
     uploadContent: function (content) {
       if (content && content.length > 0) {
-        var type = this.groupTypes[this.group.groupType]
+        const type = this.groupTypes[this.group.groupType]
 
         // Filter based on the NAME of the currently selected group item (germplasm name, location name, marker name)
         const query = {
@@ -344,7 +344,7 @@ export default {
       return this.apiPostGroupLocationTableIds(this.group.groupId, data, callback)
     },
     onEditGroup: function () {
-      var group = {
+      const group = {
         id: this.groupToEdit.groupId,
         name: this.groupToEdit.groupName,
         description: this.groupToEdit.groupDescription,
@@ -408,7 +408,7 @@ export default {
       this.groupId = groupId
 
       if (this.groupId) {
-        var queryParams = {
+        const queryParams = {
           page: 1,
           limit: 1,
           prevCount: -1,
@@ -419,7 +419,7 @@ export default {
             values: [this.groupId]
           }]
         }
-        var prevGroupType = this.group ? this.group.groupType : null
+        const prevGroupType = this.group ? this.group.groupType : null
         this.apiPostGroupTable(queryParams, result => {
           if (result && result.data && result.data.length > 0) {
             // Update the URL to reflect the newly selected group

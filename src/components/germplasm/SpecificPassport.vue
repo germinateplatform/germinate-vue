@@ -7,7 +7,7 @@
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
           <b-nav-item href="#links" @click="scrollIntoView">{{ $t('pagePassportLinksTitle') }}</b-nav-item>
-          <b-nav-item href="#performance" @click="scrollIntoView" v-if="performanceDataAvailable">{{ $t('pagePassportTraitStatsTitle') }}</b-nav-item>
+          <b-nav-item href="#performance" @click="scrollIntoView" v-if="performanceDataCount > 0">{{ $t('pagePassportTraitStatsTitle') }}</b-nav-item>
           <b-nav-item href="#datasets" @click="scrollIntoView">{{ $t('pagePassportDatasetTitle') }}</b-nav-item>
           <b-nav-item href="#pedigree" @click="scrollIntoView">{{ $t('pagePassportPedigreeTitle') }}</b-nav-item>
           <b-nav-item href="#location" @click="scrollIntoView" v-if="germplasm.declatitude && germplasm.declongitude">{{ $t('pagePassportLocationTitle') }}</b-nav-item>
@@ -67,13 +67,13 @@
         <!-- Links -->
         <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
 
-        <div v-show="performanceDataAvailable">
+        <div v-show="performanceDataCount > 0">
           <hr />
           <h2 class="mdi-heading" id="performance"><i class="mdi mdi-36px text-primary mdi-speedometer" /><span> {{ $t('pagePassportTraitStatsTitle') }}</span></h2>
           <p>{{ $t('pagePassportTraitStatsText') }}</p>
           <b-button v-b-toggle.trait-collapse variant="primary">{{ $t('buttonToggle') }}</b-button>
-          <b-collapse id="trait-collapse" class="mt-2">
-            <GermplasmTraitStats :germplasmId="germplasmId" @has-data="result => performanceDataAvailable = result" ref="performanceData" />
+          <b-collapse id="trait-collapse" class="mt-2" :visible="performanceDataCount <= 48">
+            <GermplasmTraitStats :germplasmId="germplasmId" @has-data="onTraitStatsDataChanged" ref="performanceData" />
           </b-collapse>
         </div>
 
@@ -96,7 +96,7 @@
           <hr />
           <h2 class="mdi-heading" id="location"><i class="mdi mdi-36px mdi-map-marker text-primary" /> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
           <p v-html="$t('pagePassportLocationText')" />
-          <LocationMap :locations="[getLocation()]" ref="map"/>
+          <LocationMap :locations="[location]" ref="map"/>
         </template>
 
         <hr />
@@ -183,7 +183,7 @@ export default {
         offset: 152,
         throttle: 100
       },
-      performanceDataAvailable: true
+      performanceDataCount: 0
     }
   },
   props: {
@@ -224,9 +224,28 @@ export default {
         values: [this.currentGermplasmId],
         canBeChanged: false
       }]
+    },
+    location: function () {
+      if (this.germplasm) {
+        return {
+          locationId: -1,
+          locationLatitude: this.germplasm.declatitude,
+          locationLongitude: this.germplasm.declongitude,
+          locationName: this.germplasm.collsite,
+          locationType: 'collectingsites',
+          countryName: null,
+          countryCode2: null,
+          countryCode3: this.germplasm.origcty
+        }
+      } else {
+        return null
+      }
     }
   },
   methods: {
+    onTraitStatsDataChanged: function (traitCount) {
+      this.performanceDataCount = traitCount
+    },
     scrollIntoView: function (evt) {
       evt.preventDefault()
       const href = evt.target.getAttribute('href')
@@ -256,20 +275,8 @@ export default {
     getPedigreeData: function (data, callback) {
       return this.apiPostPedigreeTable(data, callback)
     },
-    getLocation: function () {
-      return {
-        locationId: -1,
-        locationLatitude: this.germplasm.declatitude,
-        locationLongitude: this.germplasm.declongitude,
-        locationName: this.germplasm.collsite,
-        locationType: 'collectingsites',
-        countryName: null,
-        countryCode2: null,
-        countryCode3: this.germplasm.origcty
-      }
-    },
     getTitle: function () {
-      var parts = []
+      let parts = []
       parts.push(this.germplasm.accenumb)
       parts.push(this.germplasm.accename)
 
@@ -294,7 +301,7 @@ export default {
     }
   },
   created: function () {
-    var urlParam = this.$route.params.germplasmId
+    const urlParam = this.$route.params.germplasmId
 
     if (this.germplasmId) {
       this.currentGermplasmId = this.germplasmId
@@ -353,7 +360,7 @@ export default {
     })
 
     // Request information based on id
-    var request = {
+    const request = {
       page: 1,
       limit: 1,
       filter: [{

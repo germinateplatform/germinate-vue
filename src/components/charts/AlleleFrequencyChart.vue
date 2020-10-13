@@ -51,7 +51,7 @@
       <h2>{{ $t('pageAlleleFrequencyBinningChartTitle') }}</h2>
       <p>{{ $t('pageAlleleFrequencyBinningChartText') }}</p>
       <!-- Plotly.js bar chart -->
-      <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" :canChangeColors="false" v-on:force-redraw="redraw">
+      <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" :canChangeColors="false" v-on:force-redraw="redraw">
         <div slot="chart" id="allelefreq-chart" ref="allelefreqChart" />
       </BaseChart>
       <p>{{ $t('pageAlleleFrequencyBinningChartColors') }}</p>
@@ -85,7 +85,6 @@ export default {
     return {
       maxBins: 20,
       minBins: 2,
-      gradient: null,
       currentWidths: null,
       dataCount: 0,
       tabIndex: 0,
@@ -100,6 +99,20 @@ export default {
       serverFileBinning: null
     }
   },
+  computed: {
+    gradient: function () {
+      return this.createColorGradient('#ff7878', '#78fd78', this.widths.length)
+    },
+    baseSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: this.baseFilename
+      }
+    },
+    baseFilename: function () {
+      return 'allelefreq-' + this.datasetIds.join('-')
+    }
+  },
   components: {
     BaseChart
   },
@@ -109,10 +122,6 @@ export default {
       this.redraw()
     },
     widths: function (newValue, oldValue) {
-      // If the widths change, update the gradient
-      if (!this.currentWidths || this.currentWidths.length !== newValue.length) {
-        this.updateGradient()
-      }
       this.redraw()
     }
   },
@@ -120,7 +129,7 @@ export default {
   methods: {
     parseFile: function () {
       // Read the file
-      var reader = new FileReader()
+      let reader = new FileReader()
       reader.onload = () => {
         this.serverFileBinning = this.$plotly.d3.tsv.parse(reader.result)
         this.serverFileBinning.forEach(d => {
@@ -159,16 +168,16 @@ export default {
           this.autoBins = this.adjustBinCount(this.autoBins)
 
           // Using the input file, compute the bins so that each contains roughly the same number of data points
-          var total = 0
+          let total = 0
           this.serverFileBinning.forEach(d => {
             total += d.count
           })
 
           const cutoff = total / this.autoBins
-          var binWidths = []
-          var current = 0
-          var start = 0
-          for (var i = 0; i < this.serverFileBinning.length; i++) {
+          let binWidths = []
+          let current = 0
+          let start = 0
+          for (let i = 0; i < this.serverFileBinning.length; i++) {
             current += this.serverFileBinning[i].count
 
             if (current >= cutoff) {
@@ -185,9 +194,6 @@ export default {
       }
     },
     update: function (prevLength) {
-      if (prevLength !== this.widths.length) {
-        this.updateGradient()
-      }
       this.redraw()
     },
     getExportSettings: function () {
@@ -220,37 +226,24 @@ export default {
         return Math.min(this.maxBins, Math.max(this.minBins, Math.round(value)))
       }
     },
-    updateGradient: function () {
-      this.gradient = this.createColorGradient('#ff7878', '#78fd78', this.widths.length)
-    },
-    getSourceFile: function () {
-      // Return config to parent
-      return {
-        blob: this.sourceFile,
-        filename: this.getFilename()
-      }
-    },
-    getFilename: function () {
-      return 'allelefreq-' + this.datasetIds.join('-')
-    },
     redraw: function () {
       if (this.$refs.allelefreqChart) {
         // Purge existing plot
         this.$plotly.purge(this.$refs.allelefreqChart)
       }
 
-      var reader = new FileReader()
+      let reader = new FileReader()
       reader.onload = () => {
-        var data = this.$plotly.d3.tsv.parse(reader.result)
+        let data = this.$plotly.d3.tsv.parse(reader.result)
 
         this.dataCount = data.length
         if (data.length > 0) {
           this.serverFilePath = this.sourceFile.filename
 
           this.$nextTick(() => {
-            var colors = []
-            var index = 0
-            var sum = 0
+            let colors = []
+            let index = 0
+            let sum = 0
             data.forEach((value, i) => {
               if (i * 100 / data.length >= sum) {
                 sum += this.widths[index++]
@@ -275,7 +268,6 @@ export default {
     }
   },
   mounted: function () {
-    this.updateGradient()
     this.parseFile()
     this.redraw()
   }

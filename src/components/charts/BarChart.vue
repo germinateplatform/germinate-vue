@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="getSourceFile" :filename="getFilename" v-on:force-redraw="redraw">
+    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" v-on:force-redraw="redraw">
       <div slot="chart" id="bar-chart" ref="barChart" class="chart-bar text-center" />
     </BaseChart>
   </div>
@@ -42,6 +42,17 @@ export default {
       default: 500
     }
   },
+  computed: {
+    baseSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: this.baseFilename
+      }
+    },
+    baseFilename: function () {
+      return this.downloadName
+    }
+  },
   components: {
     BaseChart
   },
@@ -52,23 +63,14 @@ export default {
   },
   mixins: [ colorMixin ],
   methods: {
-    getSourceFile: function () {
-      return {
-        blob: this.sourceFile,
-        filename: this.getFilename()
-      }
-    },
-    getFilename: function () {
-      return this.downloadName
-    },
     redraw: function () {
       if (this.sourceFile) {
         this.$plotly.purge(this.$refs.barChart)
 
         if (this.sourceFile) {
-          var reader = new FileReader()
+          let reader = new FileReader()
           reader.onload = () => {
-            var data = this.$plotly.d3.tsv.parse(reader.result)
+            let data = this.$plotly.d3.tsv.parse(reader.result)
 
             this.$plotly.d3.select(this.$refs.barChart)
               .datum(data)

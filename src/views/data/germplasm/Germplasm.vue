@@ -90,8 +90,8 @@ export default {
     },
     getEntityTypeOptions: function () {
       return Object.keys(this.entityTypes).map(e => {
-        var stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
-        var enabled = stats && stats.length > 0 && stats[0].count > 0
+        const stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
+        const enabled = stats && stats.length > 0 && stats[0].count > 0
 
         return {
           id: e,

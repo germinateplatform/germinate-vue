@@ -30,16 +30,16 @@ export default {
   },
   methods: {
     setImagePath: function (index) {
-      var params = {
+      const params = {
         name: this.images[this.locale][index].name,
         token: this.token ? this.token.imageToken : null,
         type: 'template',
         size: 'large'
       }
 
-      var paramString = this.toUrlString(params)
+      const paramString = this.toUrlString(params)
 
-      for (var locale in this.images) {
+      for (let locale in this.images) {
         this.images[locale][index].src = this.baseUrl + 'image/src?' + paramString
       }
     }
@@ -50,7 +50,7 @@ export default {
     this.apiGetSettingsFile({
       'file-type': 'carousel'
     }, result => {
-      for (var locale in result) {
+      for (let locale in result) {
         result[locale].forEach(i => {
           i.src = null
         })

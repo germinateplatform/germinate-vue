@@ -2,8 +2,8 @@
   <div>
     <BaseChart :width="() => 1920"
                :height="() => 1920"
-               :sourceFile="getSourceFile"
-               :filename="getFilename"
+               :sourceFile="baseSourceFile"
+               :filename="baseFilename"
                :supportsSvgDownload="false"
                :loading="loading"
                :id="id"
@@ -111,6 +111,17 @@ export default {
       }]
     }
   },
+  computed: {
+    baseSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: this.baseFilename
+      }
+    },
+    baseFilename: function () {
+      return 'trials-' + this.datasetIds.join('-')
+    }
+  },
   components: {
     BaseChart,
     MarkedItems,
@@ -136,15 +147,6 @@ export default {
         this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: this.selectedIds })
       }
     },
-    getSourceFile: function () {
-      return {
-        blob: this.sourceFile,
-        filename: this.getFilename()
-      }
-    },
-    getFilename: function () {
-      return 'trials-' + this.datasetIds.join('-')
-    },
     redraw: function (result, colorBy) {
       this.loading = true
       this.sourceFile = result
@@ -153,13 +155,13 @@ export default {
 
       this.$plotly.purge(this.$refs.matrixChart)
 
-      var reader = new FileReader()
+      const reader = new FileReader()
       reader.onload = () => {
         // Remove the first row (Flapjack header)
-        var dirtyTsv = reader.result
-        var firstEOL = dirtyTsv.indexOf('\r\n')
-        var tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
-        var data = this.$plotly.d3.tsv.parse(tsv)
+        const dirtyTsv = reader.result
+        const firstEOL = dirtyTsv.indexOf('\r\n')
+        const tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
+        const data = this.$plotly.d3.tsv.parse(tsv)
 
         this.loading = false
 

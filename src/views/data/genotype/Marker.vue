@@ -3,41 +3,48 @@
     <h1>{{ $t('pageMarkerDetailsTitle') }}</h1>
     <hr/>
 
-    <template v-if="marker">
-      <h2 class="mdi-heading" id="mcpd">
-        <span>{{ marker.markerName }}</span>
-        <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipMarkerMarkedItem')"/>
-      </h2>
-      <p>{{ $t('pageMarkerDetailsText') }}</p>
-
-      <template v-if="marker.markerSynonyms && marker.markerSynonyms.length > 0">
-        <h3>{{ $t('pageMarkerDetailsSynonymsTitle') }}</h3>
-        <ul>
-          <li v-for="(synonym, index) in marker.markerSynonyms" :key="`marker-synonym-${index}`">
-            {{ synonym }}
-          </li>
-        </ul>
+    <div v-if="marker !== null">
+      <template v-if="marker === undefined">
+        <div class="text-center">
+          <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+        </div>
       </template>
+      <template v-else>
+        <h2 class="mdi-heading" id="mcpd">
+          <span>{{ marker.markerName }}</span>
+          <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipMarkerMarkedItem')"/>
+        </h2>
+        <p>{{ $t('pageMarkerDetailsText') }}</p>
 
-      <hr/>
-      <h3>{{ $t('pageMarkerDetailsDatasetsTitle') }}</h3>
-      <p>{{ $t('pageMarkerDetailsDatasetsText') }}</p>
-      <!-- Datasets this marker is part of -->
-      <DatasetTable :getData="getDatasetData" />
+        <template v-if="marker.markerSynonyms && marker.markerSynonyms.length > 0">
+          <h3>{{ $t('pageMarkerDetailsSynonymsTitle') }}</h3>
+          <ul>
+            <li v-for="(synonym, index) in marker.markerSynonyms" :key="`marker-synonym-${index}`">
+              {{ synonym }}
+            </li>
+          </ul>
+        </template>
 
-      <hr/>
-      <h3>{{ $t('pageMarkerDetailsMapsTitle') }}</h3>
-      <p>{{ $t('pageMarkerDetailsMapsText') }}</p>
-      <!-- Maps this marker is on -->
-      <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" />
+        <hr/>
+        <h3>{{ $t('pageMarkerDetailsDatasetsTitle') }}</h3>
+        <p>{{ $t('pageMarkerDetailsDatasetsText') }}</p>
+        <!-- Datasets this marker is part of -->
+        <DatasetTable :getData="getDatasetData" />
 
-      <hr />
-      <h3>{{ $t('pageMarkerDetailsGroupsTitle') }}</h3>
-      <p>{{ $t('pageMarkerDetailsGroupsText') }}</p>
-      <!-- Groups this marker is in -->
-      <GroupTable :getData="getGroupData" />
-    </template>
-    <h3 v-else-if="noData === true">{{ $t('pageMarkerDetailsNoMarkerWithIdFound', { markerId: currentMarkerId }) }}</h3>
+        <hr/>
+        <h3>{{ $t('pageMarkerDetailsMapsTitle') }}</h3>
+        <p>{{ $t('pageMarkerDetailsMapsText') }}</p>
+        <!-- Maps this marker is on -->
+        <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" />
+
+        <hr />
+        <h3>{{ $t('pageMarkerDetailsGroupsTitle') }}</h3>
+        <p>{{ $t('pageMarkerDetailsGroupsText') }}</p>
+        <!-- Groups this marker is in -->
+        <GroupTable :getData="getGroupData" />
+      </template>
+    </div>
+    <h3 v-else>{{ $t('pageMarkerDetailsNoMarkerWithIdFound', { markerId: currentMarkerId }) }}</h3>
   </div>
 </template>
 
@@ -57,8 +64,7 @@ export default {
   data: function () {
     return {
       currentMarkerId: null,
-      marker: null,
-      noData: false
+      marker: undefined
     }
   },
   components: {
@@ -138,13 +144,13 @@ export default {
         if (result && result.data && result.data.length > 0) {
           this.marker = result.data[0]
         } else {
-          this.noData = true
+          this.marker = null
         }
       })
     }
   },
   created: function () {
-    var urlParam = this.$route.params.markerId
+    const urlParam = this.$route.params.markerId
 
     if (this.markerId) {
       this.currentMarkerId = this.markerId

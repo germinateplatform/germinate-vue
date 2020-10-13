@@ -49,6 +49,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Toggles the dark mode on or off
+     */
     toggleDarkMode: function () {
       if (this.darkMode === true) {
         this.$store.dispatch('ON_DARK_MODE_CHANGED', false)
@@ -56,9 +59,19 @@ export default {
         this.$store.dispatch('ON_DARK_MODE_CHANGED', true)
       }
     },
+    /**
+     * Formats the given decimal number with the given number of decimal places
+     * @param {Number} number The number to format
+     * @param {Number} places The number of decimal spaces
+     */
     toFixed: function (number, places) {
       return parseFloat(Math.round(number + 'e+' + places) + 'e-' + places)
     },
+    /**
+     * Checks whether the given user type is at least the given minimum user type
+     * @param {String} userType The user type to check
+     * @param {String} atLeast The user type to check against
+     */
     userIsAtLeast: function (userType, atLeast) {
       switch (atLeast) {
         case 'Administrator':
@@ -71,6 +84,9 @@ export default {
 
       return false
     },
+    /**
+     * Gets the current window width
+     */
     getWindowWidth: function () {
       return Math.max(
         document.body.scrollWidth,
@@ -80,6 +96,11 @@ export default {
         document.documentElement.clientWidth
       )
     },
+    /**
+     * Checks whether the given column key in the given table is hidden or not
+     * @param {String} tableName The name of the table
+     * @param {String} columnKey The name of the column
+     */
     isTableColumnHidden: function (tableName, columnKey) {
       if (this.hiddenColumns[tableName]) {
         return (this.hiddenColumns[tableName].indexOf(columnKey) !== -1) ? 'd-none' : ''
@@ -87,6 +108,13 @@ export default {
         return ''
       }
     },
+    /**
+     * Formats the given value into a human-readable number (e.g. 1.000 -> 1K, 1.000.000 -> 1G)
+     * @param {Number} value The value to format
+     * @param {Number} decimals The decimal places
+     * @param {Number} k The thousand value (e.g. 1000 or 1024)
+     * @param {String} separator The separator between the number and the letter
+     */
     getNumberWithSuffix: function (value, decimals = 2, k = 1000, separator = '') {
       if (value === undefined || value === null || value === 0) {
         return '0'
@@ -99,6 +127,10 @@ export default {
 
       return parseFloat((value / Math.pow(k, i)).toFixed(dm)) + separator + sizes[i]
     },
+    /**
+     * Checks if the page with the given name is available in this configuration.
+     * @param {String} name The name of the page to check (refer to router for names)
+     */
     isPageAvailable: function (name) {
       if (this.serverSettings != null && this.serverSettings.hiddenPages != null) {
         return this.serverSettings.hiddenPages.indexOf(name) === -1
@@ -106,16 +138,20 @@ export default {
         return true
       }
     },
+    /**
+     * Downloads the data file given in the parameter using the blow, filename and extension.
+     * @param {Object} object Object of type `{ filename: '', blob: '', extension: '' }`
+     */
     downloadBlob: function (object) {
       if (!object || !object.blob) {
         return
       }
 
-      var extension = object.extension
+      const extension = object.extension
 
-      var url = window.URL.createObjectURL(object.blob)
+      const url = window.URL.createObjectURL(object.blob)
 
-      var downloadLink = document.createElement('a')
+      let downloadLink = document.createElement('a')
       downloadLink.href = url
       if (object.filename && extension) {
         downloadLink.download = object.filename + '.' + extension
@@ -126,16 +162,22 @@ export default {
 
       this.$ga.event('download', 'data', object.filename + '.' + extension)
     },
+    /**
+     * Downloads all SVGs contained in the given DOM element into a single SVG file
+     * @param {Element} container The DOM element
+     * @param {Boolean} isPlotly Is this a plotly.js chart?
+     * @param {String} filename The file name to use for the downloaded file
+     */
     downloadSvgsFromContainer: function (container, isPlotly, filename) {
       // get svg source.
-      var serializer = new XMLSerializer()
-      var svgs = isPlotly ? container.querySelectorAll('svg:not(.icon):not(:last-child)') : container.querySelectorAll('svg')
-      var source = '<?xml version="1.0" standalone="no"?>\r\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'
+      const serializer = new XMLSerializer()
+      const svgs = isPlotly ? container.querySelectorAll('svg:not(.icon):not(:last-child)') : container.querySelectorAll('svg')
+      let source = '<?xml version="1.0" standalone="no"?>\r\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'
 
       svgs.forEach(s => {
         // serializer.serializeToString(s)
-        var children = s.children
-        for (var i = 0; i < children.length; i++) {
+        const children = s.children
+        for (let i = 0; i < children.length; i++) {
           source += serializer.serializeToString(children[i]) + '\r\n'
         }
       })
@@ -143,9 +185,9 @@ export default {
       source += '</svg>'
 
       // convert svg source to URI data scheme.
-      var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source)
+      const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source)
 
-      var downloadLink = document.createElement('a')
+      let downloadLink = document.createElement('a')
       downloadLink.href = url
       downloadLink.download = filename + '.svg'
       document.body.appendChild(downloadLink)
@@ -154,6 +196,10 @@ export default {
 
       this.$ga.event('download', 'svg', filename + '.svg')
     },
+    /**
+     * Converts the given object into a safe URL string
+     * @param {Object} params The object to convert
+     */
     toUrlString: function (params) {
       return Object.keys(params).filter(function (key) {
         return params[key] !== undefined && params[key] !== null
@@ -161,10 +207,13 @@ export default {
         return params[key] ? (key + '=' + encodeURIComponent(params[key])) : ''
       }).join('&')
     },
+    /**
+     * Generates a v4 UUID
+     */
     uuidv4: function () {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0
-        var v = c === 'x' ? r : (r & 0x3 | 0x8)
+        const r = Math.random() * 16 | 0
+        const v = c === 'x' ? r : (r & 0x3 | 0x8)
         return v.toString(16)
       })
     },
@@ -174,9 +223,9 @@ export default {
      */
     handleError: function (error) {
       EventBus.$emit('show-loading', false)
-      var variant = 'danger'
-      var title = this.$t('genericError')
-      var message = error.statusText
+      let variant = 'danger'
+      let title = this.$t('genericError')
+      let message = error.statusText
 
       if (error.data && error.data.reasonPhrase && this.gatekeeperErrors[error.data.reasonPhrase]) {
         message = this.$t(this.gatekeeperErrors[error.data.reasonPhrase])
@@ -191,7 +240,7 @@ export default {
           case 403:
             message = this.$t('httpErrorFourOThree')
             this.$store.dispatch('ON_TOKEN_CHANGED', null)
-            var authMode = this.serverSettings.authMode
+            const authMode = this.serverSettings.authMode
             if (authMode === 'FULL') {
               this.$router.push({ name: 'login' })
             } else if (authMode === 'SELECTIVE') {
@@ -234,9 +283,11 @@ export default {
         appendToast: true
       })
     },
+    /**
+     * Sends a FORM to the given URL using authentication
+     * @param {Object} param0 `{ url: String, formData: Object, success: Callback, error: { codes: [], callback: Callback } }`
+     */
     authForm ({ url = null, formData, success = null, error = { codes: [], callback: this.handleError } }) {
-      var vm = this
-
       const promise = axios.post(url, formData, {
         crossDomain: true,
         withCredentials: true,
@@ -246,13 +297,13 @@ export default {
         }
       })
 
-      promise.then(function (result) {
-        var t = vm.$store.getters.token
+      promise.then(result => {
+        const t = this.$store.getters.token
 
         // Check if the token is still valid. Renew it if so.
         if (t && ((new Date().getTime() - new Date(t.createdOn).getTime()) <= t.lifetime)) {
           t.createdOn = new Date().getTime()
-          vm.$store.dispatch('ON_TOKEN_CHANGED', t)
+          this.$store.dispatch('ON_TOKEN_CHANGED', t)
         }
 
         if (success) {
@@ -260,17 +311,17 @@ export default {
         }
       })
 
-      promise.catch(function (err) {
+      promise.catch(err => {
         if (err.response) {
           // The request was made and the server responded with a status code that falls out of the range of 2xx
           // Log the user out if the result is forbidden and no error method has been provided
           // Otherwise, we assume that the calling method takes care of the error
           if (!error) {
             if (err.response.status === 403) {
-              vm.$store.dispatch('ON_TOKEN_CHANGED', null)
-              var authMode = vm.$store.getters.serverSettings.authMode
+              this.$store.dispatch('ON_TOKEN_CHANGED', null)
+              const authMode = this.$store.getters.serverSettings.authMode
               if (authMode === 'FULL') {
-                vm.$router.push({ name: 'login' })
+                this.$router.push({ name: 'login' })
               } else if (authMode === 'SELECTIVE') {
                 EventBus.$emit('on-show-login-form')
               }
@@ -281,7 +332,7 @@ export default {
             if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
               error.callback(err.response)
             } else {
-              vm.handleError(err.response)
+              this.handleError(err.response)
             }
           } else if (process.env.NODE_ENV === 'development') {
             console.error(err)
@@ -289,7 +340,7 @@ export default {
         } else if (err.request) {
           // The request was made but no response was received `err.request` is an instance of XMLHttpRequest in the browser
           if (err.request.textStatus === 'timeout') {
-            vm.$bvToast.toast('Request to the server timed out.', {
+            this.$bvToast.toast('Request to the server timed out.', {
               title: 'Error',
               variant: 'danger',
               autoHideDelay: 5000,
@@ -306,10 +357,13 @@ export default {
 
       return promise
     },
-    authAjax ({ url = null, method = 'GET', data = null, formData = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = null, error = { codes: [], callback: this.handleError } }) {
-      var vm = this
-      var requestData = null
-      var requestParams = null
+    /**
+     * Sends an Axios request to the server using authentication
+     * @param {Object} param0 `{ url: String, method: String, data: Object, formData: Object, dataType: String, contentType: String, success: Callback, error: { codes: [], callback: Callback } }`
+     */
+    authAxios ({ url = null, method = 'GET', data = null, formData = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = null, error = { codes: [], callback: this.handleError } }) {
+      let requestData = null
+      let requestParams = null
 
       // Stringify the data object for non-GET requests
       if (data !== null || data !== undefined) {
@@ -335,13 +389,13 @@ export default {
         }
       })
 
-      promise.then(function (result) {
-        var t = vm.$store.getters.token
+      promise.then(result => {
+        const t = this.$store.getters.token
 
         // Check if the token is still valid. Renew it if so.
         if (t && ((new Date().getTime() - new Date(t.createdOn).getTime()) <= t.lifetime)) {
           t.createdOn = new Date().getTime()
-          vm.$store.dispatch('ON_TOKEN_CHANGED', t)
+          this.$store.dispatch('ON_TOKEN_CHANGED', t)
         }
 
         if (success) {
@@ -361,17 +415,17 @@ export default {
         }
       })
 
-      promise.catch(function (err) {
+      promise.catch(err => {
         if (err.response) {
           // The request was made and the server responded with a status code that falls out of the range of 2xx
           // Log the user out if the result is forbidden and no error method has been provided
           // Otherwise, we assume that the calling method takes care of the error
           if (!error) {
             if (err.response.status === 403) {
-              vm.$store.dispatch('ON_TOKEN_CHANGED', null)
-              var authMode = vm.$store.getters.serverSettings.authMode
+              this.$store.dispatch('ON_TOKEN_CHANGED', null)
+              const authMode = this.$store.getters.serverSettings.authMode
               if (authMode === 'FULL') {
-                vm.$router.push({ name: 'login' })
+                this.$router.push({ name: 'login' })
               } else if (authMode === 'SELECTIVE') {
                 EventBus.$emit('on-show-login-form')
               }
@@ -382,7 +436,7 @@ export default {
             if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
               return error.callback(err.response)
             } else {
-              return vm.handleError(err.response)
+              return this.handleError(err.response)
             }
           } else if (process.env.NODE_ENV === 'development') {
             console.error(err)
@@ -390,7 +444,7 @@ export default {
         } else if (err.request) {
           // The request was made but no response was received `err.request` is an instance of XMLHttpRequest in the browser
           if (err.request.textStatus === 'timeout') {
-            vm.$bvToast.toast('Request to the server timed out.', {
+            this.$bvToast.toast('Request to the server timed out.', {
               title: 'Error',
               variant: 'danger',
               autoHideDelay: 5000,
@@ -409,8 +463,11 @@ export default {
 
       return promise
     },
+    /**
+     * Returns the current authentication token
+     */
     getToken () {
-      var t = this.$store.getters.token
+      let t = this.$store.getters.token
 
       // Check if the token is still valid
       if (t && ((new Date().getTime() - new Date(t.createdOn).getTime()) > t.lifetime)) {

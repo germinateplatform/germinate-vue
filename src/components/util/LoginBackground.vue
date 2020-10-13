@@ -53,11 +53,11 @@ export default {
 
       const p = this.backgroundColors
 
-      var simplex = new SimplexNoise()
+      const simplex = new SimplexNoise()
 
       const TAU = 6.283185307179586
 
-      var svgNS = svg.namespaceURI
+      const svgNS = svg.namespaceURI
       svg.setAttribute('width', w)
       svg.setAttribute('height', h)
 
@@ -75,14 +75,14 @@ export default {
       g.setAttribute('transform', `translate(${randInt(w)}, ${randInt(h)})`)
       svg.appendChild(g)
 
-      for (var i = 0; i < n; i++) {
+      for (let i = 0; i < n; i++) {
         const rad = 20 + i * 8
         const color = p[Math.floor(Math.random() * (p.length - 1)) + 1]
 
         const path = document.createElementNS(svgNS, 'path')
-        var d = ''
+        let d = ''
 
-        for (var j = 0; j < 360; j++) {
+        for (let j = 0; j < 360; j++) {
           const angle = j / 360 * TAU
           const c = Math.cos(angle)
           const s = Math.sin(angle)
@@ -110,14 +110,14 @@ export default {
       }
     },
     clearBackground: function () {
-      var chart = this.$refs.background
+      let chart = this.$refs.background
       while (chart.firstChild) {
         chart.removeChild(chart.firstChild)
       }
     }
   },
   mounted: function () {
-    var primaryColor = (this.serverSettings && this.serverSettings.colorPrimary) ? this.serverSettings.colorPrimary : '#20a8d8'
+    const primaryColor = (this.serverSettings && this.serverSettings.colorPrimary) ? this.serverSettings.colorPrimary : '#20a8d8'
     this.backgroundColors = this.createColorGradient('#ffffff', primaryColor, 4)
 
     this.updateBackground()

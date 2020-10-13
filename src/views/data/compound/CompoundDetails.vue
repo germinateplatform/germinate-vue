@@ -1,38 +1,45 @@
 <template>
   <div>
-    <div v-if="compound">
-      <h1>{{ compound.compoundName }} <small v-if="compound.unitName">{{ compound.unitName }}</small></h1>
-      <p v-if="compound.compoundDescription">{{ compound.compoundDescription }}</p>
-
-      <!-- Images, e.g. chemical structure -->
-      <ImageGallery :foreignId="compound.compoundId" :downloadName="compound.compoundName" referenceTable="compounds" />
-
-      <hr/>
-
-      <!-- Synonyms -->
-      <template v-if="compound.synonyms">
-        <h2>{{ $t('genericSynonyms') }}</h2>
-        <ul>
-          <li v-for="(synonym, index) in compound.synonyms" :key="`compound-synonyms-${index}`">{{ synonym }}</li>
-        </ul>
+    <div v-if="compound !== null">
+      <template v-if="compound === undefined">
+        <div class="text-center">
+          <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
+        </div>
       </template>
+      <template v-else>
+        <h1>{{ compound.compoundName }} <small v-if="compound.unitName">{{ compound.unitName }}</small></h1>
+        <p v-if="compound.compoundDescription">{{ compound.compoundDescription }}</p>
 
-      <h2>{{ $t('pageCompoundDetailsDataTitle') }}</h2>
-      <p>{{ $t('pageCompoundDetailsDataText') }}</p>
-      <!-- Compound data table -->
-      <CompoundDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="compoundDetailsTable"/>
+        <!-- Images, e.g. chemical structure -->
+        <ImageGallery :foreignId="compound.compoundId" :downloadName="compound.compoundName" referenceTable="compounds" />
 
-      <h2>{{ $t('pageCompoundDetailsStatsTitle') }}</h2>
-      <p>{{ $t('pageCompoundDetailsStatsText') }}</p>
-      <!-- Box plot for this compound -->
-      <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" xType="compounds" ref="compoundDetailsChart" />
-      <!-- Table showing datasets containing this compound -->
-      <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
+        <hr/>
 
-      <div v-show="showAdditionalDatasets">
-        <!-- Any other datasets containing data for this compound, where the license hasn't been accepted yet -->
-        <DatasetsWithUnacceptedLicense datasetType="compound" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
-      </div>
+        <!-- Synonyms -->
+        <template v-if="compound.synonyms">
+          <h2>{{ $t('genericSynonyms') }}</h2>
+          <ul>
+            <li v-for="(synonym, index) in compound.synonyms" :key="`compound-synonyms-${index}`">{{ synonym }}</li>
+          </ul>
+        </template>
+
+        <h2>{{ $t('pageCompoundDetailsDataTitle') }}</h2>
+        <p>{{ $t('pageCompoundDetailsDataText') }}</p>
+        <!-- Compound data table -->
+        <CompoundDataTable :getData="getData" :getIds="getIds" :filterOn="tableFilter" ref="compoundDetailsTable"/>
+
+        <h2>{{ $t('pageCompoundDetailsStatsTitle') }}</h2>
+        <p>{{ $t('pageCompoundDetailsStatsText') }}</p>
+        <!-- Box plot for this compound -->
+        <BoxplotChart chartMode="datasetByItem" :xIds="[compoundId]" xType="compounds" ref="compoundDetailsChart" />
+        <!-- Table showing datasets containing this compound -->
+        <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
+
+        <div v-show="showAdditionalDatasets">
+          <!-- Any other datasets containing data for this compound, where the license hasn't been accepted yet -->
+          <DatasetsWithUnacceptedLicense datasetType="compound" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
+        </div>
+      </template>
     </div>
     <h3 v-else>{{ $t('headingNoData') }}</h3>
   </div>
@@ -51,7 +58,7 @@ export default {
   data: function () {
     return {
       compoundId: null,
-      compound: null,
+      compound: undefined,
       tableFilter: null,
       showAdditionalDatasets: true
     }
@@ -100,7 +107,7 @@ export default {
         canBeChanged: false
       }]
 
-      var request = {
+      const request = {
         page: 1,
         limit: 1,
         filter: [{
@@ -113,6 +120,8 @@ export default {
       this.apiPostCompoundTable(request, result => {
         if (result && result.data && result.data.length > 0) {
           this.compound = result.data[0]
+        } else {
+          this.compound = null
         }
       })
     }

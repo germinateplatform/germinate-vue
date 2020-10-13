@@ -34,14 +34,14 @@ export default {
         experimentId: this.experimentId
       }
       this.apiPostDatasetAttributeExport(request, result => {
-        var filename
+        let filename
         if (this.experimentId) {
           filename = 'experiment-metadata-' + this.experimentId
         } else {
           filename = this.datasetType + '-dataset-metadata-' + this.datasetIds.join('-')
         }
 
-        var downloadRequext = {
+        const downloadRequext = {
           blob: result,
           filename: filename,
           extension: 'txt'

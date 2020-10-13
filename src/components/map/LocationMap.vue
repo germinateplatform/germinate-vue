@@ -66,7 +66,7 @@ require('leaflet.heat')
 require('leaflet.sync')
 require('leaflet.markercluster')
 require('leaflet-easybutton')
-var countries = require('i18n-iso-countries')
+const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
 // Set the leaflet marker icon
@@ -126,7 +126,7 @@ export default {
       this.updateMap()
     },
     climates: function (newValue, oldValue) {
-      var map = this.$refs.map.mapObject
+      const map = this.$refs.map.mapObject
 
       if (this.climates && this.climates.length > 0) {
         L.easyButton('<i class="mdi mdi-weather-snowy-rainy mdi-18px"/>', (button, map) => {
@@ -180,16 +180,16 @@ export default {
             limit: this.MAX_JAVA_INTEGER
           }
           this.apiPostClimateOverlays(queryData, result => {
-            var array = []
+            let array = []
 
             if (result && result.data) {
               result.data.forEach(i => {
-                var path = ''
+                let path = ''
 
-                var params = {
+                const params = {
                   token: this.token ? this.token.imageToken : null
                 }
-                var paramString = this.toUrlString(params)
+                const paramString = this.toUrlString(params)
 
                 path = this.baseUrl + `climate/overlay/${i.climateOverlayId}/src?` + paramString
 
@@ -223,12 +223,12 @@ export default {
     },
     getPolygons: function () {
       if (this.selectionMode === 'polygon' && this.editableLayers) {
-        var polygons = []
+        let polygons = []
 
         this.editableLayers.eachLayer(layer => {
-          var polygon = []
-          var latLngs = layer.getLatLngs()[0]
-          for (var i = 0; i < latLngs.length; i++) {
+          let polygon = []
+          const latLngs = layer.getLatLngs()[0]
+          for (let i = 0; i < latLngs.length; i++) {
             polygon.push(latLngs[i])
           }
           polygons.push(polygon)
@@ -284,7 +284,7 @@ export default {
       }
     },
     updateMap: function () {
-      var map = this.$refs.map.mapObject
+      const map = this.$refs.map.mapObject
 
       // Remove existing markers
       if (this.markers && this.markers.length > 0) {
@@ -299,9 +299,9 @@ export default {
             this.center = [this.location.locationLatitude, this.location.locationLongitude]
           })
 
-          var marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
+          let marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
           marker.on('click', e => {
-            var popup = e.target.getPopup()
+            let popup = e.target.getPopup()
             this.location = this.location
             // Set the popup content on click
             this.$nextTick(() => popup.setContent(this.$refs.popupContent))
@@ -312,7 +312,7 @@ export default {
           this.markers.push(marker)
         } else if (this.internalLocations.length > 1) {
           // If there are multiple locations, fit them into view
-          var latLngBounds = L.latLngBounds()
+          let latLngBounds = L.latLngBounds()
 
           this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .forEach(l => latLngBounds.extend([l.locationLatitude, l.locationLongitude]))
@@ -339,9 +339,9 @@ export default {
           }
           const clusterMarker = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .map(l => {
-              var marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
+              let marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
               marker.on('click', e => {
-                var popup = e.target.getPopup()
+                let popup = e.target.getPopup()
                 this.location = l
                 this.$nextTick(() => popup.setContent(this.$refs.popupContent))
               })
@@ -349,17 +349,17 @@ export default {
             })
           this.markerClusterer.addLayers(clusterMarker)
         } else if (this.mapType === 'heatmap') {
-          var ls = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
+          const ls = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .map(l => [l.locationLatitude, l.locationLongitude, 1])
           if (this.heat) {
             // If it exists, just set it
             this.heat.setLatLngs(ls)
           } else {
             // Otherwise, create it
-            var gradient = {}
+            let gradient = {}
 
             this.gradientColors.forEach((c, i) => {
-              var position = i * (1 / (this.gradientColors.length - 1))
+              const position = i * (1 / (this.gradientColors.length - 1))
               gradient[position] = c
             })
 
@@ -391,22 +391,22 @@ export default {
 
     this.$nextTick(() => {
       // Add OSM as the default
-      var openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      const openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         id: 'OpenStreetMap',
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         subdomains: ['a', 'b', 'c']
       })
 
-      var map = this.$refs.map.mapObject
+      let map = this.$refs.map.mapObject
       map.addLayer(openstreetmap)
 
       // Add an additional satellite layer
-      var satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         id: 'Esri WorldImagery',
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
       })
 
-      var baseMaps = {
+      const baseMaps = {
         'OpenStreetMap': openstreetmap,
         'Esri WorldImagery': satellite
       }
@@ -419,7 +419,7 @@ export default {
         this.editableLayers = new L.FeatureGroup()
         map.addLayer(this.editableLayers)
 
-        var options = {
+        const options = {
           position: 'topright',
           draw: {
             polyline: false,
@@ -440,14 +440,10 @@ export default {
           }
         }
 
-        var result = new L.Control.Draw(options)
+        const result = new L.Control.Draw(options)
         map.addControl(result)
 
-        map.on(L.Draw.Event.CREATED, e => {
-          var layer = e.layer
-
-          this.editableLayers.addLayer(layer)
-        })
+        map.on(L.Draw.Event.CREATED, e => this.editableLayers.addLayer(e.layer))
 
         this.$nextTick(() => {
           // Enable the polygon draw feature by default

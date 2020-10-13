@@ -266,7 +266,7 @@ export default {
       })
     },
     getDatasetType: function (datasettypeId) {
-      var match = Object.keys(this.datasetTypes).filter(k => {
+      const match = Object.keys(this.datasetTypes).filter(k => {
         return this.datasetTypes[k].id === datasettypeId
       })
 
@@ -277,7 +277,7 @@ export default {
       }
     },
     getTemplateType: function (templateType) {
-      var match = Object.keys(this.templateImportTypes).filter(k => {
+      const match = Object.keys(this.templateImportTypes).filter(k => {
         return k === templateType
       })
 

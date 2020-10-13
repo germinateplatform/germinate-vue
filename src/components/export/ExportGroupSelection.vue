@@ -10,7 +10,7 @@
         <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
       </div>
       <!-- Tooltip shown when group selection is disabled -->
-      <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll()">
+      <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll">
         {{ specialGroupSelection !== 'selection' ? $t(tooltip) : null }}
       </b-tooltip>
       <!-- Group selection options -->
@@ -68,15 +68,17 @@ export default {
       }]
     }
   },
+  computed: {
+    isAll: function () {
+      return this.specialGroupSelection === 'all'
+    }
+  },
   watch: {
     groups: function (newValue, oldValue) {
       this.update()
     }
   },
   methods: {
-    isAll: function () {
-      return this.specialGroupSelection === 'all'
-    },
     getSettings: function () {
       return {
         selectedGroups: this.selectedGroups,
@@ -96,7 +98,7 @@ export default {
       }
       this.groupOptions = []
       this.allGroups.forEach(g => {
-        var groupName = g.groupName
+        let groupName = g.groupName
 
         if (g.count !== undefined) {
           groupName += ` (${g.count})`

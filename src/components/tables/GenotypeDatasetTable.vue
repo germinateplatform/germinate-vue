@@ -104,7 +104,7 @@ export default {
       this.$refs.datasetTable.refresh()
     },
     onLoaded: function (data) {
-      var selected = this.getSelected()
+      let selected = this.getSelected()
 
       if (selected && data && data.data) {
         // Select all items by default

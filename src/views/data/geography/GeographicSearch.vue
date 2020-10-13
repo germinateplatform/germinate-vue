@@ -108,7 +108,7 @@ export default {
         data.polygons = this.polygons
 
         // Get all locations within the polygon to draw them on the map
-        var allData = JSON.parse(JSON.stringify(data))
+        let allData = JSON.parse(JSON.stringify(data))
         allData.page = 1
         allData.limit = this.MAX_JAVA_INTEGER
         this.apiPostLocationPolygonTable(allData, result => {

@@ -135,7 +135,7 @@ import locationApi from '@/mixins/api/location.js'
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
 
-var countries = require('i18n-iso-countries')
+const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
 export default {
@@ -184,7 +184,7 @@ export default {
   },
   computed: {
     columns: function () {
-      var result = [
+      let result = [
         {
           key: 'datasetId',
           type: Number,
@@ -360,7 +360,7 @@ export default {
       }
     },
     getDataPointCount: function (dataset) {
-      var result = ''
+      let result = ''
       if (dataset.datasetType === 'genotype' || dataset.datasetType === 'allelefreq') {
         result = '≤'
       }
@@ -399,7 +399,7 @@ export default {
             .then(value => {
               if (value !== null) {
                 // Then export
-                var genotypeQuery = {
+                const genotypeQuery = {
                   datasetIds: [dataset.datasetId],
                   generateFlapjackProject: value
                 }
@@ -419,7 +419,7 @@ export default {
     },
     initDownload: function (dataset, type) {
       // Request data export for all columns and rows for this current dataset
-      var query = {
+      const query = {
         xGroupIds: null,
         xIds: null,
         yGroupIds: null,
@@ -429,7 +429,7 @@ export default {
       }
       EventBus.$emit('show-loading', true)
       this.apiPostDatasetExport(type, query, result => {
-        var request = {
+        const request = {
           blob: result,
           filename: `${type}-dataset-${dataset.datasetId}-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
           extension: 'txt'
@@ -453,7 +453,7 @@ export default {
       // Otherwise, request the data and then show the map
       const dataset = data.item
       this.dataset = dataset
-      var query = {
+      const query = {
         page: 1,
         limit: this.MAX_JAVA_INTEGER,
         filter: [{

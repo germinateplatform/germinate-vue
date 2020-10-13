@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="getSourceFile" :filename="getFilename" :supportsSvgDownload="false" ref="container" v-on:force-redraw="() => redraw(sourceFile, colorBy)">>
+    <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="baseSourceFile" :filename="baseFilename" :supportsSvgDownload="false" ref="container" v-on:force-redraw="() => redraw(sourceFile, colorBy)">>
       <div slot="chart" id="scatter-chart" ref="scatterChart" class="text-center" />
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
 
@@ -109,6 +109,17 @@ export default {
       }]
     }
   },
+  computed: {
+    baseSourceFile: function () {
+      return {
+        blob: this.sourceFile,
+        filename: this.baseFilename
+      }
+    },
+    baseFilename: function () {
+      return this.datasetType + '-' + this.datasetIds.join('-')
+    }
+  },
   components: {
     BaseChart,
     MarkedItems,
@@ -134,15 +145,6 @@ export default {
         this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: this.selectedIds })
       }
     },
-    getSourceFile: function () {
-      return {
-        blob: this.sourceFile,
-        filename: this.getFilename()
-      }
-    },
-    getFilename: function () {
-      return this.datasetType + '-' + this.datasetIds.join('-')
-    },
     redraw: function (result, colorBy) {
       this.sourceFile = result
       this.colorBy = colorBy
@@ -150,13 +152,13 @@ export default {
 
       this.$plotly.purge(this.$refs.scatterChart)
 
-      var reader = new FileReader()
+      const reader = new FileReader()
       reader.onload = () => {
         // Remove the first row (Flapjack header)
-        var dirtyTsv = reader.result
-        var firstEOL = dirtyTsv.indexOf('\r\n')
-        var tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
-        var data = this.$plotly.d3.tsv.parse(tsv)
+        const dirtyTsv = reader.result
+        const firstEOL = dirtyTsv.indexOf('\r\n')
+        const tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
+        const data = this.$plotly.d3.tsv.parse(tsv)
 
         this.$plotly.d3.select(this.$refs.scatterChart)
           .datum(data)

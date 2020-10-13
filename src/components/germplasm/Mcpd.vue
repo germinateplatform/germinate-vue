@@ -22,7 +22,7 @@
 </template>
 
 <script>
-var countries = require('i18n-iso-countries')
+const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
 export default {

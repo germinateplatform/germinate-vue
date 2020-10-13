@@ -1,6 +1,9 @@
 <template>
   <div :id="`scale-${id}`">
-    <h6 v-if="heading" class="scale-heading" :title="heading">{{ heading }}</h6>
+    <h6 v-if="heading" class="scale-heading" :title="heading">
+      <router-link v-if="link" :to="link">{{ heading }}</router-link>
+      <template v-else>{{ heading }}</template>
+    </h6>
     <div class="d-flex my-2">
       <div class="d-flex align-items-center scale-container w-100">
         <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: getColor(0) }" />
@@ -52,6 +55,10 @@ export default {
     count: {
       type: Number,
       default: 0
+    },
+    link: {
+      type: Object,
+      default: null
     }
   },
   data: function () {

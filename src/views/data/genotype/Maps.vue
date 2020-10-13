@@ -67,11 +67,11 @@ export default {
   mixins: [ genotypeApi, typesMixin ],
   methods: {
     exportMap: function (format) {
-      var options = {
+      let options = {
         format: format
       }
       if (this.useAdvancedExportOptions) {
-        var customOptions = this.$refs.exportOptions.getExportOptions()
+        const customOptions = this.$refs.exportOptions.getExportOptions()
 
         if (!customOptions || !customOptions.method) {
           // TODO: Notification

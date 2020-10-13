@@ -8,8 +8,9 @@
         <b-img-lazy class="navbar-brand-full navbar-brand-text" src="img/germinate-text.svg" height="22" alt="Germinate logo" />
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
+
       <b-navbar-nav class="ml-auto align-items-stretch top-nav">
-        <b-nav-form @submit.prevent="search" class="d-none d-sm-inline">
+        <b-nav-form @submit.prevent="search" class="d-none d-md-inline">
           <!-- Search box -->
           <b-input-group class="mr-sm-2">
             <b-form-input size="sm" v-model="searchTerm" :placeholder="$t('inputPlaceholderSearch')"></b-form-input>
@@ -187,7 +188,7 @@ export default {
       this.$refs.helpModal.show()
     },
     updateNav: function () {
-      var tempNav = [
+      const tempNav = [
         {
           name: this.$t('menuHome'),
           url: '/home',
@@ -384,7 +385,7 @@ export default {
 
       // If the server asks to hide certain pages, remove them from the menu
       if (this.serverSettings && this.serverSettings.hiddenPages && this.serverSettings.hiddenPages.length > 0) {
-        var hiddenPages = this.serverSettings.hiddenPages
+        const hiddenPages = this.serverSettings.hiddenPages
         this.nav = tempNav.filter(function f (o) {
           if (o.identifiers) {
             // If the item itself contains the hidden name as an identifier, remove it
@@ -405,7 +406,7 @@ export default {
       }
     },
     getMenuElement: function () {
-      var width = this.getWindowWidth()
+      const width = this.getWindowWidth()
 
       if (width < 992) {
         return '.navbar-toggler'
@@ -458,8 +459,8 @@ export default {
     }
 
     // Since we can't add the logos to the nav sidebar in any way that CoreUI provided, we have to insert them manually.
-    var sb = this.$refs.sidebarNav.$el.querySelector('section')
-    var img = document.createElement('img')
+    let sb = this.$refs.sidebarNav.$el.querySelector('section')
+    let img = document.createElement('img')
     img.src = this.baseUrl + 'image/src-svg/logo.svg'
     img.classList.add('brand-logo')
     img.classList.add('p-3')
@@ -501,5 +502,8 @@ export default {
 .top-nav li.nav-item a {
   -ms-flex-item-align: center !important;
   align-self: center !important;
+}
+.app-header .nav-item {
+  min-width: 45px;
 }
 </style>

@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     columns: function () {
-      var result = [
+      let result = [
         {
           key: 'markerId',
           type: Number,

@@ -5,7 +5,7 @@
     :title="$t('modalTitleAddNews')"
     :ok-title="$t('genericAdd')"
     :cancel-title="$t('buttonCancel')"
-    :ok-disabled="!canContinue()"
+    :ok-disabled="!canContinue"
     @ok.prevent="okPressed">
     <!-- Modal showing news add form -->
     <b-form @submit.stop.prevent>
@@ -77,11 +77,13 @@ export default {
       }]
     }
   },
-  mixins: [ miscApi ],
-  methods: {
+  computed: {
     canContinue: function () {
       return this.newsTitle && this.newsContent && this.newsTypeId
-    },
+    }
+  },
+  mixins: [ miscApi ],
+  methods: {
     okPressed: async function () {
       let imageBase64 = null
       if (this.newsTypeId !== 4) {
