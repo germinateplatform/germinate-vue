@@ -53,8 +53,8 @@
       </template>
       <!-- Display the number of locations associated with this dataset -->
       <template v-slot:cell(locations)="data">
-        <a href="#" class="text-decoration-none text-nowrap" v-if="data.item.locations && data.item.locations.length > 0" @click.prevent="showLocations(data)">
-          <i class="mdi mdi-18px mdi-map-marker align-middle" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')" />
+        <a href="#" class="text-decoration-none text-nowrap" v-if="data.item.locations && data.item.locations.length > 0" @click.prevent="showLocations(data)" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
+          <i class="mdi mdi-18px mdi-map-marker align-middle" />
           <span>{{ data.item.locations.length }}</span>
         </a>
       </template>
@@ -117,6 +117,8 @@
     <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
     <!-- Attribute modal -->
     <AttributeModal :dataset="dataset" v-if="dataset && (dataset.dublinCore !== undefined || dataset.attributes !== 0)" ref="attributeModal" />
+    <!-- Genotype export modal for direct downloads from the table -->
+    <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
   </div>
 </template>
 
@@ -124,6 +126,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 import CollaboratorModal from '@/components/modals/CollaboratorModal'
+import GenotypeExportModal from '@/components/modals/GenotypeExportModal'
 import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props.js'
@@ -329,6 +332,7 @@ export default {
     AttributeModal,
     BaseTable,
     CollaboratorModal,
+    GenotypeExportModal,
     LocationMap,
     LicenseModal
   },
@@ -389,33 +393,29 @@ export default {
           })
           break
         case 'genotype':
-          // For genotypic data, ask for confirmation regarding Flapjack format
-          this.$bvModal.msgBoxConfirm(this.$t('pageGenotypesExportEnableFlapjackTitle'), {
-            okVariant: 'success',
-            okTitle: this.$t('genericYes'),
-            cancelTitle: this.$t('genericNo'),
-            cancelVariant: 'danger'
-          })
-            .then(value => {
-              if (value !== null) {
-                // Then export
-                const genotypeQuery = {
-                  datasetIds: [dataset.datasetId],
-                  generateFlapjackProject: value
-                }
-                EventBus.$emit('show-loading', true)
-                this.$ga.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))
-                this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
-                  result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
-
-                  // Show the sidebar
-                  EventBus.$emit('toggle-aside', 'download')
-                  EventBus.$emit('show-loading', false)
-                })
-              }
-            })
+          // For genotypic data, ask for the additional data types to download.
+          this.dataset = dataset
+          this.$nextTick(() => this.$refs.genotypeExportModal.show())
           break
       }
+    },
+    downloadGenotypicDataset: function (selectedFormats) {
+      // Then export
+      const genotypeQuery = {
+        datasetIds: [this.dataset.datasetId],
+        generateFlapjackProject: selectedFormats.indexOf('flapjack') !== -1,
+        generateHapMap: selectedFormats.indexOf('hapmap') !== -1
+      }
+      EventBus.$emit('show-loading', true)
+      this.$ga.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))
+      this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
+        result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+
+        // Show the sidebar
+        EventBus.$emit('toggle-aside', 'download')
+        EventBus.$emit('show-loading', false)
+      })
+      this.dataset = null
     },
     initDownload: function (dataset, type) {
       // Request data export for all columns and rows for this current dataset

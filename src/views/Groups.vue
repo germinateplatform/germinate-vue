@@ -31,7 +31,10 @@
     <div v-if="group" ref="groupDetails">
       <hr />
       <!-- Name -->
-      <h2>{{ group.groupName }} <small>{{ groupTypes[group.groupType].text() }}</small></h2>
+      <h2 class="d-flex justify-content-between">
+        <span>{{ group.groupName }} <small>{{ groupTypes[group.groupType].text() }}</small></span>
+        <b-button variant="danger" @click="onGroupDeleteClicked(group)" v-if="userCanEdit === true">{{ $t('buttonDelete') }}</b-button>
+      </h2>
       <!-- Description -->
       <template v-if="group.groupDescription">
         <h3>{{ $t('pageGroupsDescriptionTitle') }}</h3>
@@ -39,7 +42,7 @@
       </template>
 
       <!-- Visibility -->
-      <h3>{{ $t('pageGroupsVisibilityTitle') }}</h3>
+      <h3 class="mt-3">{{ $t('pageGroupsVisibilityTitle') }}</h3>
       <span>{{ $t('pageGroupsVisibilityText') }}</span>
       <b-form-checkbox switch
                        v-model="group.groupVisibility"
@@ -50,7 +53,7 @@
         {{ group.groupVisibility === true ? $t('genericYes') : $t('genericNo') }}
       </b-form-checkbox>
 
-      <h3>{{ $t('pageGroupsMembersTitle') }}</h3>
+      <h3 class="mt-3">{{ $t('pageGroupsMembersTitle') }}</h3>
       <!-- One of these three tables will be shown, depending on the type of the selected group -->
       <GermplasmTable v-if="group.groupType === 'germinatebase'"
                       ref="groupmembersTable"

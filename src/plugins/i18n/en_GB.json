@@ -323,6 +323,8 @@
   "modalTitleFileResource": "Upload file resource",
   "modalTitleFileResourceType": "Add file resource type",
   "modalTitleImageUpload": "Image upload",
+  "modalTitleGenotypeExport": "Additional export formats",
+  "modalTextGenotypeExport": "Please select any additional data formats you would like to receive this data in.",
   "modalTextImageUpload": "Select images to upload below. They will be associated with the current database item.",
   "modalTextEditTags": "Start typing a tag name and either select an existing tag or create a new one. Tags can also be removed.",
   "operatorsAnd": "And",
