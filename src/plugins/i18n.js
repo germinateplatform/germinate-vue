@@ -5,6 +5,8 @@ import axios from 'axios'
 import deDE from '@/plugins/i18n/de_DE.json'
 import enGB from '@/plugins/i18n/en_GB.json'
 
+const protectedProperties = [ 'pageAboutGerminateTitle', 'pageAboutGerminateSubtitle', 'pageAboutGerminateText', 'pageAboutGerminateCardHomepageText', 'pageAboutGerminateCardGithubText', 'pageAboutGerminateCardPublicationText', 'pageAboutGerminateCardDocumentationText', 'pageAboutGerminateTeamTitle', 'pageAboutGerminateTeamSubtitle', 'pageAboutGerminateTeamOthersTitle', 'pageAboutGerminateTeamOthersSubtitle', 'pageAboutGerminateTeamOthersText', 'pageAboutGerminateLocationTitle', 'pageAboutGerminateLocationSubtitle', 'pageAboutGerminateFundersTitle', 'pageAboutGerminateFundersSubtitle', 'pageAboutGerminateFundersText', 'pageAboutGerminateTeamSebastian', 'pageAboutGerminateTeamJobSebastian', 'pageAboutGerminateTeamIain', 'pageAboutGerminateTeamJobIain', 'pageAboutGerminateTeamPaul', 'pageAboutGerminateTeamJobPaul' ]
+
 Vue.use(VueI18n)
 
 let messages = {
@@ -42,23 +44,7 @@ export function loadLanguageAsync (lang) {
     // If we get a response from the server, use it
     if (m.data) {
       // Delete the content of the about Germinate page, we don't want people to change it.
-      delete m.data.pageAboutGerminateTitle
-      delete m.data.pageAboutGerminateSubtitle
-      delete m.data.pageAboutGerminateText
-      delete m.data.pageAboutGerminateCardHomepageText
-      delete m.data.pageAboutGerminateCardGithubText
-      delete m.data.pageAboutGerminateCardPublicationText
-      delete m.data.pageAboutGerminateCardDocumentationText
-      delete m.data.pageAboutGerminateTeamTitle
-      delete m.data.pageAboutGerminateTeamSubtitle
-      delete m.data.pageAboutGerminateTeamOthersTitle
-      delete m.data.pageAboutGerminateTeamOthersSubtitle
-      delete m.data.pageAboutGerminateTeamOthersText
-      delete m.data.pageAboutGerminateLocationTitle
-      delete m.data.pageAboutGerminateLocationSubtitle
-      delete m.data.pageAboutGerminateFundersTitle
-      delete m.data.pageAboutGerminateFundersSubtitle
-      delete m.data.pageAboutGerminateFundersText
+      protectedProperties.forEach(p => delete m.data[p])
     }
 
     if (lang === 'de_DE') {

@@ -52,8 +52,8 @@
           <b-img-lazy :src="`./img/${member.img}`" rounded="circle" fluid alt="Developer image" />
         </div>
         <h2>{{ member.name }}</h2>
-        <h5 class="text-primary text-uppercase">{{ member.job }}</h5>
-        <p class="text-muted">{{ member.about }}</p>
+        <h5 class="text-primary text-uppercase">{{ member.job() }}</h5>
+        <p class="text-muted">{{ member.about() }}</p>
         <a v-for="(link, j) in member.links" target="_blank" :title="link.title" :href="link.href" :key="`about-team-${i}-${j}`" class="px-1"><i :class="`mdi mdi-24px ${link.icon}`" /></a>
       </b-col>
     </b-row>
@@ -130,9 +130,9 @@ export default {
       team: [
         {
           name: 'Sebastian Raubach',
-          job: 'Lead developer',
+          job: () => this.$t('pageAboutGerminateTeamJobSebastian'),
           img: 'team/sebastian-raubach.jpg',
-          about: 'Sebastian is responsible for the bulk of the development on the database and web interface. He makes sure everything is nice and tidy and looks as best as it can.',
+          about: () => this.$t('pageAboutGerminateTeamSebastian'),
           links: [{
             icon: 'mdi-twitter',
             title: 'Twitter',
@@ -145,9 +145,9 @@ export default {
         },
         {
           name: 'Iain Milne',
-          job: 'Flapjack developer',
+          job: () => this.$t('pageAboutGerminateTeamJobIain'),
           img: 'team/iain-milne.jpg',
-          about: 'Iain is the main developer of Flapjack and makes sure that the integration between Germinate and Flapjack is as smooth as possible.',
+          about: () => this.$t('pageAboutGerminateTeamIain'),
           links: [{
             icon: 'mdi-earth',
             title: 'Website',
@@ -156,9 +156,9 @@ export default {
         },
         {
           name: 'Paul Shaw',
-          job: 'Project Lead',
+          job: () => this.$t('pageAboutGerminateTeamJobPaul'),
           img: 'team/paul-shaw.jpg',
-          about: 'Paul has worked on Germinate since 2005 and is responsible for the day to day management of the project and its promotion around the world.',
+          about: () => this.$t('pageAboutGerminateTeamPaul'),
           links: [{
             icon: 'mdi-twitter',
             title: 'Twitter',

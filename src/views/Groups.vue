@@ -7,7 +7,7 @@
 
     <!-- These buttons are for switching between different group types. They make switching very convenient. -->
     <b-button-group>
-      <b-button v-for="groupType in getGroupTypeOptions()"
+      <b-button v-for="groupType in groupTypeOptions"
                :key="groupType.id"
                :pressed="isPressed(groupType)"
                :disabled="groupType.disabled"
@@ -212,6 +212,15 @@ export default {
   computed: {
     userCanEdit: function () {
       return this.token !== null && this.group !== null && (this.group.userId === this.token.id)
+    },
+    groupTypeOptions: function () {
+      return Object.keys(this.groupTypes).map(e => {
+        return {
+          id: e,
+          icon: this.groupTypes[e].icon,
+          text: () => this.groupTypes[e].text()
+        }
+      })
     }
   },
   watch: {
@@ -306,15 +315,6 @@ export default {
       } else {
         return false
       }
-    },
-    getGroupTypeOptions: function () {
-      return Object.keys(this.groupTypes).map(e => {
-        return {
-          id: e,
-          icon: this.groupTypes[e].icon,
-          text: () => this.groupTypes[e].text()
-        }
-      })
     },
     getGroupData: function (data, callback) {
       return this.apiPostGroupTable(data, callback)
