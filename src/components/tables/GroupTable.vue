@@ -23,7 +23,8 @@
       </template>
       <!-- Group type icon -->
       <template v-slot:cell(groupType)="data">
-        <span><i :class="`mdi mdi-18px ${groupTypes[data.item.groupType].icon} fix-alignment`" :style="`color: ${groupTypes[data.item.groupType].color()};`" /> {{ groupTypes[data.item.groupType].text() }}</span>
+        <span v-if="groupTypes[data.item.groupType]"><i :class="`mdi mdi-18px ${groupTypes[data.item.groupType].icon} fix-alignment`" :style="`color: ${groupTypes[data.item.groupType].color()};`" /> {{ groupTypes[data.item.groupType].text() }}</span>
+        <span v-else>{{ data.item.groupType }}</span>
       </template>
 
       <!-- Only show if authentication enabled -->

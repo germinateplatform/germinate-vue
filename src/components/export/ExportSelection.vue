@@ -4,7 +4,8 @@
       <h2>{{ $t(texts.exportTitle) }}</h2>
       <p>{{ $t(texts.exportText) }}</p>
       <!-- Selected trait/compound/climate -->
-      <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 />
+      <SearchableSelect v-model="selectedItems" :options="itemOptions" :selectSize=7 />
+      <!-- <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 /> -->
       <p class="text-danger" v-if="max !== null && selectedItems.length > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
       <p class="text-info" v-if="min !== null && selectedItems.length < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
     </b-col>
@@ -20,6 +21,7 @@
 
 <script>
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
+import SearchableSelect from '@/components/util/SearchableSelect'
 
 export default {
   props: {
@@ -77,7 +79,8 @@ export default {
     }
   },
   components: {
-    ExportGroupSelection
+    ExportGroupSelection,
+    SearchableSelect
   },
   methods: {
     getButtonDisabled: function () {
@@ -108,13 +111,13 @@ export default {
       const settings = this.$refs.groupSelection.getSettings()
 
       // If the "Marked items" item is selected, set the individual ids
-      const markedSelected = settings.selectedGroups.filter(g => g.isMarkedItem === true)
+      const markedSelected = settings.selectedGroups.filter(g => g === null)
       if (settings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
         query.yIds = this.markedIds.germplasm
       }
 
       // Set the selected group ids
-      const groups = settings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
+      const groups = settings.selectedGroups.filter(g => g !== null && g.groupId > 0).map(g => g.groupId)
       if (settings.specialGroupSelection !== 'all' && groups.length > 0) {
         query.yGroupIds = groups
       }

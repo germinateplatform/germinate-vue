@@ -171,21 +171,21 @@ export default {
       }
 
       const germplasmSettings = this.$refs.germplasmGroups.getSettings()
-      const markedSelectedGermplasm = germplasmSettings.selectedGroups.filter(g => g.isMarkedItem === true)
+      const markedSelectedGermplasm = germplasmSettings.selectedGroups.filter(g => g === null)
       if (germplasmSettings.specialGroupSelection !== 'all' && markedSelectedGermplasm.length > 0) {
         query.yIds = this.markedIds.germplasm
       }
-      const germplasmGroups = germplasmSettings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
+      const germplasmGroups = germplasmSettings.selectedGroups.filter(g => g !== null && g.groupId > 0).map(g => g.groupId)
       if (germplasmSettings.specialGroupSelection !== 'all' && germplasmGroups.length > 0) {
         query.yGroupIds = germplasmGroups
       }
 
       const markerSettings = this.$refs.markerGroups.getSettings()
-      const markedSelectedMarkers = markerSettings.selectedGroups.filter(g => g.isMarkedItem === true)
+      const markedSelectedMarkers = markerSettings.selectedGroups.filter(g => g === null)
       if (markerSettings.specialGroupSelection !== 'all' && markedSelectedMarkers.length > 0) {
         query.xIds = this.markedIds.markers
       }
-      const markerGroups = markerSettings.selectedGroups.filter(g => g.groupId > 0).map(g => g.groupId)
+      const markerGroups = markerSettings.selectedGroups.filter(g => g !== null && g.groupId > 0).map(g => g.groupId)
       if (markerSettings.specialGroupSelection !== 'all' && markerGroups.length > 0) {
         query.xGroupIds = markerGroups
       }

@@ -93,7 +93,7 @@ Vue.filter('truncateAfterWords', (str, words) => {
 })
 
 // Set base URL
-let baseUrl = 'http://localhost:8080/germinate/v4.0.0/api/'
+let baseUrl = './api/'
 
 if (process.env.VUE_APP_BASE_URL) {
   baseUrl = process.env.VUE_APP_BASE_URL

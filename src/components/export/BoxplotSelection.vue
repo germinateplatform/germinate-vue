@@ -67,8 +67,8 @@ export default {
     ExportSelection
   },
   methods: {
-    plot: function (query, selectedTraits) {
-      this.xIds = selectedTraits.filter(t => t.dataType === 'numeric').map(t => t[this.idKey])
+    plot: function (query, selectedItems) {
+      this.xIds = selectedItems.filter(t => t.dataType === undefined || t.dataType === 'numeric').map(t => t[this.idKey])
       this.yIds = query.yIds
       this.yGroupIds = query.yGroupIds
 
@@ -79,7 +79,7 @@ export default {
       }
       this.showPlot = true
 
-      this.$emit('plot-clicked', query, selectedTraits)
+      this.$emit('plot-clicked', query, selectedItems)
     }
   }
 }

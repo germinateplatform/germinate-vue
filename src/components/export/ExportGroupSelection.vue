@@ -7,7 +7,8 @@
         <!-- Loading indicator -->
         <b-progress :value="100" height="5px" variant="primary" striped animated v-if="groups === null" />
         <!-- Group select -->
-        <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
+        <SearchableSelect v-model="selectedGroups" :options="groupOptions" :selectSize=7 className="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
+        <!-- <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" /> -->
       </div>
       <!-- Tooltip shown when group selection is disabled -->
       <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll">
@@ -27,7 +28,12 @@
 </template>
 
 <script>
+import SearchableSelect from '@/components/util/SearchableSelect'
+
 export default {
+  components: {
+    SearchableSelect
+  },
   props: {
     title: {
       type: String,
@@ -89,14 +95,18 @@ export default {
       this.allGroups = []
       if (this.groups) {
         this.groups.forEach(g => this.allGroups.push(g))
-        this.allGroups.unshift({
-          groupId: -1,
-          groupName: this.$t('pageExportSelectMarkedItems'),
-          isMarkedItem: true,
-          count: this.markedIds[this.itemType].length
-        })
+        // this.allGroups.unshift({
+        //   groupId: -1,
+        //   groupName: this.$t('pageExportSelectMarkedItems'),
+        //   isMarkedItem: true,
+        //   count: this.markedIds[this.itemType].length
+        // })
       }
-      this.groupOptions = []
+      this.groupOptions = [{
+        text: `${this.$t('pageExportSelectMarkedItems')} (${this.markedIds[this.itemType].length})`,
+        value: null,
+        disabled: this.markedIds[this.itemType].length < 1
+      }]
       this.allGroups.forEach(g => {
         let groupName = g.groupName
 
