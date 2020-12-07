@@ -25,6 +25,32 @@ import statsApi from '@/mixins/api/stats.js'
 
 export default {
   name: 'app',
+  metaInfo () {
+    return {
+      meta: [
+        { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: this.homeUrl },
+        { property: 'og:title', content: 'Germinate - The generic plant genetic resources database' },
+        { property: 'og:description', content: 'Germinate is an open source plant database infrastructure and application programming platform on which complex data from genetic resource collections can be stored, queried and visualized.' },
+        { property: 'og:image', content: `${this.pathUrl}img/android-chrome-512x512.png` },
+        { property: 'og:image:type', content: 'image/png' },
+        { name: 'twitter:title', content: 'Germinate is an open source plant database infrastructure and application programming platform on which complex data from genetic resource collections can be stored, queried and visualized.' },
+        { name: 'twitter:description', content: 'Germinate - The generic plant genetic resources database' },
+        { name: 'twitter:url', content: this.homeUrl },
+        { name: 'twitter:image', content: `${this.pathUrl}img/android-chrome-512x512.png` },
+        { name: 'twitter:card', content: 'summary_large_image' }
+      ]
+    }
+  },
+  computed: {
+    pathUrl: function () {
+      return window.location.origin + window.location.pathname
+    },
+    homeUrl: function () {
+      const relative = this.$router.resolve({ name: 'home' }).href
+      return this.pathUrl + relative
+    }
+  },
   data: function () {
     return {
       printContent: null

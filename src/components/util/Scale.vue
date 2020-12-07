@@ -6,7 +6,7 @@
     </h6>
     <div class="d-flex my-2">
       <div class="d-flex align-items-center scale-container w-100">
-        <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: getColor(0) }" />
+        <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: 'var(--primary)' }" />
       </div>
     </div>
     <b-tooltip :target="`scale-${id}`" placement="bottom">
@@ -16,7 +16,7 @@
         <span class="ml-2">{{ toFixed(min, 4)}}</span>
       </div>
       <div class="d-flex justify-content-between">
-        <span class="d-block" :style="{ color: getColor(0) }"><i class="mdi mdi-diameter-variant" /> {{ $t('widgetScaleAvg') }} </span>
+        <span class="d-block" :style="{ color: 'var(--primary)' }"><i class="mdi mdi-diameter-variant" /> {{ $t('widgetScaleAvg') }} </span>
         <span class="ml-2">{{ toFixed(marker, 4) }}</span>
       </div>
       <div class="d-flex justify-content-between">

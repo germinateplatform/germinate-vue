@@ -113,7 +113,7 @@ export default {
           key: 'image',
           type: undefined,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'image')}`,
+          class: `p-0 ${this.isTableColumnHidden(this.options.tableName, 'image')}`,
           label: ''
         }
       ]
@@ -193,8 +193,9 @@ export default {
 
 <style scoped>
 .table-image {
-  width: 100px;
-  height: 100px;
+  min-width: 200px;
+  width: 100%;
+  height: 200px;
   object-fit: cover;
 }
 </style>

@@ -17,6 +17,9 @@ import 'leaflet/dist/leaflet.css'
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
 
+import VueMeta from 'vue-meta'
+Vue.use(VueMeta)
+
 let axiosDefaults = require('axios/lib/defaults')
 
 Vue.mixin(mixin)
