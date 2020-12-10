@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./docker/x86/
-          file: ./Dockerfile
+          file: ./docker/x86/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
           tags: cropgeeks/germinate:development
