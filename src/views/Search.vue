@@ -215,7 +215,6 @@ export default {
     },
     // FILTER
     getFilter: function (columnConst) {
-      console.log('getFilter', columnConst)
       return ColumnsMixin[columnConst].map(c => {
         return {
           column: c,

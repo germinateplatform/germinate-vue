@@ -345,7 +345,6 @@ const storeState = {
           result = JSON.parse(JSON.stringify(state))
         } catch (err) {
           console.error(err)
-          console.log(state)
         }
 
         // Check if GDPR settings are active

@@ -46,7 +46,6 @@ export function plotlySunburstChart() {
       if (onLeafClicked) {
         this.on('plotly_sunburstclick', function (data) {
           if (data.nextLevel === undefined && data.points && data.points.length > 0) {
-            console.log(data)
             let path = data.points[0].currentPath.split('/')
             path.shift()
             path.pop()
