@@ -47,7 +47,9 @@ export function plotlySunburstChart() {
         this.on('plotly_sunburstclick', function (data) {
           if (data.nextLevel === undefined && data.points && data.points.length > 0) {
             let path = data.points[0].currentPath.split('/')
-            path.shift()
+            if (path.length > 0 && path[0] === '') {
+              path.shift()
+            }
             path.pop()
 
             path.push(data.points[0].label)
