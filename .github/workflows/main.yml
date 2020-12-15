@@ -29,6 +29,6 @@ jobs:
         with:
           context: ./docker/x86/
           file: ./docker/x86/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: cropgeeks/germinate:development
