@@ -287,7 +287,7 @@ export default {
                 },
                 {
                   name: this.$t('menuClimateDataExport'),
-                  identifiers: ['export-climates'],
+                  identifiers: ['export-climate'],
                   url: '/data/export/climate',
                   icon: 'mdi mdi-18px mdi-chart-sankey'
                 }
