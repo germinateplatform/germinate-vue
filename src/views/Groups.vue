@@ -368,6 +368,8 @@ export default {
 
           // Select the newly created group
           this.onGroupSelected(result)
+
+          EventBus.$emit('update-sidebar-menu')
         })
       }
     },

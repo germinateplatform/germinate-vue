@@ -73,6 +73,7 @@ export default {
         EventBus.$emit('show-loading', false)
         if (result) {
           this.$emit('images-updated')
+          EventBus.$emit('update-sidebar-menu')
           this.hide()
         }
       })

@@ -96,6 +96,7 @@ import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
 import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
 import LocaleDropdown from '@/components/dropdown/LocaleDropdown'
 import Tour from '@/components/util/Tour'
+import statsApi from '@/mixins/api/stats.js'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -159,14 +160,16 @@ export default {
         id: 'aside-popover-trigger',
         trigger: 'manual',
         variant: 'info'
-      }
+      },
+      badgeCounts: {}
     }
   },
   watch: {
     locale: function (newValue, oldValue) {
-      this.updateNav()
+      this.updateMenu()
     }
   },
+  mixins: [ statsApi ],
   methods: {
     acceptCookies: function (decision) {
       this.$store.dispatch('ON_COOKIES_ACCEPTED', decision)
@@ -202,6 +205,10 @@ export default {
             {
               name: this.$t('menuGermplasm'),
               identifiers: ['germplasm'],
+              badge: {
+                text: this.getBadgeCount(this.badgeCounts.germplasm),
+                variant: 'light'
+              },
               url: '/data/germplasm',
               icon: 'mdi mdi-18px mdi-sprout'
             },
@@ -213,24 +220,40 @@ export default {
                 {
                   name: this.$t('menuGenotypicMarkers'),
                   identifiers: ['markers'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.markers),
+                    variant: 'light'
+                  },
                   url: '/data/genotypes/markers',
                   icon: 'mdi mdi-18px mdi-rotate-90 mdi-format-indent-increase'
                 },
                 {
                   name: this.$t('menuGenotypicMaps'),
                   identifiers: ['maps', 'map-details'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.maps),
+                    variant: 'light'
+                  },
                   url: '/data/genotypes/maps',
                   icon: 'mdi mdi-18px mdi-reorder-vertical'
                 },
                 {
                   name: this.$t('menuGenotypicDataExport'),
                   identifiers: ['export-genotypes'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.datasetsGenotype),
+                    variant: 'light'
+                  },
                   url: '/data/export/genotype',
                   icon: 'mdi mdi-18px mdi-dna'
                 },
                 {
                   name: this.$t('menuAlleleFrequencyDataExport'),
                   identifiers: ['export-allelefrequency'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.datasetsAllelefreq),
+                    variant: 'light'
+                  },
                   url: '/data/export/allelefreq',
                   icon: 'mdi mdi-18px mdi-pulse'
                 }
@@ -244,12 +267,20 @@ export default {
                 {
                   name: this.$t('menuTrialsTraits'),
                   identifiers: ['traits'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.traits),
+                    variant: 'light'
+                  },
                   url: '/data/trials/traits',
                   icon: 'mdi mdi-18px mdi-tag-text-outline'
                 },
                 {
                   name: this.$t('menuTrialsDataExport'),
                   identifiers: ['export-trials'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.datasetsTrials),
+                    variant: 'light'
+                  },
                   url: '/data/export/trials',
                   icon: 'mdi mdi-18px mdi-shovel'
                 }
@@ -263,6 +294,10 @@ export default {
                 {
                   name: this.$t('menuLocations'),
                   identifiers: ['locations'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.locations),
+                    variant: 'light'
+                  },
                   url: '/data/geography/locations',
                   icon: 'mdi mdi-map'
                 },
@@ -282,12 +317,20 @@ export default {
                 {
                   name: this.$t('menuClimateClimates'),
                   identifiers: ['climates'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.climates),
+                    variant: 'light'
+                  },
                   url: '/data/climate/climates',
                   icon: 'mdi mdi-18px mdi-weather-snowy-rainy'
                 },
                 {
                   name: this.$t('menuClimateDataExport'),
                   identifiers: ['export-climate'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.datasetsClimate),
+                    variant: 'light'
+                  },
                   url: '/data/export/climate',
                   icon: 'mdi mdi-18px mdi-chart-sankey'
                 }
@@ -301,12 +344,20 @@ export default {
                 {
                   name: this.$t('menuCompoundsCompounds'),
                   identifiers: ['compounds'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.compounds),
+                    variant: 'light'
+                  },
                   url: '/data/compounds/compounds',
                   icon: 'mdi mdi-18px mdi-atom'
                 },
                 {
                   name: this.$t('menuCompoundDataExport'),
                   identifiers: ['export-compounds'],
+                  badge: {
+                    text: this.getBadgeCount(this.badgeCounts.datasetsCompound),
+                    variant: 'light'
+                  },
                   url: '/data/export/compound',
                   icon: 'mdi mdi-18px mdi-flask'
                 }
@@ -315,18 +366,30 @@ export default {
             {
               name: this.$t('menuDatasets'),
               identifiers: ['datasets'],
+              badge: {
+                text: this.getBadgeCount(this.badgeCounts.datasets),
+                variant: 'light'
+              },
               url: '/data/datasets',
               icon: 'mdi mdi-18px mdi-database'
             },
             {
               name: this.$t('menuExperiments'),
               identifiers: ['experiments'],
+              badge: {
+                text: this.getBadgeCount(this.badgeCounts.experiments),
+                variant: 'light'
+              },
               url: '/data/experiments',
               icon: 'mdi mdi-18px mdi-folder-table'
             },
             {
               name: this.$t('menuDataResources'),
               identifiers: ['data-resources'],
+              badge: {
+                text: this.getBadgeCount(this.badgeCounts.fileresources),
+                variant: 'light'
+              },
               url: '/data/data-resources',
               icon: 'mdi mdi-18px mdi-file-download'
             },
@@ -341,12 +404,20 @@ export default {
         {
           name: this.$t('menuGroups'),
           identifiers: ['groups', 'group-details'],
+          badge: {
+            text: this.getBadgeCount(this.badgeCounts.groups),
+            variant: 'light'
+          },
           url: '/groups',
           icon: 'mdi mdi-18px mdi-group'
         },
         {
           name: this.$t('menuImages'),
           identifiers: ['images'],
+          badge: {
+            text: this.getBadgeCount(this.badgeCounts.images),
+            variant: 'light'
+          },
           url: '/images',
           icon: 'mdi mdi-18px mdi-image-multiple'
         },
@@ -439,16 +510,31 @@ export default {
     },
     startIntroduction: function () {
       this.$refs.introductionTour.start()
+    },
+    updateMenu: function () {
+      this.apiGetOverviewStats(result => {
+        this.badgeCounts = result
+        this.updateNav()
+      })
+    },
+    getBadgeCount: function (value) {
+      if (!value) {
+        return null
+      } else {
+        return this.getNumberWithSuffix(value, 1)
+      }
     }
   },
   destroyed: function () {
     EventBus.$off('toggle-aside', this.toggleAside)
     EventBus.$off('show-introduction')
+    EventBus.$off('update-sidebar-menu')
   },
   mounted: function () {
-    this.updateNav()
+    this.updateMenu()
     EventBus.$on('toggle-aside', this.toggleAside)
     EventBus.$on('show-introduction', this.startIntroduction)
+    EventBus.$on('update-sidebar-menu', this.updateMenu)
 
     if (this.sidebarState && this.sidebarState.length > 0) {
       this.$nextTick(() => document.body.classList.add(...this.sidebarState.split(' ')))

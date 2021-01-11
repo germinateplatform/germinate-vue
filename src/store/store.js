@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
+import { EventBus } from '@/plugins/event-bus.js'
+
 Vue.use(Vuex)
 
 const localStorage = window.localStorage
@@ -112,6 +114,8 @@ const storeState = {
       }
 
       state.token = newToken
+
+      EventBus.$emit('update-sidebar-menu')
     },
     ON_BASE_URL_CHANGED_MUTATION: function (state, newBaseUrl) {
       state.baseUrl = newBaseUrl
