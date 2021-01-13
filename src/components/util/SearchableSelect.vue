@@ -3,7 +3,7 @@
     <!-- Input field for search terms -->
     <b-form-input v-model="searchTerm" :disabled="disabled" :placeholder="$t('inputPlaceholderSearch')" />
     <!-- Regular select field showing filtered options -->
-    <b-form-select multiple
+    <b-form-select :multiple="multiple"
                    :value="value"
                    :options="filteredOptions"
                    :select-size="selectSize"
@@ -21,6 +21,10 @@ export default {
     event: 'input'
   },
   props: {
+    multiple: {
+      type: Boolean,
+      default: true
+    },
     /** The select options */
     options: {
       type: Array,

@@ -3,7 +3,7 @@
     <div v-if="datasetType">
       <h1>{{ datasetTypes[datasetType].text() }}</h1>
       <!-- Table showing all datasets of the type -->
-      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" :selectionMode="getSelectionMode()" class="mb-3" ref="datasetTable" v-on:selection-changed="updateButtonState"/>
+      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" :selectionMode="selectionMode" class="mb-3" ref="datasetTable" v-on:selection-changed="updateButtonState"/>
       <!-- Continue button -->
       <b-button variant="primary" @click="checkLicenses" :disabled="buttonDisabled" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonNext') }}</b-button>
     </div>
@@ -35,14 +35,16 @@ export default {
   components: {
     DatasetTable
   },
+  computed: {
+    selectionMode: function () {
+      // Only single selection for allele frequency data
+      return this.datasetType === 'allelefreq' ? 'single' : 'multi'
+    }
+  },
   mixins: [ datasetApi, typesMixin ],
   methods: {
     updateButtonState: function (selectedIds) {
       this.buttonDisabled = !selectedIds || selectedIds.length < 1
-    },
-    getSelectionMode: function () {
-      // Only single selection for allele frequency data
-      return this.datasetType === 'allelefreq' ? 'single' : 'multi'
     },
     checkLicenses: function () {
       const selectedIds = this.$refs.datasetTable.getSelected()

@@ -53,7 +53,7 @@
       </template>
       <!-- Display the number of locations associated with this dataset -->
       <template v-slot:cell(locations)="data">
-        <a href="#" class="text-decoration-none text-nowrap" v-if="data.item.locations && data.item.locations.length > 0" @click.prevent="showLocations(data)" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
+        <a href="#" class="text-decoration-none text-nowrap" v-if="data.item.locations && data.item.locations.length > 0" @click.prevent="data.toggleDetails()" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
           <i class="mdi mdi-18px mdi-map-marker align-middle" />
           <span>{{ data.item.locations.length }}</span>
         </a>
@@ -107,7 +107,7 @@
 
       <!-- Row details is where the dataset locations are shown on a map -->
       <template v-slot:row-details="data">
-        <LocationMap :locations="locations" v-if="dataset && dataset.datasetId === data.item.datasetId && locations && locations.length > 0" :showLinks="false"/>
+        <LocationMap :locations="data.item.locations" v-if="data.item.locations && data.item.locations.length > 0" :showLinks="false"/>
       </template>
     </BaseTable>
 
@@ -166,7 +166,6 @@ export default {
         rowVariant: this.getRowVariant
       },
       dataset: null,
-      locations: null,
       license: null,
       previousDetailsRow: null,
       datasetStates: {
@@ -443,54 +442,15 @@ export default {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.collaboratorModal.show())
     },
-    showLocations: function (data) {
-      // If the user clicked on the same row again, just toggle it
-      if (this.previousDetailsRow && (this.previousDetailsRow.item.datasetId === data.item.datasetId)) {
-        data.toggleDetails()
-        return
-      }
-
-      // Otherwise, request the data and then show the map
-      const dataset = data.item
-      this.dataset = dataset
-      const query = {
-        page: 1,
-        limit: this.MAX_JAVA_INTEGER,
-        filter: [{
-          column: 'locationId',
-          comparator: 'inSet',
-          operator: 'and',
-          values: dataset.locations.map(l => l.locationId)
-        }]
-      }
-
-      this.apiPostLocationTable(query, result => {
-        if (result) {
-          this.locations = result.data
-
-          if (this.previousDetailsRow) {
-            this.previousDetailsRow.toggleDetails()
-          }
-
-          data.toggleDetails()
-
-          this.previousDetailsRow = data
-        } else {
-          this.$bvToast.toast('Request to the server timed out.', {
-            title: this.$t('genericError'),
-            variant: 'danger',
-            autoHideDelay: 5000,
-            appendToast: true
-          })
-        }
-      })
-    },
     showAttributes: function (dataset) {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.attributeModal.show())
     },
     getSelected: function () {
       return this.$refs.datasetTable.getSelected()
+    },
+    setSelectedItems: function (toSelect) {
+      this.$refs.datasetTable.setSelectedItems(toSelect)
     },
     refresh: function () {
       this.$refs.datasetTable.refresh()

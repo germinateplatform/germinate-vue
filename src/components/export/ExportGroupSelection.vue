@@ -8,7 +8,6 @@
         <b-progress :value="100" height="5px" variant="primary" striped animated v-if="groups === null" />
         <!-- Group select -->
         <SearchableSelect v-model="selectedGroups" :options="groupOptions" :selectSize=7 className="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
-        <!-- <b-form-select multiple v-model="selectedGroups" :options="groupOptions" :select-size=7 class="group-select" :disabled="specialGroupSelection !== 'selection'" /> -->
       </div>
       <!-- Tooltip shown when group selection is disabled -->
       <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll">
@@ -133,7 +132,7 @@ export default {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-.loading-select > *:last-child {
+.loading-select > *:last-child > input {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
