@@ -23,12 +23,12 @@
       <SearchableSelect v-model="selectedTraits" :options="traitOptions" :selectSize=7 />
       <p class="text-info" v-if="selectedTraits.length < 1">{{ $tc('pageExportSelectItemMinimum', 1) }}</p>
 
-      <b-button class="my-3" variant="primary" @click="update" :disabled="selectedTraits.length < 1 || markedIds.germplasm.length < 1"><i class="mdi mdi-18px mdi-file-compare fix-alignment"/> {{ $t('buttonCompare') }}</b-button>
+      <b-button class="my-3" variant="primary" @click="update" :disabled="selectedTraits.length < 1 || !germplasmIds || germplasmIds.length < 1"><i class="mdi mdi-18px mdi-file-compare fix-alignment"/> {{ $t('buttonCompare') }}</b-button>
 
       <template v-if="traitChartData !== null && Object.keys(traitChartData).length > 0">
         <div v-for="trait in selectedTraits" :key="`trait-${trait.traitId}`">
           <h3>{{ trait.traitName }} <small><b-badge>{{ trait.dataType }}</b-badge></small></h3>
-          <div :ref="`trait-chart-${trait.traitId}`" :id="`trait-chart-${trait.traitId}`" />
+          <ComparisonChart :treatments="treatments" :trait="trait" :germplasmData="traitChartData[trait.traitId]" :germplasm="germplasm" :colorMapping="colorMapping" />
         </div>
       </template>
       <h3 class="mt-3" v-else-if="traitChartData !== null">{{ $t('headingNoData') }}</h3>
@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import ComparisonChart from '@/components/charts/ComparisonChart'
 import DatasetTable from '@/components/tables/DatasetTable'
 import SearchableSelect from '@/components/util/SearchableSelect'
 
@@ -57,13 +58,15 @@ export default {
       groups: null,
       selectedGroups: [],
       germplasmIds: [],
+      germplasm: [],
       traits: [],
       traitChartData: null,
-      usedGermplasmColors: {},
-      germplasmNames: {}
+      treatments: [],
+      colorMapping: {}
     }
   },
   components: {
+    ComparisonChart,
     DatasetTable,
     SearchableSelect
   },
@@ -93,7 +96,7 @@ export default {
       }
     },
     selectedDatasets: function (newValue) {
-      if (newValue) {
+      if (newValue && newValue.length > 0) {
         const request = {
           datasetIds: newValue,
           groupType: 'germinatebase',
@@ -106,86 +109,12 @@ export default {
         })
       }
     },
-    traitChartData: function (newValue) {
-      if (newValue) {
-        this.$nextTick(() => {
-          this.selectedTraits.filter(t => newValue[t.traitId]).forEach(t => {
-            this.$plotly.purge(`trait-chart-${t.traitId}`)
-
-            const traces = this.usedTraitGermplasm.map(g => {
-              let color = this.usedGermplasmColors[g]
-              if (!color) {
-                color = this.getColor(Object.keys(this.usedGermplasmColors).length)
-                this.usedGermplasmColors[g] = color
-              }
-              const germplasmData = newValue[t.traitId][g]
-
-              if (germplasmData) {
-                return {
-                  y: germplasmData.values,
-                  name: this.germplasmNames[g],
-                  type: 'box',
-                  marker: {
-                    color: color
-                  }
-                }
-              } else {
-                return {
-                  visible: true,
-                  y: [newValue[t.traitId].total / newValue[t.traitId].count],
-                  hoverinfo: 'none',
-                  opacity: 0,
-                  name: this.germplasmNames[g],
-                  type: 'box',
-                  marker: {
-                    color: color
-                  }
-                }
-              }
-            })
-
-            let layout = {
-              xaxis: {
-                zeroline: false,
-                side: 'top'
-              },
-              height: 400,
-              margin: { autoexpand: true },
-              autosize: true,
-              yaxis: {
-                title: t.traitName,
-                automargin: true
-              },
-              legend: {
-                orientation: 'h'
-              }
-            }
-
-            let config = {
-              modeBarButtonsToRemove: ['toImage'],
-              displayModeBar: true,
-              responsive: true,
-              displaylogo: false
-            }
-
-            this.$plotly.newPlot(`trait-chart-${t.traitId}`, traces, layout, config)
-          })
-        })
-      }
+    selectedTraits: function (newValue) {
+      this.traitChartData = null
+      this.treatments = []
     }
   },
   computed: {
-    usedTraitGermplasm: function () {
-      if (this.traitChartData) {
-        const gIds = new Set()
-        Object.keys(this.traitChartData).forEach(t => {
-          Object.keys(this.traitChartData[t]).forEach(g => gIds.add(g))
-        })
-        return [...gIds].sort()
-      } else {
-        return []
-      }
-    },
     groupOptions: function () {
       if (!this.groups) {
         return []
@@ -234,9 +163,9 @@ export default {
       this.reset()
     },
     reset: function () {
+      this.treatments = []
       this.traits = []
       this.selectedTraits = []
-      this.usedGermplasmColors = {}
       this.traitChartData = null
     },
     adjustFilter: function (data) {
@@ -300,8 +229,6 @@ export default {
     },
     update: function () {
       this.traitChartData = null
-      this.usedGermplasmColors = {}
-      this.germplasmNames = {}
       EventBus.$emit('show-loading', true)
       this.apiPostTrialsDataTable({
         page: 1,
@@ -320,15 +247,21 @@ export default {
         }]
       }, result => {
         this.traitChartData = {}
+        this.treatments = []
         if (result && result.data) {
+          const germplasmMapping = {}
+          const tempTreatments = new Set()
           result.data.forEach(r => {
             const germplasmId = r.germplasmId
             const germplasmName = r.germplasmName
             const traitId = r.traitId
             const traitValue = r.traitValue
+            const treatment = r.treatment
 
-            if (!this.germplasmNames[germplasmId]) {
-              this.germplasmNames[germplasmId] = germplasmName
+            tempTreatments.add(treatment)
+
+            if (!germplasmMapping[germplasmId]) {
+              germplasmMapping[germplasmId] = germplasmName
             }
 
             let data = this.traitChartData[traitId]
@@ -343,21 +276,51 @@ export default {
             if (!data[germplasmId]) {
               data[germplasmId] = {
                 germplasmName: germplasmName,
-                values: []
+                values: {}
               }
             }
 
-            data[germplasmId].values.push(traitValue)
+            if (!data[germplasmId].values[treatment]) {
+              data[germplasmId].values[treatment] = []
+            }
+
+            data[germplasmId].values[treatment].push(traitValue)
             data.count++
             data.total += +traitValue
 
             this.traitChartData[traitId] = data
           })
+
+          this.treatments = Array.from(tempTreatments)
+          this.germplasm = Object.keys(germplasmMapping).map(g => { return { id: g, name: germplasmMapping[g] } })
+
+          this.updateChartColors()
         }
 
         EventBus.$emit('show-loading', false)
       })
+    },
+    updateChartColors: function () {
+      const tempColorMapping = {}
+
+      if (this.treatments && this.treatments.length > 1) {
+        this.treatments.forEach((t, i) => {
+          tempColorMapping[t] = this.getColor(i)
+        })
+      } else {
+        this.germplasm.forEach((g, i) => {
+          tempColorMapping[g.id] = this.getColor(i)
+        })
+      }
+
+      this.colorMapping = tempColorMapping
     }
+  },
+  mounted: function () {
+    EventBus.$on('chart-colors-changed', this.updateChartColors)
+  },
+  destroyed: function () {
+    EventBus.$off('chart-colors-changed', this.updateChartColors)
   }
 }
 </script>

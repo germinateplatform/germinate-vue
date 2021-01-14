@@ -35,6 +35,7 @@ export function plotlySunburstChart() {
 					automargin: true
 				},
 				legend: {
+          bgcolor: 'rgba(0,0,0,0)',
 					orientation: 'h'
         },
         sunburstcolorway: colors,

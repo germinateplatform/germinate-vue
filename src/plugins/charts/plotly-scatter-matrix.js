@@ -136,10 +136,11 @@ export function plotlyScatterMatrix() {
 				bargap: 0,
 				width: width,
 				height: height === null ? this.offsetWidth : height,
-				plot_bgcolor: 'rgba(240,240,240, 0.95)',
+				plot_bgcolor: 'rgba(240, 240, 240, 0.3)',
 				hovermode: 'closest',
 				dragmode: 'select',
 				legend: {
+          bgcolor: 'rgba(0,0,0,0)',
 					orientation: 'h'
 				}
 			};
@@ -150,16 +151,14 @@ export function plotlyScatterMatrix() {
 				layout['xaxis' + id] = {
 					showline: false,
 					zeroline: false,
-					gridcolor: '#fff',
-					ticklen: 2,
+          ticklen: 2,
 					tickfont: {size: 10},
 					titlefont: {size: 10}
 				};
 				layout['yaxis' + id] = {
 					showline: false,
 					zeroline: false,
-					gridcolor: '#fff',
-					ticklen: 2,
+          ticklen: 2,
 					tickfont: {size: 10},
 					titlefont: {size: 10}
 				};

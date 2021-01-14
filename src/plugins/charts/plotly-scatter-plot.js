@@ -172,6 +172,7 @@ export function plotlyScatterPlot() {
 					zeroline: false
 				},
 				legend: {
+          bgcolor: 'rgba(0,0,0,0)',
 					orientation: 'h'
 				},
 				barmode: 'overlay'

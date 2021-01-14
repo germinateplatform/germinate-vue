@@ -90,7 +90,10 @@ export function plotlyAlleleFreqChart() {
 				dragmode: false,
 				autosize: true,
 				hovermode: 'closest',
-				barmode: 'stacked',
+        barmode: 'stacked',
+        legend: {
+          bgcolor: 'rgba(0,0,0,0)'
+        },
 				xaxis: {
 					title: xCategory,
 					automargin: true,

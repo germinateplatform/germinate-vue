@@ -50,6 +50,7 @@ export function plotlyBarChart() {
 					automargin: true
 				},
 				legend: {
+          bgcolor: 'rgba(0,0,0,0)',
 					orientation: 'h'
 				}
 			};

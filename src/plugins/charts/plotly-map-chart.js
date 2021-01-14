@@ -30,6 +30,7 @@ export function plotlyMapChart() {
 					subplots: []
 				},
 				legend: {
+          bgcolor: 'rgba(0,0,0,0)',
 					orientation: 'h'
 				}
 			};

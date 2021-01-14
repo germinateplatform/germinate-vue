@@ -49,6 +49,7 @@ export function plotlyPieChart() {
 				},
 				barmode: 'group',
 				legend: {
+          bgcolor: 'rgba(0,0,0,0)',
 					orientation: 'h'
 				}
 			};
