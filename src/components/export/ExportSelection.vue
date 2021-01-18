@@ -6,12 +6,12 @@
       <!-- Selected trait/compound/climate -->
       <SearchableSelect v-model="selectedItems" :options="itemOptions" :selectSize=7 />
       <!-- <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 /> -->
-      <p class="text-danger" v-if="max !== null && selectedItems.length > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
-      <p class="text-info" v-if="min !== null && selectedItems.length < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
+      <p class="text-danger" v-if="max !== null && selectedItemCount() > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
+      <p class="text-info" v-if="min !== null && selectedItemCount() < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
     </b-col>
     <b-col cols=12 md=6>
       <!-- Selected germplasm/location groups -->
-      <ExportGroupSelection :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
+      <ExportGroupSelection :info="groupSelectionInfo" :multiple="multiple" :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
     </b-col>
     <b-col cols=12>
       <b-btn variant="primary" @click="buttonPressed" :disabled="getButtonDisabled()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t(texts.exportButton) }}</b-btn>
@@ -64,6 +64,14 @@ export default {
     groups: {
       type: Array,
       default: null
+    },
+    multiple: {
+      type: Boolean,
+      default: true
+    },
+    groupSelectionInfo: {
+      type: Function,
+      default: null
     }
   },
   data: function () {
@@ -87,12 +95,12 @@ export default {
       if (this.$refs.groupSelection) {
         const settings = this.$refs.groupSelection.getSettings()
 
-        let disabled = this.min !== null && this.selectedItems.length < this.min
+        let disabled = this.min !== null && this.selectedItemCount() < this.min
 
         if (settings.specialGroupSelection === 'selection') {
           disabled = disabled || settings.selectedGroups.length < 1
         }
-        disabled = disabled || (this.max !== null && this.selectedItems.length > this.max)
+        disabled = disabled || (this.max !== null && this.selectedItemCount() > this.max)
         return disabled
       } else {
         return true
@@ -123,11 +131,20 @@ export default {
       }
 
       // Set selected trait/compound/climate ids
-      if (this.selectedItems.length > 0) {
+      if (this.selectedItemCount() > 0) {
         query.xIds = this.selectedItems.map(t => t[this.idKey])
       }
 
       this.$emit('button-clicked', query, this.selectedItems)
+    },
+    selectedItemCount: function () {
+      if (!this.selectedItems) {
+        return 0
+      } else if (Array.isArray(this.selectedItems)) {
+        return this.selectedItems.length
+      } else {
+        return this.selectedItems !== null ? 1 : 0
+      }
     },
     updateItems: function () {
       this.getItems(result => {

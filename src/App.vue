@@ -140,11 +140,6 @@ export default {
 </script>
 
 <style lang="scss">
-  // CoreUI Icons Set
-  @import '~@coreui/icons/css/coreui-icons.min.css';
-  /* Import Simple Line Icons Set */
-  $simple-line-font-path: '~simple-line-icons/fonts/';
-  @import '~simple-line-icons/scss/simple-line-icons.scss';
   /* Import Flag Icons Set */
   @import '~flag-icon-css/css/flag-icon.min.css';
   @import '~@mdi/font/css/materialdesignicons.min.css';

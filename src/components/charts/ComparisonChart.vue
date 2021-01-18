@@ -9,7 +9,7 @@ import BaseChart from '@/components/charts/BaseChart'
 
 export default {
   props: {
-    treatments: {
+    categories: {
       type: Array,
       default: () => []
     },
@@ -27,6 +27,10 @@ export default {
     },
     colorMapping: {
       type: Object,
+      default: () => null
+    },
+    getPlotData: {
+      type: Function,
       default: () => null
     }
   },
@@ -46,9 +50,9 @@ export default {
   computed: {
     baseSourceFile: function () {
       return {
-        blob: new Blob([JSON.stringify(this.plotData)], { type: 'application/json' }),
+        blob: new Blob([this.getPlotData(this.trait)], { type: 'text/plain' }),
         filename: this.baseFilename,
-        extension: 'json'
+        extension: 'txt'
       }
     },
     baseFilename: function () {
@@ -58,9 +62,9 @@ export default {
   methods: {
     getTraces: function () {
       let traces
-      if (this.treatments && this.treatments.length > 1) {
-        // If there are treatments, we're going to use them as the traces
-        traces = this.treatments.map(tr => {
+      if (this.categories && (this.categories.length > 1 || (this.categories[0] !== null && this.categories[0] !== undefined))) {
+        // If there are categories, we're going to use them as the traces
+        traces = this.categories.map(tr => {
           let color = this.colorMapping[tr]
 
           // Construct all the x values
@@ -200,7 +204,7 @@ export default {
         }]
       }
 
-      if (this.treatments && this.treatments.length > 1) {
+      if (this.categories && (this.categories.length > 1 || (this.categories[0] !== null && this.categories[0] !== undefined))) {
         layout.boxmode = 'group'
       }
 

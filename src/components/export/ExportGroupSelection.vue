@@ -7,14 +7,14 @@
         <!-- Loading indicator -->
         <b-progress :value="100" height="5px" variant="primary" striped animated v-if="groups === null" />
         <!-- Group select -->
-        <SearchableSelect v-model="selectedGroups" :options="groupOptions" :selectSize=7 className="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
+        <SearchableSelect v-model="selectedGroups" :multiple="multiple" :options="groupOptions" :selectSize=7 className="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
       </div>
       <!-- Tooltip shown when group selection is disabled -->
       <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll">
         {{ specialGroupSelection !== 'selection' ? $t(tooltip) : null }}
       </b-tooltip>
       <!-- Group selection options -->
-      <b-button-group>
+      <b-button-group v-if="multiple">
         <b-form-radio-group
           v-model="specialGroupSelection"
           :options="specialGroupOptions"
@@ -22,6 +22,7 @@
           @change="$emit('change')"
           buttons />
       </b-button-group>
+      <p :class="`mt-1 ${groupInfo.variant}`" v-if="groupInfo">{{ groupInfo.text }}</p>
     </div>
   </div>
 </template>
@@ -53,6 +54,14 @@ export default {
     groups: {
       type: Array,
       default: () => []
+    },
+    multiple: {
+      type: Boolean,
+      default: true
+    },
+    info: {
+      type: Function,
+      default: null
     }
   },
   data: function () {
@@ -60,10 +69,11 @@ export default {
 
     return {
       uuid: uuid,
+      groupInfo: null,
       allGroups: [],
       selectedGroups: [],
       groupOptions: [],
-      specialGroupSelection: 'all',
+      specialGroupSelection: this.multiple ? 'all' : 'selection',
       specialGroupOptions: [{
         html: '<i class="mdi mdi-18px mdi-arrow-up-box fix-alignment"></i> ' + this.$t('pageExportGroupSelectModeSelect'),
         value: 'selection'
@@ -81,12 +91,29 @@ export default {
   watch: {
     groups: function (newValue, oldValue) {
       this.update()
+    },
+    selectedGroups: function (newValue) {
+      if (newValue) {
+        this.groupInfo = this.info(newValue)
+      } else {
+        this.groupInfo = null
+      }
     }
   },
   methods: {
     getSettings: function () {
+      let arr
+
+      if (!this.selectedGroups) {
+        arr = [null]
+      } else if (Array.isArray(this.selectedGroups)) {
+        arr = this.selectedGroups
+      } else {
+        arr = [this.selectedGroups]
+      }
+
       return {
-        selectedGroups: this.selectedGroups,
+        selectedGroups: arr,
         specialGroupSelection: this.specialGroupSelection
       }
     },

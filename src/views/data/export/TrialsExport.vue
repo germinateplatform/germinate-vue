@@ -9,8 +9,8 @@
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
       <!-- Banner buttons -->
-      <b-row class="trials-tabs" v-if="tabs">
-        <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
+      <b-row class="trials-tabs" v-if="tabs" cols-xl=5>
+        <b-col cols=12 sm=6 xl=2 :offset-xl="index === 0 ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
           <a href="#" @click.prevent="tab.onSelection">
             <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
               <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
@@ -55,6 +55,12 @@
                                  :texts="textsChart"
                                  :getItems="getTraits"
                                  v-show="currentTab === 'matrix'"/>
+      <TraitComparisonSelection :datasetIds="datasetIds"
+                                v-bind="config"
+                                :groups="groups"
+                                :texts="textsComparison"
+                                :getItems="getTraits"
+                                v-show="currentTab === 'comparison'"/>
       <!-- Trials data table section -->
       <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsTableData" v-show="currentTab === 'table'" />
       <!-- Export section -->
@@ -74,6 +80,7 @@ import BarChart from '@/components/charts/BarChart'
 import BoxplotSelection from '@/components/export/BoxplotSelection'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import TraitExportChartSelection from '@/components/export/TraitExportChartSelection'
+import TraitComparisonSelection from '@/components/export/TraitComparisonSelection'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import { EventBus } from '@/plugins/event-bus.js'
@@ -112,6 +119,14 @@ export default {
         groupTooltip: 'pageExportSelectGroupTooltip',
         exportButton: 'buttonPlot'
       },
+      textsComparison: {
+        exportTitle: 'pageTrialsExportSelectTraitTitle',
+        exportText: 'pageTrialsExportSelectTraitChartText',
+        groupTitle: 'pageTrialsExportSelectGroupTitle',
+        groupText: 'pageTrialsExportSelectGroupChartText',
+        groupTooltip: 'pageExportSelectGroupTooltip',
+        exportButton: 'buttonCompare'
+      },
       textsExport: {
         exportTitle: 'pageTrialsExportSelectTraitTitle',
         exportText: 'pageTrialsExportSelectTraitExportText',
@@ -131,6 +146,11 @@ export default {
         text: () => this.$t('pageDataExportTabDataMatrix'),
         icon: 'mdi-grid',
         onSelection: () => this.tabSelected('matrix')
+      }, {
+        key: 'comparison',
+        text: () => this.$t('pageDataExportTabComparison'),
+        icon: 'mdi-distribute-horizontal-center',
+        onSelection: () => this.tabSelected('comparison')
       }, {
         key: 'table',
         text: () => this.$t('pageDataExportTabDataTable'),
@@ -157,6 +177,7 @@ export default {
     BoxplotSelection,
     DatasetOverview,
     ExportDownloadSelection,
+    TraitComparisonSelection,
     TraitExportChartSelection,
     TrialsDataTable
   },

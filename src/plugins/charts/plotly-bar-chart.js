@@ -43,11 +43,13 @@ export function plotlyBarChart() {
 				barmode: 'group',
 				xaxis: {
 					title: xCategory,
-					automargin: true
+          automargin: true,
+          fixedrange: true
 				},
 				yaxis: {
 					title: yCategory,
-					automargin: true
+          automargin: true,
+          fixedrange: true
 				},
 				legend: {
           bgcolor: 'rgba(0,0,0,0)',

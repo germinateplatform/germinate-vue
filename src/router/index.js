@@ -119,12 +119,6 @@ const router = new Router({
               beforeEnter: requireAuth
             },
             {
-              path: 'germplasm/comparison',
-              name: 'germplasm-comparison',
-              component: () => import('@/views/data/germplasm/Comparison.vue'),
-              beforeEnter: requireAuth
-            },
-            {
               path: 'germplasm/:germplasmId',
               name: 'passport',
               component: () => import('@/views/data/germplasm/Passport.vue'),
