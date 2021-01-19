@@ -3,7 +3,7 @@
     <b-row class="dashboard-stats" v-if="stats">
       <!-- Banner buttons -->
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.key">
-        <router-link :to="{ name: category.link }" :title="`${category.text()}: ${$options.filters.toThousandSeparators(stats[category.key])}`">
+        <router-link :to="{ name: category.link, params: category.params }" :title="`${category.text()}: ${$options.filters.toThousandSeparators(stats[category.key])}`">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
@@ -71,6 +71,12 @@ export default {
           link: 'markers'
         },
         {
+          key: 'maps',
+          text: () => this.$t('dashboardBannerMaps'),
+          icon: 'mdi-reorder-vertical',
+          link: 'maps'
+        },
+        {
           key: 'traits',
           text: () => this.$t('dashboardBannerTraits'),
           icon: 'mdi-tag-text-outline',
@@ -89,10 +95,57 @@ export default {
           link: 'datasets'
         },
         {
+          key: 'experiments',
+          text: () => this.$t('dashboardBannerExperiments'),
+          icon: 'mdi-folder-table',
+          link: 'experiments'
+        },
+        {
+          key: 'datasetsAllelefreq',
+          text: () => this.$t('dashboardBannerDatasetsAllelefreq'),
+          icon: 'mdi-pulse',
+          link: 'export',
+          params: { datasetType: 'allelefreq' }
+        },
+        {
+          key: 'datasetsGenotype',
+          text: () => this.$t('dashboardBannerDatasetsGenotype'),
+          icon: 'mdi-dna',
+          link: 'export',
+          params: { datasetType: 'genotype' }
+        },
+        {
+          key: 'datasetsTrials',
+          text: () => this.$t('dashboardBannerDatasetsTrials'),
+          icon: 'mdi-shovel',
+          link: 'export',
+          params: { datasetType: 'trials' }
+        },
+        {
+          key: 'datasetsClimate',
+          text: () => this.$t('dashboardBannerDatasetsClimate'),
+          icon: 'mdi-chart-sankey',
+          link: 'export',
+          params: { datasetType: 'climate' }
+        },
+        {
+          key: 'datasetsCompound',
+          text: () => this.$t('dashboardBannerDatasetsCompound'),
+          icon: 'mdi-flask',
+          link: 'export',
+          params: { datasetType: 'compound' }
+        },
+        {
           key: 'groups',
           text: () => this.$t('dashboardBannerGroups'),
           icon: 'mdi-group',
           link: 'groups'
+        },
+        {
+          key: 'climates',
+          text: () => this.$t('dashboardBannerClimates'),
+          icon: 'mdi-weather-snowy-rainy',
+          link: 'climates'
         },
         {
           key: 'compounds',
@@ -118,7 +171,7 @@ export default {
   computed: {
     dashboardCategories: function () {
       if (this.serverSettings && this.serverSettings.dashboardCategories) {
-        return this.serverSettings.dashboardCategories.map(c => this.statCategories.find(s => s.key === c))
+        return this.statCategories.filter(d => this.serverSettings.dashboardCategories.indexOf(d.key) !== -1)
       } else {
         return this.statCategories
       }

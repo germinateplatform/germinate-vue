@@ -56,6 +56,7 @@ export default {
         this.$store.dispatch('ON_TOKEN_CHANGED', result)
         this.$refs.signInModal.hide()
         window.location.reload()
+        EventBus.$emit('update-sidebar-menu')
       }, {
         codes: [],
         callback: error => {
@@ -67,6 +68,7 @@ export default {
           }
           // If they're wrong, remove
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
+          EventBus.$emit('update-sidebar-menu')
         }
       })
     },
@@ -87,11 +89,15 @@ export default {
         }
 
         this.$ga.event('login', 'logout')
+
+        EventBus.$emit('update-sidebar-menu')
       }, {
         codes: [],
         callback: () => {
           // If they're wrong, remove
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
+
+          EventBus.$emit('update-sidebar-menu')
         }
       })
     },

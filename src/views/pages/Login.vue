@@ -50,6 +50,8 @@ import RegistrationModal from '@/components/modals/RegistrationModal'
 import authApi from '@/mixins/api/auth.js'
 import Snap from 'snapsvg'
 
+import { EventBus } from '@/plugins/event-bus.js'
+
 export default {
   name: 'Login',
   data: function () {
@@ -81,6 +83,8 @@ export default {
           this.$store.commit('ON_TOKEN_CHANGED_MUTATION', result)
           this.$router.push('/')
         }
+
+        EventBus.$emit('update-sidebar-menu')
       }, {
         codes: [],
         callback: error => {
@@ -92,6 +96,8 @@ export default {
           this.enabled = true
           // If they're wrong, remove
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
+
+          EventBus.$emit('update-sidebar-menu')
         }
       })
     },
