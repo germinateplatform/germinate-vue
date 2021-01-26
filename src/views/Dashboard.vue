@@ -3,7 +3,7 @@
     <b-row class="dashboard-stats" v-if="stats">
       <!-- Banner buttons -->
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.key">
-        <router-link :to="{ name: category.link, params: category.params }" :title="`${category.text()}: ${$options.filters.toThousandSeparators(stats[category.key])}`">
+        <router-link :disabled="isDisabled(category.link)" :event="isDisabled(category.link) ? '' : 'click'" :to="{ name: category.link, params: category.params }" :title="`${category.text()}: ${$options.filters.toThousandSeparators(stats[category.key])}`">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
@@ -182,6 +182,9 @@ export default {
     ...mapFilters(['toThousandSeparators']),
     startIntroduction: function () {
       EventBus.$emit('show-introduction')
+    },
+    isDisabled: function (routerPage) {
+      return this.serverSettings && this.serverSettings.hiddenPages.indexOf(routerPage) !== -1
     },
     getColor: function (index) {
       if (!this.serverSettings || !this.serverSettings.colorsTemplate) {

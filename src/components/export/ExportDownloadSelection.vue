@@ -46,6 +46,10 @@ export default {
       type: String,
       default: null
     },
+    downloadFileExtension: {
+      type: String,
+      default: 'txt'
+    },
     idKey: {
       type: String,
       default: null
@@ -71,7 +75,7 @@ export default {
         const downloadRequest = {
           blob: result,
           filename: this.datasetType + '-dataset-' + this.datasetIds.join('-'),
-          extension: 'txt'
+          extension: this.downloadFileExtension
         }
 
         this.downloadBlob(downloadRequest)

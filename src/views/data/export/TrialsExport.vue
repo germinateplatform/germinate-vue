@@ -103,7 +103,8 @@ export default {
       config: {
         idKey: 'traitId',
         nameKey: 'traitName',
-        downloadKey: 'trial',
+        downloadKey: 'trial?format=tab',
+        downloadFileExtension: 'txt',
         itemType: 'germplasm',
         xType: 'traits',
         groupType: 'germinatebase',

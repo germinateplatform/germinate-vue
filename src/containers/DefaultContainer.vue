@@ -20,7 +20,7 @@
           </b-input-group>
         </b-nav-form>
         <!-- Help information -->
-        <b-nav-item :disabled="getHelpDisabled()" @click="showHelp()" id="top-nav-help" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-help-circle-outline ${getHelpDisabled() ? '' : 'text-info'}`" /></b-nav-item>
+        <b-nav-item :disabled="helpDisabled" @click="showHelp()" id="top-nav-help" class="d-flex align-self-center"><i :class="`mdi mdi-18px mdi-help-circle-outline ${helpDisabled ? '' : 'text-info'}`" /></b-nav-item>
         <b-nav-item @click="toggleDarkMode()" id="top-nav-darkmode" class="d-flex align-self-center" v-b-tooltip:hover="$t('menuTopDarkModeToggle')"><i :class="`mdi mdi-18px mdi-theme-light-dark ${darkMode === true ? 'text-info' : ''}`" /></b-nav-item>
         <!-- Locale dropdown -->
         <LocaleDropdown class="top-nav-locale d-flex align-self-center"/>
@@ -164,8 +164,13 @@ export default {
       badgeCounts: {}
     }
   },
+  computed: {
+    helpDisabled: function () {
+      return this.helpKey === undefined || this.helpKey === null
+    }
+  },
   watch: {
-    locale: function (newValue, oldValue) {
+    locale: function () {
       this.updateMenu()
     }
   },
@@ -183,9 +188,6 @@ export default {
         this.$router.push({ name: 'search' })
       }
       this.searchTerm = null
-    },
-    getHelpDisabled: function () {
-      return this.helpKey === undefined || this.helpKey === null
     },
     showHelp: function () {
       this.$refs.helpModal.show()
@@ -495,14 +497,19 @@ export default {
       })
     },
     toggleAside: function (upOrDown) {
+      // If the menu isn't already showing
       if (!document.body.classList.contains('aside-menu-show')) {
+        // Open the side menu
         this.$refs.asideToggler.toggle()
+        // Activate the appropriate tab
         this.$refs.aside.showTab(upOrDown)
+        // Show the popover on the toggle button
         this.$root.$emit('bv::show::popover', 'aside-popover-trigger')
-
+        // Hide the popover after 5 seconds
         setTimeout(() => this.$root.$emit('bv::hide::popover', 'aside-popover-trigger'), 5000)
       }
 
+      // Update the sidebar content
       this.updateAside()
     },
     updateAside: function () {
