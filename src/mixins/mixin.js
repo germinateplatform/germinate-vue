@@ -15,6 +15,7 @@ export default {
       'helpKey',
       'hiddenColumns',
       'locale',
+      'mapLayer',
       'markedIds',
       'originalTarget',
       'recentIds',

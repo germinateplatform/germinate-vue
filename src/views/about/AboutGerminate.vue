@@ -255,6 +255,11 @@ export default {
           name: 'DivSeek International Network',
           href: 'https://divseekintl.org/',
           logo: 'funders/divseek.png'
+        },
+        {
+          name: 'European Union',
+          href: 'https://europa.eu/',
+          logo: 'funders/eu.svg'
         }
       ]
     }

@@ -46,7 +46,7 @@ export default {
     }
   },
   watch: {
-    clusteredMap: function (oldValue, newValue) {
+    clusteredMap: function () {
       // Synchronize the maps
       if (this.synced === false && this.clusteredMap && this.heatmappedMap) {
         this.synced = true
@@ -54,7 +54,7 @@ export default {
         this.heatmappedMap.sync(this.clusteredMap)
       }
     },
-    heatmappedMap: function (oldValue, newValue) {
+    heatmappedMap: function () {
       // Synchronize the maps
       if (this.synced === false && this.clusteredMap && this.heatmappedMap) {
         this.synced = true

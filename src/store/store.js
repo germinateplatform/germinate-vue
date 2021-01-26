@@ -30,6 +30,7 @@ const userState = {
     }
   }],
   sidebarState: 'sidebar-lg-show',
+  mapLayer: 'stadia',
   markedIds: {
     germplasm: [],
     markers: [],
@@ -98,7 +99,8 @@ const storeState = {
     cookiesAccepted: (state, getters) => state.userStates[getters.userId].cookiesAccepted,
     sidebarState: (state, getters) => state.userStates[getters.userId].sidebarState,
     customChartColors: (state, getters) => state.userStates[getters.userId].customChartColors,
-    darkMode: (state, getters) => state.userStates[getters.userId].darkMode
+    darkMode: (state, getters) => state.userStates[getters.userId].darkMode,
+    mapLayer: (state, getters) => state.userStates[getters.userId].mapLayer
   },
   mutations: {
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
@@ -236,6 +238,9 @@ const storeState = {
     },
     ON_DARK_MODE_CHANGED_MUTATION: function (state, newDarkMode) {
       state.userStates[state.token ? state.token.id : null].darkMode = newDarkMode
+    },
+    ON_MAP_LAYER_CHANGED_MUTATION: function (state, mapLayer) {
+      state.userStates[state.token ? state.token.id : null].mapLayer = mapLayer
     }
   },
   actions: {
@@ -310,6 +315,9 @@ const storeState = {
     },
     ON_DARK_MODE_CHANGED: function ({ commit }, darkMode) {
       commit('ON_DARK_MODE_CHANGED_MUTATION', darkMode)
+    },
+    ON_MAP_LAYER_CHANGED: function ({ commit }, darkMode) {
+      commit('ON_MAP_LAYER_CHANGED_MUTATION', darkMode)
     }
   },
   plugins: [

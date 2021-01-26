@@ -390,28 +390,61 @@ export default {
     this.gradientColors.push(this.getColor(0))
 
     this.$nextTick(() => {
-      // Add OSM as the default
+      // Add stadia dark as the default
+      const stadia = L.tileLayer('//tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+        id: 'Stadia Dark',
+        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+        subdomains: ['a', 'b', 'c']
+      })
+      // Add the OSM default layer
       const openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         id: 'OpenStreetMap',
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         subdomains: ['a', 'b', 'c']
       })
-
-      let map = this.$refs.map.mapObject
-      map.addLayer(openstreetmap)
-
       // Add an additional satellite layer
       const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         id: 'Esri WorldImagery',
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
       })
 
+      let map = this.$refs.map.mapObject
+
+      switch (this.mapLayer) {
+        case 'osm':
+          map.addLayer(openstreetmap)
+          break
+        case 'satellite':
+          map.addLayer(satellite)
+          break
+        case 'stadia':
+        default:
+          map.addLayer(stadia)
+          break
+      }
+
       const baseMaps = {
+        'Stadia Dark': stadia,
         'OpenStreetMap': openstreetmap,
         'Esri WorldImagery': satellite
       }
 
       L.control.layers(baseMaps).addTo(map)
+
+      // Listen for layer changes and store the user selection in the store
+      map.on('baselayerchange', e => {
+        switch (e.name) {
+          case 'Stadia Dark':
+            this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'stadia')
+            break
+          case 'OpenStreetMap':
+            this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'osm')
+            break
+          case 'Esri WorldImagery':
+            this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'satellite')
+            break
+        }
+      })
 
       this.updateMap()
 
