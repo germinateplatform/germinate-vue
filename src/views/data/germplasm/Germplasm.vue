@@ -8,16 +8,16 @@
 
     <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
     <b-button-group>
-      <b-button @click="setEntityType(null)" :pressed="selectedEntityType === null" variant="outline-primary">
-        <i class="mdi mdi-18px fix-alignment mdi-check-all" /><span> {{$t('buttonAll')}}</span>
+      <b-button @click="selectedEntityType = null" :pressed="selectedEntityType === null" variant="outline-primary">
+        <i class="mdi mdi-18px fix-alignment mdi-check-all" /><span> {{$t('buttonAll')}}</span> <b-badge>{{ allGermplasmCount }}</b-badge>
       </b-button>
-      <b-button v-for="entityType in getEntityTypeOptions()"
+      <b-button v-for="entityType in entityTypeOptions"
                :key="entityType.id"
-               :pressed="isPressed(entityType)"
+               :pressed="pressedEntityTypeId === entityType.id"
                :disabled="entityType.disabled"
                :variant="entityType.disabled ? 'outline-secondary' : 'outline-primary'"
-               @click="setEntityType(entityType)">
-        <i :class="`mdi mdi-18px fix-alignment ${entityType.icon}`" /><span> {{ entityType.text() }}</span>
+               @click="selectedEntityType = entityType">
+        <i :class="`mdi mdi-18px fix-alignment ${entityType.icon}`" /><span> {{ entityType.text() }} <b-badge>{{ entityType.count }}</b-badge></span>
       </b-button>
     </b-button-group>
 
@@ -49,8 +49,31 @@ export default {
     GermplasmDownload,
     RecentItems
   },
+  computed: {
+    entityTypeOptions: function () {
+      return Object.keys(this.entityTypes).map(e => {
+        const stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
+        const enabled = stats && stats.length > 0 && stats[0].count > 0
+        const count = stats && stats.length > 0 ? stats[0].count : 0
+
+        return {
+          id: e,
+          icon: this.entityTypes[e].icon,
+          disabled: !enabled,
+          count: count,
+          text: () => this.entityTypes[e].text()
+        }
+      })
+    },
+    allGermplasmCount: function () {
+      return this.entityTypeOptions.map(o => o.count).reduce((a, b) => a + b)
+    },
+    pressedEntityTypeId: function () {
+      return this.selectedEntityType ? this.selectedEntityType.id : null
+    }
+  },
   watch: {
-    selectedEntityType: function (newValue, oldValue) {
+    selectedEntityType: function (newValue) {
       if (!newValue) {
         this.filterOn = []
       } else {
@@ -64,21 +87,13 @@ export default {
           values: [newValue.id]
         }]
       }
+
+      // Update the table according to new filtering
+      this.$refs.germplasmTable.refresh()
     }
   },
   mixins: [ germplasmApi, miscApi, typesMixin ],
   methods: {
-    setEntityType: function (entityType) {
-      this.selectedEntityType = entityType
-      this.$nextTick(() => this.$refs.germplasmTable.refresh())
-    },
-    isPressed: function (entityType) {
-      if (this.selectedEntityType) {
-        return this.selectedEntityType.id === entityType.id
-      } else {
-        return false
-      }
-    },
     downloadTable: function (data, callback) {
       return this.apiPostTableExport(data, 'germplasm', callback)
     },
@@ -87,19 +102,6 @@ export default {
     },
     getIds: function (data, callback) {
       return this.apiPostGermplasmTableIds(data, callback)
-    },
-    getEntityTypeOptions: function () {
-      return Object.keys(this.entityTypes).map(e => {
-        const stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
-        const enabled = stats && stats.length > 0 && stats[0].count > 0
-
-        return {
-          id: e,
-          icon: this.entityTypes[e].icon,
-          disabled: !enabled,
-          text: () => this.entityTypes[e].text()
-        }
-      })
     }
   },
   created: function () {

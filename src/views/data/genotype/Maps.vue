@@ -10,7 +10,7 @@
       <h2>{{ $t('pageMapsDetailsTitle') }} <small>{{ map.name }}</small></h2>
       <p>{{ $t('pageMapsDetailsText') }}</p>
       <!-- Markers and their positions on the map -->
-      <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" ref="mapDefinitionTable" />
+      <MapDefinitionTable :filterOn="filter" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" ref="mapDefinitionTable" />
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
@@ -58,6 +58,20 @@ export default {
       useAdvancedExportOptions: false
     }
   },
+  computed: {
+    filter: function () {
+      return [{
+        column: {
+          name: 'mapId',
+          type: Number
+        },
+        comparator: 'equals',
+        operator: 'and',
+        canBeChanged: false,
+        values: [this.mapId]
+      }]
+    }
+  },
   components: {
     MapChart,
     MapTable,
@@ -90,18 +104,6 @@ export default {
         })
         EventBus.$emit('show-loading', false)
       })
-    },
-    getFilter: function () {
-      return [{
-        column: {
-          name: 'mapId',
-          type: Number
-        },
-        comparator: 'equals',
-        operator: 'and',
-        canBeChanged: false,
-        values: [this.mapId]
-      }]
     },
     getMapData: function (data, callback) {
       return this.apiPostMapsTable(data, callback)

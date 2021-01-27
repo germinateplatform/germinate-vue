@@ -12,7 +12,7 @@
       <template v-else>
         <h2 class="mdi-heading" id="mcpd">
           <span>{{ marker.markerName }}</span>
-          <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipMarkerMarkedItem')"/>
+          <i :class="`mdi mdi-36px text-primary passport-checkbox ${markedStyle}`" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipMarkerMarkedItem')"/>
         </h2>
         <p>{{ $t('pageMarkerDetailsText') }}</p>
 
@@ -35,7 +35,7 @@
         <h3>{{ $t('pageMarkerDetailsMapsTitle') }}</h3>
         <p>{{ $t('pageMarkerDetailsMapsText') }}</p>
         <!-- Maps this marker is on -->
-        <MapDefinitionTable :filterOn="getFilter()" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" />
+        <MapDefinitionTable :filterOn="filter" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" />
 
         <hr />
         <h3>{{ $t('pageMarkerDetailsGroupsTitle') }}</h3>
@@ -67,26 +67,12 @@ export default {
       marker: undefined
     }
   },
-  components: {
-    DatasetTable,
-    GroupTable,
-    MapDefinitionTable
-  },
-  mixins: [ genotypeApi ],
-  methods: {
-    getMarkedStyle: function () {
+  computed: {
+    markedStyle: function () {
       const isMarked = this.markedIds.markers.indexOf(this.currentMarkerId) !== -1
       return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
     },
-    onToggleMarked: function () {
-      const isMarked = this.markedIds.markers.indexOf(this.currentMarkerId) !== -1
-      if (isMarked) {
-        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'markers', ids: [this.currentMarkerId] })
-      } else {
-        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'markers', ids: [this.currentMarkerId] })
-      }
-    },
-    getFilter: function () {
+    filter: function () {
       return [{
         column: {
           name: 'markerId',
@@ -97,6 +83,22 @@ export default {
         canBeChanged: false,
         values: [this.currentMarkerId]
       }]
+    }
+  },
+  components: {
+    DatasetTable,
+    GroupTable,
+    MapDefinitionTable
+  },
+  mixins: [ genotypeApi ],
+  methods: {
+    onToggleMarked: function () {
+      const isMarked = this.markedIds.markers.indexOf(this.currentMarkerId) !== -1
+      if (isMarked) {
+        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'markers', ids: [this.currentMarkerId] })
+      } else {
+        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'markers', ids: [this.currentMarkerId] })
+      }
     },
     getDatasetData: function (data, callback) {
       return this.apiPostMarkerDatasetTable(this.currentMarkerId, data, callback)

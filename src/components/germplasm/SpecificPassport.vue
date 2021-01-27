@@ -18,7 +18,7 @@
           <b-nav-item href="#comments" @click="scrollIntoView" v-if="serverSettings && serverSettings.commentsEnabled === true">{{ $t('pagePassportCommentTitle') }}</b-nav-item>
           <b-nav-item class="ml-auto">
             <!-- Marked item checkbox -->
-            <i :class="'mdi mdi-18px fix-alignment text-white ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover.bottom :title="$t('tooltipGermplasmMarkedItem')"/>
+            <i :class="`mdi mdi-18px fix-alignment text-white ${markedStyle}`" @click="onToggleMarked()" v-b-tooltip.hover.bottom :title="$t('tooltipGermplasmMarkedItem')"/>
           </b-nav-item>
         </b-navbar-nav>
       </b-navbar>
@@ -27,9 +27,9 @@
         <hr />
         <!-- Heading -->
         <h2 class="mdi-heading" id="mcpd">
-          <span>{{ getTitle() }}</span>
+          <span>{{ title }}</span>
           <small v-if="germplasm.entitytype"> {{ germplasm.entitytype }} </small>
-          <i :class="'mdi mdi-36px text-primary passport-checkbox ' + getMarkedStyle()" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipGermplasmMarkedItem')"/>
+          <i :class="`mdi mdi-36px text-primary passport-checkbox ${markedStyle}`" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipGermplasmMarkedItem')"/>
         </h2>
         <p v-html="$t('pagePassportText')" />
 
@@ -213,6 +213,21 @@ export default {
   },
   mixins: [ germplasmApi, miscApi, typesMixin ],
   computed: {
+    title: function () {
+      if (this.germplasm) {
+        let parts = []
+        parts.push(this.germplasm.accenumb)
+        parts.push(this.germplasm.accename)
+
+        return parts.filter(p => p !== null).join(' / ')
+      } else {
+        return ''
+      }
+    },
+    markedStyle: function () {
+      const isMarked = this.markedIds.germplasm.indexOf(this.currentGermplasmId) !== -1
+      return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
+    },
     attributeFilter: function () {
       return [{
         column: {
@@ -274,17 +289,6 @@ export default {
     },
     getPedigreeData: function (data, callback) {
       return this.apiPostPedigreeTable(data, callback)
-    },
-    getTitle: function () {
-      let parts = []
-      parts.push(this.germplasm.accenumb)
-      parts.push(this.germplasm.accename)
-
-      return parts.filter(p => p !== null).join(' / ')
-    },
-    getMarkedStyle: function () {
-      const isMarked = this.markedIds.germplasm.indexOf(this.currentGermplasmId) !== -1
-      return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
     },
     onToggleMarked: function () {
       const isMarked = this.markedIds.germplasm.indexOf(this.currentGermplasmId) !== -1
@@ -352,6 +356,7 @@ export default {
     }]
   },
   mounted: function () {
+    // Add to recently viewed Germplasm ids
     this.$store.dispatch('ON_RECENT_IDS_PUSH', { type: 'germplasm', id: this.currentGermplasmId })
 
     // Get the germplasm MCPD based on the id

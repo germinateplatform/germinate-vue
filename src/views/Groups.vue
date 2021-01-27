@@ -9,9 +9,8 @@
     <b-button-group>
       <b-button v-for="groupType in groupTypeOptions"
                :key="groupType.id"
-               :pressed="isPressed(groupType)"
-               :disabled="groupType.disabled"
-               :variant="groupType.disabled ? 'outline-secondary' : 'outline-primary'"
+               :pressed="selectedGroupTypeId === groupType.id"
+               variant="outline-primary"
                @click="setGroupType(groupType)">
         <i :class="`mdi mdi-18px fix-alignment ${groupType.icon}`" /><span> {{ groupType.text() }}</span>
       </b-button>
@@ -221,15 +220,18 @@ export default {
           text: () => this.groupTypes[e].text()
         }
       })
+    },
+    selectedGroupTypeId: function () {
+      return this.selectedGroupType ? this.selectedGroupType.id : null
     }
   },
   watch: {
-    token: function (newValue, oldValue) {
+    token: function () {
       // On login/logout, deselect the current group
       this.group = null
       this.groupId = null
     },
-    selectedGroupType: function (newValue, oldValue) {
+    selectedGroupType: function (newValue) {
       // Change filter based on selected group type
       if (!newValue) {
         this.filterOn = []
@@ -308,13 +310,6 @@ export default {
         this.selectedGroupType = groupType
       }
       this.$nextTick(() => this.$refs.groupsTable.refresh())
-    },
-    isPressed: function (groupType) {
-      if (this.selectedGroupType) {
-        return this.selectedGroupType.id === groupType.id
-      } else {
-        return false
-      }
     },
     getGroupData: function (data, callback) {
       return this.apiPostGroupTable(data, callback)

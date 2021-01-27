@@ -239,8 +239,8 @@ const storeState = {
     ON_DARK_MODE_CHANGED_MUTATION: function (state, newDarkMode) {
       state.userStates[state.token ? state.token.id : null].darkMode = newDarkMode
     },
-    ON_MAP_LAYER_CHANGED_MUTATION: function (state, mapLayer) {
-      state.userStates[state.token ? state.token.id : null].mapLayer = mapLayer
+    ON_MAP_LAYER_CHANGED_MUTATION: function (state, newMapLayer) {
+      state.userStates[state.token ? state.token.id : null].mapLayer = newMapLayer
     }
   },
   actions: {
@@ -316,8 +316,8 @@ const storeState = {
     ON_DARK_MODE_CHANGED: function ({ commit }, darkMode) {
       commit('ON_DARK_MODE_CHANGED_MUTATION', darkMode)
     },
-    ON_MAP_LAYER_CHANGED: function ({ commit }, darkMode) {
-      commit('ON_MAP_LAYER_CHANGED_MUTATION', darkMode)
+    ON_MAP_LAYER_CHANGED: function ({ commit }, mapLayer) {
+      commit('ON_MAP_LAYER_CHANGED_MUTATION', mapLayer)
     }
   },
   plugins: [
