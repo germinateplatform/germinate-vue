@@ -1000,6 +1000,7 @@
   "widgetDropFileErrorFileTooLarge": "The selected file is too large. Please reduce the size or split it into multiple files and repeat the process.",
   "widgetDropFileErrorWrongFileType": "Wrong file type selected. Only .txt files are supported.",
   "widgetGenotypeDatasetSelectionSelect": "Please select at least one dataset in the table above to continue.",
+  "widgetGermplasmTableFilterToggle": "Common table filters",
   "widgetGdprNotificationButtonAccept": "Allow cookies",
   "widgetGdprNotificationButtonDecline": "Decline",
   "widgetGdprNotificationReadMore": "Read more...",

@@ -190,10 +190,10 @@ export default {
     }
   },
   watch: {
-    filterOn: function (newValue, oldValue) {
+    filterOn: function () {
       this.resetFilter(false)
     },
-    locale: function (newValue, oldValue) {
+    locale: function () {
       this.updateOperators()
     }
   },

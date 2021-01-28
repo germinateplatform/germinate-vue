@@ -4,6 +4,8 @@
     <hr />
     <p v-html="$t('pageGermplasmText')" />
 
+    <GermplasmTableFilter @filtering-changed="onFilteringChanged" class="my-3" />
+
     <RecentItems itemType="germinatebase" />
 
     <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
@@ -31,6 +33,7 @@
 
 <script>
 import GermplasmTable from '@/components/tables/GermplasmTable'
+import GermplasmTableFilter from '@/components/tables/GermplasmTableFilter'
 import GermplasmDownload from '@/components/germplasm/GermplasmDownload'
 import RecentItems from '@/components/util/RecentItems'
 import germplasmApi from '@/mixins/api/germplasm.js'
@@ -46,6 +49,7 @@ export default {
   },
   components: {
     GermplasmTable,
+    GermplasmTableFilter,
     GermplasmDownload,
     RecentItems
   },
@@ -94,6 +98,24 @@ export default {
   },
   mixins: [ germplasmApi, miscApi, typesMixin ],
   methods: {
+    onFilteringChanged: function (column, type, value) {
+      const copy = this.filterOn.concat().filter(f => f.column.name !== column)
+      if (value) {
+        copy.push({
+          column: {
+            name: column,
+            type: type
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [value]
+        })
+      }
+      this.filterOn = copy
+
+      // Update the table according to new filtering
+      this.$refs.germplasmTable.refresh()
+    },
     downloadTable: function (data, callback) {
       return this.apiPostTableExport(data, 'germplasm', callback)
     },

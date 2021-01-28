@@ -96,6 +96,12 @@ export default {
     },
     apiGetGermplasmStatsTraits: function (germplasmId, onSuccess, onError) {
       return this.authAxios({ url: `germplasm/${germplasmId}/stats/trait`, success: onSuccess, error: onError })
+    },
+    apiGetTaxonomyData: function (onSuccess, onError) {
+      return this.authAxios({ url: `germplasm/taxonomy`, success: onSuccess, error: onError })
+    },
+    apiGetLocationData: function (onSuccess, onError) {
+      return this.authAxios({ url: `germplasm/location`, success: onSuccess, error: onError })
     }
   }
 }
