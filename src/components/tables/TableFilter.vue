@@ -190,8 +190,10 @@ export default {
     }
   },
   watch: {
-    filterOn: function () {
-      this.resetFilter(false)
+    filterOn: function (newValue) {
+      if (!this.objectArraysAreSame(newValue, this.filter)) {
+        this.resetFilter(false)
+      }
     },
     locale: function () {
       this.updateOperators()

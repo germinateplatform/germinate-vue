@@ -69,16 +69,19 @@ export default {
       },
       entityTypes: {
         'Accession': {
+          shortName: 'accession',
           icon: 'mdi-sprout',
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('entityTypeAccession')
         },
         'Plant/Plot': {
+          shortName: 'plantplot',
           icon: 'mdi-grid',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('entityTypePlantPlot')
         },
         'Sample': {
+          shortName: 'sample',
           icon: 'mdi-leaf',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('entityTypeSample')

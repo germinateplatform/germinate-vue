@@ -50,6 +50,36 @@ export default {
     }
   },
   methods: {
+    objectArraysAreSame: function (x, y) {
+      if (x.length !== y.length) {
+        return false
+      } else {
+        for (let one = 0; one < x.length; one++) {
+          let hasMatch = false
+          for (let two = 0; two < y.length; two++) {
+            if (this.objectsAreSame(x[one], y[two])) {
+              hasMatch = true
+              break
+            }
+          }
+
+          if (!hasMatch) {
+            return false
+          }
+        }
+        return true
+      }
+    },
+    objectsAreSame: function (x, y) {
+      var objectsAreSame = true
+      for (var propertyName in x) {
+        if (x[propertyName] !== y[propertyName]) {
+          objectsAreSame = false
+          break
+        }
+      }
+      return objectsAreSame
+    },
     /**
      * Toggles the dark mode on or off
      */

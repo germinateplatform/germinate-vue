@@ -19,6 +19,22 @@
       <template v-slot:head(dataTypes)="data">
         <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmDataTypes')"/>
       </template>
+      <!-- HEAD: Trials data -->
+      <template v-slot:head(hasTrialsData)>
+        <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" />
+      </template>
+      <!-- HEAD: Genotypic data -->
+      <template v-slot:head(hasGenotypicData)>
+        <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" />
+      </template>
+      <!-- HEAD: Compound data -->
+      <template v-slot:head(hasCompoundData)>
+        <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" />
+      </template>
+      <!-- HEAD: Allelefreq data -->
+      <template v-slot:head(hasAllelefreqData)>
+        <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" />
+      </template>
 
       <template v-slot:cell(preview)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }" event="" @click.native.prevent="selectGermplasm(data.item.germplasmId)" class="table-link" v-b-tooltip:hover="$t('tableTooltipGermplasmPreviewPassport')">
@@ -123,13 +139,17 @@
         </div>
       </template>
       <!-- Dataset types -->
-      <template v-slot:cell(dataTypes)="data">
-        <span class="text-nowrap">
-          <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()" v-if="data.item.hasTrialsData" />
-          <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()" v-if="data.item.hasGenotypicData" />
-          <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()" v-if="data.item.hasCompoundData" />
-          <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()" v-if="data.item.hasAllelefreqData" />
-        </span>
+      <template v-slot:cell(hasTrialsData)="data">
+        <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()" v-if="data.item.hasTrialsData" />
+      </template>
+      <template v-slot:cell(hasGenotypicData)="data">
+        <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()" v-if="data.item.hasGenotypicData" />
+      </template>
+      <template v-slot:cell(hasCompoundData)="data">
+        <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()" v-if="data.item.hasCompoundData" />
+      </template>
+      <template v-slot:cell(hasAllelefreqData)="data">
+        <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()" v-if="data.item.hasAllelefreqData" />
       </template>
 
       <!-- Row details is where the dataset locations are shown on a map -->
@@ -346,15 +366,33 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'collDate')}`,
           label: this.$t('tableColumnColldate')
         }, {
-          key: 'dataTypes',
-          type: undefined,
-          sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'dataTypes')}`,
-          label: this.$t('tableColumnGermplasmDataTypes')
+          key: 'hasTrialsData',
+          type: Boolean,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'hasTrialsData')}`,
+          label: this.$t('tableColumnHasTrialsData')
+        }, {
+          key: 'hasGenotypicData',
+          type: Boolean,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'hasGenotypicData')}`,
+          label: this.$t('tableColumnHasGenotypicData')
+        }, {
+          key: 'hasCompoundData',
+          type: Boolean,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'hasCompoundData')}`,
+          label: this.$t('tableColumnHasCompoundData')
+        }, {
+          key: 'hasAllelefreqData',
+          type: Boolean,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'hasAllelefreqData')}`,
+          label: this.$t('tableColumnHasAllelefreqData')
         }, {
           key: 'imageCount',
-          type: undefined,
-          sortable: false,
+          type: Number,
+          sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'imageCount')}`,
           label: this.$t('tableColumnGermplasmImageCount')
         }, {
