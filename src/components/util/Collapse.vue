@@ -43,6 +43,10 @@ export default {
     noBody: {
       type: Boolean,
       default: false
+    },
+    showLoading: {
+      type: Boolean,
+      default: true
     }
   },
   data: function () {
@@ -81,6 +85,10 @@ export default {
   },
   mounted: function () {
     this.contentVisible = this.visible
+
+    if (!this.showLoading) {
+      this.loading = false
+    }
   }
 }
 </script>

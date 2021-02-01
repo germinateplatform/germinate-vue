@@ -146,13 +146,11 @@ export default {
     updateBinning: function (binning) {
       this.binning = binning
 
-      const prevLength = this.widths.length
-
       switch (this.binning) {
         case 'equal':
           this.equalBins = this.adjustBinCount(this.equalBins)
           this.widths = new Array(this.equalBins).fill(100 / this.equalBins)
-          this.update(prevLength)
+          this.update()
           break
         case 'split':
           this.splitLeftBins = this.adjustBinCount(this.splitLeftBins)
@@ -162,7 +160,7 @@ export default {
           const left = new Array(this.splitLeftBins).fill(this.splitPoint / this.splitLeftBins * 100)
           const right = new Array(this.splitRightBins).fill((1 - this.splitPoint) / this.splitRightBins * 100)
           this.widths = left.concat(right)
-          this.update(prevLength)
+          this.update()
           break
         case 'auto':
           this.autoBins = this.adjustBinCount(this.autoBins)
@@ -193,7 +191,7 @@ export default {
           break
       }
     },
-    update: function (prevLength) {
+    update: function () {
       this.redraw()
     },
     getExportSettings: function () {

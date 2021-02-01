@@ -102,6 +102,9 @@ export default {
     },
     apiGetLocationData: function (onSuccess, onError) {
       return this.authAxios({ url: `germplasm/location`, success: onSuccess, error: onError })
+    },
+    apiGetBiologicalStatusData: function (onSuccess, onError) {
+      return this.authAxios({ url: `germplasm/biologicalstatus`, success: onSuccess, error: onError })
     }
   }
 }

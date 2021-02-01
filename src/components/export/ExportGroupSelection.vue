@@ -89,11 +89,11 @@ export default {
     }
   },
   watch: {
-    groups: function (newValue, oldValue) {
+    groups: function () {
       this.update()
     },
     selectedGroups: function (newValue) {
-      if (newValue) {
+      if (newValue && this.info) {
         this.groupInfo = this.info(newValue)
       } else {
         this.groupInfo = null
