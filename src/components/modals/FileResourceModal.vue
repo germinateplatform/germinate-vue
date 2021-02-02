@@ -94,9 +94,10 @@ export default {
             fileresourcePath: result,
             fileresourceDescription: this.description,
             fileresourcetypeId: this.type
-          }, result => {
+          }, () => {
             this.$emit('resource-added')
             EventBus.$emit('show-loading', false)
+            EventBus.$emit('update-sidebar-menu')
             this.hide()
           })
         }

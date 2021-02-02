@@ -178,20 +178,22 @@ export default {
         return
       }
 
+      const filename = object.filename
       const extension = object.extension
 
       const url = window.URL.createObjectURL(object.blob)
 
       let downloadLink = document.createElement('a')
       downloadLink.href = url
-      if (object.filename && extension) {
-        downloadLink.download = object.filename + '.' + extension
+      downloadLink.target = '_blank'
+      if (filename && extension) {
+        downloadLink.download = filename + '.' + extension
       }
       document.body.appendChild(downloadLink)
       downloadLink.click()
       document.body.removeChild(downloadLink)
 
-      this.$ga.event('download', 'data', object.filename + '.' + extension)
+      this.$ga.event('download', 'data', filename + '.' + extension)
     },
     /**
      * Downloads all SVGs contained in the given DOM element into a single SVG file
