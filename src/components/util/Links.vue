@@ -29,10 +29,10 @@ export default {
   },
   mixins: [ miscApi ],
   watch: {
-    foreignId: function (newValue, oldValue) {
+    foreignId: function () {
       this.update()
     },
-    targetTable: function (newValue, oldValue) {
+    targetTable: function () {
       this.update()
     }
   },

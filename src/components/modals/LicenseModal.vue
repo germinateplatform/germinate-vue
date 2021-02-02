@@ -58,7 +58,7 @@ export default {
       this.$refs.licenseModal.hide()
     },
     accept: function () {
-      this.apiGetAcceptLicense(this.license.licenseId, result => {
+      this.apiGetAcceptLicense(this.license.licenseId, () => {
         this.$emit('license-accepted')
       })
     },

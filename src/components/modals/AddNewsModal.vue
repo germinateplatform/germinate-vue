@@ -102,7 +102,7 @@ export default {
         updatedOn: this.newsDate
       }
 
-      this.apiPostNews(news, result => {
+      this.apiPostNews(news, () => {
         this.$emit('news-added')
         this.hide()
       })

@@ -125,19 +125,19 @@ export default {
 
       // Are we plotting datasets and grouping by trait/compound/climate?
       if (this.chartMode === 'datasetByItem') {
-        for (let dataset in this.plotData.datasets) {
+        Object.keys(this.plotData.datasets).forEach(dataset => {
           for (let i = 0; i < 6; i++) {
             // If so, datasets are our Ys
             y.push(this.plotData.datasets[dataset].datasetName)
           }
-        }
+        })
       } else if (this.chartMode === 'itemByDataset' || this.chartMode === 'itemByGroup') {
-        for (let item in this.plotData[this.xTypes[this.xType].itemKey]) {
+        Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
           for (let j = 0; j < 6; j++) {
             // Else, use this complicated thing to extract the trait/compound/climate name
             y.push(this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey])
           }
-        }
+        })
       }
 
       let traces = []
@@ -191,7 +191,7 @@ export default {
       groups.forEach((group, index) => {
         let x = []
 
-        for (let item in this.plotData[this.xTypes[this.xType].itemKey]) {
+        Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
           const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
           const itemData = this.plotData.stats.filter(s => s.groupIds === group && s.xId === itemId)[0]
 
@@ -212,7 +212,7 @@ export default {
             x.push(NaN)
             x.push(NaN)
           }
-        }
+        })
 
         traces.push({
           x: x,
@@ -230,11 +230,11 @@ export default {
     },
     getData: function (y) {
       let traces = []
-      for (let dataset in this.plotData.datasets) {
+      Object.keys(this.plotData.datasets).forEach(dataset => {
         const datasetId = this.plotData.datasets[dataset].datasetId
         let x = []
 
-        for (let item in this.plotData[this.xTypes[this.xType].itemKey]) {
+        Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
           const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
           const itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
 
@@ -255,7 +255,7 @@ export default {
             x.push(NaN)
             x.push(NaN)
           }
-        }
+        })
 
         traces.push({
           x: x,
@@ -267,16 +267,16 @@ export default {
           boxpoints: false,
           orientation: 'h'
         })
-      }
+      })
       return traces
     },
     getInvertedData: function (y) {
       let traces = []
-      for (let item in this.plotData[this.xTypes[this.xType].itemKey]) {
+      Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
         const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
         let x = []
 
-        for (let d in this.plotData.datasets) {
+        Object.keys(this.plotData.datasets).forEach(d => {
           const datasetId = this.plotData.datasets[d].datasetId
           const datasetData = this.plotData.stats.filter(s => s.xId === itemId && s.datasetId === datasetId)[0]
 
@@ -297,7 +297,7 @@ export default {
             x.push(NaN)
             x.push(NaN)
           }
-        }
+        })
 
         traces.push({
           x: x,
@@ -309,7 +309,7 @@ export default {
           boxpoints: false,
           orientation: 'h'
         })
-      }
+      })
       return traces
     }
   },

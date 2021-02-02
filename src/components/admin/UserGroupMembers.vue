@@ -49,7 +49,7 @@ export default {
         isAddOperation: isAdd,
         userIds: ids
       }
-      this.apiPatchUserGroupMembers(request, result => {
+      this.apiPatchUserGroupMembers(request, () => {
         this.getData()
         this.$emit('groups-changed')
       })

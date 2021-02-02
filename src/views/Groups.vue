@@ -119,7 +119,7 @@ export default {
           variant: null,
           disabled: () => false,
           icon: 'mdi mdi-18px mdi-plus-box',
-          callback: (selectedIds) => {
+          callback: () => {
             this.groupToEdit = {
               groupId: null,
               groupName: null,
@@ -150,7 +150,7 @@ export default {
               isAddition: false
             }
             EventBus.$emit('show-loading', true)
-            this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
+            this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
               EventBus.$emit('show-loading', false)
@@ -163,7 +163,7 @@ export default {
           variant: null,
           disabled: () => false,
           icon: 'mdi mdi-18px mdi-upload',
-          callback: (selectedIds) => this.$refs.groupUploadModal.show()
+          callback: () => this.$refs.groupUploadModal.show()
         },
         {
           id: 2,
@@ -171,14 +171,14 @@ export default {
           variant: null,
           disabled: () => this.markedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
           icon: 'mdi mdi-18px mdi-expand-all',
-          callback: (selectedIds) => {
+          callback: () => {
             const type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: true
             }
             EventBus.$emit('show-loading', true)
-            this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
+            this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
               EventBus.$emit('show-loading', false)
@@ -191,14 +191,14 @@ export default {
           variant: null,
           disabled: () => this.markedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
           icon: 'mdi mdi-18px mdi-collapse-all',
-          callback: (selectedIds) => {
+          callback: () => {
             const type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: false
             }
             EventBus.$emit('show-loading', true)
-            this.apiPatchGroupMembers(this.group.groupId, type, data, result => {
+            this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
               EventBus.$emit('show-loading', false)
@@ -282,7 +282,7 @@ export default {
             isAddition: true
           }
           // Add the ids to the group
-          this.apiPatchGroupMembers(this.group.groupId, type.apiName, data, r => {
+          this.apiPatchGroupMembers(this.group.groupId, type.apiName, data, () => {
             this.$refs.groupmembersTable.refresh()
             this.$refs.groupsTable.refresh()
             EventBus.$emit('show-loading', false)
@@ -354,7 +354,7 @@ export default {
         delete group.description
       }
       if (group.id !== null) {
-        this.apiPatchGroup(group, result => {
+        this.apiPatchGroup(group, () => {
           this.$refs.groupsTable.refresh()
         })
       } else {
@@ -379,7 +379,7 @@ export default {
           id: this.group.groupId,
           visibility: this.group.groupVisibility
         }
-        this.apiPatchGroup(group, result => {
+        this.apiPatchGroup(group, () => {
           this.$refs.groupsTable.refresh()
         })
       })
@@ -392,7 +392,7 @@ export default {
       })
         .then(value => {
           if (value) {
-            this.apiDeleteGroup(groupToDelete.groupId, result => {
+            this.apiDeleteGroup(groupToDelete.groupId, () => {
               // If the current group was deleted, unset selection
               if (this.group && groupToDelete.groupId === this.group.groupId) {
                 this.group = null

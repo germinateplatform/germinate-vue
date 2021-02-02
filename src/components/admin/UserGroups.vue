@@ -68,7 +68,7 @@ export default {
           variant: null,
           disabled: () => false,
           icon: 'mdi mdi-18px mdi-plus-box',
-          callback: (selectedIds) => {
+          callback: () => {
             this.newGroup = {
               userGroupName: null,
               userGroupDescription: null
@@ -112,7 +112,7 @@ export default {
         .then(value => {
           if (value === true) {
             EventBus.$emit('show-loading', true)
-            this.apiDeleteUserGroup(group.userGroupId, result => {
+            this.apiDeleteUserGroup(group.userGroupId, () => {
               this.$refs.userGroupTable.refresh()
               EventBus.$emit('show-loading', false)
 
@@ -125,7 +125,7 @@ export default {
           }
         })
     },
-    createNewGroup: function (event) {
+    createNewGroup: function () {
       EventBus.$emit('show-loading', true)
       const payload = {
         id: this.newGroup.userGroupId,
@@ -134,7 +134,7 @@ export default {
       }
 
       if (payload.id) {
-        this.apiPatchUserGroup(payload, result => {
+        this.apiPatchUserGroup(payload, () => {
           this.newGroup = {
             userGroupName: null,
             userGroupDescription: null
@@ -144,7 +144,7 @@ export default {
           this.$emit('groups-changed')
         })
       } else {
-        this.apiPutUserGroup(payload, result => {
+        this.apiPutUserGroup(payload, () => {
           this.newGroup = {
             userGroupName: null,
             userGroupDescription: null

@@ -111,7 +111,7 @@ export default {
     }
   },
   watch: {
-    datasetIds: function (newValue, oldValue) {
+    datasetIds: function () {
       this.updateGermplasmGroups()
       this.updateMarkerGroups()
       this.updateMaps()
@@ -133,7 +133,7 @@ export default {
         this.$nextTick(() => this.$refs.genotypeDatasetTable.refresh())
       }
     },
-    getGenotypeSummaryData: function (query, callback) {
+    getGenotypeSummaryData: function (query) {
       const combinedQuery = Object.assign({}, query, this.getQuery(false))
 
       return this.apiPostGenotypeDatasetSummary(combinedQuery, result => {

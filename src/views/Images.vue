@@ -22,7 +22,7 @@ export default {
     }
   },
   watch: {
-    tag: function (newValue, oldValue) {
+    tag: function (newValue) {
       // Filter based on selected tag
       if (!newValue) {
         this.filterOn = []

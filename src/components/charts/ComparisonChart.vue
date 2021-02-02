@@ -73,7 +73,7 @@ export default {
             const germplasmData = this.germplasmData[g.id]
             if (germplasmData && germplasmData.values[tr]) {
               // If there is data for this germplasm and treatment, return an array of the same length filled with the name
-              return germplasmData.values[tr].map(c => g.name)
+              return germplasmData.values[tr].map(() => g.name)
             } else {
               // Otherwise, just return an array with the germplasm name
               return [g.name]
@@ -115,7 +115,7 @@ export default {
             return {
               visible: true,
               x: x,
-              y: x.map(_ => this.germplasmData.total / this.germplasmData.count),
+              y: x.map(() => this.germplasmData.total / this.germplasmData.count),
               hoverinfo: 'none',
               opacity: 0,
               name: tr || 'N/A',

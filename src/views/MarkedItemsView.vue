@@ -52,7 +52,7 @@ export default {
     }
   },
   watch: {
-    itemTypeLocal: function (newValue, oldValue) {
+    itemTypeLocal: function (newValue) {
       // Update the URL
       if (this.isPopup === false) {
         if (newValue === this.markedItemTypes.germplasm) {
@@ -66,7 +66,7 @@ export default {
     },
     markedIds: {
       // Refresh the table
-      handler: function (newValue, oldValue) {
+      handler: function () {
         if (this.itemTypeLocal === this.markedItemTypes.germplasm) {
           this.$refs.germplasmTable.refresh()
 

@@ -68,7 +68,7 @@ export default {
         variant: null,
         disabled: () => false,
         icon: 'mdi mdi-18px mdi-plus-box',
-        callback: (selectedIds) => {
+        callback: () => {
           this.newComment = ''
 
           this.$nextTick(() => this.$refs.commentModal.show())
@@ -77,10 +77,10 @@ export default {
     }
   },
   watch: {
-    commentTypeId: function (newValue, oldValue) {
+    commentTypeId: function () {
       this.refresh()
     },
-    referenceId: function (newValue, oldValue) {
+    referenceId: function () {
       this.refresh()
     }
   },
@@ -178,7 +178,7 @@ export default {
         .then(value => {
           if (value) {
             // Delete the comment
-            this.apiDeleteComment(comment.commentId, result => {
+            this.apiDeleteComment(comment.commentId, () => {
               this.refresh()
             })
           }
@@ -193,7 +193,7 @@ export default {
           description: this.newComment,
           referenceId: this.referenceId
         }
-        this.apiPutComment(data, result => {
+        this.apiPutComment(data, () => {
           this.refresh()
           this.$refs.commentModal.hide()
         })

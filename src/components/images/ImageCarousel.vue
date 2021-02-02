@@ -39,9 +39,7 @@ export default {
 
       const paramString = this.toUrlString(params)
 
-      for (let locale in this.images) {
-        this.images[locale][index].src = this.baseUrl + 'image/src?' + paramString
-      }
+      Object.keys(this.images).forEach(locale => this.images[locale][index].src = this.baseUrl + 'image/src?' + paramString)
     }
   },
   mixins: [ miscApi ],
@@ -50,11 +48,7 @@ export default {
     this.apiGetSettingsFile({
       'file-type': 'carousel'
     }, result => {
-      for (let locale in result) {
-        result[locale].forEach(i => {
-          i.src = null
-        })
-      }
+      Object.keys(result).forEach(locale => result[locale].forEach(i => i.src = null))
       this.images = result
 
       this.images.en_GB.forEach((image, index) => this.setImagePath(index))

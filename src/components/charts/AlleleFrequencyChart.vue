@@ -117,11 +117,11 @@ export default {
     BaseChart
   },
   watch: {
-    sourceFile: function (newValue, oldValue) {
+    sourceFile: function () {
       this.parseFile()
       this.redraw()
     },
-    widths: function (newValue, oldValue) {
+    widths: function () {
       this.redraw()
     }
   },
@@ -152,7 +152,7 @@ export default {
           this.widths = new Array(this.equalBins).fill(100 / this.equalBins)
           this.update()
           break
-        case 'split':
+        case 'split': {
           this.splitLeftBins = this.adjustBinCount(this.splitLeftBins)
           this.splitRightBins = this.adjustBinCount(this.splitRightBins)
           this.splitPoint = Math.min(0.99, Math.max(0.01, this.splitPoint))
@@ -162,7 +162,8 @@ export default {
           this.widths = left.concat(right)
           this.update()
           break
-        case 'auto':
+        }
+        case 'auto': {
           this.autoBins = this.adjustBinCount(this.autoBins)
 
           // Using the input file, compute the bins so that each contains roughly the same number of data points
@@ -189,6 +190,7 @@ export default {
 
           this.widths = binWidths
           break
+        }
       }
     },
     update: function () {

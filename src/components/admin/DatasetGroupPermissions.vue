@@ -62,7 +62,7 @@ export default {
     UserGroupTable
   },
   watch: {
-    dataset: function (newValue, oldValue) {
+    dataset: function () {
       this.refresh()
     }
   },
@@ -86,7 +86,7 @@ export default {
         isAddOperation: isAdd,
         groupIds: ids
       }
-      this.apiPatchDatasetUserGroups(request, result => {
+      this.apiPatchDatasetUserGroups(request, () => {
         this.$emit('permissions-changed')
         this.refresh()
       })

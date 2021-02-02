@@ -40,7 +40,7 @@ export default {
     UserTable
   },
   watch: {
-    dataset: function (newValue, oldValue) {
+    dataset: function () {
       this.getData()
     }
   },
@@ -55,7 +55,7 @@ export default {
         isAddOperation: isAdd,
         userIds: ids
       }
-      this.apiPatchDatasetUserMembers(request, result => {
+      this.apiPatchDatasetUserMembers(request, () => {
         this.getData()
         this.$emit('permissions-changed')
       })

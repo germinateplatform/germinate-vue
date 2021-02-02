@@ -81,10 +81,10 @@ const storeState = {
     }
   },
   getters: {
-    token: (state, getters) => state.token,
-    baseUrl: (state, getters) => state.baseUrl,
-    serverSettings: (state, getters) => state.serverSettings,
-    userId: (state, getters) => state.token ? state.token.id : null,
+    token: (state) => state.token,
+    baseUrl: (state) => state.baseUrl,
+    serverSettings: (state) => state.serverSettings,
+    userId: (state) => state.token ? state.token.id : null,
     locale: (state, getters) => state.userStates[getters.userId].locale,
     tablePerPage: (state, getters) => state.userStates[getters.userId].tablePerPage,
     helpKey: (state, getters) => state.userStates[getters.userId].helpKey,
@@ -347,7 +347,7 @@ const storeState = {
         setItem: (key, value) => localStorage.setItem(key, value),
         removeItem: key => localStorage.removeItem(key)
       },
-      reducer: (state, paths) => {
+      reducer: (state) => {
         let result = {}
         try {
           result = JSON.parse(JSON.stringify(state))

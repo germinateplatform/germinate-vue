@@ -174,7 +174,7 @@ export default {
       this.animateLogo()
 
       // On click, animate again
-      new Snap('#svg-logo svg').click(e => this.animateLogo())
+      new Snap('#svg-logo svg').click(() => this.animateLogo())
     })
   }
 }

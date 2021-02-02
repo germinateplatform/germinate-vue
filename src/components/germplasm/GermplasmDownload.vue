@@ -84,12 +84,12 @@ export default {
   },
   watch: {
     markedIds: {
-      handler: function (newValue, oldValue) {
+      handler: function () {
         this.updateSelectionOptions()
       },
       deep: true
     },
-    locale: function (newValue, oldValue) {
+    locale: function () {
       this.updateSelectionOptions()
     }
   },

@@ -44,19 +44,19 @@ export default {
     }
   },
   watch: {
-    currentIndex: function (newValue, oldValue) {
+    currentIndex: function () {
       if (this.popoverShow) {
         this.updatePopover()
       } else {
         this.resetPopover()
       }
     },
-    $route: function (newValue, oldValue) {
+    $route: function () {
       // Hide on page navigation
       this.resetPopover()
       document.body.classList.remove('overflow-hidden')
     },
-    popoverShow: function (newValue, oldValue) {
+    popoverShow: function (newValue) {
       if (newValue === true) {
         document.body.classList.add('overflow-hidden')
       } else {

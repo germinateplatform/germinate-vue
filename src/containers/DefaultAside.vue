@@ -179,7 +179,7 @@ export default {
         }).then(value => {
           if (value) {
             this.asyncExportJobs.forEach(job => {
-              this.apiDeleteDatasetAsyncExport(job.uuid, result => {
+              this.apiDeleteDatasetAsyncExport(job.uuid, () => {
                 // Delete from the store
                 this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
                 this.updateAsyncJobs()
@@ -200,7 +200,7 @@ export default {
           if (value) {
             // Delete from the database
             this.asyncImportJobs.forEach(job => {
-              this.apiDeleteDataAsyncImport(job.uuid, result => {
+              this.apiDeleteDataAsyncImport(job.uuid, () => {
                 // Delete from the store
                 this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
                 this.updateAsyncJobs()
@@ -240,7 +240,7 @@ export default {
       }).then(value => {
         if (value) {
           // Delete from the database
-          this.apiDeleteDatasetAsyncExport(job.uuid, result => {
+          this.apiDeleteDatasetAsyncExport(job.uuid, () => {
             // Delete from the store
             this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
             this.updateAsyncJobs()
@@ -257,7 +257,7 @@ export default {
       }).then(value => {
         if (value) {
           // Delete from the database
-          this.apiDeleteDataAsyncImport(job.uuid, result => {
+          this.apiDeleteDataAsyncImport(job.uuid, () => {
             // Delete from the store
             this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
             this.updateAsyncJobs()

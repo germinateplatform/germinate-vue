@@ -5,7 +5,7 @@ module.exports = {
   },
   'extends': [
     'plugin:vue/essential',
-    '@vue/standard'
+    'eslint:recommended'
   ],
   rules: {
     'no-console': 'off',

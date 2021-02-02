@@ -283,16 +283,16 @@ export default {
     }
   },
   watch: {
-    'pagination.currentPage': function (newValue, oldValue) {
+    'pagination.currentPage': function () {
       this.$refs.table.refresh()
     },
-    'pagination.totalCount': function (newValue, oldValue) {
+    'pagination.totalCount': function () {
       this.updateTableTour()
     },
-    tablePerPage: function (newValue, oldValue) {
+    tablePerPage: function () {
       this.$nextTick(() => this.$refs.table.refresh())
     },
-    selectedItems: function (newValue, oldValue) {
+    selectedItems: function (newValue) {
       if (this.selectionMode !== 'multi' && newValue && newValue.length > 1) {
         this.$nextTick(() => {
           this.selectedItems = [newValue[newValue.length - 1]]
@@ -409,7 +409,7 @@ export default {
       this.currentRequestData = localCtx
 
       this.isLoading = true
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         this.getData(localCtx).then(result => {
           let localResult = null
           if (result && result.data && result.data.data) {

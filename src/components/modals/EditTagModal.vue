@@ -52,14 +52,14 @@ export default {
     }
   },
   watch: {
-    allTags: function (newValue, oldValue) {
+    allTags: function (newValue) {
       this.allTagNames = newValue.map(t => {
         return {
           text: t.tagName
         }
       })
     },
-    prefilledTags: function (newValue, oldValue) {
+    prefilledTags: function (newValue) {
       this.newTags = newValue.map(t => {
         return {
           text: t.tagName,
@@ -90,7 +90,7 @@ export default {
       const data = this.newTags.map(t => t.text)
 
       // Add new tags
-      this.apiPutImageTags(this.imageId, data, result => {
+      this.apiPutImageTags(this.imageId, data, () => {
         this.$emit('tags-changed')
 
         this.$nextTick(() => this.$refs.editTagModal.hide())

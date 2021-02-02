@@ -113,7 +113,7 @@ export default {
     }
   },
   watch: {
-    selectedNews: function (newValue, oldValue) {
+    selectedNews: function () {
       this.$nextTick(() => this.$refs.newsModal.show())
     }
   },

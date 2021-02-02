@@ -89,7 +89,7 @@ export default {
     }
   },
   watch: {
-    users: function (newValue, oldValue) {
+    users: function () {
       this.selectedItems = []
     }
   },

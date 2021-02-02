@@ -97,14 +97,14 @@ export default {
 
             let data = []
 
-            for (let node in nodes) {
-              if (nodes.hasOwnProperty(node)) {
+            Object.keys(nodes).forEach(node => {
+              if (Object.prototype.hasOwnProperty.call(nodes, node)) {
                 data.push({
                   label: node,
                   class: node === this.germplasm.accenumb ? 'node-primary' : null
                 })
               }
-            }
+            })
 
             d3Select.select(this.$refs.pedigreeChart)
               .datum(data)

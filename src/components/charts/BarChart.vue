@@ -57,7 +57,7 @@ export default {
     BaseChart
   },
   watch: {
-    sourceFile: function (newValue, oldValue) {
+    sourceFile: function () {
       this.redraw()
     }
   },

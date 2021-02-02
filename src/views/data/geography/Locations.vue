@@ -78,7 +78,7 @@ export default {
     getIds: function (data, callback) {
       return this.apiPostLocationTableIds(data, callback)
     },
-    onDataChanged: function (request, data) {
+    onDataChanged: function (request) {
       const sameAsBefore = isEqual(request.filter, this.tableFilter)
       // If something changed, we're going to only show the locations in the table on the map
       if (!this.locations || !sameAsBefore) {

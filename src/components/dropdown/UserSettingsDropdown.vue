@@ -78,7 +78,7 @@ export default {
         password: this.token.token
       }
 
-      this.apiDeleteToken(user, result => {
+      this.apiDeleteToken(user, () => {
         // If it's successful, delete token, then redirect
         this.$store.dispatch('ON_TOKEN_CHANGED', null)
 

@@ -57,12 +57,12 @@ export default {
     }
   },
   watch: {
-    token: function (newValue, oldValue) {
+    token: function () {
       this.apiGetEntityTypeStats(result => {
         this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
       })
     },
-    darkMode: function (newValue) {
+    darkMode: function () {
       this.loadAndSetDarkMode()
     }
   },

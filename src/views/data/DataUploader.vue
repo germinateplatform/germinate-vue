@@ -68,7 +68,7 @@ export default {
     }
   },
   watch: {
-    templateType: function (newValue, oldValue) {
+    templateType: function (newValue) {
       // Reset the selected file
       this.file = null
       // Update the URL

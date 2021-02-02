@@ -82,7 +82,7 @@ export default {
     }
   },
   watch: {
-    datasetIds: function (newValue, oldValue) {
+    datasetIds: function () {
       this.updateItems()
     }
   },

@@ -121,15 +121,15 @@ export default {
     }
   },
   watch: {
-    locations: function (newValue, oldValue) {
+    locations: function (newValue) {
       this.internalLocations = newValue
       this.updateMap()
     },
-    climates: function (newValue, oldValue) {
+    climates: function () {
       const map = this.$refs.map.mapObject
 
       if (this.climates && this.climates.length > 0) {
-        L.easyButton('<i class="mdi mdi-weather-snowy-rainy mdi-18px"/>', (button, map) => {
+        L.easyButton('<i class="mdi mdi-weather-snowy-rainy mdi-18px"/>', () => {
           this.$refs.climateOverlayModal.show()
         }, 'Toggle overlays', 'settings-button', { position: 'topright' }).addTo(map)
       }
@@ -302,7 +302,6 @@ export default {
           let marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
           marker.on('click', e => {
             let popup = e.target.getPopup()
-            this.location = this.location
             // Set the popup content on click
             this.$nextTick(() => popup.setContent(this.$refs.popupContent))
           })
@@ -330,7 +329,7 @@ export default {
             // If it doesn't create it
             this.markerClusterer = L.markerClusterGroup({
               chunkedLoading: true,
-              chunkProgress: (processed, total, elapsed, layersArray) => {
+              chunkProgress: (processed, total) => {
                 this.loading = processed !== total
                 this.loadingProgress = Math.round(processed / total * 100)
               }

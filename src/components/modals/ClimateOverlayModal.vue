@@ -39,7 +39,7 @@ export default {
   },
   mixins: [ climateApi ],
   methods: {
-    handleCancel: function (event) {
+    handleCancel: function () {
       this.selected = null
       this.tempSelected = null
       this.opacity = 100
@@ -49,7 +49,7 @@ export default {
         opacity: undefined
       })
     },
-    handleOk: function (event) {
+    handleOk: function () {
       this.selected = this.tempSelected
       this.opacity = this.tempOpacity
       this.$emit('overlay-changed', {

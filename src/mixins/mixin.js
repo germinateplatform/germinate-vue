@@ -272,7 +272,7 @@ export default {
           case 401:
             message = this.$t('httpErrorFourOOne')
             break
-          case 403:
+          case 403: {
             message = this.$t('httpErrorFourOThree')
             this.$store.dispatch('ON_TOKEN_CHANGED', null)
             const authMode = this.serverSettings.authMode
@@ -282,6 +282,7 @@ export default {
               EventBus.$emit('on-show-login-form')
             }
             return
+          }
           case 404:
             message = this.$t('httpErrorFourOFour')
             break
