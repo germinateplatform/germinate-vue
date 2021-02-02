@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body class="image-card" bg-variant="dark" v-if="image">
+  <b-card no-body class="image-card" v-if="image">
     <!-- The image -->
     <a :href="getSrc('large')" class="baguettebox" @click.prevent :data-caption="image.imageDescription">
       <div>

@@ -51,7 +51,9 @@ export default {
   },
   methods: {
     objectArraysAreSame: function (x, y) {
-      if (x.length !== y.length) {
+      if ((x === null && y !== null) || (x !== null && y === null)) {
+        return false
+      } else if (x.length !== y.length) {
         return false
       } else {
         for (let one = 0; one < x.length; one++) {

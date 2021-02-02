@@ -153,7 +153,7 @@ export default {
       this.apiPostPedigreeExport(request, result => {
         this.downloadBlob({
           blob: result,
-          filename: this.getFilename(),
+          filename: this.baseFilename,
           extension: 'helium'
         })
         EventBus.$emit('show-loading', false)
