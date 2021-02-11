@@ -973,7 +973,7 @@
   "tooltipTableHelp": "Show help information about tables",
   "tooltipTableItemsPerPage": "Items per page",
   "tooltipTableLoadingIndicator": "The table is loading the requested data...",
-  "tooltipTableMarkedItems": "This is the number of currently marked items. Clicking on it will show you a table will all items.",
+  "tooltipTableMarkedItems": "This is the number of currently marked items. Clicking on it will show you a table with all marked items.",
   "tooltipTableMarkedItemsClear": "Clear all marked items",
   "tooltipTagEdit": "Edit tags",
   "tooltipGermplasmMarkedItem": "Click to mark/unmark germplasm",

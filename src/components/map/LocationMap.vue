@@ -35,7 +35,7 @@
     <div v-if="location" ref="popupContent" class="p-3">
       <dl class="row">
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
-        <dd class="col-8">
+        <dd class="col-8 location-name">
           <template v-if="showLinks">
             <router-link :to="{ name: 'datasets' }" v-if="location.locationType === 'datasets' && $route.name !== 'datasets'" @click.native="navigateToDatasets(location)" event="">{{ location.locationName }}</router-link>
             <router-link :to="{ name: 'germplasm' }" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
@@ -564,5 +564,8 @@ export default {
 }
 .location-map .location-map-loading-indicator > .progress {
   width: 50%;
+}
+.location-name * {
+  overflow-wrap: break-word;
 }
 </style>

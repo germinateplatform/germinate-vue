@@ -7,6 +7,7 @@
                 class="germplasm-table"
                 ref="germplasmTable"
                 v-on="$listeners">
+      <!-- HEADS -->
       <!-- HEAD: Germplasm PUID -->
       <template v-slot:head(germplasmPuid)="data">
         <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
@@ -21,20 +22,21 @@
       </template>
       <!-- HEAD: Trials data -->
       <template v-slot:head(hasTrialsData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" />
+        <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" v-b-tooltip="$t('tableColumnHasTrialsData')" />
       </template>
       <!-- HEAD: Genotypic data -->
       <template v-slot:head(hasGenotypicData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" />
+        <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" v-b-tooltip="$t('tableColumnHasGenotypicData')" />
       </template>
       <!-- HEAD: Compound data -->
       <template v-slot:head(hasCompoundData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" />
+        <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" v-b-tooltip="$t('tableColumnHasCompoundData')" />
       </template>
       <!-- HEAD: Allelefreq data -->
       <template v-slot:head(hasAllelefreqData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" />
+        <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" v-b-tooltip="$t('tableColumnHasAllelefreqData')" />
       </template>
+      <!-- /HEADS -->
 
       <template v-slot:cell(preview)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }" event="" @click.native.prevent="selectGermplasm(data.item.germplasmId)" class="table-link" v-b-tooltip:hover="$t('tableTooltipGermplasmPreviewPassport')">
