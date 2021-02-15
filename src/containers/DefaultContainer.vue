@@ -2,11 +2,11 @@
   <div class="app">
     <AppHeader fixed id="app-header">
       <SidebarToggler class="d-lg-none" display="md" mobile @click.native="toggleSidebar" />
-      <b-link class="navbar-brand" to="/">
+      <router-link class="navbar-brand" to="/">
         <b-img-lazy class="navbar-brand-full" src="img/germinate-square.svg" width="58" height="58" alt="Germinate logo" />
         <b-img-lazy class="navbar-brand-minimized" src="img/germinate-square.svg" width="58" height="58" alt="Germinate logo" />
         <b-img-lazy class="navbar-brand-full navbar-brand-text" src="img/germinate-text.svg" height="22" alt="Germinate logo" />
-      </b-link>
+      </router-link>
       <SidebarToggler class="d-md-down-none" display="lg" :defaultOpen=true @click.native="toggleSidebar" />
 
       <b-navbar-nav class="ml-auto align-items-stretch top-nav">

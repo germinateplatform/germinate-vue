@@ -1,10 +1,14 @@
 <template>
   <div>
+    <CoolLightBox 
+      :items="coolboxImages" 
+      :index="coolboxIndex"
+      @on-open="rotateExif"
+      @close="coolboxIndex = null" />
     <BaseTable :options="options"
                :columns="columns"
                v-bind="$props"
                ref="table"
-               @loaded="update"
                v-on="$listeners">
       <!-- Reference table -->
       <template v-slot:cell(imageRefTable)="data">
@@ -12,7 +16,7 @@
       </template>
       <!-- Image -->
       <template v-slot:cell(image)="data">
-        <a :href="getSrc(data.item, 'large')" class="baguettebox" @click.prevent>
+        <a :href="getSrc(data.item, 'large')" @click.prevent="update(data.item)">
           <b-img-lazy :src="getSrc(data.item, 'small')" class="table-image" alt="Image" />
         </a>
       </template>
@@ -40,7 +44,8 @@
 </template>
 
 <script>
-import baguetteBox from 'baguettebox.js'
+import CoolLightBox from 'vue-cool-lightbox'
+import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import typesMixin from '@/mixins/types.js'
@@ -59,7 +64,9 @@ export default {
         idColumn: 'imageId',
         tableName: 'images'
       },
-      tags: []
+      tags: [],
+      coolboxIndex: null,
+      coolboxImages: []
     }
   },
   computed: {
@@ -120,7 +127,8 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    CoolLightBox
   },
   mixins: [ typesMixin, colorMixin ],
   methods: {
@@ -162,26 +170,26 @@ export default {
 
       return this.baseUrl + 'image/src?' + paramString
     },
-    update: function () {
-      this.$nextTick(() => {
-        baguetteBox.run('.baguettebox', {
-          captions: 'true',
-          fullScreen: false,
-          filter: /.*/i,
-          afterShow: () => {
-            const overlays = document.querySelectorAll('#baguetteBox-overlay img')
+    update: function (i) {
+      this.coolboxImages = [{
+        src: this.getSrc(i, 'large'),
+        title: i.imageDescription
+      }]
+      this.coolboxIndex = 0
+    },
+    rotateExif: function () {
+      const overlays = document.querySelectorAll('.cool-lightbox img')
 
-            overlays.forEach(n => {
-              if (n.complete && n.naturalHeight !== 0) {
-                this.rotateBasedOnExif(n)
-              } else {
-                n.addEventListener('load', () => {
-                  this.rotateBasedOnExif(n)
-                })
-              }
-            })
-          }
-        })
+      overlays.forEach(i => {
+        if (i.complete && i.naturalHeight !== 0) {
+          // Rotate the image on load based on EXIF information
+          this.rotateBasedOnExif(i)
+        } else {
+          i.addEventListener('load', () => {
+            // Rotate the image on load based on EXIF information
+            this.rotateBasedOnExif(i)
+          }, { once: true })
+        }
       })
     },
     refresh: function () {

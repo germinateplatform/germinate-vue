@@ -5,7 +5,7 @@ import 'es6-object-assign/auto'
 import 'es6-set/implement'
 
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
+// import BootstrapVue from 'bootstrap-vue'
 import App from '@/App'
 import router from '@/router'
 import store from '@/store/store'
@@ -17,14 +17,87 @@ import 'leaflet/dist/leaflet.css'
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
 
+import {
+  BadgePlugin,
+  ButtonPlugin,
+  ButtonGroupPlugin,
+  CardPlugin,
+  CarouselPlugin,
+  CollapsePlugin,
+  DropdownPlugin,
+  FormPlugin,
+  FormCheckboxPlugin,
+  FormDatepickerPlugin,
+  FormFilePlugin,
+  FormGroupPlugin,
+  FormInputPlugin,
+  FormRadioPlugin,
+  FormSelectPlugin,
+  FormTagsPlugin,
+  FormTextareaPlugin,
+  ImagePlugin,
+  InputGroupPlugin,
+  LayoutPlugin,
+  ListGroupPlugin,
+  ModalPlugin,
+  NavPlugin,
+  NavbarPlugin,
+  PaginationPlugin,
+  PopoverPlugin,
+  ProgressPlugin,
+  SpinnerPlugin,
+  TablePlugin,
+  TabsPlugin,
+  ToastPlugin,
+  TooltipPlugin,
+  VBPopoverPlugin,
+  VBScrollspyPlugin,
+  VBTooltipPlugin
+} from 'bootstrap-vue'
+
 import VueMeta from 'vue-meta'
 Vue.use(VueMeta)
 
 let axiosDefaults = require('axios/lib/defaults')
 
 Vue.mixin(mixin)
-Vue.use(BootstrapVue)
+// Vue.use(BootstrapVue)
 Vue.use(Autocomplete)
+Vue.use(BadgePlugin)
+Vue.use(ButtonPlugin)
+Vue.use(ButtonGroupPlugin)
+Vue.use(CardPlugin)
+Vue.use(CarouselPlugin)
+Vue.use(CollapsePlugin)
+Vue.use(DropdownPlugin)
+Vue.use(FormPlugin)
+Vue.use(FormCheckboxPlugin)
+Vue.use(FormDatepickerPlugin)
+Vue.use(FormFilePlugin)
+Vue.use(FormGroupPlugin)
+Vue.use(FormInputPlugin)
+Vue.use(FormRadioPlugin)
+Vue.use(FormSelectPlugin)
+Vue.use(FormTagsPlugin)
+Vue.use(FormTextareaPlugin)
+Vue.use(ImagePlugin)
+Vue.use(InputGroupPlugin)
+Vue.use(LayoutPlugin)
+Vue.use(ListGroupPlugin)
+Vue.use(ModalPlugin)
+Vue.use(NavPlugin)
+Vue.use(NavbarPlugin)
+Vue.use(PaginationPlugin)
+Vue.use(PopoverPlugin)
+Vue.use(ProgressPlugin)
+Vue.use(SpinnerPlugin)
+Vue.use(TablePlugin)
+Vue.use(TabsPlugin)
+Vue.use(ToastPlugin)
+Vue.use(TooltipPlugin)
+Vue.use(VBPopoverPlugin)
+Vue.use(VBScrollspyPlugin)
+Vue.use(VBTooltipPlugin)
 
 Vue.use({
   install: function (Vue) {

@@ -36,7 +36,7 @@ export default {
   computed: {
     baseSourceFile: function () {
       return {
-        blob: this.sourceFile,
+        blob: this.plotData,
         filename: this.baseFilename,
         extension: 'helium'
       }

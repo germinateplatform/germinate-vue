@@ -1,10 +1,10 @@
 <template>
   <div class="app public">
     <AppHeader fixed>
-      <b-link class="navbar-brand" to="/">
+      <router-link class="navbar-brand" to="/">
         <img class="navbar-brand-full" src="img/germinate-square.svg" width="58" height="58" alt="Germinate logo">
         <img class="navbar-brand-minimized" src="img/germinate-square.svg" width="58" height="58" alt="Germinate logo">
-      </b-link>
+      </router-link>
       <b-navbar-nav class="ml-auto">
         <LocaleDropdown />
       </b-navbar-nav>

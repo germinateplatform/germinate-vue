@@ -2,10 +2,16 @@
   <div v-if="(images && images.length > 0) || selectedTag !== null">
     <ImageTags v-on:tag-selected="onTagClicked" :referenceTable="referenceTable" :foreignId="foreignId" ref="tags" />
 
+    <CoolLightBox 
+      :items="coolboxImages" 
+      :index="coolboxIndex"
+      @on-open="rotateExif"
+      @close="coolboxIndex = null" />
+
     <!-- Show each image node -->
     <b-row v-if="images && images.length > 0" class="image-grid mb-3">
       <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId" class="mb-3">
-        <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" v-on:tags-changed="onTagsChanged" v-on:image-deleted="onImageDeleted" />
+        <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" @image-clicked="coolboxIndex = index" v-on:tags-changed="onTagsChanged" v-on:image-deleted="onImageDeleted" />
       </b-col>
     </b-row>
     <h3 v-else>{{ $t('headingNoData') }}</h3>
@@ -28,7 +34,8 @@
 </template>
 
 <script>
-import baguetteBox from 'baguettebox.js'
+import CoolLightBox from 'vue-cool-lightbox'
+import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 import ImageNode from '@/components/images/ImageNode'
 import ImageTags from '@/components/images/ImageTags'
 import ImageUploadModal from '@/components/modals/ImageUploadModal'
@@ -39,6 +46,7 @@ import { EventBus } from '@/plugins/event-bus.js'
 export default {
   data: function () {
     return {
+      coolboxIndex: null,
       currentPage: 1,
       imagesPerPage: 8,
       images: [],
@@ -61,7 +69,18 @@ export default {
       default: 'images'
     }
   },
+  computed: {
+    coolboxImages: function () {
+      return  this.images.map(i => {
+        return {
+          src: this.getSrc(i),
+          title: i.imageDescription
+        }
+      })
+    }
+  },
   components: {
+    CoolLightBox,
     ImageNode,
     ImageTags,
     ImageUploadModal
@@ -109,6 +128,17 @@ export default {
         EventBus.$emit('show-loading', false)
       })
     },
+    getSrc: function (image) {
+      const params = {
+        name: image.imagePath,
+        token: this.token ? this.token.imageToken : null,
+        type: 'database',
+        size: 'large'
+      }
+      const paramString = this.toUrlString(params)
+
+      return this.baseUrl + 'image/src?' + paramString
+    },
     onTagsChanged: function () {
       this.getPage(this.currentPage)
       this.$refs.tags.refresh()
@@ -150,30 +180,21 @@ export default {
       }, result => {
         this.images = result.data
         this.imageCount = result.count
+      })
+    },
+    rotateExif: function () {
+      const overlays = document.querySelectorAll('.cool-lightbox img')
 
-        // Enable the baguettebox popup
-        this.$nextTick(() => {
-          baguetteBox.run('.image-grid', {
-            captions: 'true',
-            fullScreen: false,
-            filter: /.*\/image.*/i,
-            afterShow: () => {
-              const overlays = document.querySelectorAll('#baguetteBox-overlay img')
-
-              overlays.forEach(n => {
-                if (n.complete && n.naturalHeight !== 0) {
-                  // Rotate the image on load based on EXIF information
-                  this.rotateBasedOnExif(n)
-                } else {
-                  n.addEventListener('load', () => {
-                    // Rotate the image on load based on EXIF information
-                    this.rotateBasedOnExif(n)
-                  })
-                }
-              })
-            }
-          })
-        })
+      overlays.forEach(i => {
+        if (i.complete && i.naturalHeight !== 0) {
+          // Rotate the image on load based on EXIF information
+          this.rotateBasedOnExif(i)
+        } else {
+          i.addEventListener('load', () => {
+            // Rotate the image on load based on EXIF information
+            this.rotateBasedOnExif(i)
+          }, { once: true })
+        }
       })
     },
     rotateBasedOnExif: function (image) {

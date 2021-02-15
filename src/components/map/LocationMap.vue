@@ -37,7 +37,7 @@
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8 location-name">
           <template v-if="showLinks">
-            <router-link :to="{ name: 'datasets' }" v-if="location.locationType === 'datasets' && $route.name !== 'datasets'" @click.native="navigateToDatasets(location)" event="">{{ location.locationName }}</router-link>
+            <span v-if="location.locationType === 'datasets'">{{ location.locationName }}</span>
             <router-link :to="{ name: 'germplasm' }" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
             <span v-else>{{ location.locationName }}</span>
           </template>
@@ -251,19 +251,6 @@ export default {
         values: [location.locationName]
       }])
       this.$router.push({ name: 'germplasm' })
-    },
-    navigateToDatasets: function (location) {
-      // Navigate to the datasets page and filter on location
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'locationIds',
-          type: 'json'
-        },
-        comparator: 'contains',
-        operator: 'and',
-        values: [location.locationId]
-      }])
-      this.$router.push({ name: 'datasets' })
     },
     getFlag: function (country) {
       if (country.countryCode2) {

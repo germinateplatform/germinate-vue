@@ -8,7 +8,7 @@
     <!-- Location name link -->
     <template v-slot:cell(locationName)="data">
       <!-- Dataset location -->
-      <router-link to="/data/datasets" @click.native="navigateToDatasets(data.item)" event="" v-if="data.item.locationType === 'datasets'" :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</router-link>
+      <span v-if="data.item.locationType === 'datasets'">{{ data.item.locationName | truncateAfterWords(10) }}</span>
       <!-- Collecting site -->
       <router-link to="/data/germplasm" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'" :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</router-link>
       <!-- Anything else -->
@@ -175,20 +175,6 @@ export default {
       }])
       // Redirect to germplasm page filtered by location
       this.$router.push({ name: 'germplasm' })
-    },
-    navigateToDatasets: function (location) {
-      // Set up the filter
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'locations',
-          type: 'json'
-        },
-        comparator: 'contains',
-        operator: 'and',
-        values: [location.locationName]
-      }])
-      // Redirect to datasets page filtered by location
-      this.$router.push({ name: 'datasets' })
     },
     refresh: function () {
       this.$refs.locationTable.refresh()

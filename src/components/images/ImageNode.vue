@@ -1,7 +1,7 @@
 <template>
   <b-card no-body class="image-card" v-if="image">
     <!-- The image -->
-    <a :href="getSrc('large')" class="baguettebox" @click.prevent :data-caption="image.imageDescription">
+    <a :href="getSrc('large')" @click.prevent="$emit('image-clicked')" :data-caption="image.imageDescription">
       <div>
         <b-img :src="getSrc('small')" class="card-img" style="height: 300px" :alt="image.imageDescription" @load="() => imageLoaded = true" />
         <b-progress class="image-load-progress" :value="100" striped animated height="6px" v-if="imageLoaded === false" />
