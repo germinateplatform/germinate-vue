@@ -128,11 +128,8 @@ export default {
     }
   },
   watch: {
-    markedIds: {
-      deep: true,
-      handler: function () {
-        this.updateGroups()
-      }
+    markedGermplasm: function () {
+      this.updateGroups()
     }
   },
   components: {

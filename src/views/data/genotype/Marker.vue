@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     markedStyle: function () {
-      const isMarked = this.markedIds.markers.indexOf(this.currentMarkerId) !== -1
+      const isMarked = this.markedMarkers.indexOf(this.currentMarkerId) !== -1
       return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
     },
     filter: function () {
@@ -93,7 +93,7 @@ export default {
   mixins: [ genotypeApi ],
   methods: {
     onToggleMarked: function () {
-      const isMarked = this.markedIds.markers.indexOf(this.currentMarkerId) !== -1
+      const isMarked = this.markedMarkers.indexOf(this.currentMarkerId) !== -1
       if (isMarked) {
         this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'markers', ids: [this.currentMarkerId] })
       } else {

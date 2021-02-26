@@ -62,6 +62,9 @@ import climateApi from '@/mixins/api/climate.js'
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
 import { LMap, LImageOverlay } from 'vue2-leaflet'
+// LEAFLET
+import 'leaflet/dist/leaflet.css'
+
 require('leaflet.heat')
 require('leaflet.sync')
 require('leaflet.markercluster')

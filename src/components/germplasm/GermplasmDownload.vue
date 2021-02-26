@@ -83,11 +83,8 @@ export default {
     }
   },
   watch: {
-    markedIds: {
-      handler: function () {
-        this.updateSelectionOptions()
-      },
-      deep: true
+    markedGermplasm: function () {
+      this.updateSelectionOptions()
     },
     locale: function () {
       this.updateSelectionOptions()
@@ -100,9 +97,9 @@ export default {
         text: this.$t('pageGermplasmDownloadSelectAll'),
         value: 'all'
       }, {
-        text: this.$t('pageGermplasmDownloadSelectMarked', { count: this.markedIds.germplasm.length }),
+        text: this.$t('pageGermplasmDownloadSelectMarked', { count: this.markedGermplasm.length }),
         value: 'marked',
-        disabled: this.markedIds.germplasm.length < 1
+        disabled: this.markedGermplasm.length < 1
       }, {
         text: this.$t('pageGermplasmDownloadSelectGroup'),
         value: 'group',
@@ -110,17 +107,17 @@ export default {
       }]
 
       // Reset selection to "All" if there aren't any marked items
-      if (this.passportSelection === 'marked' && this.markedIds.germplasm.length < 1) {
+      if (this.passportSelection === 'marked' && this.markedGermplasm.length < 1) {
         this.passportSelection = 'all'
       }
-      if (this.pedigreeSelection === 'marked' && this.markedIds.germplasm.length < 1) {
+      if (this.pedigreeSelection === 'marked' && this.markedGermplasm.length < 1) {
         this.pedigreeSelection = 'all'
       }
     },
     downloadGermplasm: function () {
       EventBus.$emit('show-loading', true)
       const request = {
-        individualIds: this.passportSelection === 'marked' ? this.markedIds.germplasm : null,
+        individualIds: this.passportSelection === 'marked' ? this.markedGermplasm : null,
         groupIds: this.passportSelection === 'group' ? [this.passportGroup] : null,
         includeAttributes: this.passportIncludeAttributes
       }
@@ -137,7 +134,7 @@ export default {
     downloadPedigree: function () {
       EventBus.$emit('show-loading', true)
       const request = {
-        individualIds: this.pedigreeSelection === 'marked' ? this.markedIds.germplasm : null,
+        individualIds: this.pedigreeSelection === 'marked' ? this.markedGermplasm : null,
         groupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null
       }
       this.apiPostPedigreeExport(request, result => {

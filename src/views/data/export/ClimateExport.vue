@@ -142,11 +142,8 @@ export default {
     }
   },
   watch: {
-    markedIds: {
-      deep: true,
-      handler: function () {
-        this.updateGroups()
-      }
+    markedLocations: function () {
+      this.updateGroups()
     }
   },
   components: {

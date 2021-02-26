@@ -121,7 +121,7 @@ export default {
       // If the "Marked items" item is selected, set the individual ids
       const markedSelected = settings.selectedGroups.filter(g => g === null)
       if (settings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
-        query.yIds = this.markedIds.germplasm
+        query.yIds = this.markedGermplasm
       }
 
       // Set the selected group ids

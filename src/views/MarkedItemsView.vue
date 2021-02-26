@@ -64,20 +64,21 @@ export default {
         }
       }
     },
-    markedIds: {
-      // Refresh the table
-      handler: function () {
-        if (this.itemTypeLocal === this.markedItemTypes.germplasm) {
-          this.$refs.germplasmTable.refresh()
-
-          this.updateExternalIdentifiers()
-        } else if (this.itemTypeLocal === this.markedItemTypes.markers) {
-          this.$refs.markerTable.refresh()
-        } else if (this.itemTypeLocal === this.markedItemTypes.locations) {
-          this.$refs.locationTable.refresh()
-        }
-      },
-      deep: true
+    markedGermplasm: function () {
+      if (this.itemTypeLocal === this.markedItemTypes.germplasm) {
+        this.$refs.germplasmTable.refresh()
+        this.updateExternalIdentifiers()
+      }
+    },
+    markedMarkers: function () {
+      if (this.itemTypeLocal === this.markedItemTypes.markers) {
+        this.$refs.markerTable.refresh()
+      }
+    },
+    markedLocations: function () {
+      if (this.itemTypeLocal === this.markedItemTypes.locations) {
+        this.$refs.locationTable.refresh()
+      }
     }
   },
   computed: {
@@ -145,7 +146,7 @@ export default {
     },
     updateExternalIdentifiers: function () {
       if (this.serverSettings && this.serverSettings.externalLinkIdentifier && this.serverSettings.externalLinkTemplate) {
-        const ids = this.markedIds.germplasm
+        const ids = this.markedGermplasm
 
         if (this.serverSettings.externalLinkIdentifier !== 'id') {
           this.apiPostExternalLinkIdentifiers(ids, result => {

@@ -11,12 +11,11 @@ import router from '@/router'
 import store from '@/store/store'
 import { i18n } from '@/plugins/i18n.js'
 import mixin from '@/mixins/mixin.js'
-// LEAFLET
-import 'leaflet/dist/leaflet.css'
 
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
 
+// Import the bootstrap-vue plugins
 import {
   BadgePlugin,
   ButtonPlugin,
@@ -61,8 +60,9 @@ Vue.use(VueMeta)
 let axiosDefaults = require('axios/lib/defaults')
 
 Vue.mixin(mixin)
-// Vue.use(BootstrapVue)
 Vue.use(Autocomplete)
+
+// Import the bootstrap-vue plugins
 Vue.use(BadgePlugin)
 Vue.use(ButtonPlugin)
 Vue.use(ButtonGroupPlugin)

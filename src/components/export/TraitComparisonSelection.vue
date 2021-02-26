@@ -107,11 +107,8 @@ export default {
     }
   },
   watch: {
-    markedIds: {
-      deep: true,
-      handler: function () {
-        this.update()
-      }
+    markedGermplasm: function () {
+      this.update()
     },
     splitBy: function () {
       this.redraw()

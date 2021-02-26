@@ -24,7 +24,16 @@ export default {
       'tableFiltering',
       'tablePerPage',
       'token'
-    ])
+    ]),
+    markedGermplasm: function () {
+      return this.markedIds.germplasm
+    },
+    markedMarkers: function () {
+      return this.markedIds.markers
+    },
+    markedLocations: function () {
+      return this.markedIds.locations
+    }
   },
   data: function () {
     return {
@@ -323,7 +332,7 @@ export default {
      * Sends a FORM to the given URL using authentication
      * @param {Object} param0 `{ url: String, formData: Object, success: Callback, error: { codes: [], callback: Callback } }`
      */
-    authForm ({ url = null, formData, success = null, error = { codes: [], callback: this.handleError } }) {
+    authForm({ url = null, formData, success = null, error = { codes: [], callback: this.handleError } }) {
       const promise = axios.post(url, formData, {
         crossDomain: true,
         withCredentials: true,
@@ -397,7 +406,7 @@ export default {
      * Sends an Axios request to the server using authentication
      * @param {Object} param0 `{ url: String, method: String, data: Object, formData: Object, dataType: String, contentType: String, success: Callback, error: { codes: [], callback: Callback } }`
      */
-    authAxios ({ url = null, method = 'GET', data = null, formData = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = null, error = { codes: [], callback: this.handleError } }) {
+    authAxios({ url = null, method = 'GET', data = null, formData = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = null, error = { codes: [], callback: this.handleError } }) {
       let requestData = null
       let requestParams = null
 
@@ -502,7 +511,7 @@ export default {
     /**
      * Returns the current authentication token
      */
-    getToken () {
+    getToken() {
       let t = this.$store.getters.token
 
       // Check if the token is still valid

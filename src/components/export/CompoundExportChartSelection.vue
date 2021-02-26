@@ -128,12 +128,9 @@ export default {
     }
   },
   watch: {
-    markedIds: {
-      deep: true,
-      handler: function () {
-        if (this.colorBySelection === 'marked_items') {
-          this.onColorByChanged()
-        }
+    markedGermplasm: function () {
+      if (this.colorBySelection === 'marked_items') {
+        this.onColorByChanged()
       }
     }
   },
@@ -159,7 +156,7 @@ export default {
         this.plotData = result
         this.$nextTick(() => this.$refs.chart.redraw(result, {
           column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
-          ids: this.colorBySelection === 'marked_items' ? this.markedIds.germplasm : null,
+          ids: this.colorBySelection === 'marked_items' ? this.markedGermplasm : null,
           names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
         }))
         EventBus.$emit('show-loading', false)
@@ -169,7 +166,7 @@ export default {
       if (this.plotData) {
         this.$refs.chart.redraw(this.plotData, {
           column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
-          ids: this.colorBySelection === 'marked_items' ? this.markedIds.germplasm : null,
+          ids: this.colorBySelection === 'marked_items' ? this.markedGermplasm : null,
           names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
         })
       }

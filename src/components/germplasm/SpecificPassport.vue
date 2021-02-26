@@ -225,7 +225,7 @@ export default {
       }
     },
     markedStyle: function () {
-      const isMarked = this.markedIds.germplasm.indexOf(this.currentGermplasmId) !== -1
+      const isMarked = this.markedGermplasm.indexOf(this.currentGermplasmId) !== -1
       return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
     },
     attributeFilter: function () {
@@ -291,7 +291,7 @@ export default {
       return this.apiPostPedigreeTable(data, callback)
     },
     onToggleMarked: function () {
-      const isMarked = this.markedIds.germplasm.indexOf(this.currentGermplasmId) !== -1
+      const isMarked = this.markedGermplasm.indexOf(this.currentGermplasmId) !== -1
       if (isMarked) {
         this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [this.currentGermplasmId] })
       } else {

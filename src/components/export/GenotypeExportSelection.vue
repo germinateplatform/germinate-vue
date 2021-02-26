@@ -173,7 +173,7 @@ export default {
       const germplasmSettings = this.$refs.germplasmGroups.getSettings()
       const markedSelectedGermplasm = germplasmSettings.selectedGroups.filter(g => g === null)
       if (germplasmSettings.specialGroupSelection !== 'all' && markedSelectedGermplasm.length > 0) {
-        query.yIds = this.markedIds.germplasm
+        query.yIds = this.markedGermplasm
       }
       const germplasmGroups = germplasmSettings.selectedGroups.filter(g => g !== null && g.groupId > 0).map(g => g.groupId)
       if (germplasmSettings.specialGroupSelection !== 'all' && germplasmGroups.length > 0) {
@@ -183,7 +183,7 @@ export default {
       const markerSettings = this.$refs.markerGroups.getSettings()
       const markedSelectedMarkers = markerSettings.selectedGroups.filter(g => g === null)
       if (markerSettings.specialGroupSelection !== 'all' && markedSelectedMarkers.length > 0) {
-        query.xIds = this.markedIds.markers
+        query.xIds = this.markedMarkers
       }
       const markerGroups = markerSettings.selectedGroups.filter(g => g !== null && g.groupId > 0).map(g => g.groupId)
       if (markerSettings.specialGroupSelection !== 'all' && markerGroups.length > 0) {
