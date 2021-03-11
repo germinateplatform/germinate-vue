@@ -36,6 +36,13 @@ export default {
   },
   mixins: [ datasetApi ],
   methods: {
+    isAccepted: function (dataset) {
+      if (this.token) {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
+      } else {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
+      }
+    },
     triggerExport: function (binningConfig) {
       this.$refs.exportSelection.exportData(binningConfig)
     },
