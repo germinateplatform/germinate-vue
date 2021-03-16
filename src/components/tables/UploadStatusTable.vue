@@ -62,6 +62,7 @@ export default {
         MCPD_MISSING_FIELD: () => this.$t('importStatusMcpdMissingField'),
         MCPD_INVALID_SAMPSTAT: () => this.$t('importStatusMcpdInvalidSampstat'),
         MCPD_INVALID_COLLSRC: () => this.$t('importStatusMcpdInvalidCollsrc'),
+        MCPD_INVALID_MLSSTATUS: () => this.$t('importStatusMcpdInvalidMlsStatus'),
         MCPD_INVALID_STORAGE: () => this.$t('importStatusMcpdInvalidStorage'),
         GENERIC_INVALID_NUMBER: () => this.$t('importStatusMcpdInvalidNumber'),
         MCPD_INVALID_ENTITY_TYPE: () => this.$t('importStatusMcpdInvalidEntityType'),

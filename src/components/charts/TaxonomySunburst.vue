@@ -47,7 +47,7 @@ export default {
 
         data.forEach(t => {
           if (t.subtaxa) {
-            const key = `${t.subtaxa}->${t.species}`
+            const key = `${t.subtaxa}->${t.genus} ${t.species}`
             if (!sunburst[key]) {
               sunburst[key] = 0
             }
@@ -56,7 +56,7 @@ export default {
           }
 
           if (t.species) {
-            const key = `${t.species}->${t.genus}`
+            const key = `${t.genus} ${t.species}->${t.genus}`
             if (!sunburst[key]) {
               sunburst[key] = 0
             }

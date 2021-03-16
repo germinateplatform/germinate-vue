@@ -240,6 +240,7 @@
   "importStatusMcpdInvalidDMS": "An invalid latitude or longitude was found. If provided in degrees, minutes and seconds, these should be formatted as follows: Degrees (2 digits), minutes (2 digits), second (2 digits) format, followed by North (N) or South (S), e.g. 103020S. Every missing digit (minutes or seconds) should be indicated with hyphen, e.g. 10----S; 011530N).",
   "importStatusMcpdInvalidEntityParentAccenumb": "A referenced entity parent ACCENUMB could not be found. Please make sure to only reference ACCENUMBs that are either part of the template or already in the database.",
   "importStatusMcpdInvalidEntityType": "Invalid entity type specified. Please check the original template for al valid types.",
+  "importStatusMcpdInvalidMlsStatus": "Invalid MLSSTAT (Multilateral System status) found. Please check the MCPD 2.1 documentation for all valid codes.",
   "importStatusMcpdInvalidNumber": "The value specified in a number column isn't a valid number.",
   "importStatusMcpdInvalidSampstat": "Invalid SAMPSTAT (Biological status of accession) found. Please check the MCPD 2.1 documentation for all valid codes.",
   "importStatusMcpdInvalidStorage": "Invalid STORAGE (Type of germplasm storage) found. Please check the MCPD 2.1 documentation for all valid codes.",

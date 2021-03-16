@@ -98,7 +98,7 @@ export default {
       if (this.taxonomy.genus) {
         return [{
           value: null,
-          text: this.$t('tableColumnGenus')
+          text: `${this.$t('tableColumnGenus')} (${this.taxonomy.genus.length})`
         }].concat(this.taxonomy.genus.map(g => {
           return {
             value: g.taxonomy,
@@ -113,7 +113,7 @@ export default {
       if (this.taxonomy.species) {
         return [{
           value: null,
-          text: this.$t('tableColumnSpecies')
+          text: `${this.$t('tableColumnSpecies')} (${this.taxonomy.species.length})`
         }].concat(this.taxonomy.species.map(g => {
           return {
             value: g.taxonomy,
@@ -128,7 +128,7 @@ export default {
       if (this.taxonomy.subtaxa) {
         return [{
           value: null,
-          text: this.$t('tableColumnSubtaxa')
+          text: `${this.$t('tableColumnSubtaxa')} (${this.taxonomy.subtaxa.length})`
         }].concat(this.taxonomy.subtaxa.map(g => {
           return {
             value: g.taxonomy,
