@@ -380,11 +380,11 @@ export default {
 
     this.$nextTick(() => {
       // Add stadia dark as the default
-      const stadia = L.tileLayer('//tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-        id: 'Stadia Dark',
-        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-        subdomains: ['a', 'b', 'c']
-      })
+      // const stadia = L.tileLayer('//tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+      //   id: 'Stadia Dark',
+      //   attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+      //   subdomains: ['a', 'b', 'c']
+      // })
       // Add the OSM default layer
       const openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         id: 'OpenStreetMap',
@@ -400,20 +400,20 @@ export default {
       let map = this.$refs.map.mapObject
 
       switch (this.mapLayer) {
-        case 'osm':
-          map.addLayer(openstreetmap)
-          break
+        // case 'osm':
+        //   map.addLayer(openstreetmap)
+        //   break
         case 'satellite':
           map.addLayer(satellite)
           break
-        case 'stadia':
+        case 'osm':
         default:
-          map.addLayer(stadia)
+          map.addLayer(openstreetmap)
           break
       }
 
       const baseMaps = {
-        'Stadia Dark': stadia,
+        // 'Stadia Dark': stadia,
         'OpenStreetMap': openstreetmap,
         'Esri WorldImagery': satellite
       }
@@ -423,9 +423,9 @@ export default {
       // Listen for layer changes and store the user selection in the store
       map.on('baselayerchange', e => {
         switch (e.name) {
-          case 'Stadia Dark':
-            this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'stadia')
-            break
+          // case 'Stadia Dark':
+          //   this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'stadia')
+          //   break
           case 'OpenStreetMap':
             this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'osm')
             break

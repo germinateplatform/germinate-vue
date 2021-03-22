@@ -66,6 +66,7 @@
             hover
             outlined
             show-empty
+            sticky-header="90vh"
             head-variant="dark"
             table-class="position-relative"
             :empty-text="$t('paginationNoResult')"

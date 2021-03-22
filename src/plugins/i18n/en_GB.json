@@ -1039,6 +1039,8 @@
   "widgetMcpdGid": "GID",
   "widgetMcpdAccessionName": "Accession name",
   "widgetMcpdAccessionNumber": "Accession number",
+  "widgetMcpdBiologicalStatus": "Biological status",
+  "widgetMcpdCollectingSource": "Collecting/acquisition source",
   "widgetMcpdCollectingNumber": "Collecting number",
   "widgetMcpdInstitutionCode": "Institute code",
   "widgetMcpdCollectingInst": "Collecting institute address",

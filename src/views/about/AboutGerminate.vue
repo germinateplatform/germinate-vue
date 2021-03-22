@@ -297,6 +297,10 @@ export default {
 .about-banners .card-footer i.mdi {
   vertical-align: sub;
 }
+.about-banners .card-body i.mdi {
+  color: gray;
+  mix-blend-mode: screen;
+}
 .about-banners .card-body {
   color: white;
 }
@@ -306,17 +310,11 @@ export default {
 .about-banners .homepage .card-body {
   background-color: #ff9e15;
 }
-.about-banners .homepage .card-body i {
-  color: #ffc87a;
-}
 .about-banners .github {
   border: 1px solid #799900;
 }
 .about-banners .github .card-body {
   background-color: #799900;
-}
-.about-banners .github .card-body i {
-  color: #c8ff00;
 }
 .about-banners .publication {
   border: 1px solid #00748c;
@@ -324,17 +322,11 @@ export default {
 .about-banners .publication .card-body {
   background-color: #00748c;
 }
-.about-banners .publication .card-body i {
-  color: #00c8f0;
-}
 .about-banners .documentation {
   border: 1px solid #853175;
 }
 .about-banners .documentation .card-body {
   background-color: #853175;
-}
-.about-banners .documentation .card-body i {
-  color: #c25baf;
 }
 .about-logo {
   display: inline-block;

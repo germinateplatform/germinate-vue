@@ -36,10 +36,12 @@ export default {
       handler: function (newValue) {
         // Get institution data based on the provided id
         const queryData = {
-          column: 'institutionId',
-          comparator: 'equals',
-          operator: 'and',
-          values: [newValue]
+          filter: [{
+            column: 'institutionId',
+            comparator: 'equals',
+            operator: 'and',
+            values: [newValue]
+          }]
         }
         this.apiPostInstitutionTable(queryData, result => {
           if (result && result.data && result.data.length > 0) {
