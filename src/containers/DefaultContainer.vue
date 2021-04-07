@@ -70,7 +70,7 @@
     </div>
     <TheFooter class="bg-dark">
       <div class="text-muted">
-        Version 4.1.1
+        Version 4.1.3
       </div>
       <div class="ml-auto">
         <a href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>
