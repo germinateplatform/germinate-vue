@@ -2,19 +2,19 @@
   <b-card no-body v-if="dataset">
     <b-card-header>
       <!-- Truncated name with tooltip -->
-      <h6 class="mb-0"  v-b-tooltip.hover="dataset.datasetName">{{ dataset.datasetId + ' - ' + dataset.datasetName | truncateAfterWords(10) }}</h6>
+      <h6 class="mb-0"  v-b-tooltip.hover.bottom="dataset.datasetName">{{ dataset.datasetId + ' - ' + dataset.datasetName | truncateAfterWords(10) }}</h6>
     </b-card-header>
     <b-card-body v-if="dataset.datasetDescription">
       <!-- Truncated description with tooltip -->
-      <b-card-text class="dataset-card" v-b-tooltip.hover="collapsed ? dataset.datasetDescription : ''">
-        <template v-if="getDescriptionLength(dataset.datasetDescription) > lengthLimit && collapsed">
+      <b-card-text class="dataset-card">
+        <template v-if="datasetDescriptionLength > lengthLimit && collapsed">
           {{ dataset.datasetDescription | truncateAfterWords(lengthLimit) }}
         </template>
         <template v-else>
           {{ dataset.datasetDescription }}
         </template>
       </b-card-text>
-      <b-button @click="collapsed = !collapsed" v-if="getDescriptionLength(dataset.datasetDescription) > lengthLimit">
+      <b-button @click="collapsed = !collapsed" v-if="datasetDescriptionLength > lengthLimit">
         {{ collapsed ? $t('buttonReadMore') : $t('buttonReadLess') }}
       </b-button>
     </b-card-body>
@@ -53,18 +53,18 @@ export default {
       } else {
         return []
       }
-    }
-  },
-  methods: {
-    getCountryName: function (code2) {
-      return countries.getName(code2, 'en')
     },
-    getDescriptionLength: function () {
+    datasetDescriptionLength: function () {
       if (!this.dataset || !this.dataset.datasetDescription) {
         return 0
       }
 
       return this.dataset.datasetDescription.split(' ').length
+    }
+  },
+  methods: {
+    getCountryName: function (code2) {
+      return countries.getName(code2, 'en')
     }
   }
 }

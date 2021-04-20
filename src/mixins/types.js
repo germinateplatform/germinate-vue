@@ -170,39 +170,45 @@ export default {
       templateImportTypes: {
         mcpd: {
           icon: 'mdi-passport',
-          disabled: false,
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
-          text: () => this.$t('templateImportTypeMcpd')
+          text: () => this.$t('templateImportTypeMcpd'),
+          accepts: '.xlsx'
         },
         genotype: {
           icon: 'mdi-dna',
-          disabled: false,
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
-          text: () => this.$t('templateImportTypeGenotype')
+          text: () => this.$t('templateImportTypeGenotype'),
+          accepts: '.xlsx, .txt'
         },
         trial: {
           icon: 'mdi-shovel',
-          disabled: false,
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
-          text: () => this.$t('templateImportTypeTrial')
+          text: () => this.$t('templateImportTypeTrial'),
+          accepts: '.xlsx'
+        },
+        climate: {
+          icon: 'mdi-weather-snowy-rainy',
+          color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypeClimate'),
+          accepts: '.xlsx'
         },
         compound: {
           icon: 'mdi-flask',
-          disabled: false,
-          color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length],
-          text: () => this.$t('templateImportTypeCompound')
+          color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypeCompound'),
+          accepts: '.xlsx'
         },
         pedigree: {
           icon: 'mdi-tournament mdi-rotate-90',
-          disabled: false,
-          color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
-          text: () => this.$t('templateImportTypePedigree')
+          color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypePedigree'),
+          accepts: '.xlsx'
         },
         groups: {
           icon: 'mdi-group',
-          disabled: false,
-          color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
-          text: () => this.$t('templateImportTypeGroups')
+          color: () => this.serverSettings.colorsTemplate[6 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('templateImportTypeGroups'),
+          accepts: '.xlsx'
         }
       },
       commentTypes: {

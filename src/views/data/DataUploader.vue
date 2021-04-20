@@ -4,8 +4,8 @@
     <span v-html="$t('pageDataUploadText')" />
     <b-row class="template-tabs">
       <!-- Data template banner buttons -->
-      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" cols=6 sm=4 class="col-xxl-2" v-b-tooltip="type.disabled ? $t('tooltipFeatureDisabled') : null">
-        <a :href="type.disabled ? null : '#'" @click.prevent="onTemplateTypeSelected(type, name)">
+      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" cols=6 sm=4 class="col-xxl-3">
+        <a href="#" @click.prevent="onTemplateTypeSelected(type, name)">
           <b-card no-body :style="`border: 1px solid ${type.color()}; filter: ${getFilter(name)};`">
             <b-card-body :style="`background-color: ${type.color()}; color: white;`">
               <b-row>
@@ -28,7 +28,7 @@
         v-model="file"
         :state="Boolean(file)"
         :placeholder="$t('pageDataUploadFilePlaceholder')"
-        accept=".xlsx" />
+        :accept="templateType.accepts" />
       <!-- Selected file -->
       <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 

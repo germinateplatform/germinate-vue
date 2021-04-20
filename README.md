@@ -5,8 +5,9 @@
 </p>
 
 ![GitHub](https://img.shields.io/github/license/germinateplatform/germinate-vue)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/germinateplatform/germinate-vue)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/germinateplatform/germinate-vue)
 ![GitHub last commit](https://img.shields.io/github/last-commit/germinateplatform/germinate-vue)
+![Docker Pulls](https://img.shields.io/docker/pulls/cropgeeks/germinate)
 
 ![](https://germinateplatform.github.io/get-germinate/images/screenshot-1.png "Home page")
 
@@ -39,6 +40,7 @@ Please consult the [online documentation](https://germinateplatform.github.io/ge
 If you have any questions or suggestions, please send us an email on [germinate@hutton.ac.uk](mailto:germinate@hutton.ac.uk) or post an issue.
 
 ## Acknowledgements
+
 The Germinate Team gratefully acknowledges support by the following organizations who have generously provided us with open source licenses for their software products:
 
 ### Lokalise
@@ -46,6 +48,72 @@ The Germinate Team gratefully acknowledges support by the following organization
 
 We use [Lokalise](https://lokalise.co/) to manage Germinate's translations.
 
+### Funders
+
+We are very grateful for the funding Germinate has received over the years. Below is a list of our main funders who we have worked with closely during the development of Germinate.
+
+<table>
+  <tbody bgcolor="white">
+    <tr>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crop-trust.svg?sanitize=true" width="222px" alt="Crop Trust">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/cwr.svg?sanitize=true" width="222px" alt="Crop Wild Relatives">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/cimmyt.svg?sanitize=true" width="222px" alt="CIMMYT">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/uod.svg?sanitize=true" width="222px" alt="University of Dundee">
+      </td>
+      <tr>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/bbsrc.svg?sanitize=true" width="222px" alt="BBSRC">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/resas.svg?sanitize=true" width="222px" alt="RESAS">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/scottish-government.svg?sanitize=true" width="222px" alt="Scottish Government">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/sefari.svg?sanitize=true" width="222px" alt="SEFARI">
+      </td>
+    </tr>
+    <tr>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/huttonltd.svg?sanitize=true" width="222px" alt="James Hutton Limited">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/innovate-uk.svg?sanitize=true" width="222px" alt="Innovate UK">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/ibh.svg?sanitize=true" width="222px" alt="International Barley Hub">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crp-maize.svg?sanitize=true" width="222px" alt="CRP Maize">
+      </td>
+    </tr>
+    <tr>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crp-wheat.svg?sanitize=true" width="222px" alt="CRP Wheat">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/iwyp.svg?sanitize=true" width="222px" alt="IWYP">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/sader.svg?sanitize=true" width="222px" alt="SADER">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/divseek.png" width="222px" alt="DivSeek">
+      </td>
+    </tr>
+    </tr>
+  </tbody>
+</table>
+
+<br />
 <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/hutton-black.svg?sanitize=true" height="150" alt="The James Hutton Institute logo">
 <br />
 <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/ics-sdg-black.svg?sanitize=true" height="150" alt="Software Development Group logo">
