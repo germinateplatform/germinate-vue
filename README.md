@@ -52,8 +52,8 @@ We use [Lokalise](https://lokalise.co/) to manage Germinate's translations.
 
 We are very grateful for the funding Germinate has received over the years. Below is a list of our main funders who we have worked with closely during the development of Germinate.
 
-<table>
-  <tbody bgcolor="white">
+<table bgcolor="white">
+  <tbody>
     <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crop-trust.svg?sanitize=true" width="222px" alt="Crop Trust">

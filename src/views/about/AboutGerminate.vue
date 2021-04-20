@@ -177,11 +177,6 @@ export default {
           logo: 'funders/hutton.svg'
         },
         {
-          name: 'CIMMYT',
-          href: 'https://www.cimmyt.org/',
-          logo: 'funders/cimmyt.svg'
-        },
-        {
           name: 'Crop Trust',
           href: 'https://www.croptrust.org/',
           logo: 'funders/crop-trust.svg'
@@ -190,6 +185,11 @@ export default {
           name: 'The Crop Wild Relatives Project',
           href: 'https://www.cwrdiversity.org/',
           logo: 'funders/cwr.svg'
+        },
+        {
+          name: 'CIMMYT',
+          href: 'https://www.cimmyt.org/',
+          logo: 'funders/cimmyt.svg'
         },
         {
           name: 'University of Dundee',
