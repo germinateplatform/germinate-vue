@@ -56,7 +56,7 @@ We are very grateful for the funding Germinate has received over the years. Belo
   <tbody>
     <tr>
       <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/templeton.svg?sanitize=true" width="222px" alt="Crop Trust">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/templeton.svg?sanitize=true" width="222px" alt="Templeton World Charity Foundation">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crop-trust.svg?sanitize=true" width="222px" alt="Crop Trust">
