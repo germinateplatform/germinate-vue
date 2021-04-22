@@ -563,6 +563,7 @@
   "pageMapsDetailsTitle": "Map details for:",
   "pageMapsHistogramText": "The diagram below shows the density of markers on each chromosome. Selecting in the diagram by dragging will add the selection to the export options.",
   "pageMapsHistogramTitle": "Histogram",
+  "pageMapsHistogramInfo": "Very small chromosomes/linkage groups are excluded from this chart.",
   "pageMapsText": "The following maps were found in this version of Germinate. To view markers contained on a map choose a map from the table below and click on its name.",
   "pageMapsTitle": "Maps",
   "pageMarkedItemsTitle": "Marked items",

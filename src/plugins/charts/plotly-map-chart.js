@@ -9,12 +9,21 @@ export function plotlyMapChart() {
 	function chart(selection) {
 		selection.each(function (rows) {
 			var unique = {};
+      let total = 0
 			rows.forEach(function (row) {
-				if( typeof(unique[row.chromosome]) == "undefined"){
-					distinctChromosomes.push(row.chromosome);
-				}
-				unique[row.chromosome] = 0;
+        if (!unique[row.chromosome]) {
+          unique[row.chromosome] = 1;
+          distinctChromosomes.push(row.chromosome);
+        } else {
+          unique[row.chromosome]++;
+        }
+        total++
 			});
+
+      // If it's smaller than 5% of the average chromosome size, don't include it
+      const threshold = total / distinctChromosomes.length / 100 * 5
+
+      distinctChromosomes = distinctChromosomes.filter(c => unique[c] > threshold)
 
 			var data = [];
 			var layout = {

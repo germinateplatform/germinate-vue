@@ -177,6 +177,11 @@ export default {
           logo: 'funders/hutton.svg'
         },
         {
+          name: 'Templeton World Charity Foundation',
+          href: 'https://www.templetonworldcharity.org/',
+          logo: 'funders/templeton.svg'
+        },
+        {
           name: 'Crop Trust',
           href: 'https://www.croptrust.org/',
           logo: 'funders/crop-trust.svg'

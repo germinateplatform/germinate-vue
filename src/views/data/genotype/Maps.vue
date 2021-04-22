@@ -14,6 +14,7 @@
 
       <h2>{{ $t('pageMapsHistogramTitle') }}</h2>
       <p>{{ $t('pageMapsHistogramText') }}</p>
+      <p class="text-info">{{ $t('pageMapsHistogramInfo') }}</p>
       <!-- Map chromosome histogram -->
       <MapChart :mapId="mapId" ref="mapChart" v-on:points-selected="onPointsSelected" />
 
