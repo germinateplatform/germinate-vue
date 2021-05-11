@@ -54,9 +54,14 @@ export function plotlyScatterMatrix() {
 						showupperhalf: false,
 						diagonal: {visible: true},
 						dimensions: dims.map(function (k) {
+              let values = unpackConditional(rows, k, colorBy.column, cats[i]);
+              // If it's the rare case where there isn't a single value, set them all to "N/A"
+              if (values.length > 0 && values.filter(v => v !== null).length < 1) {
+                values = values.map(v => 'N/A')
+              }
 							return {
 								label: k,
-								values: unpackConditional(rows, k, colorBy.column, cats[i])
+								values: values
 							}
 						}),
 						name: cats[i],

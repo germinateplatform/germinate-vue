@@ -47,7 +47,7 @@ export default {
 
         data.forEach(t => {
           if (t.subtaxa) {
-            const key = `${t.subtaxa}->${t.genus} ${t.species}`
+            const key = `${t.subtaxa}->${t.genus} | ${t.species}`
             if (!sunburst[key]) {
               sunburst[key] = 0
             }
@@ -56,7 +56,7 @@ export default {
           }
 
           if (t.species) {
-            const key = `${t.genus} ${t.species}->${t.genus}`
+            const key = `${t.genus} | ${t.species}->${t.genus}`
             if (!sunburst[key]) {
               sunburst[key] = 0
             }
@@ -106,6 +106,9 @@ export default {
                   values: []
                 }]
               } else {
+                const genus = path[0]
+                const species = path.length > 1 ? path[1].split(' | ')[1] : null
+                const subtaxa = path.length > 2 ? path[2] : null
                 query = [{
                   column: {
                     name: 'genus',
@@ -113,10 +116,10 @@ export default {
                   },
                   comparator: 'equals',
                   operator: 'and',
-                  values: [path[0]]
+                  values: [genus]
                 }]
 
-                if (path.length > 1) {
+                if (species) {
                   query.push({
                     column: {
                       name: 'species',
@@ -124,10 +127,10 @@ export default {
                     },
                     comparator: 'equals',
                     operator: 'and',
-                    values: [path[1]]
+                    values: [species]
                   })
                 }
-                if (path.length > 2) {
+                if (subtaxa) {
                   query.push({
                     column: {
                       name: 'subtaxa',
@@ -135,7 +138,7 @@ export default {
                     },
                     comparator: 'equals',
                     operator: 'and',
-                    values: [path[2]]
+                    values: [subtaxa]
                   })
                 }
               }
