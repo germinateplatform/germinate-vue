@@ -274,17 +274,23 @@ export default {
       if (error.data && error.data.reasonPhrase && this.gatekeeperErrors[error.data.reasonPhrase]) {
         message = this.$t(this.gatekeeperErrors[error.data.reasonPhrase])
       } else {
+        const authMode = this.serverSettings.authMode
         switch (error.status) {
           case 400:
             message = this.$t('httpErrorFourOO')
             break
           case 401:
             message = this.$t('httpErrorFourOOne')
-            break
+            this.$store.dispatch('ON_TOKEN_CHANGED', null)
+            if (authMode === 'FULL') {
+              this.$router.push({ name: 'login' })
+            } else if (authMode === 'SELECTIVE') {
+              EventBus.$emit('on-show-login-form')
+            }
+            return
           case 403: {
             message = this.$t('httpErrorFourOThree')
             this.$store.dispatch('ON_TOKEN_CHANGED', null)
-            const authMode = this.serverSettings.authMode
             if (authMode === 'FULL') {
               this.$router.push({ name: 'login' })
             } else if (authMode === 'SELECTIVE') {

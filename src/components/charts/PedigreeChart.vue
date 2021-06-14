@@ -14,6 +14,7 @@
 import BaseChart from '@/components/charts/BaseChart'
 import { EventBus } from '@/plugins/event-bus.js'
 import { pedigreeChart } from '@/plugins/charts/d3-dagre-chart.js'
+import colors from '@/mixins/colors.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 
 const d3Select = require('d3-selection')
@@ -48,7 +49,7 @@ export default {
   components: {
     BaseChart
   },
-  mixins: [ germplasmApi ],
+  mixins: [ colors, germplasmApi ],
   methods: {
     update: function () {
       this.$nextTick(() => {
@@ -101,7 +102,8 @@ export default {
               if (Object.prototype.hasOwnProperty.call(nodes, node)) {
                 data.push({
                   label: node,
-                  class: node === this.germplasm.accenumb ? 'node-primary' : null
+                  class: node === this.germplasm.accenumb ? 'node-primary' : null,
+                  nodeStyle: node === this.germplasm.accenumb ? `fill: ${this.getColor(0)}` : ''
                 })
               }
             })
@@ -189,8 +191,5 @@ export default {
 .node polygon:hover {
   cursor: pointer;
   fill: lightgray !important  ;
-}
-.node-primary circle {
-  fill: var(--primary) !important;
 }
 </style>

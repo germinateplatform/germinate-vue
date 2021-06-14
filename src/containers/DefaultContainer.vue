@@ -208,7 +208,7 @@ export default {
               name: this.$t('menuGermplasm'),
               identifiers: ['germplasm'],
               badge: {
-                text: this.getBadgeCount(this.badgeCounts.germplasm),
+                text: this.getBadgeCount(this.badgeCounts, 'germplasm'),
                 variant: 'light'
               },
               url: '/data/germplasm',
@@ -223,7 +223,7 @@ export default {
                   name: this.$t('menuGenotypicMarkers'),
                   identifiers: ['markers'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.markers),
+                    text: this.getBadgeCount(this.badgeCounts, 'markers'),
                     variant: 'light'
                   },
                   url: '/data/genotypes/markers',
@@ -233,7 +233,7 @@ export default {
                   name: this.$t('menuGenotypicMaps'),
                   identifiers: ['maps', 'map-details'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.maps),
+                    text: this.getBadgeCount(this.badgeCounts, 'maps'),
                     variant: 'light'
                   },
                   url: '/data/genotypes/maps',
@@ -243,7 +243,7 @@ export default {
                   name: this.$t('menuGenotypicDataExport'),
                   identifiers: ['export-genotypes'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.datasetsGenotype),
+                    text: this.getBadgeCount(this.badgeCounts, 'datasetsGenotype'),
                     variant: 'light'
                   },
                   url: '/data/export/genotype',
@@ -253,7 +253,7 @@ export default {
                   name: this.$t('menuAlleleFrequencyDataExport'),
                   identifiers: ['export-allelefrequency'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.datasetsAllelefreq),
+                    text: this.getBadgeCount(this.badgeCounts, 'datasetsAllelefreq'),
                     variant: 'light'
                   },
                   url: '/data/export/allelefreq',
@@ -270,7 +270,7 @@ export default {
                   name: this.$t('menuTrialsTraits'),
                   identifiers: ['traits'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.traits),
+                    text: this.getBadgeCount(this.badgeCounts, 'traits'),
                     variant: 'light'
                   },
                   url: '/data/trials/traits',
@@ -280,7 +280,7 @@ export default {
                   name: this.$t('menuTrialsDataExport'),
                   identifiers: ['export-trials'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.datasetsTrials),
+                    text: this.getBadgeCount(this.badgeCounts, 'datasetsTrials'),
                     variant: 'light'
                   },
                   url: '/data/export/trials',
@@ -297,7 +297,7 @@ export default {
                   name: this.$t('menuLocations'),
                   identifiers: ['locations'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.locations),
+                    text: this.getBadgeCount(this.badgeCounts, 'locations'),
                     variant: 'light'
                   },
                   url: '/data/geography/locations',
@@ -320,7 +320,7 @@ export default {
                   name: this.$t('menuClimateClimates'),
                   identifiers: ['climates'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.climates),
+                    text: this.getBadgeCount(this.badgeCounts, 'climates'),
                     variant: 'light'
                   },
                   url: '/data/climate/climates',
@@ -330,7 +330,7 @@ export default {
                   name: this.$t('menuClimateDataExport'),
                   identifiers: ['export-climate'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.datasetsClimate),
+                    text: this.getBadgeCount(this.badgeCounts, 'datasetsClimate'),
                     variant: 'light'
                   },
                   url: '/data/export/climate',
@@ -347,7 +347,7 @@ export default {
                   name: this.$t('menuCompoundsCompounds'),
                   identifiers: ['compounds'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.compounds),
+                    text: this.getBadgeCount(this.badgeCounts, 'compounds'),
                     variant: 'light'
                   },
                   url: '/data/compounds/compounds',
@@ -357,7 +357,7 @@ export default {
                   name: this.$t('menuCompoundDataExport'),
                   identifiers: ['export-compounds'],
                   badge: {
-                    text: this.getBadgeCount(this.badgeCounts.datasetsCompound),
+                    text: this.getBadgeCount(this.badgeCounts, 'datasetsCompound'),
                     variant: 'light'
                   },
                   url: '/data/export/compound',
@@ -369,7 +369,7 @@ export default {
               name: this.$t('menuDatasets'),
               identifiers: ['datasets'],
               badge: {
-                text: this.getBadgeCount(this.badgeCounts.datasets),
+                text: this.getBadgeCount(this.badgeCounts, 'datasets'),
                 variant: 'light'
               },
               url: '/data/datasets',
@@ -379,7 +379,7 @@ export default {
               name: this.$t('menuExperiments'),
               identifiers: ['experiments'],
               badge: {
-                text: this.getBadgeCount(this.badgeCounts.experiments),
+                text: this.getBadgeCount(this.badgeCounts, 'experiments'),
                 variant: 'light'
               },
               url: '/data/experiments',
@@ -389,7 +389,7 @@ export default {
               name: this.$t('menuDataResources'),
               identifiers: ['data-resources'],
               badge: {
-                text: this.getBadgeCount(this.badgeCounts.fileresources),
+                text: this.getBadgeCount(this.badgeCounts, 'fileresources'),
                 variant: 'light'
               },
               url: '/data/data-resources',
@@ -407,7 +407,7 @@ export default {
           name: this.$t('menuGroups'),
           identifiers: ['groups', 'group-details'],
           badge: {
-            text: this.getBadgeCount(this.badgeCounts.groups),
+            text: this.getBadgeCount(this.badgeCounts, 'groups'),
             variant: 'light'
           },
           url: '/groups',
@@ -417,7 +417,7 @@ export default {
           name: this.$t('menuImages'),
           identifiers: ['images'],
           badge: {
-            text: this.getBadgeCount(this.badgeCounts.images),
+            text: this.getBadgeCount(this.badgeCounts, 'images'),
             variant: 'light'
           },
           url: '/images',
@@ -524,7 +524,13 @@ export default {
         this.updateNav()
       })
     },
-    getBadgeCount: function (value) {
+    getBadgeCount: function (stats, key) {
+      let value = null
+
+      if (stats && stats[key]) {
+        value = stats[key]
+      }
+
       if (!value) {
         return null
       } else {

@@ -41,6 +41,8 @@ export function plotlyScatterMatrix() {
 
 			var data = [];
 
+      let requiresSortingToFixMissingDimension = false
+
 			if (colorBy.column !== null || (colorBy.column === null && colorBy.ids === null && colorBy.names === null)) {
 				for (var i = 0; i < cats.length; i++) {
 					var ids = cats[i] ? unpackConditional(rows, 'dbId', colorBy.column, cats[i]) : unpack(rows, 'dbId');
@@ -55,9 +57,8 @@ export function plotlyScatterMatrix() {
 						diagonal: {visible: true},
 						dimensions: dims.map(function (k) {
               let values = unpackConditional(rows, k, colorBy.column, cats[i]);
-              // If it's the rare case where there isn't a single value, set them all to "N/A"
               if (values.length > 0 && values.filter(v => v !== null).length < 1) {
-                values = values.map(v => 'N/A')
+                requiresSortingToFixMissingDimension = true
               }
 							return {
 								label: k,
@@ -134,6 +135,15 @@ export function plotlyScatterMatrix() {
 					});
 				}
 			}
+
+      if (requiresSortingToFixMissingDimension) {
+        data.sort((a, b) => {
+          const countA = a.dimensions.map(d => d.values.filter(v => v !== null).length).reduce((x, y) => x + y, 0)
+          const countB = b.dimensions.map(d => d.values.filter(v => v !== null).length).reduce((x, y) => x + y, 0)
+
+          return Math.sign(countB - countA)
+        })
+      }
 
 			var layout = {
 				margin: {autoexpand: true},
@@ -223,7 +233,11 @@ export function plotlyScatterMatrix() {
 			return v !== undefined && v !== null && v !== ''
 		});
 
-		return values.length > 0
+    if (key === 'Date') {
+      return [...new Set(values)].length > 1
+    } else {
+  		return values.length > 0
+    }
 	}
 
 	function unpack(rows, key) {

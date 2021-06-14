@@ -106,6 +106,9 @@ export default {
         text: this.$t('widgetChartColoringByYear'),
         value: 'year'
       }, {
+        text: this.$t('widgetChartColoringByRecordingDate'),
+        value: 'Date'
+      }, {
         text: this.$t('widgetChartColoringByTreatment'),
         value: 'treatments_description'
       }, {

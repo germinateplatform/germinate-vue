@@ -26,7 +26,7 @@ export default {
       }
 
       const w = window.innerWidth
-      const h = document.documentElement.scrollHeight
+      const h = window.innerHeight
 
       const random = (a, b) => {
         if (!a) {

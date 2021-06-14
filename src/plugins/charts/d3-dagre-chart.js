@@ -48,7 +48,7 @@ export function pedigreeChart(dagreD3) {
 					class: state.class,
 					labelStyle: "font-size: 8pt; pointer-events: none;",
 					object: state,
-					style: 'stroke: #333; fill: #fff; rx: 5px; ry: 5px;',
+          style: 'stroke: #333; fill: #fff; rx: 5px; ry: 5px; ' + state.nodeStyle,
 					shape: nodeShape
 				});
 			});

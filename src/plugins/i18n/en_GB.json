@@ -998,6 +998,7 @@
   "widgetChartColoringByTreatment": "Treatment",
   "widgetChartColoringByTrialSite": "Trial site",
   "widgetChartColoringByYear": "Year",
+  "widgetChartColoringByRecordingDate": "Recording date",
   "widgetChartColoringByGroup": "Group",
   "widgetChartColoringNoColoring": "No coloring",
   "widgetChartColoringByGermplasmName": "Specific germplasm (one name per line)",

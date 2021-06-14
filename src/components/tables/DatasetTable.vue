@@ -53,10 +53,18 @@
       </template>
       <!-- Display the number of locations associated with this dataset -->
       <template v-slot:cell(locations)="data">
-        <a href="#" class="text-decoration-none text-nowrap" v-if="data.item.locations && data.item.locations.length > 0" @click.prevent="data.toggleDetails()" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
-          <i class="mdi mdi-18px mdi-map-marker align-middle" />
-          <span>{{ data.item.locations.length }}</span>
-        </a>
+        <template v-if="data.item.locations !== undefined && data.item.locations !== null && data.item.locations.length > 0">
+          <template v-if="data.item.locations[0].locationLatitude && data.item.locations[0].locationLongitude">
+            <a href="#" class="text-decoration-none text-nowrap" @click.prevent="data.toggleDetails()" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
+              <i class="mdi mdi-18px mdi-map-marker align-middle" />
+              <span>{{ data.item.locations.length }}</span>
+            </a>
+          </template>
+          <div v-else>
+            <i class="mdi mdi-18px mdi-map-marker align-middle" />
+            <span>{{ data.item.locations.length }}</span>
+          </div>
+        </template>
       </template>
       <!-- Dataset type icon -->
       <template v-slot:cell(datasetType)="data">

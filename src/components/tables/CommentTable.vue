@@ -66,7 +66,7 @@ export default {
         id: 0,
         text: this.$t('tooltipAddNewComment'),
         variant: null,
-        disabled: () => false,
+        disabled: () => !this.token,
         icon: 'mdi mdi-18px mdi-plus-box',
         callback: () => {
           this.newComment = ''
