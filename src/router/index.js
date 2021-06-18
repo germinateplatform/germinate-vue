@@ -271,6 +271,12 @@ const router = new Router({
               ]
             },
             {
+              path: 'export/cross',
+              name: 'export-cross-comparison',
+              component: () => import('@/views/data/export/CrossDataTypeComparison.vue'),
+              beforeEnter: requireAuth
+            },
+            {
               path: 'export/:datasetType',
               name: 'export',
               component: () => import('@/views/DatasetSelector.vue'),

@@ -137,6 +137,7 @@ export default {
       return this.apiPostDatasetTable(data, callback)
     },
     getIds: function (data, callback) {
+      this.adjustData(data)
       return this.apiPostDatasetTableIds(data, callback)
     },
     adjustData: function (data) {

@@ -105,6 +105,9 @@ export default {
     },
     apiGetBiologicalStatusData: function (onSuccess, onError) {
       return this.authAxios({ url: `germplasm/biologicalstatus`, success: onSuccess, error: onError })
+    },
+    apiGetGermplasmTableColumns: function (onSuccess, onError) {
+      return this.authAxios({ url: 'germplasm/table/columns', success: onSuccess, error: onError })
     }
   }
 }

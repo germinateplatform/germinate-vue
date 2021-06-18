@@ -274,7 +274,7 @@ export function plotlyScatterMatrix() {
   
   function extractValue(row, key) {
     const dataPoint = row[key]
-    if (dataPoint === '') {
+    if (dataPoint === null || dataPoint === undefined || dataPoint === '') {
       return null
     } else {
       let isDate = false

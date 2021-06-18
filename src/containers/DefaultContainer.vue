@@ -366,6 +366,12 @@ export default {
               ]
             },
             {
+              name: this.$t('menuCrossDataTypeComparison'),
+              url: '/data/export/cross',
+              identifiers: ['export-cross-comparison'],
+              icon: 'mdi mdi-18px mdi-chart-gantt'
+            },
+            {
               name: this.$t('menuDatasets'),
               identifiers: ['datasets'],
               badge: {

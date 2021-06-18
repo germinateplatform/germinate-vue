@@ -78,6 +78,9 @@ export default {
     },
     apiDeleteFileresourceType: function (id, onSuccess, onError) {
       return this.authAxios({ url: `fileresourcetype/${id}`, method: 'DELETE', success: onSuccess, error: onError })
+    },
+    apiPostCrossDataTypeComparison: function (data, onSuccess, onError) {
+      return this.authAxios({ url: 'dataset/crosscomparison', method: 'POST', dataType: 'blob', data: data, success: onSuccess, error: onError })
     }
   }
 }
