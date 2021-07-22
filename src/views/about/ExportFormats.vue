@@ -36,7 +36,7 @@
             </div>
           </b-card-body>
           <!-- Download button -->
-          <b-button :href="format.link" target="_blank" variant="primary" class="mt-auto card-button"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
+          <b-button :href="format.link" target="_blank" rel="noopener noreferrer" variant="primary" class="mt-auto card-button"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
         </b-card>
       </b-col>
     </b-row>

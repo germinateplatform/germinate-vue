@@ -119,6 +119,13 @@ const router = new Router({
               beforeEnter: requireAuth
             },
             {
+              path: 'germplasm-unifier',
+              name: 'germplasm-unifier',
+              meta: { minUserType: 'Data Curator' },
+              component: () => import('@/views/data/germplasm/GermplasmUnifier.vue'),
+              beforeEnter: requireAuth
+            },
+            {
               path: 'germplasm/:germplasmId',
               name: 'passport',
               component: () => import('@/views/data/germplasm/Passport.vue'),

@@ -108,6 +108,9 @@ export default {
     },
     apiGetGermplasmTableColumns: function (onSuccess, onError) {
       return this.authAxios({ url: 'germplasm/table/columns', success: onSuccess, error: onError })
+    },
+    apiPostGermplasmUnification: function (queryData, onSuccess, onError) {
+      return this.authAxios({ url: 'germplasm/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
     }
   }
 }

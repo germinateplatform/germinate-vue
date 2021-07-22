@@ -10,6 +10,7 @@
           <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettingsAdvancedSettings') }}</strong></b-dropdown-header>
           <b-dropdown-item :to="{ name: 'user-permissions' }" v-if="userIsAtLeast(token.userType, 'Administrator')"><i class="mdi mdi-18px mdi-account-key text-warning" /> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
           <b-dropdown-item :to="{ name: 'import-upload' }"><i class="mdi mdi-18px mdi-upload text-warning" /> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
+          <b-dropdown-item :to="{ name: 'germplasm-unifier' }"><i class="mdi mdi-18px mdi-set-merge text-warning" /> {{ $t('dropdownUserSettingsGermplasmUnifier') }}</b-dropdown-item>
         </template>
         <!-- Settings -->
         <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettings') }}<span v-if="token">: {{ token.username }}</span></strong></b-dropdown-header>

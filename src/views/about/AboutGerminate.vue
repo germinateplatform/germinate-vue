@@ -25,7 +25,7 @@
     <!-- Banner buttons -->
     <b-row class="about-banners" v-if="banners">
       <b-col cols=12 sm=6 xl=3 v-for="banner in banners" :key="'about-banners-' + banner.key">
-        <a target="_blank" :href="banner.link">
+        <a target="_blank" rel="noopener noreferrer" :href="banner.link">
           <b-card no-body :class="banner.key">
             <b-card-body>
               <b-row>
@@ -54,7 +54,7 @@
         <h2>{{ member.name }}</h2>
         <h5 class="text-primary text-uppercase">{{ member.job() }}</h5>
         <p class="text-muted">{{ member.about() }}</p>
-        <a v-for="(link, j) in member.links" target="_blank" :title="link.title" :href="link.href" :key="`about-team-${i}-${j}`" class="px-1"><i :class="`mdi mdi-24px ${link.icon}`" /></a>
+        <a v-for="(link, j) in member.links" target="_blank" rel="noopener noreferrer" :title="link.title" :href="link.href" :key="`about-team-${i}-${j}`" class="px-1"><i :class="`mdi mdi-24px ${link.icon}`" /></a>
       </b-col>
     </b-row>
 
@@ -71,7 +71,7 @@
     <b-row class="funders">
       <b-col cols=6 sm=4 xl=3 v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5 col-xxl-2">
         <div class="p-3 p-xl-4 img-container d-flex justify-content-center">
-          <a :href="funder.href" :title="funder.name" target="_blank" class="align-self-center" v-if="funder.href">
+          <a :href="funder.href" :title="funder.name" target="_blank" rel="noopener noreferrer" class="align-self-center" v-if="funder.href">
             <b-img-lazy :src="`./img/${funder.logo}`" fluid alt="Funder logo" />
           </a>
           <b-img-lazy :src="`./img/${funder.logo}`" fluid  alt="Funder logo" v-else />

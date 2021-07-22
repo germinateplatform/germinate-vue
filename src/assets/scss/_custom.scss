@@ -18,6 +18,10 @@ body {
   min-width: 250px;
 }
 
+.app-body .main {
+  z-index: 1019;
+}
+
 // This fixes an issue with Bootstrap dropdown menus if `right` is set
 .app-header .navbar-nav .dropdown-menu-right {
   right: unset;

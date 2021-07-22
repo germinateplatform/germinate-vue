@@ -102,10 +102,12 @@ export default {
       }, {
         text: this.$t('widgetChartColoringByDataset'),
         value: 'dataset_name'
-      }, {
-        text: this.$t('widgetChartColoringByYear'),
-        value: 'year'
-      }, {
+      },
+      // }, {
+      //   text: this.$t('widgetChartColoringByYear'),
+      //   value: 'year'
+      // }, {
+      {
         text: this.$t('widgetChartColoringByRecordingDate'),
         value: 'Date'
       }, {

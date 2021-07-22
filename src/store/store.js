@@ -14,6 +14,7 @@ if (!name) {
 
 const essentialKeys = ['token', 'locale', 'baseUrl', 'serverSettings', 'asyncJobUuids', 'asyncJobCount', 'markedIds', 'cookiesAccepted']
 const userState = {
+  uniqueClientId: null,
   locale: 'en_GB',
   tablePerPage: 10,
   originalTarget: null,
@@ -30,7 +31,7 @@ const userState = {
     }
   }],
   sidebarState: 'sidebar-lg-show',
-  mapLayer: 'stadia',
+  mapLayer: 'osm',
   markedIds: {
     germplasm: [],
     markers: [],
@@ -81,6 +82,7 @@ const storeState = {
     }
   },
   getters: {
+    uniqueClientId: (state) => state.uniqueClientId,
     token: (state) => state.token,
     baseUrl: (state) => state.baseUrl,
     serverSettings: (state) => state.serverSettings,
@@ -114,6 +116,9 @@ const storeState = {
       }
 
       state.token = newToken
+    },
+    ON_UNIQUE_CLIENT_ID_CHANGED_MUTATION: function (state, newUniqueClientId) {
+      state.uniqueClientId = newUniqueClientId
     },
     ON_BASE_URL_CHANGED_MUTATION: function (state, newBaseUrl) {
       state.baseUrl = newBaseUrl
@@ -249,6 +254,9 @@ const storeState = {
     },
     ON_LOCALE_CHANGED: function ({ commit }, locale) {
       commit('ON_LOCALE_CHANGED_MUTATION', locale)
+    },
+    ON_UNIQUE_CLIENT_ID_CHANGED: function ({ commit }, uniqueClientId) {
+      commit('ON_UNIQUE_CLIENT_ID_CHANGED_MUTATION', uniqueClientId)
     },
     ON_BASE_URL_CHANGED: function ({ commit }, baseUrl) {
       commit('ON_BASE_URL_CHANGED_MUTATION', baseUrl)

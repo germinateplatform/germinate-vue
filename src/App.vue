@@ -16,12 +16,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Vue from 'vue'
 import VueAnalytics from 'vue-analytics'
 import { EventBus } from '@/plugins/event-bus.js'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import miscApi from '@/mixins/api/misc.js'
 import statsApi from '@/mixins/api/stats.js'
+import { Detector } from '@/plugins/browser-detect.js'
 
 export default {
   name: 'app',
@@ -43,6 +45,10 @@ export default {
     }
   },
   computed: {
+    /** Mapgetters exposing the store configuration */
+    ...mapGetters([
+      'uniqueClientId'
+    ]),
     pathUrl: function () {
       return window.location.origin + window.location.pathname
     },
@@ -87,6 +93,9 @@ export default {
   },
   mixins: [ miscApi, statsApi ],
   methods: {
+    isLocalhost: function () {
+      return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
+    },
     loadAndSetDarkMode: function () {
       import('darkreader')
         .then(({ enable, disable }) => {
@@ -135,6 +144,26 @@ export default {
     document.head.appendChild(file)
 
     this.loadAndSetDarkMode()
+
+    // Log the run
+    if (!this.isLocalhost()) {
+      let id = this.uniqueClientId
+      if (!id) {
+        id = this.uuidv4()
+
+        this.$store.dispatch('ON_UNIQUE_CLIENT_ID_CHANGED', id)
+      }
+
+      const config = new Detector().detect()
+      const data = {
+        application: 'Germinate',
+        id: id,
+        version: `${this.germinateVersion}`,
+        locale: this.locale,
+        os: `${config.os} ${config.osVersion}`
+      }
+      this.authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
+    }
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <b-modal id="license-modal" ref="licenseModal" scrollable :title="$t('modalTitleLicense')" size="lg" modal-class="d-print-none">
     <div v-if="license">
       <div v-html="license.licenseContent" class="d-print-block"></div>
-      <a :href="htmlData" target="_blank" style="display: none;" :download="htmlFilename" ref="htmlDownloadLink" />
+      <a :href="htmlData" target="_blank" rel="noopener noreferrer" style="display: none;" :download="htmlFilename" ref="htmlDownloadLink" />
     </div>
     <div slot="modal-footer">
       <b-button-group>

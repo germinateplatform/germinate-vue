@@ -71,7 +71,7 @@
     </div>
     <TheFooter class="bg-dark">
       <div class="text-muted">
-        Version 4.2.0
+        Version {{ germinateVersion }}
       </div>
       <div class="ml-auto">
         <a href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>

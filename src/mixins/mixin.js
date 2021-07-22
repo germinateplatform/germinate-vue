@@ -37,6 +37,7 @@ export default {
   },
   data: function () {
     return {
+      germinateVersion: '4.2.0',
       MAX_JAVA_INTEGER: 2147483647,
       gatekeeperErrors: {
         'BAD_REQUEST_MISSING_FIELDS': 'gatekeeperErrorBadRequestMissingField',
@@ -197,6 +198,7 @@ export default {
       let downloadLink = document.createElement('a')
       downloadLink.href = url
       downloadLink.target = '_blank'
+      downloadLink.rel = 'noopener noreferrer'
       if (filename && extension) {
         downloadLink.download = filename + '.' + extension
       }

@@ -30,7 +30,7 @@
           <b-modal ref="newsModal" :title="selectedNews.newsTitle" scrollable size="xl" v-if="selectedNews" ok-only :ok-title="$t('buttonClose')">
             <div v-html="selectedNews.newsContent" />
             <b-button-group class="mt-3">
-              <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" :href="selectedNews.newsHyperlink" target="_blank">{{ $t('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
+              <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" :href="selectedNews.newsHyperlink" target="_blank" rel="noopener noreferrer">{{ $t('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
               <b-button v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="deleteNewsItem(selectedNews.newsId)" variant="danger"><i class="mdi mdi-delete"/> {{ $t('buttonDelete') }}</b-button>
             </b-button-group>
           </b-modal>
