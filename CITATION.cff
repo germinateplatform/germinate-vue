@@ -1,6 +1,11 @@
-# YAML 1.2
----
-authors: 
+cff-version: "1.1.0"
+doi: "10.1002/csc2.20248"
+license: "Apache-2.0"
+message: "If you use this software, please cite it using these metadata."
+url: "https://github.com/germinateplatform/germinate-vue"
+title: "From bits to bites: Advancement of the Germinate platform to support prebreeding informatics for crop wild relatives"
+date-released: 2020-06-30
+authors:
   -
     affiliation: "Department of Information and Computational Sciences, The James Hutton Institute, Errol Road, Invergowrie, Dundee, Scotland, DD2 5DA"
     family-names: Raubach
@@ -153,10 +158,3 @@ authors:
     family-names: Shaw
     given-names: "Paul D."
     orcid: "https://orcid.org/0000-0002-0202-1150"
-cff-version: "1.1.0"
-doi: "10.1002/csc2.20248"
-license: "Apache-2.0"
-message: "If you use this software, please cite it using these metadata."
-repository-code: "https://github.com/germinateplatform/germinate-vue"
-title: "From bits to bites: Advancement of the Germinate platform to support prebreeding informatics for crop wild relatives"
-date-released: 2020-06-30
