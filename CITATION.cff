@@ -1,160 +1,90 @@
-cff-version: "1.1.0"
-doi: "10.1002/csc2.20248"
-license: "Apache-2.0"
+cff-version: 1.1.0
+doi: 10.1002/csc2.20248
 message: "If you use this software, please cite it using these metadata."
 url: "https://github.com/germinateplatform/germinate-vue"
 title: "From bits to bites: Advancement of the Germinate platform to support prebreeding informatics for crop wild relatives"
 date-released: 2020-06-30
 authors:
-  -
-    affiliation: "Department of Information and Computational Sciences, The James Hutton Institute, Errol Road, Invergowrie, Dundee, Scotland, DD2 5DA"
-    family-names: Raubach
-    given-names: Sebastian
+  - family-names: "Raubach"
+    given-names: "Sebastian"
     orcid: "https://orcid.org/0000-0001-5659-247X"
-  -
-    affiliation: "Global Crop Diversity Trust, Platz der Vereinten Nationen 7, Bonn, 53113 Germany"
-    family-names: Kilian
-    given-names: Benjamin
-  -
-    affiliation: "International Maize and Wheat Improvement Center (CIMMYT), Edo. De Mexico, Texcoco, Mexico, CP56237"
-    family-names: Dreher
-    given-names: Kate
+  - family-names: "Kilian"
+    given-names: "Benjamin"
+  - family-names: "Dreher"
+    given-names: "Kate"
     orcid: "https://orcid.org/0000-0003-4652-4398"
-  -
-    affiliation: "International Center For Agricultural Research In The Dry Areas (ICARDA), Rabat, Morocco"
-    family-names: Amri
-    given-names: Ahmed
-  -
-    affiliation: "International Center For Agricultural Research In The Dry Areas (ICARDA), Rabat, Morocco"
-    family-names: Bassi
-    given-names: Filippo
+  - family-names: "Amri"
+    given-names: "Ahmed"
+  - family-names: "Bassi"
+    given-names: "Filippo"
     name-particle: M
     orcid: "https://orcid.org/0000-0002-1164-5598"
-  -
-    affiliation: "International Institute of Tropical Agriculture (IITA), HQ, Ibadan, Nigeria"
-    family-names: Boukar
-    given-names: Ousmane
-  -
-    affiliation: "Department of Plant Pathology, College of Agricultural and Environmental Sciences, University of California–Davis, One Shields Avenue, Davis, CA, 95616 USA"
-    family-names: Cook
-    given-names: Douglas
-  -
-    affiliation: "University of Queensland and Department of Agriculture and Fisheries, Warwick, Qld, 4370 Australia"
-    family-names: Cruickshank
-    given-names: Alan
+  - family-names: "Boukar"
+    given-names: "Ousmane"
+  - family-names: "Cook"
+    given-names: "Douglas"
+  - family-names: "Cruickshank"
+    given-names: "Alan"
     orcid: "https://orcid.org/0000-0002-7982-1746"
-  -
-    affiliation: "International Institute of Tropical Agriculture (IITA), Kano, Nigeria"
-    family-names: Fatokun
-    given-names: Christian
-  -
-    affiliation: "International Center For Agricultural Research In The Dry Areas (ICARDA), Rabat, Morocco"
-    family-names: "El Haddad"
-    given-names: Noureddine
-  -
-    affiliation: "South Australian Research and Development Institute (SARDI), Waite Institute, Urrbrae, 5064 Australia"
-    family-names: Humphries
-    given-names: Alan
+  - family-names: "Fatokun"
+    given-names: "Christian"
+  - family-names: "El Haddad"
+    given-names: "Noureddine"
+  - family-names: "Humphries"
+    given-names: "Alan"
     orcid: "https://orcid.org/0000-0002-8700-4340"
-  -
-    affiliation: "University of Queensland and Department of Agriculture and Fisheries, Warwick, Qld, 4370 Australia"
-    family-names: Jordan
-    given-names: David
-  -
-    affiliation: "International Center For Agricultural Research In The Dry Areas (ICARDA), Rabat, Morocco"
-    family-names: Kehel
-    given-names: Zakaria
-  -
-    affiliation: "International Center For Agricultural Research In The Dry Areas (ICARDA), Rabat, Morocco"
-    family-names: Kumar
-    given-names: Shiv
-  -
-    affiliation: "The University of Bonn/Crop Trust, Bonn, Germany"
-    family-names: Labarosa
+  - family-names: "Jordan"
+    given-names: "David"
+  - family-names: "Kehel"
+    given-names: "Zakaria"
+  - family-names: "Kumar"
+    given-names: "Shiv"
+  - family-names: "Labarosa"
     given-names: "Sandy Jan"
-  -
-    affiliation: "Mekong Delta Development Research Institute, Can Tho University, Can Tho, Vietnam"
-    family-names: Nguyen
+  - family-names: "Nguyen"
     given-names: "Loi Huu"
-  -
-    affiliation: "University of Queensland and Department of Agriculture and Fisheries, Warwick, Qld, 4370 Australia"
-    family-names: Mace
-    given-names: Emma
-  -
-    affiliation: "Plant Breeding & Genetics, Cornell University, Ithaca, NY, 14850 USA"
-    family-names: McCouch
-    given-names: Susan
-  -
-    affiliation: "International Rice Research Institute (IRRI), Pili Drive, Los Baños, Laguna, 4031 Philippines"
-    family-names: McNally
-    given-names: Ken
-  -
-    affiliation: "SRUC, Peter Wilson Building, West Mains Road, Edinburgh, Scotland, EH9 3JG"
-    family-names: Marshall
+  - family-names: "Mace"
+    given-names: "Emma"
+  - family-names: "McCouch"
+    given-names: "Susan"
+  - family-names: "McNally"
+    given-names: "Ken"
+  - family-names: "Marshall"
     given-names: "David F."
     orcid: "https://orcid.org/0000-0001-9309-2570"
-  -
-    affiliation: "International Crops Research Institute for the Semi-Arid Tropics (ICRISAT)–Eastern and Southern Africa, PO Box 39063 - 00623, Nairobi, Kenya"
-    family-names: Mikwa
+  - family-names: "Mikwa"
     given-names: "Erick Owuor"
-  -
-    affiliation: "Department of Information and Computational Sciences, The James Hutton Institute, Errol Road, Invergowrie, Dundee, Scotland, DD2 5DA"
-    family-names: Milne
-    given-names: Iain
+  - family-names: "Milne"
+    given-names: "Iain"
     orcid: "https://orcid.org/0000-0002-4126-0859"
-  -
-    affiliation: "International Crops Research Institute for the Semi-Arid Tropics (ICRISAT)–Eastern and Southern Africa, PO Box 39063 - 00623, Nairobi, Kenya"
-    family-names: Odeny
+  - family-names: "Odeny"
     given-names: "Damaris Achieng"
     orcid: "https://orcid.org/0000-0002-3629-3752"
-  -
-    affiliation: "Universitat Politècnica de València, Valencia, 46022 Spain"
-    family-names: Plazas
-    given-names: Mariola
-  -
-    affiliation: "Universitat Politècnica de València, Valencia, 46022 Spain"
-    family-names: Prohens
-    given-names: Jaime
+  - family-names: "Plazas"
+    given-names: "Mariola"
+  - family-names: "Prohens"
+    given-names: "Jaime"
     orcid: "https://orcid.org/0000-0003-1181-9065"
-  -
-    affiliation: "Department of Botany, University of British Columbia, Vancouver, British Columbia, V6T 1Z4 Canada"
-    family-names: Rieseberg
+  - family-names: "Rieseberg"
     given-names: "Loren H."
-  -
-    affiliation: "World Vegetable Center, Shanhua, Taiwan"
-    family-names: Schafleitner
-    given-names: Roland
-  -
-    affiliation: "International Crops Research Institute for the Semi-Arid Tropics (ICRISAT), Patancheru, Andhra Pradesh, 502324 India"
-    family-names: Sharma
-    given-names: Shivali
+  - family-names: "Schafleitner"
+    given-names: "Roland"
+  - family-names: "Sharma"
+    given-names: "Shivali"
     orcid: "https://orcid.org/0000-0001-5314-484X"
-  -
-    affiliation: "Department of Information and Computational Sciences, The James Hutton Institute, Errol Road, Invergowrie, Dundee, Scotland, DD2 5DA"
-    family-names: Stephen
-    given-names: Gordon
-  -
-    affiliation: "Mekong Delta Development Research Institute, Can Tho University, Can Tho, Vietnam"
-    family-names: Tin
+  - family-names: "Stephen"
+    given-names: "Gordon"
+  - family-names: "Tin"
     given-names: "Huynh Quang"
-  -
-    affiliation: "International Institute of Tropical Agriculture (IITA), Kano, Nigeria"
-    family-names: Togola
-    given-names: Abou
+  - family-names: "Togola"
+    given-names: "Abou"
     orcid: "https://orcid.org/0000-0001-6155-8292"
-  -
-    affiliation: "Department of Botany, University of British Columbia, Vancouver, British Columbia, V6T 1Z4 Canada"
-    family-names: Warschefsky
-    given-names: Emily
-  -
-    affiliation: "Global Crop Diversity Trust, Platz der Vereinten Nationen 7, Bonn, 53113 Germany"
-    family-names: Werner
-    given-names: Peter
-  -
-    family-names: "All our CWR Pre-Breeding Partners and Collaborators"
-    given-names: 
-  -
-    affiliation: "Department of Information and Computational Sciences, The James Hutton Institute, Errol Road, Invergowrie, Dundee, Scotland, DD2 5DA"
-    family-names: Shaw
+  - family-names: "Warschefsky"
+    given-names: "Emily"
+  - family-names: "Werner"
+    given-names: "Peter"
+  - family-names: "All our CWR Pre-Breeding Partners and Collaborators"
+    given-names: ""
+  - family-names: "Shaw"
     given-names: "Paul D."
     orcid: "https://orcid.org/0000-0002-0202-1150"
