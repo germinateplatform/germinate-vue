@@ -1010,6 +1010,7 @@
   "widgetChartColoringByMarkedItems": "Marked items",
   "widgetChartColoringByTreatment": "Treatment",
   "widgetChartColoringByTrialSite": "Trial site",
+  "widgetChartColoringByEntityParent": "Entity parent",
   "widgetChartColoringByYear": "Year",
   "widgetChartColoringByRecordingDate": "Recording date",
   "widgetChartColoringByGroup": "Group",

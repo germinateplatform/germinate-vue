@@ -102,6 +102,9 @@ export default {
       }, {
         text: this.$t('widgetChartColoringByDataset'),
         value: 'dataset_name'
+      }, {
+        text: this.$t('widgetChartColoringByEntityParent'),
+        value: 'entity_parent_name'
       },
       // }, {
       //   text: this.$t('widgetChartColoringByYear'),
