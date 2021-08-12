@@ -26,8 +26,8 @@ export default {
       queryData.page -= 1
       return this.authAxios({ url: 'gatekeeper/institution', method: 'GET', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostDataUpload: function (formData, templateType, isUpdate, onSuccess, onError) {
-      return this.authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}`, formData: formData, success: onSuccess, error: onError })
+    apiPostDataUpload: function (formData, templateType, isUpdate, datasetStateId, onSuccess, onError) {
+      return this.authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&datasetStateId=${datasetStateId}`, formData: formData, success: onSuccess, error: onError })
     },
     apiPostImages: function (queryData, onSuccess, onError) {
       queryData.page -= 1

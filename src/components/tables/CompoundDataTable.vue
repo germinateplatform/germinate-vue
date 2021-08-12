@@ -13,6 +13,10 @@
     <template v-slot:cell(germplasmName)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
     </template>
+    <!-- Synonyms -->
+    <template v-slot:cell(germplasmSynonyms)="data">
+      <span v-if="data.item.germplasmSynonyms">{{ data.item.germplasmSynonyms.join(', ') }}</span>
+    </template>
     <!-- Germplasm GID link -->
     <template v-slot:cell(germplasmGid)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
@@ -64,6 +68,12 @@ export default {
           sortable: true,
           label: this.$t('tableColumnGermplasmName'),
           preferedSortingColumn: true
+        }, {
+          key: 'germplasmSynonyms',
+          type: 'json',
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmSynonyms')}`,
+          label: this.$t('tableColumnSynonyms')
         }, {
           key: 'entityType',
           type: 'entityTyp',

@@ -40,6 +40,7 @@ export default {
         GENOTYPE_MISSING_ROW: () => this.$t('importStatusGenotypeMissingRow'),
         GENOTYPE_HEADER_LENGTH_MISMATCH: () => this.$t('importStatusGenotypeHeaderLenghtMismatch'),
         GENERIC_MISSING_REQUIRED_VALUE: () => this.$t('importStatusGenericMissingValue'),
+        GENERIC_MISSING_COUNTRY: () => this.$t('importStatusGenericMissingCountry'),
         GENERIC_VALUE_TOO_LONG: () => this.$t('importStatusValueTooLong'),
         GENERIC_INVALID_COUNTRY_CODE: () => this.$t('importStatusMcpdInvalidCountryCode'),
         GENERIC_INVALID_DATATYPE: () => this.$t('importStatusInvalidDataType'),

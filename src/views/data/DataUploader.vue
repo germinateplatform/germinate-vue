@@ -32,6 +32,20 @@
       <!-- Selected file -->
       <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 
+      <div v-if="templateType === 'genotype' || templateType === 'trial' || templateType === 'climate' || templateType === 'compound'">
+        <hr />
+        <h3>{{ $t('pageDataUploadDatasetStateTitle') }}</h3>
+        <b-button-group class="flex-wrap">
+          <b-button class="mb-2" v-for="datasetState in datasetStates"
+                  :key="datasetState.id"
+                  :pressed="datasetStateId === datasetState.id"
+                  variant="outline-primary"
+                  @click="datasetStateId = datasetState.id">
+            <i :class="`mdi mdi-18px fix-alignment ${datasetState.icon}`" /><span> {{ datasetState.text() }}</span>
+          </b-button>
+        </b-button-group>
+      </div>
+
       <div v-if="templateType === 'mcpd'">
         <hr />
         <b-form-radio-group
@@ -61,6 +75,7 @@ export default {
       uuids: null,
       isUpdate: false,
       templateType: null,
+      datasetStateId: 1,
       updateOptions: [
         { text: this.$t('pageDataUploadUpdateOptionInsert'), value: false },
         { text: this.$t('pageDataUploadUpdateOptionUpdate'), value: true }
@@ -71,6 +86,8 @@ export default {
     templateType: function (newValue) {
       // Reset the selected file
       this.file = null
+      // Reset the dataset state
+      this.datasetStateId = 1
       // Update the URL
       window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload-type', params: { templateType: newValue } }).href)
     }
@@ -90,7 +107,7 @@ export default {
       formData.append('fileToUpload', this.file)
 
       EventBus.$emit('show-loading', true)
-      this.apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, result => {
+      this.apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, this.datasetStateId, result => {
         this.uuids = result
 
         if (result) {

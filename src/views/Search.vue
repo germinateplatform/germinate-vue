@@ -159,6 +159,15 @@ export default {
           text: () => this.$t('comparatorsInSet')
         }
       },
+      validComparatorsForType: {
+        Boolean: ['equals', 'isNull'],
+        dataType: ['equals', 'isNull'],
+        locationType: ['equals', 'isNull'],
+        entityType: ['equals', 'isNull'],
+        json: ['contains', 'isNull'],
+        Number: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'inSet', 'isNull'],
+        Date: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'isNull']
+      },
       searchType: 'all',
       searchTypes: [
         { value: 'all', text: this.$t('pageSearchResultSectionAll') },
@@ -194,9 +203,16 @@ export default {
 
       this.tableColumns.forEach(columnConst => {
         result[columnConst] = ColumnsMixin[columnConst].map(c => {
+          let comp = this.comparator
+          const validOptions = this.validComparatorsForType[c.type]
+
+          if (validOptions !== undefined && validOptions !== null && validOptions.indexOf(comp) === -1) {
+            comp = validOptions[0]
+          }
+
           return {
             column: c,
-            comparator: this.comparator,
+            comparator: comp,
             operator: 'or',
             values: [this.searchTerm]
           }

@@ -85,6 +85,7 @@ export default {
           autosize: true,
           height: 800,
           geo: {
+            bgcolor: 'rgba(0,0,0,0)',
             showframe: true,
             showcountries: true,
             showcoastlines: false,

@@ -223,6 +223,23 @@ export default {
           text: () => 'Location'
         }
       },
+      datasetStates: {
+        public: {
+          id: 1,
+          icon: 'mdi-lock-open-variant-outline',
+          text: () => this.$t('datasetStatePublic')
+        },
+        private: {
+          id: 2,
+          icon: 'mdi-lock',
+          text: () => this.$t('datasetStatePrivate')
+        },
+        hidden: {
+          id: 3,
+          icon: 'mdi-eye-off text-primary',
+          text: () => this.$t('datasetStateHidden')
+        }
+      },
       datasetTypes: {
         allelefreq: {
           id: 4,

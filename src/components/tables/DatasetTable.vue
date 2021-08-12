@@ -49,7 +49,7 @@
       </template>
       <!-- Dataset location country flag -->
       <template v-slot:cell(countries)="data">
-        <span v-for="country in getCountries(data.item.locations)" :key="`country-flag-${country}`" class="table-country text-nowrap" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'flag-icon flag-icon-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
+        <span v-for="country in getCountries(data.item.locations)" :key="`country-flag-${country}`" class="table-country text-nowrap mr-2" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'flag-icon flag-icon-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
       </template>
       <!-- Display the number of locations associated with this dataset -->
       <template v-slot:cell(locations)="data">
@@ -88,7 +88,10 @@
       </template>
       <!-- Dataset state -->
       <template v-slot:cell(datasetState)="data">
-        <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" />
+        <a href="#" class="text-decoration-none" @click.prevent="onDatasetStateClicked(data.item)" v-if="token && userIsAtLeast(token.userType, 'Administrator')">
+          <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" />
+        </a>
+        <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" v-else />
       </template>
       <!-- External dataset? -->
       <template v-slot:cell(isExternal)="data">
@@ -127,6 +130,8 @@
     <AttributeModal :dataset="dataset" v-if="dataset && (dataset.dublinCore !== undefined || dataset.attributes !== 0)" ref="attributeModal" />
     <!-- Genotype export modal for direct downloads from the table -->
     <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
+    <!-- Dataset state modal -->
+    <DatasetStateModal :dataset="dataset" v-if="dataset && token && userIsAtLeast(token.userType, 'Administrator')" @changed="refresh" ref="datasetStateModal" />
   </div>
 </template>
 
@@ -135,6 +140,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 import CollaboratorModal from '@/components/modals/CollaboratorModal'
 import GenotypeExportModal from '@/components/modals/GenotypeExportModal'
+import DatasetStateModal from '@/components/modals/DatasetStateModal'
 import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props.js'
@@ -175,21 +181,7 @@ export default {
       },
       dataset: null,
       license: null,
-      previousDetailsRow: null,
-      datasetStates: {
-        public: {
-          icon: 'mdi-lock-open-variant-outline',
-          text: () => this.$t('datasetStatePublic')
-        },
-        private: {
-          icon: 'mdi-lock',
-          text: () => this.$t('datasetStatePrivate')
-        },
-        hidden: {
-          icon: 'mdi-eye-off text-primary',
-          text: () => this.$t('datasetStateHidden')
-        }
-      }
+      previousDetailsRow: null
     }
   },
   computed: {
@@ -339,6 +331,7 @@ export default {
     AttributeModal,
     BaseTable,
     CollaboratorModal,
+    DatasetStateModal,
     GenotypeExportModal,
     LocationMap,
     LicenseModal
@@ -468,6 +461,11 @@ export default {
       // Pass it on to the parent in case it wants to know
       this.$emit('license-accepted')
       this.refresh()
+    },
+    onDatasetStateClicked: function (dataset) {
+      this.dataset = dataset
+
+      this.$nextTick(() => this.$refs.datasetStateModal.show())
     },
     onLicenseClicked: function (dataset) {
       this.dataset = dataset

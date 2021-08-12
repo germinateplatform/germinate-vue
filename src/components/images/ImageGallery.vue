@@ -1,29 +1,31 @@
 <template>
-  <div v-if="(images && images.length > 0) || selectedTag !== null">
-    <ImageTags v-on:tag-selected="onTagClicked" :referenceTable="referenceTable" :foreignId="foreignId" ref="tags" />
+  <div>
+    <div v-if="(images && images.length > 0) || selectedTag !== null">
+      <ImageTags v-on:tag-selected="onTagClicked" :referenceTable="referenceTable" :foreignId="foreignId" ref="tags" />
 
-    <CoolLightBox 
-      :items="coolboxImages" 
-      :index="coolboxIndex"
-      @on-open="rotateExif"
-      @close="coolboxIndex = null" />
+      <CoolLightBox 
+        :items="coolboxImages" 
+        :index="coolboxIndex"
+        @on-open="rotateExif"
+        @close="coolboxIndex = null" />
 
-    <!-- Show each image node -->
-    <b-row v-if="images && images.length > 0" class="image-grid mb-3">
-      <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId" class="mb-3">
-        <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" @image-clicked="coolboxIndex = index" v-on:tags-changed="onTagsChanged" v-on:image-deleted="onImageDeleted" />
-      </b-col>
-    </b-row>
-    <h3 v-else>{{ $t('headingNoData') }}</h3>
+      <!-- Show each image node -->
+      <b-row v-if="images && images.length > 0" class="image-grid mb-3">
+        <b-col cols=12 sm=4 md=3 v-for="(image, index) in images" :key="image.imageId" class="mb-3">
+          <ImageNode :image="image" :ref="`image-${index}`" :allTags="imageTags" class="h-100" @image-clicked="coolboxIndex = index" v-on:tags-changed="onTagsChanged" v-on:image-deleted="onImageDeleted" />
+        </b-col>
+      </b-row>
+      <h3 v-else>{{ $t('headingNoData') }}</h3>
 
-    <b-pagination v-if="imageCount > imagesPerPage"
-      v-model="currentPage"
-      limit=10
-      :total-rows="imageCount"
-      :per-page="imagesPerPage"
-      @change="page => getPage(page)">
-    </b-pagination>
-
+      <b-pagination v-if="imageCount > imagesPerPage"
+        v-model="currentPage"
+        limit=10
+        :total-rows="imageCount"
+        :per-page="imagesPerPage"
+        @change="page => getPage(page)">
+      </b-pagination>
+    </div>
+    
     <b-button-group>
       <b-button class="mdi mdi-18px mdi-download" @click="download" v-if="images && images.length > 0"> {{ $t('buttonDownloadImages') }}</b-button>
       <b-button class="mdi mdi-18px mdi-upload" @click="$refs.imageUploadModal.show()" v-if="token && userIsAtLeast(token.userType, 'Data Curator')"> {{ $t('buttonUpload') }}</b-button>

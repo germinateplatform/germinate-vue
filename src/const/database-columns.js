@@ -169,6 +169,9 @@ export default {
       name: 'germplasmName',
       type: String
     }, {
+      name: 'germplasmSynonyms',
+      type: 'json'
+    }, {
       name: 'entityType',
       type: 'entityType'
     }, {
@@ -210,6 +213,9 @@ export default {
     }, {
       name: 'germplasmName',
       type: String
+    }, {
+      name: 'germplasmSynonyms',
+      type: 'json'
     }, {
       name: 'entityType',
       type: 'entityType'
