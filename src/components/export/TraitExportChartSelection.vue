@@ -24,7 +24,7 @@
         <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
         <p class="text-info">{{ $t('pageTrialsExportChartText') }}</p>
         <!-- Show the matrix chart if there are more than 2 traits/compounds/climates -->
-        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedItems.length > 2" datasetType="trials" />
+        <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedItems.length > 2" datasetType="trials" @color-by-stats-changed="colorByStatsChanged" />
         <!-- Otherwise, show the simple scatter plot -->
         <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedItems[0].displayName" :y="selectedItems[1].displayName" datasetType="trials" v-else />
       </b-col>
@@ -84,7 +84,8 @@ export default {
       plotData: null,
       selectedItems: null,
       colorByGroupEnabled: false,
-      germplasmNames: null
+      germplasmNames: null,
+      colorByStats: null
     }
   },
   computed: {
@@ -100,25 +101,30 @@ export default {
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
       }, {
-        text: this.$t('widgetChartColoringByDataset'),
-        value: 'dataset_name'
+        text: `${this.$t('widgetChartColoringByDataset')}${this.getStatsText('dataset_name')}`,
+        value: 'dataset_name',
+        disabled: this.getStatsCount('dataset_name') < 2
       }, {
-        text: this.$t('widgetChartColoringByEntityParent'),
-        value: 'entity_parent_name'
+        text: `${this.$t('widgetChartColoringByEntityParent')}${this.getStatsText('entity_parent_name')}`,
+        value: 'entity_parent_name',
+        disabled: this.getStatsCount('entity_parent_name') < 2
       },
       // }, {
       //   text: this.$t('widgetChartColoringByYear'),
       //   value: 'year'
       // }, {
       {
-        text: this.$t('widgetChartColoringByRecordingDate'),
-        value: 'Date'
+        text: `${this.$t('widgetChartColoringByRecordingDate')}${this.getStatsText('Date')}`,
+        value: 'Date',
+        disabled: this.getStatsCount('Date') < 2
       }, {
-        text: this.$t('widgetChartColoringByTreatment'),
-        value: 'treatments_description'
+        text: `${this.$t('widgetChartColoringByTreatment')}${this.getStatsText('treatments_description')}`,
+        value: 'treatments_description',
+        disabled: this.getStatsCount('treatments_description') < 2
       }, {
-        text: this.$t('widgetChartColoringByTrialSite'),
-        value: 'trial_site'
+        text: `${this.$t('widgetChartColoringByTrialSite')}${this.getStatsText('trial_site')}`,
+        value: 'trial_site',
+        disabled: this.getStatsCount('trial_site') < 2
       }, {
         text: this.$t('widgetChartColoringByMarkedItems'),
         value: 'marked_items'
@@ -151,7 +157,22 @@ export default {
   },
   mixins: [ datasetApi ],
   methods: {
+    getStatsCount: function (name) {
+      if (this.colorByStats != null && this.colorByStats[name] !== undefined && this.colorByStats[name] !== null) {
+        return this.colorByStats[name]
+      } else {
+        return Number.MAX_SAFE_INTEGER
+      }
+    },
+    getStatsText: function (name) {
+      if (this.colorByStats != null && this.colorByStats[name] !== undefined && this.colorByStats[name] !== null) {
+        return ` (${this.colorByStats[name]})`
+      } else {
+        return ''
+      }
+    },
     plot: function (query, selectedItems) {
+      this.colorByStats = null
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
 
       // If coloring by group is no longer available, but it's still selected, remove selection
@@ -181,6 +202,13 @@ export default {
             names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
           })
         }
+      }
+    },
+    colorByStatsChanged: function (stats) {
+      if (stats) {
+        this.colorByStats = stats
+      } else {
+        this.colorByStats = null
       }
     }
   }

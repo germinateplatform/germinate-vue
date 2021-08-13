@@ -6,6 +6,10 @@ body {
   overflow-x: hidden;
 }
 
+select option[disabled] {
+    color: lightgray;
+}
+
 .sidebar .nav-link * {
   vertical-align: middle;
 }

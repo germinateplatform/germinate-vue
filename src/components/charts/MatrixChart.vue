@@ -180,6 +180,9 @@ export default {
             .onPointsSelected(ps => {
               this.selectedIds = ps
             })
+            .onColorByStatsLoaded(stats => {
+              this.$emit('color-by-stats-changed', stats)
+            })
             .colors(this.getColors()))
       }
       reader.readAsText(result)
