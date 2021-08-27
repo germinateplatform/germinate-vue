@@ -9,7 +9,7 @@
         <template v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
           <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownUserSettingsAdvancedSettings') }}</strong></b-dropdown-header>
           <b-dropdown-item :to="{ name: 'user-permissions' }" v-if="userIsAtLeast(token.userType, 'Administrator')"><i class="mdi mdi-18px mdi-account-key text-warning" /> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
-          <b-dropdown-item :to="{ name: 'import-upload' }"><i class="mdi mdi-18px mdi-upload text-warning" /> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
+          <b-dropdown-item v-if="serverSettings.dataImportMode !== 'NONE'" :to="{ name: 'import-upload' }"><i class="mdi mdi-18px mdi-upload text-warning" /> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
           <b-dropdown-item :to="{ name: 'germplasm-unifier' }"><i class="mdi mdi-18px mdi-set-merge text-warning" /> {{ $t('dropdownUserSettingsGermplasmUnifier') }}</b-dropdown-item>
         </template>
         <!-- Settings -->
@@ -89,7 +89,7 @@ export default {
           this.$router.push('/home')
         }
 
-        this.$ga.event('login', 'logout')
+        this.$gtag.event('login', 'logout')
 
         EventBus.$emit('update-sidebar-menu')
       }, {

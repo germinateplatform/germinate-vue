@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
+import { setOptions, bootstrap } from 'vue-gtag'
+
 Vue.use(Vuex)
 
 const localStorage = window.localStorage
@@ -128,10 +130,18 @@ const storeState = {
 
       if (newServerSettings && newServerSettings.googleAnalyticsKey) {
         if (state.userStates[state.token ? state.token.id : null].cookiesAccepted === true) {
-          Vue.$ga.enable()
+          setOptions({
+            config: { id: newServerSettings.googleAnalyticsKey },
+            enabled: true
+          })
         } else {
-          Vue.$ga.disable()
+          setOptions({
+            config: { id: newServerSettings.googleAnalyticsKey },
+            enabled: false
+          })
         }
+
+        bootstrap()
       }
     },
     ON_LOCALE_CHANGED_MUTATION: function (state, newLocale) {
@@ -232,10 +242,16 @@ const storeState = {
 
       if (state.serverSettings && state.serverSettings.googleAnalyticsKey) {
         if (newCookiesAccepted === true) {
-          Vue.$ga.enable()
+          setOptions({
+            enabled: true
+          })
         } else {
-          Vue.$ga.disable()
+          setOptions({
+            enabled: false
+          })
         }
+
+        bootstrap()
       }
     },
     ON_CUSTOM_CHART_COLORS_CHANGED_MUTATION: function (state, newCustomChartColors) {

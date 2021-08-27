@@ -7,7 +7,7 @@
         <!-- Loading indicator -->
         <b-progress :value="100" height="5px" variant="primary" striped animated v-if="groups === null" />
         <!-- Group select -->
-        <SearchableSelect v-model="selectedGroups" :multiple="multiple" :options="groupOptions" :selectSize=7 className="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
+        <SearchableSelect v-model="selectedGroups" :multiple="multiple" :options="groupOptions" :selectSize="selectSize" className="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
       </div>
       <!-- Tooltip shown when group selection is disabled -->
       <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll">
@@ -62,6 +62,10 @@ export default {
     info: {
       type: Function,
       default: null
+    },
+    selectSize: {
+      type: Number,
+      default: 7
     }
   },
   data: function () {

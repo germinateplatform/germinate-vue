@@ -42,6 +42,9 @@ export default {
       delete queryData.orderBy
       delete queryData.ascending
       return this.authAxios({ url: `group/${groupId}/location/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiGetCountries: function (onSuccess, onError) {
+      return this.authAxios({ url: 'country', success: onSuccess, error: onError })
     }
   }
 }

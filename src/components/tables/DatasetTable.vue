@@ -38,6 +38,7 @@
       <!-- Dataset description -->
       <template v-slot:cell(datasetDescription)="data">
         <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ data.item.datasetDescription | truncateAfterWords(10) }}</span>
+        <a href="#" class="table-icon-link" @click.prevent="showFullDatasetDescription(data.item.datasetDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.datasetDescription, 10)" >&nbsp;<i class="mdi mdi-18px fix-alignment mdi-page-next" /></a>
       </template>
       <!-- Experiment name -->
       <template v-slot:cell(experimentName)="data">
@@ -339,6 +340,12 @@ export default {
   mixins: [ colorMixin, datasetApi, genotypeApi, locationApi, typesMixin ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
+    showFullDatasetDescription: function (description) {
+      this.$bvModal.msgBoxOk(description, {
+        title: this.$t('tableColumnDatasetDescription'),
+        okTitle: this.$t('genericOk')
+      })
+    },
     getCountries: function (locations) {
       if (locations) {
         return [...new Set(locations.map(l => l.countryName))]
@@ -407,7 +414,7 @@ export default {
         generateHapMap: selectedFormats.indexOf('hapmap') !== -1
       }
       EventBus.$emit('show-loading', true)
-      this.$ga.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))
+      this.$gtag.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))
       this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
         result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 

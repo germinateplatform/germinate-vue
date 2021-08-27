@@ -2,7 +2,7 @@
   <div>
     <ExportSelection v-bind="$props"
                      :min="2"
-                     :max="7"
+                     :max="10"
                      :onlyNumeric="false"
                      v-on:button-clicked="plot" />
     <b-row>

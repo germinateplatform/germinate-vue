@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div :class="`${selectionMode === 'point' ? 'point-search' : ''}`">
     <!-- The map itself -->
     <l-map
-      :class="`location-map ${selectionMode === 'point' ? 'point-search' : ''}`"
+      class="location-map"
       :center="center"
       ref="map"
       @click="onClick"
@@ -48,6 +48,13 @@
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLatitude') }}</dt><dd class="col-8">{{ location.locationLatitude.toFixed(2) }}</dd>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLongitude') }}</dt><dd class="col-8">{{ location.locationLongitude.toFixed(2) }}</dd>
         <template v-if="location.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ location.locationElevation.toFixed(2) }}</dd></template>
+
+        <div v-if="isEditMode && location.locationId === -1" class="px-3">
+          <b-button-group>
+            <b-button variant="success" @click="$emit('selection-changed', location)">{{ $t('buttonUpdate') }}</b-button>
+            <b-button @click="$emit('cancel-selection')">{{ $t('buttonCancel') }}</b-button>
+          </b-button-group>
+        </div>
       </dl>
     </div>
     <ClimateOverlayModal v-if="(climateOverlaysDisabled === false) && climates" :climates="climates" ref="climateOverlayModal" v-on:overlay-changed="updateOverlays" />
@@ -114,6 +121,10 @@ export default {
       type: String,
       default: 'none'
     },
+    isEditMode: {
+      type: Boolean,
+      default: false
+    },
     showLinks: {
       type: Boolean,
       default: true
@@ -136,6 +147,9 @@ export default {
           this.$refs.climateOverlayModal.show()
         }, 'Toggle overlays', 'settings-button', { position: 'topright' }).addTo(map)
       }
+    },
+    selectionMode: function () {
+      this.updateMap(false)
     }
   },
   components: {
@@ -273,7 +287,7 @@ export default {
         return ''
       }
     },
-    updateMap: function () {
+    updateMap: function (invalidate = true) {
       const map = this.$refs.map.mapObject
 
       // Remove existing markers
@@ -364,8 +378,10 @@ export default {
           }
         }
       }
-
-      this.$nextTick(() => map.invalidateSize())
+      
+      if (invalidate) {
+        this.$nextTick(() => map.invalidateSize())
+      }
     }
   },
   mounted: function () {
@@ -539,7 +555,7 @@ export default {
   width: 28px;
   height: 28px;
 }
-.location-map.point-search {
+.point-search > .location-map {
   cursor: crosshair;
 }
 .location-map .location-map-loading-indicator {

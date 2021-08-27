@@ -17,8 +17,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Vue from 'vue'
-import VueAnalytics from 'vue-analytics'
 import { EventBus } from '@/plugins/event-bus.js'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import miscApi from '@/mixins/api/misc.js'
@@ -74,16 +72,6 @@ export default {
   },
   created: async function () {
     await this.apiGetSettings(result => {
-      if (result) {
-        Vue.use(VueAnalytics, {
-          id: result.googleAnalyticsKey,
-          router: this.$router
-        })
-
-        // Disable initially, users have to opt-in
-        Vue.$ga.disable()
-      }
-
       this.$store.dispatch('ON_SETTINGS_CHANGED', result)
 
       this.apiGetEntityTypeStats(result => {

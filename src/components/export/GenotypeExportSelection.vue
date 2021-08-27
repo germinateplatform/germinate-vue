@@ -197,7 +197,7 @@ export default {
       const query = this.getQuery(true)
 
       if (this.datasetType === 'genotype') {
-        this.$ga.event('export', 'async', 'genotype', query.datasetIds.join('-'))
+        this.$gtag.event('export', 'async', 'genotype', query.datasetIds.join('-'))
         this.apiPostGenotypeDatasetExport(query, result => {
           if (result) {
             result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
@@ -210,7 +210,7 @@ export default {
       } else if (this.datasetType === 'allelefreq') {
         if (binningConfig) {
           query.config = binningConfig
-          this.$ga.event('export', 'async', 'allelefreq', query.datasetIds.join('-'))
+          this.$gtag.event('export', 'async', 'allelefreq', query.datasetIds.join('-'))
           this.apiPostAlleleFrequencyDatasetExport(query, result => {
             this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
 

@@ -6,12 +6,14 @@ export function plotlyScatterPlot() {
       names: null
     },
 		colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"],
+    colorByOptions = ['dataset_name', 'entity_parent_name', 'Date', 'treatments_description', 'rep', 'trial_site', 'group_ids'],
 		height = null,
 		width = null,
 		xCategory = 'x',
 		yCategory = 'y',
 		onPointClicked = null,
-		onPointsSelected = null;
+    onPointsSelected = null,
+    onColorByStatsLoaded = null;
 
 	function chart(selection) {
 		selection.each(function (rows) {
@@ -215,8 +217,26 @@ export function plotlyScatterPlot() {
 					}
 				});
 			}
+
+      if (onColorByStatsLoaded) {
+        getColorByStats(rows)
+      }
 		});
 	}
+
+  async function getColorByStats(rows) {
+    const statsResult = {}
+
+    colorByOptions.forEach(o => {
+      statsResult[o] = unpackDistinct(rows, o).length
+    })
+
+    onColorByStatsLoaded(statsResult)
+  }
+
+  function unpackDistinct(rows, key) {
+    return [...new Set(unpack(rows, key))]
+  }
 
 	function unpack(rows, key) {
 		return rows.map(function (row) {
@@ -330,6 +350,12 @@ export function plotlyScatterPlot() {
 		onPointClicked = _;
 		return chart;
 	};
+
+  chart.onColorByStatsLoaded = function (_) {
+    if (!arguments.length) return onColorByStatsLoaded;
+    onColorByStatsLoaded = _;
+    return chart;
+  };
 
 	chart.onPointsSelected = function (_) {
 		if (!arguments.length) return onPointsSelected;

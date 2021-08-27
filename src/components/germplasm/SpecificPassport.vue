@@ -96,7 +96,21 @@
           <hr />
           <h2 class="mdi-heading" id="location"><i class="mdi mdi-36px mdi-map-marker text-primary" /> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
           <p v-html="$t('pagePassportLocationText')" />
-          <LocationMap :locations="[location]" ref="map"/>
+
+          <LocationMap :locations="[location]"
+                       :selectionMode="mapSelectionMode"
+                       :isEditMode="mapSelectionMode === 'point'"
+                       @selection-changed="onLocationChanged"
+                       @cancel-selection="toggleMapSelection()"
+                       ref="map"/>
+          
+          <div v-if="isAtLeastDataCurator" class="mt-3">
+            <h3>{{ $t('modalTitleSelectGermplasmLocation') }}</h3>
+            <b-button-group>
+              <b-button @click="$refs.locationSelectionModal.show()"><i class="mdi fix-alignment mdi-18px mdi-table" /> {{ $t('modalButtonSelectGermplasmLocationSelectFromTable') }}</b-button>
+              <b-button @click="toggleMapSelection()"><i class="mdi fix-alignment mdi-18px mdi-map-marker" /> {{ $t('modalButtonSelectGermplasmLocationSelectOnMap') }}</b-button>
+            </b-button-group>
+          </div>
         </template>
 
         <hr />
@@ -149,6 +163,9 @@
     <b-modal :title="$t('pagePassportPdciTitle')" ok-only ref="pdciModal">
       <div v-html="$t('pagePassportPdciModal')" />
     </b-modal>
+
+    <LocationSelectionModal @location-selected="updateGermplasmLocation" ref="locationSelectionModal" />
+    <LocationCountrySelectionModal :title="$t('modalTitleLocationName')" :message="$t('modalMessageLocationName')" @selection-changed="updateGermplasmLocationName" ref="locationCountrySelectionModal" />
   </div>
 </template>
 
@@ -160,6 +177,8 @@ import GermplasmAttributeTable from '@/components/tables/GermplasmAttributeTable
 import GermplasmTraitStats from '@/components/germplasm/GermplasmTraitStats'
 import GroupTable from '@/components/tables/GroupTable'
 import Institution from '@/components/institution/Institution'
+import LocationCountrySelectionModal from '@/components/modals/LocationCountrySelectionModal'
+import LocationSelectionModal from '@/components/modals/LocationSelectionModal'
 import Mcpd from '@/components/germplasm/Mcpd'
 import Links from '@/components/util/Links'
 import LocationMap from '@/components/map/LocationMap'
@@ -183,7 +202,8 @@ export default {
         offset: 152,
         throttle: 100
       },
-      performanceDataCount: 0
+      performanceDataCount: 0,
+      mapSelectionMode: 'none'
     }
   },
   props: {
@@ -204,15 +224,24 @@ export default {
     GermplasmTraitStats,
     GroupTable,
     ImageGallery,
+    LocationCountrySelectionModal,
     Institution,
     Links,
     LocationMap,
+    LocationSelectionModal,
     Mcpd,
     PedigreeChart,
     PedigreeTable
   },
   mixins: [ germplasmApi, miscApi, typesMixin ],
   computed: {
+    isAtLeastDataCurator: function () {
+      if (this.token) {
+        return this.userIsAtLeast(this.token.userType, 'Data Curator')
+      } else {
+        return false
+      }
+    },
     title: function () {
       if (this.germplasm) {
         let parts = []
@@ -243,9 +272,10 @@ export default {
     location: function () {
       if (this.germplasm) {
         return {
-          locationId: -1,
+          locationId: this.germplasmTableData ? this.germplasmTableData.locationId : -1,
           locationLatitude: this.germplasm.declatitude,
           locationLongitude: this.germplasm.declongitude,
+          locationElevation: this.germplasm.elevation,
           locationName: this.germplasm.collsite,
           locationType: 'collectingsites',
           countryName: null,
@@ -258,6 +288,48 @@ export default {
     }
   },
   methods: {
+    updateGermplasmLocation: function (location) {
+      this.apiPatchGermplasmLocation(this.germplasmId, {
+        id: location
+      }, () => {
+        this.apiGetGermplasmMcpd(this.germplasmId, result => {
+          this.germplasm = result
+        })
+      })
+    },
+    updateGermplasmLocationName: function (locationInput) {
+      if (locationInput && this.tempNewLocation) {
+        this.apiPatchGermplasmLocation(this.germplasmId, {
+          id: null,
+          countryId: locationInput.countryId,
+          siteName: locationInput.name,
+          elevation: locationInput.elevation,
+          latitude: this.tempNewLocation.locationLatitude,
+          longitude: this.tempNewLocation.locationLongitude,
+          locationtypeId: 1
+        }, () => {
+          this.apiGetGermplasmMcpd(this.germplasmId, result => {
+            this.germplasm = result
+          })
+          this.toggleMapSelection()
+        })
+      }
+
+      this.tempNewLocation = null
+    },
+    onLocationChanged: function (newLocation) {
+      if (newLocation) {
+        this.tempNewLocation = newLocation
+        this.$refs.locationCountrySelectionModal.show()
+      }
+    },
+    toggleMapSelection: function () {
+      if (this.mapSelectionMode === 'point') {
+        this.mapSelectionMode = 'none'
+      } else {
+        this.mapSelectionMode = 'point'
+      }
+    },
     onTraitStatsDataChanged: function (traitCount) {
       this.performanceDataCount = traitCount
     },

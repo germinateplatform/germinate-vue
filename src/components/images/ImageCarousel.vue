@@ -7,8 +7,8 @@
     :img-height="600"
     indicators>
     <b-carousel-slide
-      v-for="image in images[locale]"
-      :key="`dashboard-carousel-${image.name}`"
+      v-for="(image, index) in images[locale]"
+      :key="`dashboard-carousel-${index}`"
       :caption-html="image.text"
       :img-src="image.src" >
       <template v-slot:img>

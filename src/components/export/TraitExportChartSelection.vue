@@ -2,7 +2,7 @@
   <div>
     <ExportSelection v-bind="$props"
                      :min="2"
-                     :max="7"
+                     :max="10"
                      :onlyNumeric="false"
                      v-on:button-clicked="plot" />
     <b-row>
@@ -26,7 +26,7 @@
         <!-- Show the matrix chart if there are more than 2 traits/compounds/climates -->
         <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedItems.length > 2" datasetType="trials" @color-by-stats-changed="colorByStatsChanged" />
         <!-- Otherwise, show the simple scatter plot -->
-        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedItems[0].displayName" :y="selectedItems[1].displayName" datasetType="trials" v-else />
+        <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedItems[0].displayName" :y="selectedItems[1].displayName" datasetType="trials" @color-by-stats-changed="colorByStatsChanged" v-else />
       </b-col>
     </b-row>
   </div>
@@ -121,6 +121,10 @@ export default {
         text: `${this.$t('widgetChartColoringByTreatment')}${this.getStatsText('treatments_description')}`,
         value: 'treatments_description',
         disabled: this.getStatsCount('treatments_description') < 2
+      }, {
+        text: `${this.$t('widgetChartColoringByRep')}${this.getStatsText('rep')}`,
+        value: 'rep',
+        disabled: this.getStatsCount('rep') < 2
       }, {
         text: `${this.$t('widgetChartColoringByTrialSite')}${this.getStatsText('trial_site')}`,
         value: 'trial_site',

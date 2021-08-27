@@ -57,6 +57,10 @@ export default {
     tableMode: {
       type: String,
       default: 'base'
+    },
+    selectionMode: {
+      type: String,
+      default: 'multi'
     }
   },
   data: function () {

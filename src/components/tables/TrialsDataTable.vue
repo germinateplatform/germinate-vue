@@ -141,6 +141,12 @@ export default {
           sortable: true,
           label: this.$t('tableColumnTraitTreatment')
         }, {
+          key: 'rep',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'rep')}`,
+          sortable: true,
+          label: this.$t('tableColumnTraitRep')
+        }, {
           key: 'unitName',
           type: String,
           class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,

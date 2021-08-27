@@ -60,6 +60,15 @@ export default {
     }
   },
   methods: {
+    isTruncatedAfter: function (str, words) {
+      if (!str) {
+        return false
+      }
+
+      const parts = str.split(' ')
+
+      return parts.length > words
+    },
     objectArraysAreSame: function (x, y) {
       if ((x === null && y !== null) || (x !== null && y === null)) {
         return false
@@ -206,7 +215,7 @@ export default {
       downloadLink.click()
       document.body.removeChild(downloadLink)
 
-      this.$ga.event('download', 'data', filename + '.' + extension)
+      this.$gtag.event('download', 'data', filename + '.' + extension)
     },
     /**
      * Downloads all SVGs contained in the given DOM element into a single SVG file
@@ -240,7 +249,7 @@ export default {
       downloadLink.click()
       document.body.removeChild(downloadLink)
 
-      this.$ga.event('download', 'svg', filename + '.svg')
+      this.$gtag.event('download', 'svg', filename + '.svg')
     },
     /**
      * Converts the given object into a safe URL string
@@ -327,7 +336,7 @@ export default {
         }
       }
 
-      this.$ga.exception(error.status + ' ' + message)
+      this.$gtag.exception(error.status + ' ' + message)
 
       this.$bvToast.toast(message, {
         title: title,

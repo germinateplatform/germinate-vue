@@ -56,8 +56,13 @@ export default {
   methods: {
     login: function () {
       if (this.enabled) {
-        this.$ga.event('login', 'login')
-        this.$emit('login', this.user)
+        this.$gtag.event('login', 'login')
+        this.$emit('login', JSON.parse(JSON.stringify(this.user)))
+
+        this.user = {
+          username: null,
+          password: null
+        }
       }
     }
   }

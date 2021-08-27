@@ -54,6 +54,8 @@ import {
   VBTooltipPlugin
 } from 'bootstrap-vue'
 
+import VueGtag from 'vue-gtag'
+
 import VueMeta from 'vue-meta'
 Vue.use(VueMeta)
 
@@ -98,6 +100,11 @@ Vue.use(TooltipPlugin)
 Vue.use(VBPopoverPlugin)
 Vue.use(VBScrollspyPlugin)
 Vue.use(VBTooltipPlugin)
+
+Vue.use(VueGtag, {
+  bootstrap: false,
+  enabled: false
+}, router)
 
 Vue.use({
   install: function (Vue) {
