@@ -192,6 +192,16 @@ export default {
           logo: 'funders/cwr.svg'
         },
         {
+          name: 'The Norwegian Agency for Development Coorperation',
+          href: 'https://www.norad.no/en/',
+          logo: 'funders/norad.svg'
+        },
+        {
+          name: 'Norwegian Ministry of Foreign Affairs',
+          href: 'https://www.regjeringen.no/en/dep/ud/id833/',
+          logo: 'funders/norwegian-ministry-of-foreign-affairs.svg'
+        },
+        {
           name: 'CIMMYT',
           href: 'https://www.cimmyt.org/',
           logo: 'funders/cimmyt.svg'
