@@ -86,6 +86,7 @@
         <hr />
         <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-tournament mdi-rotate-90 text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
         <p v-html="$t('pagePassportPedigreeText')" />
+        <PedigreeDefinitionTable :getData="getPedigreeDefinitionData" :filterOn="pedigreeDefinitionFilter" />
         <!-- Pedigree table -->
         <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
         <!-- Pedigree chart -->
@@ -165,7 +166,7 @@
     </b-modal>
 
     <LocationSelectionModal @location-selected="updateGermplasmLocation" ref="locationSelectionModal" />
-    <LocationCountrySelectionModal :title="$t('modalTitleLocationName')" :message="$t('modalMessageLocationName')" @selection-changed="updateGermplasmLocationName" ref="locationCountrySelectionModal" />
+    <LocationCountrySelectionModal @selection-changed="updateGermplasmLocationName" ref="locationCountrySelectionModal" />
   </div>
 </template>
 
@@ -185,6 +186,7 @@ import LocationMap from '@/components/map/LocationMap'
 import ImageGallery from '@/components/images/ImageGallery'
 import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
+import PedigreeDefinitionTable from '@/components/tables/PedigreeDefinitionTable'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import miscApi from '@/mixins/api/misc.js'
 import typesMixin from '@/mixins/types.js'
@@ -196,6 +198,7 @@ export default {
       germplasmTableData: null,
       commentFilter: null,
       pedigreeFilter: null,
+      pedigreeDefinitionFilter: null,
       entityFilter: null,
       currentGermplasmId: null,
       scrollSpyConfig: {
@@ -231,7 +234,8 @@ export default {
     LocationSelectionModal,
     Mcpd,
     PedigreeChart,
-    PedigreeTable
+    PedigreeTable,
+    PedigreeDefinitionTable
   },
   mixins: [ germplasmApi, miscApi, typesMixin ],
   computed: {
@@ -362,6 +366,10 @@ export default {
     getPedigreeData: function (data, callback) {
       return this.apiPostPedigreeTable(data, callback)
     },
+    getPedigreeDefinitionData: function (data, callback) {
+      return this.apiPostPedigreedefinitionTable(data, callback)
+    },
+
     onToggleMarked: function () {
       const isMarked = this.markedGermplasm.indexOf(this.currentGermplasmId) !== -1
       if (isMarked) {
@@ -402,6 +410,17 @@ export default {
       },
       comparator: 'equals',
       operator: 'or',
+      values: [this.currentGermplasmId],
+      canBeChanged: false
+    }]
+
+    this.pedigreeDefinitionFilter = [{
+      column: {
+        name: 'germplasmId',
+        type: Number
+      },
+      comparator: 'equals',
+      operator: 'and',
       values: [this.currentGermplasmId],
       canBeChanged: false
     }]

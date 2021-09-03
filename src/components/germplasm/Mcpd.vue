@@ -6,6 +6,8 @@
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdGid') }}</dt><dd class="col-9">{{ germplasm.accenumb }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdAccessionName') }}</dt><dd class="col-9">{{ germplasm.accename }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdAccessionNumber') }}</dt><dd class="col-9">{{ germplasm.accenumb }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBreederCode') }}</dt><dd class="col-9">{{ germplasm.bredcode }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBreederName') }}</dt><dd class="col-9">{{ germplasm.bredname }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBiologicalStatus') }}</dt><dd class="col-9">{{ sampstat[germplasm.sampstat] }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingSource') }}</dt><dd class="col-9">{{ collsrc[germplasm.collsrc] }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingNumber') }}</dt><dd class="col-9">{{ germplasm.collnumb }}</dd>
@@ -18,7 +20,7 @@
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSubtaxon') }}</dt><dd class="col-9">{{ germplasm.subtaxa }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSubtaxonAuth') }}</dt><dd class="col-9">{{ germplasm.subtauthor }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCountry') }}</dt><dd class="col-9"><template v-if="germplasm.origcty"><i :class="'flag-icon flag-icon-' + getFlag(germplasm.origcty.toUpperCase())" v-if="germplasm.origcty"/> {{ getCountry(germplasm.origcty.toUpperCase()) }}</template></dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdColldate') }}</dt><dd class="col-9"><template v-if="germplasm.colldate">{{ germplasm.colldate | toDate }}</template></dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdColldate') }}</dt><dd class="col-9"><template v-if="germplasm.colldate">{{ germplasm.colldate | toMcpdDate }}</template></dd>
     </dl>
   </div>
 </template>

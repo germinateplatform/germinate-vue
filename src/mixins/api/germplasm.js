@@ -114,6 +114,13 @@ export default {
     },
     apiPatchGermplasmLocation: function (germplasmId, location, onSuccess, onError) {
       return this.authAxios({ url: `germplasm/${germplasmId}/location`, data: location, method: 'PATCH', success: onSuccess, error: onError })
-    }
+    },
+    apiPostPedigreedefinitionTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAxios({ url: 'pedigreedefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostPedigreedefinitionExport: function (queryData, onSuccess, onError) {
+      return this.authAxios({ url: 'pedigreedefinition/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+    },
   }
 }

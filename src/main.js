@@ -145,6 +145,18 @@ Vue.filter('toDate', value => {
   }
   return moment.format(i18n.t('formatDate'))
 })
+Vue.filter('toMcpdDate', value => {
+  if (value === null || value === undefined) {
+    return null
+  }
+  let moment
+  if (value.indexOf('-') !== -1) {
+    moment = window.moment(value)
+  } else {
+    moment = window.moment(value, 'YYYYMMDD')
+  }
+  return moment.format(i18n.t('formatDate'))
+})
 
 // Date time formatting
 Vue.filter('toDateTime', value => {

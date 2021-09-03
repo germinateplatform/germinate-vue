@@ -23,16 +23,6 @@ export default {
   components: {
     SearchableSelect
   },
-  props: {
-    title: {
-      type: String,
-      default: null
-    },
-    message: {
-      type: String,
-      default: null
-    }
-  },
   data: function () {
     return {
       countries: [],

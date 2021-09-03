@@ -62,6 +62,7 @@ const userState = {
     groups: ['userId'],
     locations: [],
     pedigrees: [],
+    pedigreedefinitions: ['pedigreeNotationDescription', 'pedigreeDescriptionDescription'],
     traits: [],
     trialsData: ['traitId'],
     collaborators: []

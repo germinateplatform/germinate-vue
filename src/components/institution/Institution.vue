@@ -5,6 +5,7 @@
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionId') }}</dt><dd class="col-9">{{ institution.institutionId }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionName') }}</dt><dd class="col-9">{{ institution.institutionName }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionAcronym') }}</dt><dd class="col-9">{{ institution.institutionAcronym }}</dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionCode') }}</dt><dd class="col-9">{{ institution.institutionCode }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionAddress') }}</dt><dd class="col-9">{{ institution.institutionAddress }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionEmail') }}</dt><dd class="col-9"><template v-if="institution.institutionEmail"><a :href="`mailto:${institution.institutionEmail}`">{{ institution.institutionEmail }}</a></template></dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionPhone') }}</dt><dd class="col-9">{{ institution.institutionPhone }}</dd>
