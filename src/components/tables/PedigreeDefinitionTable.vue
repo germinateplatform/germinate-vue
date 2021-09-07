@@ -5,6 +5,13 @@
                v-bind="$props"
                ref="pedigreeDefinitionTable"
                v-on="$listeners">
+      <!-- Pedigree notation URL -->
+      <template v-slot:cell(pedigreeNotationUrl)="data">
+        <span v-if="data.item.pedigreeNotationUrl">
+          <a :href="toUrl(data.item.pedigreeNotationUrl)" rel="nofollow" v-if="toUrl(data.item.pedigreeNotationUrl)">{{ data.item.pedigreeNotationUrl }}</a>
+          <span v-else>{{ data.item.pedigreeNotationUrl }}</span>
+        </span>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -99,6 +106,21 @@ export default {
     BaseTable
   },
   methods: {
+    toUrl: function (input) {
+      let url;
+  
+      try {
+        url = new URL(input)
+      } catch (_) {
+        return false; 
+      }
+
+      if (url.protocol === 'http:' || url.protocol === 'https:') {
+        return input
+      } else {
+        return undefined
+      }
+    },
     refresh: function () {
       this.$refs.pedigreeDefinitionTable.refresh()
     }
