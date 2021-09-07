@@ -141,7 +141,7 @@ Vue.filter('toDate', value => {
   if (value.indexOf('-') !== -1) {
     moment = window.moment(value)
   } else {
-    moment = window.moment(value, 'MMM D, YYYY')
+    moment = window.moment(value, 'YYYY-MM-DD')
   }
   return moment.format(i18n.t('formatDate'))
 })

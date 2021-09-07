@@ -89,10 +89,7 @@
       </template>
       <!-- Dataset state -->
       <template v-slot:cell(datasetState)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onDatasetStateClicked(data.item)" v-if="token && userIsAtLeast(token.userType, 'Administrator')">
-          <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" />
-        </a>
-        <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" v-else />
+        <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" />
       </template>
       <!-- External dataset? -->
       <template v-slot:cell(isExternal)="data">
@@ -116,6 +113,12 @@
           <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
         </a>
       </template>
+      <!-- Edit dataset -->
+      <template v-slot:cell(edit)="data">
+        <a href="#" class="text-decoration-none" @click.prevent="onDatasetEditClicked(data.item)" v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
+          <i :class="`mdi mdi-18px mdi-square-edit-outline`" v-b-tooltip.hover :title="$t('tableTooltipDatasetEdit')" />
+        </a>
+      </template>
 
       <!-- Row details is where the dataset locations are shown on a map -->
       <template v-slot:row-details="data">
@@ -132,7 +135,7 @@
     <!-- Genotype export modal for direct downloads from the table -->
     <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
     <!-- Dataset state modal -->
-    <DatasetStateModal :dataset="dataset" v-if="dataset && token && userIsAtLeast(token.userType, 'Administrator')" @changed="refresh" ref="datasetStateModal" />
+    <DatasetEditModal :dataset="dataset" v-if="dataset && token && userIsAtLeast(token.userType, 'Administrator')" @changed="refresh" ref="datasetEditModal" />
   </div>
 </template>
 
@@ -141,7 +144,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 import CollaboratorModal from '@/components/modals/CollaboratorModal'
 import GenotypeExportModal from '@/components/modals/GenotypeExportModal'
-import DatasetStateModal from '@/components/modals/DatasetStateModal'
+import DatasetEditModal from '@/components/modals/DatasetEditModal'
 import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props.js'
@@ -315,6 +318,15 @@ export default {
         }
       ]
 
+      if (this.token && this.userIsAtLeast(this.token.userType, 'Data Curator')) {
+        result.push({
+          key: 'edit',
+          type: undefined,
+          sortable: false,
+          label: ''
+        })
+      }
+
       if (this.selectable === true) {
         result.unshift({
           key: 'selected',
@@ -332,7 +344,7 @@ export default {
     AttributeModal,
     BaseTable,
     CollaboratorModal,
-    DatasetStateModal,
+    DatasetEditModal,
     GenotypeExportModal,
     LocationMap,
     LicenseModal
@@ -469,10 +481,10 @@ export default {
       this.$emit('license-accepted')
       this.refresh()
     },
-    onDatasetStateClicked: function (dataset) {
+    onDatasetEditClicked: function (dataset) {
       this.dataset = dataset
 
-      this.$nextTick(() => this.$refs.datasetStateModal.show())
+      this.$nextTick(() => this.$refs.datasetEditModal.show())
     },
     onLicenseClicked: function (dataset) {
       this.dataset = dataset

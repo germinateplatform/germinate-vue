@@ -82,8 +82,8 @@ export default {
     apiPostCrossDataTypeComparison: function (data, onSuccess, onError) {
       return this.authAxios({ url: 'dataset/crosscomparison', method: 'POST', dataType: 'blob', data: data, success: onSuccess, error: onError })
     },
-    apiPatchDatasetState: function (id, stateId, onSuccess, onError) {
-      return this.authAxios({ url: `dataset/${id}/state`, method: 'PATCH', data: stateId, success: onSuccess, error: onError })
+    apiPatchDataset: function (id, data, onSuccess, onError) {
+      return this.authAxios({ url: `dataset/${id}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
     }
   }
 }
