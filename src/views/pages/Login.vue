@@ -3,7 +3,7 @@
     <div class="container">
       <b-row>
         <b-col lg=7>
-          <b-card-group>
+          <b-card-group class="my-4">
             <!-- Login -->
             <b-card no-body class="p-4">
               <b-card-body>

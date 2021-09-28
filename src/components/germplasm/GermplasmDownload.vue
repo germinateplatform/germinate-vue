@@ -55,6 +55,9 @@
             :options="groups"
             v-if="pedigreeSelection === 'group'" />
 
+          <!-- Export attributes? -->
+          <b-form-checkbox class="mb-3" v-model="pedigreeIncludeAttributes" switch>{{ $t('pageGermplasmDownloadTabPedigreeIncludeAttributes') }}</b-form-checkbox>
+
           <template v-slot:footer>
             <b-button variant="primary" @click="downloadPedigree"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
           </template>
@@ -135,13 +138,14 @@ export default {
       EventBus.$emit('show-loading', true)
       const request = {
         individualIds: this.pedigreeSelection === 'marked' ? this.markedGermplasm : null,
-        groupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null
+        groupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null,
+        includeAttributes: this.pedigreeIncludeAttributes
       }
       this.apiPostPedigreeExport(request, result => {
         this.downloadBlob({
           blob: result,
           filename: `pedigree-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
-          extension: 'helium'
+          extension: this.pedigreeIncludeAttributes ? 'zip' : 'helium'
         })
         EventBus.$emit('show-loading', false)
       }, {

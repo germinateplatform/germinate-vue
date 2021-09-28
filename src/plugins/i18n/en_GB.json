@@ -542,6 +542,7 @@
   "pageGermplasmDownloadTabPedigreeSubtitle": "Export pedigree data for germplasm selections",
   "pageGermplasmDownloadTabPedigreeText": "Please select which data to export. This can either be the whole collection, your marked items or a group of germplasm.",
   "pageGermplasmDownloadTabPedigreeTitle": "Pedigree data",
+  "pageGermplasmDownloadTabPedigreeIncludeAttributes": "Include attributes?",
   "pageGermplasmDownloadTitle": "Advanced download",
   "pageGermplasmText": "<p>Select a germplasm name below to view further information for that germplasm. This database contains data such as geographical collection site data, breeders data and general passport data although this may not be available for all germplasm.</p><p>Column sorting applies across the entire dataset and can be enabled by clicking on a column title. You can also jump through the data by using the forward and back arrows at the bottom of the table. The table can be filtered down by using the column filtering system.</p><p>Tools to export data can be found at the foot of the germplasm table.</p>",
   "pageGermplasmTitle": "Germplasm",

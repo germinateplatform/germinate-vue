@@ -29,7 +29,7 @@
         <h3>{{ $t('pageMarkerDetailsDatasetsTitle') }}</h3>
         <p>{{ $t('pageMarkerDetailsDatasetsText') }}</p>
         <!-- Datasets this marker is part of -->
-        <DatasetTable :getData="getDatasetData" />
+        <DatasetTable :getData="getDatasetData" v-on:license-accepted="getMarker" />
 
         <hr/>
         <h3>{{ $t('pageMarkerDetailsMapsTitle') }}</h3>

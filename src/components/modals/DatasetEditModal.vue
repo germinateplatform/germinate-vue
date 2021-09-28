@@ -61,6 +61,9 @@ export default {
       this.datasetEndDate = this.dataset.endDate ? new Date(this.dataset.endDate) : null
       this.$refs['datasetEditModal-' + this.id].show()
     },
+    hide: function () {
+      this.$refs['datasetEditModal-' + this.id].hide()
+    },
     updateDataset: function () {
       return this.apiPatchDataset(this.dataset.datasetId, {
         name: this.datasetName,
@@ -71,6 +74,7 @@ export default {
       }, (result) => {
         if (result) {
           this.$emit('changed')
+          this.hide()
         }
       })
     }
