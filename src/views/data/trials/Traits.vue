@@ -1,22 +1,104 @@
 <template>
   <div>
     <h1>{{ $t('pageTraitsTitle') }}</h1>
-    <TraitTable :getData="getData" />
+    <TraitTable :getData="getData" :getIds="selectionMode === 'multi' ? getIds : null" :selectionMode="selectionMode" v-on:selection-changed="updateButtonState" ref="traitTable" />
+
+    <template v-if="token && userIsAtLeast(token.userType, 'Administrator')">
+      <Collapse :visible="false" :title="$t('pageTraitsUnifierTitle')" :showLoading="false" @toggle="unifierExpanded = !unifierExpanded" ref="traitCollapse">
+        <template v-slot:content>
+          <p>{{ $t('pageTraitsUnifierText') }}</p>
+          <b-button class="my-3" variant="primary" @click="getSelectedTrait" :disabled="!selectedIds || selectedIds.length < 2"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t('buttonNext') }}</b-button>
+
+          <div v-if="selectedTraits">
+            <h2>{{ $t('pageTraitsUnifierSelectPreferedTitle') }}</h2>
+            <p>{{ $t('pageTraitsUnifierSelectPreferedText') }}</p>
+            <b-list-group>
+              <b-list-group-item v-for="trait in selectedTraits" :key="`trait-${trait.traitId}`" href="#" @click="primaryTrait = trait.traitId" :active="trait.traitId === primaryTrait">
+                {{ trait.traitId }} - {{ trait.traitName }}
+              </b-list-group-item>
+            </b-list-group>
+
+            <b-button class="my-3" @click="mergeTrait"> <i class="mdi mdi-18px fix-alignment mdi-set-merge"/> {{ $t('buttonMerge') }}</b-button>
+          </div>
+        </template>
+      </Collapse>
+    </template>
   </div>
 </template>
 
 <script>
+import Collapse from '@/components/util/Collapse'
 import TraitTable from '@/components/tables/TraitTable'
 import traitApi from '@/mixins/api/trait.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   components: {
+    Collapse,
     TraitTable
+  },
+  data: function () {
+    return {
+      unifierExpanded: false,
+      selectedTraits: null,
+      primaryTrait: null,
+      selectedIds: [],
+    }
+  },
+  computed: {
+    selectionMode: function () {
+      return this.unifierExpanded ? 'multi' : null
+    }
   },
   mixins: [ traitApi ],
   methods: {
     getData: function (data, callback) {
       return this.apiPostTraitTable(data, callback)
+    },
+    getIds: function (data, callback) {
+      return this.apiPostTraitTableIds(data, callback)
+    },
+    updateButtonState: function (selectedIds) {
+      this.reset()
+      this.selectedIds = selectedIds
+    },
+    reset: function () {
+      this.primaryTrait = null
+      this.selectedTraits = null
+      this.selectedIds = []
+    },
+    getSelectedTrait: function () {
+      this.apiPostTraitTable({
+        page: 1,
+        limit: this.MAX_JAVA_INTEGER,
+        filter: [{
+          column: 'traitId',
+          operator: 'and',
+          comparator: 'inSet',
+          values: this.selectedIds
+        }]
+      }, result => {
+        if (result && result.data && result.data.length > 0) {
+          this.selectedTraits = result.data
+          this.primaryTrait = result.data[0].traitId
+        } else {
+          this.selectedTraits = []
+          this.primaryTrait = null
+        }
+      })
+    },
+    mergeTrait: function () {
+      EventBus.$emit('show-loading', true)
+      const others = this.selectedIds.filter(id => id != this.primaryTrait)
+      this.apiPostTraitUnification({
+        preferredTraitId: this.primaryTrait,
+        otherTraitIds: others
+      }, () => {
+        this.$refs.traitTable.refresh()
+        this.reset()
+        this.$refs.traitCollapse.toggle()
+        EventBus.$emit('show-loading', false)
+      })
     }
   }
 }

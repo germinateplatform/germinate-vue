@@ -41,12 +41,22 @@
       <template v-slot:cell(synonyms)="data">
         <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
       </template>
+      <!-- Edit trait -->
+      <template v-slot:cell(edit)="data">
+        <a href="#" class="text-decoration-none" @click.prevent="onTraitEditClicked(data.item)" v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
+          <i :class="`mdi mdi-18px mdi-square-edit-outline`" v-b-tooltip.hover :title="$t('tableTooltipTraitEdit')" />
+        </a>
+      </template>      
     </BaseTable>
+
+    <!-- Trait state modal -->
+    <TraitEditModal :trait="trait" v-if="trait && token && userIsAtLeast(token.userType, 'Administrator')" @changed="refresh" ref="traitEditModal" />
   </div>
 </template>
 
 <script>
 import BaseTable from '@/components/tables/BaseTable'
+import TraitEditModal from '@/components/modals/TraitEditModal'
 import defaultProps from '@/const/table-props.js'
 import colorMixin from '@/mixins/colors.js'
 import typesMixin from '@/mixins/types.js'
@@ -54,19 +64,25 @@ import typesMixin from '@/mixins/types.js'
 export default {
   name: 'TraitTable',
   props: {
-    ...defaultProps.BASE
+    ...defaultProps.BASE,
+    ...defaultProps.IDS,
+    selectionMode: {
+      type: String,
+      default: 'multi'
+    }
   },
   data: function () {
     return {
       options: {
         idColumn: 'traitId',
         tableName: 'traits'
-      }
+      },
+      trait: null
     }
   },
   computed: {
     columns: function () {
-      return [
+      const result = [
         {
           key: 'traitId',
           type: Number,
@@ -137,15 +153,42 @@ export default {
           formatter: this.$options.filters.toThousandSeparators
         }
       ]
+
+      if (this.token && this.userIsAtLeast(this.token.userType, 'Data Curator')) {
+        result.push({
+          key: 'edit',
+          type: undefined,
+          sortable: false,
+          label: ''
+        })
+      }
+
+      if (this.selectionMode === 'multi') {
+        result.unshift({
+          key: 'selected',
+          type: undefined,
+          sortable: false,
+          class: 'bg-primary',
+          label: ''
+        })
+      }
+
+      return result
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    TraitEditModal
   },
   mixins: [ colorMixin, typesMixin ],
   methods: {
     refresh: function () {
       this.$refs.traitTable.refresh()
+    },
+    onTraitEditClicked: function (trait) {
+      this.trait = trait
+
+      this.$nextTick(() => this.$refs.traitEditModal.show())
     }
   }
 }
