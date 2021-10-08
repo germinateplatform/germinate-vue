@@ -27,9 +27,11 @@
     <!-- Images -->
     <ImageCarousel class="mb-4" />
 
+    <!-- Heading and welcome text -->
     <h1>{{ $t('pageDashboardTitle') }}</h1>
     <p v-html="$t('pageDashboardText')" />
 
+    <!-- Publications -->
     <div v-if="showPublications || (token && userIsAtLeast(token.userType, 'Data Curator'))" class="mb-4">
       <h2>{{ $t('pageDashboardPublicationsTitle') }}</h2>
       <p>{{ $t('pageDashboardPublicationsText') }}</p>

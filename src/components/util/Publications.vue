@@ -77,7 +77,8 @@ export default {
         doi: null,
         html: null,
         errorMessage: null,
-        loading: false
+        loading: false,
+        date: null
       }
     }
   },
@@ -96,7 +97,8 @@ export default {
         doi: null,
         html: null,
         errorMessage: null,
-        loading: false
+        loading: false,
+        date: null
       }
     },
     deleteReference: function (p) {
@@ -116,11 +118,16 @@ export default {
       this.newPublication.json = null
       this.newPublication.errorMessage = null
       this.newPublication.loading = true
+      this.newPublication.date = null
 
       Cite.async(this.newPublication.doi.trim())
         .then(result => {
           this.newPublication.json = JSON.stringify(result.data[0])
           this.newPublication.html = result.format('bibliography', { format: 'html', template: 'apa' })
+
+          if (result.data[0].created && result.data[0].created['date-time']) {
+            this.newPublication.date = new Date(result.data[0].created['date-time'])
+          }
         })
         .catch(error => {
           this.newPublication.errorMessage = error.message
@@ -136,7 +143,8 @@ export default {
     onSubmit: function () {
       this.apiPutPublication({
         doi: this.newPublication.doi,
-        fallbackCache: this.newPublication.json
+        fallbackCache: this.newPublication.json,
+        createdOn: this.newPublication.date
       }, publicationId => {
         this.apiPutPublicationReference(publicationId, {
           publicationId: publicationId,
@@ -188,7 +196,7 @@ export default {
         page: 1,
         limit: this.MAX_JAVA_INTEGER,
         filter: filter,
-        orderBy: 'updatedOn',
+        orderBy: 'createdOn',
         ascending: 0
       }, result => {
         let pubs = result.data
