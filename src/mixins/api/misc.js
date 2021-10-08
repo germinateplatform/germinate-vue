@@ -91,6 +91,19 @@ export default {
     },
     apiGetDataResource: function (id, onSuccess, onError) {
       return this.authAxios({ url: `fileresource/${id}`, dataType: 'blob', success: onSuccess, error: onError })
+    },
+    apiPostPublicationsTable: function (queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAxios({ url: 'publication/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPutPublication: function (data, onSuccess, onError) {
+      return this.authAxios({ url: 'publication', method: 'PUT', data: data, success: onSuccess, error: onError })
+    },
+    apiPutPublicationReference: function (publicationId, data, onSuccess, onError) {
+      return this.authAxios({ url: `publication/${publicationId}/reference`, method: 'PUT', data: data, success: onSuccess, error: onError })
+    },
+    apiDeletePublicationReference: function (publicationId, referenceType, referenceId, onSuccess, onError) {
+      return this.authAxios({ url: `publication/${publicationId}/reference/${referenceType}/${referenceId || ''}`, method: 'DELETE', success: onSuccess, error: onError })
     }
   }
 }

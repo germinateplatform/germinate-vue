@@ -82,7 +82,8 @@ export default {
       pedigreeSelection: 'all',
       pedigreeGroup: null,
       groups: null,
-      hasPedigreeData: false
+      hasPedigreeData: false,
+      pedigreeIncludeAttributes: false
     }
   },
   watch: {

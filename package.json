@@ -27,6 +27,7 @@
     "axios": "~0.21.1",
     "bootstrap": "~4.5.3",
     "bootstrap-vue": "~2.19.0",
+    "citation-js": "^0.5.1",
     "core-js": "~2.6.11",
     "css-vars-ponyfill": "~2.1.2",
     "d3-dsv": "~1.2.0",

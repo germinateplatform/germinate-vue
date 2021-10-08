@@ -95,6 +95,12 @@
       <template v-slot:cell(isExternal)="data">
         <i :class="`mdi mdi-18px ${data.item.isExternal ? 'mdi-link-box-variant-outline' : 'mdi-file-document-box-outline'}`" v-if="data.item.isExternal !== undefined" v-b-tooltip.hover :title="data.item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
       </template>
+      <!-- Show publications -->
+      <template v-slot:cell(publications)="data">
+        <a href="#" class="text-decoration-none" v-if="data.item.publications !== 0 || (token && userIsAtLeast(token.userType, 'Data Curator'))" @click.prevent="showPublications(data.item)">
+          <i class="mdi mdi-18px mdi-text-box-check-outline" v-b-tooltip.hover :title="$t('tableTooltipDatasetPublications')" />
+        </a>
+      </template>
       <!-- Show collaborators -->
       <template v-slot:cell(collaborators)="data">
         <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showCollaborators(data.item)">
@@ -129,6 +135,8 @@
     <!-- License modal -->
     <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted" />
     <!-- Collaborators modal -->
+    <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || (token && userIsAtLeast(token.userType, 'Data Curator')))" ref="publicationsModal" />
+    <!-- Collaborators modal -->
     <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
     <!-- Attribute modal -->
     <AttributeModal :dataset="dataset" v-if="dataset && (dataset.dublinCore !== undefined || dataset.attributes !== 0)" ref="attributeModal" />
@@ -145,6 +153,7 @@ import LicenseModal from '@/components/modals/LicenseModal'
 import CollaboratorModal from '@/components/modals/CollaboratorModal'
 import GenotypeExportModal from '@/components/modals/GenotypeExportModal'
 import DatasetEditModal from '@/components/modals/DatasetEditModal'
+import PublicationsModal from '@/components/modals/PublicationsModal'
 import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props.js'
@@ -298,6 +307,12 @@ export default {
           class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'datasetState')}`,
           label: ''
         }, {
+          key: 'publications',
+          type: undefined,
+          sortable: false,
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'publications')}`,
+          label: ''
+        }, {
           key: 'collaborators',
           type: undefined,
           sortable: false,
@@ -307,7 +322,7 @@ export default {
           key: 'attributes',
           type: undefined,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributes')}`,
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'attributes')}`,
           label: ''
         }, {
           key: 'download',
@@ -347,7 +362,8 @@ export default {
     DatasetEditModal,
     GenotypeExportModal,
     LocationMap,
-    LicenseModal
+    LicenseModal,
+    PublicationsModal
   },
   mixins: [ colorMixin, datasetApi, genotypeApi, locationApi, typesMixin ],
   methods: {
@@ -461,6 +477,10 @@ export default {
     showCollaborators: function (dataset) {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.collaboratorModal.show())
+    },
+    showPublications: function (dataset) {
+      this.dataset = dataset
+      this.$nextTick(() => this.$refs.publicationsModal.show())
     },
     showAttributes: function (dataset) {
       this.dataset = dataset

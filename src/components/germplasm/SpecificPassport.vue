@@ -6,6 +6,7 @@
         <b-navbar-nav class="align-items-center">
           <b-nav-item href="#mcpd" @click="scrollIntoView">{{ $t('pagePassportMcpdTitle') }}</b-nav-item>
           <b-nav-item href="#institution" @click="scrollIntoView">{{ $t('pagePassportInstitutionTitle') }}</b-nav-item>
+          <b-nav-item href="#publications" @click="scrollIntoView">{{ $t('pagePassportPublicationsTitle') }}</b-nav-item>
           <b-nav-item href="#links" @click="scrollIntoView">{{ $t('pagePassportLinksTitle') }}</b-nav-item>
           <b-nav-item href="#performance" @click="scrollIntoView" v-if="performanceDataCount > 0">{{ $t('pagePassportTraitStatsTitle') }}</b-nav-item>
           <b-nav-item href="#datasets" @click="scrollIntoView">{{ $t('pagePassportDatasetTitle') }}</b-nav-item>
@@ -60,6 +61,12 @@
             <Institution v-if="germplasmTableData" :institutionId="germplasmTableData.institutionId" id="institution"/>
           </b-col>
         </b-row>
+
+        <hr />
+        <h2 class="mdi-heading" id="publications"><i class="mdi mdi-36px text-primary mdi-text-box-check-outline"/><span> {{ $t('pagePassportPublicationsTitle') }}</span></h2>
+        <p v-html="$t('pagePassportPublicationsText')" />
+
+        <Publications :referencingId="this.germplasmId" referenceType="germplasm" />
 
         <hr />
         <h2 class="mdi-heading" id="links"><i class="mdi mdi-36px text-primary mdi-link-variant"/><span> {{ $t('pagePassportLinksTitle') }}</span></h2>
@@ -187,6 +194,7 @@ import ImageGallery from '@/components/images/ImageGallery'
 import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
 import PedigreeDefinitionTable from '@/components/tables/PedigreeDefinitionTable'
+import Publications from '@/components/util/Publications'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import miscApi from '@/mixins/api/misc.js'
 import typesMixin from '@/mixins/types.js'
@@ -235,7 +243,8 @@ export default {
     Mcpd,
     PedigreeChart,
     PedigreeTable,
-    PedigreeDefinitionTable
+    PedigreeDefinitionTable,
+    Publications
   },
   mixins: [ germplasmApi, miscApi, typesMixin ],
   computed: {

@@ -301,6 +301,7 @@ export default {
           this.location = this.internalLocations[0]
           this.$nextTick(() => {
             this.center = [this.location.locationLatitude, this.location.locationLongitude]
+            map.panTo(new L.LatLng(this.location.locationLatitude, this.location.locationLongitude))
           })
 
           let marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')

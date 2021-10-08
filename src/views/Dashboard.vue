@@ -30,6 +30,13 @@
     <h1>{{ $t('pageDashboardTitle') }}</h1>
     <p v-html="$t('pageDashboardText')" />
 
+    <div v-if="showPublications || (token && userIsAtLeast(token.userType, 'Data Curator'))" class="mb-4">
+      <h2>{{ $t('pageDashboardPublicationsTitle') }}</h2>
+      <p>{{ $t('pageDashboardPublicationsText') }}</p>
+
+      <Publications referenceType="database" @publication-count-changed="count => showPublications = count > 0"/>
+    </div>
+
     <!-- Introduction tour -->
     <b-button variant="primary" @click="startIntroduction"><i class="mdi mdi-18px fix-alignment mdi-presentation-play" /> {{ $t('widgetIntroTourButtonText') }}</b-button>
 
@@ -42,6 +49,7 @@
 <script>
 import ImageCarousel from '@/components/images/ImageCarousel'
 import NewsSection from '@/components/news/NewsSection'
+import Publications from '@/components/util/Publications'
 import statsApi from '@/mixins/api/stats.js'
 import colorMixin from '@/mixins/colors.js'
 import { mapFilters } from '@/plugins/map-filters.js'
@@ -51,10 +59,12 @@ export default {
   name: 'dashboard',
   components: {
     ImageCarousel,
-    NewsSection
+    NewsSection,
+    Publications
   },
   data: function () {
     return {
+      showPublications: true,
       stats: null,
       images: null,
       statCategories: [

@@ -48,7 +48,8 @@ export function plotlyScatterPlot() {
         reversescale: false,
         opacity: 0.5,
         showscale: false,
-        type: 'histogram2dcontour'
+        type: 'histogram2dcontour',
+        hoverinfo: 'skip'
       });
 
 			for (var i = 0; i < cats.length; i++) {
