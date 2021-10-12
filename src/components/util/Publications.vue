@@ -204,7 +204,7 @@ export default {
         pubs = pubs.map(p => {
           let result = p
           try {
-            const citation = new Cite(p.publicationDoi.trim())
+            const citation = Cite.async(p.publicationDoi.trim())
             if (citation && citation.data && citation.data.length > 0) {
               p.displayData = citation.format('data', {format: 'object'})[0]
               p.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
