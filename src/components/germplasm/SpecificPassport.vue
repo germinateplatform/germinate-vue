@@ -378,7 +378,6 @@ export default {
     getPedigreeDefinitionData: function (data, callback) {
       return this.apiPostPedigreedefinitionTable(data, callback)
     },
-
     onToggleMarked: function () {
       const isMarked = this.markedGermplasm.indexOf(this.currentGermplasmId) !== -1
       if (isMarked) {

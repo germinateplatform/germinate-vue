@@ -15,19 +15,22 @@
           <b-progress-bar :value="loadingProgress" animated variant="primary"></b-progress-bar>
         </b-progress>
       </div>
-      <!-- Add overlays if available -->
-      <template v-if="imageOverlays && imageOverlays.length > 0">
+
+      <l-control position="bottomleft" class="leaflet-control-layers">
         <!-- Legend -->
-        <div class="location-map-legend" v-if="getOverlays(true).length > 0">
-          <b-img-lazy :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" alt="Image overlay legend" />
+        <div class="p-2 legend" v-if="imageOverlays && imageOverlays.length > 0 && getOverlays(true).length > 0">
+          <b-img-lazy fluid :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" alt="Image overlay legend" />
         </div>
-        <!-- Overlays -->
-        <l-image-overlay v-for="image in getOverlays(false)"
-                        :key="`map-overlay-${image.id}`"
-                        :url="image.url"
-                        :opacity="imageOverlayOpacity"
-                        :bounds="image.bounds" />
-      </template>
+      </l-control>
+
+      <!-- Add overlays if available -->
+      <!-- Overlays -->
+      <l-image-overlay v-for="image in getOverlays(false)"
+                      :key="`map-overlay-${image.id}`"
+                      :url="image.url"
+                      :opacity="imageOverlayOpacity"
+                      :bounds="image.bounds" />
+      
     </l-map>
     <!-- Add color gradient for heatmapping -->
     <ColorGradient :colors="gradientColors" v-if="mapType === 'heatmap'" ref="gradient" />
@@ -68,7 +71,7 @@ import L from 'leaflet'
 import climateApi from '@/mixins/api/climate.js'
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
-import { LMap, LImageOverlay } from 'vue2-leaflet'
+import { LMap, LImageOverlay, LControl } from 'vue2-leaflet'
 // LEAFLET
 import 'leaflet/dist/leaflet.css'
 
@@ -155,8 +158,9 @@ export default {
   components: {
     ClimateOverlayModal,
     ColorGradient,
-    'l-map': LMap,
-    'l-image-overlay': LImageOverlay
+    LControl,
+    LMap,
+    LImageOverlay
   },
   mixins: [ climateApi, typesMixin, colorMixin ],
   methods: {
@@ -375,7 +379,7 @@ export default {
               gradient: gradient
             }).addTo(this.$refs.map.mapObject)
 
-            this.$refs.gradient.refresh()
+            // this.$refs.gradient.refresh()
           }
         }
       }
@@ -528,7 +532,7 @@ export default {
   height: 600px !important;
 }
 
-.location-map .location-map-legend {
+/* .location-map .location-map-legend {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -537,6 +541,10 @@ export default {
   padding: 5px;
   pointer-events: none;
   z-index: 1000;
+} */
+.location-map .legend {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .leaflet-popup-content-wrapper {
