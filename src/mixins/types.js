@@ -240,6 +240,132 @@ export default {
           text: () => this.$t('datasetStateHidden')
         }
       },
+      statCategories: [
+        {
+          value: 'germplasm',
+          textI18n: () => this.$t('dashboardBannerGermplasm'),
+          text: this.$t('dashboardBannerGermplasm'),
+          icon: 'mdi-sprout',
+          link: 'germplasm'
+        },
+        {
+          value: 'markers',
+          textI18n: () => this.$t('dashboardBannerMarkers'),
+          text: this.$t('dashboardBannerMarkers'),
+          icon: 'mdi-dna',
+          link: 'markers'
+        },
+        {
+          value: 'maps',
+          textI18n: () => this.$t('dashboardBannerMaps'),
+          text: this.$t('dashboardBannerMaps'),
+          icon: 'mdi-reorder-vertical',
+          link: 'maps'
+        },
+        {
+          value: 'traits',
+          textI18n: () => this.$t('dashboardBannerTraits'),
+          text: this.$t('dashboardBannerTraits'),
+          icon: 'mdi-tag-text-outline',
+          link: 'traits'
+        },
+        {
+          value: 'locations',
+          textI18n: () => this.$t('dashboardBannerLocations'),
+          text: this.$t('dashboardBannerLocations'),
+          icon: 'mdi-map-marker',
+          link: 'locations'
+        },
+        {
+          value: 'datasets',
+          textI18n: () => this.$t('dashboardBannerDatasets'),
+          text: this.$t('dashboardBannerDatasets'),
+          icon: 'mdi-database',
+          link: 'datasets'
+        },
+        {
+          value: 'experiments',
+          textI18n: () => this.$t('dashboardBannerExperiments'),
+          text: this.$t('dashboardBannerExperiments'),
+          icon: 'mdi-folder-table',
+          link: 'experiments'
+        },
+        {
+          value: 'datasetsAllelefreq',
+          textI18n: () => this.$t('dashboardBannerDatasetsAllelefreq'),
+          text: this.$t('dashboardBannerDatasetsAllelefreq'),
+          icon: 'mdi-pulse',
+          link: 'export',
+          params: { datasetType: 'allelefreq' }
+        },
+        {
+          value: 'datasetsGenotype',
+          textI18n: () => this.$t('dashboardBannerDatasetsGenotype'),
+          text: this.$t('dashboardBannerDatasetsGenotype'),
+          icon: 'mdi-dna',
+          link: 'export',
+          params: { datasetType: 'genotype' }
+        },
+        {
+          value: 'datasetsTrials',
+          textI18n: () => this.$t('dashboardBannerDatasetsTrials'),
+          text: this.$t('dashboardBannerDatasetsTrials'),
+          icon: 'mdi-shovel',
+          link: 'export',
+          params: { datasetType: 'trials' }
+        },
+        {
+          value: 'datasetsClimate',
+          textI18n: () => this.$t('dashboardBannerDatasetsClimate'),
+          text: this.$t('dashboardBannerDatasetsClimate'),
+          icon: 'mdi-chart-sankey',
+          link: 'export',
+          params: { datasetType: 'climate' }
+        },
+        {
+          value: 'datasetsCompound',
+          textI18n: () => this.$t('dashboardBannerDatasetsCompound'),
+          text: this.$t('dashboardBannerDatasetsCompound'),
+          icon: 'mdi-flask',
+          link: 'export',
+          params: { datasetType: 'compound' }
+        },
+        {
+          value: 'groups',
+          textI18n: () => this.$t('dashboardBannerGroups'),
+          text: this.$t('dashboardBannerGroups'),
+          icon: 'mdi-group',
+          link: 'groups'
+        },
+        {
+          value: 'climates',
+          textI18n: () => this.$t('dashboardBannerClimates'),
+          text: this.$t('dashboardBannerClimates'),
+          icon: 'mdi-weather-snowy-rainy',
+          link: 'climates'
+        },
+        {
+          value: 'compounds',
+          textI18n: () => this.$t('dashboardBannerCompounds'),
+          text: this.$t('dashboardBannerCompounds'),
+          icon: 'mdi-atom',
+          link: 'compounds'
+        },
+        {
+          value: 'images',
+          textI18n: () => this.$t('dashboardBannerImages'),
+          text: this.$t('dashboardBannerImages'),
+          icon: 'mdi-image-multiple',
+          link: 'images'
+        },
+        {
+          value: 'fileresources',
+          textI18n: () => this.$t('dashboardBannerFileResources'),
+          text: this.$t('dashboardBannerFileResources'),
+          icon: 'mdi-file-download',
+          link: 'data-resources'
+        }
+      ],
       datasetTypes: {
         allelefreq: {
           id: 4,

@@ -2,14 +2,14 @@
   <div class="animated fadeIn">
     <b-row class="dashboard-stats" v-if="stats">
       <!-- Banner buttons -->
-      <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.key">
-        <router-link :disabled="isDisabled(category.link)" :event="isDisabled(category.link) ? '' : 'click'" :to="{ name: category.link, params: category.params }" :title="`${category.text()}: ${$options.filters.toThousandSeparators(stats[category.key])}`">
+      <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.value">
+        <router-link :disabled="isDisabled(category.link)" :event="isDisabled(category.link) ? '' : 'click'" :to="{ name: category.link, params: category.params }" :title="`${category.textI18n()}: ${$options.filters.toThousandSeparators(stats[category.value])}`">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
                 <b-col cols=6 class="align-self-center">
-                  <h2 class="mb-0">{{ getNumberWithSuffix(stats[category.key], 1) }}</h2>
-                  <p>{{ category.text() }}</p>
+                  <h2 class="mb-0">{{ getNumberWithSuffix(stats[category.value], 1) }}</h2>
+                  <p>{{ category.textI18n() }}</p>
                 </b-col>
                 <b-col cols=6 class="text-right">
                   <i :class="`mdi mdi-48px fix-alignment ${category.icon}`" />
@@ -53,6 +53,7 @@ import ImageCarousel from '@/components/images/ImageCarousel'
 import NewsSection from '@/components/news/NewsSection'
 import Publications from '@/components/util/Publications'
 import statsApi from '@/mixins/api/stats.js'
+import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
 import { mapFilters } from '@/plugins/map-filters.js'
 import { EventBus } from '@/plugins/event-bus.js'
@@ -69,127 +70,18 @@ export default {
       showPublications: true,
       stats: null,
       images: null,
-      statCategories: [
-        {
-          key: 'germplasm',
-          text: () => this.$t('dashboardBannerGermplasm'),
-          icon: 'mdi-sprout',
-          link: 'germplasm'
-        },
-        {
-          key: 'markers',
-          text: () => this.$t('dashboardBannerMarkers'),
-          icon: 'mdi-dna',
-          link: 'markers'
-        },
-        {
-          key: 'maps',
-          text: () => this.$t('dashboardBannerMaps'),
-          icon: 'mdi-reorder-vertical',
-          link: 'maps'
-        },
-        {
-          key: 'traits',
-          text: () => this.$t('dashboardBannerTraits'),
-          icon: 'mdi-tag-text-outline',
-          link: 'traits'
-        },
-        {
-          key: 'locations',
-          text: () => this.$t('dashboardBannerLocations'),
-          icon: 'mdi-map-marker',
-          link: 'locations'
-        },
-        {
-          key: 'datasets',
-          text: () => this.$t('dashboardBannerDatasets'),
-          icon: 'mdi-database',
-          link: 'datasets'
-        },
-        {
-          key: 'experiments',
-          text: () => this.$t('dashboardBannerExperiments'),
-          icon: 'mdi-folder-table',
-          link: 'experiments'
-        },
-        {
-          key: 'datasetsAllelefreq',
-          text: () => this.$t('dashboardBannerDatasetsAllelefreq'),
-          icon: 'mdi-pulse',
-          link: 'export',
-          params: { datasetType: 'allelefreq' }
-        },
-        {
-          key: 'datasetsGenotype',
-          text: () => this.$t('dashboardBannerDatasetsGenotype'),
-          icon: 'mdi-dna',
-          link: 'export',
-          params: { datasetType: 'genotype' }
-        },
-        {
-          key: 'datasetsTrials',
-          text: () => this.$t('dashboardBannerDatasetsTrials'),
-          icon: 'mdi-shovel',
-          link: 'export',
-          params: { datasetType: 'trials' }
-        },
-        {
-          key: 'datasetsClimate',
-          text: () => this.$t('dashboardBannerDatasetsClimate'),
-          icon: 'mdi-chart-sankey',
-          link: 'export',
-          params: { datasetType: 'climate' }
-        },
-        {
-          key: 'datasetsCompound',
-          text: () => this.$t('dashboardBannerDatasetsCompound'),
-          icon: 'mdi-flask',
-          link: 'export',
-          params: { datasetType: 'compound' }
-        },
-        {
-          key: 'groups',
-          text: () => this.$t('dashboardBannerGroups'),
-          icon: 'mdi-group',
-          link: 'groups'
-        },
-        {
-          key: 'climates',
-          text: () => this.$t('dashboardBannerClimates'),
-          icon: 'mdi-weather-snowy-rainy',
-          link: 'climates'
-        },
-        {
-          key: 'compounds',
-          text: () => this.$t('dashboardBannerCompounds'),
-          icon: 'mdi-atom',
-          link: 'compounds'
-        },
-        {
-          key: 'images',
-          text: () => this.$t('dashboardBannerImages'),
-          icon: 'mdi-image-multiple',
-          link: 'images'
-        },
-        {
-          key: 'fileresources',
-          text: () => this.$t('dashboardBannerFileResources'),
-          icon: 'mdi-file-download',
-          link: 'data-resources'
-        }
-      ]
     }
   },
   computed: {
     dashboardCategories: function () {
       if (this.serverSettings && this.serverSettings.dashboardCategories) {
-        return this.statCategories.filter(d => this.serverSettings.dashboardCategories.indexOf(d.key) !== -1)
+        return this.statCategories.filter(d => this.serverSettings.dashboardCategories.indexOf(d.value) !== -1)
       } else {
         return this.statCategories
       }
     }
   },
-  mixins: [ statsApi, colorMixin ],
+  mixins: [ statsApi, colorMixin, typesMixin ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     startIntroduction: function () {

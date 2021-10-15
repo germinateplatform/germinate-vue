@@ -101,6 +101,13 @@ const router = new Router({
               meta: { minUserType: 'Administrator' },
               component: () => import('@/views/admin/UserPermissions.vue'),
               beforeEnter: requireAuth
+            },
+            {
+              path: 'germinate-settings',
+              name: 'germinate-settings',
+              meta: { minUserType: 'Administrator' },
+              component: () => import('@/views/admin/GerminateSettings.vue'),
+              beforeEnter: requireAuth
             }
           ]
         },
