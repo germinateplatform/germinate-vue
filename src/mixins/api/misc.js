@@ -6,6 +6,9 @@ export default {
     apiGetAdminSettings: function (onSuccess, onError) {
       return this.authAxios({ url: 'settings/admin', success: onSuccess, error: onError })
     },
+    apiPostAdminSettings: function (queryData, onSuccess, onError) {
+      return this.authAxios({ url: 'settings/admin', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiGetSettingsFile: function (queryData, onSuccess, onError) {
       return this.authAxios({ url: 'settings/file', data: queryData, success: onSuccess, error: onError })
     },

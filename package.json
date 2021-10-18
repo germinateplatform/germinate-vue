@@ -22,7 +22,7 @@
     "@coreui/icons": "~0.3.0",
     "@coreui/vue": "~2.1.2",
     "@johmun/vue-tags-input": "~2.1.0",
-    "@mdi/font": "~5.3.45",
+    "@mdi/font": "^6.3.95",
     "@trevoreyre/autocomplete-vue": "~2.0.4",
     "axios": "^0.21.4",
     "bootstrap": "~4.5.3",
@@ -63,6 +63,7 @@
     "vue-meta": "~2.4.0",
     "vue-router": "~3.1.3",
     "vue2-leaflet": "^2.7.1",
+    "vuedraggable": "^2.24.3",
     "vuex": "~3.1.2",
     "vuex-persistedstate": "~2.7.0",
     "zxcvbn": "~4.4.2"

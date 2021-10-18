@@ -114,22 +114,31 @@ export default {
       } else {
         this.$refs.loadingModal.hide()
       }
+    },
+    attachStyleSheet: function () {
+      if (this.customStyleSheet) {
+        document.head.removeChild(this.customStyleSheet)
+      }      
+
+      // Load the custom .css file provided specifically for this project
+      this.customStyleSheet = document.createElement('link')
+      this.customStyleSheet.rel = 'stylesheet'
+      this.customStyleSheet.href = this.baseUrl + 'settings/css'
+      document.head.appendChild(this.customStyleSheet)
     }
   },
   destroyed: function () {
     EventBus.$off('on-print', this.print)
     EventBus.$off('show-loading', this.toggleLoading)
+    EventBus.$off('on-stylesheet-changed', this.attachStyleSheet)
   },
   mounted: function () {
     loadLanguageAsync(this.locale)
     EventBus.$on('on-print', this.print)
     EventBus.$on('show-loading', this.toggleLoading)
+    EventBus.$on('on-stylesheet-changed', this.attachStyleSheet)
 
-    // Load the custom .css file provided specifically for this project
-    let file = document.createElement('link')
-    file.rel = 'stylesheet'
-    file.href = this.baseUrl + 'settings/css'
-    document.head.appendChild(file)
+    this.attachStyleSheet()
 
     this.loadAndSetDarkMode()
 
