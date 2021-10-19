@@ -8,6 +8,8 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/germinateplatform/germinate-vue)
 ![GitHub last commit](https://img.shields.io/github/last-commit/germinateplatform/germinate-vue)
 ![Docker Pulls](https://img.shields.io/docker/pulls/cropgeeks/germinate)
+[![Docker CI Push](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-push.yml/badge.svg)](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-push.yml)
+[![Docker CI Tag](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-tag.yml/badge.svg)](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-tag.yml)
 
 ![](https://germinateplatform.github.io/get-germinate/images/screenshot-1.png "Home page")
 
