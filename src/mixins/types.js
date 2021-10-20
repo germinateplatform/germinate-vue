@@ -178,7 +178,7 @@ export default {
           icon: 'mdi-dna',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypeGenotype'),
-          accepts: '.xlsx, .txt'
+          accepts: '.xlsx, .txt, .hapmap'
         },
         trial: {
           icon: 'mdi-shovel',
