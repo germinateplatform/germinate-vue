@@ -522,6 +522,8 @@
   "pageExportSelectItemMinimum": "Please select at least one item. | Please select at least {count} items.",
   "pageGenotypesExportEnableFlapjackText": "By enabling this, Germinate will generate a <a href='https://ics.hutton.ac.uk/flapjack'>Flapjack</a> project file in addition to the flat text files.",
   "pageGenotypesExportEnableFlapjackTitle": "Generate Flapjack project?",
+  "pageGenotypesExportEnableFlatFileText": "By enabling this, Germinate will generate a flat tab-delimited file containing the genotypic data.",
+  "pageGenotypesExportEnableFlatFileTitle": "Generate flat text file?",
   "pageGenotypesExportEnableHapmapText": "By enabling this, Germinate will generate a HapMap file in addition to the flat text files.",
   "pageGenotypesExportEnableHapmapTitle": "Generate HapMap file?",
   "pageGenotypesExportMultipleSubselectText": "This table shows you how many of the germplasm and markers you selected are in each of the datasets you want to export. If there are datasets that you no longer want to export based on this information, please untick them in the table.",

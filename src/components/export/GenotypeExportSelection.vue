@@ -42,6 +42,12 @@
           </b-form-group>
         </b-col>
         <b-col cols=12 md=6>
+          <h2>{{$t('pageGenotypesExportEnableFlatFileTitle') }}</h2>
+          <p v-html="$t('pageGenotypesExportEnableFlatFileText')" />
+          <b-form-checkbox v-model="generateFlatFile" switch>
+            {{ generateFlatFile === true ? $t('genericYes') : $t('genericNo') }}
+          </b-form-checkbox>
+          <p></p>
           <!-- Export Flapjack file? -->
           <h2>{{$t('pageGenotypesExportEnableFlapjackTitle') }}</h2>
           <p v-html="$t('pageGenotypesExportEnableFlapjackText')" />
@@ -105,6 +111,7 @@ export default {
       mapOptions: [],
       map: null,
       generateFlapjackProject: false,
+      generateFlatFile: true,
       generateHapMap: false,
       selectedDatasetIds: [],
       exportStarted: false
@@ -167,7 +174,8 @@ export default {
         datasetIds: isFinal ? this.selectedDatasetIds : this.datasetIds,
         mapId: this.map,
         generateFlapjackProject: this.generateFlapjackProject,
-        generateHapMap: this.generateHapMap
+        generateHapMap: this.generateHapMap,
+        generateFlatFile: this.generateFlatFile
       }
 
       const germplasmSettings = this.$refs.germplasmGroups.getSettings()
