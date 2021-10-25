@@ -151,6 +151,7 @@ export default {
     },
     downloadMetadata: function () {
       EventBus.$emit('show-loading', true)
+      
       const request = {
         datasetIds: this.selectedDatasetIds
       }
