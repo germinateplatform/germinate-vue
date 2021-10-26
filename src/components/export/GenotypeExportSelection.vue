@@ -151,7 +151,7 @@ export default {
     },
     downloadMetadata: function () {
       EventBus.$emit('show-loading', true)
-      
+
       const request = {
         datasetIds: this.selectedDatasetIds
       }
@@ -272,7 +272,7 @@ export default {
             let name = m.mapName
 
             if (m.markerCount) {
-              name += ` (${m.markerCount})`
+              name += ` (${m.markerCount.toLocaleString()})`
             }
 
             this.mapOptions.push({
