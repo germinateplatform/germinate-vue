@@ -70,6 +70,18 @@ img.rotate270 {
   transition: 0.5s ease-in-out;
 }
 
+.sidebar-nav i.icon-germinate {
+  opacity: 0.6;
+}
+.sidebar-nav li:not(.nav-dropdown) a.active i.icon-germinate,
+.sidebar-nav li:not(.nav-dropdown):hover i.icon-germinate {
+  opacity: 1;
+}
+
+.sidebar-nav i.icon-germinate:after {
+  content: url("/img/germinate-mini.svg");
+}
+
 // Indentation of sidebar menu items
 .sidebar
   .ps

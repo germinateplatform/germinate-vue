@@ -74,7 +74,7 @@
         Version {{ germinateVersion }}
       </div>
       <div class="ml-auto">
-        <a href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>
+        <a rel="noopener noreferrer" href="https://ics.hutton.ac.uk/get-germinate">Germinate</a>
         <span class="ml-1">&copy; {{ new Date().getFullYear() }} The James Hutton Institute.</span>
       </div>
     </TheFooter>
@@ -450,7 +450,8 @@ export default {
               name: this.$t('menuAboutGerminate'),
               identifiers: ['about-germinate'],
               url: '/about/germinate',
-              icon: 'mdi mdi-18px mdi-alpha-g-circle-outline'
+              // icon: 'mdi mdi-18px mdi-alpha-g-circle-outline'
+              icon: 'icon-germinate'
             },
             {
               name: this.$t('menuAboutExportFormat'),

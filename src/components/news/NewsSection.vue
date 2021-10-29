@@ -50,7 +50,7 @@
                 </b-card-body>
 
                 <b-button-group>
-                  <b-button variant="primary" :href="project.newsHyperlink" v-if="project.newsHyperlink">{{ $t('pageNewsReadMore') }}</b-button>
+                  <b-button variant="primary" :href="project.newsHyperlink" rel="noopener noreferrer" v-if="project.newsHyperlink">{{ $t('pageNewsReadMore') }}</b-button>
                   <b-button v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="deleteNewsItem(project.newsId)" variant="danger"><i class="mdi mdi-delete"/> {{ $t('buttonDelete') }}</b-button>
                 </b-button-group>
               </b-card>
