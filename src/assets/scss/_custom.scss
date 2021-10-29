@@ -71,7 +71,7 @@ img.rotate270 {
 }
 
 .sidebar-nav i.icon-germinate {
-  opacity: 0.6;
+  opacity: 0.4;
 }
 .sidebar-nav li:not(.nav-dropdown) a.active i.icon-germinate,
 .sidebar-nav li:not(.nav-dropdown):hover i.icon-germinate {
@@ -79,7 +79,7 @@ img.rotate270 {
 }
 
 .sidebar-nav i.icon-germinate:after {
-  content: url("/img/germinate-mini.svg");
+  content: url("~@/assets/img/germinate-mini.svg");
 }
 
 // Indentation of sidebar menu items
