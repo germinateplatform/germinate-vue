@@ -188,7 +188,7 @@ export function plotlyScatterPlot() {
 				displaylogo: false
 			};
 
-			Plotly.plot(this, data, layout, config);
+      Plotly.newPlot(this, data, layout, config);
 
       var that = this;
       

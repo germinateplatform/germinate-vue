@@ -51,6 +51,8 @@ import Passport from '@/views/data/germplasm/Passport'
 import Tour from '@/components/util/Tour'
 import colorMixin from '@/mixins/colors.js'
 import { plotlyScatterMatrix } from '@/plugins/charts/plotly-scatter-matrix.js'
+const d3Select = require('d3-selection')
+const d3Dsv = require('d3-dsv')
 
 export default {
   props: {
@@ -161,11 +163,11 @@ export default {
         const dirtyTsv = reader.result
         const firstEOL = dirtyTsv.indexOf('\r\n')
         const tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
-        const data = this.$plotly.d3.tsv.parse(tsv)
+        const data = d3Dsv.tsvParse(tsv)
 
         this.loading = false
 
-        this.$plotly.d3.select(this.$refs.matrixChart)
+        d3Select.select(this.$refs.matrixChart)
           .datum(data)
           .call(plotlyScatterMatrix()
             .colorBy(colorBy)

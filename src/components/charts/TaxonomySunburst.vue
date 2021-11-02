@@ -11,6 +11,8 @@ import BaseChart from '@/components/charts/BaseChart'
 import { plotlySunburstChart } from '@/plugins/charts/plotly-sunburst-chart.js'
 import statsApi from '@/mixins/api/stats.js'
 import colorMixin from '@/mixins/colors.js'
+const d3Select = require('d3-selection')
+const d3Dsv = require('d3-dsv')
 
 export default {
   data: function () {
@@ -41,7 +43,7 @@ export default {
 
       const reader = new FileReader()
       reader.onload = () => {
-        const data = this.$plotly.d3.tsv.parse(reader.result)
+        const data = d3Dsv.tsvParse(reader.result)
 
         let sunburst = {}
 
@@ -87,7 +89,7 @@ export default {
           chartData.values.push(sunburst[k])
         })
 
-        this.$plotly.d3.select(this.$refs.taxonomyChart)
+        d3Select.select(this.$refs.taxonomyChart)
           .datum(chartData)
           .call(plotlySunburstChart()
             .height(500)

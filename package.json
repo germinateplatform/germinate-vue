@@ -51,7 +51,7 @@
     "leaflet.sync": "~0.2.4",
     "lodash": "~4.17.21",
     "moment": "~2.24.0",
-    "plotly.js": "~1.54.6",
+    "plotly.js": "^2.6.0",
     "simple-line-icons": "~2.4.1",
     "simplex-noise": "~2.4.0",
     "snapsvg": "~0.5.1",

@@ -69,6 +69,8 @@
 import BaseChart from '@/components/charts/BaseChart'
 import colorMixin from '@/mixins/colors.js'
 import { plotlyAlleleFreqChart } from '@/plugins/charts/plotly-allelefreq-chart.js'
+const d3Select = require('d3-selection')
+const d3Dsv = require('d3-dsv')
 
 export default {
   props: {
@@ -131,7 +133,7 @@ export default {
       // Read the file
       let reader = new FileReader()
       reader.onload = () => {
-        this.serverFileBinning = this.$plotly.d3.tsv.parse(reader.result)
+        this.serverFileBinning = d3Dsv.tsvParse(reader.result)
         this.serverFileBinning.forEach(d => {
           // Parse the content
           d.position = parseFloat(d.position)
@@ -234,7 +236,7 @@ export default {
 
       let reader = new FileReader()
       reader.onload = () => {
-        let data = this.$plotly.d3.tsv.parse(reader.result)
+        let data = d3Dsv.tsvParse(reader.result)
 
         this.dataCount = data.length
         if (data.length > 0) {
@@ -252,7 +254,7 @@ export default {
             })
 
             // Plot the chart
-            this.$plotly.d3.select(this.$refs.allelefreqChart)
+            d3Select.select(this.$refs.allelefreqChart)
               .datum(data)
               .call(plotlyAlleleFreqChart()
                 .x('position')

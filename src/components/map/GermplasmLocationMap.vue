@@ -77,6 +77,7 @@ const rad_Earth = 6378.16
 const one_degree = (2 * Math.PI * rad_Earth) / 360
 const one_km = 1 / one_degree
 
+// Define these here instead of `data` to improve performance
 let locationMap = new Map()
 let germplasmData = null
 let germplasmLocations = null
@@ -292,11 +293,11 @@ export default {
 
           const marker = L.circleMarker([latLng.lat, latLng.lng], {
             fillColor: color,
-            radius: 4,
+            radius: 3,
             stroke: false,
             weight: 1,
             color: 'white',
-            fillOpacity: 0.75
+            fillOpacity: 0.66
           })
           marker.bindPopup('')
           marker.on('click', e => {

@@ -41,6 +41,8 @@ import genotypeApi from '@/mixins/api/genotype.js'
 import colorMixin from '@/mixins/colors.js'
 import { EventBus } from '@/plugins/event-bus.js'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
+const d3Select = require('d3-selection')
+const d3Dsv = require('d3-dsv')
 
 export default {
   props: {
@@ -189,9 +191,9 @@ export default {
           const dirtyTsv = reader.result
           const firstEOL = dirtyTsv.indexOf('\r\n')
           const tsv = 'markerName\tchromosome\tposition\r\n' + dirtyTsv.substring(firstEOL + 2)
-          const data = this.$plotly.d3.tsv.parse(tsv)
+          const data = d3Dsv.tsvParse(tsv)
 
-          this.$plotly.d3.select(this.$refs.mapChart)
+          d3Select.select(this.$refs.mapChart)
             .datum(data)
             .call(plotlyMapChart()
               .colors(this.getColors())

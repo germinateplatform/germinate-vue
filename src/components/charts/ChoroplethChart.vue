@@ -10,6 +10,7 @@
 import BaseChart from '@/components/charts/BaseChart'
 import statsApi from '@/mixins/api/stats.js'
 import colorMixin from '@/mixins/colors.js'
+const d3Dsv = require('d3-dsv')
 
 export default {
   data: function () {
@@ -53,7 +54,7 @@ export default {
 
       let reader = new FileReader()
       reader.onload = () => {
-        const rows = this.$plotly.d3.tsv.parse(reader.result)
+        const rows = d3Dsv.tsvParse(reader.result)
 
         const color = this.getColor(0)
 
@@ -105,7 +106,7 @@ export default {
 
         const chart = this.$refs.choroplethChart
 
-        this.$plotly.plot(chart, data, layout, config)
+        this.$plotly.newPlot(chart, data, layout, config)
 
         chart.on('plotly_click', data => {
           if (data && data.points && data.points.length > 0) {

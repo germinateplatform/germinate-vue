@@ -10,6 +10,8 @@
 import BaseChart from '@/components/charts/BaseChart'
 import { plotlyBarChart } from '@/plugins/charts/plotly-bar-chart.js'
 import colorMixin from '@/mixins/colors.js'
+const d3Dsv = require('d3-dsv')
+const d3Select = require('d3-selection')
 
 export default {
   props: {
@@ -70,9 +72,9 @@ export default {
         if (this.sourceFile) {
           let reader = new FileReader()
           reader.onload = () => {
-            let data = this.$plotly.d3.tsv.parse(reader.result)
+            let data = d3Dsv.tsvParse(reader.result)
 
-            this.$plotly.d3.select(this.$refs.barChart)
+            d3Select.select(this.$refs.barChart)
               .datum(data)
               .call(plotlyBarChart()
                 .height(this.height)
