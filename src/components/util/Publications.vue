@@ -6,7 +6,7 @@
     <div v-else>
       <b-row v-if="publications && publications.length > 0">
         <b-col cols=12 sm=6 md=4 xl=3 v-for="p in publications" :key="`publication-${p.publicationDoi}`">
-          <b-card :title="p.displayData.title" :sub-title="p.displayData['container-title']">
+          <b-card :title="p.displayData.title" :sub-title="p.displayData['container-title']" bg-variant="light">
             <p v-if="p.displayData && p.displayData.issued && p.displayData.issued['date-parts'] && p.displayData.issued['date-parts'].length > 0 && p.displayData.issued['date-parts'][0].length > 0">
               {{ p.displayData.issued['date-parts'][0][0] }}
             </p>

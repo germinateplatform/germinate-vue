@@ -13,7 +13,7 @@
         </span>
       </div>
     </b-card-header>
-    <b-collapse :id="id" :visible="contentVisible" :accordion="`accordion-${id}`" role="tabpanel">
+    <b-collapse :id="id" :visible="contentVisible" :accordion="`accordion-${id}`" role="tabpanel" @shown="$emit('shown')">
       <!-- This is where the content goes, it can trigger the 'update' event to let this component know something happened -->
       <template v-if="noBody">
         <slot name="content" v-bind:update="update"/>

@@ -1,7 +1,5 @@
 <template>
   <div>
-    <p v-if="!locations || locations.length < 1 || !germplasmData || germplasmData.length < 1">{{ $t('headingNoData') }}</p>
-
     <b-form-group label-for="color-by" :label="$t('pageTrialsExportColorByTitle')">
       <b-form-select id="color-by" :options="colorOptions" v-model="colorBy" />
     </b-form-group>
@@ -67,6 +65,8 @@ import ColorGradient from '@/components/util/ColorGradient'
 import L from 'leaflet'
 import { LMap, LControl } from 'vue2-leaflet'
 
+import germplasmApi from '@/mixins/api/germplasm.js'
+import locationApi from '@/mixins/api/location.js'
 import colorsMixin from '@/mixins/colors.js'
 import typesMixin from '@/mixins/types.js'
 
@@ -76,6 +76,11 @@ countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 const rad_Earth = 6378.16
 const one_degree = (2 * Math.PI * rad_Earth) / 360
 const one_km = 1 / one_degree
+
+let locationMap = new Map()
+let germplasmData = null
+let germplasmLocations = null
+let markers
 
 export default {
   components: {
@@ -92,7 +97,6 @@ export default {
       zoom: 3,
       maxZoom: 18,
       center: [22.5937, 2.1094],
-      markers: [],
       selectedLocation: null,
       selectedGermplasm: null,
       colorOptions: [{
@@ -115,29 +119,13 @@ export default {
         value: { fields: ['biologicalStatusName'], type: 'text', format: (value) => value }
       }],
       colorBy: null,
-      initialLoad: true,
       colorLegend: [],
       gradientColors: [],
-      gradientMinMax: { min: 0, max: 100, format: (x) => x }
-    }
-  },
-  props: {
-    locations: {
-      type: Array,
-      default: () => []
-    },
-    germplasmData: {
-      type: Array,
-      default: () => []
+      gradientMinMax: { min: 0, max: 100, format: (x) => x },
+      bounds: null
     }
   },
   watch: {
-    germplasmData: function () {
-      this.update()
-    },
-    locationMap: function () {
-      this.update()
-    },
     colorBy: function () {
       this.update()
     }
@@ -146,24 +134,19 @@ export default {
     markedStyle: function () {
       const isMarked = this.selectedGermplasm && this.markedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
       return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
-    },
-    locationMap: function () {
-      const result = new Map()
-
-      if (this.locations) {
-        this.locations.forEach(l => {
-          result.set(l.locationId, l)
-        })
-      }
-
-      return result
     }
   },
-  mixins: [colorsMixin, typesMixin],
+  mixins: [colorsMixin, typesMixin, germplasmApi, locationApi],
   methods: {
     invalidateSize: function () {
-      if (this.$refs.map) {
-        this.$nextTick(() => this.$refs.map.mapObject.invalidateSize())
+      if (this.$refs.map && this.$refs.map.mapObject) {
+        this.$nextTick(() => {
+          this.$refs.map.mapObject.invalidateSize()
+
+          if (this.bounds.isValid()) {
+            this.$nextTick(() => this.$refs.map.mapObject.fitBounds(this.bounds))
+          }
+        })
       }
     },
     onToggleMarked: function () {
@@ -226,7 +209,7 @@ export default {
       }
     },
     update: function () {
-      if (!this.germplasmData || !this.locationMap || this.locationMap.size < 1) {
+      if (!germplasmData || !locationMap || locationMap.size < 1) {
         return
       }
 
@@ -238,8 +221,8 @@ export default {
       const map = this.$refs.map.mapObject
 
       // Remove existing markers
-      if (this.markers && this.markers.length > 0) {
-        this.markers.forEach(m => map.removeLayer(m))
+      if (markers && markers.length > 0) {
+        markers.forEach(m => map.removeLayer(m))
       }
 
       const tempMarkers = []
@@ -251,7 +234,7 @@ export default {
 
       if (this.colorBy && this.colorBy.type !== 'text') {
         this.gradientMinMax.format = this.colorBy.format
-        this.germplasmData.forEach(g => {
+        germplasmData.forEach(g => {
           const value = this.colorBy.extractValue(g)
 
           if (value < this.gradientMinMax.min) {
@@ -263,10 +246,10 @@ export default {
         })
       }
 
-      const bounds = this.initialLoad ? L.latLngBounds() : null
+      this.bounds = L.latLngBounds()
 
-      this.germplasmData.forEach(g => {
-        const l = this.locationMap.get(g.locationId)
+      germplasmData.forEach(g => {
+        const l = locationMap.get(g.locationId)
 
         if (l) {
           let colorByValue = null
@@ -293,7 +276,7 @@ export default {
               case 'date':
               case 'number':
                 colorByValue = this.colorBy.extractValue(g)
-                rgb = this.$refs.gradient ? this.$refs.gradient.getColor(this.gradientMinMax.min, this.gradientMinMax.max, colorByValue) : { r: 0, g: 0, b: 0}
+                rgb = this.$refs.gradient ? this.$refs.gradient.getColor(this.gradientMinMax.min, this.gradientMinMax.max, colorByValue) : { r: 128, g: 128, b: 128}
                 if (rgb) {
                   color = this.rgbToHex(rgb.r, rgb.g, rgb.b)
                 } else {
@@ -305,9 +288,7 @@ export default {
 
           const latLng = this.jitter(l.locationLatitude, l.locationLongitude, 1, 6)
 
-          if (this.initialLoad) {
-            bounds.extend([latLng.lat, latLng.lng])
-          }
+          this.bounds.extend([latLng.lat, latLng.lng])
 
           const marker = L.circleMarker([latLng.lat, latLng.lng], {
             fillColor: color,
@@ -337,13 +318,74 @@ export default {
         }
       })
 
-      if (this.initialLoad && bounds.isValid()) {
-        this.$nextTick(() => map.fitBounds(bounds))
-        this.initialLoad = false
+      if (this.bounds.isValid()) {
+        this.$nextTick(() => map.fitBounds(this.bounds))
       }
 
-      this.markers = tempMarkers
+      markers = tempMarkers
       this.loading = false
+    },
+    updateLocationMap: function () {
+      locationMap = new Map()
+      germplasmLocations.forEach(l => {
+        locationMap.set(l.locationId, l)
+      })
+    },
+    getGermplasmMapData: function () {
+      this.loading = true
+      this.apiPostLocationTable({
+        page: 1,
+        limit: this.MAX_JAVA_INTEGER,
+        filter: [{
+          column: 'locationType',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['collectingsites']
+        }, {
+          column: 'locationLatitude',
+          comparator: 'isNotNull',
+          operator: 'and',
+          values: null
+        }, {
+          column: 'locationLongitude',
+          comparator: 'isNotNull',
+          operator: 'and',
+          values: null
+        }]
+      }, result => {
+        if (result && result.data && result.data.length > 0) {
+          const locations = result.data
+          Object.freeze(locations)
+          germplasmLocations = locations
+        } else {
+          germplasmLocations = []
+        }
+
+        this.updateLocationMap()
+
+        this.update()
+      })
+
+      this.apiPostGermplasmTable({
+        page: 1,
+        limit: this.MAX_JAVA_INTEGER,
+        filter: [{
+          column: 'locationId',
+          comparator: 'isNotNull',
+          operator: 'and',
+          values: null
+        }]
+      }, result => {
+        if (result && result.data && result.data.length > 0) {
+          const data = result.data
+          Object.freeze(data)
+          germplasmData = data
+        } else {
+          germplasmData = []
+        }
+
+        this.update()
+      })
     }
   },
   mounted: function () {
@@ -402,9 +444,7 @@ export default {
         map.scrollWheelZoom.disable()
       })
 
-      if (this.locations && this.locations.length > 0) {
-        this.update()
-      }
+      this.getGermplasmMapData()
     })
   }
 }
