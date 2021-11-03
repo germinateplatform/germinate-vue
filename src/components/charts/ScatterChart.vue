@@ -165,6 +165,7 @@ export default {
         d3Select.select(this.$refs.scatterChart)
           .datum(data)
           .call(plotlyScatterPlot()
+            .darkMode(this.darkMode)
             .colorBy(colorBy)
             .xCategory(this.x)
             .yCategory(this.y)

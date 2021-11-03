@@ -196,6 +196,7 @@ export default {
           d3Select.select(this.$refs.mapChart)
             .datum(data)
             .call(plotlyMapChart()
+              .darkMode(this.darkMode)
               .colors(this.getColors())
               .onPointsSelected((chromosome, start, end) => {
                 this.chartSelection.push({

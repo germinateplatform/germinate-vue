@@ -6,6 +6,7 @@ export function plotlyAlleleFreqChart() {
 		yCategory = '',
 		onPointClicked = null,
 		widths = [],
+    darkMode = false,
 		x = '',
 		y = '',
 		colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
@@ -91,17 +92,24 @@ export function plotlyAlleleFreqChart() {
 				autosize: true,
 				hovermode: 'closest',
         barmode: 'stacked',
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
         legend: {
-          bgcolor: 'rgba(0,0,0,0)'
+          bgcolor: 'rgba(0,0,0,0)',
+          font: { color: darkMode ? 'white' : 'black' }
         },
 				xaxis: {
-					title: xCategory,
+          title: { text: xCategory, font: { color: darkMode ? 'white' : 'black' } },
+          tickfont: { color: darkMode ? 'white' : 'black' },
 					automargin: true,
 					range: [0, 1.0]
 				},
 				yaxis: {
-					title: yCategory,
+          title: { text: yCategory, font: { color: darkMode ? 'white' : 'black' } },
+          tickfont: { color: darkMode ? 'white' : 'black' },
 					zeroline: true,
+          showgrid: true,
+          gridcolor: darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
 					rangemode: 'tozero',
 					automargin: true
 				}};
@@ -187,6 +195,12 @@ export function plotlyAlleleFreqChart() {
 		widths = _;
 		return chart;
 	}
+
+  chart.darkMode = function (_) {
+    if (!arguments.length) return darkMode;
+    darkMode = _;
+    return chart;
+  };
 
 	return chart;
 }

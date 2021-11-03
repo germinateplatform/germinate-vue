@@ -257,6 +257,7 @@ export default {
             d3Select.select(this.$refs.allelefreqChart)
               .datum(data)
               .call(plotlyAlleleFreqChart()
+                .darkMode(this.darkMode)
                 .x('position')
                 .y('count')
                 .xCategory(this.$t('datasetTypeAllelefreq'))

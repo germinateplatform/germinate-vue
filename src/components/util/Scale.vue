@@ -5,7 +5,7 @@
       <template v-else>{{ heading }}</template>
     </h6>
     <div class="d-flex my-2">
-      <div class="d-flex align-items-center scale-container w-100">
+      <div class="d-flex align-items-center scale-container w-100 bg-light">
         <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: 'var(--primary)' }" />
       </div>
     </div>
@@ -83,7 +83,6 @@ export default {
   text-overflow: ellipsis;
 }
 .scale-container {
-  background-color: #f0f3f5;
   border-radius: 0.25rem;
   height: 1rem;
   margin: .25rem 0;

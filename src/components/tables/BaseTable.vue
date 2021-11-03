@@ -94,7 +94,7 @@
       <template v-slot:head(marked)>
         <b-dropdown size="sm" dropleft variant="outline-primary" boundary="window">
           <template slot="button-content">
-            <i class="mdi mdi-18px mdi-check-box-multiple-outline" />
+            <i class="mdi mdi-18px mdi-checkbox-multiple-outline" />
           </template>
           <b-dropdown-item @click="markAllItems(true)"><i class="mdi mdi-18px mdi-checkbox-multiple-marked" />{{ $t('tableItemMarkingMarkAll') }}</b-dropdown-item>
           <b-dropdown-item @click="markAllItems(false)"><i class="mdi mdi-18px mdi-checkbox-multiple-blank-outline" />{{ $t('tableItemMarkingUnmarkAll') }}</b-dropdown-item>

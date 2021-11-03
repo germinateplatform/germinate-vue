@@ -92,6 +92,11 @@ export default {
       default: true
     }
   },
+  watch: {
+    darkMode: function () {
+      this.$emit('force-redraw')
+    }
+  },
   components: {
     CustomChartColorModal,
     ResizeObserver

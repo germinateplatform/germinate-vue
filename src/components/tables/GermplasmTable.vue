@@ -133,8 +133,8 @@
         <div v-if="data.item.pdci !== undefined" class="table-pdci">
           <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg); vertical-align: text-bottom;">
             <g>
-              <circle id="circle" style="stroke-dasharray: 44; stroke-dashoffset: 0;" r="7" cy="9" cx="9" stroke-width="4" stroke="#ccc" fill="none"/>
-              <circle id="circle" :style="'stroke-dasharray: 44; stroke-dashoffset: ' + (44 - (data.item.pdci / 10 * 44)) + ';'" r="7" cy="9" cx="9" stroke-width="4" stroke="#2f353a" fill="none"/>
+              <circle id="circle" class="pdci-circle-background" style="stroke-dasharray: 44; stroke-dashoffset: 0;" r="7" cy="9" cx="9" stroke-width="4" fill="none"/>
+              <circle id="circle" class="pdci-circle-inner" :style="'stroke-dasharray: 44; stroke-dashoffset: ' + (44 - (data.item.pdci / 10 * 44)) + ';'" r="7" cy="9" cx="9" stroke-width="4" fill="none"/>
             </g>
           </svg>
           <span> {{ data.item.pdci.toFixed(2) }}</span>
@@ -576,5 +576,11 @@ export default {
 }
 .germplasm-table .b-table-details td {
   padding: 0;
+}
+.pdci-circle-background {
+  stroke: #ccc;
+}
+.pdci-circle-inner {
+  stroke: #2f353a;
 }
 </style>

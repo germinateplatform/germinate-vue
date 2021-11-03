@@ -9,6 +9,7 @@ export function plotlyScatterMatrix() {
     colorByOptions = ['dataset_name', 'entity_parent_name', 'Date', 'treatments_description', 'rep', 'trial_site', 'group_ids'],
 		height = null,
 		width = null,
+    darkMode = false,
 		columnsToIgnore = [],
 		onPointClicked = null,
 		onPointsSelected = null,
@@ -151,14 +152,16 @@ export function plotlyScatterMatrix() {
 				margin: {autoexpand: true},
 				autosize: true,
 				bargap: 0,
+        paper_bgcolor: 'transparent',
 				width: width,
 				height: height === null ? this.offsetWidth : height,
-				plot_bgcolor: 'rgba(240, 240, 240, 0.3)',
+        plot_bgcolor: darkMode ? 'rgba(45, 45, 45, 0.3)' : 'rgba(240, 240, 240, 0.3)',
 				hovermode: 'closest',
 				dragmode: 'select',
 				legend: {
           bgcolor: 'rgba(0,0,0,0)',
-					orientation: 'h'
+					orientation: 'h',
+          font: { color: darkMode ? 'white' : 'black' }
 				}
 			};
 
@@ -169,15 +172,17 @@ export function plotlyScatterMatrix() {
 					showline: false,
 					zeroline: false,
           ticklen: 2,
-					tickfont: {size: 10},
-					titlefont: {size: 10}
+          gridcolor: darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          tickfont: { size: 10, color: darkMode ? 'white' : 'black'},
+          title: { font: { color: darkMode ? 'white' : 'black', size: 10 } }
 				};
 				layout['yaxis' + id] = {
 					showline: false,
 					zeroline: false,
           ticklen: 2,
-					tickfont: {size: 10},
-					titlefont: {size: 10}
+          gridcolor: darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          tickfont: { size: 10, color: darkMode ? 'white' : 'black'},
+          title: { font: { color: darkMode ? 'white' : 'black', size: 10 } }
 				};
 
 				if (d === 'Date') {
@@ -378,6 +383,12 @@ export function plotlyScatterMatrix() {
 		columnsToIgnore = _;
 		return chart;
 	};
+
+  chart.darkMode = function (_) {
+    if (!arguments.length) return darkMode;
+    darkMode = _;
+    return chart;
+  };
 
 	return chart;
 }

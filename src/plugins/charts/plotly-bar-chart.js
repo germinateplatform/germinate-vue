@@ -4,6 +4,7 @@ export function plotlyBarChart() {
 		height = 600,
 		xCategory = '',
 		yCategory = '',
+    darkMode = false,
 		onPointClicked = null,
 		mode = 'traces',
 		x = '',
@@ -41,19 +42,26 @@ export function plotlyBarChart() {
 				height: height,
 				hovermode: 'closest',
 				barmode: 'group',
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
 				xaxis: {
-					title: xCategory,
+          title: { text: xCategory, font: { color: darkMode ? 'white' : 'black' } },
+          tickfont: { color: darkMode ? 'white' : 'black' },
           automargin: true,
           fixedrange: true
 				},
 				yaxis: {
-					title: yCategory,
+          title: { text: yCategory, font: { color: darkMode ? 'white' : 'black' } },
+          tickfont: { color: darkMode ? 'white' : 'black' },
           automargin: true,
-          fixedrange: true
+          fixedrange: true,
+          showgrid: true,
+          gridcolor: darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
 				},
 				legend: {
           bgcolor: 'rgba(0,0,0,0)',
-					orientation: 'h'
+					orientation: 'h',
+          font: { color: darkMode ? 'white' : 'black' }
 				}
 			};
 
@@ -132,6 +140,12 @@ export function plotlyBarChart() {
 		mode = _;
 		return chart;
 	};
+
+  chart.darkMode = function (_) {
+    if (!arguments.length) return darkMode;
+    darkMode = _;
+    return chart;
+  };
 
 	return chart;
 }

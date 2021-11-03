@@ -85,14 +85,7 @@ export default {
       return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
     },
     loadAndSetDarkMode: function () {
-      import('darkreader')
-        .then(({ enable, disable }) => {
-          if (this.darkMode === true) {
-            enable()
-          } else {
-            disable()
-          }
-        })
+      document.body.classList.toggle('dark-mode')
     },
     print: function (newContent) {
       // Set the print content

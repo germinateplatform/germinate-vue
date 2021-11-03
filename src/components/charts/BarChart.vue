@@ -77,6 +77,7 @@ export default {
             d3Select.select(this.$refs.barChart)
               .datum(data)
               .call(plotlyBarChart()
+                .darkMode(this.darkMode)
                 .height(this.height)
                 .colors(this.getColors())
                 .x(this.xColumn)

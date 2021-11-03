@@ -92,6 +92,7 @@ export default {
         d3Select.select(this.$refs.taxonomyChart)
           .datum(chartData)
           .call(plotlySunburstChart()
+            .darkMode(this.darkMode)
             .height(500)
             .onLeafClicked(path => {
               // Then store a filter using genus, species and subtaxa

@@ -2,6 +2,7 @@
 export function plotlySunburstChart() {
 	var height = 800,
     onLeafClicked = null,
+    darkMode = false,
 		colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
 
 	function chart(selection) {
@@ -27,6 +28,8 @@ export function plotlySunburstChart() {
 
 			var layout = {
 				height: height,
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
 				margin: {l: 20, r: 20, b: 20, t: 20},
 				xaxis: {
 					automargin: true
@@ -36,7 +39,8 @@ export function plotlySunburstChart() {
 				},
 				legend: {
           bgcolor: 'rgba(0,0,0,0)',
-					orientation: 'h'
+					orientation: 'h',
+          font: { color: darkMode ? 'white' : 'black' }
         },
         sunburstcolorway: colors,
         extendsunburstcolorway: true
@@ -79,6 +83,12 @@ export function plotlySunburstChart() {
 		onLeafClicked = _;
 		return chart;
 	};
+
+  chart.darkMode = function (_) {
+    if (!arguments.length) return darkMode;
+    darkMode = _;
+    return chart;
+  };
 
 	return chart;
 }

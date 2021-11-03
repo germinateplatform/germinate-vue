@@ -78,11 +78,14 @@ export default {
           colorbar: {
             autotic: false,
             tickprefix: '',
-            thickness: 6
+            thickness: 6,
+            tickfont: { color: this.darkMode ? 'white' : 'black' }
           }
         }]
 
         const layout = {
+          paper_bgcolor: 'transparent',
+          plot_bgcolor: 'transparent',
           autosize: true,
           height: 800,
           geo: {

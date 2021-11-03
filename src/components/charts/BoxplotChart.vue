@@ -153,14 +153,22 @@ export default {
       let layout = {
         xaxis: {
           zeroline: false,
-          side: 'top'
+          side: 'top',
+          title: { font: { color: this.darkMode ? 'white' : 'black' } },
+          tickfont: { color: this.darkMode ? 'white' : 'black' },
+          showgrid: true,
+          gridcolor: this.darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
         },
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
         height: this.getHeight(),
         margin: { autoexpand: true },
         autosize: true,
         boxmode: 'group',
         yaxis: {
-          automargin: true
+          automargin: true,
+          title: { font: { color: this.darkMode ? 'white' : 'black' } },
+          tickfont: { color: this.darkMode ? 'white' : 'black' }
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',

@@ -9,6 +9,7 @@ export function plotlyScatterPlot() {
     colorByOptions = ['dataset_name', 'entity_parent_name', 'Date', 'treatments_description', 'rep', 'trial_site', 'group_ids'],
 		height = null,
 		width = null,
+    darkMode = false,
 		xCategory = 'x',
 		yCategory = 'y',
 		onPointClicked = null,
@@ -44,12 +45,16 @@ export function plotlyScatterPlot() {
         y: unpackConditional(rows, yCategory, null, cats[i]),
         name: 'density',
         ncontours: 20,
-        colorscale: [[0, '#ffffff'], [1, '#000000']],
+        colorscale: darkMode ? [[0, 'transparent'], [0.0001, 'black'], [1, 'white']] : [[0, 'transparent'], [0.0001, 'white'], [1, 'black']],
         reversescale: false,
-        opacity: 0.5,
+        opacity: 1,
+        line: {
+          color: darkMode ? 'white' : 'black'
+        },
         showscale: false,
         type: 'histogram2dcontour',
-        hoverinfo: 'skip'
+        hoverinfo: 'skip',
+        fillcolor: 'transparent'
       });
 
 			for (var i = 0; i < cats.length; i++) {
@@ -148,25 +153,29 @@ export function plotlyScatterPlot() {
 				height: height === null ? Math.min(this.offsetWidth, window.innerHeight) * 0.95 : height,
 				hovermode: 'closest',
         dragmode: 'select',
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
         updatemenus: updatemenus,
 				margin: {t: 65, autoexpand: true},
 				xaxis: {
 					domain: [0, 0.95],
 					showgrid: false,
 					showline: true,
-					title: xCategory
+					title: { text: xCategory, font: { color: darkMode ? 'white' : 'black' } },
+          tickfont: { color: darkMode ? 'white' : 'black' }
 				},
 				xaxis2: {
 					domain: [0.95, 1],
 					showgrid: false,
 					showticklabels: false,
-					zeroline: false
+          zeroline: false
 				},
 				yaxis: {
 					domain: [0, 0.95],
 					showgrid: false,
 					showline: true,
-					title: yCategory
+          title: { text: yCategory, font: { color: darkMode ? 'white' : 'black' } },
+          tickfont: { color: darkMode ? 'white' : 'black' }
 				},
 				yaxis2: {
 					domain: [0.95, 1],
@@ -176,7 +185,8 @@ export function plotlyScatterPlot() {
 				},
 				legend: {
           bgcolor: 'rgba(0,0,0,0)',
-					orientation: 'h'
+					orientation: 'h',
+          font: { color: darkMode ? 'white' : 'black' }
 				},
 				barmode: 'overlay'
 			};
@@ -363,6 +373,12 @@ export function plotlyScatterPlot() {
 		onPointsSelected = _;
 		return chart;
 	};
+
+  chart.darkMode = function (_) {
+    if (!arguments.length) return darkMode;
+    darkMode = _;
+    return chart;
+  };
 
 	return chart;
 }

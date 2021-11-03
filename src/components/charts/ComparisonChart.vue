@@ -172,20 +172,28 @@ export default {
       let traces = this.getTraces()
 
       let layout = {
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
         xaxis: {
           zeroline: false,
-          side: 'top'
+          side: 'top',
+          title: { font: { color: this.darkMode ? 'white' : 'black' } },
+          tickfont: { color: this.darkMode ? 'white' : 'black' }
         },
         height: 400,
         margin: { autoexpand: true },
         autosize: true,
         yaxis: {
-          title: this.trait.traitName,
-          automargin: true
+          automargin: true,
+          title: { text: this.trait.traitName, font: { color: this.darkMode ? 'white' : 'black' } },
+          tickfont: { color: this.darkMode ? 'white' : 'black' },
+          showgrid: true,
+          gridcolor: this.darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
-          orientation: 'h'
+          orientation: 'h',
+          font: { color: this.darkMode ? 'white' : 'black' }
         },
         shapes: [{
           type: 'line',
@@ -210,7 +218,7 @@ export default {
 
       let config = {
         modeBarButtonsToRemove: ['toImage'],
-        displayModeBar: true,
+        displayModeBar: false,
         responsive: true,
         displaylogo: false
       }
