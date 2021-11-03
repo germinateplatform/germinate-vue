@@ -352,6 +352,29 @@ body.dark-mode .b-popover-secondary .popover-header {
     border-bottom-color: rgb(62, 67, 69);
 }
 
+body.dark-mode hr {
+    border-top-color: rgba(140, 130, 115, 0.1);
+}
+
+body.dark-mode .table-danger tbody + tbody,
+body.dark-mode .table-danger td,
+body.dark-mode .table-danger th,
+body.dark-mode .table-danger thead th {
+    border-color: rgb(120, 8, 6);
+}
+
+body.dark-mode .table-danger,
+body.dark-mode .table-danger > td,
+body.dark-mode .table-danger > th {
+    background-color: rgb(73, 4, 4);
+}
+
+body.dark-mode .table-hover .table-danger:hover,
+body.dark-mode .table-hover .table-danger:hover > td,
+body.dark-mode .table-hover .table-danger:hover > th {
+    background-color: rgb(88, 4, 4);
+}
+
 body.dark-mode ::-webkit-scrollbar {
     background-color: #202324;
     color: #aba499;

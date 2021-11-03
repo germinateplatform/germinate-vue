@@ -133,7 +133,9 @@ export default {
 
     this.attachStyleSheet()
 
-    this.loadAndSetDarkMode()
+    if (this.darkMode) {
+      this.loadAndSetDarkMode()
+    }
 
     // Log the run
     if (!this.isLocalhost()) {
