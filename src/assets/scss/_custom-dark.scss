@@ -94,7 +94,8 @@ body.dark-mode .form-control {
   border-color: rgb(55, 59, 62);
 }
 
-body.dark-mode .form-control:disabled, body.dark-mode .form-control[readonly] {
+body.dark-mode .form-control:disabled,
+body.dark-mode .form-control[readonly] {
     background-color: rgb(38, 41, 42);
 }
 
@@ -120,17 +121,22 @@ body.dark-mode .btn-light {
   border-color: rgb(52, 56, 58);
 }
 
-body.dark-mode .btn-light.focus, .btn-light:focus {
+body.dark-mode .btn-light.focus,
+body.dark-mode .btn-light:focus {
   box-shadow: #30343680 0px 0px 0px 0.2rem;
 }
 
-body.dark-mode .btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show > .btn-light.dropdown-toggle {
+body.dark-mode .btn-light:not(:disabled):not(.disabled).active,
+body.dark-mode .btn-light:not(:disabled):not(.disabled):active,
+body.dark-mode .show > .btn-light.dropdown-toggle {
     color: rgb(207, 203, 197);
     background-color: rgb(45, 49, 51);
     border-color: rgb(60, 65, 68);
 }
 
-body.dark-mode .btn-light:not(:disabled):not(.disabled).active:focus, .btn-light:not(:disabled):not(.disabled):active:focus, .show > .btn-light.dropdown-toggle:focus {
+body.dark-mode .btn-light:not(:disabled):not(.disabled).active:focus,
+body.dark-mode .btn-light:not(:disabled):not(.disabled):active:focus,
+body.dark-mode .show > .btn-light.dropdown-toggle:focus {
   box-shadow: #30343680 0px 0px 0px 0.2rem;
 }
 
@@ -150,7 +156,8 @@ body.dark-mode .dropdown-item {
   color: rgb(207, 203, 197);
 }
 
-body.dark-mode .dropdown-item:focus, .dropdown-item:hover {
+body.dark-mode .dropdown-item:focus,
+body.dark-mode .dropdown-item:hover {
   color: rgb(215, 211, 206);
   background-color: rgb(31, 34, 35);
 }
@@ -173,12 +180,14 @@ body.dark-mode .aside-menu .nav-tabs .nav-link.active {
   border-right-color: rgb(62, 67, 70);
 }
 
-body.dark-mode .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:focus {
+body.dark-mode .nav-tabs .nav-link.active,
+body.dark-mode .nav-tabs .nav-link.active:focus {
   background-color: rgb(24, 26, 27);
   border-color: rgb(62, 67, 70) rgb(62, 67, 70) rgb(48, 52, 54);
 }
 
-body.dark-mode .btn-secondary.disabled, .btn-secondary:disabled {
+body.dark-mode .btn-secondary.disabled,
+body.dark-mode .btn-secondary:disabled {
     color: rgb(207, 203, 197);
     background-color: rgb(52, 56, 58);
     border-color: rgb(62, 67, 70);
@@ -314,7 +323,8 @@ body.dark-mode .input-group-text {
     border-color: rgb(55, 59, 62);
 }
 
-body.dark-mode .custom-file-label, .custom-file-label::after {
+body.dark-mode .custom-file-label,
+body.dark-mode .custom-file-label::after {
     color: rgb(167, 159, 147);
 }
 
@@ -393,7 +403,8 @@ body.dark-mode .leaflet-control-layers {
     background-color: rgb(24, 26, 27);
 }
 
-body.dark-mode .leaflet-bar a, .leaflet-bar a:hover {
+body.dark-mode .leaflet-bar a,
+body.dark-mode .leaflet-bar a:hover {
     background-color: rgb(24, 26, 27);
     border-bottom-color: rgb(62, 68, 70);
     text-decoration-color: initial;
