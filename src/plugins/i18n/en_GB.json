@@ -1000,6 +1000,7 @@
   "tableColumnTraitId": "Trait id",
   "tableColumnTraitName": "Trait name",
   "tableColumnTraitNameShort": "Trait name short",
+  "tableColumnTraitNrDataset": "# Datasets",
   "tableColumnTraitRep": "Rep",
   "tableColumnTraitSynonyms": "Trait synonyms",
   "tableColumnTraitTreatment": "Treatment",

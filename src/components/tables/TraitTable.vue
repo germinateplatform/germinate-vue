@@ -25,6 +25,10 @@
       <template v-slot:cell(dataType)="data">
         <span class="text-nowrap"><i :class="`mdi mdi-18px ${dataTypes[data.item.dataType].icon} fix-alignment`" :style="`color: ${dataTypes[data.item.dataType].color()};`" /> {{ dataTypes[data.item.dataType].text() }}</span>
       </template>
+      <!-- Dataset ids -->
+      <template v-slot:cell(datasetIds)="data">
+        <span v-if="data.item.datasetIds">{{ data.item.datasetIds.length }}</span>
+      </template>
       <template v-slot:cell(traitRestrictions)="data">
         <div v-if="data.item.traitRestrictions">
           <span :id="`trait-restrictions-${data.item.traitId}`"><i class="mdi mdi-18px mdi-code-brackets text-primary" /></span>
@@ -144,6 +148,12 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'unitAbbreviation')}`,
           sortable: true,
           label: this.$t('tableColumnTraitUnitAbbreviation')
+        }, {
+          key: 'datasetIds',
+          type: undefined,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetIds')}`,
+          sortable: false,
+          label: this.$t('tableColumnTraitNrDataset')
         }, {
           key: 'count',
           type: Number,

@@ -94,6 +94,12 @@ body.dark-mode .list-group-item-accent-info {
 body.dark-mode .list-group-item-accent-info {
     border-left-color: rgb(28, 107, 131);
 }
+body.dark-mode .list-group-item-accent-success {
+    border-left-color: rgb(47, 128, 75);
+}
+body.dark-mode .list-group-item-accent-danger {
+    border-left-color: rgb(142, 8, 7);
+}
 
 body.dark-mode .list-group-accent .list-group-item.list-group-item-divider::before {
     background-color: rgb(38, 41, 42);
