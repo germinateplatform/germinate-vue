@@ -2,8 +2,8 @@
   <div>
     <h2 class="mt-3">{{ $t('pageGermplasmDownloadTitle') }}</h2>
     <b-row>
-      <b-col lg=6>
-        <b-card class="h-100 mb-3">
+      <b-col lg=6 class="mb-3">
+        <b-card class="h-100">
           <b-card-title>
             <i class="mdi mdi-passport mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabGermplasmTitle') }}
           </b-card-title>
@@ -32,8 +32,8 @@
           </template>
         </b-card>
       </b-col>
-      <b-col lg=6 v-if="hasPedigreeData">
-        <b-card class="h-100 mb-3">
+      <b-col lg=6 v-if="hasPedigreeData" class="mb-3">
+        <b-card class="h-100">
           <b-card-title>
             <i class="mdi mdi-sitemap mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabPedigreeTitle') }}
           </b-card-title>

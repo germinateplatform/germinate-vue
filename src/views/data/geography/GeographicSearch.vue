@@ -14,7 +14,7 @@
             <div>{{ $t('pageGeographicSearchPointSearchText') }}</div>
           </b-card-body>
           <!-- Point search map -->
-          <LocationMap :locations="[]" selectionMode="point" v-on:map-loaded="updatePolygonMap" ref="pointMap" />
+          <LocationMap :locations="[]" selectionMode="point" @map-loaded="updatePolygonMap" ref="pointMap" />
           <b-card-body v-if="point">
             <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:content="slotProps">
@@ -86,6 +86,31 @@ export default {
     GermplasmTable,
     LocationTable,
     LocationMap
+  },
+  watch: {
+    tabIndex: function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      query.tabIndex = newValue
+
+      this.$router.replace({ query })
+    },
+    polygons: function (newValue) {
+      if (newValue && newValue.length > 0) {
+        const query = Object.assign({}, this.$route.query)
+        
+        query.polygons = newValue.map(polygon => polygon.map(l => `${l.lat.toFixed(6)},${l.lng.toFixed(6)}`).join(';')).join('|')
+
+        this.$router.replace({ query })
+      }
+    },
+    point: function (newValue) {
+      if (newValue) {
+        const query = Object.assign({}, this.$route.query)
+        query.latLng = `${newValue.lat.toFixed(6)},${newValue.lng.toFixed(6)}`
+
+        this.$router.replace({ query })
+      }
+    }
   },
   mixins: [ germplasmApi, locationApi ],
   methods: {
@@ -183,6 +208,46 @@ export default {
     },
     updatePolygonMap: function () {
       this.$nextTick(() => this.$refs.polygonMap.invalidateSize())
+    }
+  },
+  mounted: function () {
+    if (this.$route.query) {
+      if (this.$route.query.tabIndex) {
+        this.tabIndex = +this.$route.query.tabIndex
+      }
+
+      if (this.$route.query.polygons) {
+        const polygons = this.$route.query.polygons.split('|').map(p => p.split(';').map(l => {
+          const parts = l.split(',').map(p => +(p.trim()))
+
+          return {
+            lat: parts[0],
+            lng: parts[1]
+          }
+        }))
+
+        if (polygons.length > 0) {
+          this.$nextTick(() => this.$refs.polygonMap.setPolygons(polygons))
+        }
+      }
+
+      if (this.$route.query.latLng) {
+        const parts = this.$route.query.latLng.split(',').map(p => +(p.trim()))
+
+        if (parts.length == 2) {
+          const event = {
+            latlng: {
+              lat: parts[0],
+              lng: parts[1]
+            }
+          }
+
+          this.$nextTick(() => {
+            // Trigger a click manually
+            this.$refs.pointMap.onClick(event)
+          })
+        }
+      }
     }
   }
 }

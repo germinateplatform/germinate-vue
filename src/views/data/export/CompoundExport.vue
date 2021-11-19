@@ -11,20 +11,18 @@
       <!-- Banner buttons -->
       <b-row class="compound-tabs" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'compound-tabs-' + tab.key">
-          <a href="#" @click.prevent="tab.onSelection">
-            <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
-              <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
-                <b-row>
-                  <b-col cols=12 class="text-center">
-                    <i :class="`mdi mdi-48px ${tab.icon}`" />
-                  </b-col>
-                </b-row>
-              </b-card-body>
-              <b-card-footer :style="`color: ${getColor(index)}`">
-                <i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ tab.text() }}</span>
-              </b-card-footer>
-            </b-card>
-          </a>
+          <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
+            <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
+              <b-row>
+                <b-col cols=12 class="text-center">
+                  <i :class="`mdi mdi-48px ${tab.icon}`" />
+                </b-col>
+              </b-row>
+            </b-card-body>
+            <b-card-footer :style="`color: ${getColor(index)}`">
+              <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ tab.text() }}</span></a>
+            </b-card-footer>
+          </b-card>
         </b-col>
       </b-row>
       <!-- Boxplot section -->
@@ -166,8 +164,15 @@ export default {
       data.datasetIds = this.datasetIds
       return this.apiPostCompoundDataTableIds(data, callback)
     },
-    tabSelected: function (tab) {
+    tabSelected: function (tab, trigger = true) {
       this.currentTab = tab
+
+      if (trigger) {
+        const query = Object.assign({}, this.$route.query)
+        query.tab = tab
+
+        this.$router.replace({ query })
+      }
     },
     getFilter: function (index) {
       return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
@@ -248,6 +253,10 @@ export default {
       this.updateGroups()
       EventBus.$emit('show-loading', false)
     })
+
+    if (this.$route.query && this.$route.query.tab) {
+      this.$nextTick(() => this.tabSelected(this.$route.query.tab, false))
+    }
   }
 }
 </script>
@@ -262,5 +271,8 @@ export default {
 .compound-tabs .card,
 .compound-tabs .card * {
   transition: filter 0.15s;
+}
+.compound-tabs .card .card-footer a {
+  color: inherit;
 }
 </style>

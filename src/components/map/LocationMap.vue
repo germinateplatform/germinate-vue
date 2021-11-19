@@ -173,6 +173,7 @@ export default {
       if (this.selectionMode === 'point') {
         const map = this.$refs.map.mapObject
         const markerPosition = e.latlng
+
         this.internalLocations = [{
           locationId: -1,
           locationName: 'Query',
@@ -183,6 +184,11 @@ export default {
         map.panTo(markerPosition)
 
         this.updateMap()
+      }
+    },
+    setPolygons: function (polygons) {
+      if (this.selectionMode === 'polygon' && this.editableLayers) {
+        polygons.forEach(p => L.polygon(p).addTo(this.editableLayers))
       }
     },
     updateOverlays: function (overlay) {
@@ -502,7 +508,6 @@ export default {
       map.on('blur', function () {
         map.scrollWheelZoom.disable()
       })
-
       this.$emit('map-loaded', map)
 
       if (this.climateOverlaysDisabled === false) {

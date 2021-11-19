@@ -7,6 +7,16 @@ import { EventBus } from '@/plugins/event-bus.js'
 
 Vue.use(Router)
 
+const originalReplace = Router.prototype.replace
+Router.prototype.replace = function replace(location, onResolve, onReject) {
+  if (onResolve || onReject) return originalReplace.call(this, location, onResolve, onReject)
+  return originalReplace.call(this, location).catch(err => {
+    if (err.name != 'NavigationDuplicated') {
+      throw err
+    }
+  })
+}
+
 function userIsAtLeast (userType, atLeast) {
   switch (atLeast) {
     case 'Administrator':
@@ -49,7 +59,13 @@ function requireAuth (to, from, next) {
 const router = new Router({
   mode: 'hash', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'open active',
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition || (from && to && from.path === to.path)) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
   routes: [
     {
       path: '/g8',

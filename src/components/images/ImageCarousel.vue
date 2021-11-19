@@ -13,7 +13,7 @@
       :img-src="image.src" >
       <template v-slot:img>
         <!-- Add rounded corners to image -->
-        <b-img-lazy class="rounded w-100" :src="image.src" :alt="image.text" />
+        <b-img class="rounded w-100" :src="image.src" :alt="image.text" />
       </template>
     </b-carousel-slide>
   </b-carousel>

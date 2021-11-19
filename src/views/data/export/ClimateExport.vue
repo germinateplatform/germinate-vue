@@ -13,7 +13,6 @@
         <!-- Left padding if there are 5 tabs, because 5 doesn't work well with 12 columns -->
         <b-col class="d-none d-xl-block" sm=1 v-if="tabs.length === 5"/>
         <b-col cols=12 sm=6 :xl="tabs.length === 5 ? 2 : 3" v-for="(tab, index) in tabs" :key="'climate-tabs-' + tab.key">
-          <a href="#" @click.prevent="tab.onSelection">
             <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
               <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
                 <b-row>
@@ -23,10 +22,9 @@
                 </b-row>
               </b-card-body>
               <b-card-footer :style="`color: ${getColor(index)}`">
-                <i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ tab.text() }}</span>
+                <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ tab.text() }}</span></a>
               </b-card-footer>
             </b-card>
-          </a>
         </b-col>
         <!-- Left padding if there are 5 tabs, because 5 doesn't work well with 12 columns -->
         <b-col class="d-none d-xl-block" sm=1 v-if="tabs.length === 5"/>
@@ -181,11 +179,18 @@ export default {
       data.datasetIds = this.datasetIds
       return this.apiPostClimateDataTableIds(data, callback)
     },
-    tabSelected: function (tab) {
+    tabSelected: function (tab, trigger = true) {
       this.currentTab = tab
 
       if (this.currentTab === 'overlays') {
         this.$nextTick(() => this.$refs.overlayMap.invalidateSize())
+      }
+
+      if (trigger) {
+        const query = Object.assign({}, this.$route.query)
+        query.tab = tab
+
+        this.$router.replace({ query })
       }
     },
     getFilter: function (index) {
@@ -273,6 +278,10 @@ export default {
       this.updateGroups()
       EventBus.$emit('show-loading', false)
     })
+
+    if (this.$route.query && this.$route.query.tab) {
+      this.$nextTick(() => this.tabSelected(this.$route.query.tab, false))
+    }
   }
 }
 </script>
@@ -287,5 +296,8 @@ export default {
 .climate-tabs .card,
 .climate-tabs .card * {
   transition: filter 0.15s;
+}
+.climate-tabs .card .card-footer a {
+  color: inherit;
 }
 </style>

@@ -70,8 +70,8 @@
             head-variant="dark"
             table-class="position-relative"
             :empty-text="$t('paginationNoResult')"
-            :sort-by="options.orderBy"
-            :sort-desc="options.orderByDesc"
+            :sort-by.sync="options.orderBy"
+            :sort-desc.sync="options.orderByDesc"
             :tbody-tr-class="options ? options.rowClassCallback : null"
             @refreshed="notifyLoaded"
             ref="table">
@@ -153,7 +153,8 @@
           <b-pagination v-model="pagination.currentPage"
                         :total-rows="pagination.totalCount"
                         :per-page="tablePerPage"
-                        id="table-pagination" />
+                        id="table-pagination"
+                        v-if="pagination.totalCount > 0" />
         </b-button-group>
       </div>
     </div>
@@ -284,11 +285,28 @@ export default {
     }
   },
   watch: {
-    'pagination.currentPage': function () {
+    'pagination.currentPage': function (newValue) {
       this.$refs.table.refresh()
+
+      const query = Object.assign({}, this.$route.query)
+      query[`${this.options.tableName}-page`] = newValue
+
+      this.$router.replace({ query })
     },
     'pagination.totalCount': function () {
       this.updateTableTour()
+    },
+    'options.orderBy': function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      query[`${this.options.tableName}-sort`] = newValue
+
+      this.$router.replace({ query })
+    },
+    'options.orderByDesc': function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      query[`${this.options.tableName}-sort-desc`] = newValue
+
+      this.$router.replace({ query })
     },
     tablePerPage: function () {
       this.$nextTick(() => this.$refs.table.refresh())
@@ -620,6 +638,18 @@ export default {
   },
   mounted: function () {
     this.updateTableTour()
+
+    if (this.$route.query) {
+      if (this.$route.query[`${this.options.tableName}-page`]) {
+        this.pagination.currentPage = +this.$route.query[`${this.options.tableName}-page`]
+      }
+      if (this.$route.query[`${this.options.tableName}-sort`]) {
+        this.options.orderBy = this.$route.query[`${this.options.tableName}-sort`]
+      }
+      if (this.$route.query[`${this.options.tableName}-sort-desc`]) {
+        this.options.orderByDesc = (this.$route.query[`${this.options.tableName}-sort-desc`] === 'true')
+      }
+    }
   }
 }
 </script>
