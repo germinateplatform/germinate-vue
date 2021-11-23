@@ -37,8 +37,7 @@
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8 location-name">
           <span v-if="selectedLocation.locationType === 'datasets'">{{ selectedLocation.locationName }}</span>
-          <router-link :to="{ name: 'germplasm' }" v-else-if="selectedLocation.locationType === 'collectingsites'" @click.native="navigateToGermplasm(selectedLocation)" event="">{{ selectedLocation.locationName }}</router-link>
-          <span v-else>{{ selectedLocation.locationName }}</span>
+          <span>{{ selectedLocation.locationName }}</span>
         </dd>
         <template v-if="selectedLocation.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8"><i :class="`mdi mdi-18px ${locationTypes[selectedLocation.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[selectedLocation.locationType].color()};`" /> {{ this.locationTypes[selectedLocation.locationType].text() }}</dd></template>
         <template v-if="selectedLocation.countryCode2 || selectedLocation.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'flag-icon flag-icon-' + getFlag(selectedLocation)" /> {{ getCountry(selectedLocation) }}</dd></template>
@@ -159,19 +158,6 @@ export default {
           this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [this.selectedGermplasm.germplasmId] })
         }
       }
-    },
-    navigateToGermplasm: function (location) {
-      // Navigate to the germplasm overview page and filter on location
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'location',
-          type: String
-        },
-        comparator: 'equals',
-        operator: 'and',
-        values: [location.locationName]
-      }])
-      this.$router.push({ name: 'germplasm' })
     },
     getFlag: function (location) {
       if (location.countryCode2) {

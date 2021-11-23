@@ -69,7 +69,6 @@ const userState = {
   },
   asyncJobUuids: [],
   asyncJobCount: 0,
-  tableFiltering: null,
   cookiesAccepted: null,
   customChartColors: null,
   darkMode: false
@@ -98,7 +97,6 @@ const storeState = {
     entityTypeStats: (state, getters) => state.userStates[getters.userId].entityTypeStats,
     hiddenColumns: (state, getters) => state.userStates[getters.userId].hiddenColumns,
     originalTarget: (state, getters) => state.userStates[getters.userId].originalTarget,
-    tableFiltering: (state, getters) => state.userStates[getters.userId].tableFiltering,
     asyncJobUuids: (state, getters) => state.userStates[getters.userId].asyncJobUuids,
     asyncJobCount: (state, getters) => state.userStates[getters.userId].asyncJobCount,
     cookiesAccepted: (state, getters) => state.userStates[getters.userId].cookiesAccepted,
@@ -205,9 +203,6 @@ const storeState = {
     ON_HELP_KEY_CHANGED_MUTATION: function (state, newHelpKey) {
       state.userStates[state.token ? state.token.id : null].helpKey = newHelpKey
     },
-    ON_TABLE_FILTERING_CHANGED_MUTATION: function (state, newTableFiltering) {
-      state.userStates[state.token ? state.token.id : null].tableFiltering = newTableFiltering
-    },
     ON_ENTITY_TYPE_STATS_CHANGED_MUTATION: function (state, newEntityTypeStats) {
       state.userStates[state.token ? state.token.id : null].entityTypeStats = newEntityTypeStats
     },
@@ -310,9 +305,6 @@ const storeState = {
     },
     ON_HELP_KEY_CHANGED: function ({ commit }, helpKey) {
       commit('ON_HELP_KEY_CHANGED_MUTATION', helpKey)
-    },
-    ON_TABLE_FILTERING_CHANGED: function ({ commit }, tableFiltering) {
-      commit('ON_TABLE_FILTERING_CHANGED_MUTATION', tableFiltering)
     },
     ON_ENTITY_TYPE_STATS_CHANGED: function ({ commit }, entityTypeStats) {
       commit('ON_ENTITY_TYPE_STATS_CHANGED_MUTATION', entityTypeStats)

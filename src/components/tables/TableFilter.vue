@@ -197,6 +197,15 @@ export default {
     },
     locale: function () {
       this.updateOperators()
+    },
+    targetFilter: function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      if (newValue && newValue.length > 0) {
+        query[`${this.tableName}-filter`] = JSON.stringify(newValue)
+      } else {
+        delete query[`${this.tableName}-filter`]
+      }
+      this.$router.replace({ query })
     }
   },
   computed: {
@@ -420,24 +429,63 @@ export default {
       }
     },
     resetFilter: function (trigger) {
-      this.$nextTick(() => {
-        this.tempFilter = []
-        if (this.filterOn) {
-          this.filterOn.forEach(f => {
-            this.tempFilter.push(f)
-          })
+      this.tempFilter = []
+      if (this.filterOn) {
+        this.filterOn.forEach(f => {
+          this.tempFilter.push(f)
+        })
+      }
+
+      this.setFilter(false, trigger)
+    },
+    refresh: function (concat = true) {
+      let urlFilter = null
+      if (this.$route.query) {
+        if (this.$route.query[`${this.tableName}-filter`]) {
+          try {
+            urlFilter = JSON.parse(this.$route.query[`${this.tableName}-filter`])
+
+            const columns = this.getColumns
+            urlFilter = urlFilter.map(f => {
+              const existingColumn = columns.filter(c => c.key === f.column)
+
+              if (existingColumn && existingColumn.length > 0) {
+                f.column = {
+                  name: existingColumn[0].key,
+                  type: existingColumn[0].type
+                }
+              } else {
+                f.column = null
+              }
+
+              return f
+            }).filter(f => f.column)
+          }
+          catch {
+            // Do nothing here
+          }
+        }
+      }
+
+      if (this.filterOn && this.filterOn.length > 0) {
+        this.resetFilter(!urlFilter)
+      }
+
+      if (urlFilter) {
+        if (concat) {
+          this.tempFilter = this.tempFilter.concat(urlFilter)
+        } else {
+          this.tempFilter = urlFilter
         }
 
-        this.setFilter(false, trigger)
-      })
+        this.setFilter(false, true)
+      }
     }
   },
   mounted: function () {
     this.updateOperators()
 
-    if (this.filterOn) {
-      this.resetFilter(true)
-    }
+    this.refresh()
   }
 }
 </script>

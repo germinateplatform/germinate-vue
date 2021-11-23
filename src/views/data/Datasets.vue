@@ -48,12 +48,6 @@ export default {
 
       return filter
     }
-  },
-  created: function () {
-    if (this.tableFiltering && this.tableFiltering.length > 0) {
-      this.filterOn = this.tableFiltering
-      this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', null)
-    }
   }
 }
 </script>

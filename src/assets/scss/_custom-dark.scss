@@ -1,3 +1,10 @@
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    border-color: #736b5e;
+    color: #e8e6e3;
+}
+
 body.dark-mode {
   background-color: rgb(24, 26, 27);
   color: rgb(207, 203, 197);
@@ -514,6 +521,11 @@ body.dark-mode .leaflet-control-layers {
     background-color: rgb(24, 26, 27);
 }
 
+body.dark-mode .leaflet-control-layers-expanded {
+    color: rgb(200, 195, 188);
+    background-color: rgb(24, 26, 27);
+}
+
 body.dark-mode .leaflet-bar a,
 body.dark-mode .leaflet-bar a:hover {
     background-color: rgb(24, 26, 27);
@@ -531,6 +543,17 @@ body.dark-mode .leaflet-bar button:hover {
     border-bottom-color: rgb(62, 68, 70);
     text-decoration-color: initial;
     color: rgb(232, 230, 227);
+}
+
+body.dark-mode .leaflet-popup-content-wrapper,
+body.dark-mode .leaflet-popup-tip {
+    background-color: rgb(24, 26, 27);
+    color: rgb(200, 195, 188);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 14px;
+}
+
+body.dark-mode .leaflet-container {
+    background-color: rgb(43, 47, 49);
 }
 
 

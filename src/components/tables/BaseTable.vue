@@ -361,6 +361,7 @@ export default {
     refresh: function () {
       this.pagination.totalCount = -1
       this.selectedItems = []
+      this.readUrlParams()
       this.$refs.table.refresh()
     },
     setSelectedItems: function (toSelect) {
@@ -634,22 +635,25 @@ export default {
       }
 
       this.tableTourSteps = tableTourSteps
+    },
+    readUrlParams: function () {
+      if (this.$route.query) {
+        if (this.$route.query[`${this.options.tableName}-page`]) {
+          this.pagination.currentPage = +this.$route.query[`${this.options.tableName}-page`]
+        }
+        if (this.$route.query[`${this.options.tableName}-sort`]) {
+          this.options.orderBy = this.$route.query[`${this.options.tableName}-sort`]
+        }
+        if (this.$route.query[`${this.options.tableName}-sort-desc`]) {
+          this.options.orderByDesc = (this.$route.query[`${this.options.tableName}-sort-desc`] === 'true')
+        }
+      }
     }
   },
   mounted: function () {
     this.updateTableTour()
 
-    if (this.$route.query) {
-      if (this.$route.query[`${this.options.tableName}-page`]) {
-        this.pagination.currentPage = +this.$route.query[`${this.options.tableName}-page`]
-      }
-      if (this.$route.query[`${this.options.tableName}-sort`]) {
-        this.options.orderBy = this.$route.query[`${this.options.tableName}-sort`]
-      }
-      if (this.$route.query[`${this.options.tableName}-sort-desc`]) {
-        this.options.orderByDesc = (this.$route.query[`${this.options.tableName}-sort-desc`] === 'true')
-      }
-    }
+    this.readUrlParams()
   }
 }
 </script>

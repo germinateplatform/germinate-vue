@@ -117,31 +117,29 @@ export default {
   methods: {
     redirectToExport: function (experiment, datasetType) {
       // Set up the filter
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'experimentId',
-          type: Number
-        },
+      const filter = [{
+        column: 'experimentId',
         comparator: 'equals',
         operator: 'and',
         values: [experiment.experimentId]
-      }])
+      }]
       // Then redirect to the export page
-      this.$router.push({ name: 'export', params: { datasetType: datasetType } })
+      this.$router.push({ name: 'export', params: { datasetType: datasetType }, query: {
+        'datasets-filter': JSON.stringify(filter)
+      } })
     },
     redirectToDatasets: function (experiment) {
       // Set up the filter
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'experimentId',
-          type: Number
-        },
+      const filter = [{
+        column: 'experimentId',
         comparator: 'equals',
         operator: 'and',
         values: [experiment.experimentId]
-      }])
+      }]
       // Then redirect to the datasets page
-      this.$router.push({ name: 'datasets' })
+      this.$router.push({ name: 'datasets', query: {
+        'datasets-filter': JSON.stringify(filter)
+      } })
     },
     refresh: function () {
       this.$refs.experimentTable.refresh()

@@ -121,17 +121,16 @@ export default {
     },
     navigateToGermplasmPageFilteredByCountry: function (countryName) {
       // Store the filter
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'countryName',
-          type: String
-        },
+      const filter = [{
+        column: 'countryName',
         comparator: 'equals',
         operator: 'and',
         values: [countryName]
-      }])
+      }]
       // Then navigate
-      this.$router.push({ name: 'germplasm' })
+      this.$router.push({ name: 'germplasm', query: {
+        'germplasm-filter': JSON.stringify(filter)
+      } })
     }
   },
   mounted: function () {

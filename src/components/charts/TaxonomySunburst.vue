@@ -100,10 +100,7 @@ export default {
 
               if (path.length === 1 && path[0] === 'N/A') {
                 query = [{
-                  column: {
-                    name: 'genus',
-                    type: String
-                  },
+                  column: 'genus',
                   comparator: 'isNull',
                   operator: 'and',
                   values: []
@@ -113,10 +110,7 @@ export default {
                 const species = path.length > 1 ? path[1].split(' | ')[1] : null
                 const subtaxa = path.length > 2 ? path[2] : null
                 query = [{
-                  column: {
-                    name: 'genus',
-                    type: String
-                  },
+                  column: 'genus',
                   comparator: 'equals',
                   operator: 'and',
                   values: [genus]
@@ -124,10 +118,7 @@ export default {
 
                 if (species) {
                   query.push({
-                    column: {
-                      name: 'species',
-                      type: String
-                    },
+                    column: 'species',
                     comparator: 'equals',
                     operator: 'and',
                     values: [species]
@@ -135,10 +126,7 @@ export default {
                 }
                 if (subtaxa) {
                   query.push({
-                    column: {
-                      name: 'subtaxa',
-                      type: String
-                    },
+                    column: 'subtaxa',
                     comparator: 'equals',
                     operator: 'and',
                     values: [subtaxa]
@@ -147,8 +135,9 @@ export default {
               }
 
               // Navigate to the germplasm page
-              this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', query)
-              this.$router.push({ name: 'germplasm' })
+              this.$router.push({ name: 'germplasm', query: {
+                'germplasm-filter': JSON.stringify(query)
+              } })
             })
             .colors(this.getColors()))
       }

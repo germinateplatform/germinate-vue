@@ -21,7 +21,6 @@ export default {
       'recentIds',
       'serverSettings',
       'sidebarState',
-      'tableFiltering',
       'tablePerPage',
       'token'
     ]),

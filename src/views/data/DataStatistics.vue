@@ -71,29 +71,27 @@ export default {
   mixins: [ statsApi ],
   methods: {
     biologicalStatusClicked: function (status) {
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'biologicalStatusName',
-          type: String
-        },
+      const filter = [{
+        column: 'biologicalStatusName',
         comparator: 'contains',
         operator: 'and',
         values: [status + '%']
-      }])
-      this.$router.push({ name: 'germplasm' })
+      }]
+      this.$router.push({ name: 'germplasm', query: {
+        'germplasm-filter': JSON.stringify(filter)
+      } })
     },
     pdciClicked: function (bar) {
       const parts = bar.split('-')
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'pdci',
-          type: Number
-        },
+      const filter = [{
+        column: 'pdci',
         comparator: 'between',
         operator: 'and',
         values: parts
-      }])
-      this.$router.push({ name: 'germplasm' })
+      }]
+      this.$router.push({ name: 'germplasm', query: {
+        'germplasm-filter': JSON.stringify(filter)
+      } })
     },
     datasetClicked: function (dataset) {
       this.$router.push({ name: 'export', params: { datasetType: dataset } })

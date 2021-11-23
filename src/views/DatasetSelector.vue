@@ -162,11 +162,6 @@ export default {
     }
   },
   created: function () {
-    if (this.tableFiltering && this.tableFiltering.length > 0) {
-      this.filterOn = this.tableFiltering
-      this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', null)
-    }
-
     const datasetType = this.$route.params.datasetType
 
     if (this.datasetTypes[datasetType]) {

@@ -168,17 +168,16 @@ export default {
   methods: {
     navigateToGermplasm: function (location) {
       // Set up the filter
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'location',
-          type: String
-        },
+      const filter = [{
+        column: 'location',
         comparator: 'equals',
         operator: 'and',
         values: [location.locationName]
-      }])
+      }]
       // Redirect to germplasm page filtered by location
-      this.$router.push({ name: 'germplasm' })
+      this.$router.push({ name: 'germplasm', query: {
+        'germplasm-filter': JSON.stringify(filter)
+      } })
     },
     refresh: function () {
       this.$refs.locationTable.refresh()

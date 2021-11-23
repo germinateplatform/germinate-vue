@@ -268,16 +268,15 @@ export default {
     },
     navigateToGermplasm: function (location) {
       // Navigate to the germplasm overview page and filter on location
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'location',
-          type: String
-        },
+      const filter = [{
+        column: 'location',
         comparator: 'equals',
         operator: 'and',
         values: [location.locationName]
-      }])
-      this.$router.push({ name: 'germplasm' })
+      }]
+      this.$router.push({ name: 'germplasm', query: {
+        'germplasm-filter': JSON.stringify(filter)
+      } })
     },
     getFlag: function (country) {
       if (country.countryCode2) {

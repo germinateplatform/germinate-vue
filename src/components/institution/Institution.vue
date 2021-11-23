@@ -56,16 +56,15 @@ export default {
   methods: {
     navigateToGermplasm: function (institutionId) {
       // Navigate to the germplasm overview page and filter based on institution
-      this.$store.commit('ON_TABLE_FILTERING_CHANGED_MUTATION', [{
-        column: {
-          name: 'institutionId',
-          type: Number
-        },
+      const filter = [{
+        column: 'institutionId',
         comparator: 'equals',
         operator: 'and',
         values: [institutionId]
-      }])
-      this.$router.push({ name: 'germplasm' })
+      }]
+      this.$router.push({ name: 'germplasm', query: {
+        'germplasm-filter': JSON.stringify(filter)
+      } })
     }
   }
 }
