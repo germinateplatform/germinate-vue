@@ -637,6 +637,7 @@ export default {
       this.tableTourSteps = tableTourSteps
     },
     readUrlParams: function () {
+      // Check the URL query parameters and adjust the pagination and sorting
       if (this.$route.query) {
         if (this.$route.query[`${this.options.tableName}-page`]) {
           this.pagination.currentPage = +this.$route.query[`${this.options.tableName}-page`]
@@ -662,6 +663,9 @@ export default {
 .base-table table th[aria-sort="none"] {
   padding-right: 0.75em !important;
   background-image: none !important;
+}
+.base-table table thead tr {
+  background-color: #2f353a;
 }
 .table-loading-indicator {
   border-radius: 0;

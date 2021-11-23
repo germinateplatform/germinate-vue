@@ -1,5 +1,9 @@
 // Here you can add other styles
 
+* {
+  transition: background-color 0.25s;
+}
+
 body {
   background-color: #ffffff;
   // This is to stop tables from overflowing in production.
