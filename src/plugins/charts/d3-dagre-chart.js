@@ -6,6 +6,7 @@ export function pedigreeChart(dagreD3) {
 			bottom: 30,
 			left: 50
 		},
+    darkMode = false,
 		width = 960,
 		height = 500,
 		tooltip = function (d) {
@@ -46,9 +47,9 @@ export function pedigreeChart(dagreD3) {
 				graph.setNode(state.label, {
 					label: substring(state.label),
 					class: state.class,
-					labelStyle: "font-size: 8pt; pointer-events: none;",
+          labelStyle: (darkMode ? 'fill: white; font-size: 8pt; pointer-events: none;' : 'fill: black; font-size: 8pt; pointer-events: none;'),
 					object: state,
-          style: 'stroke: #333; fill: #fff; rx: 5px; ry: 5px; ' + state.nodeStyle,
+          style: (darkMode ? 'stroke: #ddd; fill: #000; rx: 5px; ry: 5px; ' : 'stroke: #333; fill: #fff; rx: 5px; ry: 5px; ') + state.nodeStyle,
 					shape: nodeShape
 				});
 			});
@@ -57,7 +58,7 @@ export function pedigreeChart(dagreD3) {
 				connections.forEach(function (edge) {
 					graph.setEdge(edge.from, edge.to, {
 						curve: interpolate,
-						style: 'stroke: #333; fill: none; stroke-width: 3px; ' + edge.edgeStyle,
+            style: (darkMode ? 'stroke: #333; fill: none; stroke-width: 3px; ' : 'stroke: #333; fill: none; stroke-width: 3px; ') + edge.edgeStyle,
 						arrowheadStyle: edge.headStyle
 					});
 				});
@@ -180,6 +181,12 @@ export function pedigreeChart(dagreD3) {
 		tooltipStyle = _;
 		return chart;
 	};
+
+  chart.darkMode = function (_) {
+    if (!arguments.length) return darkMode;
+    darkMode = _;
+    return chart;
+  };
 
 	return chart;
 }

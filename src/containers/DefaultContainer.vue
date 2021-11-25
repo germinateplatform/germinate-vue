@@ -25,7 +25,7 @@
         <!-- Locale dropdown -->
         <LocaleDropdown class="top-nav-locale d-flex align-self-center"/>
         <!-- Marked items -->
-        <MarkedItemDropdown class="d-flex align-self-center" />
+        <!-- <MarkedItemDropdown class="d-flex align-self-center" /> -->
         <!-- User dropdown -->
         <UserSettingsDropdown class="d-flex align-self-center" />
       </b-navbar-nav>
@@ -56,9 +56,24 @@
       </AppSidebar>
       <main class="main">
         <div class="container-fluid mb-4">
-          <div class="mb-3 d-flex align-items-center my-4">
-            <b-img-lazy width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" onerror="this.onerror=null;this.src='null';" alt="Crop logo" />
-            <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
+          <div class="mb-3 my-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <b-img-lazy width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" onerror="this.onerror=null;this.src='null';" alt="Crop logo" />
+              <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
+            </div>
+            <div class="d-flex flex-row">
+              <!-- Badges for marked items -->
+              <h5 v-for="itemType in Object.keys(markedItemTypes)"
+                  :key="`item-type-${markedItemTypes[itemType].icon}`"
+                  class="d-flex align-items-stretch mx-1 marked-item-badges"
+                  v-b-tooltip="`${markedItemTypes[itemType].text()}: ${toThousandSeparators(markedIds[itemType].length)}`">
+                <router-link :to="{ name: 'marked-items-type', params: { itemType: itemType } }" class="d-flex align-items-stretch">
+                  <b-badge :style="{ backgroundColor: markedItemTypes[itemType].color(), color: getHighContrastTextColor(markedItemTypes[itemType].color()) }"><i :class="`mdi ${markedItemTypes[itemType].icon}`" /></b-badge>
+                  <b-badge>{{ getNumberWithSuffix(markedIds[itemType].length, 1) }}</b-badge>
+                </router-link>
+                <b-badge href="#" @click.prevent="clearMarkedItems(itemType)"><i class="mdi mdi-delete text-danger" /></b-badge>
+              </h5>
+            </div>
           </div>
           <hr />
           <!-- Child content goes here -->
@@ -93,10 +108,13 @@
 import { Header as AppHeader, SidebarToggler, Sidebar as AppSidebar, SidebarFooter, SidebarHeader, SidebarMinimizer, SidebarNav, Aside as AppAside, AsideToggler, Footer as TheFooter } from '@coreui/vue'
 import DefaultAside from './DefaultAside'
 import UserSettingsDropdown from '@/components/dropdown/UserSettingsDropdown'
-import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
+// import MarkedItemDropdown from '@/components/dropdown/MarkedItemDropdown'
 import LocaleDropdown from '@/components/dropdown/LocaleDropdown'
 import Tour from '@/components/util/Tour'
 import statsApi from '@/mixins/api/stats.js'
+import typesMixin from '@/mixins/types.js'
+import colorsMixin from '@/mixins/colors.js'
+import { mapFilters } from '@/plugins/map-filters.js'
 import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
@@ -115,8 +133,8 @@ export default {
     SidebarHeader,
     SidebarNav,
     SidebarMinimizer,
-    Tour,
-    MarkedItemDropdown
+    Tour
+    // MarkedItemDropdown
   },
   data () {
     return {
@@ -174,8 +192,23 @@ export default {
       this.updateMenu()
     }
   },
-  mixins: [ statsApi ],
+  mixins: [ colorsMixin, statsApi, typesMixin ],
   methods: {
+    ...mapFilters(['toThousandSeparators']),
+    clearMarkedItems: function (itemType) {
+      // Ask for confirmation
+      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
+        okVariant: 'danger',
+        okTitle: this.$t('genericYes'),
+        cancelTitle: this.$t('genericNo')
+      })
+        .then(value => {
+          if (value) {
+            this.$store.dispatch('ON_MARKED_IDS_CLEAR', itemType)
+          }
+        })
+      
+    },
     acceptCookies: function (decision) {
       this.$store.dispatch('ON_COOKIES_ACCEPTED', decision)
     },
@@ -611,5 +644,22 @@ export default {
 }
 .app-header .nav-item {
   min-width: 45px;
+}
+</style>
+
+<style scoped>
+.marked-item-badges {
+  white-space: nowrap;
+}
+.marked-item-badges a .badge:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.marked-item-badges a .badge:last-child {
+  border-radius: 0;
+}
+.marked-item-badges > .badge {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 </style>

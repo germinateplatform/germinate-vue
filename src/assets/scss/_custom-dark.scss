@@ -480,6 +480,37 @@ body.dark-mode .b-popover-secondary .popover-header {
     border-bottom-color: rgb(62, 67, 69);
 }
 
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="top"] > .arrow::before,
+body.dark-mode .b-popover-secondary.bs-popover-top > .arrow::before {
+    border-top-color: rgb(59, 64, 66);
+}
+
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="top"] > .arrow::after,
+body.dark-mode .b-popover-secondary.bs-popover-top > .arrow::after {
+    border-top-color: rgb(56, 60, 63);
+}
+
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="bottom"] > .arrow::before,
+body.dark-mode .b-popover-secondary.bs-popover-bottom > .arrow::before {
+    border-bottom-color: rgb(59, 64, 66);
+}
+
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="bottom"] .popover-header::before,
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="bottom"] > .arrow::after,
+body.dark-mode .b-popover-secondary.bs-popover-bottom .popover-header::before,
+body.dark-mode .b-popover-secondary.bs-popover-bottom > .arrow::after {
+    border-bottom-color: rgb(58, 63, 65);
+}
+
+body.dark-mode .border-right {
+    border-right-color: rgb(62, 67, 70) !important;
+}
+
+body.dark-mode .border-left {
+    border-left-color: rgb(62, 67, 70) !important;
+}
+
+
 body.dark-mode hr {
     border-top-color: rgba(140, 130, 115, 0.1);
 }

@@ -114,6 +114,7 @@ export default {
                 .margin({ left: 50, right: 50, top: 30, bottom: 30 })
                 .width(this.$refs.pedigreeChart.offsetWidth)
                 .height(600)
+                .darkMode(this.darkMode)
                 .nodeStyle('node')
                 .connections(connections)
                 .nodeShape('circle')
@@ -191,5 +192,13 @@ export default {
 .node polygon:hover {
   cursor: pointer;
   fill: lightgray !important  ;
+}
+
+body.dark-mode .node rect:hover,
+body.dark-mode .node circle:hover,
+body.dark-mode .node ellipse:hover,
+body.dark-mode .node polygon:hover {
+  cursor: pointer;
+  fill: #2f353a !important  ;
 }
 </style>
