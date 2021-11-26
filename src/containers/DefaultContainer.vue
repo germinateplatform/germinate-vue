@@ -61,17 +61,21 @@
               <b-img-lazy width="48" height="48" :src="`${baseUrl}image/src-svg/crop.svg`" onerror="this.onerror=null;this.src='null';" alt="Crop logo" />
               <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
             </div>
-            <div class="d-flex flex-row">
+            <div class="d-flex flex-row flex-wrap justify-content-end">
               <!-- Badges for marked items -->
               <h5 v-for="itemType in Object.keys(markedItemTypes)"
                   :key="`item-type-${markedItemTypes[itemType].icon}`"
-                  class="d-flex align-items-stretch mx-1 marked-item-badges"
-                  v-b-tooltip="`${markedItemTypes[itemType].text()}: ${toThousandSeparators(markedIds[itemType].length)}`">
+                  class="d-flex align-items-stretch mx-1 marked-item-badges">
                 <router-link :to="{ name: 'marked-items-type', params: { itemType: itemType } }" class="d-flex align-items-stretch">
                   <b-badge :style="{ backgroundColor: markedItemTypes[itemType].color(), color: getHighContrastTextColor(markedItemTypes[itemType].color()) }"><i :class="`mdi ${markedItemTypes[itemType].icon}`" /></b-badge>
-                  <b-badge>{{ getNumberWithSuffix(markedIds[itemType].length, 1) }}</b-badge>
+                  <b-badge v-b-tooltip="`${markedItemTypes[itemType].text()}: ${toThousandSeparators(markedIds[itemType].length)}`">{{ getNumberWithSuffix(markedIds[itemType].length, 1) }}</b-badge>
                 </router-link>
-                <b-badge href="#" @click.prevent="clearMarkedItems(itemType)"><i class="mdi mdi-delete text-danger" /></b-badge>
+                <b-badge :href="markedIds[itemType].length < 1 ? null : '#'"
+                         :disabled="markedIds[itemType].length < 1"
+                         @click.prevent="clearMarkedItems(itemType)"
+                         v-b-tooltip="$t('chartTooltipMarkedItemsClear')">
+                  <i :class="`mdi mdi-delete ${markedIds[itemType].length >= 1 ? 'text-danger' : null}`" />
+                </b-badge>
               </h5>
             </div>
           </div>
@@ -657,6 +661,9 @@ export default {
 }
 .marked-item-badges a .badge:last-child {
   border-radius: 0;
+}
+.marked-item-badges a:hover {
+  text-decoration: none;
 }
 .marked-item-badges > .badge {
   border-top-left-radius: 0;
