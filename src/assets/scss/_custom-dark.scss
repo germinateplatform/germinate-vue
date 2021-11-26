@@ -510,6 +510,15 @@ body.dark-mode .border-left {
     border-left-color: rgb(62, 67, 70) !important;
 }
 
+body.dark-mode .page-header {
+  background-color: #272a2c;
+}
+
+body.dark-mode .app-footer {
+  background-color: #24292d;
+  color: white;
+}
+
 
 body.dark-mode hr {
     border-top-color: rgba(140, 130, 115, 0.1);

@@ -28,7 +28,9 @@
         <b-col lg=1 class="d-none d-lg-block"></b-col>
         <!-- Germinate logo -->
         <b-col lg=4>
-          <div id="svg-logo" class="d-flex justify-content-center align-items-center h-100 py-3"/>
+          <div id="svg-logo" class="d-flex justify-content-center align-items-center h-100 py-3">
+            <b-img src="./img/germinate-square.svg" />
+          </div>
         </b-col>
         <!-- Horizontal logos below, same width as login+registration -->
         <b-col lg=7>
@@ -48,7 +50,6 @@
 import SignInForm from '@/components/util/SignInForm'
 import RegistrationModal from '@/components/modals/RegistrationModal'
 import authApi from '@/mixins/api/auth.js'
-import Snap from 'snapsvg'
 
 import { EventBus } from '@/plugins/event-bus.js'
 
@@ -101,81 +102,6 @@ export default {
         }
       })
     },
-    animateLogo: function () {
-      // Get the container
-      const s = new Snap('#svg-logo svg')
-
-      // Specify all elements of the SVG to animate
-      const elements = [{
-        id: '#sh',
-        opacity: 0.29200003
-      }, {
-        id: '#t3',
-        opacity: 1
-      }, {
-        id: '#t2',
-        opacity: 1
-      }, {
-        id: '#t1',
-        opacity: 1
-      }, {
-        id: '#g6',
-        opacity: 1
-      }, {
-        id: '#g5',
-        opacity: 1
-      }, {
-        id: '#g4',
-        opacity: 1
-      }, {
-        id: '#g3',
-        opacity: 1
-      }, {
-        id: '#g2',
-        opacity: 1
-      }, {
-        id: '#g1',
-        opacity: 1
-      }, {
-        id: '#bg',
-        opacity: 1
-      }]
-
-      // Hide them all
-      s.selectAll('path').forEach(e => {
-        e.stop()
-        e.attr({
-          opacity: 0
-        })
-      })
-
-      // Hide them all
-      elements.forEach(e => {
-        const el = s.select(e.id)
-        el.stop()
-        el.attr({
-          opacity: 0
-        })
-      })
-
-      // Show them one after the other
-      elements.reverse().forEach((e, i) => {
-        setTimeout(() => s.select(e.id).animate({ opacity: e.opacity }, 500, window.mina.linear), i * 65)
-      })
-    }
-  },
-  mounted: function () {
-    // Load the SVG
-    Snap.load('./img/germinate-square.svg', data => {
-      // Attach to container
-      new Snap('#svg-logo').append(data)
-
-      // Start animation
-      this.animateLogo()
-
-      // On click, animate again
-      new Snap('#svg-logo svg').click(() => this.animateLogo())
-    })
   }
 }
 </script>
