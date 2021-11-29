@@ -16,7 +16,6 @@
                   selectionMode="multi"
                   ref="datasetTable"
                   class="mt-3"
-                  v-on:license-accepted="update"
                   v-on:selection-changed="updateSelectedDatasetIds" v-if="selectedDataType.datasetType" />
 
     <template v-if="selectedDataType.key === 'GERMPLASM_COLUMN' || (selectedDatasetIds != null && selectedDatasetIds.length > 0 && itemOptions !== null && itemOptions.length > 0)">
@@ -36,6 +35,7 @@
 import DatasetTable from '@/components/tables/DatasetTable'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 
+import { EventBus } from '@/plugins/event-bus.js'
 import climateApi from '@/mixins/api/climate.js'
 import compoundApi from '@/mixins/api/compound.js'
 import datasetApi from '@/mixins/api/dataset.js'
@@ -277,6 +277,12 @@ export default {
   },
   created: function () {
     this.update()
+  },
+  mounted: function () {
+    EventBus.$on('license-accepted', this.update)
+  },
+  beforeDestroy: function () {
+    EventBus.$off('license-accepted', this.update)
   }
 }
 </script>

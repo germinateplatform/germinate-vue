@@ -109,7 +109,7 @@
       </Collapse>
 
       <template v-if="showAdditionalDatasets">
-        <DatasetsWithUnacceptedLicense v-on:license-accepted="search" v-on:data-changed="checkNumbers"/>
+        <DatasetsWithUnacceptedLicense v-on:data-changed="checkNumbers"/>
       </template>
     </template>
   </div>
@@ -137,6 +137,8 @@ import locationApi from '@/mixins/api/location.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
 import searchMixin from '@/mixins/search.js'
+
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
@@ -349,6 +351,11 @@ export default {
   mounted: function () {
     this.searchTerm = this.$route.params.searchTerm
     this.tempSearchTerm = this.searchTerm
+
+    EventBus.$on('license-accepted', this.search)
+  },
+  beforeDestroy: function () {
+    EventBus.$off('license-accepted', this.search)
   }
 }
 </script>

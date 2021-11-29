@@ -133,7 +133,7 @@
     </BaseTable>
 
     <!-- License modal -->
-    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" v-on:license-accepted="onLicenseAccepted" />
+    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" />
     <!-- Collaborators modal -->
     <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || (token && userIsAtLeast(token.userType, 'Data Curator')))" ref="publicationsModal" />
     <!-- Collaborators modal -->
@@ -496,9 +496,7 @@ export default {
       this.$refs.datasetTable.refresh()
     },
     onLicenseAccepted: function () {
-      this.$refs.licenseModal.hide()
-      // Pass it on to the parent in case it wants to know
-      this.$emit('license-accepted')
+      // this.$refs.licenseModal.hide()
       this.refresh()
     },
     onDatasetEditClicked: function (dataset) {
@@ -542,6 +540,12 @@ export default {
         })
       }
     }
+  },
+  mounted: function () {
+    EventBus.$on('license-accepted', this.onLicenseAccepted)
+  },
+  beforeDestroy: function () {
+    EventBus.$off('license-accepted', this.onLicenseAccepted)
   }
 }
 </script>

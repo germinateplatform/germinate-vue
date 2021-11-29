@@ -55,11 +55,11 @@
         <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" v-else />
 
         <!-- Table showing all datasets this trait is scored in -->
-        <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
+        <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 
         <div v-show="showAdditionalDatasets">
           <!-- Any additional datasets this trait is part of for which the license hasn't been accepted yet -->
-          <DatasetsWithUnacceptedLicense datasetType="trials" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
+          <DatasetsWithUnacceptedLicense datasetType="trials" v-on:data-changed="checkNumbers"/>
         </div>
       </template>
     </div>
@@ -79,6 +79,8 @@ import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
 import colorMixin from '@/mixins/colors.js'
 import typesMixin from '@/mixins/types.js'
+
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
@@ -194,6 +196,11 @@ export default {
         }
       })
     }
+
+    EventBus.$on('license-accepted', this.update)
+  },
+  beforeDestroy: function () {
+    EventBus.$off('license-accepted', this.update)
   }
 }
 </script>

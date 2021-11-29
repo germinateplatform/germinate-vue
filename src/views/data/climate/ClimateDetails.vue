@@ -20,11 +20,11 @@
         <!-- Box plot for this climate -->
         <BoxplotChart chartMode="datasetByItem" :xIds="[climateId]" xType="climates" ref="climateDetailsChart" />
         <!-- Table showing datasets containing this climate -->
-        <DatasetTable :getData="getDatasetData" ref="datasetTable" v-on:license-accepted="update" />
+        <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 
         <div v-show="showAdditionalDatasets">
           <!-- Any other datasets containing data for this climate, where the license hasn't been accepted yet -->
-          <DatasetsWithUnacceptedLicense datasetType="climate" v-on:license-accepted="update" v-on:data-changed="checkNumbers"/>
+          <DatasetsWithUnacceptedLicense datasetType="climate" v-on:data-changed="checkNumbers"/>
         </div>
       </template>
     </div>
@@ -39,6 +39,7 @@ import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import miscApi from '@/mixins/api/misc.js'
 import climateApi from '@/mixins/api/climate.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   data: function () {
@@ -109,6 +110,11 @@ export default {
         }
       })
     }
+
+    EventBus.$on('license-accepted', this.update)
+  },
+  beforeDestroy: function () {
+    EventBus.$off('license-accepted', this.update)
   }
 }
 </script>

@@ -59,7 +59,9 @@ export default {
     },
     accept: function () {
       this.apiGetAcceptLicense(this.license.licenseId, () => {
-        this.$emit('license-accepted')
+        EventBus.$emit('license-accepted', this.license.licenseId)
+
+        this.hide()
       })
     },
     onPrint: function () {

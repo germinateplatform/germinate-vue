@@ -88,7 +88,7 @@
         <h2 class="mdi-heading" id="datasets"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
         <p v-html="$t('pagePassportDatasetText')" />
         <!-- Datasets containing this germplasm -->
-        <DatasetTable :getData="getDatasetData" @license-accepted="$refs.performanceData.update()" />
+        <DatasetTable :getData="getDatasetData" />
 
         <hr />
         <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-tournament mdi-rotate-90 text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>

@@ -12,6 +12,7 @@
 <script>
 import Scale from '@/components/util/Scale'
 import germplasmApi from '@/mixins/api/germplasm.js'
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   props: {
@@ -48,9 +49,14 @@ export default {
     }
   },
   mounted: function () {
+    EventBus.$on('license-accepted', this.update)
+
     if (this.germplasmId) {
       this.update()
     }
+  },
+  beforeDestroy: function () {
+    EventBus.$off('license-accepted', this.update)
   }
 }
 </script>

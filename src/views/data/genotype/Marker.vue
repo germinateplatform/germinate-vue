@@ -29,7 +29,7 @@
         <h3>{{ $t('pageMarkerDetailsDatasetsTitle') }}</h3>
         <p>{{ $t('pageMarkerDetailsDatasetsText') }}</p>
         <!-- Datasets this marker is part of -->
-        <DatasetTable :getData="getDatasetData" v-on:license-accepted="getMarker" />
+        <DatasetTable :getData="getDatasetData" />
 
         <hr/>
         <h3>{{ $t('pageMarkerDetailsMapsTitle') }}</h3>
@@ -53,6 +53,8 @@ import DatasetTable from '@/components/tables/DatasetTable'
 import GroupTable from '@/components/tables/GroupTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import genotypeApi from '@/mixins/api/genotype.js'
+
+import { EventBus } from '@/plugins/event-bus.js'
 
 export default {
   props: {
@@ -173,6 +175,11 @@ export default {
 
       this.$store.dispatch('ON_RECENT_IDS_PUSH', { type: 'markers', id: this.currentMarkerId })
     }
+
+    EventBus.$on('license-accepted', this.getMarker)
+  },
+  beforeDestroy: function () {
+    EventBus.$off('license-accepted', this.getMarker)
   }
 }
 </script>
