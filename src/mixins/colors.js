@@ -70,9 +70,16 @@ export default {
      * @param {String} backgroundColor The background color in HEX
      */
     getHighContrastTextColor: function (backgroundColor) {
-      const rgb = this.hexToRgb(backgroundColor)
-      const o = Math.round(((rgb.r * 299) + (rgb.g * 587) + (rgb.b * 114)) / 1000)
-      return (o > 125) ? 'black' : 'white'
+      if (backgroundColor) {
+        const rgb = this.hexToRgb(backgroundColor)
+        if (!rgb) {
+          return 'black'
+        }
+        const o = Math.round(((rgb.r * 299) + (rgb.g * 587) + (rgb.b * 114)) / 1000)
+        return (o > 125) ? 'black' : 'white'
+      } else {
+        return 'black'
+      }
     }
   }
 }

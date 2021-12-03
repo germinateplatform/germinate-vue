@@ -439,7 +439,8 @@ export default {
       const genotypeQuery = {
         datasetIds: [this.dataset.datasetId],
         generateFlapjackProject: selectedFormats.indexOf('flapjack') !== -1,
-        generateHapMap: selectedFormats.indexOf('hapmap') !== -1
+        generateHapMap: selectedFormats.indexOf('hapmap') !== -1,
+        generateFlatFile: selectedFormats.indexOf('flat') !== -1
       }
       EventBus.$emit('show-loading', true)
       this.$gtag.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))

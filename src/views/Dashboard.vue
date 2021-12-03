@@ -36,7 +36,7 @@
       <h2>{{ $t('pageDashboardPublicationsTitle') }}</h2>
       <p>{{ $t('pageDashboardPublicationsText') }}</p>
 
-      <Publications referenceType="database" @publication-count-changed="count => showPublications = count > 0"/>
+      <PublicationsWidget referenceType="database" @publication-count-changed="count => showPublications = count > 0"/>
     </div>
 
     <!-- Introduction tour -->
@@ -51,7 +51,7 @@
 <script>
 import ImageCarousel from '@/components/images/ImageCarousel'
 import NewsSection from '@/components/news/NewsSection'
-import Publications from '@/components/util/Publications'
+import PublicationsWidget from '@/components/util/PublicationsWidget'
 import statsApi from '@/mixins/api/stats.js'
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
@@ -63,7 +63,7 @@ export default {
   components: {
     ImageCarousel,
     NewsSection,
-    Publications
+    PublicationsWidget
   },
   data: function () {
     return {

@@ -447,6 +447,16 @@ export default {
           ]
         },
         {
+          name: this.$t('menuPublications'),
+          identifiers: ['publications', 'publication-details'],
+          badge: {
+            text: this.getBadgeCount(this.badgeCounts, 'publications'),
+            variant: 'light'
+          },
+          url: '/publications',
+          icon: 'mdi mdi-18px mdi-newspaper-variant'
+        },
+        {
           name: this.$t('menuGroups'),
           identifiers: ['groups', 'group-details'],
           badge: {

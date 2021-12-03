@@ -27,7 +27,7 @@
           <b-card-body class="d-flex flex-column bg-dark">
             <b-card-title>{{ format.name }}</b-card-title>
             <b-card-text>
-              {{ format.text() }}
+              {{ format.text }}
             </b-card-text>
             <div>
               <b-badge v-for="(tag, index) in format.tags" :key="`export-format-tag-individual-${index}`" class="dispay-inline mr-2" variant="light" :style="`background: ${getBackgroundColor(tag)}; color: ${getTextColor(tag)}`">

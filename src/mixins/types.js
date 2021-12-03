@@ -1,50 +1,83 @@
 export default {
-  data: function () {
-    return {
-      exportFormats: {
+  computed: {
+    exportFormats: function () {
+      return {
         flapjack: {
           name: 'Flapjack',
           logo: 'tools/flapjack.png',
-          text: () => this.$t('pageExportFormatsFlapjackText'),
+          text: this.$t('pageExportFormatsFlapjackText'),
           tags: ['genotype', 'phenotype'],
           link: 'https://ics.hutton.ac.uk/flapjack'
         },
         helium: {
           name: 'Helium',
           logo: 'tools/helium.png',
-          text: () => this.$t('pageExportFormatsHeliumText'),
+          text: this.$t('pageExportFormatsHeliumText'),
           tags: ['pedigree', 'phenotype'],
           link: 'https://ics.hutton.ac.uk/helium'
         },
         curlywhirly: {
           name: 'CurlyWhirly',
           logo: 'tools/curlywhirly.png',
-          text: () => this.$t('pageExportFormatsCurlyWhirlyText'),
+          text: this.$t('pageExportFormatsCurlyWhirlyText'),
           tags: ['pca'],
           link: 'https://ics.hutton.ac.uk/curlywhirly'
         },
         strudel: {
           name: 'Strudel',
           logo: 'tools/strudel.png',
-          text: () => this.$t('pageExportFormatsStrudelText'),
+          text: this.$t('pageExportFormatsStrudelText'),
           tags: ['genotype'],
           link: 'https://ics.hutton.ac.uk/strudel'
         },
         excel: {
           name: 'Excel',
           logo: 'tools/excel.svg',
-          text: () => this.$t('pageExportFormatsExcelText'),
+          text: this.$t('pageExportFormatsExcelText'),
           tags: ['genotype', 'phenotype'],
           link: 'https://products.office.com/excel'
         },
         tassel: {
           name: 'Tassel',
           logo: 'tools/tassel.png',
-          text: () => this.$t('pageExportFormatsTasselText'),
+          text: this.$t('pageExportFormatsTasselText'),
           tags: ['genotype'],
           link: 'https://www.maizegenetics.net/tassel'
         }
-      },
+      }
+    },
+    publicationTypes: function () {
+      return {
+        germplasm: {
+          icon: 'mdi-sprout',
+          color: this.serverSettings ? this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length] : null,
+          text: this.$t('publicationTypeGerminatebase')
+        },
+        group: {
+          icon: 'mdi-group',
+          color: this.serverSettings ? this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length] : null,
+          text: this.$t('publicationTypeGroup')
+        },
+        database: {
+          icon: 'icon-germinate',
+          color: this.serverSettings ? this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length] : null,
+          text: this.$t('publicationTypeDatabase')
+        },
+        dataset: {
+          icon: 'mdi-database',
+          color: this.serverSettings ? this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length] : null,
+          text: this.$t('publicationTypeDataset')
+        },
+        experiment: {
+          icon: 'mdi-folder-table',
+          color: this.serverSettings ? this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length] : null,
+          text: this.$t('publicationTypeExperiment')
+        }
+      }
+    }
+  },
+  data: function () {
+    return {
       dataTypes: {
         'numeric': {
           text: () => this.$t('dataTypeNumeric'),

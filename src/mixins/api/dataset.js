@@ -1,5 +1,9 @@
 export default {
   methods: {
+    apiPostPublicationDatasetTable: function (publicationId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAxios({ url: `publication/${publicationId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostCollaboratorsTable: function (datasetId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAxios({ url: `dataset/${datasetId}/collaborator`, method: 'POST', data: queryData, success: onSuccess, error: onError })

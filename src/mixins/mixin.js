@@ -36,7 +36,7 @@ export default {
   },
   data: function () {
     return {
-      germinateVersion: '4.2.0',
+      germinateVersion: '4.2.1',
       MAX_JAVA_INTEGER: 2147483647,
       gatekeeperErrors: {
         'BAD_REQUEST_MISSING_FIELDS': 'gatekeeperErrorBadRequestMissingField',

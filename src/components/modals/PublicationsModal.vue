@@ -4,16 +4,16 @@
            :ok-title="$t('buttonClose')"
            size="xl"
            ok-only>
-    <Publications :referenceType="referenceType" :referencingId="referencingId" />
+    <PublicationsWidget :referenceType="referenceType" :referencingId="referencingId" />
   </b-modal>
 </template>
 
 <script>
-import Publications from '@/components/util/Publications'
+import PublicationsWidget from '@/components/util/PublicationsWidget'
 
 export default {
   components: {
-    Publications
+    PublicationsWidget
   },
   props: {
     referenceType: {

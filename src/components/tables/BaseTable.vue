@@ -70,10 +70,11 @@
             head-variant="dark"
             table-class="position-relative"
             :empty-text="$t('paginationNoResult')"
-            :sort-by.sync="options.orderBy"
-            :sort-desc.sync="options.orderByDesc"
+            :sort-by="options.orderBy"
+            :sort-desc="options.orderByDesc"
             :tbody-tr-class="options ? options.rowClassCallback : null"
             @refreshed="notifyLoaded"
+            @sort-changed="updateSort"
             ref="table">
       <!-- Pass on all named slots -->
       <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
@@ -296,18 +297,6 @@ export default {
     'pagination.totalCount': function () {
       this.updateTableTour()
     },
-    'options.orderBy': function (newValue) {
-      const query = Object.assign({}, this.$route.query)
-      query[`${this.options.tableName}-sort`] = newValue
-
-      this.$router.replace({ query })
-    },
-    'options.orderByDesc': function (newValue) {
-      const query = Object.assign({}, this.$route.query)
-      query[`${this.options.tableName}-sort-desc`] = newValue
-
-      this.$router.replace({ query })
-    },
     tablePerPage: function () {
       this.$nextTick(() => this.$refs.table.refresh())
     },
@@ -339,6 +328,22 @@ export default {
   mixins: [ groupApi, searchMixin, typesMixin ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
+    updateSort: function (ctx) {
+      const query = Object.assign({}, this.$route.query)
+      if (ctx.sortBy) {
+        query[`${this.options.tableName}-sort`] = ctx.sortBy
+      } else {
+        delete query[`${this.options.tableName}-sort`]
+      }
+
+      if (ctx.sortDesc) {
+        query[`${this.options.tableName}-sort-desc`] = ctx.sortDesc
+      } else {
+        delete query[`${this.options.tableName}-sort-desc`]
+      }
+
+      this.$router.replace({ query })
+    },
     jumpToPage: function () {
       if (this.jumpToPageValue > 0 && this.jumpToPageValue <= this.maxPage) {
         this.pagination.currentPage = this.jumpToPageValue

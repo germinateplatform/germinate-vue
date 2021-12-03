@@ -422,6 +422,18 @@ const router = new Router({
           beforeEnter: requireAuth
         },
         {
+          path: 'publications',
+          name: 'publications',
+          component: () => import('@/views/Publications.vue'),
+          beforeEnter: requireAuth
+        },
+        {
+          path: 'publications/:publicationType/:publicationId',
+          name: 'publication-details',
+          component: () => import('@/views/Publications.vue'),
+          beforeEnter: requireAuth
+        },
+        {
           path: 'groups',
           name: 'groups',
           component: () => import('@/views/Groups.vue'),

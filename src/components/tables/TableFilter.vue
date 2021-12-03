@@ -381,7 +381,7 @@ export default {
       }
     },
     getValue: function (column) {
-      return this.hiddenColumns[this.tableName].indexOf(column.key) === -1
+      return this.hiddenColumns[this.tableName] ? this.hiddenColumns[this.tableName].indexOf(column.key) === -1 : false
     },
     toggleColumn: function (value, column) {
       if (value) {

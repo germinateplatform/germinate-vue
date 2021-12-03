@@ -26,6 +26,7 @@ export default {
   computed: {
     options: function () {
       return [
+        { text: this.$t('pageGenotypesExportEnableFlatFileTitle'), value: 'flat'},
         { text: this.$t('pageGenotypesExportEnableFlapjackTitle'), value: 'flapjack' },
         { text: this.$t('pageGenotypesExportEnableHapmapTitle'), value: 'hapmap' }
       ]

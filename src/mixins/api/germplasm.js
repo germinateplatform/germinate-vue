@@ -25,6 +25,10 @@ export default {
       delete queryData.ascending
       return this.authAxios({ url: 'germplasm/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiPostPublicationGermplasmTable: function (publicationId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAxios({ url: `publication/${publicationId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
     apiPostGroupGermplasmTable: function (groupId, queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAxios({ url: `group/${groupId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
