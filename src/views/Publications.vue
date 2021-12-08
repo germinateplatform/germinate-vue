@@ -6,7 +6,12 @@
     <div v-if="publicationId" ref="publicationDetails" >
       <h2>{{ $t('pagePublicationDetailsTitle') }}</h2>
 
-      <template v-if="publication">
+      <template v-if="publicationData">
+        <h3>{{ publicationData.title }}</h3>
+      </template>
+
+
+      <template v-if="publication && publication.referenceType !== 'database'">
         <!-- One of these three tables will be shown, depending on the type of the selected publication -->
         <GermplasmTable v-if="publication.referenceType === 'germplasm'"
                         ref="publicationmembersTable"
@@ -28,6 +33,8 @@ import datasetApi from '@/mixins/api/dataset.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import miscApi from '@/mixins/api/misc.js'
 
+const Cite = require('citation-js')
+
 export default {
   components: {
     DatasetTable,
@@ -38,7 +45,36 @@ export default {
     return {
       publicationId: null,
       publicationType: null,
-      publication: null
+      publication: null,
+      publicationData: null
+    }
+  },
+  watch: {
+    publication: function (newValue) {
+      if (newValue) {
+        try {
+          const citation = new Cite(newValue.publicationFallbackCache)
+            
+          if (citation && citation.data && citation.data.length > 0) {
+            this.publicationData = citation.format('data', {format: 'object'})[0]
+          } else {
+            this.publicationData = {
+              title: 'N/A',
+              fullReference: 'N/A',
+              URL: newValue.publicationDoi
+            }
+          }
+        } catch (err) {
+          console.error(err)
+          this.publicationData = {
+            title: 'N/A',
+            fullReference: 'N/A',
+            URL: newValue.publicationDoi
+          }
+        }
+      } else {
+        this.publicationData = null
+      }
     }
   },
   mixins: [ datasetApi, germplasmApi, miscApi ],

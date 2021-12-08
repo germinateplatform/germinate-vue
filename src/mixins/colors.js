@@ -23,6 +23,21 @@ export default {
         return '#00acef'
       }
     },
+    createMultiColorGradient: function (colors, steps) {
+      const sections = colors.length - 1
+
+      const result = []
+
+      for (let i = 0; i < steps; i++) {
+        result = result.concat(this.createColorGradient(colors[i], colors[i + 1], Math.floor(steps / sections)))
+      }
+
+      while (result.length < steps) {
+        result.push(colors[colors.length - 1])
+      }
+      
+      return result
+    },
     /**
      * Creates a linear gradient between the two given colors with the given number of steps
      * @param {String} one The first color in HEX

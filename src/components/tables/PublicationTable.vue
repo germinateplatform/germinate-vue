@@ -7,10 +7,14 @@
               ref="publicationTable"
               v-on="$listeners">
       <template v-slot:cell(publicationId)="data">
-        <router-link :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }">{{ data.item.publicationId }}</router-link>
+        <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }">{{ data.item.publicationId }}</router-link>
+        <span v-else>{{ data.item.publicationId }}</span>
       </template>        
       <template v-slot:cell(publicationName)="data">
-        <router-link :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }" v-if="data.item.publicationFallbackCache">{{ data.item.publicationFallbackCache.title }}</router-link>
+        <template v-if="data.item.publicationFallbackCache">
+          <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }">{{ data.item.publicationFallbackCache.title }}</router-link>
+          <span v-else>{{ data.item.publicationFallbackCache.title }}</span>
+        </template>
       </template>
       <template v-slot:cell(publicationJournal)="data">
         <span v-if="data.item.publicationFallbackCache">{{ data.item.publicationFallbackCache['container-title'] }}</span>
