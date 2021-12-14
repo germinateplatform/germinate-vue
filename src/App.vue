@@ -147,14 +147,16 @@ export default {
       }
 
       const config = new Detector().detect()
-      const data = {
-        application: 'Germinate',
-        id: id,
-        version: `${this.germinateVersion}`,
-        locale: this.locale,
-        os: `${config.os} ${config.osVersion}`
+      if (config.os !== undefined && config.os !== null && config.os !== 'Search Bot') {
+        const data = {
+          application: 'Germinate',
+          id: id,
+          version: `${this.germinateVersion}`,
+          locale: this.locale,
+          os: `${config.os} ${config.osVersion}`
+        }
+        this.authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
       }
-      this.authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
     }
   }
 }
