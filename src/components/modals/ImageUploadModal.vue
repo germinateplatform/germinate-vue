@@ -64,9 +64,7 @@ export default {
       }
 
       let formData = new FormData()
-      this.imageFiles.forEach(i => {
-        formData.append('imageFiles', i)
-      })
+      this.imageFiles.forEach(i => formData.append('imageFiles', i))
 
       EventBus.$emit('show-loading', true)
       this.apiPostImageForm(this.foreignId, this.referenceTable, formData, result => {
