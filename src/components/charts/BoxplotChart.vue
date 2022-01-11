@@ -1,13 +1,26 @@
 <template>
-  <BaseChart :width="() => 1280" :height="() => getHeight()" :sourceFile="baseSourceFile" :filename="baseFilename" :loading="loading" v-on:force-redraw="redraw">
-    <div slot="chart" ref="chart" />
-  </BaseChart>
+  <div>
+    <BaseChart :id="id" :width="() => 1280" :height="() => getHeight()" :sourceFile="baseSourceFile" :filename="baseFilename" :loading="loading" v-on:force-redraw="redraw">
+      <div slot="chart" ref="chart" />
+
+      <template slot="additionalButtons">
+        <b-button v-b-tooltip.hover
+                  :title="$t('chartTooltipMatrixTour')"
+                  @click="showTour()">
+          <i class="mdi mdi-18px mdi-help-circle-outline" />
+        </b-button>
+      </template>
+    </BaseChart>
+    <!-- Tour to explain the chart -->
+    <Tour :steps="popoverContent" ref="tour" />
+  </div>
 </template>
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
 import datasetApi from '@/mixins/api/dataset.js'
 import colorMixin from '@/mixins/colors.js'
+import Tour from '@/components/util/Tour'
 
 export default {
   props: {
@@ -37,10 +50,14 @@ export default {
     }
   },
   components: {
-    BaseChart
+    BaseChart,
+    Tour
   },
   data: function () {
+    const id = 'chart-' + this.uuidv4()
+
     return {
+      id: id,
       plotData: null,
       loading: false,
       xTypes: {
@@ -62,7 +79,18 @@ export default {
           apiKey: 'climate',
           nameKey: 'climateName'
         }
-      }
+      },
+      popoverContent: [{
+        title: () => this.$t('popoverChartTourGenericOptionsTitle'),
+        text: () => this.$t('popoverChartTourGenericOptionsText'),
+        target: () => `#${id} #additional-options`,
+        position: 'bottom'
+      }, {
+        title: () => this.$t('popoverChartTourGenericModebarTitle'),
+        text: () => this.$t('popoverChartTourGenericModebarText'),
+        target: () => `#${id} .modebar`,
+        position: 'bottom'
+      }]
     }
   },
   computed: {
@@ -85,6 +113,9 @@ export default {
   },
   mixins: [ datasetApi, colorMixin ],
   methods: {
+    showTour: function () {
+      this.$refs.tour.start()
+    },
     getHeight: function () {
       if (this.chartMode === 'itemByGroup') {
         let groups = []

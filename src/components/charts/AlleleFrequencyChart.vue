@@ -51,8 +51,16 @@
       <h2>{{ $t('pageAlleleFrequencyBinningChartTitle') }}</h2>
       <p>{{ $t('pageAlleleFrequencyBinningChartText') }}</p>
       <!-- Plotly.js bar chart -->
-      <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" :canChangeColors="false" v-on:force-redraw="redraw">
+      <BaseChart :id="id" :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" :canChangeColors="false" v-on:force-redraw="redraw">
         <div slot="chart" id="allelefreq-chart" ref="allelefreqChart" />
+
+        <template slot="additionalButtons">
+        <b-button v-b-tooltip.hover
+                  :title="$t('chartTooltipMatrixTour')"
+                  @click="showTour()">
+          <i class="mdi mdi-18px mdi-help-circle-outline" />
+        </b-button>
+      </template>
       </BaseChart>
       <p>{{ $t('pageAlleleFrequencyBinningChartColors') }}</p>
 
@@ -62,11 +70,15 @@
       <b-button variant="primary" @click="$emit('trigger-export', getExportSettings())"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonExport') }}</b-button>
     </div>
     <h3 class="mt-3" v-else>{{ $t('headingNoData') }}</h3>
+
+    <!-- Tour to explain the chart -->
+    <Tour :steps="popoverContent" ref="tour" />
   </div>
 </template>
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
+import Tour from '@/components/util/Tour'
 import colorMixin from '@/mixins/colors.js'
 import { plotlyAlleleFreqChart } from '@/plugins/charts/plotly-allelefreq-chart.js'
 const d3Select = require('d3-selection')
@@ -84,7 +96,10 @@ export default {
     }
   },
   data: function () {
+    const id = 'chart-' + this.uuidv4()
+
     return {
+      id: id,
       maxBins: 20,
       minBins: 2,
       currentWidths: null,
@@ -98,7 +113,13 @@ export default {
       splitPoint: 0.5,
       widths: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
       serverFilePath: null,
-      serverFileBinning: null
+      serverFileBinning: null,
+      popoverContent: [{
+        title: () => this.$t('popoverChartTourGenericOptionsTitle'),
+        text: () => this.$t('popoverChartTourGenericOptionsText'),
+        target: () => `#${id} #additional-options`,
+        position: 'bottom'
+      }]
     }
   },
   computed: {
@@ -116,7 +137,8 @@ export default {
     }
   },
   components: {
-    BaseChart
+    BaseChart,
+    Tour
   },
   watch: {
     sourceFile: function () {
@@ -129,6 +151,9 @@ export default {
   },
   mixins: [ colorMixin ],
   methods: {
+    showTour: function () {
+      this.$refs.tour.start()
+    },
     parseFile: function () {
       // Read the file
       let reader = new FileReader()

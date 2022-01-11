@@ -501,6 +501,26 @@ body.dark-mode .b-popover-secondary.bs-popover-bottom > .arrow::after {
     border-bottom-color: rgb(58, 63, 65);
 }
 
+body.dark-mode .bs-popover-right > .arrow::before,
+body.dark-mode .bs-popover-auto[x-placement^="right"] > .arrow::before {
+    border-right-color: rgb(56, 60, 63);
+}
+
+body.dark-mode .bs-popover-right > .arrow::after,
+body.dark-mode .bs-popover-auto[x-placement^="right"] > .arrow::after {
+    border-right-color: rgb(44, 47, 49);
+}
+
+body.dark-mode .bs-popover-left > .arrow::before,
+body.dark-mode .bs-popover-auto[x-placement^="left"] > .arrow::before {
+    border-left-color: rgb(56, 60, 63);
+}
+
+body.dark-mode .bs-popover-left > .arrow::after,
+body.dark-mode .bs-popover-auto[x-placement^="left"] > .arrow::after {
+    border-left-color: rgb(44, 47, 49);
+}
+
 body.dark-mode .border-right {
     border-right-color: rgb(62, 67, 70) !important;
 }

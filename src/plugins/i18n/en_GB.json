@@ -785,6 +785,8 @@
   "paginationNoResult": "No matching records",
   "paginationPage": "Page",
   "paginationPageCustom": "{from} of {to}",
+  "popoverChartTourClickableSelectionTitle": "Selection",
+  "popoverChartTourClickableSelectionText": "Select items by clicking on them.",
   "popoverChartTourGenericOptionsTitle": "Options",
   "popoverChartTourGenericOptionsText": "Additional options like chart download options are available in this menu.",
   "popoverChartTourGenericModebarTitle": "Modebar",

@@ -1,8 +1,19 @@
 <template>
   <div v-if="plotData">
-    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false"  v-on:force-redraw="update">
-      <div slot="chart" ref="pedigreeChart" />
+    <BaseChart :id="id" :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false"  v-on:force-redraw="update">
+      <div id="pedigree-chart" slot="chart" ref="pedigreeChart" />
+
+      <template slot="additionalButtons">
+        <b-button v-b-tooltip.hover
+                  :title="$t('chartTooltipMatrixTour')"
+                  @click="showTour()">
+          <i class="mdi mdi-18px mdi-help-circle-outline" />
+        </b-button>
+      </template>
     </BaseChart>
+    <!-- Tour to explain the chart -->
+    <Tour :steps="popoverContent" ref="tour" />
+
     <!-- Export button -->
     <b-button @click="downloadPedigree()"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownloadForHelium') }}</b-button>
     <!-- Information about the export formats -->
@@ -12,6 +23,7 @@
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
+import Tour from '@/components/util/Tour'
 import { EventBus } from '@/plugins/event-bus.js'
 import { pedigreeChart } from '@/plugins/charts/d3-dagre-chart.js'
 import colors from '@/mixins/colors.js'
@@ -30,8 +42,22 @@ export default {
     }
   },
   data: function () {
+    const id = 'chart-' + this.uuidv4()
+
     return {
-      plotData: null
+      id: id,
+      plotData: null,
+      popoverContent: [{
+        title: () => this.$t('popoverChartTourGenericOptionsTitle'),
+        text: () => this.$t('popoverChartTourGenericOptionsText'),
+        target: () => `#${id} #additional-options`,
+        position: 'bottom'
+      }, {
+        title: () => this.$t('popoverChartTourClickableSelectionTitle'),
+        text: () => this.$t('popoverChartTourClickableSelectionText'),
+        target: () => `#${id} #pedigree-chart`,
+        position: 'top'
+      }]
     }
   },
   computed: {
@@ -47,10 +73,14 @@ export default {
     }
   },
   components: {
-    BaseChart
+    BaseChart,
+    Tour
   },
   mixins: [ colors, germplasmApi ],
   methods: {
+    showTour: function () {
+      this.$refs.tour.start()
+    },
     update: function () {
       this.$nextTick(() => {
         while (this.$refs.pedigreeChart.firstChild) {

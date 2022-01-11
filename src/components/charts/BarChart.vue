@@ -1,13 +1,25 @@
 <template>
   <div>
-    <BaseChart :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" v-on:force-redraw="redraw">
+    <BaseChart :id="id" :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" v-on:force-redraw="redraw">
       <div slot="chart" id="bar-chart" ref="barChart" class="chart-bar text-center" />
+
+      <template slot="additionalButtons">
+        <b-button v-b-tooltip.hover
+                  :title="$t('chartTooltipMatrixTour')"
+                  @click="showTour()">
+          <i class="mdi mdi-18px mdi-help-circle-outline" />
+        </b-button>
+      </template>
     </BaseChart>
+
+    <!-- Tour to explain the chart -->
+    <Tour :steps="popoverContent" ref="tour" />
   </div>
 </template>
 
 <script>
 import BaseChart from '@/components/charts/BaseChart'
+import Tour from '@/components/util/Tour'
 import { plotlyBarChart } from '@/plugins/charts/plotly-bar-chart.js'
 import colorMixin from '@/mixins/colors.js'
 const d3Dsv = require('d3-dsv')
@@ -44,6 +56,19 @@ export default {
       default: 500
     }
   },
+  data: function () {
+    const id = 'chart-' + this.uuidv4()
+
+    return {
+      id: id,
+      popoverContent: [{
+        title: () => this.$t('popoverChartTourGenericOptionsTitle'),
+        text: () => this.$t('popoverChartTourGenericOptionsText'),
+        target: () => `#${id} #additional-options`,
+        position: 'bottom'
+      }]
+    }
+  },
   computed: {
     baseSourceFile: function () {
       return {
@@ -56,7 +81,8 @@ export default {
     }
   },
   components: {
-    BaseChart
+    BaseChart,
+    Tour
   },
   watch: {
     sourceFile: function () {
@@ -65,6 +91,9 @@ export default {
   },
   mixins: [ colorMixin ],
   methods: {
+    showTour: function () {
+      this.$refs.tour.start()
+    },
     redraw: function () {
       if (this.sourceFile) {
         this.$plotly.purge(this.$refs.barChart)
