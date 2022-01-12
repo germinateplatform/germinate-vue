@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     coolboxImages: function () {
-      return  this.images.map(i => {
+      return this.images.map(i => {
         return {
           src: this.getSrc(i),
           title: i.imageDescription
