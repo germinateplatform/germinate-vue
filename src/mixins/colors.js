@@ -26,7 +26,7 @@ export default {
     createMultiColorGradient: function (colors, steps) {
       const sections = colors.length - 1
 
-      const result = []
+      let result = []
 
       for (let i = 0; i < steps; i++) {
         result = result.concat(this.createColorGradient(colors[i], colors[i + 1], Math.floor(steps / sections)))

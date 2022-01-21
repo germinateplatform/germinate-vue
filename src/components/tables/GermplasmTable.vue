@@ -91,8 +91,11 @@
       </template>
       <!-- Country flag -->
       <template v-slot:cell(countryName)="data">
-          <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName">
-            <i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()" v-if="data.item.countryCode"/> <span> {{ data.item.countryCode }}</span>
+          <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName" v-if="data.item.countryCode">
+            <i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()"/> <span> {{ data.item.countryCode }}</span>
+          </span>
+          <span v-else>
+            {{ data.item.countryName }}
           </span>
       </template>
       <!-- Formatted colldate -->
