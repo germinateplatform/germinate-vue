@@ -72,7 +72,7 @@
                 </router-link>
                 <b-badge :href="markedIds[itemType].length < 1 ? null : '#'"
                          :disabled="markedIds[itemType].length < 1"
-                         @click.prevent="clearMarkedItems(itemType)"
+                         @click.prevent="markedIds[itemType].length < 1 ? null : clearMarkedItems(itemType)"
                          v-b-tooltip="$t('chartTooltipMarkedItemsClear')">
                   <i :class="`mdi mdi-delete ${markedIds[itemType].length >= 1 ? 'text-danger' : null}`" />
                 </b-badge>

@@ -16,12 +16,14 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { EventBus } from '@/plugins/event-bus.js'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import miscApi from '@/mixins/api/misc.js'
 import statsApi from '@/mixins/api/stats.js'
 import { Detector } from '@/plugins/browser-detect.js'
+import { VuePlausible } from 'vue-plausible'
 
 export default {
   name: 'app',
@@ -73,6 +75,19 @@ export default {
   created: async function () {
     await this.apiGetSettings(result => {
       this.$store.dispatch('ON_SETTINGS_CHANGED', result)
+
+      if (result.plausibleDomain) {
+        Vue.use(VuePlausible, {
+          domain: result.plausibleDomain,
+          hashMode: result.plausibleHashMode || true,
+          apiHost: result.plausibleApiHost || 'https://plausible.io',
+          trackLocalhost: false
+        })
+
+        this.$nextTick(() => {
+          this.$plausible.enableAutoPageviews()
+        })
+      }
 
       this.apiGetEntityTypeStats(result => {
         this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
