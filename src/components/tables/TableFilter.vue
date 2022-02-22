@@ -439,6 +439,7 @@ export default {
       this.setFilter(false, trigger)
     },
     refresh: function (concat = true) {
+      // Check the URL for filter options
       let urlFilter = null
       if (this.$route.query) {
         if (this.$route.query[`${this.tableName}-filter`]) {
@@ -446,7 +447,7 @@ export default {
             urlFilter = JSON.parse(this.$route.query[`${this.tableName}-filter`])
 
             const columns = this.getColumns
-            urlFilter = urlFilter.map(f => {
+            urlFilter = urlFilter.filter(f => this.filterOn && !this.filterOn.some(of => of.column.name === f.column)).map(f => {
               const existingColumn = columns.filter(c => c.key === f.column)
 
               if (existingColumn && existingColumn.length > 0) {

@@ -33,6 +33,9 @@ export default {
     },
     apiPostTraitUnification: function (queryData, onSuccess, onError) {
       return this.authAxios({ url: 'trait/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
+    },
+    apiGetTraitDistinctValues: function (traitId, onSuccess, onError) {
+      return this.authAxios({ url: `trait/${traitId}/values`, success: onSuccess, error: onError })
     }
   }
 }

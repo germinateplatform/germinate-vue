@@ -34,6 +34,8 @@
         </h2>
         <p v-html="$t('pagePassportText')" />
 
+        <b-button target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.accenumb}`"><i class="mdi mdi-18px mdi-barcode" /> {{ $t('pagePassportGenerateBarcode') }}</b-button>
+
         <!-- PDCI -->
         <template v-if="germplasmTableData && germplasmTableData.pdci">
           <hr />

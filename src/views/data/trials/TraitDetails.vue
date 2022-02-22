@@ -23,6 +23,8 @@
           </h4>
         </template>
 
+        <b-button @click="$refs.barcodeModal.show()"><i class="mdi mdi-18px mdi-barcode" /> {{ $t('pageTraitDetailsGenerateBarcodes') }}</b-button>
+
         <!-- Image gallery with representative images for this trait -->
         <ImageGallery :foreignId="trait.traitId" referenceTable="phenotypes" :downloadName="trait.traitName" />
         <hr/>
@@ -62,6 +64,18 @@
           <DatasetsWithUnacceptedLicense datasetType="trials" v-on:data-changed="checkNumbers"/>
         </div>
       </template>
+
+      <YesNoCancelModal :title="$t('modalTitleTraitBarcodeIncludeValues')"
+                        :message="$t('modalTextTraitBarcodeIncludeValues')"
+                        :yesTitle="$t('genericYes')"
+                        :noTitle="$t('genericNo')"
+                        :cancelTitle="$t('genericCancel')"
+                        yesVariant="secondary"
+                        noVariant="secondary"
+                        cancelVariant="outline-secondary"
+                        @yes="generateBarcodes(true)"
+                        @no="generateBarcodes(false)"
+                        ref="barcodeModal" />
     </div>
     <h3 v-else>{{ $t('headingNoData') }}</h3>
   </div>
@@ -74,6 +88,8 @@ import DatasetTable from '@/components/tables/DatasetTable'
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import ImageGallery from '@/components/images/ImageGallery'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import YesNoCancelModal from '@/components/modals/YesNoCancelModal'
+
 import datasetApi from '@/mixins/api/dataset.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
@@ -98,9 +114,25 @@ export default {
     DatasetTable,
     BoxplotChart,
     ImageGallery,
-    TrialsDataTable
+    TrialsDataTable,
+    YesNoCancelModal
   },
   methods: {
+    generateBarcodes: function (includeValues) {
+      if (includeValues) {
+        this.apiGetTraitDistinctValues(this.traitId, result => {
+          this.openInNewTab(`https://cropgeeks.github.io/humbug/#/import?barcodes=${[this.trait.traitName, ...result].map(c => encodeURIComponent(c)).join(',')}`)  
+        })
+      } else {
+        this.openInNewTab(`https://cropgeeks.github.io/humbug/#/import?barcodes=${encodeURIComponent(this.trait.traitName)}`)
+      }
+    },
+    openInNewTab: function (url) {
+      Object.assign(document.createElement('a'), {
+        target: '_blank',
+        href: url
+      }).click()
+    },
     traitValueClicked: function (value) {
       this.tableFilter = [{
         column: {

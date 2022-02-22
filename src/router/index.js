@@ -11,7 +11,7 @@ const originalReplace = Router.prototype.replace
 Router.prototype.replace = function replace(location, onResolve, onReject) {
   if (onResolve || onReject) return originalReplace.call(this, location, onResolve, onReject)
   return originalReplace.call(this, location).catch(err => {
-    if (err.name != 'NavigationDuplicated') {
+    if (err && err.name != 'NavigationDuplicated') {
       throw err
     }
   })
