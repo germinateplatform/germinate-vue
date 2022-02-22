@@ -10,7 +10,7 @@
     size="xl"
     @ok="notifyCaller">
     <p>{{ $t('modalTextImageUpload') }}</p>
-    <UploadWidget accept="image/png,image/jpeg" :postAction="`${baseUrl}image/${referenceTable}/${foreignId}`" name="imageFiles" />
+    <UploadWidget accept="image/png,image/jpeg" :postAction="`${baseUrl}image/upload/${referenceTable}/${foreignId}`" name="imageFiles" />
   </b-modal>
 </template>
 

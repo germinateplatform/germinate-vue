@@ -92,7 +92,17 @@ export default {
       }
       const paramString = this.toUrlString(params)
 
-      return this.baseUrl + 'image/src?' + paramString
+      let name = this.image.imagePath
+      let index = name.lastIndexOf('\\')
+      if (index !== -1) {
+        name = name.substring(index + 1)
+      }
+      index = name.lastIndexOf('/')
+      if (index !== -1) {
+        name = name.substring(index + 1)
+      }
+
+      return `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
     },
     deleteImage: function () {
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {

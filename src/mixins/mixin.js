@@ -256,7 +256,7 @@ export default {
      */
     toUrlString: function (params) {
       return Object.keys(params).filter(function (key) {
-        return params[key] !== undefined && params[key] !== null
+        return params[key] !== undefined && params[key] !== null && params[key] !== ''
       }).map(function (key) {
         return params[key] ? (key + '=' + encodeURIComponent(params[key])) : ''
       }).join('&')

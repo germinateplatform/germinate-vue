@@ -461,7 +461,17 @@ export default {
 
       const paramString = this.toUrlString(params)
 
-      return this.baseUrl + 'image/src?' + paramString
+      let name = germplasm.firstImagePath
+      let index = name.lastIndexOf('\\')
+      if (index !== -1) {
+        name = name.substring(index + 1)
+      }
+      index = name.lastIndexOf('/')
+      if (index !== -1) {
+        name = name.substring(index + 1)
+      }
+
+      return `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
     },
     markParents: function (item) {
       if (item) {

@@ -29,17 +29,29 @@ export default {
     }
   },
   methods: {
-    setImagePath: function (index) {
-      const params = {
-        name: this.images[this.locale][index].name,
-        token: this.token ? this.token.imageToken : null,
-        type: 'template',
-        size: 'large'
-      }
+    setImagePath: function (imageIndex) {
+      Object.keys(this.images).forEach(locale => {
+        const params = {
+          name: this.images[this.locale][imageIndex].name,
+          token: this.token ? this.token.imageToken : null,
+          type: 'template',
+          size: 'large'
+        }
 
-      const paramString = this.toUrlString(params)
+        const paramString = this.toUrlString(params)
 
-      Object.keys(this.images).forEach(locale => this.images[locale][index].src = this.baseUrl + 'image/src?' + paramString)
+        let name = this.images[this.locale][imageIndex].name
+        let index = name.lastIndexOf('\\')
+        if (index !== -1) {
+          name = name.substring(index + 1)
+        }
+        index = name.lastIndexOf('/')
+        if (index !== -1) {
+          name = name.substring(index + 1)
+        }
+
+        this.images[locale][imageIndex].src = `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
+      })
     }
   },
   mixins: [ miscApi ],
