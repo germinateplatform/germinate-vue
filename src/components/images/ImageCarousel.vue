@@ -31,26 +31,12 @@ export default {
   methods: {
     setImagePath: function (imageIndex) {
       Object.keys(this.images).forEach(locale => {
-        const params = {
+        return this.images[locale][imageIndex].src = this.getImageUrl(this.images[this.locale][imageIndex].name, {
           name: this.images[this.locale][imageIndex].name,
           token: this.token ? this.token.imageToken : null,
           type: 'template',
           size: 'large'
-        }
-
-        const paramString = this.toUrlString(params)
-
-        let name = this.images[this.locale][imageIndex].name
-        let index = name.lastIndexOf('\\')
-        if (index !== -1) {
-          name = name.substring(index + 1)
-        }
-        index = name.lastIndexOf('/')
-        if (index !== -1) {
-          name = name.substring(index + 1)
-        }
-
-        this.images[locale][imageIndex].src = `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
+        })
       })
     }
   },

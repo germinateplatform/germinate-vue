@@ -452,26 +452,12 @@ export default {
       this.$refs.germplasmTable.refresh()
     },
     getSrc: function (germplasm) {
-      const params = {
+      return this.getImageUrl(germplasm.firstImagePath, {
         name: germplasm.firstImagePath,
         type: 'database',
         size: 'small',
         token: this.token ? this.token.imageToken : ''
-      }
-
-      const paramString = this.toUrlString(params)
-
-      let name = germplasm.firstImagePath
-      let index = name.lastIndexOf('\\')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-      index = name.lastIndexOf('/')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-
-      return `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
+      })
     },
     markParents: function (item) {
       if (item) {

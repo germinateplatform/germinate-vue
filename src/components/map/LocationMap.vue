@@ -501,12 +501,8 @@ export default {
 
       // Disable zoom until focus gained, disable when blur
       map.scrollWheelZoom.disable()
-      map.on('focus', function () {
-        map.scrollWheelZoom.enable()
-      })
-      map.on('blur', function () {
-        map.scrollWheelZoom.disable()
-      })
+      map.on('focus', () => map.scrollWheelZoom.enable())
+      map.on('blur', () => map.scrollWheelZoom.disable())
       this.$emit('map-loaded', map)
 
       if (this.climateOverlaysDisabled === false) {

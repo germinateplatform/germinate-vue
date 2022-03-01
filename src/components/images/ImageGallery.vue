@@ -131,25 +131,12 @@ export default {
       })
     },
     getSrc: function (image) {
-      const params = {
+      return this.getImageUrl(image.imagePath, {
         name: image.imagePath,
         token: this.token ? this.token.imageToken : null,
         type: 'database',
         size: 'large'
-      }
-      const paramString = this.toUrlString(params)
-
-      let name = image.imagePath
-      let index = name.lastIndexOf('\\')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-      index = name.lastIndexOf('/')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-
-      return `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
+      })
     },
     onTagsChanged: function () {
       this.getPage(this.currentPage)

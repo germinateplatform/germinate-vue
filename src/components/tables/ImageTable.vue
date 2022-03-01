@@ -159,26 +159,12 @@ export default {
       return this.serverSettings.colorsTemplate[index % this.serverSettings.colorsTemplate.length]
     },
     getSrc: function (image, size) {
-      const params = {
+      return this.getImageUrl(image.imagePath, {
         name: image.imagePath,
         type: 'database',
         size: size,
         token: this.token ? this.token.imageToken : ''
-      }
-
-      const paramString = this.toUrlString(params)
-
-      let name = image.imagePath
-      let index = name.lastIndexOf('\\')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-      index = name.lastIndexOf('/')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-
-      return `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
+      })
     },
     update: function (i) {
       this.coolboxImages = [{

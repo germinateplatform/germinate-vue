@@ -84,25 +84,12 @@ export default {
       this.apiPatchImage(this.image)
     },
     getSrc: function (size) {
-      const params = {
+      return this.getImageUrl(this.image.imagePath, {
         name: this.image.imagePath,
         token: this.token ? this.token.imageToken : null,
         type: 'database',
         size: size
-      }
-      const paramString = this.toUrlString(params)
-
-      let name = this.image.imagePath
-      let index = name.lastIndexOf('\\')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-      index = name.lastIndexOf('/')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-
-      return `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
+      })
     },
     deleteImage: function () {
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {

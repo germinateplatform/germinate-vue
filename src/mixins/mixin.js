@@ -261,6 +261,20 @@ export default {
         return params[key] ? (key + '=' + encodeURIComponent(params[key])) : ''
       }).join('&')
     },
+    getImageUrl: function (name, params) {
+      const paramString = this.toUrlString(params)
+
+      let index = name.lastIndexOf('\\')
+      if (index !== -1) {
+        name = name.substring(index + 1)
+      }
+      index = name.lastIndexOf('/')
+      if (index !== -1) {
+        name = name.substring(index + 1)
+      }
+
+      return `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
+    },
     /**
      * Generates a v4 UUID
      */

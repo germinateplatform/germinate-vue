@@ -166,25 +166,12 @@ export default {
       }
     },
     getImageSrc: function (item) {
-      const params = {
+      return this.getImageUrl(item.newsImage, {
         name: item.newsImage,
         token: this.token ? this.token.imageToken : null,
         type: 'news',
         size: 'small'
-      }
-      const paramString = this.toUrlString(params)
-
-      let name = item.newsImage
-      let index = name.lastIndexOf('\\')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-      index = name.lastIndexOf('/')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-
-      return `${this.baseUrl}image/src/${encodeURI(name)}?${paramString}`
+      })
     },
     updateNews: function (page) {
       const newsQuery = {
