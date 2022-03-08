@@ -159,13 +159,13 @@
 </template>
 
 <script>
-import { EventBus } from '@/plugins/event-bus.js'
-
 import draggable from 'vuedraggable'
 
 import colorMixin from '@/mixins/colors.js'
 import typeMixin from '@/mixins/types.js'
 import miscApi from '@/mixins/api/misc.js'
+
+const emitter = require('tiny-emitter/instance')
 
 const defaults = {
   colorPrimary: '#20a8d8',
@@ -263,7 +263,7 @@ export default {
                   // Then remove the token (because the server reset them all anyway)
                   this.$store.commit('ON_TOKEN_CHANGED_MUTATION', null)
 
-                  EventBus.$emit('on-stylesheet-changed')
+                  emitter.emit('on-stylesheet-changed')
 
                   // And redirect to the home/login page
                   if (this.serverSettings.authMode === 'FULL') {

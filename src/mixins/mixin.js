@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   computed: {
@@ -290,7 +291,7 @@ export default {
      * @param {*} error The error response object
      */
     handleError: function (error) {
-      EventBus.$emit('show-loading', false)
+      emitter.emit('show-loading', false)
       let variant = 'danger'
       let title = this.$t('genericError')
       let message = error.statusText
@@ -309,7 +310,7 @@ export default {
             if (authMode === 'FULL') {
               this.$router.push({ name: 'login' })
             } else if (authMode === 'SELECTIVE') {
-              EventBus.$emit('on-show-login-form')
+              emitter.emit('on-show-login-form')
             }
             return
           case 403: {
@@ -318,7 +319,7 @@ export default {
             if (authMode === 'FULL') {
               this.$router.push({ name: 'login' })
             } else if (authMode === 'SELECTIVE') {
-              EventBus.$emit('on-show-login-form')
+              emitter.emit('on-show-login-form')
             }
             return
           }
@@ -398,7 +399,7 @@ export default {
               if (authMode === 'FULL') {
                 this.$router.push({ name: 'login' })
               } else if (authMode === 'SELECTIVE') {
-                EventBus.$emit('on-show-login-form')
+                emitter.emit('on-show-login-form')
               }
             } else if (process.env.NODE_ENV === 'development') {
               console.error(err)
@@ -502,7 +503,7 @@ export default {
               if (authMode === 'FULL') {
                 this.$router.push({ name: 'login' })
               } else if (authMode === 'SELECTIVE') {
-                EventBus.$emit('on-show-login-form')
+                emitter.emit('on-show-login-form')
               }
             } else if (process.env.NODE_ENV === 'development') {
               console.error(err)

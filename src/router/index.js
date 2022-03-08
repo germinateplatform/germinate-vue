@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import auth from '@/auth'
 import store from '@/store/store'
 import { loadLanguageAsync } from '@/plugins/i18n'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 Vue.use(Router)
 
@@ -34,7 +35,7 @@ function requireAuth (to, from, next) {
   const authMode = store.getters.serverSettings ? store.getters.serverSettings.authMode : 'NONE'
   const token = store.getters.token
 
-  EventBus.$emit('show-loading', false)
+  emitter.emit('show-loading', false)
 
   // If we're in full auth mode, check credentials for each call
   if (authMode === 'FULL') {

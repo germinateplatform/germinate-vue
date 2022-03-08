@@ -53,7 +53,8 @@ import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnaccep
 import ImageGallery from '@/components/images/ImageGallery'
 import miscApi from '@/mixins/api/misc.js'
 import compoundApi from '@/mixins/api/compound.js'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -127,10 +128,10 @@ export default {
       })
     }
 
-    EventBus.$on('license-accepted', this.update)
+    emitter.on('license-accepted', this.update)
   },
   beforeDestroy: function () {
-    EventBus.$off('license-accepted', this.update)
+    emitter.off('license-accepted', this.update)
   }
 }
 </script>

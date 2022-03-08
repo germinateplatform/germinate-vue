@@ -35,13 +35,14 @@
 import DatasetTable from '@/components/tables/DatasetTable'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 
-import { EventBus } from '@/plugins/event-bus.js'
 import climateApi from '@/mixins/api/climate.js'
 import compoundApi from '@/mixins/api/compound.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import groupApi from '@/mixins/api/group.js'
 import traitApi from '@/mixins/api/trait.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
@@ -279,10 +280,10 @@ export default {
     this.update()
   },
   mounted: function () {
-    EventBus.$on('license-accepted', this.update)
+    emitter.on('license-accepted', this.update)
   },
   beforeDestroy: function () {
-    EventBus.$off('license-accepted', this.update)
+    emitter.off('license-accepted', this.update)
   }
 }
 </script>

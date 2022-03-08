@@ -16,7 +16,7 @@
 
 <script>
 import UploadWidget from '@/components/util/UploadWidget'
-import { EventBus } from '@/plugins/event-bus.js'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
@@ -41,7 +41,7 @@ export default {
     },
     notifyCaller: function () {
       this.$emit('images-updated')
-      EventBus.$emit('update-sidebar-menu')
+      emitter.emit('update-sidebar-menu')
     }
   }
 }

@@ -29,7 +29,8 @@
 import GermplasmTable from '@/components/tables/GermplasmTable'
 
 import germplasmApi from '@/mixins/api/germplasm.js'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
@@ -46,7 +47,7 @@ export default {
   mixins: [ germplasmApi ],
   methods: {
     mergeGermplasm: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       const others = this.selectedIds.filter(id => id != this.primaryGermplasm)
       this.apiPostGermplasmUnification({
         preferredGermplasmId: this.primaryGermplasm,
@@ -55,7 +56,7 @@ export default {
       }, () => {
         this.$refs.germplasmTable.refresh()
         this.reset()
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     getSelectedGermplasm: function () {

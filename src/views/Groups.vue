@@ -101,7 +101,8 @@ import germplasmApi from '@/mixins/api/germplasm.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
 import typesMixin from '@/mixins/types.js'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -149,11 +150,11 @@ export default {
               ids: selectedIds,
               isAddition: false
             }
-            EventBus.$emit('show-loading', true)
+            emitter.emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
-              EventBus.$emit('show-loading', false)
+              emitter.emit('show-loading', false)
             })
           }
         },
@@ -177,11 +178,11 @@ export default {
               ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: true
             }
-            EventBus.$emit('show-loading', true)
+            emitter.emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
-              EventBus.$emit('show-loading', false)
+              emitter.emit('show-loading', false)
             })
           }
         },
@@ -197,11 +198,11 @@ export default {
               ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: false
             }
-            EventBus.$emit('show-loading', true)
+            emitter.emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
-              EventBus.$emit('show-loading', false)
+              emitter.emit('show-loading', false)
             })
           }
         }
@@ -274,7 +275,7 @@ export default {
           }]
         }
 
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         // Define the callback
         const callback = result => {
           const data = {
@@ -285,7 +286,7 @@ export default {
           this.apiPatchGroupMembers(this.group.groupId, type.apiName, data, () => {
             this.$refs.groupmembersTable.refresh()
             this.$refs.groupsTable.refresh()
-            EventBus.$emit('show-loading', false)
+            emitter.emit('show-loading', false)
           })
         }
 
@@ -364,7 +365,7 @@ export default {
           // Select the newly created group
           this.onGroupSelected(result)
 
-          EventBus.$emit('update-sidebar-menu')
+          emitter.emit('update-sidebar-menu')
         })
       }
     },

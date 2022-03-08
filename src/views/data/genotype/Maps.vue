@@ -47,9 +47,10 @@ import MapChart from '@/components/charts/MapChart'
 import MapTable from '@/components/tables/MapTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import MapExportSelection from '@/components/export/MapExportSelection'
-import { EventBus } from '@/plugins/event-bus.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import typesMixin from '@/mixins/types.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -96,14 +97,14 @@ export default {
         }
       }
 
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPostMapExport(this.mapId, options, result => {
         this.downloadBlob({
           blob: result,
           filename: 'map-' + this.mapId,
           extension: format === 'flapjack' ? 'map' : 'strudel'
         })
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     getMapData: function (data, callback) {

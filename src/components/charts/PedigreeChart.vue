@@ -24,10 +24,11 @@
 <script>
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
-import { EventBus } from '@/plugins/event-bus.js'
 import { pedigreeChart } from '@/plugins/charts/d3-dagre-chart.js'
 import colors from '@/mixins/colors.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
+
+const emitter = require('tiny-emitter/instance')
 
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
@@ -177,7 +178,7 @@ export default {
       })
     },
     downloadPedigree: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       const request = {
         individualIds: [this.germplasm.id],
         levelsUp: 3,
@@ -189,7 +190,7 @@ export default {
           filename: this.baseFilename,
           extension: 'helium'
         })
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       }, {
         codes: [404],
         callback: () => {

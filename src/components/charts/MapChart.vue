@@ -39,8 +39,8 @@ import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import genotypeApi from '@/mixins/api/genotype.js'
 import colorMixin from '@/mixins/colors.js'
-import { EventBus } from '@/plugins/event-bus.js'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
+const emitter = require('tiny-emitter/instance')
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 
@@ -157,7 +157,7 @@ export default {
 
           counter = counter + 1
           // Show loading indicator
-          EventBus.$emit('show-loading', true)
+          emitter.emit('show-loading', true)
           // Get the ids of the markers in the requested regions
           this.apiPostMapdefinitionTableIds(query, result => {
             if (result && result.data && result.data.length > 0) {
@@ -171,7 +171,7 @@ export default {
             counter = counter - 1
             // If this is the last one to finish, hide the loading indicator
             if (counter < 1) {
-              EventBus.$emit('show-loading', false)
+              emitter.emit('show-loading', false)
             }
           })
         })

@@ -32,9 +32,10 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
-import { EventBus } from '@/plugins/event-bus.js'
 import SignInForm from '@/components/util/SignInForm'
 import authApi from '@/mixins/api/auth.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'UserSettingsDropdown',
@@ -58,7 +59,7 @@ export default {
         this.$store.dispatch('ON_TOKEN_CHANGED', result)
         this.$refs.signInModal.hide()
         window.location.reload()
-        EventBus.$emit('update-sidebar-menu')
+        emitter.emit('update-sidebar-menu')
       }, {
         codes: [],
         callback: error => {
@@ -70,7 +71,7 @@ export default {
           }
           // If they're wrong, remove
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
-          EventBus.$emit('update-sidebar-menu')
+          emitter.emit('update-sidebar-menu')
         }
       })
     },
@@ -92,14 +93,14 @@ export default {
 
         this.$gtag.event('login', 'logout')
 
-        EventBus.$emit('update-sidebar-menu')
+        emitter.emit('update-sidebar-menu')
       }, {
         codes: [],
         callback: () => {
           // If they're wrong, remove
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
 
-          EventBus.$emit('update-sidebar-menu')
+          emitter.emit('update-sidebar-menu')
         }
       })
     },
@@ -108,7 +109,7 @@ export default {
     }
   },
   mounted: function () {
-    EventBus.$on('on-show-login-form', () => {
+    emitter.on('on-show-login-form', () => {
       this.showLogin()
     })
   }

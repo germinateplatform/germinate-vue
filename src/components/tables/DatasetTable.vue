@@ -157,13 +157,14 @@ import PublicationsModal from '@/components/modals/PublicationsModal'
 import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props.js'
-import { EventBus } from '@/plugins/event-bus.js'
 import { mapFilters } from '@/plugins/map-filters.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
+
+const emitter = require('tiny-emitter/instance')
 
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
@@ -442,14 +443,14 @@ export default {
         generateHapMap: selectedFormats.indexOf('hapmap') !== -1,
         generateFlatFile: selectedFormats.indexOf('flat') !== -1
       }
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.$gtag.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))
       this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
         result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
         // Show the sidebar
-        EventBus.$emit('toggle-aside', 'download')
-        EventBus.$emit('show-loading', false)
+        emitter.emit('toggle-aside', 'download')
+        emitter.emit('show-loading', false)
       })
       this.dataset = null
     },
@@ -463,7 +464,7 @@ export default {
         currentTraitCount: null,
         datasetIds: [dataset.datasetId]
       }
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPostDatasetExport(type, query, result => {
         const request = {
           blob: result,
@@ -472,7 +473,7 @@ export default {
         }
 
         this.downloadBlob(request)
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     showCollaborators: function (dataset) {
@@ -543,10 +544,10 @@ export default {
     }
   },
   mounted: function () {
-    EventBus.$on('license-accepted', this.onLicenseAccepted)
+    emitter.on('license-accepted', this.onLicenseAccepted)
   },
   beforeDestroy: function () {
-    EventBus.$off('license-accepted', this.onLicenseAccepted)
+    emitter.off('license-accepted', this.onLicenseAccepted)
   }
 }
 </script>

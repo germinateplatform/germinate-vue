@@ -16,8 +16,9 @@
 </template>
 
 <script>
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -51,12 +52,12 @@ export default {
         return
       }
 
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPostFileresourceType({
         name: this.name,
         description: this.description
       }, result => {
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
         if (result) {
           this.$emit('type-added', result)
           this.hide()

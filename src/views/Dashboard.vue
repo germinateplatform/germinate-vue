@@ -56,7 +56,8 @@ import statsApi from '@/mixins/api/stats.js'
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
 import { mapFilters } from '@/plugins/map-filters.js'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'dashboard',
@@ -85,7 +86,7 @@ export default {
   methods: {
     ...mapFilters(['toThousandSeparators']),
     startIntroduction: function () {
-      EventBus.$emit('show-introduction')
+      emitter.emit('show-introduction')
     },
     isDisabled: function (routerPage) {
       return this.serverSettings && this.serverSettings.hiddenPages.indexOf(routerPage) !== -1

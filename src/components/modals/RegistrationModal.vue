@@ -108,7 +108,7 @@
 <script>
 import PasswordInput from '@/components/util/PasswordInput'
 import miscApi from '@/mixins/api/misc.js'
-import { EventBus } from '@/plugins/event-bus.js'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -214,10 +214,10 @@ export default {
 
         delete newRequest.user.userPasswordConfirm
 
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         // Register the new user
         this.apiPostGatekeeperNew(newRequest, result => {
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
 
           if (result === true) {
             // Show toast
@@ -236,7 +236,7 @@ export default {
           // Show error message
           if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
             this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
-            EventBus.$emit('show-loading', false)
+            emitter.emit('show-loading', false)
           }
         })
       } else {
@@ -247,9 +247,9 @@ export default {
           password: this.user.userPassword
         }
 
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         this.apiPostGatekeeperExisting(existingRequest, result => {
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
 
           if (result === true) {
             // Show toast
@@ -268,7 +268,7 @@ export default {
           // Show error
           if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
             this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
-            EventBus.$emit('show-loading', false)
+            emitter.emit('show-loading', false)
           }
         })
       }

@@ -30,7 +30,8 @@
 import Collapse from '@/components/util/Collapse'
 import TraitTable from '@/components/tables/TraitTable'
 import traitApi from '@/mixins/api/trait.js'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
@@ -88,7 +89,7 @@ export default {
       })
     },
     mergeTrait: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       const others = this.selectedIds.filter(id => id != this.primaryTrait)
       this.apiPostTraitUnification({
         preferredTraitId: this.primaryTrait,
@@ -97,7 +98,7 @@ export default {
         this.$refs.traitTable.refresh()
         this.reset()
         this.$refs.traitCollapse.toggle()
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     }
   }

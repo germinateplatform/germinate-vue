@@ -43,7 +43,7 @@ import ImageTags from '@/components/images/ImageTags'
 import ImageUploadModal from '@/components/modals/ImageUploadModal'
 import miscApi from '@/mixins/api/misc.js'
 import { EXIF } from 'exif-js'
-import { EventBus } from '@/plugins/event-bus.js'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -94,7 +94,7 @@ export default {
       this.refresh()
     },
     download: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
 
       // Set up images query
       const data = {
@@ -127,7 +127,7 @@ export default {
           filename: this.downloadName,
           extension: 'zip'
         })
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     getSrc: function (image) {

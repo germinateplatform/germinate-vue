@@ -13,8 +13,9 @@
 <script>
 import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import ExportSelection from '@/components/export/ExportSelection'
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: {
@@ -70,7 +71,7 @@ export default {
   mixins: [ datasetApi ],
   methods: {
     downloadData: function (query) {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPostDatasetExport(this.downloadKey, query, result => {
         const downloadRequest = {
           blob: result,
@@ -79,7 +80,7 @@ export default {
         }
 
         this.downloadBlob(downloadRequest)
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     }
   }

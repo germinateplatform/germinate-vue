@@ -96,7 +96,7 @@ import traitApi from '@/mixins/api/trait.js'
 import colorMixin from '@/mixins/colors.js'
 import typesMixin from '@/mixins/types.js'
 
-import { EventBus } from '@/plugins/event-bus.js'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -229,10 +229,10 @@ export default {
       })
     }
 
-    EventBus.$on('license-accepted', this.update)
+    emitter.on('license-accepted', this.update)
   },
   beforeDestroy: function () {
-    EventBus.$off('license-accepted', this.update)
+    emitter.off('license-accepted', this.update)
   }
 }
 </script>

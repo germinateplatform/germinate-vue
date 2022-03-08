@@ -29,10 +29,11 @@
 <script>
 import ComparisonChart from '@/components/charts/ComparisonChart'
 import ExportSelection from '@/components/export/ExportSelection'
-import { EventBus } from '@/plugins/event-bus.js'
 import colorMixin from '@/mixins/colors.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import traitApi from '@/mixins/api/trait.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: {
@@ -239,7 +240,7 @@ export default {
           this.redraw(false)
         }
 
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     plot: function (query, selectedItems) {
@@ -247,7 +248,7 @@ export default {
       this.traitChartData = {}
       this.rawData = null
       this.splitValues = []
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       if (query.yGroupIds) {
         this.apiPostGroupGermplasmTableIds(query.yGroupIds[0], {}, result => {
           if (result && result.data) {

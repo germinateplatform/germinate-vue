@@ -27,8 +27,9 @@ import Vue from 'vue'
 import CrossDataTypeSelection from '@/components/export/CrossDataTypeSelection'
 import ScatterChart from '@/components/charts/ScatterChart'
 
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
@@ -64,7 +65,7 @@ export default {
 
       this.dimensions = [first.itemName, second.itemName]
 
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPostCrossDataTypeComparison({
         first: {
           id: first.dataType === 'GERMPLASM_COLUMN' ? null : first.itemId,
@@ -92,7 +93,7 @@ export default {
             column: null
           })
 
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
         })
       })
     }

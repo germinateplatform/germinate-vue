@@ -68,9 +68,10 @@
 </template>
 
 <script>
-import { EventBus } from '@/plugins/event-bus.js'
 import groupApi from '@/mixins/api/group.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -119,7 +120,7 @@ export default {
       }
     },
     downloadGermplasm: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       const request = {
         individualIds: this.passportSelection === 'marked' ? this.markedGermplasm : null,
         groupIds: this.passportSelection === 'group' ? [this.passportGroup] : null,
@@ -132,11 +133,11 @@ export default {
           filename: `germplasm-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
           extension: 'zip'
         })
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     downloadPedigree: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       const request = {
         individualIds: this.pedigreeSelection === 'marked' ? this.markedGermplasm : null,
         groupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null,
@@ -148,7 +149,7 @@ export default {
           filename: `pedigree-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
           extension: this.pedigreeIncludeAttributes ? 'zip' : 'helium'
         })
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       }, {
         codes: [404],
         callback: () => {

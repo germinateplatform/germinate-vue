@@ -25,8 +25,9 @@
 </template>
 
 <script>
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: {
@@ -59,13 +60,13 @@ export default {
     },
     accept: function () {
       this.apiGetAcceptLicense(this.license.licenseId, () => {
-        EventBus.$emit('license-accepted', this.license.licenseId)
+        emitter.emit('license-accepted', this.license.licenseId)
 
         this.hide()
       })
     },
     onPrint: function () {
-      EventBus.$emit('on-print', this.license.licenseContent)
+      emitter.emit('on-print', this.license.licenseContent)
     },
     onDownload: function () {
       this.htmlData = 'data:application/octet-stream;base64,' + btoa(unescape(encodeURIComponent(this.license.licenseContent)))

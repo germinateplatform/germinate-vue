@@ -7,8 +7,9 @@
 </template>
 
 <script>
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: {
@@ -28,7 +29,7 @@ export default {
   mixins: [ datasetApi ],
   methods: {
     downloadMetadata: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       const request = {
         datasetIds: this.datasetIds,
         experimentId: this.experimentId
@@ -48,7 +49,7 @@ export default {
         }
 
         this.downloadBlob(downloadRequext)
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     }
   }

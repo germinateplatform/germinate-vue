@@ -32,8 +32,9 @@
 <script>
 import FileResourceTypeModal from '@/components/modals/FileResourceTypeModal'
 
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -86,7 +87,7 @@ export default {
       let formData = new FormData()
       formData.append('file', this.file)
 
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPostFileresourceFile(formData, result => {
         if (result) {
           this.apiPutFileresource({
@@ -96,8 +97,8 @@ export default {
             fileresourcetypeId: this.type
           }, () => {
             this.$emit('resource-added')
-            EventBus.$emit('show-loading', false)
-            EventBus.$emit('update-sidebar-menu')
+            emitter.emit('show-loading', false)
+            emitter.emit('update-sidebar-menu')
             this.hide()
           })
         }

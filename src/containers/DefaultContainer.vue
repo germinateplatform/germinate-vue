@@ -119,7 +119,8 @@ import statsApi from '@/mixins/api/stats.js'
 import typesMixin from '@/mixins/types.js'
 import colorsMixin from '@/mixins/colors.js'
 import { mapFilters } from '@/plugins/map-filters.js'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'DefaultContainer',
@@ -593,15 +594,15 @@ export default {
     }
   },
   destroyed: function () {
-    EventBus.$off('toggle-aside', this.toggleAside)
-    EventBus.$off('show-introduction')
-    EventBus.$off('update-sidebar-menu')
+    emitter.off('toggle-aside', this.toggleAside)
+    emitter.off('show-introduction')
+    emitter.off('update-sidebar-menu')
   },
   mounted: function () {
     this.updateMenu()
-    EventBus.$on('toggle-aside', this.toggleAside)
-    EventBus.$on('show-introduction', this.startIntroduction)
-    EventBus.$on('update-sidebar-menu', this.updateMenu)
+    emitter.on('toggle-aside', this.toggleAside)
+    emitter.on('show-introduction', this.startIntroduction)
+    emitter.on('update-sidebar-menu', this.updateMenu)
 
     if (this.sidebarState && this.sidebarState.length > 0) {
       this.$nextTick(() => document.body.classList.add(...this.sidebarState.split(' ')))

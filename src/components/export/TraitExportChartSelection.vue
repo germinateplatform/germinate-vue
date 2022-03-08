@@ -36,8 +36,9 @@
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
 import ExportSelection from '@/components/export/ExportSelection'
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: {
@@ -185,7 +186,7 @@ export default {
       }
 
       this.plotData = null
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPostDatasetExport('trial', query, result => {
         this.selectedItems = selectedItems
         this.plotData = result
@@ -194,7 +195,7 @@ export default {
           ids: this.colorBySelection === 'marked_items' ? this.markedGermplasm : null,
           names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
         }))
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     onColorByChanged: function () {

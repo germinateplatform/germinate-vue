@@ -64,9 +64,10 @@
 </template>
 
 <script>
-import { EventBus } from '@/plugins/event-bus.js'
 import miscApi from '@/mixins/api/misc.js'
 import typesMixin from '@/mixins/types.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -106,7 +107,7 @@ export default {
       let formData = new FormData()
       formData.append('fileToUpload', this.file)
 
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, this.datasetStateId, result => {
         this.uuids = result
 
@@ -114,8 +115,8 @@ export default {
           result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
         }
 
-        EventBus.$emit('toggle-aside', 'upload')
-        EventBus.$emit('show-loading', false)
+        emitter.emit('toggle-aside', 'upload')
+        emitter.emit('show-loading', false)
 
         this.file = null
       })

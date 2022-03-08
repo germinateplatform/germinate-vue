@@ -60,12 +60,13 @@ import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import CompoundExportChartSelection from '@/components/export/CompoundExportChartSelection'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
-import { EventBus } from '@/plugins/event-bus.js'
 import compoundApi from '@/mixins/api/compound.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 import colorMixin from '@/mixins/colors.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: [ 'datasetIds' ],
@@ -245,13 +246,13 @@ export default {
     }
   },
   mounted: function () {
-    EventBus.$emit('show-loading', true)
+    emitter.emit('show-loading', true)
     this.apiPostDatasetCompounds(this.datasetIds, result => {
       this.compounds = result
 
       this.getDatasets()
       this.updateGroups()
-      EventBus.$emit('show-loading', false)
+      emitter.emit('show-loading', false)
     })
 
     if (this.$route.query && this.$route.query.tab) {

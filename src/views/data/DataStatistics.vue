@@ -52,8 +52,9 @@
 import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
 import TaxonomySunburst from '@/components/charts/TaxonomySunburst'
-import { EventBus } from '@/plugins/event-bus.js'
 import statsApi from '@/mixins/api/stats.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -98,7 +99,7 @@ export default {
     }
   },
   mounted: function () {
-    EventBus.$emit('show-loading', true)
+    emitter.emit('show-loading', true)
     const p1 = this.apiGetStatsFile('biologicalstatus', result => {
       this.biologicalstatusFile = result
     })
@@ -111,7 +112,7 @@ export default {
 
     // When they're all done (either successful or not), hide the loading indicator
     Promise.all([p1, p2, p3])
-      .finally(() => EventBus.$emit('show-loading', false))
+      .finally(() => emitter.emit('show-loading', false))
   }
 }
 </script>

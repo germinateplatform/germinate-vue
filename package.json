@@ -53,6 +53,7 @@
     "plotly.js": "^2.6.0",
     "simple-line-icons": "~2.4.1",
     "simplex-noise": "~2.4.0",
+    "tiny-emitter": "^2.1.0",
     "vue": "~2.6.11",
     "vue-context": "~4.1.1",
     "vue-cool-lightbox": "~2.7.1",

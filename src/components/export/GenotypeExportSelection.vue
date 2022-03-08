@@ -83,7 +83,6 @@
 </template>
 
 <script>
-import { EventBus } from '@/plugins/event-bus.js'
 import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import ExportFormats from '@/views/about/ExportFormats'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
@@ -91,6 +90,8 @@ import GenotypeDatasetTable from '@/components/tables/GenotypeDatasetTable'
 import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import genotypeApi from '@/mixins/api/genotype.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: {
@@ -150,7 +151,7 @@ export default {
       })
     },
     downloadMetadata: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
 
       const request = {
         datasetIds: this.selectedDatasetIds
@@ -163,7 +164,7 @@ export default {
         }
 
         this.downloadBlob(downloadRequext)
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     getQuery: function (isFinal) {
@@ -202,7 +203,7 @@ export default {
       return query
     },
     exportData: function (binningConfig) {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       const query = this.getQuery(true)
 
       if (this.datasetType === 'genotype') {
@@ -212,8 +213,8 @@ export default {
             result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
           }
 
-          EventBus.$emit('toggle-aside', 'download')
-          EventBus.$emit('show-loading', false)
+          emitter.emit('toggle-aside', 'download')
+          emitter.emit('show-loading', false)
           this.exportStarted = true
         })
       } else if (this.datasetType === 'allelefreq') {
@@ -223,15 +224,15 @@ export default {
           this.apiPostAlleleFrequencyDatasetExport(query, result => {
             this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
 
-            EventBus.$emit('toggle-aside', 'download')
-            EventBus.$emit('show-loading', false)
+            emitter.emit('toggle-aside', 'download')
+            emitter.emit('show-loading', false)
             this.exportStarted = true
           })
         } else {
           this.apiPostDatasetExport('allelefreq/histogram', query, result => {
             this.$emit('on-file-loaded', result)
 
-            EventBus.$emit('show-loading', false)
+            emitter.emit('show-loading', false)
           })
         }
       }

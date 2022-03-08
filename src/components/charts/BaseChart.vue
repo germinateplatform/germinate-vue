@@ -45,7 +45,7 @@
 import ResizeObserver from '@/components/ResizeObserver'
 import CustomChartColorModal from '@/components/modals/CustomChartColorModal'
 
-import { EventBus } from '@/plugins/event-bus.js'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     onColorsChanged: function () {
-      EventBus.$emit('chart-colors-changed')
+      emitter.emit('chart-colors-changed')
     },
     handleResize: function () {
       if (this.chartType === 'plotly') {
@@ -149,10 +149,10 @@ export default {
     }
   },
   mounted: function () {
-    EventBus.$on('chart-colors-changed', this.chartColorsChangedHandler)
+    emitter.on('chart-colors-changed', this.chartColorsChangedHandler)
   },
   destroyed: function () {
-    EventBus.$off('chart-colors-changed', this.chartColorsChangedHandler)
+    emitter.off('chart-colors-changed', this.chartColorsChangedHandler)
   }
 }
 </script>

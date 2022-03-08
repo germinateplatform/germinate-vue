@@ -50,8 +50,9 @@
 <script>
 import UserGroupTable from '@/components/tables/UserGroupTable'
 import UserGroupMembers from '@/components/admin/UserGroupMembers'
-import { EventBus } from '@/plugins/event-bus.js'
 import usergroupApi from '@/mixins/api/usergroup.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -111,10 +112,10 @@ export default {
       })
         .then(value => {
           if (value === true) {
-            EventBus.$emit('show-loading', true)
+            emitter.emit('show-loading', true)
             this.apiDeleteUserGroup(group.userGroupId, () => {
               this.$refs.userGroupTable.refresh()
-              EventBus.$emit('show-loading', false)
+              emitter.emit('show-loading', false)
 
               if (this.selectedGroup && this.selectedGroup.userGroupId === group.userGroupId) {
                 this.selectedGroup = null
@@ -126,7 +127,7 @@ export default {
         })
     },
     createNewGroup: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       const payload = {
         id: this.newGroup.userGroupId,
         name: this.newGroup.userGroupName,
@@ -140,7 +141,7 @@ export default {
             userGroupDescription: null
           }
           this.$refs.userGroupTable.refresh()
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
           this.$emit('groups-changed')
         })
       } else {
@@ -150,7 +151,7 @@ export default {
             userGroupDescription: null
           }
           this.$refs.userGroupTable.refresh()
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
           this.$emit('groups-changed')
         })
       }

@@ -54,7 +54,7 @@ import GroupTable from '@/components/tables/GroupTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import genotypeApi from '@/mixins/api/genotype.js'
 
-import { EventBus } from '@/plugins/event-bus.js'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: {
@@ -176,10 +176,10 @@ export default {
       this.$store.dispatch('ON_RECENT_IDS_PUSH', { type: 'markers', id: this.currentMarkerId })
     }
 
-    EventBus.$on('license-accepted', this.getMarker)
+    emitter.on('license-accepted', this.getMarker)
   },
   beforeDestroy: function () {
-    EventBus.$off('license-accepted', this.getMarker)
+    emitter.off('license-accepted', this.getMarker)
   }
 }
 </script>

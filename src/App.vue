@@ -18,12 +18,13 @@
 <script>
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import { EventBus } from '@/plugins/event-bus.js'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import miscApi from '@/mixins/api/misc.js'
 import statsApi from '@/mixins/api/stats.js'
 import { Detector } from '@/plugins/browser-detect.js'
 import { VuePlausible } from 'vue-plausible'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'app',
@@ -136,15 +137,15 @@ export default {
     }
   },
   destroyed: function () {
-    EventBus.$off('on-print', this.print)
-    EventBus.$off('show-loading', this.toggleLoading)
-    EventBus.$off('on-stylesheet-changed', this.attachStyleSheet)
+    emitter.off('on-print', this.print)
+    emitter.off('show-loading', this.toggleLoading)
+    emitter.off('on-stylesheet-changed', this.attachStyleSheet)
   },
   mounted: function () {
     loadLanguageAsync(this.locale)
-    EventBus.$on('on-print', this.print)
-    EventBus.$on('show-loading', this.toggleLoading)
-    EventBus.$on('on-stylesheet-changed', this.attachStyleSheet)
+    emitter.on('on-print', this.print)
+    emitter.on('show-loading', this.toggleLoading)
+    emitter.on('on-stylesheet-changed', this.attachStyleSheet)
 
     this.attachStyleSheet()
 

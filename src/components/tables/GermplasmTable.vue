@@ -172,13 +172,14 @@
 </template>
 
 <script>
-import { EventBus } from '@/plugins/event-bus.js'
 import BaseTable from '@/components/tables/BaseTable'
 import LocationMap from '@/components/map/LocationMap'
 import Passport from '@/views/data/germplasm/Passport'
 import defaultProps from '@/const/table-props.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import typesMixin from '@/mixins/types.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'GermplasmTable',
@@ -464,35 +465,35 @@ export default {
         const parentId = item.entityParentId
         this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [parentId] })
       } else {
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         const requestData = this.$refs.germplasmTable.getCurrentRequestData()
         // First request all ids for the current table items
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
           this.apiPostEntityIds(result.data, 'up', result => {
             this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
-            EventBus.$emit('show-loading', false)
+            emitter.emit('show-loading', false)
           })
         })
       }
     },
     markChildren: function (item) {
       if (item) {
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         const id = item.germplasmId
         this.apiPostEntityIds([id], 'down', result => {
           this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
         })
       } else {
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         const requestData = this.$refs.germplasmTable.getCurrentRequestData()
         // First request all ids for the current table items
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
           this.apiPostEntityIds(result.data, 'down', result => {
             this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
-            EventBus.$emit('show-loading', false)
+            emitter.emit('show-loading', false)
           })
         })
       }
@@ -502,35 +503,35 @@ export default {
         const parentId = item.entityParentId
         this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [parentId] })
       } else {
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         const requestData = this.$refs.germplasmTable.getCurrentRequestData()
         // First request all ids for the current table items
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
           this.apiPostEntityIds(result.data, 'up', result => {
             this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
-            EventBus.$emit('show-loading', false)
+            emitter.emit('show-loading', false)
           })
         })
       }
     },
     unmarkChildren: function (item) {
       if (item) {
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         const id = item.germplasmId
         this.apiPostEntityIds([id], 'down', result => {
           this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
         })
       } else {
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         const requestData = this.$refs.germplasmTable.getCurrentRequestData()
         // First request all ids for the current table items
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
           this.apiPostEntityIds(result.data, 'down', result => {
             this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
-            EventBus.$emit('show-loading', false)
+            emitter.emit('show-loading', false)
           })
         })
       }

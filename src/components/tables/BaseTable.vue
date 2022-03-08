@@ -206,11 +206,12 @@ import MarkedItems from '@/components/tables/MarkedItems'
 import TableFilter from '@/components/tables/TableFilter'
 import Tour from '@/components/util/Tour'
 import { VueContext } from 'vue-context'
-import { EventBus } from '@/plugins/event-bus.js'
 import { mapFilters } from '@/plugins/map-filters.js'
 import groupApi from '@/mixins/api/group.js'
 import searchMixin from '@/mixins/search.js'
 import typesMixin from '@/mixins/types.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'base-table',
@@ -400,14 +401,14 @@ export default {
     },
     markAllItems: function (mark) {
       if (this.getIds) {
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         this.getIds(this.currentRequestData, result => {
           if (mark) {
             this.$store.dispatch('ON_MARKED_IDS_ADD', { type: this.itemType, ids: result.data })
           } else {
             this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: result.data })
           }
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
         })
       }
     },
@@ -496,7 +497,7 @@ export default {
         createdBy: this.newGroup.userId
       }
 
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       this.apiPutGroup(group, result => {
         const data = {
           ids: this.markedIds[this.itemType],
@@ -514,7 +515,7 @@ export default {
             appendToast: true
           })
 
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
           this.$router.push({ name: 'group-details', params: { groupId: groupId } })
         })
       })
@@ -552,18 +553,18 @@ export default {
     },
     onSelectionHeaderClicked: function (value) {
       if (value && this.getIds) {
-        EventBus.$emit('show-loading', true)
+        emitter.emit('show-loading', true)
         // Get all ids in the current table
         this.getIds(this.currentRequestData, result => {
           this.selectedItems = result.data
-          EventBus.$emit('show-loading', false)
+          emitter.emit('show-loading', false)
         })
       } else {
         this.selectedItems = []
       }
     },
     requestDownload: function () {
-      EventBus.$emit('show-loading', true)
+      emitter.emit('show-loading', true)
       // Download the current table data
       this.downloadTable(this.currentRequestData, result => {
         this.downloadBlob({
@@ -571,7 +572,7 @@ export default {
           filename: `${this.options.tableName}-table-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
           extension: 'zip'
         })
-        EventBus.$emit('show-loading', false)
+        emitter.emit('show-loading', false)
       })
     },
     updateTableTour: function () {

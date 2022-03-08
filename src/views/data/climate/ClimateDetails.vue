@@ -39,7 +39,8 @@ import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import miscApi from '@/mixins/api/misc.js'
 import climateApi from '@/mixins/api/climate.js'
-import { EventBus } from '@/plugins/event-bus.js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
@@ -111,10 +112,10 @@ export default {
       })
     }
 
-    EventBus.$on('license-accepted', this.update)
+    emitter.on('license-accepted', this.update)
   },
   beforeDestroy: function () {
-    EventBus.$off('license-accepted', this.update)
+    emitter.off('license-accepted', this.update)
   }
 }
 </script>

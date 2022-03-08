@@ -81,13 +81,14 @@ import TraitExportChartSelection from '@/components/export/TraitExportChartSelec
 import TraitComparisonSelection from '@/components/export/TraitComparisonSelection'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
-import { EventBus } from '@/plugins/event-bus.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 import traitApi from '@/mixins/api/trait.js'
 import colorMixin from '@/mixins/colors.js'
 import Vue from 'vue'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   props: [ 'datasetIds' ],
@@ -301,13 +302,13 @@ export default {
     }
   },
   mounted: function () {
-    EventBus.$emit('show-loading', true)
+    emitter.emit('show-loading', true)
     this.apiPostDatasetTraits(this.datasetIds, result => {
       this.traits = result
 
       this.getDatasets()
       this.updateGroups()
-      EventBus.$emit('show-loading', false)
+      emitter.emit('show-loading', false)
     })
 
     if (this.$route.query && this.$route.query.tab) {

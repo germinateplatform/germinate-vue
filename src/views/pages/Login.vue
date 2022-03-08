@@ -51,7 +51,7 @@ import SignInForm from '@/components/util/SignInForm'
 import RegistrationModal from '@/components/modals/RegistrationModal'
 import authApi from '@/mixins/api/auth.js'
 
-import { EventBus } from '@/plugins/event-bus.js'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'Login',
@@ -85,7 +85,7 @@ export default {
           this.$router.push('/')
         }
 
-        EventBus.$emit('update-sidebar-menu')
+        emitter.emit('update-sidebar-menu')
       }, {
         codes: [],
         callback: error => {
@@ -98,7 +98,7 @@ export default {
           // If they're wrong, remove
           this.$store.dispatch('ON_TOKEN_CHANGED', null)
 
-          EventBus.$emit('update-sidebar-menu')
+          emitter.emit('update-sidebar-menu')
         }
       })
     },
