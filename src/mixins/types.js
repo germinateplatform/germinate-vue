@@ -446,7 +446,8 @@ export default {
         pedigree: {
           id: 7,
           icon: 'mdi-family-tree mdi-rotate-180',
-          pageName: 'export-pedigrees',
+          // pageName: 'export-pedigrees',
+          pageName: null,
           color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypePedigree')
         },

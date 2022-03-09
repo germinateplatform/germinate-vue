@@ -20,7 +20,7 @@
         <!-- If clickHandler is provided, just let it handle clicks -->
         <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetId }}</a>
         <!-- Else, if we can link to the target page, let's do so -->
-        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item))">{{ data.item.datasetId }}</router-link>
+        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item)) && datasetTypes[data.item.datasetType].pageName">{{ data.item.datasetId }}</router-link>
         <!-- If neither is true, just show the id -->
         <span v-else>{{ data.item.datasetId }}</span>
       </template>
@@ -31,7 +31,7 @@
         <!-- Else, if there's a hyperlink for an external dataset, show that -->
         <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" rel="noopener noreferrer" :href="data.item.hyperlink" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }} </a><i class="mdi mdi-open-in-new" /></span>
         <!-- Else, if we can link to the target page, let's do so -->
-        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item))" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</router-link>
+        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item)) && datasetTypes[data.item.datasetType].pageName" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</router-link>
         <!-- If none are true, just show the id -->
         <span v-else :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</span>
       </template>
