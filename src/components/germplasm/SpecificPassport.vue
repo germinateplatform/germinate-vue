@@ -93,7 +93,7 @@
         <DatasetTable :getData="getDatasetData" />
 
         <hr />
-        <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-tournament mdi-rotate-90 text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-family-tree mdi-rotate-180 text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
         <p v-html="$t('pagePassportPedigreeText')" />
         <PedigreeDefinitionTable :getData="getPedigreeDefinitionData" :filterOn="pedigreeDefinitionFilter" />
         <!-- Pedigree table -->

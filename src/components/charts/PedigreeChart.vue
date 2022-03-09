@@ -1,23 +1,34 @@
 <template>
-  <div v-if="plotData">
-    <BaseChart :id="id" :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false"  v-on:force-redraw="update">
-      <div id="pedigree-chart" slot="chart" ref="pedigreeChart" />
+  <div v-if="datasets && datasets.length > 0">
+    <h4>{{ $t('pagePassportPedigreeChartTitle') }}</h4>
+    <b-form-group :label="$t('tableColumnDatasetName')" label-for="dataset">
+      <b-form-select :options="datasetOptions" v-model="dataset" id="dataset">
+        <template #first>
+          <b-form-select-option :value="null" disabled>{{ $t('formLabelPedigreeChartDatasetSelect') }}</b-form-select-option>
+        </template>
+      </b-form-select>
+    </b-form-group>
 
-      <template slot="additionalButtons">
-        <b-button v-b-tooltip.hover
-                  :title="$t('chartTooltipMatrixTour')"
-                  @click="showTour()">
-          <i class="mdi mdi-18px mdi-help-circle-outline" />
-        </b-button>
-      </template>
-    </BaseChart>
-    <!-- Tour to explain the chart -->
-    <Tour :steps="popoverContent" ref="tour" />
+    <div v-if="plotData">
+      <BaseChart :id="id" :width="() => 1280" :height="() => 600" :sourceFile="baseSourceFile" :filename="baseFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false"  v-on:force-redraw="update">
+        <div id="pedigree-chart" slot="chart" ref="pedigreeChart" />
 
-    <!-- Export button -->
-    <b-button @click="downloadPedigree()"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownloadForHelium') }}</b-button>
-    <!-- Information about the export formats -->
-    <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'pedigree' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
+        <template slot="additionalButtons">
+          <b-button v-b-tooltip.hover
+                    :title="$t('chartTooltipMatrixTour')"
+                    @click="showTour()">
+            <i class="mdi mdi-18px mdi-help-circle-outline" />
+          </b-button>
+        </template>
+      </BaseChart>
+      <!-- Tour to explain the chart -->
+      <Tour :steps="popoverContent" ref="tour" />
+
+      <!-- Export button -->
+      <b-button @click="downloadPedigree"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownloadForHelium') }}</b-button>
+      <!-- Information about the export formats -->
+      <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'pedigree' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
+    </div>
   </div>
 </template>
 
@@ -27,6 +38,7 @@ import Tour from '@/components/util/Tour'
 import { pedigreeChart } from '@/plugins/charts/d3-dagre-chart.js'
 import colors from '@/mixins/colors.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
+import datasetApi from '@/mixins/api/dataset.js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -48,6 +60,8 @@ export default {
     return {
       id: id,
       plotData: null,
+      dataset: null,
+      datasets: [],
       popoverContent: [{
         title: () => this.$t('popoverChartTourGenericOptionsTitle'),
         text: () => this.$t('popoverChartTourGenericOptionsText'),
@@ -62,6 +76,18 @@ export default {
     }
   },
   computed: {
+    datasetOptions: function () {
+      if (this.datasets) {
+        return this.datasets.map(d => {
+          return {
+            value: d,
+            text: d.datasetName
+          }
+        })
+      } else {
+        return []
+      }
+    },
     baseSourceFile: function () {
       return {
         blob: this.plotData,
@@ -70,14 +96,19 @@ export default {
       }
     },
     baseFilename: function () {
-      return 'pedigree-' + this.germplasm.id
+      return `pedigree-${this.germplasm.id}-dataset-${this.dataset ? this.dataset.datasetId : 'null'}`
+    }
+  },
+  watch: {
+    dataset: function () {
+      this.getPlotData()
     }
   },
   components: {
     BaseChart,
     Tour
   },
-  mixins: [ colors, germplasmApi ],
+  mixins: [ colors, germplasmApi, datasetApi ],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -179,12 +210,15 @@ export default {
     },
     downloadPedigree: function () {
       emitter.emit('show-loading', true)
+
       const request = {
-        individualIds: [this.germplasm.id],
+        yIds: [this.germplasm.id],
+        datasetIds: [this.dataset.datasetId],
         levelsUp: 3,
         levelsDown: 3
       }
-      this.apiPostPedigreeExport(request, result => {
+
+      this.apiPostDatasetExport('pedigree', request, result => {
         this.downloadBlob({
           blob: result,
           filename: this.baseFilename,
@@ -197,19 +231,35 @@ export default {
           // Do nothing here, it just means there is no data.
         }
       })
+    },
+    getPlotData: function () {
+      const request = {
+        yIds: [this.germplasm.id],
+        datasetIds: [this.dataset.datasetId]
+      }
+
+      this.apiPostDatasetExport('pedigree', request, result => {
+        this.plotData = result
+        this.update()
+      }, {
+        codes: [404],
+        callback: () => {
+          // Do nothing here, it just means there is no data.
+        }
+      })
     }
   },
   mounted: function () {
-    const request = {
-      individualIds: [this.germplasm.id]
-    }
-    this.apiPostPedigreeExport(request, result => {
-      this.plotData = result
-      this.update()
-    }, {
-      codes: [404],
-      callback: () => {
-        // Do nothing here, it just means there is no data.
+    this.apiPostGermplasmDatasetTable(this.germplasm.id, {
+      filter: [{
+        column: 'datasetType',
+        comparator: 'equals',
+        operator: 'and',
+        values: ['pedigree']
+      }]
+    }, result => {
+      if (result && result.data) {
+        this.datasets = result.data
       }
     })
   }

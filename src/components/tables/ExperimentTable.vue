@@ -45,6 +45,11 @@
           <i :class="`mdi mdi-18px ${datasetTypes.climate.icon}`" :style="`color: ${datasetTypes.climate.color()};`" />
           <span> {{ data.item.climateCount }}</span>
         </router-link>
+        <!-- Climate datasets -->
+        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'pedigree')" v-if="data.item.pedigreeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.pedigree.text()">
+          <i :class="`mdi mdi-18px ${datasetTypes.pedigree.icon}`" :style="`color: ${datasetTypes.pedigree.color()};`" />
+          <span> {{ data.item.pedigreeCount }}</span>
+        </router-link>
       </template>
     </BaseTable>
   </div>

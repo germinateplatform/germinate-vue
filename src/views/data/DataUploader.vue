@@ -32,7 +32,7 @@
       <!-- Selected file -->
       <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 
-      <div v-if="templateType === 'genotype' || templateType === 'trial' || templateType === 'climate' || templateType === 'compound'">
+      <div v-if="templateType === 'genotype' || templateType === 'trial' || templateType === 'climate' || templateType === 'compound' || templateType === 'pedigree'">
         <hr />
         <h3>{{ $t('pageDataUploadDatasetStateTitle') }}</h3>
         <b-button-group class="flex-wrap">

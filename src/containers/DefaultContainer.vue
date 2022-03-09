@@ -252,6 +252,16 @@ export default {
               url: '/data/germplasm',
               icon: 'mdi mdi-18px mdi-sprout'
             },
+            // {
+            //   name: this.$t('menuPedigreeData'),
+            //   identifiers: ['pedigrees'],
+            //   badge: {
+            //     text: this.getBadgeCount(this.badgeCounts, 'datasetsPedigree'),
+            //     variant: 'light'
+            //   },
+            //   url: '/data/export/pedigree',
+            //   icon: 'mdi mdi-18px mdi-family-tree mdi-rotate-180'
+            // },
             {
               name: this.$t('menuGenotypicData'),
               url: '/data/genotypes/maps',

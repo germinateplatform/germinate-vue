@@ -59,6 +59,20 @@ export default {
     columns: function () {
       return [
         {
+          key: 'datasetId',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetId')}`,
+          label: this.$t('tableColumnPedigreeDatasetId')
+        },
+        {
+          key: 'datasetName',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
+          label: this.$t('tableColumnPedigreeDatasetName')
+        },
+        {
           key: 'parentId',
           type: Number,
           sortable: true,

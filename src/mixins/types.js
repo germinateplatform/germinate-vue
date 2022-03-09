@@ -232,7 +232,7 @@ export default {
           accepts: '.xlsx'
         },
         pedigree: {
-          icon: 'mdi-tournament mdi-rotate-90',
+          icon: 'mdi-family-tree mdi-rotate-180',
           color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('templateImportTypePedigree'),
           accepts: '.xlsx'
@@ -364,6 +364,14 @@ export default {
           params: { datasetType: 'compound' }
         },
         {
+          value: 'datasetsPedigree',
+          textI18n: () => this.$t('dashboardBannerDatasetsPedigree'),
+          text: this.$t('dashboardBannerDatasetsPedigree'),
+          icon: 'mdi-family-tree mdi-rotate-180',
+          link: 'export',
+          params: { datasetType: 'pedigree' }
+        },
+        {
           value: 'groups',
           textI18n: () => this.$t('dashboardBannerGroups'),
           text: this.$t('dashboardBannerGroups'),
@@ -435,10 +443,17 @@ export default {
           color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeTrials')
         },
+        pedigree: {
+          id: 7,
+          icon: 'mdi-family-tree mdi-rotate-180',
+          pageName: 'export-pedigrees',
+          color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
+          text: () => this.$t('datasetTypePedigree')
+        },
         unknown: {
           id: -1,
           icon: 'mdi-help-box',
-          color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
+          color: () => this.serverSettings.colorsTemplate[6 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('datasetTypeUnknown')
         }
       }

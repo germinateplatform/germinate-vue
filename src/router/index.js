@@ -326,6 +326,19 @@ const router = new Router({
                 }
               }
             },
+            // {
+            //   path: 'export/pedigree/:datasetIds',
+            //   name: 'export-pedigrees',
+            //   component: () => import('@/views/data/export/PedigreeExport.vue'),
+            //   beforeEnter: requireAuth,
+            //   props(route) {
+            //     const datasetIds = route.params.datasetIds || ''
+
+            //     return {
+            //       datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
+            //     }
+            //   }
+            // },
             {
               path: 'export/trials/:datasetIds',
               name: 'export-trials',

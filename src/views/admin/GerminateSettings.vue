@@ -138,6 +138,12 @@
             <b-form-group :label="$t('formLabelAdminSettingsGoogleAnalytics')" label-for="google-analytics">
               <b-form-input id="google-analytics" v-model="settings.googleAnalyticsKey" />
             </b-form-group>
+            <b-form-group :label="$t('formLabelAdminSettingsPlausibleDomain')" label-for="plausible-domain">
+              <b-form-input id="plausible-domain" v-model="settings.plausibleDomain" />
+            </b-form-group>
+            <b-form-group :label="$t('formLabelAdminSettingsPlausibleApiHost')" label-for="plausible-api-host">
+              <b-form-input id="plausible-api-host" v-model="settings.plausibleApiHost" />
+            </b-form-group>
             <b-form-group :label="$t('formLabelAdminSettingsExternalLinkId')" label-for="external-link-id">
               <b-form-input id="external-link-id" v-model="settings.externalLinkIdentifier" />
             </b-form-group>

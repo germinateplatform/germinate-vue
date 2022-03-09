@@ -35,7 +35,7 @@
       <b-col lg=6 v-if="hasPedigreeData" class="mb-3">
         <b-card class="h-100">
           <b-card-title>
-            <i class="mdi mdi-sitemap mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabPedigreeTitle') }}
+            <i class="mdi mdi-family-tree mdi-rotate-180 mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabPedigreeTitle') }}
           </b-card-title>
           <b-card-sub-title class="mb-2">{{ $t('pageGermplasmDownloadTabPedigreeSubtitle') }}</b-card-sub-title>
 
@@ -58,8 +58,16 @@
           <!-- Export attributes? -->
           <b-form-checkbox class="mb-3" v-model="pedigreeIncludeAttributes" switch>{{ $t('pageGermplasmDownloadTabPedigreeIncludeAttributes') }}</b-form-checkbox>
 
+          <b-form-group :label="$t('tableColumnDatasetName')" label-for="dataset">
+            <b-form-select :options="datasetOptions" v-model="pedigreeDataset" id="dataset">
+              <template #first>
+                <b-form-select-option :value="null" disabled>{{ $t('formLabelPedigreeChartDatasetSelect') }}</b-form-select-option>
+              </template>
+            </b-form-select>
+          </b-form-group>
+
           <template v-slot:footer>
-            <b-button variant="primary" @click="downloadPedigree"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
+            <b-button variant="primary" @click="downloadPedigree" :disabled="!pedigreeDataset"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
           </template>
         </b-card>
       </b-col>
@@ -69,6 +77,7 @@
 
 <script>
 import groupApi from '@/mixins/api/group.js'
+import datasetApi from '@/mixins/api/dataset.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 
 const emitter = require('tiny-emitter/instance')
@@ -82,9 +91,25 @@ export default {
       passportGroup: null,
       pedigreeSelection: 'all',
       pedigreeGroup: null,
+      pedigreeDatasets: [],
+      pedigreeDataset: null,
       groups: null,
       hasPedigreeData: false,
       pedigreeIncludeAttributes: false
+    }
+  },
+  computed: {
+    datasetOptions: function () {
+      if (this.pedigreeDatasets) {
+        return this.pedigreeDatasets.map(d => {
+          return {
+            value: d,
+            text: d.datasetName
+          }
+        })
+      } else {
+        return []
+      }
     }
   },
   watch: {
@@ -95,7 +120,7 @@ export default {
       this.updateSelectionOptions()
     }
   },
-  mixins: [ groupApi, germplasmApi ],
+  mixins: [ datasetApi, groupApi, germplasmApi ],
   methods: {
     updateSelectionOptions: function () {
       this.selectionOptions = [{
@@ -139,11 +164,12 @@ export default {
     downloadPedigree: function () {
       emitter.emit('show-loading', true)
       const request = {
-        individualIds: this.pedigreeSelection === 'marked' ? this.markedGermplasm : null,
-        groupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null,
+        yIds: this.pedigreeSelection === 'marked' ? this.markedGermplasm : null,
+        yGroupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null,
         includeAttributes: this.pedigreeIncludeAttributes
       }
-      this.apiPostPedigreeExport(request, result => {
+
+      this.apiPostDatasetExport('pedigree', request, result => {
         this.downloadBlob({
           blob: result,
           filename: `pedigree-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
@@ -194,6 +220,19 @@ export default {
     this.apiPostPedigreeTable(pedigreeQuery, result => {
       if (result && result.count) {
         this.hasPedigreeData = result.count > 0
+      }
+    })
+
+    this.apiPostDatasetTable({
+      filter: [{
+        column: 'datasetType',
+        comparator: 'equals',
+        operator: 'and',
+        values: ['pedigree']
+      }]
+    }, result => {
+      if (result && result.data) {
+        this.pedigreeDatasets = result.data
       }
     })
   }

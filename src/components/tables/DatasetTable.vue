@@ -418,6 +418,9 @@ export default {
         case 'climate':
           this.initDownload(dataset, 'climate')
           break
+        case 'pedigree':
+          this.initDownload(dataset, 'pedigree')
+          break
         case 'allelefreq':
           // For allelefreq data, just request the underlying data file
           this.apiGetDatasetSourceFile(dataset.datasetId, result => {

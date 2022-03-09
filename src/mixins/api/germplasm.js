@@ -88,9 +88,6 @@ export default {
       queryData.page -= 1
       return this.authAxios({ url: 'pedigree/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
-    apiPostPedigreeExport: function (queryData, onSuccess, onError) {
-      return this.authAxios({ url: 'pedigree/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
-    },
     apiPostEntityTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAxios({ url: 'entity/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -122,9 +119,6 @@ export default {
     apiPostPedigreedefinitionTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAxios({ url: 'pedigreedefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostPedigreedefinitionExport: function (queryData, onSuccess, onError) {
-      return this.authAxios({ url: 'pedigreedefinition/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
-    },
+    }
   }
 }
