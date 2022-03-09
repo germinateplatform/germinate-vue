@@ -260,6 +260,12 @@ export default {
     }, result => {
       if (result && result.data) {
         this.datasets = result.data
+
+        if (result.data.length > 0) {
+          this.dataset = result.data.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn))[0]
+        } else {
+          this.dataset = null
+        }
       }
     })
   }

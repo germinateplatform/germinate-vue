@@ -233,6 +233,12 @@ export default {
     }, result => {
       if (result && result.data) {
         this.pedigreeDatasets = result.data
+
+        if (result.data.length > 0) {
+          this.pedigreeDataset = result.data.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn))[0]
+        } else {
+          this.pedigreeDataset = null
+        }
       }
     })
   }
