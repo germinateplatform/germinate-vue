@@ -36,6 +36,10 @@
       <template v-slot:head(hasAllelefreqData)>
         <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" v-b-tooltip="$t('tableColumnHasAllelefreqData')" />
       </template>
+      <!-- HEAD: Allelefreq data -->
+      <template v-slot:head(hasPedigreeData)>
+        <i :class="`mdi mdi-18px ${datasetTypes.pedigree.icon}`" v-b-tooltip="$t('tableColumnHasPedigreeData')" />
+      </template>
       <!-- /HEADS -->
 
       <template v-slot:cell(preview)="data">
@@ -155,6 +159,9 @@
       </template>
       <template v-slot:cell(hasAllelefreqData)="data">
         <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()" v-if="data.item.hasAllelefreqData" />
+      </template>
+      <template v-slot:cell(hasPedigreeData)="data">
+        <i :class="`mdi mdi-18px ${datasetTypes.pedigree.icon}`" :style="`color: ${datasetTypes.pedigree.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.pedigree.text()" v-if="data.item.hasPedigreeData" />
       </template>
 
       <!-- Row details is where the dataset locations are shown on a map -->
@@ -371,6 +378,12 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'collDate')}`,
           label: this.$t('tableColumnColldate')
+        }, {
+          key: 'hasPedigreeData',
+          type: Boolean,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'hasPedigreeData')}`,
+          label: this.$t('tableColumnHasPedigreeData')
         }, {
           key: 'hasTrialsData',
           type: Boolean,
