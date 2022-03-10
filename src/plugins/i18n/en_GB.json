@@ -952,6 +952,7 @@
   "tableColumnHasGenotypicData": "Has genotypic data",
   "tableColumnHasCompoundData": "Has compound data",
   "tableColumnHasAllelefreqData": "Has allele frequency data",
+  "tableColumnHasPedigreeData": "Has pedigree data",
   "tableColumnImageCreatedOn": "Created on",
   "tableColumnImageDescription": "Description",
   "tableColumnImageId": "Id",
