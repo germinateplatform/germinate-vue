@@ -52,6 +52,10 @@
         {{ group.groupVisibility === true ? $t('genericYes') : $t('genericNo') }}
       </b-form-checkbox>
 
+      <h3 class="mt-3">{{ $t('pageGroupsPublicationsTitle') }}</h3>
+      <p v-html="$t('pageGroupsPublicationsText')" />
+      <PublicationsWidget :referencingId="group.groupId" referenceType="group" />
+
       <h3 class="mt-3">{{ $t('pageGroupsMembersTitle') }}</h3>
       <!-- One of these three tables will be shown, depending on the type of the selected group -->
       <GermplasmTable v-if="group.groupType === 'germinatebase'"
@@ -96,6 +100,7 @@ import LocationTable from '@/components/tables/LocationTable'
 import MarkerTable from '@/components/tables/MarkerTable'
 import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
 import GroupUploadModal from '@/components/modals/GroupUploadModal'
+import PublicationsWidget from '@/components/util/PublicationsWidget'
 import groupApi from '@/mixins/api/group.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import genotypeApi from '@/mixins/api/genotype.js'
@@ -255,7 +260,8 @@ export default {
     GroupEditAddModal,
     GroupUploadModal,
     LocationTable,
-    MarkerTable
+    MarkerTable,
+    PublicationsWidget
   },
   mixins: [ groupApi, germplasmApi, genotypeApi, locationApi, typesMixin ],
   methods: {

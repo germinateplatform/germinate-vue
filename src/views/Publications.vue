@@ -1,7 +1,8 @@
 <template>
   <div>
     <h1>{{ $t('pagePublicationsTitle') }}</h1>
-    <PublicationTable :getData="getData" />
+    <PublicationTable :getData="getData"
+                      @publication-selected="onPublicationSelected" />
 
     <div v-if="publicationId" ref="publicationDetails" >
       <h2>{{ $t('pagePublicationDetailsTitle') }}</h2>
@@ -13,7 +14,10 @@
 
       <template v-if="publication && publication.referenceType !== 'database'">
         <!-- One of these three tables will be shown, depending on the type of the selected publication -->
-        <GermplasmTable v-if="publication.referenceType === 'germplasm'"
+        <GroupTable v-if="publication.referenceType === 'group'"
+                    ref="publicationmembersTable"
+                    :getData="getGroupData" />
+        <GermplasmTable v-else-if="publication.referenceType === 'germplasm'"
                         ref="publicationmembersTable"
                         :getData="getGermplasmData"/>
         <DatasetTable v-else-if="publication.referenceType === 'dataset'"
@@ -27,10 +31,12 @@
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
 import GermplasmTable from '@/components/tables/GermplasmTable'
+import GroupTable from '@/components/tables/GroupTable'
 import PublicationTable from '@/components/tables/PublicationTable'
 
 import datasetApi from '@/mixins/api/dataset.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
+import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 
 const Cite = require('citation-js')
@@ -39,6 +45,7 @@ export default {
   components: {
     DatasetTable,
     GermplasmTable,
+    GroupTable,
     PublicationTable
   },
   data: function () {
@@ -77,10 +84,13 @@ export default {
       }
     }
   },
-  mixins: [ datasetApi, germplasmApi, miscApi ],
+  mixins: [ datasetApi, germplasmApi, groupApi, miscApi ],
   methods: {
     getGermplasmData: function (data, callback) {
       return this.apiPostPublicationGermplasmTable(this.publication.publicationId, data, callback)
+    },
+    getGroupData: function (data, callback) {
+      return this.apiPostPublicationGroupTable(this.publication.publicationId, data, callback)
     },
     getDatasetData: function (data, callback) {
       return this.apiPostPublicationDatasetTable(this.publication.publicationId, data, callback)
@@ -98,7 +108,7 @@ export default {
         }
       })
     },
-    onPublicationSelected: function () {
+    onPublicationSelected: function (config) {
       const queryParams = {
         page: 1,
         limit: 1,
@@ -107,14 +117,17 @@ export default {
           column: 'publicationId',
           comparator: 'equals',
           operator: 'and',
-          values: [this.publicationId]
+          values: [config.publicationId]
         }, {
           column: 'referenceType',
           comparator: 'equals',
           operator: 'and',
-          values: [this.publicationType]
+          values: [config.publicationType]
         }]
       }
+
+      window.history.replaceState({}, null, this.$router.resolve({ name: 'publication-details', params: { publicationType: config.publicationType, publicationId: config.publicationId } }).href)
+
       this.apiPostPublicationsTable(queryParams, result => {
         if (result && result.data && result.data.length > 0) {
           // Update the URL to reflect the newly selected publication
@@ -145,7 +158,10 @@ export default {
       this.publicationId = this.$route.params.publicationId
       this.publicationType = this.$route.params.publicationType
 
-      this.onPublicationSelected()
+      this.onPublicationSelected({
+        publicationId: this.publicationId,
+        publicationType: this.publicationType
+      })
     }
   }
 }

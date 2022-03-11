@@ -68,7 +68,7 @@
         <h2 class="mdi-heading" id="publications"><i class="mdi mdi-36px text-primary mdi-text-box-check-outline"/><span> {{ $t('pagePassportPublicationsTitle') }}</span></h2>
         <p v-html="$t('pagePassportPublicationsText')" />
 
-        <PublicationsWidget :referencingId="this.germplasmId" referenceType="germplasm" />
+        <PublicationsWidget :referencingId="germplasmId" referenceType="germplasm" />
 
         <hr />
         <h2 class="mdi-heading" id="links"><i class="mdi mdi-36px text-primary mdi-link-variant"/><span> {{ $t('pagePassportLinksTitle') }}</span></h2>

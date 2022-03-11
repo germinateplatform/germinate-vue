@@ -26,6 +26,10 @@ export default {
     },
     apiPostDatasetGroups: function (queryData, onSuccess, onError) {
       return this.authAxios({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostPublicationGroupTable: function (publicationId, queryData, onSuccess, onError) {
+      queryData.page -= 1
+      return this.authAxios({ url: `publication/${publicationId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

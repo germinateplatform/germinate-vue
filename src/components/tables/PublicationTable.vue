@@ -7,12 +7,12 @@
               ref="publicationTable"
               v-on="$listeners">
       <template v-slot:cell(publicationId)="data">
-        <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }">{{ data.item.publicationId }}</router-link>
+        <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId, publicationType: data.item.referenceType })">{{ data.item.publicationId }}</router-link>
         <span v-else>{{ data.item.publicationId }}</span>
       </template>        
       <template v-slot:cell(publicationName)="data">
         <template v-if="data.item.publicationFallbackCache">
-          <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }">{{ data.item.publicationFallbackCache.title }}</router-link>
+          <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId, publicationType: data.item.referenceType })">{{ data.item.publicationFallbackCache.title }}</router-link>
           <span v-else>{{ data.item.publicationFallbackCache.title }}</span>
         </template>
       </template>

@@ -612,6 +612,8 @@
   "pageGermplasmUnifierExplanationText": "Add an explanation for merging these germplasm. This will be added to the preferred germplasm to provide a record of this merging event.",
   "pageGroupsDescriptionTitle": "Group description",
   "pageGroupsMembersTitle": "Group members",
+  "pageGroupsPublicationsText": "This is a list of all publications referencing this group.",
+  "pageGroupsPublicationsTitle": "Publications",
   "pageGroupsTitle": "Groups",
   "pageGroupsText": "Groups are subsets of either germplasm, markers or locations. These groups are either defined by the database manager or (depending on the Germinate configuration) can be created by any user. The table below shows all groups that are visible to you. Select a group to see all items within the group.",
   "pageGroupsVisibilityText": "Should this group be visible to all Germinate users?",
