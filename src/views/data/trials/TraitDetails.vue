@@ -187,6 +187,12 @@ export default {
 
       this.apiPostTraitStatsCategorical(query, result => {
         this.categoricalTraitFile = result
+      }, {
+        codes: [404],
+        callback: () => {
+          // Do nothing here, it just means there is no data.
+          this.categoricalTraitFile = null
+        }
       })
     }
   },

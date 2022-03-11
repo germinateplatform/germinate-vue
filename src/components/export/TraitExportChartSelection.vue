@@ -196,6 +196,12 @@ export default {
           names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
         }))
         emitter.emit('show-loading', false)
+      }, {
+        codes: [404],
+        callback: () => {
+          // Do nothing here, it just means there is no data.
+          emitter.emit('show-loading', false)
+        }
       })
     },
     onColorByChanged: function () {
