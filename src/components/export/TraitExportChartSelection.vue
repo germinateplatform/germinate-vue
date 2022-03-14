@@ -119,6 +119,10 @@ export default {
         value: 'Date',
         disabled: this.getStatsCount('Date') < 2
       }, {
+        text: `${this.$t('widgetChartColoringByTaxonomy')}${this.getStatsText('taxonomy')}`,
+        value: 'taxonomy',
+        disabled: this.getStatsCount('taxonomy') < 2
+      }, {
         text: `${this.$t('widgetChartColoringByTreatment')}${this.getStatsText('treatments_description')}`,
         value: 'treatments_description',
         disabled: this.getStatsCount('treatments_description') < 2

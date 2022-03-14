@@ -1140,6 +1140,7 @@
   "widgetChartColoringByYear": "Year",
   "widgetChartColoringByRecordingDate": "Recording date",
   "widgetChartColoringByGroup": "Group",
+  "widgetChartColoringByTaxonomy": "Taxonomy",
   "widgetChartColoringByRep": "Rep",
   "widgetChartColoringNoColoring": "No coloring",
   "widgetChartColoringByGermplasmName": "Specific germplasm (one name per line)",

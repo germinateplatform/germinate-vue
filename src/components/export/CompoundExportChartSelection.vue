@@ -108,6 +108,9 @@ export default {
         text: this.$t('widgetChartColoringByDataset'),
         value: 'dataset_name'
       }, {
+        text: this.$t('widgetChartColoringByTaxonomy'),
+        value: 'taxonomy'
+      }, {
         text: this.$t('widgetChartColoringByYear'),
         value: 'year'
       }, {

@@ -172,7 +172,7 @@ export default {
           .call(plotlyScatterMatrix()
             .darkMode(this.darkMode)
             .colorBy(colorBy)
-            .columnsToIgnore(['name', 'puid', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'Site', 'treatments_description', 'year', 'group_ids'])
+            .columnsToIgnore(['name', 'puid', 'taxonomy', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'Site', 'treatments_description', 'year', 'group_ids'])
             .onPointClicked(p => {
               // For trials and compounds we show the passport page on click
               if (this.datasetType === 'trials' || this.datasetType === 'compounds') {
