@@ -41,16 +41,24 @@
               <small> {{ status[job.status].text() }}</small>
             </div>
             <!-- Download link -->
-            <div v-if="job.status === 'completed'" class="d-flex flex-row align-items-start">
-              <i class="mdi fix-alignment mdi-download" />
-              <div class="d-inline-block ml-1">
-                <a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs">{{ $t('buttonDownload') }}</a>
-                <div v-if="job.resultSize">
-                  <!-- File size -->
-                  <small class="text-muted">{{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}B</small>
+            <template v-if="job.status === 'completed'">
+              <div class="d-flex flex-row align-items-start">
+                <i class="mdi fix-alignment icon-helium" />
+                <div class="d-inline-block ml-1" v-if="job.datasettypeId === 7 && serverSettings && serverSettings.heliumUrl">
+                  <a target="_blank" :href="`${serverSettings.heliumUrl}?germinateUrl=${encodeURIComponent(baseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateAsyncJobs">{{ $t('buttonSendToHelium') }}</a>
                 </div>
               </div>
-            </div>
+              <div class="d-flex flex-row align-items-start">
+                <i class="mdi fix-alignment mdi-download" />
+                <div class="d-inline-block ml-1">
+                  <a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs">{{ $t('buttonDownload') }}</a>
+                  <div v-if="job.resultSize">
+                    <!-- File size -->
+                    <small class="text-muted">{{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}B</small>
+                  </div>
+                </div>
+              </div>
+            </template>
           </b-list-group-item>
         </b-list-group>
       </b-tab>

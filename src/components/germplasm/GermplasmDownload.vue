@@ -166,21 +166,18 @@ export default {
       const request = {
         yIds: this.pedigreeSelection === 'marked' ? this.markedGermplasm : null,
         yGroupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null,
-        includeAttributes: this.pedigreeIncludeAttributes
+        includeAttributes: this.pedigreeIncludeAttributes,
+        datasetIds: [this.pedigreeDataset.datasetId],
       }
 
-      this.apiPostDatasetExport('pedigree', request, result => {
-        this.downloadBlob({
-          blob: result,
-          filename: `pedigree-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
-          extension: this.pedigreeIncludeAttributes ? 'zip' : 'helium'
-        })
+      emitter.emit('show-loading', true)
+      this.$gtag.event('export', 'async', 'pedigree', request.datasetIds.join('-'))
+      this.apiPostPedigreeDatasetExport(request, result => {
+        result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+
+        // Show the sidebar
+        emitter.emit('toggle-aside', 'download')
         emitter.emit('show-loading', false)
-      }, {
-        codes: [404],
-        callback: () => {
-          // Do nothing here, it just means there is no data.
-        }
       })
     }
   },

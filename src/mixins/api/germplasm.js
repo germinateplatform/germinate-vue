@@ -119,6 +119,9 @@ export default {
     apiPostPedigreedefinitionTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAxios({ url: 'pedigreedefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+    },
+    apiPostPedigreeDatasetExport: function (queryData, onSuccess, onError) {
+      return this.authAxios({ url: 'dataset/export/pedigree-async', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

@@ -160,6 +160,7 @@ import defaultProps from '@/const/table-props.js'
 import { mapFilters } from '@/plugins/map-filters.js'
 import datasetApi from '@/mixins/api/dataset.js'
 import genotypeApi from '@/mixins/api/genotype.js'
+import germplasmApi from '@/mixins/api/germplasm.js'
 import locationApi from '@/mixins/api/location.js'
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
@@ -366,7 +367,7 @@ export default {
     LicenseModal,
     PublicationsModal
   },
-  mixins: [ colorMixin, datasetApi, genotypeApi, locationApi, typesMixin ],
+  mixins: [ colorMixin, datasetApi, genotypeApi, germplasmApi, locationApi, typesMixin ],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     showFullDatasetDescription: function (description) {
@@ -419,7 +420,7 @@ export default {
           this.initDownload(dataset, 'climate')
           break
         case 'pedigree':
-          this.initDownload(dataset, 'pedigree')
+          this.downloadPedigreeDataset(dataset)
           break
         case 'allelefreq':
           // For allelefreq data, just request the underlying data file
@@ -437,6 +438,21 @@ export default {
           this.$nextTick(() => this.$refs.genotypeExportModal.show())
           break
       }
+    },
+    downloadPedigreeDataset: function (dataset) {
+      const query = {
+        datasetIds: [dataset.datasetId],
+        includeAttributes: true
+      }
+      emitter.emit('show-loading', true)
+      this.$gtag.event('export', 'async', 'pedigree', query.datasetIds.join('-'))
+      this.apiPostPedigreeDatasetExport(query, result => {
+        result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+
+        // Show the sidebar
+        emitter.emit('toggle-aside', 'download')
+        emitter.emit('show-loading', false)
+      })
     },
     downloadGenotypicDataset: function (selectedFormats) {
       // Then export
