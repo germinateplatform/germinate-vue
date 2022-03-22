@@ -27,6 +27,7 @@
             <b-button-group class="flex-wrap">
               <b-button class="mb-2" variant="outline-secondary" @click="onHasTraitDataClicked" v-b-tooltip="datasetTypes.trials.text()"><i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" /></b-button>
               <b-button class="mb-2" variant="outline-secondary" @click="onHasGenotypicDataClicked" v-b-tooltip="datasetTypes.genotype.text()"><i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" /></b-button>
+              <b-button class="mb-2" variant="outline-secondary" @click="onHasPedigreeDataClicked" v-b-tooltip="datasetTypes.pedigree.text()"><i :class="`mdi mdi-18px ${datasetTypes.pedigree.icon}`" :style="`color: ${datasetTypes.pedigree.color()};`" /></b-button>
               <b-button class="mb-2" variant="outline-secondary" @click="onHasCompoundDataClicked" v-b-tooltip="datasetTypes.compound.text()"><i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" /></b-button>
               <b-button class="mb-2" variant="outline-secondary" @click="onHasAllelefreqDataClicked" v-b-tooltip="datasetTypes.allelefreq.text()"><i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" /></b-button>
             </b-button-group>
@@ -239,6 +240,9 @@ export default {
     },
     onHasTraitDataClicked: function () {
       this.$emit('filtering-changed', 'hasTrialsData', Boolean, 1)
+    },
+    onHasPedigreeDataClicked: function () {
+      this.$emit('filtering-changed', 'hasPedigreeData', Boolean, 1)
     },
     onHasGenotypicDataClicked: function () {
       this.$emit('filtering-changed', 'hasGenotypicData', Boolean, 1)

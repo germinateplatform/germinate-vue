@@ -379,12 +379,6 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'collDate')}`,
           label: this.$t('tableColumnColldate')
         }, {
-          key: 'hasPedigreeData',
-          type: Boolean,
-          sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'hasPedigreeData')}`,
-          label: this.$t('tableColumnHasPedigreeData')
-        }, {
           key: 'hasTrialsData',
           type: Boolean,
           sortable: true,
@@ -396,6 +390,12 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'hasGenotypicData')}`,
           label: this.$t('tableColumnHasGenotypicData')
+        }, {
+          key: 'hasPedigreeData',
+          type: Boolean,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'hasPedigreeData')}`,
+          label: this.$t('tableColumnHasPedigreeData')
         }, {
           key: 'hasCompoundData',
           type: Boolean,
