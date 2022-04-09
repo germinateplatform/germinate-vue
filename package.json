@@ -49,7 +49,7 @@
     "leaflet.markercluster": "~1.4.1",
     "leaflet.sync": "~0.2.4",
     "lodash": "~4.17.21",
-    "moment": "~2.24.0",
+    "moment": "~2.29.2",
     "plotly.js": "^2.6.0",
     "simple-line-icons": "~2.4.1",
     "simplex-noise": "~2.4.0",
