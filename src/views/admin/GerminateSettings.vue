@@ -5,7 +5,7 @@
     <p>{{ $t('pageGerminateSettingsText') }}</p>
     <b-form id="admin-form" @submit.prevent="saveSettings" autocomplete="off" v-if="settings">
       <b-row>
-        <b-col cols=12 md=6>
+        <b-col cols=12 xl=6>
           <b-card :title="$t('pageGerminateSettingsCardColors')">
             <b-form-group :label="$t('formLabelAdminSettingsColorPrimary')" label-for="primary-color">
               <b-form-input type="color" v-model="settings.colorPrimary" class="d-inline" id="primary-color" />
@@ -41,7 +41,7 @@
             </b-form-group>
           </b-card>
         </b-col>
-        <b-col cols=12 md=6>
+        <b-col cols=12 xl=6>
           <b-card :title="$t('pageGerminateSettingsCardToggles')">
             <b-row>
               <b-col cols=6>

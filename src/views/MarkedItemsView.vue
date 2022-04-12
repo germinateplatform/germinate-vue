@@ -18,7 +18,7 @@
 
       <template v-if="(itemTypeLocal === markedItemTypes.germplasm) && externalIdentifiers && (externalIdentifiers.length > 0)">
         <h3 class="mt-3">{{ $t('pageMarkedGermplasmExportTitle') }}</h3>
-        <a :href="externalLink" >{{ $t('pageMarkedGermplasmExportText') }}</a> <i class="mdi mdi-open-in-new" />
+        <a :href="externalLink" v-if="externalLink">{{ $t('pageMarkedGermplasmExportText') }}</a> <i class="mdi mdi-open-in-new" />
       </template>
     </div>
     <h2 v-else>{{ $t('pageMarkedItemsUnknownType') }}</h2>
@@ -83,7 +83,11 @@ export default {
   },
   computed: {
     externalLink: function () {
-      return encodeURI(this.serverSettings.externalLinkTemplate.replace('{identifiers}', this.externalIdentifiers.join(',')))
+      if (this.serverSettings.externalLinkTemplate) {
+        return this.serverSettings.externalLinkTemplate.replace('{identifiers}', this.externalIdentifiers.join(','))
+      } else {
+        return null
+      }
     }
   },
   components: {
