@@ -72,7 +72,7 @@ export default {
       return (this.marker - this.min) * (100 - 0) / (this.max - this.min)
     }
   },
-  mixins: [ colorApi ]
+  mixins: [colorApi]
 }
 </script>
 

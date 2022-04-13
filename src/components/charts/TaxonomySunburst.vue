@@ -34,7 +34,7 @@ export default {
   components: {
     BaseChart
   },
-  mixins: [ statsApi, colorMixin ],
+  mixins: [statsApi, colorMixin],
   methods: {
     redraw: function (result) {
       this.sourceFile = result
@@ -45,7 +45,7 @@ export default {
       reader.onload = () => {
         const data = d3Dsv.tsvParse(reader.result)
 
-        let sunburst = {}
+        const sunburst = {}
 
         data.forEach(t => {
           if (t.subtaxa) {
@@ -76,14 +76,14 @@ export default {
           }
         })
 
-        let chartData = {
+        const chartData = {
           labels: [],
           parents: [],
           values: []
         }
 
         Object.keys(sunburst).forEach(k => {
-          let parts = k.split('->')
+          const parts = k.split('->')
           chartData.labels.push(parts[0])
           chartData.parents.push(parts[1] === 'NULL' ? '' : parts[1])
           chartData.values.push(sunburst[k])
@@ -135,9 +135,12 @@ export default {
               }
 
               // Navigate to the germplasm page
-              this.$router.push({ name: 'germplasm', query: {
-                'germplasm-filter': JSON.stringify(query)
-              } })
+              this.$router.push({
+                name: 'germplasm',
+                query: {
+                  'germplasm-filter': JSON.stringify(query)
+                }
+              })
             })
             .colors(this.getColors()))
       }

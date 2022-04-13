@@ -69,7 +69,7 @@ export default {
     ChoroplethChart,
     TaxonomySunburst
   },
-  mixins: [ statsApi ],
+  mixins: [statsApi],
   methods: {
     biologicalStatusClicked: function (status) {
       const filter = [{
@@ -78,9 +78,12 @@ export default {
         operator: 'and',
         values: [status + '%']
       }]
-      this.$router.push({ name: 'germplasm', query: {
-        'germplasm-filter': JSON.stringify(filter)
-      } })
+      this.$router.push({
+        name: 'germplasm',
+        query: {
+          'germplasm-filter': JSON.stringify(filter)
+        }
+      })
     },
     pdciClicked: function (bar) {
       const parts = bar.split('-')
@@ -90,9 +93,12 @@ export default {
         operator: 'and',
         values: parts
       }]
-      this.$router.push({ name: 'germplasm', query: {
-        'germplasm-filter': JSON.stringify(filter)
-      } })
+      this.$router.push({
+        name: 'germplasm',
+        query: {
+          'germplasm-filter': JSON.stringify(filter)
+        }
+      })
     },
     datasetClicked: function (dataset) {
       this.$router.push({ name: 'export', params: { datasetType: dataset } })

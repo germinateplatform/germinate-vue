@@ -43,7 +43,7 @@ export default {
       unifierExpanded: false,
       selectedTraits: null,
       primaryTrait: null,
-      selectedIds: [],
+      selectedIds: []
     }
   },
   computed: {
@@ -51,7 +51,7 @@ export default {
       return this.unifierExpanded ? 'multi' : null
     }
   },
-  mixins: [ traitApi ],
+  mixins: [traitApi],
   methods: {
     getData: function (data, callback) {
       return this.apiPostTraitTable(data, callback)
@@ -90,7 +90,7 @@ export default {
     },
     mergeTrait: function () {
       emitter.emit('show-loading', true)
-      const others = this.selectedIds.filter(id => id != this.primaryTrait)
+      const others = this.selectedIds.filter(id => id !== this.primaryTrait)
       this.apiPostTraitUnification({
         preferredTraitId: this.primaryTrait,
         otherTraitIds: others

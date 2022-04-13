@@ -50,7 +50,7 @@
         <a href="#" class="text-decoration-none" @click.prevent="onTraitEditClicked(data.item)" v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
           <i :class="`mdi mdi-18px mdi-square-edit-outline`" v-b-tooltip.hover :title="$t('tableTooltipTraitEdit')" />
         </a>
-      </template>      
+      </template>
     </BaseTable>
 
     <!-- Trait state modal -->
@@ -190,7 +190,7 @@ export default {
     BaseTable,
     TraitEditModal
   },
-  mixins: [ colorMixin, typesMixin ],
+  mixins: [colorMixin, typesMixin],
   methods: {
     refresh: function () {
       this.$refs.traitTable.refresh()

@@ -157,12 +157,12 @@ export default {
       })
     },
     getFromCache: function (p) {
-      let result = p
+      const result = p
       try {
         const citation = new Cite(JSON.parse(p.publicationFallbackCache))
-        
+
         if (citation && citation.data && citation.data.length > 0) {
-          result.displayData = citation.format('data', {format: 'object'})[0]
+          result.displayData = citation.format('data', { format: 'object' })[0]
           result.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
         }
       } catch (err) {
@@ -206,7 +206,7 @@ export default {
           try {
             const citation = Cite.async(p.publicationDoi.trim())
             if (citation && citation.data && citation.data.length > 0) {
-              p.displayData = citation.format('data', {format: 'object'})[0]
+              p.displayData = citation.format('data', { format: 'object' })[0]
               p.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
             } else {
               result = this.getFromCache(p)

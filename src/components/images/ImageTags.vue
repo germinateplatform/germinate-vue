@@ -32,7 +32,7 @@ export default {
       imageTags: []
     }
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     selectTag: function (tag) {
       this.selectedTag = tag

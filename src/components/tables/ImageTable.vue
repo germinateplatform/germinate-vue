@@ -1,7 +1,7 @@
 <template>
   <div>
-    <CoolLightBox 
-      :items="coolboxImages" 
+    <CoolLightBox
+      :items="coolboxImages"
       :index="coolboxIndex"
       @on-open="rotateExif"
       @close="coolboxIndex = null" />
@@ -130,7 +130,7 @@ export default {
     BaseTable,
     CoolLightBox
   },
-  mixins: [ typesMixin, colorMixin ],
+  mixins: [typesMixin, colorMixin],
   methods: {
     rotateBasedOnExif: function (image) {
       EXIF.getData(image, function () {

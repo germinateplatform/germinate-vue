@@ -263,7 +263,7 @@ export default {
     MarkerTable,
     PublicationsWidget
   },
-  mixins: [ groupApi, germplasmApi, genotypeApi, locationApi, typesMixin ],
+  mixins: [groupApi, germplasmApi, genotypeApi, locationApi, typesMixin],
   methods: {
     uploadContent: function (content) {
       if (content && content.length > 0) {

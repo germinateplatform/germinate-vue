@@ -173,7 +173,7 @@ export default {
   components: {
     PasswordInput
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     validateForm: function () {
       this.formValidated = true
@@ -207,7 +207,7 @@ export default {
           delete this.user.institutionAddress
         }
 
-        let newRequest = {
+        const newRequest = {
           locale: this.locale,
           user: this.user
         }
@@ -314,7 +314,7 @@ export default {
     // Get all existing institutions
     this.apiGetGatekeeperInstitutions(query, result => {
       if (result && result.data) {
-        let tempInst = []
+        const tempInst = []
 
         result.data.forEach(i => tempInst.push({
           value: i,

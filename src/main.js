@@ -59,7 +59,7 @@ import VueGtag from 'vue-gtag'
 import VueMeta from 'vue-meta'
 Vue.use(VueMeta)
 
-let axiosDefaults = require('axios/lib/defaults')
+const axiosDefaults = require('axios/lib/defaults')
 
 Vue.mixin(mixin)
 Vue.use(Autocomplete)
@@ -108,9 +108,6 @@ Vue.use(VueGtag, {
 
 Vue.use({
   install: function (Vue) {
-    // Make moment.js available
-    Vue.prototype.$moment = require('moment')
-    window.moment = Vue.prototype.$moment
     // Make custom plotly available
     Vue.prototype.$plotly = require('@/plugins/charts/custom-plotly')
     window.Plotly = Vue.prototype.$plotly
@@ -137,25 +134,23 @@ Vue.filter('toDate', value => {
   if (value === null || value === undefined) {
     return null
   }
-  let moment
-  if (value.indexOf('-') !== -1) {
-    moment = window.moment(value)
-  } else {
-    moment = window.moment(value, 'YYYY-MM-DD')
+
+  try {
+    return new Date(value).toLocaleDateString()
+  } catch (err) {
+    return null
   }
-  return moment.format(i18n.t('formatDate'))
 })
 Vue.filter('toMcpdDate', value => {
   if (value === null || value === undefined) {
     return null
   }
-  let moment
-  if (value.indexOf('-') !== -1) {
-    moment = window.moment(value)
-  } else {
-    moment = window.moment(value, 'YYYYMMDD')
+
+  try {
+    return new Date(value.substring(0, 4), value.substring(4, 2), value.substring(6, 2)).toLocaleDateString()
+  } catch (err) {
+    return null
   }
-  return moment.format(i18n.t('formatDate'))
 })
 
 // Date time formatting
@@ -163,13 +158,12 @@ Vue.filter('toDateTime', value => {
   if (value === null || value === undefined) {
     return null
   }
-  let moment
-  if (value.indexOf('-') !== -1) {
-    moment = window.moment(value)
-  } else {
-    moment = window.moment(value, 'MMM D, YYYY')
+
+  try {
+    return new Date(value).toLocaleString()
+  } catch (err) {
+    return null
   }
-  return moment.format(i18n.t('formatDateTime'))
 })
 
 // Truncate a string after this many words

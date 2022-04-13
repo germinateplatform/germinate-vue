@@ -108,7 +108,7 @@ export default {
     BaseChart,
     Tour
   },
-  mixins: [ colors, germplasmApi, datasetApi ],
+  mixins: [colors, germplasmApi, datasetApi],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -127,8 +127,8 @@ export default {
             const firstEOL = dirtyTsv.indexOf('\n')
             const parsedTsv = d3Dsv.tsvParse(dirtyTsv.substring(firstEOL + 1))
 
-            let nodes = {}
-            let connections = []
+            const nodes = {}
+            const connections = []
 
             // First, add the parents (important for layout)
             parsedTsv.forEach(function (d) {
@@ -158,8 +158,7 @@ export default {
               })
             })
 
-            let data = []
-
+            const data = []
             Object.keys(nodes).forEach(node => {
               if (Object.prototype.hasOwnProperty.call(nodes, node)) {
                 data.push({

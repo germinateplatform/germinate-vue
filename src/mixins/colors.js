@@ -35,7 +35,7 @@ export default {
       while (result.length < steps) {
         result.push(colors[colors.length - 1])
       }
-      
+
       return result
     },
     /**
@@ -48,7 +48,7 @@ export default {
       const oneRgb = this.hexToRgb(one)
       const twoRgb = this.hexToRgb(two)
 
-      let result = []
+      const result = []
       for (let i = 0; i < steps; i++) {
         const iNorm = i / (steps - 1)
         result.push(this.rgbToHex(
@@ -65,11 +65,13 @@ export default {
      */
     hexToRgb: function (hex) {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-      return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-      } : null
+      return result
+        ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+          }
+        : null
     },
     /**
      * Converts the given R, G, B values into a HEX color

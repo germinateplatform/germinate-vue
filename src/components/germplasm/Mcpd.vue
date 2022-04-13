@@ -61,7 +61,7 @@ export default {
         423: 'Other genetic stocks (e.g. mapping populations)',
         500: 'Advanced or improved cultivar (conventional breeding methods)',
         600: 'GMO (by genetic engineering)',
-        999: 'Other (Elaborate in REMARKS field)',
+        999: 'Other (Elaborate in REMARKS field)'
       },
       collsrc: {
         10: 'Wild habitat',

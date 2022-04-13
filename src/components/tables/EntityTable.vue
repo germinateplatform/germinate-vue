@@ -136,7 +136,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ typesMixin ],
+  mixins: [typesMixin],
   methods: {
     refresh: function () {
       this.$refs.entityTable.refresh()

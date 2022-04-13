@@ -38,7 +38,7 @@ export default {
   components: {
     UserTable
   },
-  mixins: [ usergroupApi ],
+  mixins: [usergroupApi],
   methods: {
     refresh: function () {
       this.getData()

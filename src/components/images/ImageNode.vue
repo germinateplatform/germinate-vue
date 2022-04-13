@@ -17,7 +17,7 @@
         </b-input-group-append>
       </b-input-group>
       <div class="mb-2" v-else>{{ image.imageDescription }}</div>
-      <div class="text-muted mb-2" v-if="image.createdOn"><i class="mdi mdi-18px fix-alignment mdi-calendar-clock" /> {{ image.createdOn | toDateTime }}</div>
+      <div class="text-muted mb-2" v-if="image.createdOn"><i class="mdi mdi-18px fix-alignment mdi-calendar-clock" /> {{ new Date(image.createdOn).toLocaleString() }}</div>
       <div>
         <!-- Show tags -->
         <template v-if="image.tags">
@@ -75,7 +75,7 @@ export default {
   components: {
     EditTagModal
   },
-  mixins: [ miscApi, typesMixin ],
+  mixins: [miscApi, typesMixin],
   methods: {
     showTagEditModal: function () {
       this.$refs.editTagModal.show()

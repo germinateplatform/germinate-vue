@@ -25,7 +25,7 @@ export default {
   components: {
     DatasetTable
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     getData: function (data, callback) {
       return this.apiPostDatasetTable(data, callback)

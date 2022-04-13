@@ -5,10 +5,10 @@
     <b-row>
       <b-col>
         <div class="d-flex align-items-center">
-          <i class="mdi mdi-arrow-collapse-left mr-2" /> 
+          <i class="mdi mdi-arrow-collapse-left mr-2" />
           <div class="text-left">
             <div>{{ $t('widgetGradientLow') }}</div>
-            <div v-if="min !== undefined && min !== null">{{ formatMinMax(min) }}</div>    
+            <div v-if="min !== undefined && min !== null">{{ formatMinMax(min) }}</div>
           </div>
         </div>
       </b-col>
@@ -16,7 +16,7 @@
         <div class="d-flex justify-content-end align-items-center">
           <div class="text-right">
             <div>{{ $t('widgetGradientHigh') }} </div>
-            <div v-if="max !== undefined && max !== null">{{ formatMinMax(max) }}</div>    
+            <div v-if="max !== undefined && max !== null">{{ formatMinMax(max) }}</div>
           </div>
           <i class="mdi mdi-arrow-collapse-right ml-2" />
         </div>

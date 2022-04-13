@@ -20,7 +20,7 @@ export default {
   components: {
     GermplasmTable
   },
-  mixins: [ germplasmApi ],
+  mixins: [germplasmApi],
   methods: {
     getGermplasmData: function (query, callback) {
       return this.apiPostGermplasmTableCW(query, this.file, callback)

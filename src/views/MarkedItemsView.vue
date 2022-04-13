@@ -95,7 +95,7 @@ export default {
     LocationTable,
     MarkerTable
   },
-  mixins: [ germplasmApi, genotypeApi, locationApi, miscApi, typesMixin ],
+  mixins: [germplasmApi, genotypeApi, locationApi, miscApi, typesMixin],
   methods: {
     getGermplasmData: function (data, callback) {
       data = this.adjustFilter(data, 'germplasmId', 'germplasm')

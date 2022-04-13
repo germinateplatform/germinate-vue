@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let columns = [
+      const columns = [
         {
           key: 'groupId',
           type: Number,
@@ -141,7 +141,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ typesMixin ],
+  mixins: [typesMixin],
   methods: {
     refresh: function () {
       this.$refs.table.refresh()

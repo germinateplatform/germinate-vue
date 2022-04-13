@@ -31,8 +31,8 @@
             <!-- Dataset ids -->
             <div v-if="job.datasetIds" class="text-muted">{{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</div>
             <!-- Date time -->
-            <div class="text-muted">
-              <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ job.updatedOn | toDateTime }}</small>
+            <div class="text-muted" v-if="job.updatedOn">
+              <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ new Date(job.updatedOn).toLocaleString() }}</small>
             </div>
             <!-- Status -->
             <div :class="`text-${status[job.status].color}`">
@@ -42,9 +42,9 @@
             </div>
             <!-- Download link -->
             <template v-if="job.status === 'completed'">
-              <div class="d-flex flex-row align-items-start">
+              <div class="d-flex flex-row align-items-start" v-if="job.datasettypeId === 7 && serverSettings && serverSettings.heliumUrl">
                 <i class="mdi fix-alignment icon-helium" />
-                <div class="d-inline-block ml-1" v-if="job.datasettypeId === 7 && serverSettings && serverSettings.heliumUrl">
+                <div class="d-inline-block ml-1">
                   <a target="_blank" :href="`${serverSettings.heliumUrl}?germinateUrl=${encodeURIComponent(baseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateAsyncJobs">{{ $t('buttonSendToHelium') }}</a>
                 </div>
               </div>
@@ -175,7 +175,7 @@ export default {
   components: {
     UploadStatusTable
   },
-  mixins: [ datasetApi, miscApi, typesMixin ],
+  mixins: [datasetApi, miscApi, typesMixin],
   methods: {
     clearExportJobs: function () {
       if (this.asyncExportJobs) {

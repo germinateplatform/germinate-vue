@@ -149,14 +149,14 @@ export default {
       this.redraw()
     }
   },
-  mixins: [ colorMixin ],
+  mixins: [colorMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
     },
     parseFile: function () {
       // Read the file
-      let reader = new FileReader()
+      const reader = new FileReader()
       reader.onload = () => {
         this.serverFileBinning = d3Dsv.tsvParse(reader.result)
         this.serverFileBinning.forEach(d => {
@@ -200,7 +200,7 @@ export default {
           })
 
           const cutoff = total / this.autoBins
-          let binWidths = []
+          const binWidths = []
           let current = 0
           let start = 0
           for (let i = 0; i < this.serverFileBinning.length; i++) {
@@ -259,16 +259,16 @@ export default {
         this.$plotly.purge(this.$refs.allelefreqChart)
       }
 
-      let reader = new FileReader()
+      const reader = new FileReader()
       reader.onload = () => {
-        let data = d3Dsv.tsvParse(reader.result)
+        const data = d3Dsv.tsvParse(reader.result)
 
         this.dataCount = data.length
         if (data.length > 0) {
           this.serverFilePath = this.sourceFile.filename
 
           this.$nextTick(() => {
-            let colors = []
+            const colors = []
             let index = 0
             let sum = 0
             data.forEach((value, i) => {

@@ -82,7 +82,7 @@ export default {
       return this.newsTitle && this.newsContent && this.newsTypeId
     }
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     okPressed: async function () {
       let imageBase64 = null
@@ -92,7 +92,7 @@ export default {
         imageBase64 = await this.toBase64(this.imageFile)
       }
 
-      let news = {
+      const news = {
         newstypeId: this.newsTypeId,
         title: this.newsTitle,
         content: this.newsContent,

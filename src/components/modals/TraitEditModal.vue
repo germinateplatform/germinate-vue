@@ -47,7 +47,7 @@ export default {
       })
     }
   },
-  mixins: [ traitApi, typesMixin ],
+  mixins: [traitApi, typesMixin],
   methods: {
     show: function () {
       this.traitName = this.trait.traitName

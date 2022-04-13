@@ -13,7 +13,7 @@ export default {
   components: {
     CompoundTable
   },
-  mixins: [ compoundApi ],
+  mixins: [compoundApi],
   methods: {
     getData: function (data, callback) {
       return this.apiPostCompoundTable(data, callback)

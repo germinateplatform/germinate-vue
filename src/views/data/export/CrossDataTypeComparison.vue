@@ -5,7 +5,7 @@
     <b-row>
       <b-col cols=12 sm=6>
         <h2>{{ $t('pageDatasetCrossTypeComparisonFirstSubtitle') }}</h2>
-        
+
         <CrossDataTypeSelection ref="selectionFirst" @data-type-changed="type => updateDataType(type, 0)" />
       </b-col>
       <b-col cols=12 sm=6>
@@ -49,7 +49,7 @@ export default {
       return this.dataTypes[0] !== this.dataTypes[1]
     }
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     updateDataType: function (type, index) {
       Vue.set(this.dataTypes, index, type)

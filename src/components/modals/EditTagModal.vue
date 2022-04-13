@@ -40,7 +40,7 @@ export default {
       this.newTags = newValue.map(t => t.tagName)
     }
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     focus: function () {
       this.$nextTick(() => this.$refs.focusThis.focus())

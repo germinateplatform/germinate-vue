@@ -40,22 +40,22 @@ export default {
       germinateVersion: '4.2.1',
       MAX_JAVA_INTEGER: 2147483647,
       gatekeeperErrors: {
-        'BAD_REQUEST_MISSING_FIELDS': 'gatekeeperErrorBadRequestMissingField',
-        'CONFLICT_USER_ALREADY_HAS_ACCESS': 'gatekeeperErrorConflictUserAlreadyHasAccess',
-        'CONFLICT_USER_ALREADY_REQUESTED_ACCESS': 'gatekeeperErrorConflictUserAlreadyRequestedAccess',
-        'CONFLICT_USERNAME_EMAIL_ALREADY_IN_USE': 'gatekeeperErrorConflictUsernameEmailAlreadyInUse',
-        'FORBIDDEN_ACCESS_TO_OTHER_USER': 'gatekeeperErrorForbiddenAccessToOtherUser',
-        'FORBIDDEN_INSUFFICIENT_PERMISSIONS': 'gatekeeperErrorForbiddenInsufficientPermissions',
-        'FORBIDDEN_INVALID_CREDENTIALS': 'gatekeeperErrorForbiddenInvalidCredentials',
-        'NOT_FOUND_ACTIVATION_KEY': 'gatekeeperErrorNotFoundActivationKey',
-        'NOT_FOUND_ACTIVATION_REQUEST': 'gatekeeperErrorNotFoundActivationRequest',
-        'NOT_FOUND_ID': 'gatekeeperErrorNotFoundId',
-        'NOT_FOUND_ID_OR_PAYLOAD': 'gatekeeperErrorNotFoundIdOrPayload',
-        'NOT_FOUND_INSTITUTION': 'gatekeeperErrorNotFoundInstitution',
-        'NOT_FOUND_PAYLOAD': 'gatekeeperErrorNotFoundPayload',
-        'NOT_FOUND_TOKEN': 'gatekeeperErrorNotFoundToken',
-        'NOT_FOUND_USER': 'gatekeeperErrorNotFoundUser',
-        'UNAVAILABLE_EMAIL': 'gatekeeperErrorUnavailableEmail'
+        BAD_REQUEST_MISSING_FIELDS: 'gatekeeperErrorBadRequestMissingField',
+        CONFLICT_USER_ALREADY_HAS_ACCESS: 'gatekeeperErrorConflictUserAlreadyHasAccess',
+        CONFLICT_USER_ALREADY_REQUESTED_ACCESS: 'gatekeeperErrorConflictUserAlreadyRequestedAccess',
+        CONFLICT_USERNAME_EMAIL_ALREADY_IN_USE: 'gatekeeperErrorConflictUsernameEmailAlreadyInUse',
+        FORBIDDEN_ACCESS_TO_OTHER_USER: 'gatekeeperErrorForbiddenAccessToOtherUser',
+        FORBIDDEN_INSUFFICIENT_PERMISSIONS: 'gatekeeperErrorForbiddenInsufficientPermissions',
+        FORBIDDEN_INVALID_CREDENTIALS: 'gatekeeperErrorForbiddenInvalidCredentials',
+        NOT_FOUND_ACTIVATION_KEY: 'gatekeeperErrorNotFoundActivationKey',
+        NOT_FOUND_ACTIVATION_REQUEST: 'gatekeeperErrorNotFoundActivationRequest',
+        NOT_FOUND_ID: 'gatekeeperErrorNotFoundId',
+        NOT_FOUND_ID_OR_PAYLOAD: 'gatekeeperErrorNotFoundIdOrPayload',
+        NOT_FOUND_INSTITUTION: 'gatekeeperErrorNotFoundInstitution',
+        NOT_FOUND_PAYLOAD: 'gatekeeperErrorNotFoundPayload',
+        NOT_FOUND_TOKEN: 'gatekeeperErrorNotFoundToken',
+        NOT_FOUND_USER: 'gatekeeperErrorNotFoundUser',
+        UNAVAILABLE_EMAIL: 'gatekeeperErrorUnavailableEmail'
       }
     }
   },
@@ -92,8 +92,8 @@ export default {
       }
     },
     objectsAreSame: function (x, y) {
-      var objectsAreSame = true
-      for (var propertyName in x) {
+      let objectsAreSame = true
+      for (const propertyName in x) {
         if (x[propertyName] !== y[propertyName]) {
           objectsAreSame = false
           break
@@ -204,7 +204,7 @@ export default {
 
       const url = window.URL.createObjectURL(object.blob)
 
-      let downloadLink = document.createElement('a')
+      const downloadLink = document.createElement('a')
       downloadLink.href = url
       downloadLink.target = '_blank'
       downloadLink.rel = 'noopener noreferrer'
@@ -242,7 +242,7 @@ export default {
       // convert svg source to URI data scheme.
       const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source)
 
-      let downloadLink = document.createElement('a')
+      const downloadLink = document.createElement('a')
       downloadLink.href = url
       downloadLink.download = filename + '.svg'
       document.body.appendChild(downloadLink)
@@ -250,6 +250,16 @@ export default {
       document.body.removeChild(downloadLink)
 
       this.$gtag.event('download', 'svg', filename + '.svg')
+    },
+    getDateTimeString: function (date) {
+      if (!date) {
+        date = new Date()
+      }
+
+      return `${date.getFullYear()}-${this.padTo2Digits(date.getMonth() + 1)}-${this.padTo2Digits(date.getDate())}-${this.padTo2Digits(date.getHours())}-${this.padTo2Digits(date.getMinutes())}-${this.padTo2Digits(date.getSeconds())}`
+    },
+    padTo2Digits: function (num) {
+      return num.toString().padStart(2, '0')
     },
     /**
      * Converts the given object into a safe URL string
@@ -292,8 +302,8 @@ export default {
      */
     handleError: function (error) {
       emitter.emit('show-loading', false)
-      let variant = 'danger'
-      let title = this.$t('genericError')
+      const variant = 'danger'
+      const title = this.$t('genericError')
       let message = error.statusText
 
       if (error.data && error.data.reasonPhrase && this.gatekeeperErrors[error.data.reasonPhrase]) {
@@ -363,13 +373,13 @@ export default {
      * Sends a FORM to the given URL using authentication
      * @param {Object} param0 `{ url: String, formData: Object, success: Callback, error: { codes: [], callback: Callback } }`
      */
-    authForm({ url = null, formData, success = null, error = { codes: [], callback: this.handleError } }) {
+    authForm ({ url = null, formData, success = null, error = { codes: [], callback: this.handleError } }) {
       const promise = axios.post(url, formData, {
         crossDomain: true,
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': 'Bearer ' + this.getToken()
+          Authorization: `Bearer ${this.getToken()}`
         }
       })
 
@@ -437,7 +447,7 @@ export default {
      * Sends an Axios request to the server using authentication
      * @param {Object} param0 `{ url: String, method: String, data: Object, formData: Object, dataType: String, contentType: String, success: Callback, error: { codes: [], callback: Callback } }`
      */
-    authAxios({ url = null, method = 'GET', data = null, formData = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = null, error = { codes: [], callback: this.handleError } }) {
+    authAxios ({ url = null, method = 'GET', data = null, formData = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = null, error = { codes: [], callback: this.handleError } }) {
       let requestData = null
       let requestParams = null
 
@@ -461,7 +471,7 @@ export default {
         withCredentials: true,
         headers: {
           'Content-Type': contentType,
-          'Authorization': 'Bearer ' + this.getToken()
+          Authorization: `Bearer ${this.getToken()}`
         }
       })
 
@@ -542,7 +552,7 @@ export default {
     /**
      * Returns the current authentication token
      */
-    getToken() {
+    getToken () {
       let t = this.$store.getters.token
 
       // Check if the token is still valid

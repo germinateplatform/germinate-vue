@@ -11,7 +11,7 @@
               <div class="flex-column align-items-start flex-grow-1">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ newsItem.newsTitle }}</h5>
-                  <small class="text-nowrap" v-if="newsItem.createdOn"><i class="mdi mdi-calendar-clock" /> {{ newsItem.createdOn | toDate }}</small>
+                  <small class="text-nowrap" v-if="newsItem.createdOn"><i class="mdi mdi-calendar-clock" /> {{ new Date(newsItem.createdOn).toLocaleDateString() }}</small>
                 </div>
                 <p class="mb-1" v-if="newsItem.newsContent">{{ getContent(newsItem) }}</p>
                 <small class="text-muted">{{ newsTypes[newsItem.newstypeName].text() }}</small>
@@ -89,22 +89,22 @@ export default {
       newsCurrentPage: 1,
       selectedNews: null,
       newsTypes: {
-        'Projects': {
+        Projects: {
           id: 4,
           text: () => this.$t('widgetNewsTypeRelatedProject'),
           icon: 'mdi-newspaper-variant-outline'
         },
-        'Data': {
+        Data: {
           id: 3,
           text: () => this.$t('widgetNewsTypeDataChanges'),
           icon: 'mdi-database'
         },
-        'Updates': {
+        Updates: {
           id: 2,
           text: () => this.$t('widgetNewsTypeGeneralUpdates'),
           icon: 'mdi-refresh'
         },
-        'General': {
+        General: {
           id: 1,
           text: () => this.$t('widgetNewsTypeGeneralNews'),
           icon: 'mdi-newspaper'
@@ -120,7 +120,7 @@ export default {
   components: {
     AddNewsModal
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     deleteNewsItem: function (id) {
       if (id) {

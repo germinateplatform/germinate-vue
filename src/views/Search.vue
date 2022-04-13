@@ -198,10 +198,10 @@ export default {
     PedigreeTable,
     TrialsDataTable
   },
-  mixins: [ compoundApi, datasetApi, germplasmApi, genotypeApi, locationApi, miscApi, traitApi, searchMixin ],
+  mixins: [compoundApi, datasetApi, germplasmApi, genotypeApi, locationApi, miscApi, traitApi, searchMixin],
   computed: {
     initialFilters: function () {
-      let result = {}
+      const result = {}
 
       this.tableColumns.forEach(columnConst => {
         result[columnConst] = ColumnsMixin[columnConst].map(c => {

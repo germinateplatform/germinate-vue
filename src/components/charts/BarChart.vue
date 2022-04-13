@@ -89,7 +89,7 @@ export default {
       this.redraw()
     }
   },
-  mixins: [ colorMixin ],
+  mixins: [colorMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -99,9 +99,9 @@ export default {
         this.$plotly.purge(this.$refs.barChart)
 
         if (this.sourceFile) {
-          let reader = new FileReader()
+          const reader = new FileReader()
           reader.onload = () => {
-            let data = d3Dsv.tsvParse(reader.result)
+            const data = d3Dsv.tsvParse(reader.result)
 
             d3Select.select(this.$refs.barChart)
               .datum(data)

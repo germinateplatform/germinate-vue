@@ -70,7 +70,7 @@ export default {
     return {
       showPublications: true,
       stats: null,
-      images: null,
+      images: null
     }
   },
   computed: {
@@ -82,7 +82,7 @@ export default {
       }
     }
   },
-  mixins: [ statsApi, colorMixin, typesMixin ],
+  mixins: [statsApi, colorMixin, typesMixin],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     startIntroduction: function () {

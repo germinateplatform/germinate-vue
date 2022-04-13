@@ -7,7 +7,6 @@
 import colorMixin from '@/mixins/colors.js'
 
 import SimplexNoise from 'simplex-noise'
-import { debounce } from 'lodash'
 
 export default {
   data: function () {
@@ -15,7 +14,7 @@ export default {
       backgroundColors: null
     }
   },
-  mixins: [ colorMixin ],
+  mixins: [colorMixin],
   methods: {
     updateBackground: function () {
       // Magic happens in this method
@@ -110,9 +109,28 @@ export default {
       }
     },
     clearBackground: function () {
-      let chart = this.$refs.background
+      const chart = this.$refs.background
       while (chart.firstChild) {
         chart.removeChild(chart.firstChild)
+      }
+    },
+    debounce: function (func, wait, immediate) {
+      let timeout
+      return function () {
+        const context = this
+        const args = arguments
+        const later = function () {
+          timeout = null
+          if (!immediate) {
+            func.apply(context, args)
+          }
+        }
+        const callNow = immediate && !timeout
+        clearTimeout(timeout)
+        timeout = setTimeout(later, wait)
+        if (callNow) {
+          func.apply(context, args)
+        }
       }
     }
   },
@@ -125,12 +143,12 @@ export default {
     // Clear the background first
     window.addEventListener('resize', this.clearBackground)
     // Then debounce the re-drawing
-    window.addEventListener('resize', debounce(this.updateBackground, 500))
+    window.addEventListener('resize', this.debounce(this.updateBackground, 500))
   },
   beforeDestroy: function () {
     // Remove both listeners
     window.removeEventListener('resize', this.clearBackground)
-    window.removeEventListener('resize', debounce(this.updateBackground, 500))
+    window.removeEventListener('resize', this.debounce(this.updateBackground, 500))
   }
 }
 </script>

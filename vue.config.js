@@ -8,7 +8,17 @@ module.exports = {
   configureWebpack: {
     plugins: [
       // new BundleAnalyzerPlugin(),
-      new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
-    ]
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+      })
+    ],
+    resolve: {
+      // ... rest of the resolve config
+      fallback: {
+        'path': require.resolve('path-browserify')
+      }
+    },
+    devtool: 'source-map',
+    target: 'web'
   }
 }

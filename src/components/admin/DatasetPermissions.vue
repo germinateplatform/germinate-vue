@@ -41,7 +41,7 @@ export default {
     DatasetGroupPermissions,
     DatasetUserPermissions
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     refresh: function () {
       if (this.$refs.groupPermissions) {

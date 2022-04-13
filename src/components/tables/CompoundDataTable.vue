@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let result = [
+      const result = [
         {
           key: 'germplasmId',
           type: Number,
@@ -156,7 +156,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ typesMixin ],
+  mixins: [typesMixin],
   methods: {
     refresh: function () {
       this.$refs.compoundDataTable.refresh()

@@ -13,7 +13,7 @@ export default {
   components: {
     ClimateTable
   },
-  mixins: [ climateApi ],
+  mixins: [climateApi],
   methods: {
     getData: function (data, callback) {
       return this.apiPostClimateTable(data, callback)

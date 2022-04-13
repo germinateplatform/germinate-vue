@@ -79,29 +79,29 @@ export default {
   data: function () {
     return {
       dataTypes: {
-        'numeric': {
+        numeric: {
           text: () => this.$t('dataTypeNumeric'),
           icon: 'mdi-numeric',
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length]
         },
-        'text': {
+        text: {
           text: () => this.$t('dataTypeText'),
           icon: 'mdi-alphabetical',
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length]
         },
-        'date': {
+        date: {
           text: () => this.$t('dataTypeDate'),
           icon: 'mdi-calendar',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length]
         },
-        'categorical': {
+        categorical: {
           text: () => this.$t('dataTypeCategorical'),
           icon: 'mdi-tag-text',
           color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length]
         }
       },
       entityTypes: {
-        'Accession': {
+        Accession: {
           shortName: 'accession',
           icon: 'mdi-sprout',
           color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
@@ -113,7 +113,7 @@ export default {
           color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
           text: () => this.$t('entityTypePlantPlot')
         },
-        'Sample': {
+        Sample: {
           shortName: 'sample',
           icon: 'mdi-leaf',
           color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],

@@ -24,7 +24,7 @@ export default {
   components: {
     CollaboratorTable
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     show: function () {
       this.$refs['collaboratorModal-' + this.id].show()

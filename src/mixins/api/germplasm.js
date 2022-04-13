@@ -99,13 +99,13 @@ export default {
       return this.authAxios({ url: `germplasm/${germplasmId}/stats/trait`, success: onSuccess, error: onError })
     },
     apiGetTaxonomyData: function (onSuccess, onError) {
-      return this.authAxios({ url: `germplasm/taxonomy`, success: onSuccess, error: onError })
+      return this.authAxios({ url: 'germplasm/taxonomy', success: onSuccess, error: onError })
     },
     apiGetLocationData: function (onSuccess, onError) {
-      return this.authAxios({ url: `germplasm/location`, success: onSuccess, error: onError })
+      return this.authAxios({ url: 'germplasm/location', success: onSuccess, error: onError })
     },
     apiGetBiologicalStatusData: function (onSuccess, onError) {
-      return this.authAxios({ url: `germplasm/biologicalstatus`, success: onSuccess, error: onError })
+      return this.authAxios({ url: 'germplasm/biologicalstatus', success: onSuccess, error: onError })
     },
     apiGetGermplasmTableColumns: function (onSuccess, onError) {
       return this.authAxios({ url: 'germplasm/table/columns', success: onSuccess, error: onError })

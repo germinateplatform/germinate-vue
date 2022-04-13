@@ -91,7 +91,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let result = [
+      const result = [
         {
           key: 'userGroupId',
           type: Number,

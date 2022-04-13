@@ -188,7 +188,7 @@ export default {
       })
     }
   },
-  mixins: [ germplasmApi, typesMixin ],
+  mixins: [germplasmApi, typesMixin],
   watch: {
     collapseVisible: function (newValue) {
       if (newValue) {

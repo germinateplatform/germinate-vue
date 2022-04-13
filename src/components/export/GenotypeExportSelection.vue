@@ -131,7 +131,7 @@ export default {
     ExportGroupSelection,
     GenotypeDatasetTable
   },
-  mixins: [ datasetApi, groupApi, genotypeApi ],
+  mixins: [datasetApi, groupApi, genotypeApi],
   methods: {
     onSelectionChanged: function (selectedIds) {
       this.selectedDatasetIds = selectedIds
@@ -168,7 +168,7 @@ export default {
       })
     },
     getQuery: function (isFinal) {
-      let query = {
+      const query = {
         xGroupIds: null,
         xIds: null,
         yGroupIds: null,

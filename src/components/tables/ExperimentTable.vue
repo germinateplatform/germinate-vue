@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let result = [
+      const result = [
         {
           key: 'experimentId',
           type: Number,
@@ -118,7 +118,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ datasetApi, typesMixin ],
+  mixins: [datasetApi, typesMixin],
   methods: {
     redirectToExport: function (experiment, datasetType) {
       // Set up the filter
@@ -129,9 +129,15 @@ export default {
         values: [experiment.experimentId]
       }]
       // Then redirect to the export page
-      this.$router.push({ name: 'export', params: { datasetType: datasetType }, query: {
-        'datasets-filter': JSON.stringify(filter)
-      } })
+      this.$router.push({
+        name: 'export',
+        params: {
+          datasetType: datasetType
+        },
+        query: {
+          'datasets-filter': JSON.stringify(filter)
+        }
+      })
     },
     redirectToDatasets: function (experiment) {
       // Set up the filter
@@ -142,9 +148,12 @@ export default {
         values: [experiment.experimentId]
       }]
       // Then redirect to the datasets page
-      this.$router.push({ name: 'datasets', query: {
-        'datasets-filter': JSON.stringify(filter)
-      } })
+      this.$router.push({
+        name: 'datasets',
+        query: {
+          'datasets-filter': JSON.stringify(filter)
+        }
+      })
     },
     refresh: function () {
       this.$refs.experimentTable.refresh()

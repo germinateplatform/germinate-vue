@@ -37,7 +37,7 @@ export default {
       default: () => []
     }
   },
-  mixins: [ climateApi ],
+  mixins: [climateApi],
   methods: {
     handleCancel: function () {
       this.selected = null

@@ -49,7 +49,7 @@ export default {
       enabled: true
     }
   },
-  mixins: [ authApi ],
+  mixins: [authApi],
   methods: {
     signIn: function (user) {
       this.enabled = false

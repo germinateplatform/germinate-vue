@@ -27,7 +27,7 @@ export default {
       links: null
     }
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   watch: {
     foreignId: function () {
       this.update()

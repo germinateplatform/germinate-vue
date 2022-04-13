@@ -45,7 +45,7 @@ export default {
       }
     }
   },
-  mixins: [ locationApi ],
+  mixins: [locationApi],
   methods: {
     handleOk: function () {
       this.$emit('selection-changed', {

@@ -50,7 +50,7 @@ export default {
       htmlFilename: null
     }
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     show: function () {
       this.$refs.licenseModal.show()

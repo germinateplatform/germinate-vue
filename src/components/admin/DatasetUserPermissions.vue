@@ -44,7 +44,7 @@ export default {
       this.getData()
     }
   },
-  mixins: [ usergroupApi ],
+  mixins: [usergroupApi],
   methods: {
     refresh: function () {
       this.getData()

@@ -92,7 +92,7 @@ export default {
       if (this.categories && (this.categories.length > 1 || (this.categories[0] !== null && this.categories[0] !== undefined))) {
         // If there are categories, we're going to use them as the traces
         traces = this.categories.map(tr => {
-          let color = this.colorMapping[tr]
+          const color = this.colorMapping[tr]
 
           // Construct all the x values
           const x = this.germplasm.map(g => {
@@ -157,7 +157,7 @@ export default {
         // Otherwise use the germplasm as traces
         traces = this.germplasm.map(g => {
           // Get and remember the color
-          let color = this.colorMapping[g.id]
+          const color = this.colorMapping[g.id]
 
           // Check if here is data for this germplasm
           const germplasmData = this.germplasmData[g.id]
@@ -192,13 +192,13 @@ export default {
     },
     redraw: function () {
       this.loading = true
-      let div = this.$refs.chart
+      const div = this.$refs.chart
 
       this.$plotly.purge(div)
 
-      let traces = this.getTraces()
+      const traces = this.getTraces()
 
-      let layout = {
+      const layout = {
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
         xaxis: {
@@ -215,7 +215,7 @@ export default {
           title: { text: this.trait.traitName, font: { color: this.darkMode ? 'white' : 'black' } },
           tickfont: { color: this.darkMode ? 'white' : 'black' },
           showgrid: true,
-          gridcolor: this.darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          gridcolor: this.darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)'
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
@@ -243,7 +243,7 @@ export default {
         layout.boxmode = 'group'
       }
 
-      let config = {
+      const config = {
         modeBarButtonsToRemove: ['toImage'],
         displayModeBar: false,
         responsive: true,

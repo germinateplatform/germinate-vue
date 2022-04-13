@@ -32,7 +32,7 @@ export default {
   components: {
     BaseChart
   },
-  mixins: [ statsApi, colorMixin ],
+  mixins: [statsApi, colorMixin],
   methods: {
     unpack: function (rows, key) {
       return rows.map(r => r[key])
@@ -52,7 +52,7 @@ export default {
     redraw: function () {
       this.$plotly.purge(this.$refs.choroplethChart)
 
-      let reader = new FileReader()
+      const reader = new FileReader()
       reader.onload = () => {
         const rows = d3Dsv.tsvParse(reader.result)
 
@@ -128,9 +128,12 @@ export default {
         values: [countryName]
       }]
       // Then navigate
-      this.$router.push({ name: 'germplasm', query: {
-        'germplasm-filter': JSON.stringify(filter)
-      } })
+      this.$router.push({
+        name: 'germplasm',
+        query: {
+          'germplasm-filter': JSON.stringify(filter)
+        }
+      })
     }
   },
   mounted: function () {

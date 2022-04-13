@@ -43,7 +43,7 @@ export default {
     ImageTable,
     ImageTags
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     onFilterChanged: function (filter) {
       if (filter === null || filter.filter == null || filter.filter.length === 0) {

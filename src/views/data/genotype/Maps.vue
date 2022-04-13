@@ -80,7 +80,7 @@ export default {
     MapDefinitionTable,
     MapExportSelection
   },
-  mixins: [ genotypeApi, typesMixin ],
+  mixins: [genotypeApi, typesMixin],
   methods: {
     exportMap: function (format) {
       let options = {

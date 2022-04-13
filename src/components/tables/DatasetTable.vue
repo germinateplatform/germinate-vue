@@ -201,7 +201,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let result = [
+      const result = [
         {
           key: 'datasetId',
           type: Number,
@@ -367,7 +367,7 @@ export default {
     LicenseModal,
     PublicationsModal
   },
-  mixins: [ colorMixin, datasetApi, genotypeApi, germplasmApi, locationApi, typesMixin ],
+  mixins: [colorMixin, datasetApi, genotypeApi, germplasmApi, locationApi, typesMixin],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     showFullDatasetDescription: function (description) {
@@ -426,7 +426,7 @@ export default {
           // For allelefreq data, just request the underlying data file
           this.apiGetDatasetSourceFile(dataset.datasetId, result => {
             this.downloadBlob({
-              filename: `allelefreq-${dataset.datasetId}-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
+              filename: `allelefreq-${dataset.datasetId}-${this.getDateTimeString()}`,
               extension: 'txt',
               blob: result
             })
@@ -487,7 +487,7 @@ export default {
       this.apiPostDatasetExport(type, query, result => {
         const request = {
           blob: result,
-          filename: `${type}-dataset-${dataset.datasetId}-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
+          filename: `${type}-dataset-${dataset.datasetId}-${this.getDateTimeString()}`,
           extension: 'txt'
         }
 

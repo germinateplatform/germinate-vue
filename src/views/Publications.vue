@@ -11,7 +11,6 @@
         <h3>{{ publicationData.title }}</h3>
       </template>
 
-
       <template v-if="publication && publication.referenceType !== 'database'">
         <!-- One of these three tables will be shown, depending on the type of the selected publication -->
         <GroupTable v-if="publication.referenceType === 'group'"
@@ -61,9 +60,9 @@ export default {
       if (newValue) {
         try {
           const citation = new Cite(newValue.publicationFallbackCache)
-            
+
           if (citation && citation.data && citation.data.length > 0) {
-            this.publicationData = citation.format('data', {format: 'object'})[0]
+            this.publicationData = citation.format('data', { format: 'object' })[0]
           } else {
             this.publicationData = {
               title: 'N/A',
@@ -84,7 +83,7 @@ export default {
       }
     }
   },
-  mixins: [ datasetApi, germplasmApi, groupApi, miscApi ],
+  mixins: [datasetApi, germplasmApi, groupApi, miscApi],
   methods: {
     getGermplasmData: function (data, callback) {
       return this.apiPostPublicationGermplasmTable(this.publication.publicationId, data, callback)

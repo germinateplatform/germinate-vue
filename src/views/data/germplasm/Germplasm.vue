@@ -51,7 +51,7 @@ export default {
     GermplasmLocationMap,
     RecentItems
   },
-  mixins: [ germplasmApi, locationApi, miscApi ],
+  mixins: [germplasmApi, locationApi, miscApi],
   methods: {
     invalidateMapSize: function () {
       this.$nextTick(() => this.$refs.germplasmMap.invalidateSize())

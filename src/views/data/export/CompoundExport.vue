@@ -69,7 +69,7 @@ import colorMixin from '@/mixins/colors.js'
 const emitter = require('tiny-emitter/instance')
 
 export default {
-  props: [ 'datasetIds' ],
+  props: ['datasetIds'],
   data: function () {
     return {
       datasets: null,
@@ -138,7 +138,7 @@ export default {
     DatasetOverview,
     ExportDownloadSelection
   },
-  mixins: [ datasetApi, compoundApi, groupApi, miscApi, colorMixin ],
+  mixins: [datasetApi, compoundApi, groupApi, miscApi, colorMixin],
   methods: {
     updateGroups: function () {
       const request = {

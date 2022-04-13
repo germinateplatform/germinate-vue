@@ -159,7 +159,7 @@ export default {
   components: {
     Autocomplete
   },
-  mixins: [ genotypeApi ],
+  mixins: [genotypeApi],
   methods: {
     setRegionChromosome: function (event, index) {
       index -= 1
@@ -183,7 +183,7 @@ export default {
       this.intervalMarkerIdTwo = marker.markerId
     },
     getExportOptions: function () {
-      let result = {
+      const result = {
         method: this.method
       }
 

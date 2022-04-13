@@ -9,10 +9,10 @@ const emitter = require('tiny-emitter/instance')
 Vue.use(Router)
 
 const originalReplace = Router.prototype.replace
-Router.prototype.replace = function replace(location, onResolve, onReject) {
+Router.prototype.replace = function replace (location, onResolve, onReject) {
   if (onResolve || onReject) return originalReplace.call(this, location, onResolve, onReject)
   return originalReplace.call(this, location).catch(err => {
-    if (err && err.name != 'NavigationDuplicated') {
+    if (err && err.name !== 'NavigationDuplicated') {
       throw err
     }
   })
@@ -60,7 +60,7 @@ function requireAuth (to, from, next) {
 const router = new Router({
   mode: 'hash', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'open active',
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior (to, from, savedPosition) {
     if (savedPosition || (from && to && from.path === to.path)) {
       return savedPosition
     } else {

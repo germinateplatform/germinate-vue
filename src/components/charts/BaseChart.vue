@@ -27,8 +27,6 @@
     </div>
     <!-- This is where the chart goes -->
     <slot name="chart" ref="chart"/>
-    <!-- Resize listener that takes care of resizing according to page width -->
-    <ResizeObserver v-on:notify-width="handleResize" />
 
     <!-- Modal to ask for filenames -->
     <b-modal ref="chartModal" :title="$t('modalTitleChartFilename')" :ok-title="$t('buttonOk')" :cancel-title="$t('buttonCancel')" @ok="download">
@@ -42,7 +40,6 @@
 </template>
 
 <script>
-import ResizeObserver from '@/components/ResizeObserver'
 import CustomChartColorModal from '@/components/modals/CustomChartColorModal'
 
 const emitter = require('tiny-emitter/instance')
@@ -98,29 +95,16 @@ export default {
     }
   },
   components: {
-    CustomChartColorModal,
-    ResizeObserver
+    CustomChartColorModal
   },
   methods: {
     onColorsChanged: function () {
       emitter.emit('chart-colors-changed')
     },
-    handleResize: function () {
-      if (this.chartType === 'plotly') {
-        if (this.$slots.chart[0].elm) {
-          this.$plotly.relayout(this.$slots.chart[0].elm, {
-            // 'xaxis.autorange': true,
-            // 'yaxis.autorange': true
-          })
-        }
-      } else {
-        this.$emit('resize')
-      }
-    },
     downloadSource: function () {
-      let request = this.sourceFile
+      const request = this.sourceFile
 
-      request.filename = request.filename + '-' + window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')
+      request.filename = request.filename + '-' + this.getDateTimeString()
 
       if (!request.extension) {
         request.extension = 'txt'
@@ -139,9 +123,9 @@ export default {
       this.$refs.chartModal.hide()
 
       if (this.imageType === 'svg') {
-        this.downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename + '-' + window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss'))
+        this.downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename + '-' + this.getDateTimeString())
       } else if (this.imageType === 'png') {
-        this.$plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss') })
+        this.$plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + this.getDateTimeString() })
       }
     },
     chartColorsChangedHandler: function () {

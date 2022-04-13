@@ -76,7 +76,7 @@ export default {
       default: null
     }
   },
-  mixins: [ typesMixin, colorMixin ],
+  mixins: [typesMixin, colorMixin],
   methods: {
     getBackgroundColor: function (tag) {
       const index = Object.keys(this.tags).indexOf(tag)

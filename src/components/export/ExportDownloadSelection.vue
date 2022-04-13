@@ -68,7 +68,7 @@ export default {
     DatasetMetadataDownload,
     ExportSelection
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     downloadData: function (query) {
       emitter.emit('show-loading', true)

@@ -67,7 +67,7 @@ export default {
     LocationMap,
     LocationTable
   },
-  mixins: [ locationApi, miscApi ],
+  mixins: [locationApi, miscApi],
   methods: {
     getData: function (data, callback) {
       return this.apiPostLocationTable(data, callback)
@@ -85,7 +85,7 @@ export default {
         this.tableFilter = JSON.parse(JSON.stringify(request.filter))
 
         // Create a custom request based on the one from the table, but change limit and page to get all the locations
-        let customRequest = Object.assign({}, request)
+        const customRequest = Object.assign({}, request)
         customRequest.limit = this.MAX_JAVA_INTEGER
         customRequest.page = 1
         this.apiPostLocationTable(customRequest, result => {

@@ -30,7 +30,7 @@ export default {
       }]
     }
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     onLocaleChanged: function (language) {
       loadLanguageAsync(language.locale).then(() => {

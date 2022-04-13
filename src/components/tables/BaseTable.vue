@@ -326,7 +326,7 @@ export default {
     Tour,
     VueContext
   },
-  mixins: [ groupApi, searchMixin, typesMixin ],
+  mixins: [groupApi, searchMixin, typesMixin],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     updateSort: function (ctx) {
@@ -417,7 +417,7 @@ export default {
     },
     getDataLocal: function (ctx) {
       // Set the API pagination information fields
-      let localCtx = JSON.parse(JSON.stringify(ctx))
+      const localCtx = JSON.parse(JSON.stringify(ctx))
       localCtx.page = this.pagination.currentPage
       localCtx.limit = this.tablePerPage
       localCtx.prevCount = this.pagination.totalCount
@@ -569,14 +569,14 @@ export default {
       this.downloadTable(this.currentRequestData, result => {
         this.downloadBlob({
           blob: result,
-          filename: `${this.options.tableName}-table-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
+          filename: `${this.options.tableName}-table-${this.getDateTimeString()}`,
           extension: 'zip'
         })
         emitter.emit('show-loading', false)
       })
     },
     updateTableTour: function () {
-      let tableTourSteps = [
+      const tableTourSteps = [
         {
           title: () => this.$t('popoverTableTourColumnSelectorTitle'),
           text: () => this.$t('popoverTableTourColumnSelectorText'),

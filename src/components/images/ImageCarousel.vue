@@ -31,7 +31,7 @@ export default {
   methods: {
     setImagePath: function (imageIndex) {
       Object.keys(this.images).forEach(locale => {
-        return this.images[locale][imageIndex].src = this.getImageUrl(this.images[this.locale][imageIndex].name, {
+        this.images[locale][imageIndex].src = this.getImageUrl(this.images[this.locale][imageIndex].name, {
           name: this.images[this.locale][imageIndex].name,
           token: this.token ? this.token.imageToken : null,
           type: 'template',
@@ -40,13 +40,13 @@ export default {
       })
     }
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   mounted: function () {
     // Get carousel configuration file
     this.apiGetSettingsFile({
       'file-type': 'carousel'
     }, result => {
-      Object.keys(result).forEach(locale => result[locale].forEach(i => i.src = null))
+      Object.keys(result).forEach(locale => result[locale].forEach(i => { i.src = null }))
       this.images = result
 
       this.images.en_GB.forEach((image, index) => this.setImagePath(index))

@@ -98,7 +98,7 @@ export default {
       }
     },
     colorByOptions: function () {
-      let result = [{
+      const result = [{
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
       }, {
@@ -164,7 +164,7 @@ export default {
     MatrixChart,
     ScatterChart
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     getStatsCount: function (name) {
       if (this.colorByStats != null && this.colorByStats[name] !== undefined && this.colorByStats[name] !== null) {

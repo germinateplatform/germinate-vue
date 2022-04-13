@@ -44,11 +44,11 @@ export default {
       comment: null
     }
   },
-  mixins: [ germplasmApi ],
+  mixins: [germplasmApi],
   methods: {
     mergeGermplasm: function () {
       emitter.emit('show-loading', true)
-      const others = this.selectedIds.filter(id => id != this.primaryGermplasm)
+      const others = this.selectedIds.filter(id => id !== this.primaryGermplasm)
       this.apiPostGermplasmUnification({
         preferredGermplasmId: this.primaryGermplasm,
         otherGermplasmIds: others,

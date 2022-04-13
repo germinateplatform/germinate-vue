@@ -25,7 +25,7 @@ export default {
     DatasetMetadataDownload,
     DatasetTable
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     getData: function (query, callback) {
       return this.apiPostDatasetTable(query, callback)

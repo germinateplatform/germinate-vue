@@ -22,7 +22,7 @@ export default {
       return this.authAxios({ url: `usergroup/${groupId}`, method: 'DELETE', success: onSuccess, error: onError })
     },
     apiPutUserGroup: function (group, onSuccess, onError) {
-      return this.authAxios({ url: `usergroup`, method: 'PUT', data: group, success: onSuccess, error: onError })
+      return this.authAxios({ url: 'usergroup', method: 'PUT', data: group, success: onSuccess, error: onError })
     },
     apiPatchUserGroup: function (group, onSuccess, onError) {
       return this.authAxios({ url: `usergroup/${group.id}`, data: group, method: 'PATCH', success: onSuccess, error: onError })

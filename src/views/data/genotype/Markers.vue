@@ -19,7 +19,7 @@ export default {
     MarkerTable,
     RecentItems
   },
-  mixins: [ genotypeApi ],
+  mixins: [genotypeApi],
   methods: {
     getData: function (data, callback) {
       return this.apiPostMarkerTable(data, callback)

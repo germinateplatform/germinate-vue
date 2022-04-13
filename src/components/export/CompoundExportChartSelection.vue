@@ -101,7 +101,7 @@ export default {
       }
     },
     colorByOptions: function () {
-      let result = [{
+      const result = [{
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
       }, {
@@ -143,7 +143,7 @@ export default {
     MatrixChart,
     ScatterChart
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     plot: function (query, selectedItems) {
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0

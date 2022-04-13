@@ -66,7 +66,7 @@ export default {
       this.refresh()
     }
   },
-  mixins: [ usergroupApi ],
+  mixins: [usergroupApi],
   methods: {
     refresh: function () {
       this.$nextTick(() => {

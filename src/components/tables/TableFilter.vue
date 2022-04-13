@@ -235,7 +235,7 @@ export default {
       })
     }
   },
-  mixins: [ searchMixin, typesMixin ],
+  mixins: [searchMixin, typesMixin],
   methods: {
     updateOperators: function () {
       this.localOperators = Object.keys(this.operators).map(o => {
@@ -461,8 +461,7 @@ export default {
 
               return f
             }).filter(f => f.column)
-          }
-          catch {
+          } catch {
             // Do nothing here
           }
         }

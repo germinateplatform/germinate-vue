@@ -116,7 +116,7 @@ export default {
       }
     },
     buttonPressed: function () {
-      let query = {
+      const query = {
         xGroupIds: null,
         xIds: null,
         yGroupIds: null,

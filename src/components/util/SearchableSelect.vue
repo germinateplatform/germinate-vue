@@ -101,6 +101,8 @@ export default {
             case 'string':
               // For strings, check if the search temr is part of the text
               return o.toLowerCase().indexOf(this.searchTermLowerCase) !== -1
+            default:
+              return false
           }
         })
       } else {

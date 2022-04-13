@@ -29,7 +29,7 @@
         <!-- Germinate logo -->
         <b-col lg=4>
           <div id="svg-logo" class="d-flex justify-content-center align-items-center h-100 py-3">
-            <b-img src="./img/germinate-square.svg" />
+            <b-img src="./img/germinate-square.svg" fluid />
           </div>
         </b-col>
         <!-- Horizontal logos below, same width as login+registration -->
@@ -65,7 +65,7 @@ export default {
     RegistrationModal,
     SignInForm
   },
-  mixins: [ authApi ],
+  mixins: [authApi],
   methods: {
     login: function (user) {
       this.enabled = false
@@ -101,7 +101,7 @@ export default {
           emitter.emit('update-sidebar-menu')
         }
       })
-    },
+    }
   }
 }
 </script>

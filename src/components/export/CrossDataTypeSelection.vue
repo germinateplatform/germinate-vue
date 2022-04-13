@@ -28,7 +28,7 @@
       <h2 class="mt-3">{{ $t('widgetCrossDataTypeSelectionSelectDimension') }}</h2>
       <b-form-select :options="itemOptions" v-model="selectedItem" class="mt-3"/>
     </template>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -146,7 +146,7 @@ export default {
       }
     }
   },
-  mixins: [ climateApi, compoundApi, datasetApi, germplasmApi, groupApi, traitApi ],
+  mixins: [climateApi, compoundApi, datasetApi, germplasmApi, groupApi, traitApi],
   methods: {
     setDataType: function (type) {
       this.selectedDataTypeKey = type
@@ -239,7 +239,7 @@ export default {
             column: 'groupType',
             operator: 'and',
             comparator: 'equals',
-            values: [ 'germinatebase' ]
+            values: ['germinatebase']
           }]
         }, result => {
           this.groups = result.data

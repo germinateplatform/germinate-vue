@@ -73,7 +73,7 @@ export default {
     Collapse,
     FileResourceModal
   },
-  mixins: [ datasetApi, miscApi ],
+  mixins: [datasetApi, miscApi],
   methods: {
     downloadResource: function (resource) {
       this.apiGetDataResource(resource.fileresourceId, result => {

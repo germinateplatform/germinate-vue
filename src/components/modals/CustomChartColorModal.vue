@@ -41,7 +41,7 @@ export default {
       colorValid: null
     }
   },
-  mixins: [ colorMixin ],
+  mixins: [colorMixin],
   methods: {
     removeColor: function (index) {
       this.colors.splice(index, 1)

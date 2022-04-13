@@ -113,7 +113,7 @@
                        @selection-changed="onLocationChanged"
                        @cancel-selection="toggleMapSelection()"
                        ref="map"/>
-          
+
           <div v-if="isAtLeastDataCurator" class="mt-3">
             <h3>{{ $t('modalTitleSelectGermplasmLocation') }}</h3>
             <b-button-group>
@@ -248,7 +248,7 @@ export default {
     PedigreeDefinitionTable,
     PublicationsWidget
   },
-  mixins: [ germplasmApi, miscApi, typesMixin ],
+  mixins: [germplasmApi, miscApi, typesMixin],
   computed: {
     isAtLeastDataCurator: function () {
       if (this.token) {
@@ -259,7 +259,7 @@ export default {
     },
     title: function () {
       if (this.germplasm) {
-        let parts = []
+        const parts = []
         parts.push(this.germplasm.accenumb)
         parts.push(this.germplasm.accename)
 

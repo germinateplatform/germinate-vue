@@ -3,8 +3,8 @@
     <div v-if="(images && images.length > 0) || selectedTag !== null">
       <ImageTags v-on:tag-selected="onTagClicked" :referenceTable="referenceTable" :foreignId="foreignId" ref="tags" />
 
-      <CoolLightBox 
-        :items="coolboxImages" 
+      <CoolLightBox
+        :items="coolboxImages"
         :index="coolboxIndex"
         @on-open="rotateExif"
         @close="coolboxIndex = null" />
@@ -25,7 +25,7 @@
         @change="page => getPage(page)">
       </b-pagination>
     </div>
-    
+
     <b-button-group>
       <b-button class="mdi mdi-18px mdi-download" @click="download" v-if="images && images.length > 0"> {{ $t('buttonDownloadImages') }}</b-button>
       <b-button class="mdi mdi-18px mdi-upload" @click="$refs.imageUploadModal.show()" v-if="token && userIsAtLeast(token.userType, 'Data Curator')"> {{ $t('buttonUpload') }}</b-button>
@@ -87,7 +87,7 @@ export default {
     ImageTags,
     ImageUploadModal
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     onTagClicked: function (tag) {
       this.selectedTag = tag
@@ -147,7 +147,7 @@ export default {
     },
     getPage: function (page) {
       // Set up images query
-      let filter = [{
+      const filter = [{
         column: 'imageForeignId',
         comparator: 'equals',
         operator: 'and',

@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let result = [
+      const result = [
         {
           key: 'locationId',
           type: Number,
@@ -152,7 +152,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ typesMixin ],
+  mixins: [typesMixin],
   methods: {
     refresh: function () {
       this.$refs.climateDataTable.refresh()

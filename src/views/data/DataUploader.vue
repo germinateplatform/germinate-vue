@@ -93,7 +93,7 @@ export default {
       window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload-type', params: { templateType: newValue } }).href)
     }
   },
-  mixins: [ miscApi, typesMixin ],
+  mixins: [miscApi, typesMixin],
   methods: {
     onTemplateTypeSelected: function (type, name) {
       if (!type.disabled) {
@@ -104,7 +104,7 @@ export default {
       return type === this.templateType ? '' : 'brightness(75%)'
     },
     onSubmit: function () {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('fileToUpload', this.file)
 
       emitter.emit('show-loading', true)

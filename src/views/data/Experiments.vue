@@ -19,7 +19,7 @@ export default {
   components: {
     ExperimentTable
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     getData: function (data, callback) {
       return this.apiPostExperimentTable(data, callback)

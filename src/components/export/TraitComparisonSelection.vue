@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     splitByOptions: function () {
-      let result = [{
+      const result = [{
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
       }, {
@@ -119,7 +119,7 @@ export default {
     ComparisonChart,
     ExportSelection
   },
-  mixins: [ colorMixin, germplasmApi, traitApi ],
+  mixins: [colorMixin, germplasmApi, traitApi],
   methods: {
     groupSelectionInfo: function (selectedGroup) {
       if (selectedGroup && selectedGroup.count > 10) {

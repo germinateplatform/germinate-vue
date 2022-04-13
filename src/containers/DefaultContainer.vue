@@ -197,7 +197,7 @@ export default {
       this.updateMenu()
     }
   },
-  mixins: [ colorsMixin, statsApi, typesMixin ],
+  mixins: [colorsMixin, statsApi, typesMixin],
   methods: {
     ...mapFilters(['toThousandSeparators']),
     clearMarkedItems: function (itemType) {
@@ -212,7 +212,6 @@ export default {
             this.$store.dispatch('ON_MARKED_IDS_CLEAR', itemType)
           }
         })
-      
     },
     acceptCookies: function (decision) {
       this.$store.dispatch('ON_COOKIES_ACCEPTED', decision)
@@ -623,8 +622,8 @@ export default {
     }
 
     // Since we can't add the logos to the nav sidebar in any way that CoreUI provided, we have to insert them manually.
-    let sb = this.$refs.sidebarNav.$el.querySelector('section')
-    let img = document.createElement('img')
+    const sb = this.$refs.sidebarNav.$el.querySelector('section')
+    const img = document.createElement('img')
     img.src = this.baseUrl + 'image/src-svg/logo.svg'
     img.classList.add('brand-logo')
     img.classList.add('p-3')

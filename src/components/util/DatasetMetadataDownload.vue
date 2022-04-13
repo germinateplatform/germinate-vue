@@ -26,7 +26,7 @@ export default {
       default: ''
     }
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     downloadMetadata: function () {
       emitter.emit('show-loading', true)

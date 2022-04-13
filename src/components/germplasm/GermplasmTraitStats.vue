@@ -34,7 +34,7 @@ export default {
   components: {
     Scale
   },
-  mixins: [ germplasmApi ],
+  mixins: [germplasmApi],
   methods: {
     update: function () {
       this.apiGetGermplasmStatsTraits(this.germplasmId, result => {

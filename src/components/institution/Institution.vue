@@ -52,7 +52,7 @@ export default {
       }
     }
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   methods: {
     navigateToGermplasm: function (institutionId) {
       // Navigate to the germplasm overview page and filter based on institution
@@ -62,9 +62,12 @@ export default {
         operator: 'and',
         values: [institutionId]
       }]
-      this.$router.push({ name: 'germplasm', query: {
-        'germplasm-filter': JSON.stringify(filter)
-      } })
+      this.$router.push({
+        name: 'germplasm',
+        query: {
+          'germplasm-filter': JSON.stringify(filter)
+        }
+      })
     }
   }
 }

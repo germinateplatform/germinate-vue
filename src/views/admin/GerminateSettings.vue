@@ -222,7 +222,7 @@ export default {
         explanation: 'pageGerminateSettingsCardAuthModeFullExplanation'
       }],
       tempTemplateColor: '#000000',
-      tempChartColor: '#000000',
+      tempChartColor: '#000000'
     }
   },
   computed: {

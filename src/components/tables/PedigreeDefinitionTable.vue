@@ -121,12 +121,12 @@ export default {
   },
   methods: {
     toUrl: function (input) {
-      let url;
-  
+      let url
+
       try {
         url = new URL(input)
       } catch (_) {
-        return false; 
+        return false
       }
 
       if (url.protocol === 'http:' || url.protocol === 'https:') {

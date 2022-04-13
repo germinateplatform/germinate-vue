@@ -55,7 +55,7 @@ export default {
   components: {
     FileResourceTypeModal
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     show: function () {
       this.name = null
@@ -84,7 +84,7 @@ export default {
         return
       }
 
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', this.file)
 
       emitter.emit('show-loading', true)

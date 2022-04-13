@@ -95,7 +95,7 @@ export default {
       })
     })
   },
-  mixins: [ miscApi, statsApi ],
+  mixins: [miscApi, statsApi],
   methods: {
     isLocalhost: function () {
       return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
@@ -127,7 +127,7 @@ export default {
     attachStyleSheet: function () {
       if (this.customStyleSheet) {
         document.head.removeChild(this.customStyleSheet)
-      }      
+      }
 
       // Load the custom .css file provided specifically for this project
       this.customStyleSheet = document.createElement('link')
@@ -205,6 +205,6 @@ export default {
   @import '~bootstrap-vue/dist/bootstrap-vue.css';
   // Import Main styles for this application
   @import 'assets/scss/style';
-  
+
   @import '~leaflet-easybutton/src/easy-button.css';
 </style>

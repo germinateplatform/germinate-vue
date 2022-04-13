@@ -56,7 +56,7 @@ export default {
   components: {
     SpecificPassport
   },
-  mixins: [ germplasmApi ],
+  mixins: [germplasmApi],
   methods: {
     updateChildMap: function () {
       this.$nextTick(() => this.$refs.child.invalidateSize())

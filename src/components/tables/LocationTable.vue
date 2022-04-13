@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let result = [
+      const result = [
         {
           key: 'locationId',
           type: Number,
@@ -164,7 +164,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ typesMixin ],
+  mixins: [typesMixin],
   methods: {
     navigateToGermplasm: function (location) {
       // Set up the filter
@@ -175,9 +175,12 @@ export default {
         values: [location.locationName]
       }]
       // Redirect to germplasm page filtered by location
-      this.$router.push({ name: 'germplasm', query: {
-        'germplasm-filter': JSON.stringify(filter)
-      } })
+      this.$router.push({
+        name: 'germplasm',
+        query: {
+          'germplasm-filter': JSON.stringify(filter)
+        }
+      })
     },
     refresh: function () {
       this.$refs.locationTable.refresh()

@@ -111,14 +111,14 @@ export default {
       }
     }
   },
-  mixins: [ datasetApi, colorMixin ],
+  mixins: [datasetApi, colorMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
     },
     getHeight: function () {
       if (this.chartMode === 'itemByGroup') {
-        let groups = []
+        const groups = []
 
         this.plotData.stats.forEach(s => {
           if (groups.indexOf(s.groupIds) === -1) {
@@ -148,11 +148,11 @@ export default {
       })
     },
     chart: function () {
-      let div = this.$refs.chart
+      const div = this.$refs.chart
 
       this.$plotly.purge(div)
 
-      let y = []
+      const y = []
 
       // Are we plotting datasets and grouping by trait/compound/climate?
       if (this.chartMode === 'datasetByItem') {
@@ -181,14 +181,14 @@ export default {
         traces = this.getGroupData(y)
       }
 
-      let layout = {
+      const layout = {
         xaxis: {
           zeroline: false,
           side: 'top',
           title: { font: { color: this.darkMode ? 'white' : 'black' } },
           tickfont: { color: this.darkMode ? 'white' : 'black' },
           showgrid: true,
-          gridcolor: this.darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          gridcolor: this.darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)'
         },
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
@@ -207,7 +207,7 @@ export default {
         }
       }
 
-      let config = {
+      const config = {
         modeBarButtonsToRemove: ['toImage'],
         displayModeBar: true,
         responsive: true,
@@ -217,9 +217,9 @@ export default {
       this.$plotly.newPlot(div, traces, layout, config)
     },
     getGroupData: function (y) {
-      let traces = []
+      const traces = []
 
-      let groups = []
+      const groups = []
 
       this.plotData.stats.forEach(s => {
         if (groups.indexOf(s.groupIds) === -1) {
@@ -228,7 +228,7 @@ export default {
       })
 
       groups.forEach((group, index) => {
-        let x = []
+        const x = []
 
         Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
           const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
@@ -268,10 +268,10 @@ export default {
       return traces
     },
     getData: function (y) {
-      let traces = []
+      const traces = []
       Object.keys(this.plotData.datasets).forEach(dataset => {
         const datasetId = this.plotData.datasets[dataset].datasetId
-        let x = []
+        const x = []
 
         Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
           const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
@@ -310,10 +310,10 @@ export default {
       return traces
     },
     getInvertedData: function (y) {
-      let traces = []
+      const traces = []
       Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
         const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
-        let x = []
+        const x = []
 
         Object.keys(this.plotData.datasets).forEach(d => {
           const datasetId = this.plotData.datasets[d].datasetId

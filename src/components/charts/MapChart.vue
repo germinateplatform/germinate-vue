@@ -108,7 +108,7 @@ export default {
     MarkedItems,
     Tour
   },
-  mixins: [ genotypeApi, colorMixin ],
+  mixins: [genotypeApi, colorMixin],
   methods: {
     getHeight: function () {
       if (this.distinctChromosomes === null || this.distinctChromosomes < 1) {
@@ -185,7 +185,7 @@ export default {
       }
       this.apiPostMapExport(this.mapId, request, result => {
         this.sourceFile = result
-        let reader = new FileReader()
+        const reader = new FileReader()
         reader.onload = () => {
           // Remove the first row (Flapjack header)
           const dirtyTsv = reader.result

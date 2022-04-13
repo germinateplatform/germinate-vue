@@ -92,7 +92,7 @@ export default {
   components: {
     DatasetAttributeTable
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     getAttributeData: function (data, callback) {
       return this.apiPostDatasetAttributeTable(this.dataset.datasetId, data, callback)

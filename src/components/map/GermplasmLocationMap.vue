@@ -32,7 +32,7 @@
     <div v-if="selectedLocation" ref="popupContent" class="p-3">
       <dl class="row">
         <template v-if="selectedGermplasm">
-          <dt class="col-4 text-right">{{ $t('tableColumnGermplasmName') }}</dt><dd class="col-8">{{ selectedGermplasm.germplasmName }}</dd>  
+          <dt class="col-4 text-right">{{ $t('tableColumnGermplasmName') }}</dt><dd class="col-8">{{ selectedGermplasm.germplasmName }}</dd>
         </template>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8 location-name">
@@ -72,9 +72,9 @@ import typesMixin from '@/mixins/types.js'
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
-const rad_Earth = 6378.16
-const one_degree = (2 * Math.PI * rad_Earth) / 360
-const one_km = 1 / one_degree
+const radEarth = 6378.16
+const oneDegree = (2 * Math.PI * radEarth) / 360
+const oneKm = 1 / oneDegree
 
 // Define these here instead of `data` to improve performance
 let locationMap = new Map()
@@ -109,7 +109,7 @@ export default {
         text: this.$t('tableColumnElevation'),
         value: { fields: ['elevation'], type: 'number', extractValue: (germplasm) => germplasm.elevation, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
       }, {
-      text: this.$t('widgetGermplasmMapOptionTaxonomy'),
+        text: this.$t('widgetGermplasmMapOptionTaxonomy'),
         value: { fields: ['genus', 'species', 'subtaxa'], type: 'text', format: (value) => value }
       }, {
         text: this.$t('tableColumnPdci'),
@@ -183,14 +183,14 @@ export default {
     },
     jitter: function (lat, lng, kms, fixed) {
       return {
-        lat : this.randomInRange(
-          lat - (kms * one_km),
-          lat + (kms * one_km),
+        lat: this.randomInRange(
+          lat - (kms * oneKm),
+          lat + (kms * oneKm),
           fixed
         ),
-        lng : this.randomInRange(
-          lng - (kms * one_km),
-          lng + (kms * one_km),
+        lng: this.randomInRange(
+          lng - (kms * oneKm),
+          lng + (kms * oneKm),
           fixed
         )
       }
@@ -241,9 +241,8 @@ export default {
         if (l) {
           let colorByValue = null
           let color = this.serverSettings.colorPrimary || '#20a8d8'
-          
+
           if (this.colorBy) {
-            
             let potentialColor
             let rgb
 
@@ -263,7 +262,7 @@ export default {
               case 'date':
               case 'number':
                 colorByValue = this.colorBy.extractValue(g)
-                rgb = this.$refs.gradient ? this.$refs.gradient.getColor(this.gradientMinMax.min, this.gradientMinMax.max, colorByValue) : { r: 128, g: 128, b: 128}
+                rgb = this.$refs.gradient ? this.$refs.gradient.getColor(this.gradientMinMax.min, this.gradientMinMax.max, colorByValue) : { r: 128, g: 128, b: 128 }
                 if (rgb) {
                   color = this.rgbToHex(rgb.r, rgb.g, rgb.b)
                 } else {
@@ -287,7 +286,7 @@ export default {
           })
           marker.bindPopup('')
           marker.on('click', e => {
-            let popup = e.target.getPopup()
+            const popup = e.target.getPopup()
             this.selectedLocation = l
             this.selectedGermplasm = g
             // Set the popup content on click
@@ -390,7 +389,7 @@ export default {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
       })
 
-      let map = this.$refs.map.mapObject
+      const map = this.$refs.map.mapObject
 
       switch (this.mapLayer) {
         case 'satellite':
@@ -404,7 +403,7 @@ export default {
 
       const baseMaps = {
         // 'Stadia Dark': stadia,
-        'OpenStreetMap': openstreetmap,
+        OpenStreetMap: openstreetmap,
         'Esri WorldImagery': satellite
       }
 

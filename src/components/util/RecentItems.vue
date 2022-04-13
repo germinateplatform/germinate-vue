@@ -49,7 +49,7 @@ export default {
       }).reverse()
     }
   },
-  mixins: [ germplasmApi, genotypeApi, typesMixin ],
+  mixins: [germplasmApi, genotypeApi, typesMixin],
   methods: {
     clearItems: function () {
       this.$store.dispatch('ON_RECENT_IDS_CLEAR', this.groupTypes[this.itemType].itemType)

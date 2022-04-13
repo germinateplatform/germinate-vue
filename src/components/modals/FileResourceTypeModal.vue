@@ -31,7 +31,7 @@ export default {
       }
     }
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     show: function () {
       this.name = null

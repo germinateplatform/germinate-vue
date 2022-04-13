@@ -41,7 +41,7 @@ export default {
       return this.datasetType === 'allelefreq' ? 'single' : 'multi'
     }
   },
-  mixins: [ datasetApi, typesMixin ],
+  mixins: [datasetApi, typesMixin],
   methods: {
     updateButtonState: function (selectedIds) {
       this.buttonDisabled = !selectedIds || selectedIds.length < 1
@@ -128,7 +128,7 @@ export default {
       }
     },
     getDatasetTypes: function () {
-      let result = Object.assign({}, this.datasetTypes)
+      const result = Object.assign({}, this.datasetTypes)
       delete result.unknown
       return result
     },

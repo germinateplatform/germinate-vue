@@ -21,7 +21,7 @@ import GenotypeExportSelection from '@/components/export/GenotypeExportSelection
 import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
-  props: [ 'datasetIds' ],
+  props: ['datasetIds'],
   data: function () {
     return {
       datasets: null,
@@ -33,7 +33,7 @@ export default {
     DatasetOverview,
     GenotypeExportSelection
   },
-  mixins: [ datasetApi ],
+  mixins: [datasetApi],
   methods: {
     isAccepted: function (dataset) {
       if (this.token) {

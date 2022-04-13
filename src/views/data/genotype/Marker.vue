@@ -92,7 +92,7 @@ export default {
     GroupTable,
     MapDefinitionTable
   },
-  mixins: [ genotypeApi ],
+  mixins: [genotypeApi],
   methods: {
     onToggleMarked: function () {
       const isMarked = this.markedMarkers.indexOf(this.currentMarkerId) !== -1

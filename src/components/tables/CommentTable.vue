@@ -142,7 +142,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ miscApi, typesMixin ],
+  mixins: [miscApi, typesMixin],
   methods: {
     getFilter: function () {
       return [{

@@ -16,7 +16,7 @@ export default {
       newsItem: null
     }
   },
-  mixins: [ miscApi ],
+  mixins: [miscApi],
   mounted: function () {
     this.newsId = this.$route.params.newsId
 

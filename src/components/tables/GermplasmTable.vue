@@ -104,7 +104,7 @@
       </template>
       <!-- Formatted colldate -->
       <template v-slot:cell(collDate)="data">
-        <span v-if="data.item.collDate">{{ data.item.collDate | toDate }}</span>
+        <span v-if="data.item.collDate">{{ new Date(data.item.collDate).toLocaleDateString() }}</span>
       </template>
       <!-- Image preview -->
       <template v-slot:cell(imageCount)="data">
@@ -238,7 +238,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let result = [
+      const result = [
         {
           key: 'preview',
           type: undefined,
@@ -456,7 +456,7 @@ export default {
     LocationMap,
     Passport
   },
-  mixins: [ germplasmApi, typesMixin ],
+  mixins: [germplasmApi, typesMixin],
   methods: {
     selectGermplasm: function (id) {
       this.germplasmId = id

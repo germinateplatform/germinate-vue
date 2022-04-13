@@ -22,13 +22,13 @@ const userState = {
   originalTarget: null,
   helpKey: null,
   entityTypeStats: [{
-    'Accession': {
+    Accession: {
       count: 0
     },
     'Plant/Plot': {
       count: 0
     },
-    'Sample': {
+    Sample: {
       count: 0
     }
   }],
@@ -343,7 +343,7 @@ const storeState = {
       storage: {
         getItem: key => {
           // Get the value and parse it
-          let result = JSON.parse(localStorage.getItem(key))
+          const result = JSON.parse(localStorage.getItem(key))
 
           // If it exists and there is user state data
           if (result && result.userStates) {
@@ -376,7 +376,7 @@ const storeState = {
         if (result.userStates && result.serverSettings && result.serverSettings.showGdprNotification) {
           // If so, for each user
           Object.keys(result.userStates).forEach(u => {
-            let currentUserState = result.userStates[u]
+            const currentUserState = result.userStates[u]
 
             // If they haven't accepted cookies, remove the keys that aren't flagged as "essential cookies"
             if (currentUserState.cookiesAccepted !== true) {

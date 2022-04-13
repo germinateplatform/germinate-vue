@@ -42,7 +42,7 @@ export default {
   components: {
     DatasetTable
   },
-  mixins: [ datasetApi, typesMixin ],
+  mixins: [datasetApi, typesMixin],
   methods: {
     emitDataChanged: function (request, data) {
       this.$emit('data-changed', request, data)

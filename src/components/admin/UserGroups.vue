@@ -84,7 +84,7 @@ export default {
     UserGroupMembers,
     UserGroupTable
   },
-  mixins: [ usergroupApi ],
+  mixins: [usergroupApi],
   methods: {
     selectGroup: function (group) {
       this.selectedGroup = group

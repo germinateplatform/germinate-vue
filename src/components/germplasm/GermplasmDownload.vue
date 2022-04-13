@@ -120,7 +120,7 @@ export default {
       this.updateSelectionOptions()
     }
   },
-  mixins: [ datasetApi, groupApi, germplasmApi ],
+  mixins: [datasetApi, groupApi, germplasmApi],
   methods: {
     updateSelectionOptions: function () {
       this.selectionOptions = [{
@@ -155,7 +155,7 @@ export default {
       this.apiExportPassport(request, result => {
         this.downloadBlob({
           blob: result,
-          filename: `germplasm-${window.moment(new Date()).format('YYYY-MM-DD-HH-mm-ss')}`,
+          filename: `germplasm-${this.getDateTimeString()}`,
           extension: 'zip'
         })
         emitter.emit('show-loading', false)
@@ -167,7 +167,7 @@ export default {
         yIds: this.pedigreeSelection === 'marked' ? this.markedGermplasm : null,
         yGroupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null,
         includeAttributes: this.pedigreeIncludeAttributes,
-        datasetIds: [this.pedigreeDataset.datasetId],
+        datasetIds: [this.pedigreeDataset.datasetId]
       }
 
       emitter.emit('show-loading', true)

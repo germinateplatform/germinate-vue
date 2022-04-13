@@ -121,7 +121,7 @@ export default {
     generateBarcodes: function (includeValues) {
       if (includeValues) {
         this.apiGetTraitDistinctValues(this.traitId, result => {
-          this.openInNewTab(`https://cropgeeks.github.io/humbug/#/import?barcodes=${[this.trait.traitName, ...result].map(c => encodeURIComponent(c)).join(',')}`)  
+          this.openInNewTab(`https://cropgeeks.github.io/humbug/#/import?barcodes=${[this.trait.traitName, ...result].map(c => encodeURIComponent(c)).join(',')}`)
         })
       } else {
         this.openInNewTab(`https://cropgeeks.github.io/humbug/#/import?barcodes=${encodeURIComponent(this.trait.traitName)}`)
@@ -196,7 +196,7 @@ export default {
       })
     }
   },
-  mixins: [ colorMixin, datasetApi, miscApi, traitApi, typesMixin ],
+  mixins: [colorMixin, datasetApi, miscApi, traitApi, typesMixin],
   mounted: function () {
     if (this.$route.params.traitId) {
       this.traitId = parseInt(this.$route.params.traitId)

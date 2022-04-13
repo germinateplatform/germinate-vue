@@ -97,7 +97,7 @@ export default {
     polygons: function (newValue) {
       if (newValue && newValue.length > 0) {
         const query = Object.assign({}, this.$route.query)
-        
+
         query.polygons = newValue.map(polygon => polygon.map(l => `${l.lat.toFixed(6)},${l.lng.toFixed(6)}`).join(';')).join('|')
 
         this.$router.replace({ query })
@@ -112,7 +112,7 @@ export default {
       }
     }
   },
-  mixins: [ germplasmApi, locationApi ],
+  mixins: [germplasmApi, locationApi],
   methods: {
     getGermplasmData: function (data, callback) {
       if (this.tabIndex === 0) {
@@ -133,7 +133,7 @@ export default {
         data.polygons = this.polygons
 
         // Get all locations within the polygon to draw them on the map
-        let allData = JSON.parse(JSON.stringify(data))
+        const allData = JSON.parse(JSON.stringify(data))
         allData.page = 1
         allData.limit = this.MAX_JAVA_INTEGER
         this.apiPostLocationPolygonTable(allData, result => {
@@ -234,7 +234,7 @@ export default {
       if (this.$route.query.latLng) {
         const parts = this.$route.query.latLng.split(',').map(p => +(p.trim()))
 
-        if (parts.length == 2) {
+        if (parts.length === 2) {
           const event = {
             latlng: {
               lat: parts[0],

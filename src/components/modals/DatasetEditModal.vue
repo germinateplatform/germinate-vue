@@ -51,7 +51,7 @@ export default {
       })
     }
   },
-  mixins: [ datasetApi, typesMixin ],
+  mixins: [datasetApi, typesMixin],
   methods: {
     show: function () {
       this.datasetState = this.datasetStates[this.dataset.datasetState].id

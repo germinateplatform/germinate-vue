@@ -91,7 +91,7 @@ import Vue from 'vue'
 const emitter = require('tiny-emitter/instance')
 
 export default {
-  props: [ 'datasetIds' ],
+  props: ['datasetIds'],
   data: function () {
     return {
       datasets: null,
@@ -178,7 +178,7 @@ export default {
     TraitExportChartSelection,
     TrialsDataTable
   },
-  mixins: [ datasetApi, groupApi, miscApi, traitApi, colorMixin ],
+  mixins: [datasetApi, groupApi, miscApi, traitApi, colorMixin],
   methods: {
     updateCategoricalTraitCharts: function (query, selectedTraits) {
       this.categoricalTraitsSelected = selectedTraits.filter(t => t.dataType !== 'numeric')

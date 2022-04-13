@@ -30,7 +30,6 @@
                       :url="image.url"
                       :opacity="imageOverlayOpacity"
                       :bounds="image.bounds" />
-      
     </l-map>
     <!-- Add color gradient for heatmapping -->
     <ColorGradient :colors="gradientColors" v-if="mapType === 'heatmap'" ref="gradient" />
@@ -162,7 +161,7 @@ export default {
     LMap,
     LImageOverlay
   },
-  mixins: [ climateApi, typesMixin, colorMixin ],
+  mixins: [climateApi, typesMixin, colorMixin],
   methods: {
     getLatLngs: function () {
       return this.internalLocations.map(l => {
@@ -207,7 +206,7 @@ export default {
             limit: this.MAX_JAVA_INTEGER
           }
           this.apiPostClimateOverlays(queryData, result => {
-            let array = []
+            const array = []
 
             if (result && result.data) {
               result.data.forEach(i => {
@@ -250,10 +249,10 @@ export default {
     },
     getPolygons: function () {
       if (this.selectionMode === 'polygon' && this.editableLayers) {
-        let polygons = []
+        const polygons = []
 
         this.editableLayers.eachLayer(layer => {
-          let polygon = []
+          const polygon = []
           const latLngs = layer.getLatLngs()[0]
           for (let i = 0; i < latLngs.length; i++) {
             polygon.push(latLngs[i])
@@ -274,9 +273,12 @@ export default {
         operator: 'and',
         values: [location.locationName]
       }]
-      this.$router.push({ name: 'germplasm', query: {
-        'germplasm-filter': JSON.stringify(filter)
-      } })
+      this.$router.push({
+        name: 'germplasm',
+        query: {
+          'germplasm-filter': JSON.stringify(filter)
+        }
+      })
     },
     getFlag: function (country) {
       if (country.countryCode2) {
@@ -313,9 +315,9 @@ export default {
             map.panTo(new L.LatLng(this.location.locationLatitude, this.location.locationLongitude))
           })
 
-          let marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
+          const marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
           marker.on('click', e => {
-            let popup = e.target.getPopup()
+            const popup = e.target.getPopup()
             // Set the popup content on click
             this.$nextTick(() => popup.setContent(this.$refs.popupContent))
           })
@@ -325,7 +327,7 @@ export default {
           this.markers.push(marker)
         } else if (this.internalLocations.length > 1) {
           // If there are multiple locations, fit them into view
-          let latLngBounds = L.latLngBounds()
+          const latLngBounds = L.latLngBounds()
 
           this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .forEach(l => latLngBounds.extend([l.locationLatitude, l.locationLongitude]))
@@ -352,9 +354,9 @@ export default {
           }
           const clusterMarker = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
             .map(l => {
-              let marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
+              const marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
               marker.on('click', e => {
-                let popup = e.target.getPopup()
+                const popup = e.target.getPopup()
                 this.location = l
                 this.$nextTick(() => popup.setContent(this.$refs.popupContent))
               })
@@ -369,7 +371,7 @@ export default {
             this.heat.setLatLngs(ls)
           } else {
             // Otherwise, create it
-            let gradient = {}
+            const gradient = {}
 
             this.gradientColors.forEach((c, i) => {
               const position = i * (1 / (this.gradientColors.length - 1))
@@ -388,7 +390,7 @@ export default {
           }
         }
       }
-      
+
       if (invalidate) {
         this.$nextTick(() => map.invalidateSize())
       }
@@ -423,7 +425,7 @@ export default {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
       })
 
-      let map = this.$refs.map.mapObject
+      const map = this.$refs.map.mapObject
 
       switch (this.mapLayer) {
         // case 'osm':
@@ -440,7 +442,7 @@ export default {
 
       const baseMaps = {
         // 'Stadia Dark': stadia,
-        'OpenStreetMap': openstreetmap,
+        OpenStreetMap: openstreetmap,
         'Esri WorldImagery': satellite
       }
 

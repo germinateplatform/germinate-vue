@@ -77,7 +77,7 @@ export default {
       this.checkNumbers()
     }
   },
-  mixins: [ miscApi, climateApi ],
+  mixins: [miscApi, climateApi],
   mounted: function () {
     if (this.$route.params.climateId) {
       this.climateId = parseInt(this.$route.params.climateId)

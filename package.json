@@ -3,19 +3,10 @@
   "version": "4.2.1",
   "description": "Germinate is an open source plant database infrastructure and application programming platform on which complex data from genetic resource collections can be stored, queried and visualized",
   "author": "Sebastian Raubach",
-  "homepage": "https://ics.hutton.ac.uk/get-germinate",
-  "copyright": "Copyright 2021 The James Hutton Institute",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/germinateplatform/germinate-vue.git"
-  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@coreui/coreui": "~2.1.16",
@@ -27,8 +18,8 @@
     "axios": "~0.21.4",
     "bootstrap": "~4.5.3",
     "bootstrap-vue": "~2.19.0",
-    "citation-js": "~0.5.1",
-    "core-js": "~2.6.11",
+    "citation-js": "^0.5.3",
+    "core-js": "^2.6.11",
     "css-vars-ponyfill": "~2.1.2",
     "d3-dsv": "~1.2.0",
     "d3-selection": "~1.4.1",
@@ -48,10 +39,7 @@
     "leaflet.heat": "~0.2.0",
     "leaflet.markercluster": "~1.4.1",
     "leaflet.sync": "~0.2.4",
-    "lodash": "~4.17.21",
-    "moment": "^2.29.2",
     "plotly.js": "^2.6.0",
-    "simple-line-icons": "~2.4.1",
     "simplex-noise": "~2.4.0",
     "tiny-emitter": "^2.1.0",
     "vue": "~2.6.11",
@@ -70,23 +58,26 @@
     "zxcvbn": "~4.4.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@vue/babel-preset-app": "^4.5.11",
-    "@vue/cli-plugin-babel": "^4.5.11",
-    "@vue/cli-plugin-e2e-nightwatch": "^4.2.2",
-    "@vue/cli-plugin-eslint": "^4.5.11",
-    "@vue/cli-plugin-unit-jest": "^4.5.11",
-    "@vue/cli-service": "^4.5.13",
+    "@vue/cli-plugin-babel": "^5.0.4",
+    "@vue/cli-plugin-eslint": "^5.0.4",
+    "@vue/cli-service": "^5.0.4",
     "@vue/eslint-config-standard": "^6.0.0",
-    "@vue/test-utils": "1.0.0-beta.29",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^25.1.0",
-    "eslint": "^7.19.0",
-    "eslint-plugin-vue": "^7.0.0-alpha.6",
+    "eslint": "^7.32.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^8.0.3",
     "growl": "^1.10.5",
     "https-proxy-agent": "^2.2.4",
-    "node-sass": "^4.14.1",
+    "sass": "^1.32.13",
     "sass-loader": "^7.3.1",
     "vue-template-compiler": "^2.6.11",
     "webpack-bundle-analyzer": "^3.7.0"
@@ -96,8 +87,15 @@
     "last 2 versions",
     "ie >= 11"
   ],
+  "copyright": "Copyright 2021 The James Hutton Institute",
   "engines": {
     "node": ">= 8.10.x",
     "npm": ">= 5.6.0"
+  },
+  "homepage": "https://ics.hutton.ac.uk/get-germinate",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/germinateplatform/germinate-vue.git"
   }
 }

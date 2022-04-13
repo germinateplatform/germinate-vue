@@ -9,7 +9,7 @@
       <template v-slot:cell(publicationId)="data">
         <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId, publicationType: data.item.referenceType })">{{ data.item.publicationId }}</router-link>
         <span v-else>{{ data.item.publicationId }}</span>
-      </template>        
+      </template>
       <template v-slot:cell(publicationName)="data">
         <template v-if="data.item.publicationFallbackCache">
           <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId, publicationType: data.item.referenceType })">{{ data.item.publicationFallbackCache.title }}</router-link>
@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     columns: function () {
-      let result = [
+      const result = [
         {
           key: 'publicationId',
           type: Number,
@@ -108,7 +108,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [ colorMixin, typesMixin ],
+  mixins: [colorMixin, typesMixin],
   methods: {
     refresh: function () {
       this.$refs.publicationTable.refresh()

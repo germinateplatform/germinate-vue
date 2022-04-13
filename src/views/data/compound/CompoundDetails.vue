@@ -72,7 +72,7 @@ export default {
     DatasetsWithUnacceptedLicense,
     ImageGallery
   },
-  mixins: [ compoundApi, miscApi ],
+  mixins: [compoundApi, miscApi],
   methods: {
     getDatasetData: function (data, callback) {
       return this.apiPostCompoundDatasetTable(this.compoundId, data, callback)

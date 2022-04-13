@@ -128,7 +128,7 @@ export default {
     Passport,
     Tour
   },
-  mixins: [ colorMixin ],
+  mixins: [colorMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
