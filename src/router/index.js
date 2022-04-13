@@ -100,6 +100,11 @@ const router = new Router({
           beforeEnter: requireAuth
         },
         {
+          path: 'login',
+          name: 'login-selective',
+          component: () => import('@/views/pages/Login.vue')
+        },
+        {
           path: 'cookies',
           name: 'cookies',
           component: () => import('@/views/pages/Cookies')

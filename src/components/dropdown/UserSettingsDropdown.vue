@@ -18,21 +18,14 @@
         <!-- Logout -->
         <b-dropdown-item @click="signOut" v-if="token && token.token"><i class="mdi mdi-18px mdi-logout-variant text-danger" /> {{ $t('dropdownUserSettingsLogout') }}</b-dropdown-item>
         <!-- Login -->
-        <b-dropdown-item @click="showLogin" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> {{ $t('dropdownUserSettingsLogin') }}</b-dropdown-item>
+        <b-dropdown-item :to="{ name: 'login-selective' }" v-else><i class="mdi mdi-18px mdi-login-variant text-danger" /> {{ $t('dropdownUserSettingsLogin') }}</b-dropdown-item>
       </template>
     </AppHeaderDropdown>
-
-    <!-- Modal containing the sign in form -->
-    <b-modal ref="signInModal" :title="$t('widgetSignInTitle')" hide-footer>
-      <SignInForm v-on:login="signIn" :enabled="enabled" :showRegistration="serverSettings && serverSettings.registrationEnabled" />
-      <p class="text-danger mt-3" v-if="response">{{ response }}</p>
-    </b-modal>
   </div>
 </template>
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
-import SignInForm from '@/components/util/SignInForm'
 import authApi from '@/mixins/api/auth.js'
 
 const emitter = require('tiny-emitter/instance')
@@ -40,8 +33,7 @@ const emitter = require('tiny-emitter/instance')
 export default {
   name: 'UserSettingsDropdown',
   components: {
-    AppHeaderDropdown,
-    SignInForm
+    AppHeaderDropdown
   },
   data: () => {
     return {
@@ -103,15 +95,7 @@ export default {
           emitter.emit('update-sidebar-menu')
         }
       })
-    },
-    showLogin: function () {
-      this.$nextTick(() => this.$refs.signInModal.show())
     }
-  },
-  mounted: function () {
-    emitter.on('on-show-login-form', () => {
-      this.showLogin()
-    })
   }
 }
 </script>

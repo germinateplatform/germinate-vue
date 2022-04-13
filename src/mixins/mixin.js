@@ -320,7 +320,7 @@ export default {
             if (authMode === 'FULL') {
               this.$router.push({ name: 'login' })
             } else if (authMode === 'SELECTIVE') {
-              emitter.emit('on-show-login-form')
+              this.$router.push({ name: 'login-selective' })
             }
             return
           case 403: {
@@ -329,7 +329,7 @@ export default {
             if (authMode === 'FULL') {
               this.$router.push({ name: 'login' })
             } else if (authMode === 'SELECTIVE') {
-              emitter.emit('on-show-login-form')
+              this.$router.push({ name: 'login-selective' })
             }
             return
           }
@@ -409,7 +409,7 @@ export default {
               if (authMode === 'FULL') {
                 this.$router.push({ name: 'login' })
               } else if (authMode === 'SELECTIVE') {
-                emitter.emit('on-show-login-form')
+                this.$router.push({ name: 'login-selective' })
               }
             } else if (process.env.NODE_ENV === 'development') {
               console.error(err)
@@ -513,7 +513,7 @@ export default {
               if (authMode === 'FULL') {
                 this.$router.push({ name: 'login' })
               } else if (authMode === 'SELECTIVE') {
-                emitter.emit('on-show-login-form')
+                this.$router.push({ name: 'login-selective' })
               }
             } else if (process.env.NODE_ENV === 'development') {
               console.error(err)
