@@ -54,6 +54,13 @@ import { plotlyScatterMatrix } from '@/plugins/charts/plotly-scatter-matrix.js'
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 
+const Plotly = require('plotly.js/lib/core')
+
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/splom')
+])
+
 export default {
   props: {
     datasetIds: {
@@ -155,7 +162,7 @@ export default {
       this.colorBy = colorBy
       this.selectedIds = []
 
-      this.$plotly.purge(this.$refs.matrixChart)
+      Plotly.purge(this.$refs.matrixChart)
 
       const reader = new FileReader()
       reader.onload = () => {
@@ -169,7 +176,7 @@ export default {
 
         d3Select.select(this.$refs.matrixChart)
           .datum(data)
-          .call(plotlyScatterMatrix()
+          .call(plotlyScatterMatrix(Plotly)
             .darkMode(this.darkMode)
             .colorBy(colorBy)
             .columnsToIgnore(['name', 'puid', 'taxonomy', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'Site', 'treatments_description', 'year', 'group_ids'])

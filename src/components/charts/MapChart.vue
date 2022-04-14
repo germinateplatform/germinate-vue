@@ -44,6 +44,13 @@ const emitter = require('tiny-emitter/instance')
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 
+const Plotly = require('plotly.js/lib/core')
+
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/histogram')
+])
+
 export default {
   props: {
     mapId: {
@@ -178,7 +185,7 @@ export default {
       }
     },
     redraw: function () {
-      this.$plotly.purge(this.$refs.mapChart)
+      Plotly.purge(this.$refs.mapChart)
 
       const request = {
         format: 'flapjack'
@@ -195,7 +202,7 @@ export default {
 
           d3Select.select(this.$refs.mapChart)
             .datum(data)
-            .call(plotlyMapChart()
+            .call(plotlyMapChart(Plotly)
               .darkMode(this.darkMode)
               .colors(this.getColors())
               .onPointsSelected((chromosome, start, end) => {

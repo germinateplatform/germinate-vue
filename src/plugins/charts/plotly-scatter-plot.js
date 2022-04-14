@@ -1,5 +1,5 @@
 /* eslint-disable */
-export function plotlyScatterPlot() {
+export function plotlyScatterPlot(Plotly) {
 	var colorBy = {
       column: null,
       ids: null,

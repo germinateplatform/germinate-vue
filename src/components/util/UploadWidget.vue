@@ -68,12 +68,12 @@
           @input-filter="inputFilter"
           @input-file="inputFile"
           ref="upload">
-          <BIconFileEarmarkPlus /> {{ $t('genericAdd') }}
+          <i class="mdi-18px mdi-file-plus-outline" /> {{ $t('genericAdd') }}
         </file-upload>
       </div>
       <template v-if="files && files.length > 0">
-        <b-button variant="success" @click="$refs.upload.active = true" v-if="!$refs.upload || !$refs.upload.active"><BIconUpload /> {{ $t('widgetDataUploadLabelStartUpload') }}</b-button>
-        <b-button variant="danger" @click="$refs.upload.active = false" v-else><BIconSlashCircle /> {{ $t('widgetDataUploadLabelStopUpload') }}</b-button>
+        <b-button variant="success" @click="$refs.upload.active = true" v-if="!$refs.upload || !$refs.upload.active"><i class="mdi-18px mdi-upload" /> {{ $t('widgetDataUploadLabelStartUpload') }}</b-button>
+        <b-button variant="danger" @click="$refs.upload.active = false" v-else><i class="mdi-18px mdi-cancel" /> {{ $t('widgetDataUploadLabelStopUpload') }}</b-button>
       </template>
     </div>
   </div>
@@ -81,14 +81,10 @@
 </template>
 
 <script>
-import { BIconUpload, BIconSlashCircle, BIconFileEarmarkPlus } from 'bootstrap-vue'
 import FileUpload from 'vue-upload-component'
 export default {
   components: {
-    FileUpload,
-    BIconUpload,
-    BIconSlashCircle,
-    BIconFileEarmarkPlus
+    FileUpload
   },
   props: {
     postAction: {

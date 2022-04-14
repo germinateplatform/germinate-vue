@@ -7,7 +7,7 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   configureWebpack: {
     plugins: [
-      // new BundleAnalyzerPlugin(),
+      // new BundleAnalyzerPlugin()
       new webpack.ProvidePlugin({
         process: 'process/browser',
       })

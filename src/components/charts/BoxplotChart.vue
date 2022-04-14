@@ -22,6 +22,13 @@ import datasetApi from '@/mixins/api/dataset.js'
 import colorMixin from '@/mixins/colors.js'
 import Tour from '@/components/util/Tour'
 
+const Plotly = require('plotly.js/lib/core')
+
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/box')
+])
+
 export default {
   props: {
     datasetIds: {
@@ -150,7 +157,7 @@ export default {
     chart: function () {
       const div = this.$refs.chart
 
-      this.$plotly.purge(div)
+      Plotly.purge(div)
 
       const y = []
 
@@ -214,7 +221,7 @@ export default {
         displaylogo: false
       }
 
-      this.$plotly.newPlot(div, traces, layout, config)
+      Plotly.newPlot(div, traces, layout, config)
     },
     getGroupData: function (y) {
       const traces = []

@@ -21,6 +21,13 @@
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 
+const Plotly = require('plotly.js/lib/core')
+
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/box')
+])
+
 export default {
   props: {
     categories: {
@@ -194,7 +201,7 @@ export default {
       this.loading = true
       const div = this.$refs.chart
 
-      this.$plotly.purge(div)
+      Plotly.purge(div)
 
       const traces = this.getTraces()
 
@@ -251,7 +258,7 @@ export default {
       }
 
       this.loading = false
-      this.$plotly.newPlot(div, traces, layout, config)
+      Plotly.newPlot(div, traces, layout, config)
     }
   },
   mounted: function () {

@@ -25,6 +25,13 @@ import colorMixin from '@/mixins/colors.js'
 const d3Dsv = require('d3-dsv')
 const d3Select = require('d3-selection')
 
+const Plotly = require('plotly.js/lib/core')
+
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/bar')
+])
+
 export default {
   props: {
     xTitle: {
@@ -96,7 +103,7 @@ export default {
     },
     redraw: function () {
       if (this.sourceFile) {
-        this.$plotly.purge(this.$refs.barChart)
+        Plotly.purge(this.$refs.barChart)
 
         if (this.sourceFile) {
           const reader = new FileReader()
@@ -105,7 +112,7 @@ export default {
 
             d3Select.select(this.$refs.barChart)
               .datum(data)
-              .call(plotlyBarChart()
+              .call(plotlyBarChart(Plotly)
                 .darkMode(this.darkMode)
                 .height(this.height)
                 .colors(this.getColors())

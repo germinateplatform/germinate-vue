@@ -1,5 +1,5 @@
 /* eslint-disable */
-export function plotlySunburstChart() {
+export function plotlySunburstChart(Plotly) {
 	var height = 800,
     onLeafClicked = null,
     darkMode = false,

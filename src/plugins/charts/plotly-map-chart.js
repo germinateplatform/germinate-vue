@@ -1,5 +1,5 @@
 /* eslint-disable */
-export function plotlyMapChart() {
+export function plotlyMapChart(Plotly) {
 	var onPointsSelected = null,
 		onSelectionCleared = null,
 		onDistinctChromosomes = null,

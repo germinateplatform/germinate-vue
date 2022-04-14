@@ -1,5 +1,5 @@
 /* eslint-disable */
-export function plotlyAlleleFreqChart() {
+export function plotlyAlleleFreqChart(Plotly) {
 	var width = null,
 		height = 600,
 		xCategory = '',

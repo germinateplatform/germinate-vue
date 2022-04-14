@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import { isEqual } from 'lodash'
 import LocationMap from '@/components/map/LocationMap'
 import LocationTable from '@/components/tables/LocationTable'
 import locationApi from '@/mixins/api/location.js'
@@ -38,7 +37,6 @@ import miscApi from '@/mixins/api/misc.js'
 export default {
   data: function () {
     return {
-      tableFilter: null,
       locations: null,
       clusteredMap: null,
       heatmappedMap: null,
@@ -79,11 +77,8 @@ export default {
       return this.apiPostLocationTableIds(data, callback)
     },
     onDataChanged: function (request) {
-      const sameAsBefore = isEqual(request.filter, this.tableFilter)
       // If something changed, we're going to only show the locations in the table on the map
-      if (!this.locations || !sameAsBefore) {
-        this.tableFilter = JSON.parse(JSON.stringify(request.filter))
-
+      if (!this.locations) {
         // Create a custom request based on the one from the table, but change limit and page to get all the locations
         const customRequest = Object.assign({}, request)
         customRequest.limit = this.MAX_JAVA_INTEGER

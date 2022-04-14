@@ -12,6 +12,13 @@ import statsApi from '@/mixins/api/stats.js'
 import colorMixin from '@/mixins/colors.js'
 const d3Dsv = require('d3-dsv')
 
+const Plotly = require('plotly.js/lib/core')
+
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/choropleth')
+])
+
 export default {
   data: function () {
     return {
@@ -50,7 +57,7 @@ export default {
       return hex
     },
     redraw: function () {
-      this.$plotly.purge(this.$refs.choroplethChart)
+      Plotly.purge(this.$refs.choroplethChart)
 
       const reader = new FileReader()
       reader.onload = () => {
@@ -109,7 +116,7 @@ export default {
 
         const chart = this.$refs.choroplethChart
 
-        this.$plotly.newPlot(chart, data, layout, config)
+        Plotly.newPlot(chart, data, layout, config)
 
         chart.on('plotly_click', data => {
           if (data && data.points && data.points.length > 0) {

@@ -44,6 +44,8 @@ import CustomChartColorModal from '@/components/modals/CustomChartColorModal'
 
 const emitter = require('tiny-emitter/instance')
 
+const Plotly = require('plotly.js/lib/core')
+
 export default {
   data: function () {
     return {
@@ -125,7 +127,7 @@ export default {
       if (this.imageType === 'svg') {
         this.downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename + '-' + this.getDateTimeString())
       } else if (this.imageType === 'png') {
-        this.$plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + this.getDateTimeString() })
+        Plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + this.getDateTimeString() })
       }
     },
     chartColorsChangedHandler: function () {

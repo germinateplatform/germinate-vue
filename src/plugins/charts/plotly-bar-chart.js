@@ -1,5 +1,5 @@
 /* eslint-disable */
-export function plotlyBarChart() {
+export function plotlyBarChart(Plotly) {
 	var width = 1280,
 		height = 600,
 		xCategory = '',

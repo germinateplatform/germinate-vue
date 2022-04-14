@@ -46,6 +46,15 @@ import { plotlyScatterPlot } from '@/plugins/charts/plotly-scatter-plot.js'
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 
+const Plotly = require('plotly.js/lib/core')
+
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/scattergl'),
+  require('plotly.js/lib/histogram2dcontour'),
+  require('plotly.js/lib/histogram')
+])
+
 export default {
   props: {
     datasetIds: {
@@ -152,7 +161,7 @@ export default {
       this.colorBy = colorBy
       this.selectedIds = []
 
-      this.$plotly.purge(this.$refs.scatterChart)
+      Plotly.purge(this.$refs.scatterChart)
 
       const reader = new FileReader()
       reader.onload = () => {
@@ -164,7 +173,7 @@ export default {
 
         d3Select.select(this.$refs.scatterChart)
           .datum(data)
-          .call(plotlyScatterPlot()
+          .call(plotlyScatterPlot(Plotly)
             .darkMode(this.darkMode)
             .colorBy(colorBy)
             .xCategory(this.x)

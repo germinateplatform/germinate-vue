@@ -5,7 +5,6 @@ import 'es6-object-assign/auto'
 import 'es6-set/implement'
 
 import Vue from 'vue'
-// import BootstrapVue from 'bootstrap-vue'
 import App from '@/App'
 import router from '@/router'
 import store from '@/store/store'
@@ -105,14 +104,6 @@ Vue.use(VueGtag, {
   bootstrap: false,
   enabled: false
 }, router)
-
-Vue.use({
-  install: function (Vue) {
-    // Make custom plotly available
-    Vue.prototype.$plotly = require('@/plugins/charts/custom-plotly')
-    window.Plotly = Vue.prototype.$plotly
-  }
-})
 
 // Add thousand separators
 Vue.filter('toThousandSeparators', value => {
