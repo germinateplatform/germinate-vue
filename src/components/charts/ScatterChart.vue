@@ -7,7 +7,7 @@
       <template slot="additionalMenuItems">
         <b-dropdown-divider />
         <b-dropdown-item :disabled="!selectedIds || selectedIds.length < 1"
-                         @click="toggleItems(true)">
+                        @click="toggleItems(true)">
           <i class="mdi mdi-18px mdi-checkbox-marked" /> <span> {{ $t('widgetChartMarkSelectedItems') }}</span>
         </b-dropdown-item>
         <b-dropdown-item :disabled="!selectedIds || selectedIds.length < 1"

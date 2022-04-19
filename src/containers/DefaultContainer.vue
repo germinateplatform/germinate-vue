@@ -604,8 +604,8 @@ export default {
   },
   destroyed: function () {
     emitter.off('toggle-aside', this.toggleAside)
-    emitter.off('show-introduction')
-    emitter.off('update-sidebar-menu')
+    emitter.off('show-introduction', this.startIntroduction)
+    emitter.off('update-sidebar-menu', this.updateMenu)
   },
   mounted: function () {
     this.updateMenu()

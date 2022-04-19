@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  props: [ 'datasetIds' ]
+  props: ['datasetIds']
 }
 </script>
 

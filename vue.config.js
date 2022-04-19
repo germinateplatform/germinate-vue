@@ -7,15 +7,15 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   configureWebpack: {
     plugins: [
-      // new BundleAnalyzerPlugin()
+      // new BundleAnalyzerPlugin(),
       new webpack.ProvidePlugin({
-        process: 'process/browser',
+        process: 'process/browser'
       })
     ],
     resolve: {
       // ... rest of the resolve config
       fallback: {
-        'path': require.resolve('path-browserify')
+        path: require.resolve('path-browserify')
       }
     },
     devtool: 'source-map',
