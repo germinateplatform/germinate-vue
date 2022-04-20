@@ -5,7 +5,7 @@
 
     <GermplasmTable :selectable="true" :getData="getData" :getIds="getIds" v-on:selection-changed="updateButtonState" ref="germplasmTable" />
 
-    <b-button class="my-3" variant="primary" @click="getSelectedGermplasm" :disabled="!selectedIds || selectedIds.length < 2"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t('buttonNext') }}</b-button>
+    <b-button class="my-3" variant="primary" @click="getSelectedGermplasm" :disabled="!selectedIds || selectedIds.length < 2"><MdiIcon :path="mdiArrowRightBox" /> {{ $t('buttonNext') }}</b-button>
 
     <div v-if="selectedGermplasm">
       <h2>{{ $t('pageGermplasmUnifierSelectPreferedTitle') }}</h2>
@@ -20,24 +20,30 @@
       <p>{{ $t('pageGermplasmUnifierExplanationText') }}</p>
       <b-textarea v-model="comment" />
 
-      <b-button class="my-3" @click="mergeGermplasm"> <i class="mdi mdi-18px fix-alignment mdi-set-merge"/> {{ $t('buttonMerge') }}</b-button>
+      <b-button class="my-3" @click="mergeGermplasm"> <MdiIcon :path="mdiSetMerge"/> {{ $t('buttonMerge') }}</b-button>
     </div>
   </div>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 
 import germplasmApi from '@/mixins/api/germplasm.js'
+
+import { mdiArrowRightBox, mdiSetMerge } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
-    GermplasmTable
+    GermplasmTable,
+    MdiIcon
   },
   data: function () {
     return {
+      mdiArrowRightBox,
+      mdiSetMerge,
       selectedIds: [],
       primaryGermplasm: null,
       selectedGermplasm: null,

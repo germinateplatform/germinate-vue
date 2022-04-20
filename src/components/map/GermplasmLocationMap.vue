@@ -13,8 +13,8 @@
 
       <l-control position="bottomleft" class="leaflet-control-layers">
         <div class="p-2 legend" v-if="colorBy && colorBy.type === 'text'">
-          <div v-for="legendItem in colorLegend" :key="`color-mapping-${legendItem.name}`">
-            <i class="mdi mdi-18px mdi-circle" :style="{ color: legendItem.color }"/> {{ legendItem.name }}
+          <div v-for="legendItem in colorLegend" :key="`color-mapping-${legendItem.name}`" :style="{ color: legendItem.color }">
+            <MdiIcon :path="mdiCircle"/> {{ legendItem.name }}
           </div>
         </div>
       </l-control>
@@ -39,8 +39,8 @@
           <span v-if="selectedLocation.locationType === 'datasets'">{{ selectedLocation.locationName }}</span>
           <span>{{ selectedLocation.locationName }}</span>
         </dd>
-        <template v-if="selectedLocation.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8"><i :class="`mdi mdi-18px ${locationTypes[selectedLocation.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[selectedLocation.locationType].color()};`" /> {{ this.locationTypes[selectedLocation.locationType].text() }}</dd></template>
-        <template v-if="selectedLocation.countryCode2 || selectedLocation.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'flag-icon flag-icon-' + getFlag(selectedLocation)" /> {{ getCountry(selectedLocation) }}</dd></template>
+        <template v-if="selectedLocation.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8"><span :style="`color: ${locationTypes[selectedLocation.locationType].color()};`"><MdiIcon :path="locationTypes[selectedLocation.locationType].path" /></span> {{ this.locationTypes[selectedLocation.locationType].text() }}</dd></template>
+        <template v-if="selectedLocation.countryCode2 || selectedLocation.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'fi fi-' + getFlag(selectedLocation)" /> {{ getCountry(selectedLocation) }}</dd></template>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLatitude') }}</dt><dd class="col-8">{{ selectedLocation.locationLatitude.toFixed(2) }}</dd>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLongitude') }}</dt><dd class="col-8">{{ selectedLocation.locationLongitude.toFixed(2) }}</dd>
         <template v-if="selectedLocation.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ selectedLocation.locationElevation.toFixed(2) }}</dd></template>
@@ -52,22 +52,27 @@
 
       <div class="mt-2" v-if="selectedGermplasm">
         <!-- Marked item checkbox -->
-        <i :class="`mdi mdi-18px fix-alignment ${markedStyle}`" @click="onToggleMarked()" /> {{ $t('tooltipGermplasmMarkedItem') }}
+        <MdiIcon :path="markedStyle" @click="onToggleMarked()" /> {{ $t('tooltipGermplasmMarkedItem') }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import ColorGradient from '@/components/util/ColorGradient'
 
 import L from 'leaflet'
 import { LMap, LControl } from 'vue2-leaflet'
 
-import germplasmApi from '@/mixins/api/germplasm.js'
-import locationApi from '@/mixins/api/location.js'
-import colorsMixin from '@/mixins/colors.js'
-import typesMixin from '@/mixins/types.js'
+import germplasmApi from '@/mixins/api/germplasm'
+import locationApi from '@/mixins/api/location'
+import colorsMixin from '@/mixins/colors'
+import typesMixin from '@/mixins/types'
+
+import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiCircle } from '@mdi/js'
 
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
@@ -86,10 +91,12 @@ export default {
   components: {
     ColorGradient,
     LControl,
-    LMap
+    LMap,
+    MdiIcon
   },
   data: function () {
     return {
+      mdiCircle,
       mapOptions: {
         preferCanvas: true
       },
@@ -131,9 +138,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeServerSettings',
+      'storeMapLayer',
+      'storeMarkedGermplasm'
+    ]),
     markedStyle: function () {
-      const isMarked = this.selectedGermplasm && this.markedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
-      return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
+      const isMarked = this.selectedGermplasm && this.storeMarkedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
+      return isMarked ? mdiCheckboxMarked : mdiCheckboxBlankOutline
     }
   },
   mixins: [colorsMixin, typesMixin, germplasmApi, locationApi],
@@ -151,11 +163,11 @@ export default {
     },
     onToggleMarked: function () {
       if (this.selectedGermplasm) {
-        const isMarked = this.markedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
+        const isMarked = this.storeMarkedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
         if (isMarked) {
-          this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [this.selectedGermplasm.germplasmId] })
+          this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: [this.selectedGermplasm.germplasmId] })
         } else {
-          this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [this.selectedGermplasm.germplasmId] })
+          this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: [this.selectedGermplasm.germplasmId] })
         }
       }
     },
@@ -240,7 +252,7 @@ export default {
 
         if (l) {
           let colorByValue = null
-          let color = this.serverSettings.colorPrimary || '#20a8d8'
+          let color = this.storeServerSettings.colorPrimary || '#20a8d8'
 
           if (this.colorBy) {
             let potentialColor
@@ -391,7 +403,7 @@ export default {
 
       const map = this.$refs.map.mapObject
 
-      switch (this.mapLayer) {
+      switch (this.storeMapLayer) {
         case 'satellite':
           map.addLayer(satellite)
           break
@@ -413,10 +425,10 @@ export default {
       map.on('baselayerchange', e => {
         switch (e.name) {
           case 'OpenStreetMap':
-            this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'osm')
+            this.$store.dispatch('setMapLayer', 'osm')
             break
           case 'Esri WorldImagery':
-            this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'satellite')
+            this.$store.dispatch('setMapLayer', 'satellite')
             break
         }
       })

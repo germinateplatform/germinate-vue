@@ -25,8 +25,6 @@ export default {
       default: null
     }
   },
-  data: function () {
-  },
   methods: {
     hide: function () {
       this.$refs.publicationsModal.hide()

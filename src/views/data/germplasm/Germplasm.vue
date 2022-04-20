@@ -12,7 +12,7 @@
     <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" :downloadTable="downloadTable" @filter-changed="resetFilter" ref="germplasmTable" />
 
     <!-- Germplasm location map -->
-    <Collapse icon="mdi-map-marker-multiple" :title="$t('widgetGermplasmMapTitle')" :visible="false" :showLoading="false" class="my-3" @toggle="collapseVisible = !collapseVisible" @shown="invalidateMapSize" v-if="locationDataAvailable">
+    <Collapse :icon="mdiMapMarkerMultiple" :title="$t('widgetGermplasmMapTitle')" :visible="false" :showLoading="false" class="my-3" @toggle="collapseVisible = !collapseVisible" @shown="invalidateMapSize" v-if="locationDataAvailable">
       <template v-slot:content>
         <p>{{ $t('widgetGermplasmMapText') }}</p>
         <GermplasmLocationMap ref="germplasmMap" />
@@ -35,9 +35,12 @@ import germplasmApi from '@/mixins/api/germplasm.js'
 import locationApi from '@/mixins/api/location.js'
 import miscApi from '@/mixins/api/misc.js'
 
+import { mdiMapMarkerMultiple } from '@mdi/js'
+
 export default {
   data: function () {
     return {
+      mdiMapMarkerMultiple,
       collapseVisible: false,
       filterOn: [],
       locationDataAvailable: false
@@ -90,7 +93,7 @@ export default {
     }
   },
   mounted: function () {
-    this.$store.dispatch('ON_HELP_KEY_CHANGED', 'helpGermplasm')
+    this.$store.dispatch('setHelpKey', 'helpGermplasm')
 
     // TODO: Check if location data is available
     this.apiPostLocationTable({

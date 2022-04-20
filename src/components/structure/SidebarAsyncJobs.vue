@@ -1,18 +1,17 @@
 <template>
-  <div class="aside-scroll">
-    <b-tabs v-model="tabIndex">
-      <!-- Download jobs -->
-      <b-tab>
-        <template slot="title">
-          <i class="mdi mdi-18px mdi-download" />
+  <b-container fluid>
+    <b-tabs justified v-model="tabIndex">
+      <b-tab active>
+        <template #title>
+          <MdiIcon :path="mdiDownload" />
         </template>
         <!-- Update button -->
         <b-button-group class="w-100 action-buttons" >
-          <b-button @click="updateAsyncJobs" variant="info">
-            <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
+          <b-button @click="updateInternal" variant="info">
+            <MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}
           </b-button>
           <b-button @click="clearExportJobs" :disabled="!asyncExportJobs || asyncExportJobs.length < 1">
-            <i class="mdi mdi-delete" /> {{ $t('genericClear') }}
+            <MdiIcon :path="mdiDelete" /> {{ $t('genericClear') }}
           </b-button>
         </b-button-group>
         <b-list-group class="list-group-accent">
@@ -23,35 +22,38 @@
           <!-- List of jobs -->
           <b-list-group-item v-for="job in asyncExportJobs"
                               :key="job.id"
-                              :class="`list-group-item-accent-${status[job.status].color} list-group-item-divider`">
+                              :class="status[job.status].color">
             <!-- Delete job -->
-            <a href="#" class="text-muted" @click.prevent="deleteExportJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
+            <a href="#" class="text-muted float-right" @click.prevent="deleteExportJob(job)" :title="$t('buttonDelete')"><MdiIcon :path="mdiClose" /></a>
             <!-- Job type -->
             <div><strong>{{ getDatasetType(job.datasettypeId) }}</strong></div>
             <!-- Dataset ids -->
-            <div v-if="job.datasetIds" class="text-muted">{{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</div>
+            <div class="text-muted" v-if="job.datasetIds">
+              <MdiIcon :path="mdiDatabase" /><small> {{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</small>
+            </div>
             <!-- Date time -->
             <div class="text-muted" v-if="job.updatedOn">
-              <i class="mdi fix-alignment mdi-calendar-clock"></i><small> {{ new Date(job.updatedOn).toLocaleString() }}</small>
+              <MdiIcon :path="mdiCalendarClock" /><small> {{ new Date(job.updatedOn).toLocaleString() }}</small>
             </div>
             <!-- Status -->
             <div :class="`text-${status[job.status].color}`">
               <b-spinner variant="info" small v-if="job.status === 'running'" />
-              <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`" v-else />
+              <MdiIcon :path="status[job.status].path" v-else />
               <small> {{ status[job.status].text() }}</small>
             </div>
             <!-- Download link -->
             <template v-if="job.status === 'completed'">
-              <div class="d-flex flex-row align-items-start" v-if="job.datasettypeId === 7 && serverSettings && serverSettings.heliumUrl">
+              <div class="d-flex flex-row align-items-start" v-if="job.datasettypeId === 7 && storeServerSettings && storeServerSettings.heliumUrl">
+                <!-- TODO -->
                 <i class="mdi fix-alignment icon-helium" />
                 <div class="d-inline-block ml-1">
-                  <a target="_blank" :href="`${serverSettings.heliumUrl}?germinateUrl=${encodeURIComponent(baseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateAsyncJobs">{{ $t('buttonSendToHelium') }}</a>
+                  <a target="_blank" :href="`${storeServerSettings.heliumUrl}?germinateUrl=${encodeURIComponent(storeBaseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateInternal">{{ $t('buttonSendToHelium') }}</a>
                 </div>
               </div>
               <div class="d-flex flex-row align-items-start">
-                <i class="mdi fix-alignment mdi-download" />
+                <MdiIcon :path="mdiDownload" />
                 <div class="d-inline-block ml-1">
-                  <a :href="`${baseUrl}dataset/export/async/${job.uuid}/download`" @click="updateAsyncJobs">{{ $t('buttonDownload') }}</a>
+                  <a :href="`${storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateInternal">{{ $t('buttonDownload') }}</a>
                   <div v-if="job.resultSize">
                     <!-- File size -->
                     <small class="text-muted">{{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}B</small>
@@ -62,120 +64,157 @@
           </b-list-group-item>
         </b-list-group>
       </b-tab>
-
-      <!-- Upload jobs -->
-      <template v-if="token && token.userType && userIsAtLeast(token.userType, 'Data Curator') && serverSettings.dataImportMode !== 'NONE'">
-        <b-tab>
-          <template slot="title">
-            <i class="mdi mdi-18px mdi-upload" />
-          </template>
-          <!-- Update button -->
-          <b-button-group class="w-100 action-buttons">
-            <b-button @click="updateAsyncJobs" variant="info">
-              <i class="mdi mdi-18px mdi-refresh" /> {{ $t('buttonUpdate') }}
-            </b-button>
-            <b-button @click="clearImportJobs" :disabled="!asyncImportJobs || asyncImportJobs.length < 1">
-              <i class="mdi mdi-delete" /> {{ $t('genericClear') }}
-            </b-button>
-          </b-button-group>
-          <b-list-group class="list-group-accent">
-            <!-- Heading -->
-            <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
-              {{ $t('widgetAsyncImportJobPanelTitle') }}
-            </b-list-group-item>
-            <!-- List of jobs -->
-            <b-list-group-item v-for="job in asyncImportJobs"
-                                  :key="job.id"
-                                  :class="`list-group-item-accent-${(job.feedback && job.feedback.length) > 0 ? 'danger' : status[job.status].color} list-group-item-divider`">
-              <!-- Delete job -->
-              <a href="#" class="text-muted" @click.prevent="deleteImportJob(job)" :title="$t('buttonDelete')"><i class="mdi mdi-close float-right"></i></a>
-              <!-- Template type -->
-              <div><strong>{{ getTemplateType(job.datatype) }}</strong></div>
-              <!-- Date time and filename -->
-              <div class="text-muted">
-                <i class="mdi fix-alignment mdi-calendar-clock" /><small> {{ job.updatedOn | toDateTime }}</small><br/>
-                <template v-if="job.originalFilename"><i class="mdi fix-alignment mdi-file" /><small> {{ job.originalFilename }}</small></template>
+      <b-tab>
+        <template #title>
+          <MdiIcon :path="mdiUpload" />
+        </template>
+        <!-- Update button -->
+        <b-button-group class="w-100 action-buttons">
+          <b-button @click="updateInternal" variant="info">
+            <MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}
+          </b-button>
+          <b-button @click="clearImportJobs" :disabled="!asyncImportJobs || asyncImportJobs.length < 1">
+            <MdiIcon :path="mdiDelete" /> {{ $t('genericClear') }}
+          </b-button>
+        </b-button-group>
+        <b-list-group class="list-group-accent">
+          <!-- Heading -->
+          <b-list-group-item class="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">
+            {{ $t('widgetAsyncImportJobPanelTitle') }}
+          </b-list-group-item>
+          <!-- List of jobs -->
+          <b-list-group-item v-for="job in asyncImportJobs"
+                                :key="job.id"
+                                :class="`${(job.feedback && job.feedback.length) > 0 ? 'danger' : status[job.status].color}`">
+            <!-- Delete job -->
+            <a href="#" class="text-muted float-right" @click.prevent="deleteImportJob(job)" :title="$t('buttonDelete')"><MdiIcon :path="mdiClose" /></a>
+            <!-- Template type -->
+            <div class="text-muted">
+              <MdiIcon :path="mdiDatabase" /><strong>{{ getTemplateType(job.datatype) }}</strong>
+            </div>
+            <!-- Date time and filename -->
+            <div class="text-muted">
+              <MdiIcon :path="mdiCalendarClock" /><small v-if="job.updatedOn"> {{ new Date(job.updatedOn).toLocaleString() }}</small><br/>
+              <template v-if="job.originalFilename"><MdiIcon :path="mdiFile" /><small> {{ job.originalFilename }}</small></template>
+            </div>
+            <!-- Status -->
+            <div v-if="job.status === 'completed'">
+              <!-- If there is feedback -->
+              <div v-if="job.feedback">
+                <!-- Show a button to view the feedback -->
+                <span class="text-danger" v-if="job.feedback.length > 0"><MdiIcon :path="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
+                <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
+                <template v-else-if="job.imported === false">
+                  <span class="text-success" v-if="storeServerSettings.dataImportMode === 'IMPORT'"><MdiIcon :path="mdiCheckCircle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
+                  <span class="text-success" v-else><MdiIcon :path="mdiCheckCircle" />&nbsp;{{ $t('widgetAsyncJobPanelImportDisabled') }}</span>
+                </template>
               </div>
-              <!-- Status -->
-              <div v-if="job.status === 'completed'">
-                <!-- If there is feedback -->
-                <div v-if="job.feedback">
-                  <!-- Show a button to view the feedback -->
-                  <span class="text-danger" v-if="job.feedback.length > 0"><i class="mdi mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
-                  <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
-                  <template v-else-if="job.imported === false">
-                    <span class="text-success" v-if="serverSettings.dataImportMode === 'IMPORT'"><i class="mdi mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
-                    <span class="text-success" v-else><i class="mdi mdi-check-circle" />&nbsp;{{ $t('widgetAsyncJobPanelImportDisabled') }}</span>
-                  </template>
-                </div>
-              </div>
-              <div :class="`text-${status[job.status].color}`" v-else>
-                <b-spinner variant="info" small v-if="job.status === 'running'" />
-                <i :class="`mdi fix-alignment mdi-${status[job.status].icon}`" v-else />
-                <small> {{ status[job.status].text() }}</small>
-              </div>
-            </b-list-group-item>
-          </b-list-group>
-        </b-tab>
-      </template>
+            </div>
+            <div :class="`text-${status[job.status].color}`" v-else>
+              <b-spinner variant="info" small v-if="job.status === 'running'" />
+              <MdiIcon :path="status[job.status].path" v-else/>
+              <small> {{ status[job.status].text() }}</small>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+      </b-tab>
     </b-tabs>
 
     <!-- Modal showing the issues with the selected upload job -->
     <b-modal ref="uploadStatusModal" :title="$t('widgetImportStatusTitle')" :ok-title="$t('buttonClose')" ok-only size="xl">
       <UploadStatusTable :job="selectedImportJob" />
     </b-modal>
-  </div>
+  </b-container>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+import { mdiDelete, mdiDownload, mdiUpload, mdiRefresh, mdiDatabase, mdiClose, mdiCalendarClock, mdiFile, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiPauseCircle, mdiCancel, mdiProgressWrench } from '@mdi/js'
+
 import UploadStatusTable from '@/components/tables/UploadStatusTable'
 import axios from 'axios'
-import datasetApi from '@/mixins/api/dataset.js'
-import miscApi from '@/mixins/api/misc.js'
-import typesMixin from '@/mixins/types.js'
+import datasetApi from '@/mixins/api/dataset'
+import miscApi from '@/mixins/api/misc'
+import typesMixin from '@/mixins/types'
+import formattingMixin from '@/mixins/formatting'
 
 export default {
-  name: 'DefaultAside',
+  components: {
+    MdiIcon,
+    UploadStatusTable
+  },
+  props: {
+    direction: {
+      type: String,
+      default: null
+    }
+  },
+  watch: {
+    tabIndex: function (newValue) {
+      this.$store.dispatch('setAsyncSidebarTabIndex', newValue)
+    },
+    storeAsyncSidebarTabIndex: function (newValue) {
+      this.showTab()
+    }
+  },
   data: function () {
     return {
+      mdiDelete,
+      mdiDownload,
+      mdiUpload,
+      mdiRefresh,
+      mdiClose,
+      mdiCalendarClock,
+      mdiDatabase,
+      mdiFile,
+      mdiAlertCircle,
+      mdiCheckCircle,
       asyncExportJobs: null,
       asyncImportJobs: null,
-      isUpdating: false,
+      timeout: null,
       tabIndex: 0,
       selectedImportJob: null,
       status: {
         running: {
           color: 'info',
-          icon: 'progress-wrench',
+          path: mdiProgressWrench,
           text: () => this.$t('asyncJobStatusRunning')
         },
         failed: {
           color: 'danger',
-          icon: 'alert',
+          path: mdiAlert,
           text: () => this.$t('asyncJobStatusFailed')
         },
         completed: {
           color: 'success',
-          icon: 'check-circle',
+          path: mdiCheckCircle,
           text: () => this.$t('asyncJobStatusCompleted')
         },
         waiting: {
           color: 'info',
-          icon: 'pause-circle',
+          path: mdiPauseCircle,
           text: () => this.$t('asyncJobStatusWaiting')
         },
         cancelled: {
           color: 'warning',
-          icon: 'mdi-cancel',
+          path: mdiCancel,
           text: () => this.$t('asyncJobStatusCancelled')
         }
       }
     }
   },
-  components: {
-    UploadStatusTable
+  computed: {
+    ...mapGetters([
+      'storeBaseUrl',
+      'storeAsyncJobUuids',
+      'storeAsyncJobCount',
+      'storeServerSettings',
+      'storeAsyncSidebarTabIndex'
+    ])
   },
-  mixins: [datasetApi, miscApi, typesMixin],
+  mixins: [datasetApi, miscApi, typesMixin, formattingMixin],
   methods: {
     clearExportJobs: function () {
       if (this.asyncExportJobs) {
@@ -190,7 +229,7 @@ export default {
               this.apiDeleteDatasetAsyncExport(job.uuid, () => {
                 // Delete from the store
                 this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
-                this.updateAsyncJobs()
+                this.updateInternal()
               })
             })
           }
@@ -211,19 +250,17 @@ export default {
               this.apiDeleteDataAsyncImport(job.uuid, () => {
                 // Delete from the store
                 this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
-                this.updateAsyncJobs()
+                this.updateInternal()
               })
             })
           }
         })
       }
     },
-    showTab: function (tab) {
-      if (tab === 'upload') {
-        this.tabIndex = 1
-      } else if (tab === 'download') {
-        this.tabIndex = 0
-      }
+    showTab: function () {
+      this.$nextTick(() => {
+        this.tabIndex = this.storeAsyncSidebarTabIndex
+      })
     },
     showFeedback: function (job) {
       this.selectedImportJob = job
@@ -233,10 +270,10 @@ export default {
     startActualImport: function (job) {
       this.apiGetDataAsyncImportStart(job.uuid, result => {
         if (result) {
-          result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+          result.forEach(r => this.$store.commit('addAsyncUuid', r.uuid))
         }
 
-        this.updateAsyncJobs()
+        this.updateInternal()
       })
     },
     deleteExportJob: function (job) {
@@ -251,7 +288,7 @@ export default {
           this.apiDeleteDatasetAsyncExport(job.uuid, () => {
             // Delete from the store
             this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
-            this.updateAsyncJobs()
+            this.updateInternal()
           })
         }
       })
@@ -268,7 +305,7 @@ export default {
           this.apiDeleteDataAsyncImport(job.uuid, () => {
             // Delete from the store
             this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
-            this.updateAsyncJobs()
+            this.updateInternal()
           })
         }
       })
@@ -297,16 +334,16 @@ export default {
     },
     updateInternal: function () {
       this.$nextTick(() => {
-        const exportJobs = this.apiPostDatasetAsyncExport(this.asyncJobUuids, null, {
+        const exportJobs = this.apiPostDatasetAsyncExport(this.storeAsyncJobUuids, null, {
           codes: [],
           callback: (error) => {
             if (error && error.status === 403) {
               // Log the user out if we get here
-              this.$store.dispatch('ON_TOKEN_CHANGED', null)
+              this.$store.dispatch('setToken', null)
             }
           }
         }).catch(() => null)
-        const importJobs = this.apiPostDataAsyncImport(this.asyncJobUuids, null, {
+        const importJobs = this.apiPostDataAsyncImport(this.storeAsyncJobUuids, null, {
           codes: [],
           callback: () => {
             // We do nothing here. It either works or it doesn't.
@@ -320,34 +357,33 @@ export default {
           const count = this.asyncExportJobs.length + this.asyncImportJobs.length
           const joined = this.asyncExportJobs.concat(this.asyncImportJobs)
 
-          this.$store.dispatch('ON_ASYNC_JOB_COUNT_CHANGED', count)
-          this.$store.dispatch('ON_ASYNC_JOB_UUID', joined.map(a => a.uuid))
+          this.$store.dispatch('setAsyncJobCount', count)
+          this.$store.dispatch('setAsyncJobUuid', joined.map(a => a.uuid))
         }).catch(() => {
           // We do nothing here. It either works or it doesn't.
         })
       })
     },
-    updateAsyncJobs: function (setTimer, overwrite = false) {
-      if (setTimer === true && (!this.isUpdating || overwrite)) {
-        this.isUpdating = true
-        // Check it first
-        this.updateInternal()
-        // Then after 10 seconds, start another check
-        setTimeout(() => {
-          // Only repeat if the aside is still open
-          if (document.body.classList.contains('aside-menu-show')) {
-            this.updateAsyncJobs(true, true)
-          } else {
-            this.isUpdating = false
-          }
-        }, 10000)
-      } else {
-        this.updateInternal()
+    updateAsyncJobs: function () {
+      if (this.timeout) {
+        clearTimeout(this.timeout)
+        this.timeout = null
       }
+      this.updateInternal()
+      this.timeout = setTimeout(() => {
+        this.updateAsyncJobs()
+      }, 10000)
+    }
+  },
+  beforeDestroy: function () {
+    if (this.timeout) {
+      clearTimeout(this.timeout)
     }
   },
   mounted: function () {
     this.updateAsyncJobs()
+
+    this.showTab()
   }
 }
 </script>

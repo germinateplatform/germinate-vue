@@ -58,15 +58,19 @@
             <dt class="col-sm-3 text-right">{{ $t('dublinCoreRights') }}</dt><dd class="col-sm-9" v-html="dataset.dublinCore.rights.join(', ')" />
           </template>
         </dl>
-        <a  class="btn btn-secondary" :href="href" :download="`dataset-${dataset.datasetId}-dublin-core.json`" ><i class="mdi mdi-18px mdi-download" /></a>
+        <a  class="btn btn-secondary" :href="href" :download="`dataset-${dataset.datasetId}-dublin-core.json`" ><MdiIcon :path="mdiDownload" /></a>
       </div>
     </div>
   </b-modal>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetAttributeTable from '@/components/tables/DatasetAttributeTable'
 import datasetApi from '@/mixins/api/dataset.js'
+import utilMixin from '@/mixins/util'
+
+import { mdiDownload } from '@mdi/js'
 
 export default {
   props: {
@@ -77,6 +81,7 @@ export default {
   },
   data: function () {
     return {
+      mdiDownload,
       id: this.uuidv4()
     }
   },
@@ -90,9 +95,10 @@ export default {
     }
   },
   components: {
-    DatasetAttributeTable
+    DatasetAttributeTable,
+    MdiIcon
   },
-  mixins: [datasetApi],
+  mixins: [datasetApi, utilMixin],
   methods: {
     getAttributeData: function (data, callback) {
       return this.apiPostDatasetAttributeTable(this.dataset.datasetId, data, callback)

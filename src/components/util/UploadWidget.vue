@@ -68,12 +68,12 @@
           @input-filter="inputFilter"
           @input-file="inputFile"
           ref="upload">
-          <i class="mdi-18px mdi-file-plus-outline" /> {{ $t('genericAdd') }}
+          <MdiIcon :path="mdiFilePlusOutline" /> {{ $t('genericAdd') }}
         </file-upload>
       </div>
       <template v-if="files && files.length > 0">
-        <b-button variant="success" @click="$refs.upload.active = true" v-if="!$refs.upload || !$refs.upload.active"><i class="mdi-18px mdi-upload" /> {{ $t('widgetDataUploadLabelStartUpload') }}</b-button>
-        <b-button variant="danger" @click="$refs.upload.active = false" v-else><i class="mdi-18px mdi-cancel" /> {{ $t('widgetDataUploadLabelStopUpload') }}</b-button>
+        <b-button variant="success" @click="$refs.upload.active = true" v-if="!$refs.upload || !$refs.upload.active"><MdiIcon :path="mdiUpload" /> {{ $t('widgetDataUploadLabelStartUpload') }}</b-button>
+        <b-button variant="danger" @click="$refs.upload.active = false" v-else><MdiIcon :path="mdiCancel" /> {{ $t('widgetDataUploadLabelStopUpload') }}</b-button>
       </template>
     </div>
   </div>
@@ -81,10 +81,17 @@
 </template>
 
 <script>
+import formattingMixin from '@/mixins/formatting'
+import baseApiMixin from '@/mixins/api/base'
 import FileUpload from 'vue-upload-component'
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import { mdiFilePlusOutline, mdiUpload, mdiCancel } from '@mdi/js'
+
 export default {
   components: {
-    FileUpload
+    FileUpload,
+    MdiIcon
   },
   props: {
     postAction: {
@@ -102,6 +109,9 @@ export default {
   },
   data () {
     return {
+      mdiFilePlusOutline,
+      mdiUpload,
+      mdiCancel,
       files: [],
       multiple: true,
       drop: true,
@@ -122,6 +132,7 @@ export default {
       ]
     }
   },
+  mixins: [baseApiMixin, formattingMixin],
   methods: {
     clear: function () {
       this.$refs.upload.clear()

@@ -1,11 +1,11 @@
 <template>
   <div>
     <h1>{{ $t('pageGerminateSettingsTitle') }}</h1>
-    <b-button @click="reload"><i class="mdi mdi-18px mdi-reload" /> {{ $t('buttonReload') }}</b-button>
+    <b-button @click="reload"><MdiIcon :path="mdiReload" /> {{ $t('buttonReload') }}</b-button>
     <p>{{ $t('pageGerminateSettingsText') }}</p>
     <b-form id="admin-form" @submit.prevent="saveSettings" autocomplete="off" v-if="settings">
       <b-row>
-        <b-col cols=12 xl=6>
+        <b-col cols=12 xl=6 class="mb-3">
           <b-card :title="$t('pageGerminateSettingsCardColors')">
             <b-form-group :label="$t('formLabelAdminSettingsColorPrimary')" label-for="primary-color">
               <b-form-input type="color" v-model="settings.colorPrimary" class="d-inline" id="primary-color" />
@@ -21,7 +21,7 @@
               <b-input-group class="d-inline-flex align-items-center w-auto mt-2">
                 <b-form-input type="color" v-model="tempChartColor" class="d-inline" />
                 <b-input-group-addon>
-                  <b-button @click="addTempChartColor"><i class="mdi mdi-plus-box" /></b-button>
+                  <b-button @click="addTempChartColor"><MdiIcon :path="mdiPlusBox" /></b-button>
                 </b-input-group-addon>
               </b-input-group>
             </b-form-group>
@@ -35,16 +35,16 @@
               <b-input-group class="d-inline-flex align-items-center w-auto mt-2">
                 <b-form-input type="color" v-model="tempTemplateColor" class="d-inline" />
                 <b-input-group-addon>
-                  <b-button @click="addTempTemplateColor"><i class="mdi mdi-plus-box" /></b-button>
+                  <b-button @click="addTempTemplateColor"><MdiIcon :path="mdiPlusBox" /></b-button>
                 </b-input-group-addon>
               </b-input-group>
             </b-form-group>
           </b-card>
         </b-col>
-        <b-col cols=12 xl=6>
+        <b-col cols=12 xl=6 class="mb-3">
           <b-card :title="$t('pageGerminateSettingsCardToggles')">
             <b-row>
-              <b-col cols=6>
+              <b-col cols=12 md=6 class="mb-3">
                 <b-card :class="`toggle-card ${settings.brapiEnabled ? 'active' : null}`" :style="{ backgroundColor: settings.brapiEnabled ? settings.colorsTemplate[0] : null }" @click="settings.brapiEnabled = !settings.brapiEnabled">
                   <div class="d-flex justify-content-between">
                     <svg class="toggle-card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59.999 60">
@@ -58,10 +58,10 @@
                 </b-card>
               </b-col>
 
-              <b-col cols=6>
+              <b-col cols=12 md=6 class="mb-3">
                 <b-card :class="`toggle-card ${settings.commentsEnabled ? 'active' : null}`" :style="{ backgroundColor: settings.commentsEnabled ? settings.colorsTemplate[1] : null }" @click="settings.commentsEnabled = !settings.commentsEnabled">
                   <div class="d-flex justify-content-between">
-                    <i class="toggle-card-icon mdi mdi-48px mdi-comment-text-multiple-outline" />
+                    <MdiIcon :size="48" :path="mdiCommentTextMultipleOutline" />
                     <div class="text-right">
                       <b-card-title>{{ $t('formLabelAdminSettingsToggleComments') }}</b-card-title>
                       <b-form-checkbox disabled id="comments" v-model="settings.commentsEnabled" switch />
@@ -70,10 +70,10 @@
                 </b-card>
               </b-col>
 
-              <b-col cols=6>
+              <b-col cols=12 md=6 class="mb-3">
                 <b-card :class="`toggle-card ${settings.pdciEnabled ? 'active' : null}`" :style="{ backgroundColor: settings.pdciEnabled ? settings.colorsTemplate[2] : null }" @click="settings.pdciEnabled = !settings.pdciEnabled">
                   <div class="d-flex justify-content-between">
-                    <i class="toggle-card-icon mdi mdi-48px mdi-shield-alert-outline" />
+                    <MdiIcon :size="48" :path="mdiShieldAlertOutline" />
                     <div class="text-right">
                       <b-card-title>{{ $t('formLabelAdminSettingsToggleGdpr') }}</b-card-title>
                       <b-form-checkbox disabled id="gdpc" v-model="settings.pdciEnabled" switch />
@@ -82,10 +82,10 @@
                 </b-card>
               </b-col>
 
-              <b-col cols=6>
+              <b-col cols=12 md=6 class="mb-3">
                 <b-card :class="`toggle-card ${settings.showGdprNotification ? 'active' : null}`" :style="{ backgroundColor: settings.showGdprNotification ? settings.colorsTemplate[3] : null }" @click="settings.showGdprNotification = !settings.showGdprNotification">
                   <div class="d-flex justify-content-between">
-                    <i class="toggle-card-icon mdi mdi-48px mdi-calculator-variant-outline" />
+                    <MdiIcon :size="48" :path="mdiCalculatorVariantOutline" />
                     <div class="text-right">
                       <b-card-title>{{ $t('formLabelAdminSettingsTogglePdci') }}</b-card-title>
                       <b-form-checkbox disabled id="pdci" v-model="settings.showGdprNotification" switch />
@@ -96,7 +96,7 @@
             </b-row>
           </b-card>
         </b-col>
-        <b-col cols=12 md=6>
+        <b-col cols=12 md=6 class="mb-3">
           <b-card :title="$t('pageGerminateSettingsCardGatekeeper')">
             <b-form-group :label="$t('formLabelAdminSettingsGatekeeperUrl')" label-for="gatekeeper-url">
               <b-form-input type="url" id="gatekeeper-url" v-model="settings.gatekeeperUrl" />
@@ -115,7 +115,7 @@
             </b-form-group>
           </b-card>
         </b-col>
-        <b-col cols=12 md=6>
+        <b-col cols=12 md=6 class="mb-3">
           <b-card :title="$t('pageGerminateSettingsCardTemplate')">
             <b-form-group :label="$t('formLabelAdminSettingsTemplateDashboardCategories')" label-for="dashboard-categories">
               <b-form-checkbox-group stacked :options="statCategories" v-model="settings.dashboardCategories" id="dashboard-categories" />
@@ -123,7 +123,7 @@
             <a href="#" @click.prevent="selectAllCategories(true)">{{ $t('buttonSelectAll') }}</a> | <a href="#" @click.prevent="selectAllCategories(false)">{{ $t('buttonDeselectAll') }}</a>
           </b-card>
         </b-col>
-        <b-col cols=12 md=6>
+        <b-col cols=12 md=6 class="mb-3">
           <b-card border-variant="danger">
             <b-card-title class="text-danger">{{ $t('pageGerminateSettingsCardAdvanced') }}</b-card-title>
 
@@ -159,17 +159,21 @@
           </b-card>
         </b-col>
       </b-row>
-      <b-button type="submit" variant="primary"><i class="mdi mdi-18px mdi-upload" /> {{ $t('buttonSubmit') }}</b-button>
+      <b-button type="submit" variant="primary"><MdiIcon :path="mdiUpload" /> {{ $t('buttonSubmit') }}</b-button>
     </b-form>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import draggable from 'vuedraggable'
 
 import colorMixin from '@/mixins/colors.js'
 import typeMixin from '@/mixins/types.js'
 import miscApi from '@/mixins/api/misc.js'
+
+import { mdiReload, mdiPlusBox, mdiCommentTextMultipleOutline, mdiShieldAlertOutline, mdiCalculatorVariantOutline, mdiUpload } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -189,10 +193,17 @@ const defaults = {
 
 export default {
   components: {
-    draggable
+    draggable,
+    MdiIcon
   },
   data: function () {
     return {
+      mdiReload,
+      mdiPlusBox,
+      mdiCommentTextMultipleOutline,
+      mdiShieldAlertOutline,
+      mdiCalculatorVariantOutline,
+      mdiUpload,
       // Define the defaults here
       settings: null,
       dataImportModes: [{
@@ -226,6 +237,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ]),
     dataImportModeDescription: function () {
       if (this.settings && this.settings.dataImportMode) {
         return this.dataImportModes.find(i => i.value === this.settings.dataImportMode).explanation
@@ -272,7 +286,7 @@ export default {
                   emitter.emit('on-stylesheet-changed')
 
                   // And redirect to the home/login page
-                  if (this.serverSettings.authMode === 'FULL') {
+                  if (this.storeServerSettings.authMode === 'FULL') {
                     this.$router.push({ name: 'login' })
                   } else {
                     this.$router.push({ name: 'home' })
@@ -322,6 +336,5 @@ export default {
 }
 svg.toggle-card-icon {
   height: 48px;
-  margin: 12px 0;
 }
 </style>

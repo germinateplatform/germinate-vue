@@ -37,24 +37,29 @@
       </b-list-group>
 
       <!-- Export format information -->
-      <p><span class="text-muted" v-html="$t('pageExportFormatsGenotypeText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
+      <p><span class="text-muted" v-html="$t('pageExportFormatsGenotypeText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link> </p>
     </div>
   </div>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import MapChart from '@/components/charts/MapChart'
 import MapTable from '@/components/tables/MapTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import MapExportSelection from '@/components/export/MapExportSelection'
 import genotypeApi from '@/mixins/api/genotype.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
+
+import { mdiInformationOutline } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
     return {
+      mdiInformationOutline,
       mapId: null,
       map: null,
       useAdvancedExportOptions: false
@@ -78,9 +83,10 @@ export default {
     MapChart,
     MapTable,
     MapDefinitionTable,
-    MapExportSelection
+    MapExportSelection,
+    MdiIcon
   },
-  mixins: [genotypeApi, typesMixin],
+  mixins: [genotypeApi, typesMixin, utilMixin],
   methods: {
     exportMap: function (format) {
       let options = {

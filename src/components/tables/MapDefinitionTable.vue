@@ -25,6 +25,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   name: 'MapDefinitionTable',
@@ -91,7 +92,7 @@ export default {
           sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'position')}`,
           label: this.$t('tableColumnMapPosition'),
-          formatter: this.$options.filters.toThousandSeparators
+          formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
         }, {
           key: 'marked',
           type: null,
@@ -105,6 +106,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [utilMixin],
   methods: {
     refresh: function () {
       this.$refs.mapDefinitionTable.refresh()

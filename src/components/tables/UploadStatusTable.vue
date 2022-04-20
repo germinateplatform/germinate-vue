@@ -11,7 +11,8 @@
               sort-by="rowIndex">
       <!-- Import status icon -->
       <template v-slot:cell(icon)="data">
-        <i :class="`mdi mdi-18px ${getIconAndVariant(data.item.status)}`" />
+        <span v-if="data.item.status === 'OK'"><span class="text-success"><MdiIcon :path="mdiCheckCircleOutline" /></span></span>
+        <span v-else><span class="text-danger"><MdiIcon :path="mdiAlertCircleOutline" /></span></span>
       </template>
       <!-- Import status message -->
       <template v-slot:cell(status)="data">
@@ -22,7 +23,14 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import { mdiCheckCircleOutline, mdiAlertCircleOutline } from '@mdi/js'
+
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     job: {
       type: Object,
@@ -31,6 +39,8 @@ export default {
   },
   data: function () {
     return {
+      mdiCheckCircleOutline,
+      mdiAlertCircleOutline,
       statusOptions: {
         GENERIC_INVALID_MARKER: () => this.$t('importStatusGenericInvalidMarker'),
         GENERIC_INVALID_LOCATION: () => this.$t('importStatusGenericInvalidLocation'),
@@ -88,15 +98,6 @@ export default {
           key: 'message'
         }
       ]
-    }
-  },
-  methods: {
-    getIconAndVariant: function (status) {
-      if (status === 'OK') {
-        return 'text-success mdi-check-circle-outline'
-      } else {
-        return 'text-danger mdi-alert-circle-outline'
-      }
     }
   }
 }

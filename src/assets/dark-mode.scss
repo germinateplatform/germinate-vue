@@ -1,8 +1,8 @@
 body.dark-mode input,
 body.dark-mode textarea,
 body.dark-mode select {
-    border-color: #736b5e;
-    color: #e8e6e3;
+  border-color: #736b5e;
+  color: #e8e6e3;
 }
 
 body.dark-mode {
@@ -26,14 +26,14 @@ body.dark-mode .card-header {
 }
 
 body.dark-mode .card-header .nav-tabs .nav-link.active {
-    color: rgb(207, 203, 197);
-    background-image: initial;
-    background-color: rgb(24, 26, 27);
+  color: rgb(207, 203, 197);
+  background-image: initial;
+  background-color: rgb(24, 26, 27);
 }
 
 body.dark-mode .nav-tabs .nav-link:focus,
 body.dark-mode .nav-tabs .nav-link:hover {
-    border-color: rgb(55, 59, 62) rgb(55, 59, 62) rgb(62, 67, 70);
+  border-color: rgb(55, 59, 62) rgb(55, 59, 62) rgb(62, 67, 70);
 }
 
 body.dark-mode .autocomplete-input {
@@ -52,11 +52,11 @@ body.dark-mode .sidebar .nav-link .nav-icon {
 }
 
 body.dark-mode .sidebar .nav-link:hover .nav-icon {
-    color: rgb(232, 230, 227);
+  color: rgb(232, 230, 227);
 }
 
 body.dark-mode .sidebar .nav-link.active {
-    color: rgb(232, 230, 227);
+  color: rgb(232, 230, 227);
 }
 
 body.dark-mode .sidebar .nav-link.active .nav-icon {
@@ -64,12 +64,12 @@ body.dark-mode .sidebar .nav-link.active .nav-icon {
 }
 
 body.dark-mode .list-group-item.active {
-    color: rgb(232, 230, 227);
+  color: rgb(232, 230, 227);
 }
 
 body.dark-mode .list-group-item {
-    background-color: rgb(24, 26, 27);
-    border-color: rgba(140, 130, 115, 0.13);
+  background-color: rgb(24, 26, 27);
+  border-color: rgba(140, 130, 115, 0.13);
 }
 
 body.dark-mode .list-group-item.active {
@@ -77,44 +77,47 @@ body.dark-mode .list-group-item.active {
 }
 
 body.dark-mode .list-group-item-action {
-    color: rgb(167, 159, 147);
+  color: rgb(167, 159, 147);
 }
 
 body.dark-mode .list-group-item-action:focus {
-    color: rgb(232, 230, 227);
+  color: rgb(232, 230, 227);
 }
 
 body.dark-mode .list-group-item-action:hover {
   color: rgb(167, 159, 147);
-   background-color: rgb(31, 34, 35);
+  background-color: rgb(31, 34, 35);
 }
 
 body.dark-mode .list-group-item-action.active {
-    color: rgb(232, 230, 227);
-    background-color: var(--primary);
+  color: rgb(232, 230, 227);
+  background-color: var(--primary);
 }
 
 body.dark-mode .list-group-item-accent-info {
-    border-left: 4px solid #63c2de;
+  border-left: 4px solid #63c2de;
 }
 
 body.dark-mode .list-group-item-accent-info {
-    border-left-color: rgb(28, 107, 131);
+  border-left-color: rgb(28, 107, 131);
 }
+
 body.dark-mode .list-group-item-accent-success {
-    border-left-color: rgb(47, 128, 75);
+  border-left-color: rgb(47, 128, 75);
 }
+
 body.dark-mode .list-group-item-accent-danger {
-    border-left-color: rgb(142, 8, 7);
+  border-left-color: rgb(142, 8, 7);
 }
 
 body.dark-mode .list-group-accent .list-group-item.list-group-item-divider::before {
-    background-color: rgb(38, 41, 42);
+  background-color: rgb(38, 41, 42);
 }
 
 body.dark-mode .navbar-nav .nav-link {
   color: rgb(152, 144, 130);
 }
+
 body.dark-mode .nav-link.disabled {
   color: rgb(152, 144, 130);
 }
@@ -127,7 +130,7 @@ body.dark-mode .form-control {
 
 body.dark-mode .form-control:disabled,
 body.dark-mode .form-control[readonly] {
-    background-color: rgb(38, 41, 42);
+  background-color: rgb(38, 41, 42);
 }
 
 body.dark-mode .form-control:focus {
@@ -140,10 +143,10 @@ body.dark-mode .form-control:focus {
 
 body.dark-mode .btn-secondary:not(:disabled):not(.disabled).active,
 body.dark-mode .btn-secondary:not(:disabled):not(.disabled):active,
-body.dark-mode .show > .btn-secondary.dropdown-toggle {
-    color: rgb(207, 203, 197);
-    background-color: rgb(66, 72, 75);
-    border-color: rgb(71, 77, 80);
+body.dark-mode .show>.btn-secondary.dropdown-toggle {
+  color: rgb(207, 203, 197);
+  background-color: rgb(66, 72, 75);
+  border-color: rgb(71, 77, 80);
 }
 
 body.dark-mode .btn-light {
@@ -159,15 +162,15 @@ body.dark-mode .btn-light:focus {
 
 body.dark-mode .btn-light:not(:disabled):not(.disabled).active,
 body.dark-mode .btn-light:not(:disabled):not(.disabled):active,
-body.dark-mode .show > .btn-light.dropdown-toggle {
-    color: rgb(207, 203, 197);
-    background-color: rgb(45, 49, 51);
-    border-color: rgb(60, 65, 68);
+body.dark-mode .show>.btn-light.dropdown-toggle {
+  color: rgb(207, 203, 197);
+  background-color: rgb(45, 49, 51);
+  border-color: rgb(60, 65, 68);
 }
 
 body.dark-mode .btn-light:not(:disabled):not(.disabled).active:focus,
 body.dark-mode .btn-light:not(:disabled):not(.disabled):active:focus,
-body.dark-mode .show > .btn-light.dropdown-toggle:focus {
+body.dark-mode .show>.btn-light.dropdown-toggle:focus {
   box-shadow: #30343680 0px 0px 0px 0.2rem;
 }
 
@@ -200,11 +203,11 @@ body.dark-mode .aside-menu {
 }
 
 body.dark-mode .aside-menu .nav-tabs {
-    border-color: rgb(62, 67, 70);
+  border-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .aside-menu .tab-content {
-    border-top-color: rgb(62, 67, 70);
+  border-top-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .aside-menu .nav-tabs .nav-link.active {
@@ -219,13 +222,13 @@ body.dark-mode .nav-tabs .nav-link.active:focus {
 
 body.dark-mode .btn-secondary.disabled,
 body.dark-mode .btn-secondary:disabled {
-    color: rgb(207, 203, 197);
-    background-color: rgb(52, 56, 58);
-    border-color: rgb(62, 67, 70);
+  color: rgb(207, 203, 197);
+  background-color: rgb(52, 56, 58);
+  border-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .list-group-item-accent-secondary {
-    border-left-color: rgb(62, 67, 70);
+  border-left-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .bg-light {
@@ -234,41 +237,41 @@ body.dark-mode .bg-light {
 
 
 body.dark-mode .sidebar {
-    color: rgb(232, 230, 227);
-    background-image: initial;
-    background-color: rgb(40, 43, 44);
+  color: rgb(232, 230, 227);
+  background-image: initial;
+  background-color: rgb(40, 43, 44);
 }
 
 body.dark-mode .btn-secondary {
-    color: rgb(207, 203, 197);
-    background-color: rgb(52, 56, 58);
-    border-color: rgb(62, 67, 70);
+  color: rgb(207, 203, 197);
+  background-color: rgb(52, 56, 58);
+  border-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .btn-secondary:hover {
-    color: rgb(207, 203, 197);
-    background-color: rgb(63, 68, 71);
-    border-color: rgb(69, 75, 78);
+  color: rgb(207, 203, 197);
+  background-color: rgb(63, 68, 71);
+  border-color: rgb(69, 75, 78);
 }
 
 body.dark-mode .custom-select {
-    color: rgb(167, 159, 147);
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%232f353a' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
-    background-color: rgb(24, 26, 27);
-    border-color: rgb(55, 59, 62);
+  color: rgb(167, 159, 147);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%232f353a' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+  background-color: rgb(24, 26, 27);
+  border-color: rgb(55, 59, 62);
 }
 
 body.dark-mode .custom-select:disabled {
-    color: rgb(152, 144, 130);
-    background-color: rgb(38, 41, 42);
+  color: rgb(152, 144, 130);
+  background-color: rgb(38, 41, 42);
 }
 
-body.dark-mode select[disabled] > option {
-    color: rgb(130, 130, 130);
+body.dark-mode select[disabled]>option {
+  color: rgb(130, 130, 130);
 }
 
 body.dark-mode select option[disabled] {
-    color: rgb(204, 200, 193);
+  color: rgb(204, 200, 193);
 }
 
 body.dark-mode .badge-secondary {
@@ -282,251 +285,251 @@ body.dark-mode .badge-light {
 }
 
 body.dark-mode .btn-outline-secondary {
-    color: rgb(201, 196, 189);
-    border-color: rgb(62, 67, 70);
+  color: rgb(201, 196, 189);
+  border-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .btn-success {
-    color: rgb(232, 230, 227);
-    background-color: rgb(53, 144, 100);
-    border-color: rgb(47, 128, 75);
+  color: rgb(232, 230, 227);
+  background-color: rgb(53, 144, 100);
+  border-color: rgb(47, 128, 75);
 }
 
 body.dark-mode .btn-danger {
-    color: rgb(232, 230, 227);
-    background-color: rgb(137, 7, 7);
-    border-color: rgb(142, 8, 7);
+  color: rgb(232, 230, 227);
+  background-color: rgb(137, 7, 7);
+  border-color: rgb(142, 8, 7);
 }
 
 body.dark-mode .btn-info {
-    color: rgb(207, 203, 197);
-    background-color: rgb(29, 111, 136);
-    border-color: rgb(28, 107, 131);
+  color: rgb(207, 203, 197);
+  background-color: rgb(29, 111, 136);
+  border-color: rgb(28, 107, 131);
 }
 
 body.dark-mode .btn-success:hover {
-    color: rgb(232, 230, 227);
-    background-color: rgb(50, 133, 78);
-    border-color: rgb(51, 139, 82);
+  color: rgb(232, 230, 227);
+  background-color: rgb(50, 133, 78);
+  border-color: rgb(51, 139, 82);
 }
 
 body.dark-mode .btn-danger:hover {
-    color: rgb(232, 230, 227);
-    background-color: rgb(160, 9, 8);
-    border-color: rgb(157, 9, 7);
+  color: rgb(232, 230, 227);
+  background-color: rgb(160, 9, 8);
+  border-color: rgb(157, 9, 7);
 }
 
 body.dark-mode .btn-info:hover {
-    color: rgb(207, 203, 197);
-    background-color: rgb(33, 128, 155);
-    border-color: rgb(30, 118, 144);
+  color: rgb(207, 203, 197);
+  background-color: rgb(33, 128, 155);
+  border-color: rgb(30, 118, 144);
 }
 
 body.dark-mode .btn-success:not(:disabled):not(.disabled).active,
 body.dark-mode .btn-success:not(:disabled):not(.disabled):active,
-body.dark-mode .show > .btn-success.dropdown-toggle {
-    color: rgb(232, 230, 227);
-    background-color: rgb(46, 126, 74);
-    border-color: rgb(53, 142, 83);
+body.dark-mode .show>.btn-success.dropdown-toggle {
+  color: rgb(232, 230, 227);
+  background-color: rgb(46, 126, 74);
+  border-color: rgb(53, 142, 83);
 }
 
 body.dark-mode .btn-danger:not(:disabled):not(.disabled).active,
 body.dark-mode .btn-danger:not(:disabled):not(.disabled):active,
-body.dark-mode .show > .btn-danger.dropdown-toggle {
-    color: rgb(232, 230, 227);
-    background-color: rgb(167, 9, 8);
-    border-color: rgb(160, 9, 8);
+body.dark-mode .show>.btn-danger.dropdown-toggle {
+  color: rgb(232, 230, 227);
+  background-color: rgb(167, 9, 8);
+  border-color: rgb(160, 9, 8);
 }
 
 body.dark-mode .btn-info:not(:disabled):not(.disabled).active,
 body.dark-mode .btn-info:not(:disabled):not(.disabled):active,
-body.dark-mode .show > .btn-info.dropdown-toggle {
-    color: rgb(232, 230, 227);
-    background-color: rgb(34, 132, 161);
-    border-color: rgb(31, 120, 147);
+body.dark-mode .show>.btn-info.dropdown-toggle {
+  color: rgb(232, 230, 227);
+  background-color: rgb(34, 132, 161);
+  border-color: rgb(31, 120, 147);
 }
 
 body.dark-mode .btn-success:not(:disabled):not(.disabled).active:focus,
 body.dark-mode .btn-success:not(:disabled):not(.disabled):active:focus,
-body.dark-mode .show > .btn-success.dropdown-toggle:focus {
-    box-shadow: rgba(47, 128, 88, 0.5) 0px 0px 0px 0.2rem;
+body.dark-mode .show>.btn-success.dropdown-toggle:focus {
+  box-shadow: rgba(47, 128, 88, 0.5) 0px 0px 0px 0.2rem;
 }
 
 body.dark-mode .btn-danger:not(:disabled):not(.disabled).active:focus,
 body.dark-mode .btn-danger:not(:disabled):not(.disabled):active:focus,
-body.dark-mode .show > .btn-danger.dropdown-toggle:focus {
-    box-shadow: rgba(124, 7, 6, 0.5) 0px 0px 0px 0.2rem;
+body.dark-mode .show>.btn-danger.dropdown-toggle:focus {
+  box-shadow: rgba(124, 7, 6, 0.5) 0px 0px 0px 0.2rem;
 }
 
 body.dark-mode .btn-info:not(:disabled):not(.disabled).active:focus,
 body.dark-mode .btn-info:not(:disabled):not(.disabled):active:focus,
-body.dark-mode .show > .btn-info.dropdown-toggle:focus {
-    box-shadow: rgba(50, 117, 137, 0.5) 0px 0px 0px 0.2rem;
+body.dark-mode .show>.btn-info.dropdown-toggle:focus {
+  box-shadow: rgba(50, 117, 137, 0.5) 0px 0px 0px 0.2rem;
 }
 
 body.dark-mode select option[disabled] {
-    color: rgb(62, 67, 70);
+  color: rgb(62, 67, 70);
 }
 
 body.dark-mode .table {
-    color: rgb(207, 203, 197);
+  color: rgb(207, 203, 197);
 }
 
 body.dark-mode .table td,
 body.dark-mode .table th {
-    border-top-color: rgb(62, 67, 70);
+  border-top-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .table-hover tbody tr:hover {
-    color: rgb(207, 203, 197);
-    background-color: rgba(0, 0, 0, 0.07);
+  color: rgb(207, 203, 197);
+  background-color: rgba(0, 0, 0, 0.07);
 }
 
 body.dark-mode .table-striped tbody tr:nth-of-type(2n+1) {
-    background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 body.dark-mode .border {
-    border-color: rgb(62, 67, 70) !important;
+  border-color: rgb(62, 67, 70) !important;
 }
 
 body.dark-mode .page-link {
-    background-color: rgb(24, 26, 27);
-    border-color: rgb(62, 67, 70);
+  background-color: rgb(24, 26, 27);
+  border-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .page-item.disabled .page-link {
-    color: rgb(152, 144, 130);
-    background-color: rgb(24, 26, 27);
-    border-color: rgb(62, 67, 70);
+  color: rgb(152, 144, 130);
+  background-color: rgb(24, 26, 27);
+  border-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .btn-outline-secondary:hover {
-    color: rgb(207, 203, 197);
-    background-color: rgb(52, 56, 58);
-    border-color: rgb(62, 67, 70);
+  color: rgb(207, 203, 197);
+  background-color: rgb(52, 56, 58);
+  border-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .modal-content {
-    background-color: rgb(24, 26, 27);
-    border-color: rgba(140, 130, 115, 0.2);
+  background-color: rgb(24, 26, 27);
+  border-color: rgba(140, 130, 115, 0.2);
 }
 
 body.dark-mode .modal-header {
-    border-bottom-color: rgb(62, 67, 70);
+  border-bottom-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .modal-footer {
-    border-top-color: rgb(62, 67, 70);
+  border-top-color: rgb(62, 67, 70);
 }
 
 body.dark-mode .close {
-    color: rgb(232, 230, 227);
-    text-shadow: #181a1b 0px 1px 0px;
+  color: rgb(232, 230, 227);
+  text-shadow: #181a1b 0px 1px 0px;
 }
 
 body.dark-mode .custom-control-label::before {
-    background-color: rgb(24, 26, 27);
-    border-color: rgb(76, 83, 86);
+  background-color: rgb(24, 26, 27);
+  border-color: rgb(76, 83, 86);
 }
 
 body.dark-mode .custom-switch .custom-control-label::after {
-    background-color: rgb(81, 87, 91);
+  background-color: rgb(81, 87, 91);
 }
 
 body.dark-mode .input-group-text {
-    color: rgb(167, 159, 147);
-    background-color: rgb(31, 34, 35);
-    border-color: rgb(55, 59, 62);
+  color: rgb(167, 159, 147);
+  background-color: rgb(31, 34, 35);
+  border-color: rgb(55, 59, 62);
 }
 
 body.dark-mode .custom-file-label,
 body.dark-mode .custom-file-label::after {
-    color: rgb(167, 159, 147);
+  color: rgb(167, 159, 147);
 }
 
 body.dark-mode .custom-file-label::after {
-    background-color: rgb(31, 34, 35);
-    border-left-color: inherit;
+  background-color: rgb(31, 34, 35);
+  border-left-color: inherit;
 }
 
 body.dark-mode .custom-file-label {
-    background-color: rgb(24, 26, 27);
+  background-color: rgb(24, 26, 27);
 }
 
 body.dark-mode .text-dark {
-    color: rgb(199, 194, 187) !important;
+  color: rgb(199, 194, 187) !important;
 }
 
 body.dark-mode .form-control .btn {
-    color: rgb(207, 203, 197);
-    background-color: transparent;
-    border-color: transparent;
+  color: rgb(207, 203, 197);
+  background-color: transparent;
+  border-color: transparent;
 }
 
 body.dark-mode .b-popover-secondary.popover {
-    background-color: rgb(40, 43, 44);
-    border-color: rgb(59, 64, 66);
+  background-color: rgb(40, 43, 44);
+  border-color: rgb(59, 64, 66);
 }
 
 body.dark-mode .b-popover-secondary .popover-body {
-    color: rgb(194, 188, 180);
+  color: rgb(194, 188, 180);
 }
 
 body.dark-mode .b-popover-secondary .popover-header {
-    color: rgb(209, 205, 199);
-    background-color: rgb(44, 47, 49);
-    border-bottom-color: rgb(62, 67, 69);
+  color: rgb(209, 205, 199);
+  background-color: rgb(44, 47, 49);
+  border-bottom-color: rgb(62, 67, 69);
 }
 
-body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="top"] > .arrow::before,
-body.dark-mode .b-popover-secondary.bs-popover-top > .arrow::before {
-    border-top-color: rgb(59, 64, 66);
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="top"]>.arrow::before,
+body.dark-mode .b-popover-secondary.bs-popover-top>.arrow::before {
+  border-top-color: rgb(59, 64, 66);
 }
 
-body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="top"] > .arrow::after,
-body.dark-mode .b-popover-secondary.bs-popover-top > .arrow::after {
-    border-top-color: rgb(56, 60, 63);
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="top"]>.arrow::after,
+body.dark-mode .b-popover-secondary.bs-popover-top>.arrow::after {
+  border-top-color: rgb(56, 60, 63);
 }
 
-body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="bottom"] > .arrow::before,
-body.dark-mode .b-popover-secondary.bs-popover-bottom > .arrow::before {
-    border-bottom-color: rgb(59, 64, 66);
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="bottom"]>.arrow::before,
+body.dark-mode .b-popover-secondary.bs-popover-bottom>.arrow::before {
+  border-bottom-color: rgb(59, 64, 66);
 }
 
 body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="bottom"] .popover-header::before,
-body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="bottom"] > .arrow::after,
+body.dark-mode .b-popover-secondary.bs-popover-auto[x-placement^="bottom"]>.arrow::after,
 body.dark-mode .b-popover-secondary.bs-popover-bottom .popover-header::before,
-body.dark-mode .b-popover-secondary.bs-popover-bottom > .arrow::after {
-    border-bottom-color: rgb(58, 63, 65);
+body.dark-mode .b-popover-secondary.bs-popover-bottom>.arrow::after {
+  border-bottom-color: rgb(58, 63, 65);
 }
 
-body.dark-mode .bs-popover-right > .arrow::before,
-body.dark-mode .bs-popover-auto[x-placement^="right"] > .arrow::before {
-    border-right-color: rgb(56, 60, 63);
+body.dark-mode .bs-popover-right>.arrow::before,
+body.dark-mode .bs-popover-auto[x-placement^="right"]>.arrow::before {
+  border-right-color: rgb(56, 60, 63);
 }
 
-body.dark-mode .bs-popover-right > .arrow::after,
-body.dark-mode .bs-popover-auto[x-placement^="right"] > .arrow::after {
-    border-right-color: rgb(44, 47, 49);
+body.dark-mode .bs-popover-right>.arrow::after,
+body.dark-mode .bs-popover-auto[x-placement^="right"]>.arrow::after {
+  border-right-color: rgb(44, 47, 49);
 }
 
-body.dark-mode .bs-popover-left > .arrow::before,
-body.dark-mode .bs-popover-auto[x-placement^="left"] > .arrow::before {
-    border-left-color: rgb(56, 60, 63);
+body.dark-mode .bs-popover-left>.arrow::before,
+body.dark-mode .bs-popover-auto[x-placement^="left"]>.arrow::before {
+  border-left-color: rgb(56, 60, 63);
 }
 
-body.dark-mode .bs-popover-left > .arrow::after,
-body.dark-mode .bs-popover-auto[x-placement^="left"] > .arrow::after {
-    border-left-color: rgb(44, 47, 49);
+body.dark-mode .bs-popover-left>.arrow::after,
+body.dark-mode .bs-popover-auto[x-placement^="left"]>.arrow::after {
+  border-left-color: rgb(44, 47, 49);
 }
 
 body.dark-mode .border-right {
-    border-right-color: rgb(62, 67, 70) !important;
+  border-right-color: rgb(62, 67, 70) !important;
 }
 
 body.dark-mode .border-left {
-    border-left-color: rgb(62, 67, 70) !important;
+  border-left-color: rgb(62, 67, 70) !important;
 }
 
 body.dark-mode .page-header {
@@ -540,85 +543,88 @@ body.dark-mode .app-footer {
 
 
 body.dark-mode hr {
-    border-top-color: rgba(140, 130, 115, 0.1);
+  border-top-color: rgba(140, 130, 115, 0.1);
 }
 
-body.dark-mode .table-danger tbody + tbody,
+body.dark-mode .table-danger tbody+tbody,
 body.dark-mode .table-danger td,
 body.dark-mode .table-danger th,
 body.dark-mode .table-danger thead th {
-    border-color: rgb(120, 8, 6);
+  border-color: rgb(120, 8, 6);
 }
 
 body.dark-mode .table-danger,
-body.dark-mode .table-danger > td,
-body.dark-mode .table-danger > th {
-    background-color: rgb(73, 4, 4);
+body.dark-mode .table-danger>td,
+body.dark-mode .table-danger>th {
+  background-color: rgb(73, 4, 4);
 }
 
 body.dark-mode .table-hover .table-danger:hover,
-body.dark-mode .table-hover .table-danger:hover > td,
-body.dark-mode .table-hover .table-danger:hover > th {
-    background-color: rgb(88, 4, 4);
+body.dark-mode .table-hover .table-danger:hover>td,
+body.dark-mode .table-hover .table-danger:hover>th {
+  background-color: rgb(88, 4, 4);
 }
 
 body.dark-mode ::-webkit-scrollbar {
-    background-color: #202324;
-    color: #aba499;
+  background-color: #202324;
+  color: #aba499;
 }
+
 body.dark-mode ::-webkit-scrollbar-corner {
-    background-color: #181a1b;
+  background-color: #181a1b;
 }
+
 body.dark-mode ::-webkit-scrollbar-thumb {
-    background-color: #454a4d;
+  background-color: #454a4d;
 }
 
 
 body.dark-mode .leaflet-control-layers {
-    box-shadow: #00000066 0px 1px 5px;
-    background-image: initial;
-    background-color: rgb(24, 26, 27);
+  box-shadow: #00000066 0px 1px 5px;
+  background-image: initial;
+  background-color: rgb(24, 26, 27);
 }
 
 body.dark-mode .leaflet-control-layers-expanded {
-    color: rgb(200, 195, 188);
-    background-color: rgb(24, 26, 27);
+  color: rgb(200, 195, 188);
+  background-color: rgb(24, 26, 27);
 }
 
 body.dark-mode .leaflet-bar a,
 body.dark-mode .leaflet-bar a:hover {
-    background-color: rgb(24, 26, 27);
-    border-bottom-color: rgb(62, 68, 70);
-    text-decoration-color: initial;
-    color: rgb(232, 230, 227);
+  background-color: rgb(24, 26, 27);
+  border-bottom-color: rgb(62, 68, 70);
+  text-decoration-color: initial;
+  color: rgb(232, 230, 227);
 }
 
 body.dark-mode .leaflet-bar button,
 body.dark-mode .leaflet-bar button:hover {
-    background-color: rgb(24, 26, 27);
-    border-top-color: initial;
-    border-right-color: initial;
-    border-left-color: initial;
-    border-bottom-color: rgb(62, 68, 70);
-    text-decoration-color: initial;
-    color: rgb(232, 230, 227);
+  background-color: rgb(24, 26, 27);
+  border-top-color: initial;
+  border-right-color: initial;
+  border-left-color: initial;
+  border-bottom-color: rgb(62, 68, 70);
+  text-decoration-color: initial;
+  color: rgb(232, 230, 227);
 }
 
 body.dark-mode .leaflet-popup-content-wrapper,
 body.dark-mode .leaflet-popup-tip {
-    background-color: rgb(24, 26, 27);
-    color: rgb(200, 195, 188);
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 14px;
+  background-color: rgb(24, 26, 27);
+  color: rgb(200, 195, 188);
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 14px;
 }
 
 body.dark-mode .leaflet-container {
-    background-color: rgb(43, 47, 49);
+  background-color: rgb(43, 47, 49);
 }
 
 
 body.dark-mode .pdci-circle-background {
   stroke: #2f353a;
 }
+
 body.dark-mode .pdci-circle-inner {
   stroke: #ccc;
 }

@@ -9,19 +9,19 @@
                v-on="$listeners">
       <!-- Comment type -->
       <template v-slot:cell(commentType)="data">
-        <span class="text-nowrap"><i :class="`mdi mdi-18px ${commentTypes[data.item.commentType].icon} fix-alignment`" :style="`color: ${commentTypes[data.item.commentType].color()};`" /> {{ commentTypes[data.item.commentType].text() }}</span>
+        <span class="text-nowrap"><span :style="`color: ${commentTypes[data.item.commentType].color()};`"><MdiIcon :path="commentTypes[data.item.commentType].path" /></span> {{ commentTypes[data.item.commentType].text() }}</span>
       </template>
       <!-- Additional actions column holding the delete button -->
       <template v-slot:cell(actions)="data">
-        <div v-if="token && token.id === data.item.userId">
-          <b-button size="sm" variant="outline-danger" v-b-tooltip:hover :title="$t('tooltipDelete')" @click="deleteComment(data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
+        <div v-if="storeToken && storeToken.id === data.item.userId">
+          <b-button size="sm" variant="outline-danger" v-b-tooltip:hover :title="$t('tooltipDelete')" @click="deleteComment(data.item)"><MdiIcon :path="mdiDelete" /></b-button>
         </div>
       </template>
     </BaseTable>
 
     <!-- Modal containing the input field for new comments -->
     <b-modal ref="commentModal"
-             v-if="token"
+             v-if="storeToken"
              :title="$t('modalTitleAddComment')"
              :ok-title="$t('buttonSubmit')"
              :cancel-title="$t('buttonCancel')"
@@ -35,10 +35,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import miscApi from '@/mixins/api/misc.js'
-import typesMixin from '@/mixins/types.js'
+import defaultProps from '@/const/table-props'
+import miscApi from '@/mixins/api/misc'
+import typesMixin from '@/mixins/types'
+import utilMixin from '@/mixins/util'
+
+import { mdiPlusBox, mdiDelete } from '@mdi/js'
 
 export default {
   name: 'CompoundTable',
@@ -55,6 +60,7 @@ export default {
   },
   data: function () {
     return {
+      mdiDelete,
       options: {
         idColumn: 'commentId',
         tableName: 'comments',
@@ -66,8 +72,8 @@ export default {
         id: 0,
         text: this.$t('tooltipAddNewComment'),
         variant: null,
-        disabled: () => !this.token,
-        icon: 'mdi mdi-18px mdi-plus-box',
+        disabled: () => !this.storeToken,
+        path: mdiPlusBox,
         callback: () => {
           this.newComment = ''
 
@@ -85,6 +91,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     columns: function () {
       return [{
         key: 'commentId',
@@ -129,7 +138,7 @@ export default {
         class: `${this.isTableColumnHidden(this.options.tableName, 'updatedOn')}`,
         sortable: true,
         label: this.$t('tableColumnCommentUpdatedOn'),
-        formatter: this.$options.filters.toDateTime
+        formatter: value => value ? new Date(value).toLocaleString() : null
       }, {
         key: 'actions',
         type: undefined,
@@ -140,9 +149,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
-  mixins: [miscApi, typesMixin],
+  mixins: [miscApi, typesMixin, utilMixin],
   methods: {
     getFilter: function () {
       return [{
@@ -189,7 +199,7 @@ export default {
         // Submit the new comment
         const data = {
           commenttypeId: this.commentTypeId,
-          userId: this.token ? this.token.id : null,
+          userId: this.storeToken ? this.storeToken.id : null,
           description: this.newComment,
           referenceId: this.referenceId
         }

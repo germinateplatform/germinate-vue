@@ -27,27 +27,38 @@
     </div>
 
     <b-button-group>
-      <b-button class="mdi mdi-18px mdi-download" @click="download" v-if="images && images.length > 0"> {{ $t('buttonDownloadImages') }}</b-button>
-      <b-button class="mdi mdi-18px mdi-upload" @click="$refs.imageUploadModal.show()" v-if="token && userIsAtLeast(token.userType, 'Data Curator')"> {{ $t('buttonUpload') }}</b-button>
+      <b-button @click="download" v-if="images && images.length > 0"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownloadImages') }}</b-button>
+      <b-button @click="$refs.imageUploadModal.show()" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiUpload" /> {{ $t('buttonUpload') }}</b-button>
     </b-button-group>
 
-    <ImageUploadModal :foreignId="foreignId" :referenceTable="referenceTable" v-on:images-updated="refresh()" ref="imageUploadModal" v-if="token && userIsAtLeast(token.userType, 'Data Curator')" />
+    <ImageUploadModal :foreignId="foreignId" :referenceTable="referenceTable" v-on:images-updated="refresh()" ref="imageUploadModal" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import CoolLightBox from 'vue-cool-lightbox'
 import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 import ImageNode from '@/components/images/ImageNode'
 import ImageTags from '@/components/images/ImageTags'
 import ImageUploadModal from '@/components/modals/ImageUploadModal'
+import imageMixin from '@/mixins/image'
 import miscApi from '@/mixins/api/misc.js'
+import utilMixin from '@/mixins/util'
+import authApi from '@/mixins/api/auth.js'
 import { EXIF } from 'exif-js'
+
+import { mdiDownload, mdiUpload } from '@mdi/js'
+
 const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
     return {
+      mdiDownload,
+      mdiUpload,
       coolboxIndex: null,
       currentPage: 1,
       imagesPerPage: 8,
@@ -72,6 +83,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     coolboxImages: function () {
       return this.images.map(i => {
         return {
@@ -85,9 +99,10 @@ export default {
     CoolLightBox,
     ImageNode,
     ImageTags,
-    ImageUploadModal
+    ImageUploadModal,
+    MdiIcon
   },
-  mixins: [miscApi],
+  mixins: [imageMixin, miscApi, utilMixin, authApi],
   methods: {
     onTagClicked: function (tag) {
       this.selectedTag = tag
@@ -133,7 +148,7 @@ export default {
     getSrc: function (image) {
       return this.getImageUrl(image.imagePath, {
         name: image.imagePath,
-        token: this.token ? this.token.imageToken : null,
+        token: this.storeToken ? this.storeToken.imageToken : null,
         type: 'database',
         size: 'large'
       })

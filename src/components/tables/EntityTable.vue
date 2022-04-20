@@ -37,20 +37,22 @@
       </template>
       <!-- Entity parent type -->
       <template v-slot:cell(entityParentType)="data">
-        <span class="text-nowrap" v-if="data.item.entityParentType"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityParentType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityParentType].color()};`" /> {{ entityTypes[data.item.entityParentType].text() }}</span>
+        <span class="text-nowrap" v-if="data.item.entityParentType"><span :style="`color: ${entityTypes[data.item.entityParentType].color()};`"><MdiIcon :path="entityTypes[data.item.entityParentType].path" /></span> {{ entityTypes[data.item.entityParentType].text() }}</span>
       </template>
       <!-- Entity child type -->
       <template v-slot:cell(entityChildType)="data">
-        <span class="text-nowrap" v-if="data.item.entityChildType"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityChildType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityChildType].color()};`" /> {{ entityTypes[data.item.entityChildType].text() }}</span>
+        <span class="text-nowrap" v-if="data.item.entityChildType"><span :style="`color: ${entityTypes[data.item.entityChildType].color()};`"><MdiIcon :path="entityTypes[data.item.entityChildType].path" /></span> {{ entityTypes[data.item.entityChildType].text() }}</span>
       </template>
     </BaseTable>
   </div>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   name: 'EntityTable',
@@ -134,9 +136,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
-  mixins: [typesMixin],
+  mixins: [typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.entityTable.refresh()

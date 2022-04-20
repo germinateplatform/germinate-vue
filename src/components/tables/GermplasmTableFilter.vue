@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Collapse icon="mdi-filter" :title="$t('widgetGermplasmTableFilterToggle')" :visible="false" :showLoading="false" class="mb-2" @toggle="collapseVisible = !collapseVisible">
+    <Collapse :icon="mdiFilter" :title="$t('widgetGermplasmTableFilterToggle')" :visible="false" :showLoading="false" class="mb-2" @toggle="collapseVisible = !collapseVisible">
       <template v-slot:content>
         <b-row>
           <b-col xs=12 sm=6 md=6 lg=4 xl=3>
@@ -8,28 +8,28 @@
             <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
             <b-button-group class="flex-wrap">
               <b-button class="mb-2" @click="onEntityTypeSelected(null)" variant="outline-primary">
-                <i class="mdi mdi-18px fix-alignment mdi-check-all" /><span> {{$t('buttonAll')}}</span> <b-badge>{{ allGermplasmCount }}</b-badge>
+                <MdiIcon :path="mdiCheckAll" /><span> {{$t('buttonAll')}}</span> <b-badge>{{ allGermplasmCount }}</b-badge>
               </b-button>
               <b-button class="mb-2" v-for="entityType in entityTypeOptions"
                       :key="entityType.id"
                       :disabled="entityType.disabled"
                       :variant="entityType.disabled ? 'outline-secondary' : 'outline-primary'"
                       @click="onEntityTypeSelected(entityType)">
-                <i :class="`mdi mdi-18px fix-alignment ${entityType.icon}`" /><span> {{ entityType.text() }} <b-badge>{{ entityType.count }}</b-badge></span>
+                <MdiIcon :path="entityType.path" /><span> {{ entityType.text() }} <b-badge>{{ entityType.count }}</b-badge></span>
               </b-button>
             </b-button-group>
           </b-col>
           <b-col xs=12 sm=6 md=6 lg=4 xl=3 v-if="locationOptions && locationOptions.length > 2">
             <h6>{{ $t('widgetGermplasmTableFilterHasData') }}</h6>
             <b-button-group class="mr-2">
-              <b-button class="mb-2 text-dark" variant="outline-secondary" @click="onHasImagesClicked" v-b-tooltip="$t('widgetGermplasmTableFilterHasImages')"><i class="mdi mdi-18px mdi-camera" /></b-button>
+              <b-button class="mb-2 text-dark" variant="outline-secondary" @click="onHasImagesClicked" v-b-tooltip="$t('widgetGermplasmTableFilterHasImages')"><MdiIcon :path="mdiCamera" /></b-button>
             </b-button-group>
             <b-button-group class="flex-wrap">
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasTraitDataClicked" v-b-tooltip="datasetTypes.trials.text()"><i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" /></b-button>
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasGenotypicDataClicked" v-b-tooltip="datasetTypes.genotype.text()"><i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" /></b-button>
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasPedigreeDataClicked" v-b-tooltip="datasetTypes.pedigree.text()"><i :class="`mdi mdi-18px ${datasetTypes.pedigree.icon}`" :style="`color: ${datasetTypes.pedigree.color()};`" /></b-button>
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasCompoundDataClicked" v-b-tooltip="datasetTypes.compound.text()"><i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" /></b-button>
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasAllelefreqDataClicked" v-b-tooltip="datasetTypes.allelefreq.text()"><i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" /></b-button>
+              <b-button class="mb-2" variant="outline-secondary" @click="onHasTraitDataClicked" v-b-tooltip="datasetTypes.trials.text()" :style="`color: ${datasetTypes.trials.color()};`"><MdiIcon :path="datasetTypes.trials.path" /></b-button>
+              <b-button class="mb-2" variant="outline-secondary" @click="onHasGenotypicDataClicked" v-b-tooltip="datasetTypes.genotype.text()" :style="`color: ${datasetTypes.genotype.color()};`"><MdiIcon :path="datasetTypes.genotype.path" /></b-button>
+              <b-button class="mb-2" variant="outline-secondary" @click="onHasPedigreeDataClicked" v-b-tooltip="datasetTypes.pedigree.text()" :style="`color: ${datasetTypes.pedigree.color()};`"><MdiIcon :path="datasetTypes.pedigree.path" /></b-button>
+              <b-button class="mb-2" variant="outline-secondary" @click="onHasCompoundDataClicked" v-b-tooltip="datasetTypes.compound.text()" :style="`color: ${datasetTypes.compound.color()};`"><MdiIcon :path="datasetTypes.compound.path" /></b-button>
+              <b-button class="mb-2" variant="outline-secondary" @click="onHasAllelefreqDataClicked" v-b-tooltip="datasetTypes.allelefreq.text()" :style="`color: ${datasetTypes.allelefreq.color()};`"><MdiIcon :path="datasetTypes.allelefreq.path" /></b-button>
             </b-button-group>
           </b-col>
           <b-col xs=12 sm=6 md=6 lg=4 xl=3 v-if="genusOptions && genusOptions.length > 2">
@@ -59,17 +59,26 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 
 import germplasmApi from '@/mixins/api/germplasm.js'
 import typesMixin from '@/mixins/types.js'
 
+import { mdiFilter, mdiCamera, mdiCheckAll } from '@mdi/js'
+
 export default {
   components: {
-    Collapse
+    Collapse,
+    MdiIcon
   },
   data: function () {
     return {
+      mdiFilter,
+      mdiCamera,
+      mdiCheckAll,
       collapseVisible: false,
       selectedGenus: null,
       selectedSpecies: null,
@@ -92,6 +101,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeEntityTypeStats'
+    ]),
     allGermplasmCount: function () {
       return this.entityTypeOptions.map(o => o.count).reduce((a, b) => a + b)
     },
@@ -174,13 +186,14 @@ export default {
     },
     entityTypeOptions: function () {
       return Object.keys(this.entityTypes).map(e => {
-        const stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
+        const stats = this.storeEntityTypeStats.filter(es => es.entityTypeName === e)
         const enabled = stats && stats.length > 0 && stats[0].count > 0
         const count = stats && stats.length > 0 ? stats[0].count : 0
 
         return {
           id: e,
           icon: this.entityTypes[e].icon,
+          path: this.entityTypes[e].path,
           disabled: !enabled,
           count: count,
           text: () => this.entityTypes[e].text()

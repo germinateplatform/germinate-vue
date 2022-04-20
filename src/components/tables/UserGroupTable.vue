@@ -24,11 +24,11 @@
 
       <!-- Additional action buttons -->
       <template v-slot:cell(actions)="data">
-        <b-button-group v-if="hideDefaultActions !== true && token && token.userType === 'Administrator'">
+        <b-button-group v-if="hideDefaultActions !== true && storeToken && storeToken.userType === 'Administrator'">
           <!-- Edit group -->
-          <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('edit-group-clicked', data.item)"><i class="mdi mdi-18px mdi-rename-box" /></b-button>
+          <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('edit-group-clicked', data.item)"><MdiIcon :path="mdiRenameBox" /></b-button>
           <!-- Delete group -->
-          <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('delete-group-clicked', data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
+          <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('delete-group-clicked', data.item)"><MdiIcon :path="mdiDelete" /></b-button>
         </b-button-group>
       </template>
     </BaseTable>
@@ -36,8 +36,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import utilMixin from '@/mixins/util'
+
+import { mdiRenameBox, mdiDelete } from '@mdi/js'
 
 export default {
   name: 'UserGroupTable',
@@ -83,13 +88,19 @@ export default {
     }
 
     return {
+      mdiRenameBox,
+      mdiDelete,
       options: {
         idColumn: 'userGroupId',
         tableName: 'groups'
       }
     }
   },
+  mixins: [utilMixin],
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     columns: function () {
       const result = [
         {
@@ -117,14 +128,14 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnUserGroupCreatedOn'),
-          formatter: this.$options.filters.toDate
+          formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'count',
           type: Number,
           sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
           label: this.$t('tableColumnUserGroupCount'),
-          formatter: this.$options.filters.toThousandSeparators
+          formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null
         }, {
           key: 'actions',
           type: undefined,
@@ -148,7 +159,8 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
   methods: {
     refresh: function () {

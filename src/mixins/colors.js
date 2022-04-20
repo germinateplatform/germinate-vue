@@ -1,13 +1,21 @@
+import { mapGetters } from 'vuex'
+
 export default {
+  computed: {
+    ...mapGetters([
+      'storeServerSettings',
+      'storeCustomChartColors'
+    ])
+  },
   methods: {
     /**
      * Returns the chart colors
      */
     getColors: function () {
-      if (this.customChartColors && this.customChartColors.length > 0) {
-        return this.customChartColors
+      if (this.storeCustomChartColors && this.storeCustomChartColors.length > 0) {
+        return this.storeCustomChartColors
       } else {
-        return this.serverSettings.colorsCharts
+        return this.storeServerSettings.colorsCharts
       }
     },
     /**

@@ -16,10 +16,13 @@
           <b-nav-item href="#groups" @click="scrollIntoView">{{ $t('pagePassportGroupTitle') }}</b-nav-item>
           <b-nav-item href="#entity" @click="scrollIntoView">{{ $t('pagePassportEntityTitle') }}</b-nav-item>
           <b-nav-item href="#attributes" @click="scrollIntoView">{{ $t('pagePassportAttributeTitle') }}</b-nav-item>
-          <b-nav-item href="#comments" @click="scrollIntoView" v-if="serverSettings && serverSettings.commentsEnabled === true">{{ $t('pagePassportCommentTitle') }}</b-nav-item>
+          <b-nav-item href="#comments" @click="scrollIntoView" v-if="storeServerSettings && storeServerSettings.commentsEnabled === true">{{ $t('pagePassportCommentTitle') }}</b-nav-item>
           <b-nav-item class="ml-auto">
             <!-- Marked item checkbox -->
-            <i :class="`mdi mdi-18px fix-alignment text-white ${markedStyle}`" @click="onToggleMarked()" v-b-tooltip.hover.bottom :title="$t('tooltipGermplasmMarkedItem')"/>
+            <span class="text-white" @click="onToggleMarked()" v-b-tooltip.hover.bottom :title="$t('tooltipGermplasmMarkedItem')">
+              <MdiIcon :path="mdiCheckboxMarked" v-if="isMarked" />
+              <MdiIcon :path="mdiCheckboxBlankOutline" v-else />
+            </span>
           </b-nav-item>
         </b-navbar-nav>
       </b-navbar>
@@ -30,16 +33,24 @@
         <h2 class="mdi-heading" id="mcpd">
           <span>{{ title }}</span>
           <small v-if="germplasm.entitytype"> {{ germplasm.entitytype }} </small>
-          <i :class="`mdi mdi-36px text-primary passport-checkbox ${markedStyle}`" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipGermplasmMarkedItem')"/>
+          <span class="text-primary"  @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipGermplasmMarkedItem')">
+            <MdiIcon :path="mdiCheckboxMarked" v-if="isMarked" />
+            <MdiIcon :path="mdiCheckboxBlankOutline" v-else />
+          </span>
         </h2>
         <p v-html="$t('pagePassportText')" />
 
-        <b-button target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.accenumb}`"><i class="mdi mdi-18px mdi-barcode" /> {{ $t('pagePassportGenerateBarcode') }}</b-button>
+        <b-button target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.accenumb}`">
+          <MdiIcon :path="mdiBarcode" /> {{ $t('pagePassportGenerateBarcode') }}
+        </b-button>
 
         <!-- PDCI -->
         <template v-if="germplasmTableData && germplasmTableData.pdci">
           <hr />
-          <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-chart-donut text-primary" /> <span> {{ $t('pagePassportPdciTitle') }} </span><small><a href="#" @click.prevent="showPdciModal"><i class="mdi mdi-18px mdi-help-circle"/></a></small></h2>
+          <h2 class="mdi-heading">
+            <span class="text-primary"><MdiIcon :path="mdiChartDonut" /></span> <span> {{ $t('pagePassportPdciTitle') }} </span><small><a href="#" @click.prevent="showPdciModal">
+              <span class="text-muted"><MdiIcon :path="mdiHelpCircle" /></span>
+            </a></small></h2>
           <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasmTableData.pdci.toFixed(2) }) }}</strong></p>
         </template>
         <hr />
@@ -51,7 +62,7 @@
           <b-col cols=12 lg=6>
             <!-- Synonyms -->
             <template v-if="germplasmTableData && germplasmTableData.synonyms">
-              <h2 class="mdi-heading"><i class="mdi mdi-36px text-primary mdi-tag-text-outline"/><span> {{ $t('pagePassportSynonymsTitle') }}</span></h2>
+              <h2 class="mdi-heading"><span class="text-primary"><MdiIcon :path="mdiTagTextOutline" /></span><span> {{ $t('pagePassportSynonymsTitle') }}</span></h2>
               <ul>
                 <li v-for="(synonym, index) in germplasmTableData.synonyms" :key="`germplasm-synonym-${index}`">
                   {{ synonym }}
@@ -65,20 +76,20 @@
         </b-row>
 
         <hr />
-        <h2 class="mdi-heading" id="publications"><i class="mdi mdi-36px text-primary mdi-text-box-check-outline"/><span> {{ $t('pagePassportPublicationsTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="publications"><span class="text-primary"><MdiIcon :path="mdiTextBoxCheckOutline" /></span><span> {{ $t('pagePassportPublicationsTitle') }}</span></h2>
         <p v-html="$t('pagePassportPublicationsText')" />
 
         <PublicationsWidget :referencingId="germplasmId" referenceType="germplasm" />
 
         <hr />
-        <h2 class="mdi-heading" id="links"><i class="mdi mdi-36px text-primary mdi-link-variant"/><span> {{ $t('pagePassportLinksTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="links"><span class="text-primary"><MdiIcon :path="mdiLinkVariant" /></span><span> {{ $t('pagePassportLinksTitle') }}</span></h2>
         <p v-html="$t('pagePassportLinksText')" />
         <!-- Links -->
         <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
 
         <div v-show="performanceDataCount > 0">
           <hr />
-          <h2 class="mdi-heading" id="performance"><i class="mdi mdi-36px text-primary mdi-speedometer" /><span> {{ $t('pagePassportTraitStatsTitle') }}</span></h2>
+          <h2 class="mdi-heading" id="performance"><span class="text-primary"><MdiIcon :path="mdiSpeedometer" /></span><span> {{ $t('pagePassportTraitStatsTitle') }}</span></h2>
           <p>{{ $t('pagePassportTraitStatsText') }}</p>
           <b-button v-b-toggle.trait-collapse variant="primary">{{ $t('buttonToggle') }}</b-button>
           <b-collapse id="trait-collapse" class="mt-2" :visible="performanceDataCount <= 48">
@@ -87,13 +98,13 @@
         </div>
 
         <hr />
-        <h2 class="mdi-heading" id="datasets"><i class="mdi mdi-36px text-primary mdi-database"/><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="datasets"><span class="text-primary"><MdiIcon :path="mdiDatabase" /></span><span> {{ $t('pagePassportDatasetTitle') }}</span></h2>
         <p v-html="$t('pagePassportDatasetText')" />
         <!-- Datasets containing this germplasm -->
         <DatasetTable :getData="getDatasetData" />
 
         <hr />
-        <h2 class="mdi-heading" id="pedigree"><i class="mdi mdi-36px mdi-family-tree mdi-rotate-180 text-primary" /> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="pedigree"><span class="text-primary"><MdiIcon :path="mdiFamilyTree" /></span> <span> {{ $t('pagePassportPedigreeTitle') }}</span></h2>
         <p v-html="$t('pagePassportPedigreeText')" />
         <PedigreeDefinitionTable :getData="getPedigreeDefinitionData" :filterOn="pedigreeDefinitionFilter" />
         <!-- Pedigree table -->
@@ -104,7 +115,7 @@
         <!-- Location map -->
         <template v-if="germplasm.declatitude && germplasm.declongitude">
           <hr />
-          <h2 class="mdi-heading" id="location"><i class="mdi mdi-36px mdi-map-marker text-primary" /> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
+          <h2 class="mdi-heading" id="location"><span class="text-primary"><MdiIcon :path="mdiMapMarker" /></span> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
           <p v-html="$t('pagePassportLocationText')" />
 
           <LocationMap :locations="[location]"
@@ -117,33 +128,33 @@
           <div v-if="isAtLeastDataCurator" class="mt-3">
             <h3>{{ $t('modalTitleSelectGermplasmLocation') }}</h3>
             <b-button-group>
-              <b-button @click="$refs.locationSelectionModal.show()"><i class="mdi fix-alignment mdi-18px mdi-table" /> {{ $t('modalButtonSelectGermplasmLocationSelectFromTable') }}</b-button>
-              <b-button @click="toggleMapSelection()"><i class="mdi fix-alignment mdi-18px mdi-map-marker" /> {{ $t('modalButtonSelectGermplasmLocationSelectOnMap') }}</b-button>
+              <b-button @click="$refs.locationSelectionModal.show()"><MdiIcon :path="mdiTable" /> {{ $t('modalButtonSelectGermplasmLocationSelectFromTable') }}</b-button>
+              <b-button @click="toggleMapSelection()"><MdiIcon :path="mdiMapMarker" /> {{ $t('modalButtonSelectGermplasmLocationSelectOnMap') }}</b-button>
             </b-button-group>
           </div>
         </template>
 
         <hr />
-        <h2 class="mdi-heading" id="images"><i class="mdi mdi-36px text-primary mdi-image-multiple"/><span> {{ $t('pagePassportImageTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="images"><span class="text-primary"><MdiIcon :path="mdiImageMultiple" /></span> <span> {{ $t('pagePassportImageTitle') }}</span></h2>
         <p v-html="$t('pagePassportImageText')" />
         <!-- Image gallery -->
         <ImageGallery :foreignId="germplasm.id" referenceTable="germinatebase" :downloadName="germplasm.accenumb" />
 
         <hr />
-        <h2 class="mdi-heading" id="groups"><i class="mdi mdi-36px text-primary mdi-group"/><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="groups"><span class="text-primary"><MdiIcon :path="mdiGroup" /></span><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
         <p v-html="$t('pagePassportGroupText')" />
         <!-- Groups containing this germplasm -->
         <GroupTable :getData="getGroupData" />
 
         <hr />
-        <h2 class="mdi-heading" id="entity"><i class="mdi mdi-36px mdi-file-tree text-primary" /> <span> {{ $t('pagePassportEntityTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="entity"><span class="text-primary"><MdiIcon :path="mdiFileTree" /></span> <span> {{ $t('pagePassportEntityTitle') }}</span></h2>
         <p v-html="$t('pagePassportEntityText')" />
         <ul class="no-bullet-list">
-          <li><i class="mdi mdi-18px fix-alignment mdi-circle-medium" />{{ entityTypes['Accession'].text() }}</li>
+          <li><MdiIcon :path="mdiCircleMedium" /> {{ entityTypes['Accession'].text() }}</li>
           <ul>
-            <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Plant/Plot'].text() }}</li>
+            <li><MdiIcon :path="mdiSubdirectoryArrowRight" /> {{ entityTypes['Plant/Plot'].text() }}</li>
             <ul>
-              <li><i class="mdi mdi-18px fix-alignment mdi-subdirectory-arrow-right" />{{ entityTypes['Sample'].text() }}</li>
+              <li><MdiIcon :path="mdiSubdirectoryArrowRight" /> {{ entityTypes['Sample'].text() }}</li>
             </ul>
           </ul>
         </ul>
@@ -151,14 +162,14 @@
         <EntityTable :getData="getEntityData" :filterOn="entityFilter" />
 
         <hr />
-        <h2 class="mdi-heading" id="attributes"><i class="mdi mdi-36px text-primary mdi-playlist-plus"/><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
+        <h2 class="mdi-heading" id="attributes"><span class="text-primary"><MdiIcon :path="mdiPlaylistPlus" /></span><span> {{ $t('pagePassportAttributeTitle') }}</span></h2>
         <p v-html="$t('pagePassportAttributeText')" />
         <!-- Germplasm attributes -->
         <GermplasmAttributeTable :filterOn="attributeFilter" :getData="getGermplasmAttributeData" />
 
-        <template v-if="serverSettings && serverSettings.commentsEnabled === true">
+        <template v-if="storeServerSettings && storeServerSettings.commentsEnabled === true">
           <hr />
-          <h2 class="mdi-heading" id="comments"><i class="mdi mdi-36px text-primary mdi-comment-account-outline"/><span> {{ $t('pagePassportCommentTitle') }}</span></h2>
+          <h2 class="mdi-heading" id="comments"><span class="text-primary"><MdiIcon :path="mdiCommentAccountOutline" /></span><span> {{ $t('pagePassportCommentTitle') }}</span></h2>
           <p v-html="$t('pagePassportCommentText')" />
           <!-- Comments  (if enabled) -->
           <CommentTable :getData="getCommentData" ref="commentTable" :commentTypeId="1" :referenceId="currentGermplasmId" />
@@ -180,6 +191,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import CommentTable from '@/components/tables/CommentTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import EntityTable from '@/components/tables/EntityTable'
@@ -197,13 +211,36 @@ import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
 import PedigreeDefinitionTable from '@/components/tables/PedigreeDefinitionTable'
 import PublicationsWidget from '@/components/util/PublicationsWidget'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import miscApi from '@/mixins/api/misc.js'
-import typesMixin from '@/mixins/types.js'
+import authApi from '@/mixins/api/auth'
+import germplasmApi from '@/mixins/api/germplasm'
+import miscApi from '@/mixins/api/misc'
+import typesMixin from '@/mixins/types'
+
+import { mdiPlaylistPlus, mdiCommentAccountOutline, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiBarcode, mdiChartDonut, mdiHelpCircle, mdiTagTextOutline, mdiTextBoxCheckOutline, mdiLinkVariant, mdiSpeedometer, mdiDatabase, mdiFamilyTree, mdiMapMarker, mdiTable, mdiImageMultiple, mdiGroup, mdiFileTree, mdiCircleMedium, mdiSubdirectoryArrowRight } from '@mdi/js'
 
 export default {
   data: function () {
     return {
+      mdiCheckboxBlankOutline,
+      mdiCheckboxMarked,
+      mdiBarcode,
+      mdiChartDonut,
+      mdiHelpCircle,
+      mdiTagTextOutline,
+      mdiTextBoxCheckOutline,
+      mdiLinkVariant,
+      mdiSpeedometer,
+      mdiDatabase,
+      mdiFamilyTree,
+      mdiMapMarker,
+      mdiTable,
+      mdiImageMultiple,
+      mdiGroup,
+      mdiFileTree,
+      mdiCircleMedium,
+      mdiSubdirectoryArrowRight,
+      mdiPlaylistPlus,
+      mdiCommentAccountOutline,
       germplasm: null,
       germplasmTableData: null,
       commentFilter: null,
@@ -230,6 +267,7 @@ export default {
     }
   },
   components: {
+    MdiIcon,
     CommentTable,
     DatasetTable,
     EntityTable,
@@ -248,11 +286,16 @@ export default {
     PedigreeDefinitionTable,
     PublicationsWidget
   },
-  mixins: [germplasmApi, miscApi, typesMixin],
+  mixins: [authApi, germplasmApi, miscApi, typesMixin],
   computed: {
+    ...mapGetters([
+      'storeServerSettings',
+      'storeToken',
+      'storeMarkedGermplasm'
+    ]),
     isAtLeastDataCurator: function () {
-      if (this.token) {
-        return this.userIsAtLeast(this.token.userType, 'Data Curator')
+      if (this.storeToken) {
+        return this.userIsAtLeast(this.storeToken.userType, 'Data Curator')
       } else {
         return false
       }
@@ -268,9 +311,8 @@ export default {
         return ''
       }
     },
-    markedStyle: function () {
-      const isMarked = this.markedGermplasm.indexOf(this.currentGermplasmId) !== -1
-      return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
+    isMarked: function () {
+      return this.storeMarkedGermplasm.indexOf(this.currentGermplasmId) !== -1
     },
     attributeFilter: function () {
       return [{
@@ -353,7 +395,7 @@ export default {
       const href = evt.target.getAttribute('href')
       const el = href ? document.querySelector(href) : null
       if (el) {
-        window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - 65 - this.$refs.scrollSpy.$el.offsetHeight)
+        window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - 72 - this.$refs.scrollSpy.$el.offsetHeight)
       }
     },
     showPdciModal: function () {
@@ -381,11 +423,11 @@ export default {
       return this.apiPostPedigreedefinitionTable(data, callback)
     },
     onToggleMarked: function () {
-      const isMarked = this.markedGermplasm.indexOf(this.currentGermplasmId) !== -1
+      const isMarked = this.storeMarkedGermplasm.indexOf(this.currentGermplasmId) !== -1
       if (isMarked) {
-        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [this.currentGermplasmId] })
+        this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: [this.currentGermplasmId] })
       } else {
-        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [this.currentGermplasmId] })
+        this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: [this.currentGermplasmId] })
       }
     },
     invalidateSize: function () {
@@ -458,7 +500,7 @@ export default {
   },
   mounted: function () {
     // Add to recently viewed Germplasm ids
-    this.$store.dispatch('ON_RECENT_IDS_PUSH', { type: 'germplasm', id: this.currentGermplasmId })
+    this.$store.dispatch('pushRecentIds', { type: 'germplasm', id: this.currentGermplasmId })
 
     // Get the germplasm MCPD based on the id
     this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
@@ -482,7 +524,7 @@ export default {
       }
     })
 
-    this.$store.dispatch('ON_HELP_KEY_CHANGED', 'helpPassport')
+    this.$store.dispatch('setHelpKey', 'helpPassport')
   }
 }
 </script>
@@ -505,7 +547,7 @@ export default {
 .scrollspy-sticky {
   position: -webkit-sticky;
   position: sticky;
-  top: 65px;
+  top: 72px;
   align-self: flex-start;
   z-index: 1019;
 }

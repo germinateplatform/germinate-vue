@@ -8,7 +8,7 @@
         <!-- Point search -->
         <b-tab active @click="updatePointMap">
           <template v-slot:title>
-            <i class="mdi mdi-18px mdi-crosshairs-gps" /> {{ $t('pageGeographicSearchPointSearchTitle') }}
+            <MdiIcon :path="mdiCrosshairsGps" /> {{ $t('pageGeographicSearchPointSearchTitle') }}
           </template>
           <b-card-body>
             <div>{{ $t('pageGeographicSearchPointSearchText') }}</div>
@@ -16,13 +16,13 @@
           <!-- Point search map -->
           <LocationMap :locations="[]" selectionMode="point" @map-loaded="updatePolygonMap" ref="pointMap" />
           <b-card-body v-if="point">
-            <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
+            <Collapse :icon="mdiMapMarker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:content="slotProps">
                 <!-- Locations ordered by distance -->
                 <LocationTable tableMode="distance" :getData="getLocationData" :getIds="getLocationIds" ref="locationPointTable" orderBy="distance" v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
-            <Collapse icon="mdi-sprout" :title="$t('pageGeographicSearchPointGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
+            <Collapse :icon="mdiSprout" :title="$t('pageGeographicSearchPointGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
               <template v-slot:content="slotProps">
                 <!-- Germplasm ordered by distance -->
                 <GermplasmTable tableMode="distance" :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPointTable" orderBy="distance"  v-on:data-changed="slotProps.update"/>
@@ -33,7 +33,7 @@
         <!-- Polygon search -->
         <b-tab @click="updatePolygonMap">
           <template v-slot:title>
-            <i class="mdi mdi-18px mdi-vector-polygon" /> {{ $t('pageGeographicSearchPolygonSearchTitle') }}
+            <MdiIcon :path="mdiVectorPolygon" /> {{ $t('pageGeographicSearchPolygonSearchTitle') }}
           </template>
           <b-card-body>
             <div>{{ $t('pageGeographicSearchPolygonSearchText') }}</div>
@@ -41,13 +41,13 @@
           <!-- Polygon map -->
           <LocationMap selectionMode="polygon" :locations="polygonLocations" ref="polygonMap" />
           <b-card-body v-if="polygons && polygons.length > 0">
-            <Collapse icon="mdi-map-marker" :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body class="my-2">
+            <Collapse :icon="mdiMapMarker" :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:content="slotProps">
                 <!-- Locations inside the polygons -->
                 <LocationTable :getData="getLocationData" :getIds="getLocationIds" ref="locationPolygonTable"  v-on:data-changed="slotProps.update"/>
               </template>
             </Collapse>
-            <Collapse icon="mdi-sprout" :title="$t('pageGeographicSearchPolygonGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
+            <Collapse :icon="mdiSprout" :title="$t('pageGeographicSearchPolygonGermplasmResultTitle')" :visible="false" class="mt-2 mb-0" no-body>
               <template v-slot:content="slotProps">
                 <!-- Germplasm inside the polygons -->
                 <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" ref="germplasmPolygonTable" v-on:data-changed="slotProps.update"/>
@@ -57,7 +57,7 @@
         </b-tab>
         <template v-slot:tabs-end>
           <!-- Search button -->
-          <b-nav-item href="#" @click="query" class="ml-auto text-primary bg-primary"><span class="text-white"><i class="mdi mdi-18px mdi-arrow-right-box" /> {{ $t('pageGeographicSearchButtonRun') }}</span></b-nav-item>
+          <b-nav-item href="#" @click="query" class="ml-auto text-primary bg-primary"><span class="text-white"><MdiIcon :path="mdiArrowRightBox" /> {{ $t('pageGeographicSearchButtonRun') }}</span></b-nav-item>
         </template>
       </b-tabs>
     </b-card>
@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import LocationTable from '@/components/tables/LocationTable'
@@ -72,9 +73,16 @@ import LocationMap from '@/components/map/LocationMap'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import locationApi from '@/mixins/api/location.js'
 
+import { mdiCrosshairsGps, mdiVectorPolygon, mdiMapMarker, mdiSprout, mdiArrowRightBox } from '@mdi/js'
+
 export default {
   data: function () {
     return {
+      mdiCrosshairsGps,
+      mdiVectorPolygon,
+      mdiMapMarker,
+      mdiSprout,
+      mdiArrowRightBox,
       tabIndex: 0,
       point: null,
       polygons: null,
@@ -85,7 +93,8 @@ export default {
     Collapse,
     GermplasmTable,
     LocationTable,
-    LocationMap
+    LocationMap,
+    MdiIcon
   },
   watch: {
     tabIndex: function (newValue) {

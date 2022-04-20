@@ -2,13 +2,13 @@
   <b-card no-body v-if="dataset">
     <b-card-header>
       <!-- Truncated name with tooltip -->
-      <h6 class="mb-0"  v-b-tooltip.hover.bottom="dataset.datasetName">{{ dataset.datasetId + ' - ' + dataset.datasetName | truncateAfterWords(10) }}</h6>
+      <h6 class="mb-0"  v-b-tooltip.hover.bottom="dataset.datasetName">{{ truncateAfterWords(dataset.datasetId + ' - ' + dataset.datasetName, 10) }}</h6>
     </b-card-header>
     <b-card-body v-if="dataset.datasetDescription">
       <!-- Truncated description with tooltip -->
       <b-card-text class="dataset-card">
         <template v-if="datasetDescriptionLength > lengthLimit && collapsed">
-          {{ dataset.datasetDescription | truncateAfterWords(lengthLimit) }}
+          {{ truncateAfterWords(dataset.datasetDescription, lengthLimit) }}
         </template>
         <template v-else>
           {{ dataset.datasetDescription }}
@@ -20,13 +20,14 @@
     </b-card-body>
     <b-card-footer v-if="dataset.locations">
       <div>
-        <span v-for="country in countries" :key="`country-flag-${country}`" class="table-country text-nowrap mr-2" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'flag-icon flag-icon-' + country.toLowerCase()" v-if="country"/></span>
+        <span v-for="country in countries" :key="`country-flag-${country}`" class="table-country text-nowrap mr-2" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'fi fi-' + country.toLowerCase()" v-if="country"/></span>
       </div>
     </b-card-footer>
   </b-card>
 </template>
 
 <script>
+import formattingMixin from '@/mixins/formatting'
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
@@ -62,6 +63,7 @@ export default {
       return this.dataset.datasetDescription.split(' ').length
     }
   },
+  mixins: [formattingMixin],
   methods: {
     getCountryName: function (code2) {
       return countries.getName(code2, 'en')

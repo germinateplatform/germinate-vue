@@ -8,7 +8,7 @@
           <!-- Entity child -->
           <b-tab active @click="updateChildMap">
             <template v-slot:title>
-              <i class="mdi mdi-18px mdi-arrow-down-bold-box-outline" /> {{ germplasm.accenumb }}
+              <MdiIcon :path="mdiArrowDownBoldBoxOutline" /> {{ germplasm.accenumb }}
             </template>
             <!-- Passport -->
             <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" ref="child"/>
@@ -16,7 +16,7 @@
           <!-- Entity parent -->
           <b-tab @click="updateParentMap">
             <template v-slot:title>
-              <i class="mdi mdi-18px mdi-arrow-up-bold-box-outline" /> {{ germplasm.entityparentaccenumb }}
+              <MdiIcon :path="mdiArrowUpBoldBoxOutline" /> {{ germplasm.entityparentaccenumb }}
             </template>
             <!-- Passport -->
             <SpecificPassport :germplasmId="germplasm.entityparentid" :isPopup="isPopup" v-if="germplasm.entityparentid" ref="parent"/>
@@ -30,12 +30,17 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import SpecificPassport from '@/components/germplasm/SpecificPassport'
-import germplasmApi from '@/mixins/api/germplasm.js'
+import germplasmApi from '@/mixins/api/germplasm'
+
+import { mdiArrowDownBoldBoxOutline, mdiArrowUpBoldBoxOutline } from '@mdi/js'
 
 export default {
   data: function () {
     return {
+      mdiArrowDownBoldBoxOutline,
+      mdiArrowUpBoldBoxOutline,
       currentGermplasmId: null,
       noGermplasmFound: false,
       urlParam: null,
@@ -54,6 +59,7 @@ export default {
     }
   },
   components: {
+    MdiIcon,
     SpecificPassport
   },
   mixins: [germplasmApi],

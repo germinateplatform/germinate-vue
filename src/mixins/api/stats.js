@@ -1,4 +1,7 @@
+import baseApiMixin from '@/mixins/api/base'
+
 export default {
+  mixins: [baseApiMixin],
   methods: {
     apiGetOverviewStats: function (onSuccess, onError) {
       return this.authAxios({ url: 'stats/overview', success: onSuccess, error: onError })

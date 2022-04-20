@@ -7,46 +7,55 @@
     :img-height="600"
     indicators>
     <b-carousel-slide
-      v-for="(image, index) in images[locale]"
+      v-for="(image, index) in images[storeLocale]"
       :key="`dashboard-carousel-${index}`"
       :caption-html="image.text"
       :img-src="image.src" >
       <template v-slot:img>
         <!-- Add rounded corners to image -->
-        <b-img class="rounded w-100" :src="image.src" :alt="image.text" />
+        <b-img class="w-100" :src="image.src" :alt="image.text" />
       </template>
     </b-carousel-slide>
   </b-carousel>
 </template>
 
 <script>
-import miscApi from '@/mixins/api/misc.js'
+import { mapGetters } from 'vuex'
+
+import imagesMixin from '@/mixins/image'
+import miscApi from '@/mixins/api/misc'
 
 export default {
+  computed: {
+    ...mapGetters([
+      'storeLocale',
+      'storeToken'
+    ])
+  },
   data: function () {
     return {
       images: null
     }
   },
+  mixins: [imagesMixin, miscApi],
   methods: {
     setImagePath: function (imageIndex) {
-      Object.keys(this.images).forEach(locale => {
-        this.images[locale][imageIndex].src = this.getImageUrl(this.images[this.locale][imageIndex].name, {
-          name: this.images[this.locale][imageIndex].name,
-          token: this.token ? this.token.imageToken : null,
+      Object.keys(this.images).forEach(storeLocale => {
+        this.images[storeLocale][imageIndex].src = this.getImageUrl(this.images[this.storeLocale][imageIndex].name, {
+          name: this.images[this.storeLocale][imageIndex].name,
+          token: this.storeToken ? this.storeToken.imageToken : null,
           type: 'template',
           size: 'large'
         })
       })
     }
   },
-  mixins: [miscApi],
   mounted: function () {
     // Get carousel configuration file
     this.apiGetSettingsFile({
       'file-type': 'carousel'
     }, result => {
-      Object.keys(result).forEach(locale => result[locale].forEach(i => { i.src = null }))
+      Object.keys(result).forEach(storeLocale => result[storeLocale].forEach(i => { i.src = null }))
       this.images = result
 
       this.images.en_GB.forEach((image, index) => this.setImagePath(index))

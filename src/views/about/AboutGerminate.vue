@@ -32,8 +32,8 @@
                 <b-col cols=8 class="align-self-center">
                   <h5 class="mb-0">{{ banner.text() }}</h5>
                 </b-col>
-                <b-col cols=4 class="text-right">
-                  <i :class="`mdi mdi-48px ${banner.icon}`" />
+                <b-col cols=4 class="text-right text-muted">
+                  <MdiIcon :size="48" :path="banner.path" />
                 </b-col>
               </b-row>
             </b-card-body>
@@ -54,7 +54,7 @@
         <h2>{{ member.name }}</h2>
         <h5 class="text-primary text-uppercase">{{ member.job() }}</h5>
         <p class="text-muted">{{ member.about() }}</p>
-        <a v-for="(link, j) in member.links" target="_blank" rel="noopener noreferrer" :title="link.title" :href="link.href" :key="`about-team-${i}-${j}`" class="px-1"><i :class="`mdi mdi-24px ${link.icon}`" /></a>
+        <a v-for="(link, j) in member.links" target="_blank" rel="noopener noreferrer" :title="link.title" :href="link.href" :key="`about-team-${i}-${j}`" class="px-1"><MdiIcon :size="24" :path="link.path" /></a>
       </b-col>
     </b-row>
 
@@ -96,7 +96,9 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import LocationMap from '@/components/map/LocationMap'
+import { mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiTwitter, mdiWeb } from '@mdi/js'
 
 export default {
   data: function () {
@@ -105,25 +107,25 @@ export default {
         {
           key: 'homepage',
           text: () => this.$t('pageAboutGerminateCardHomepageText'),
-          icon: 'mdi-web',
+          path: mdiWeb,
           link: 'https://ics.hutton.ac.uk/get-germinate'
         },
         {
           key: 'github',
           text: () => this.$t('pageAboutGerminateCardGithubText'),
-          icon: 'mdi-github',
+          path: mdiGithub,
           link: 'https://github.com/germinateplatform/germinate-vue'
         },
         {
           key: 'publication',
           text: () => this.$t('pageAboutGerminateCardPublicationText'),
-          icon: 'mdi-file-document',
+          path: mdiFileDocument,
           link: 'https://dl.sciencesocieties.org/publications/cs/articles/57/3/1259'
         },
         {
           key: 'documentation',
           text: () => this.$t('pageAboutGerminateCardDocumentationText'),
-          icon: 'mdi-glasses',
+          path: mdiGlasses,
           link: 'https://germinateplatform.github.io/germinate-server'
         }
       ],
@@ -134,11 +136,11 @@ export default {
           img: 'team/sebastian-raubach.jpg',
           about: () => this.$t('pageAboutGerminateTeamSebastian'),
           links: [{
-            icon: 'mdi-twitter',
+            path: mdiTwitter,
             title: 'Twitter',
             href: 'https://twitter.com/BazRaubach'
           }, {
-            icon: 'mdi-earth',
+            path: mdiEarth,
             title: 'Website',
             href: 'http://www.hutton.ac.uk/staff/sebastian-raubach'
           }]
@@ -149,7 +151,7 @@ export default {
           img: 'team/iain-milne.jpg',
           about: () => this.$t('pageAboutGerminateTeamIain'),
           links: [{
-            icon: 'mdi-earth',
+            path: mdiEarth,
             title: 'Website',
             href: 'http://www.hutton.ac.uk/staff/iain-milne'
           }]
@@ -160,11 +162,11 @@ export default {
           img: 'team/paul-shaw.jpg',
           about: () => this.$t('pageAboutGerminateTeamPaul'),
           links: [{
-            icon: 'mdi-twitter',
+            path: mdiTwitter,
             title: 'Twitter',
             href: 'https://twitter.com/cardinalb'
           }, {
-            icon: 'mdi-earth',
+            path: mdiEarth,
             title: 'Website',
             href: 'http://www.hutton.ac.uk/staff/paul-shaw'
           }]
@@ -280,7 +282,8 @@ export default {
     }
   },
   components: {
-    LocationMap
+    LocationMap,
+    MdiIcon
   },
   methods: {
     getLocation: function () {
@@ -299,7 +302,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .about-header-logo {
   max-height: 200px;
 }
@@ -309,10 +312,7 @@ export default {
 .about-banners *:hover {
   text-decoration: none;
 }
-.about-banners .card-footer i.mdi {
-  vertical-align: sub;
-}
-.about-banners .card-body i.mdi {
+.about-banners .card-body .mdi-icon {
   color: gray;
   mix-blend-mode: screen;
 }

@@ -7,7 +7,7 @@
         <b-button v-b-tooltip.hover
                   :title="$t('chartTooltipMatrixTour')"
                   @click="showTour()">
-          <i class="mdi mdi-18px mdi-help-circle-outline" />
+          <MdiIcon :path="mdiHelpCircleOutline" />
         </b-button>
       </template>
     </BaseChart>
@@ -18,8 +18,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
+
+import { mdiHelpCircleOutline } from '@mdi/js'
 
 const Plotly = require('plotly.js/lib/core')
 
@@ -57,6 +63,7 @@ export default {
   },
   components: {
     BaseChart,
+    MdiIcon,
     Tour
   },
   data: function () {
@@ -64,6 +71,7 @@ export default {
 
     return {
       id: id,
+      mdiHelpCircleOutline,
       loading: false,
       popoverContent: [{
         title: () => this.$t('popoverChartTourGenericOptionsTitle'),
@@ -79,6 +87,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     baseSourceFile: function () {
       return {
         blob: new Blob([this.getPlotData(this.trait)], { type: 'text/plain' }),
@@ -90,6 +101,7 @@ export default {
       return `comparison-${this.trait.traitName.replace(' ', '-')}`
     }
   },
+  mixins: [baseApiMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -211,23 +223,23 @@ export default {
         xaxis: {
           zeroline: false,
           side: 'top',
-          title: { font: { color: this.darkMode ? 'white' : 'black' } },
-          tickfont: { color: this.darkMode ? 'white' : 'black' }
+          title: { font: { color: this.storeDarkMode ? 'white' : 'black' } },
+          tickfont: { color: this.storeDarkMode ? 'white' : 'black' }
         },
         height: 400,
         margin: { autoexpand: true },
         autosize: true,
         yaxis: {
           automargin: true,
-          title: { text: this.trait.traitName, font: { color: this.darkMode ? 'white' : 'black' } },
-          tickfont: { color: this.darkMode ? 'white' : 'black' },
+          title: { text: this.trait.traitName, font: { color: this.storeDarkMode ? 'white' : 'black' } },
+          tickfont: { color: this.storeDarkMode ? 'white' : 'black' },
           showgrid: true,
-          gridcolor: this.darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)'
+          gridcolor: this.storeDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)'
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h',
-          font: { color: this.darkMode ? 'white' : 'black' }
+          font: { color: this.storeDarkMode ? 'white' : 'black' }
         },
         shapes: [{
           type: 'line',

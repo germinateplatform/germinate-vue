@@ -1,6 +1,6 @@
 <template>
   <div v-if="institution">
-    <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-city text-primary" /> <span> {{ $t('pagePassportInstitutionTitle') }} </span></h2>
+    <h2 class="mdi-heading"><span class="text-primary"><MdiIcon :path="mdiCity" /></span> <span> {{ $t('pagePassportInstitutionTitle') }} </span></h2>
     <dl class="row">
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionId') }}</dt><dd class="col-9">{{ institution.institutionId }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionName') }}</dt><dd class="col-9">{{ institution.institutionName }}</dd>
@@ -10,16 +10,22 @@
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionEmail') }}</dt><dd class="col-9"><template v-if="institution.institutionEmail"><a :href="`mailto:${institution.institutionEmail}`">{{ institution.institutionEmail }}</a></template></dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionPhone') }}</dt><dd class="col-9">{{ institution.institutionPhone }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionContact') }}</dt><dd class="col-9">{{ institution.institutionContact }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionCountry') }}</dt><dd class="col-9"><template v-if="institution.countryCode"><i :class="'flag-icon flag-icon-' + institution.countryCode.toLowerCase()"/> {{ institution.countryName }}</template></dd>
-      <dt class="col-3"></dt><dd class="col-9"><b-button @click.prevent="navigateToGermplasm(institution.institutionId)"><i class="mdi mdi-18px fix-alignment mdi-sprout"/> {{ $t('widgetGermplasmInstitutionViewButton') }}</b-button></dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('tableColumnInstitutionCountry') }}</dt><dd class="col-9"><template v-if="institution.countryCode"><i :class="'fi fi-' + institution.countryCode.toLowerCase()"/> {{ institution.countryName }}</template></dd>
+      <dt class="col-3"></dt><dd class="col-9"><b-button @click.prevent="navigateToGermplasm(institution.institutionId)"><MdiIcon :path="mdiSprout" /> {{ $t('widgetGermplasmInstitutionViewButton') }}</b-button></dd>
     </dl>
   </div>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import miscApi from '@/mixins/api/misc.js'
 
+import { mdiCity, mdiSprout } from '@mdi/js'
+
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     institutionId: {
       type: Number,
@@ -28,6 +34,8 @@ export default {
   },
   data: function () {
     return {
+      mdiCity,
+      mdiSprout,
       institution: null
     }
   },

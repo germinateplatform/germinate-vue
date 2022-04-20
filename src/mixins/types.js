@@ -1,5 +1,14 @@
+import { mapGetters } from 'vuex'
+
+import { mdiSprout, mdiDna, mdiGrid, mdiLeaf, mdiMapMarker, mdiPulse, mdiWeatherSnowyRainy, mdiFlask, mdiShovel, mdiFamilyTree, mdiHelpBox, mdiBasketFill, mdiDatabase, mdiNumeric, mdiAlphabetical, mdiCalendar, mdiTagText, mdiReorderVertical, mdiTagTextOutline, mdiFolderTable, mdiChartSankey, mdiGroup, mdiAtom, mdiImageMultiple, mdiFileDownload, mdiMarker, mdiLockOpenVariantOutline, mdiLock, mdiEyeOff, mdiPassport } from '@mdi/js'
+
+const mdiGerminate = 'M 11.999836,0 C 5.384778,0 -3.9999998e-7,5.38515 0,12.00026 -3.9999998e-7,18.61531 5.384778,24.00011 11.999836,24.00011 18.614894,24.00011 24,18.61531 24,12.00026 24,5.38515 18.614894,0 11.999836,0 Z m 0,2.09227 c 5.484271,0 9.907984,4.42367 9.907984,9.90799 0,5.48425 -4.423713,9.90754 -9.907984,9.90754 -5.4842703,0 -9.9076558,-4.42329 -9.9076558,-9.90754 0,-5.48432 4.4233855,-9.90799 9.9076558,-9.90799 z M 9.5003025,5.50579 c -2.4997191,0 -2.4997043,0 -3.7494633,2.16472 L 4.500991,9.83539 c -1.2498943,2.16476 -1.2498943,2.16487 0,4.32945 l 1.2498482,2.16476 c 1.261759,2.16476 1.2617442,2.16476 3.7494633,2.16476 2.4996545,0 2.4997185,0 3.7495455,-2.16476 h -8.1e-5 c 1.249812,-2.16476 1.249787,-2.16469 0,-4.32934 v -1.1e-4 H 10.750152 8.2505363 l 1.2497662,2.16469 H 12 L 10.750152,16.3296 H 8.2505363 L 7.0006881,14.16484 5.7508392,12.00015 7.0006881,9.83539 8.2505363,7.67051 h 2.4996157 2.499696 L 12,5.50579 Z m 4.9993125,0 1.249849,2.16472 1.249848,2.16488 h -2.499697 l -1.249767,2.16476 h 2.499616 l 1.249848,2.16469 -1.249848,2.16476 -1.249849,2.16476 h 2.499697 l 1.249849,-2.16476 1.249766,-2.16476 c 1.249826,-2.16476 1.249826,-2.16469 0,-4.32945 L 18.249161,7.67051 16.999312,5.50579 Z'
+
 export default {
   computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ]),
     exportFormats: function () {
       return {
         flapjack: {
@@ -49,28 +58,28 @@ export default {
     publicationTypes: function () {
       return {
         germplasm: {
-          icon: 'mdi-sprout',
-          color: this.serverSettings ? this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length] : null,
+          path: mdiSprout,
+          color: this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: this.$t('publicationTypeGerminatebase')
         },
         group: {
-          icon: 'mdi-group',
-          color: this.serverSettings ? this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length] : null,
+          path: mdiGroup,
+          color: this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: this.$t('publicationTypeGroup')
         },
         database: {
-          icon: 'icon-germinate',
-          color: this.serverSettings ? this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length] : null,
+          path: mdiGerminate,
+          color: this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: this.$t('publicationTypeDatabase')
         },
         dataset: {
-          icon: 'mdi-database',
-          color: this.serverSettings ? this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length] : null,
+          path: mdiDatabase,
+          color: this.storeServerSettings ? this.storeServerSettings.colorsTemplate[3 % this.storeServerSettings.colorsTemplate.length] : null,
           text: this.$t('publicationTypeDataset')
         },
         experiment: {
-          icon: 'mdi-folder-table',
-          color: this.serverSettings ? this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length] : null,
+          path: mdiFolderTable,
+          color: this.storeServerSettings ? this.storeServerSettings.colorsTemplate[4 % this.storeServerSettings.colorsTemplate.length] : null,
           text: this.$t('publicationTypeExperiment')
         }
       }
@@ -81,195 +90,192 @@ export default {
       dataTypes: {
         numeric: {
           text: () => this.$t('dataTypeNumeric'),
-          icon: 'mdi-numeric',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length]
+          path: mdiNumeric,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null
         },
         text: {
           text: () => this.$t('dataTypeText'),
-          icon: 'mdi-alphabetical',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length]
+          path: mdiAlphabetical,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null
         },
         date: {
           text: () => this.$t('dataTypeDate'),
-          icon: 'mdi-calendar',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length]
+          path: mdiCalendar,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null
         },
         categorical: {
           text: () => this.$t('dataTypeCategorical'),
-          icon: 'mdi-tag-text',
-          color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length]
+          path: mdiTagText,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[3 % this.storeServerSettings.colorsTemplate.length] : null
         }
       },
       entityTypes: {
         Accession: {
           shortName: 'accession',
-          icon: 'mdi-sprout',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          path: mdiSprout,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('entityTypeAccession')
         },
         'Plant/Plot': {
           shortName: 'plantplot',
-          icon: 'mdi-grid',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          path: mdiGrid,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('entityTypePlantPlot')
         },
         Sample: {
           shortName: 'sample',
-          icon: 'mdi-leaf',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          path: mdiLeaf,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('entityTypeSample')
         }
       },
       groupTypes: {
         germinatebase: {
-          icon: 'mdi-sprout',
+          path: mdiSprout,
           apiName: 'germplasm',
           itemType: 'germplasm',
           idColumn: 'germplasmId',
           nameColumn: 'germplasmName',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('groupTypeGerminatebase')
         },
         markers: {
-          icon: 'mdi-dna',
+          path: mdiDna,
           apiName: 'marker',
           itemType: 'markers',
           idColumn: 'markerId',
           nameColumn: 'markerName',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('groupTypeMarker')
         },
         locations: {
-          icon: 'mdi-map-marker',
+          path: mdiMapMarker,
           apiName: 'location',
           itemType: 'locations',
           idColumn: 'locationId',
           nameColumn: 'locationName',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('groupTypeLocation')
         }
       },
       markedItemTypes: {
         germplasm: {
-          icon: 'mdi-sprout',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          path: mdiSprout,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('groupTypeGerminatebase')
         },
         markers: {
-          icon: 'mdi-dna',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          path: mdiDna,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('groupTypeMarker')
         },
         locations: {
-          icon: 'mdi-map-marker',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          path: mdiMapMarker,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('groupTypeLocation')
         }
       },
       imageTypes: {
         germinatebase: {
-          icon: 'mdi-sprout',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('imageTypeGerminatebase')
         },
         compounds: {
-          icon: 'mdi-flask',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('imageTypeCompounds')
         },
         phenotypes: {
-          icon: 'mdi-tag-text-outline',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('imageTypePhenotypes')
         }
       },
       locationTypes: {
         trialsite: {
-          icon: 'mdi-shovel',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          path: mdiShovel,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('locationTypeTrialsite')
         },
         collectingsites: {
-          icon: 'mdi-basket-fill',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          path: mdiBasketFill,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('locationTypeCollectingsite')
         },
         datasets: {
-          icon: 'mdi-database',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          path: mdiDatabase,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('locationTypeDataset')
         }
       },
       templateImportTypes: {
         mcpd: {
-          icon: 'mdi-passport',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          path: mdiPassport,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('templateImportTypeMcpd'),
           accepts: '.xlsx'
         },
         genotype: {
-          icon: 'mdi-dna',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          path: mdiDna,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('templateImportTypeGenotype'),
           accepts: '.xlsx, .txt, .hapmap'
         },
         trial: {
-          icon: 'mdi-shovel',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          path: mdiShovel,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('templateImportTypeTrial'),
           accepts: '.xlsx'
         },
         climate: {
-          icon: 'mdi-weather-snowy-rainy',
-          color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length],
+          path: mdiWeatherSnowyRainy,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[3 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('templateImportTypeClimate'),
           accepts: '.xlsx'
         },
         compound: {
-          icon: 'mdi-flask',
-          color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
+          path: mdiFlask,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[4 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('templateImportTypeCompound'),
           accepts: '.xlsx'
         },
         pedigree: {
-          icon: 'mdi-family-tree mdi-rotate-180',
-          color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
+          path: mdiFamilyTree,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[5 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('templateImportTypePedigree'),
           accepts: '.xlsx'
         },
         groups: {
-          icon: 'mdi-group',
-          color: () => this.serverSettings.colorsTemplate[6 % this.serverSettings.colorsTemplate.length],
+          path: mdiGroup,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[6 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('templateImportTypeGroups'),
           accepts: '.xlsx'
         }
       },
       commentTypes: {
         germinatebase: {
-          icon: 'mdi-sprout',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          path: mdiSprout,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => 'Germplasm'
         },
         locations: {
-          icon: 'mdi-marker',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          path: mdiMarker,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => 'Location'
         }
       },
       datasetStates: {
         public: {
           id: 1,
-          icon: 'mdi-lock-open-variant-outline',
+          path: mdiLockOpenVariantOutline,
           text: () => this.$t('datasetStatePublic')
         },
         private: {
           id: 2,
-          icon: 'mdi-lock',
+          path: mdiLock,
           text: () => this.$t('datasetStatePrivate')
         },
         hidden: {
           id: 3,
-          icon: 'mdi-eye-off text-primary',
+          path: mdiEyeOff,
           text: () => this.$t('datasetStateHidden')
         }
       },
@@ -278,56 +284,56 @@ export default {
           value: 'germplasm',
           textI18n: () => this.$t('dashboardBannerGermplasm'),
           text: this.$t('dashboardBannerGermplasm'),
-          icon: 'mdi-sprout',
+          path: mdiSprout,
           link: 'germplasm'
         },
         {
           value: 'markers',
           textI18n: () => this.$t('dashboardBannerMarkers'),
           text: this.$t('dashboardBannerMarkers'),
-          icon: 'mdi-dna',
+          path: mdiDna,
           link: 'markers'
         },
         {
           value: 'maps',
           textI18n: () => this.$t('dashboardBannerMaps'),
           text: this.$t('dashboardBannerMaps'),
-          icon: 'mdi-reorder-vertical',
+          path: mdiReorderVertical,
           link: 'maps'
         },
         {
           value: 'traits',
           textI18n: () => this.$t('dashboardBannerTraits'),
           text: this.$t('dashboardBannerTraits'),
-          icon: 'mdi-tag-text-outline',
+          path: mdiTagTextOutline,
           link: 'traits'
         },
         {
           value: 'locations',
           textI18n: () => this.$t('dashboardBannerLocations'),
           text: this.$t('dashboardBannerLocations'),
-          icon: 'mdi-map-marker',
+          path: mdiMapMarker,
           link: 'locations'
         },
         {
           value: 'datasets',
           textI18n: () => this.$t('dashboardBannerDatasets'),
           text: this.$t('dashboardBannerDatasets'),
-          icon: 'mdi-database',
+          path: mdiDatabase,
           link: 'datasets'
         },
         {
           value: 'experiments',
           textI18n: () => this.$t('dashboardBannerExperiments'),
           text: this.$t('dashboardBannerExperiments'),
-          icon: 'mdi-folder-table',
+          path: mdiFolderTable,
           link: 'experiments'
         },
         {
           value: 'datasetsAllelefreq',
           textI18n: () => this.$t('dashboardBannerDatasetsAllelefreq'),
           text: this.$t('dashboardBannerDatasetsAllelefreq'),
-          icon: 'mdi-pulse',
+          path: mdiPulse,
           link: 'export',
           params: { datasetType: 'allelefreq' }
         },
@@ -335,7 +341,7 @@ export default {
           value: 'datasetsGenotype',
           textI18n: () => this.$t('dashboardBannerDatasetsGenotype'),
           text: this.$t('dashboardBannerDatasetsGenotype'),
-          icon: 'mdi-dna',
+          path: mdiDna,
           link: 'export',
           params: { datasetType: 'genotype' }
         },
@@ -343,7 +349,7 @@ export default {
           value: 'datasetsTrials',
           textI18n: () => this.$t('dashboardBannerDatasetsTrials'),
           text: this.$t('dashboardBannerDatasetsTrials'),
-          icon: 'mdi-shovel',
+          path: mdiShovel,
           link: 'export',
           params: { datasetType: 'trials' }
         },
@@ -351,7 +357,7 @@ export default {
           value: 'datasetsClimate',
           textI18n: () => this.$t('dashboardBannerDatasetsClimate'),
           text: this.$t('dashboardBannerDatasetsClimate'),
-          icon: 'mdi-chart-sankey',
+          path: mdiChartSankey,
           link: 'export',
           params: { datasetType: 'climate' }
         },
@@ -359,7 +365,7 @@ export default {
           value: 'datasetsCompound',
           textI18n: () => this.$t('dashboardBannerDatasetsCompound'),
           text: this.$t('dashboardBannerDatasetsCompound'),
-          icon: 'mdi-flask',
+          path: mdiFlask,
           link: 'export',
           params: { datasetType: 'compound' }
         },
@@ -367,7 +373,7 @@ export default {
           value: 'datasetsPedigree',
           textI18n: () => this.$t('dashboardBannerDatasetsPedigree'),
           text: this.$t('dashboardBannerDatasetsPedigree'),
-          icon: 'mdi-family-tree mdi-rotate-180',
+          path: mdiFamilyTree,
           link: 'export',
           params: { datasetType: 'pedigree' }
         },
@@ -375,86 +381,86 @@ export default {
           value: 'groups',
           textI18n: () => this.$t('dashboardBannerGroups'),
           text: this.$t('dashboardBannerGroups'),
-          icon: 'mdi-group',
+          path: mdiGroup,
           link: 'groups'
         },
         {
           value: 'climates',
           textI18n: () => this.$t('dashboardBannerClimates'),
           text: this.$t('dashboardBannerClimates'),
-          icon: 'mdi-weather-snowy-rainy',
+          path: mdiWeatherSnowyRainy,
           link: 'climates'
         },
         {
           value: 'compounds',
           textI18n: () => this.$t('dashboardBannerCompounds'),
           text: this.$t('dashboardBannerCompounds'),
-          icon: 'mdi-atom',
+          path: mdiAtom,
           link: 'compounds'
         },
         {
           value: 'images',
           textI18n: () => this.$t('dashboardBannerImages'),
           text: this.$t('dashboardBannerImages'),
-          icon: 'mdi-image-multiple',
+          path: mdiImageMultiple,
           link: 'images'
         },
         {
           value: 'fileresources',
           textI18n: () => this.$t('dashboardBannerFileResources'),
           text: this.$t('dashboardBannerFileResources'),
-          icon: 'mdi-file-download',
+          path: mdiFileDownload,
           link: 'data-resources'
         }
       ],
       datasetTypes: {
         allelefreq: {
           id: 4,
-          icon: 'mdi-pulse',
+          path: mdiPulse,
           pageName: 'export-allelefrequency',
-          color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('datasetTypeAllelefreq')
         },
         climate: {
           id: 5,
-          icon: 'mdi-weather-snowy-rainy',
+          path: mdiWeatherSnowyRainy,
           pageName: 'export-climate',
-          color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('datasetTypeClimate')
         },
         compound: {
           id: 6,
-          icon: 'mdi-flask',
+          path: mdiFlask,
           pageName: 'export-compounds',
-          color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('datasetTypeCompound')
         },
         genotype: {
           id: 1,
-          icon: 'mdi-dna',
+          path: mdiDna,
           pageName: 'export-genotypes',
-          color: () => this.serverSettings.colorsTemplate[3 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[3 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('datasetTypeGenotype')
         },
         trials: {
           id: 3,
-          icon: 'mdi-shovel',
+          path: mdiShovel,
           pageName: 'export-trials',
-          color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[4 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('datasetTypeTrials')
         },
         pedigree: {
           id: 7,
-          icon: 'mdi-family-tree mdi-rotate-180',
+          path: mdiFamilyTree,
           // pageName: 'export-pedigrees',
           pageName: null,
-          color: () => this.serverSettings.colorsTemplate[5 % this.serverSettings.colorsTemplate.length],
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[5 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('datasetTypePedigree')
         },
         unknown: {
           id: -1,
-          icon: 'mdi-help-box',
-          color: () => this.serverSettings.colorsTemplate[6 % this.serverSettings.colorsTemplate.length],
+          path: mdiHelpBox,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[6 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('datasetTypeUnknown')
         }
       }

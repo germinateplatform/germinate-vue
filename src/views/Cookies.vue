@@ -13,7 +13,7 @@
       <dt class="col-3 text-right">{{ $t('pageCookiesDescriptionTitleOther') }}</dt><dd class="col-9">{{ $t('pageCookiesDescriptionDataOther') }}</dd>
     </dl>
     <p>{{ $t('pageCookiesTextExplanationGerminate') }}</p>
-    <template v-if="serverSettings && serverSettings.googleAnalyticsKey">
+    <template v-if="storeServerSettings && storeServerSettings.googleAnalyticsKey">
       <h2>{{ $t('pageCookiesTitleThirdParty') }}</h2>
       <p>{{ $t('pageCookiesTextThirdParty') }}</p>
     </template>
@@ -21,7 +21,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
+  computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ])
+  }
 }
 </script>
 

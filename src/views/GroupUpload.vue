@@ -9,7 +9,7 @@
 
 <script>
 import GermplasmTable from '@/components/tables/GermplasmTable'
-import germplasmApi from '@/mixins/api/germplasm.js'
+import germplasmApi from '@/mixins/api/germplasm'
 
 export default {
   data: function () {

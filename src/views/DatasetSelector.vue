@@ -5,7 +5,7 @@
       <!-- Table showing all datasets of the type -->
       <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" :selectionMode="selectionMode" class="mb-3" ref="datasetTable" v-on:selection-changed="updateButtonState"/>
       <!-- Continue button -->
-      <b-button variant="primary" @click="checkLicenses" :disabled="buttonDisabled" ><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonNext') }}</b-button>
+      <b-button variant="primary" @click="checkLicenses" :disabled="buttonDisabled" ><MdiIcon :path="mdiArrowRightBox" /> {{ $t('buttonNext') }}</b-button>
     </div>
     <div v-else>
       <h1>{{ $t('pageDatasetSelectorInvalidTypeTitle') }}</h1>
@@ -20,22 +20,32 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
 import datasetApi from '@/mixins/api/dataset.js'
 import typesMixin from '@/mixins/types.js'
 
+import { mdiArrowRightBox } from '@mdi/js'
+
 export default {
   data: function () {
     return {
+      mdiArrowRightBox,
       filterOn: null,
       datasetType: null,
       buttonDisabled: true
     }
   },
   components: {
-    DatasetTable
+    DatasetTable,
+    MdiIcon
   },
   computed: {
+    ...mapGetters([
+      'storeLocale',
+      'storeToken'
+    ]),
     selectionMode: function () {
       // Only single selection for allele frequency data
       return this.datasetType === 'allelefreq' ? 'single' : 'multi'
@@ -72,7 +82,7 @@ export default {
           column: 'localeName',
           comparator: 'equals',
           operator: 'and',
-          values: [this.locale]
+          values: [this.storeLocale]
         }]
       }
       this.apiPostLicenseTable(query, result => {
@@ -81,9 +91,9 @@ export default {
             let result = true
 
             if (l.acceptedBy !== undefined && l.acceptedBy !== null && l.acceptedBy.length > 0) {
-              if (this.token && l.acceptedBy.indexOf(this.token.id) !== -1) {
+              if (this.storeToken && l.acceptedBy.indexOf(this.storeToken.id) !== -1) {
                 result = false
-              } else if (!this.token && l.acceptedBy.indexOf(-1000) !== -1) {
+              } else if (!this.storeToken && l.acceptedBy.indexOf(-1000) !== -1) {
                 result = false
               }
             }

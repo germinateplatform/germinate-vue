@@ -12,19 +12,19 @@
     <b-tooltip :target="`scale-${id}`" placement="bottom">
       <h6>{{ heading }}</h6>
       <div class="d-flex justify-content-between">
-        <span class="d-block"><i class="mdi mdi-arrow-down-bold" /> {{ $t('widgetScaleMin') }} </span>
+        <span class="d-block"><MdiIcon :path="mdiArrowDownBold" /> {{ $t('widgetScaleMin') }} </span>
         <span class="ml-2">{{ toFixed(min, 4)}}</span>
       </div>
       <div class="d-flex justify-content-between">
-        <span class="d-block" :style="{ color: 'var(--primary)' }"><i class="mdi mdi-diameter-variant" /> {{ $t('widgetScaleAvg') }} </span>
+        <span class="d-block" :style="{ color: 'var(--primary)' }"><MdiIcon :path="mdiDiameterVariant" /> {{ $t('widgetScaleAvg') }} </span>
         <span class="ml-2">{{ toFixed(marker, 4) }}</span>
       </div>
       <div class="d-flex justify-content-between">
-        <span class="d-block"><i class="mdi mdi-arrow-up-bold" /> {{ $t('widgetScaleMax') }} </span>
+        <span class="d-block"><MdiIcon :path="mdiArrowUpBold" /> {{ $t('widgetScaleMax') }} </span>
         <span class="ml-2">{{ toFixed(max, 4) }}</span>
       </div>
       <div class="d-flex justify-content-between">
-        <span class="d-block"><i class="mdi mdi-numeric" /> {{ $t('widgetScaleCount') }} </span>
+        <span class="d-block"><MdiIcon :path="mdiNumeric" /> {{ $t('widgetScaleCount') }} </span>
         <span class="ml-2">{{ getNumberWithSuffix(count) }}</span>
       </div>
     </b-tooltip>
@@ -32,9 +32,18 @@
 </template>
 
 <script>
-import colorApi from '@/mixins/colors.js'
+import MdiIcon from '@/components/icons/MdiIcon'
+import colorMixin from '@/mixins/colors'
+import baseApiMixin from '@/mixins/api/base'
+import formattingMixin from '@/mixins/formatting'
+import utilMixin from '@/mixins/util'
+
+import { mdiArrowDownBold, mdiArrowUpBold, mdiDiameterVariant, mdiNumeric } from '@mdi/js'
 
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     heading: {
       type: String,
@@ -64,6 +73,10 @@ export default {
   data: function () {
     const id = this.uuidv4()
     return {
+      mdiArrowDownBold,
+      mdiArrowUpBold,
+      mdiDiameterVariant,
+      mdiNumeric,
       id: id
     }
   },
@@ -72,7 +85,7 @@ export default {
       return (this.marker - this.min) * (100 - 0) / (this.max - this.min)
     }
   },
-  mixins: [colorApi]
+  mixins: [baseApiMixin, colorMixin, formattingMixin, utilMixin]
 }
 </script>
 

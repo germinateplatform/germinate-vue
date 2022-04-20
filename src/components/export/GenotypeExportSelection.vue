@@ -54,17 +54,17 @@
           <b-form-checkbox v-model="generateFlapjackProject" switch>
             {{ generateFlapjackProject === true ? $t('genericYes') : $t('genericNo') }}
           </b-form-checkbox>
-          <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
+          <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link> </p>
           <template v-if="datasetType === 'genotype'">
             <h2>{{$t('pageGenotypesExportEnableHapmapTitle') }}</h2>
-            <p><span v-html="$t('pageGenotypesExportEnableHapmapText')" /> &nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link></p>
+            <p><span v-html="$t('pageGenotypesExportEnableHapmapText')" /> &nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link></p>
             <b-form-checkbox v-model="generateHapMap" switch>
               {{ generateHapMap === true ? $t('genericYes') : $t('genericNo') }}
             </b-form-checkbox>
           </template>
         </b-col>
       </b-row>
-      <b-button variant="primary" @click="exportData()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ datasetType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
+      <b-button variant="primary" @click="exportData()"><MdiIcon :path="mdiArrowRightBox" /> {{ datasetType === 'allelefreq' ? $t('buttonBinData') : $t('buttonExport') }}</b-button>
     </template>
     <h2 class="text-info" v-if="datasetType === 'genotype' && selectedDatasetIds.length < 1">{{ $t('widgetGenotypeDatasetSelectionSelect') }}</h2>
 
@@ -83,6 +83,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import ExportFormats from '@/views/about/ExportFormats'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
@@ -90,6 +92,9 @@ import GenotypeDatasetTable from '@/components/tables/GenotypeDatasetTable'
 import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import genotypeApi from '@/mixins/api/genotype.js'
+import utilMixin from '@/mixins/util'
+
+import { mdiArrowRightBox, mdiInformationOutline } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -106,6 +111,8 @@ export default {
   },
   data: function () {
     return {
+      mdiArrowRightBox,
+      mdiInformationOutline,
       markerGroups: null,
       germplasmGroups: null,
       maps: null,
@@ -129,9 +136,16 @@ export default {
     DatasetMetadataDownload,
     ExportFormats,
     ExportGroupSelection,
-    GenotypeDatasetTable
+    GenotypeDatasetTable,
+    MdiIcon
   },
-  mixins: [datasetApi, groupApi, genotypeApi],
+  computed: {
+    ...mapGetters([
+      'storeMarkedGermplasm',
+      'storeMarkedMarkers'
+    ])
+  },
+  mixins: [datasetApi, groupApi, genotypeApi, utilMixin],
   methods: {
     onSelectionChanged: function (selectedIds) {
       this.selectedDatasetIds = selectedIds
@@ -183,7 +197,7 @@ export default {
       const germplasmSettings = this.$refs.germplasmGroups.getSettings()
       const markedSelectedGermplasm = germplasmSettings.selectedGroups.filter(g => g === null)
       if (germplasmSettings.specialGroupSelection !== 'all' && markedSelectedGermplasm.length > 0) {
-        query.yIds = this.markedGermplasm
+        query.yIds = this.storeMarkedGermplasm
       }
       const germplasmGroups = germplasmSettings.selectedGroups.filter(g => g !== null && g.groupId > 0).map(g => g.groupId)
       if (germplasmSettings.specialGroupSelection !== 'all' && germplasmGroups.length > 0) {
@@ -193,7 +207,7 @@ export default {
       const markerSettings = this.$refs.markerGroups.getSettings()
       const markedSelectedMarkers = markerSettings.selectedGroups.filter(g => g === null)
       if (markerSettings.specialGroupSelection !== 'all' && markedSelectedMarkers.length > 0) {
-        query.xIds = this.markedMarkers
+        query.xIds = this.storeMarkedMarkers
       }
       const markerGroups = markerSettings.selectedGroups.filter(g => g !== null && g.groupId > 0).map(g => g.groupId)
       if (markerSettings.specialGroupSelection !== 'all' && markerGroups.length > 0) {

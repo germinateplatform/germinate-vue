@@ -8,6 +8,7 @@
 <script>
 import CollaboratorTable from '@/components/tables/CollaboratorTable'
 import datasetApi from '@/mixins/api/dataset.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   props: {
@@ -24,7 +25,7 @@ export default {
   components: {
     CollaboratorTable
   },
-  mixins: [datasetApi],
+  mixins: [datasetApi, utilMixin],
   methods: {
     show: function () {
       this.$refs['collaboratorModal-' + this.id].show()

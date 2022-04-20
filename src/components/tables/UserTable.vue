@@ -25,14 +25,21 @@
       <b-button v-b-tooltip.hover.bottom
                 :title="isAdd ? $t('genericAdd') : $t('genericRemove')"
                 @click="$emit('action-clicked', selectedItems)">
-        <i :class="`mdi mdi-18px ${isAdd ? 'mdi-plus-box' : 'mdi-delete'}`" />
+        <MdiIcon :path="mdiPlusBox" v-if="isAdd" />
+        <MdiIcon :path="mdiDelete" v-else />
       </b-button>
     </b-button-group>
   </div>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
+import { mdiPlusBox, mdiDelete } from '@mdi/js'
+
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     users: {
       type: Array,
@@ -45,6 +52,8 @@ export default {
   },
   data: function () {
     return {
+      mdiPlusBox,
+      mdiDelete,
       selectedItems: []
     }
   },

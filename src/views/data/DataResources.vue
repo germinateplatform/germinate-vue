@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{ $t('pageDataResourcesTitle') }} <b-button size="sm" v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="onShowAddModal"><i class="mdi mdi-plus"/></b-button></h1>
+    <h1>{{ $t('pageDataResourcesTitle') }} <b-button size="sm" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="onShowAddModal"><MdiIcon :path="mdiPlus" /></b-button></h1>
     <p>{{ $t('pageDataResourcesText') }}</p>
     <template v-if="fileResourceTypes && fileResourceTypes.length > 0">
       <!-- Show a collapse per file resource type -->
@@ -22,15 +22,15 @@
                 <div class="d-flex justify-content-between align-items-center">
                   <!-- Heading and link to download -->
                   <h5 class="mb-1"><a href="#" @click="downloadResource(resource)">{{ resource.fileresourceName }}</a></h5>
-                  <i class="mdi mdi-download mdi-18px align-middle mx-1" />
+                  <span class="align-middle mx-1"><MdiIcon :path="mdiDownload" /></span>
                   <!-- File size -->
                   <small v-if="resource.fileresourceSize">({{ getNumberWithSuffix(resource.fileresourceSize, 2, 1024, ' ') }}B)</small>
                 </div>
                 <div>
                   <!-- Date -->
-                  <small v-b-tooltip="$options.filters.toDateTime(resource.fileresourceCreatedOn)"><i class="mdi mdi-calendar-clock" /> {{ resource.fileresourceCreatedOn | toDate }}</small>
+                  <small v-b-tooltip="new Date(resource.fileresourceCreatedOn).toLocaleDateString()" v-if="resource.fileresourceCreatedOn"><MdiIcon :path="mdiCalendarClock" /> {{ new Date(resource.fileresourceCreatedOn).toLocaleDateString() }}</small>
                   <!-- Button to delete the file resource -->
-                  <b-button variant="danger" class="ml-3" v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="onDeleteResource(resource)"><i class="mdi mdi-delete" /></b-button>
+                  <b-button variant="danger" class="ml-3" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="onDeleteResource(resource)"><MdiIcon :path="mdiCalendarClock" /></b-button>
                 </div>
               </div>
               <!-- Description of file resource -->
@@ -38,42 +38,57 @@
             </b-list-group-item>
           </b-list-group>
 
-          <b-button variant="danger" class="mt-3" v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="onDeleteType(type)"><i class="mdi mdi-delete" /> {{ $t('buttonDeleteType') }}</b-button>
+          <b-button variant="danger" class="mt-3" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="onDeleteType(type)"><MdiIcon :path="mdiCalendarClock" /> {{ $t('buttonDeleteType') }}</b-button>
         </template>
       </Collapse>
     </template>
     <!-- Modal to allow adding new file resources -->
-    <FileResourceModal ref="fileResourceModal" v-on:resource-added="getFileResources" v-if="token && userIsAtLeast(token.userType, 'Data Curator')" />
+    <FileResourceModal ref="fileResourceModal" v-on:resource-added="getFileResources" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" />
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
 
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 import FileResourceModal from '@/components/modals/FileResourceModal'
 
 import datasetApi from '@/mixins/api/dataset'
+import authApi from '@/mixins/api/auth'
 import miscApi from '@/mixins/api/misc'
+import formattingMixin from '@/mixins/formatting'
+import utilMixin from '@/mixins/util'
+
+import { mdiPlus, mdiDownload, mdiCalendarClock } from '@mdi/js'
 
 export default {
   data: function () {
     return {
+      mdiPlus,
+      mdiDownload,
+      mdiCalendarClock,
       fileResourceTypes: null,
       fileResources: {
       }
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     nonEmptyFileResourceTypes: function () {
       return this.fileResourceTypes ? this.fileResourceTypes.filter(f => f.count > 0) : null
     }
   },
   components: {
     Collapse,
-    FileResourceModal
+    FileResourceModal,
+    MdiIcon
   },
-  mixins: [datasetApi, miscApi],
+  mixins: [authApi, datasetApi, miscApi, formattingMixin, utilMixin],
   methods: {
     downloadResource: function (resource) {
       this.apiGetDataResource(resource.fileresourceId, result => {

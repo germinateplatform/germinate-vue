@@ -28,6 +28,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   name: 'ClimateTable',
@@ -94,7 +95,7 @@ export default {
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
           sortable: true,
           label: this.$t('tableColumnClimateDataPoints'),
-          formatter: this.$options.filters.toThousandSeparators
+          formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null
         }
       ]
     }
@@ -102,6 +103,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [utilMixin],
   methods: {
     refresh: function () {
       this.$refs.climateTable.refresh()

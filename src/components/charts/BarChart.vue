@@ -7,7 +7,7 @@
         <b-button v-b-tooltip.hover
                   :title="$t('chartTooltipMatrixTour')"
                   @click="showTour()">
-          <i class="mdi mdi-18px mdi-help-circle-outline" />
+          <MdiIcon :path="mdiHelpCircleOutline" />
         </b-button>
       </template>
     </BaseChart>
@@ -18,10 +18,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import { plotlyBarChart } from '@/plugins/charts/plotly-bar-chart.js'
 import colorMixin from '@/mixins/colors.js'
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
+
+import { mdiHelpCircleOutline } from '@mdi/js'
+
 const d3Dsv = require('d3-dsv')
 const d3Select = require('d3-selection')
 
@@ -67,6 +74,7 @@ export default {
     const id = 'chart-' + this.uuidv4()
 
     return {
+      mdiHelpCircleOutline,
       id: id,
       popoverContent: [{
         title: () => this.$t('popoverChartTourGenericOptionsTitle'),
@@ -77,6 +85,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     baseSourceFile: function () {
       return {
         blob: this.sourceFile,
@@ -89,14 +100,15 @@ export default {
   },
   components: {
     BaseChart,
-    Tour
+    Tour,
+    MdiIcon
   },
   watch: {
     sourceFile: function () {
       this.redraw()
     }
   },
-  mixins: [colorMixin],
+  mixins: [colorMixin, baseApiMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -113,7 +125,7 @@ export default {
             d3Select.select(this.$refs.barChart)
               .datum(data)
               .call(plotlyBarChart(Plotly)
-                .darkMode(this.darkMode)
+                .darkMode(this.storeDarkMode)
                 .height(this.height)
                 .colors(this.getColors())
                 .x(this.xColumn)

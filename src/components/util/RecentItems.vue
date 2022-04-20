@@ -7,16 +7,25 @@
             class="mr-1">
       {{ item[groupTypes[itemType].nameColumn] }}
     </b-badge>
-    <b-badge href="#" variant="danger" @click.prevent="clearItems"><i class="mdi mdi-delete" /> {{ $t('genericClear')}}</b-badge>
+    <b-badge href="#" variant="danger" @click.prevent="clearItems"><MdiIcon :path="mdiDelete" /> {{ $t('genericClear')}}</b-badge>
   </div>
 </template>
 
 <script>
-import germplasmApi from '@/mixins/api/germplasm.js'
-import genotypeApi from '@/mixins/api/genotype.js'
-import typesMixin from '@/mixins/types.js'
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import germplasmApi from '@/mixins/api/germplasm'
+import genotypeApi from '@/mixins/api/genotype'
+import typesMixin from '@/mixins/types'
+
+import { mdiDelete } from '@mdi/js'
 
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     itemType: {
       type: String,
@@ -25,6 +34,7 @@ export default {
   },
   data: function () {
     return {
+      mdiDelete,
       recentItems: null
     }
   },
@@ -32,7 +42,7 @@ export default {
     itemType: function () {
       this.update()
     },
-    recentIds: {
+    storeRecentIds: {
       deep: true,
       handler: function () {
         this.update()
@@ -40,9 +50,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeRecentIds'
+    ]),
     getItems: function () {
       // Return them in the reverse order that they were visited in
-      return this.recentIds[this.groupTypes[this.itemType].itemType].map(id => {
+      return this.storeRecentIds[this.groupTypes[this.itemType].itemType].map(id => {
         return this.recentItems.filter(item => {
           return item[this.groupTypes[this.itemType].idColumn] === id
         })[0]
@@ -52,7 +65,7 @@ export default {
   mixins: [germplasmApi, genotypeApi, typesMixin],
   methods: {
     clearItems: function () {
-      this.$store.dispatch('ON_RECENT_IDS_CLEAR', this.groupTypes[this.itemType].itemType)
+      this.$store.dispatch('clearRecentIds', this.groupTypes[this.itemType].itemType)
     },
     getLink: function (id) {
       switch (this.itemType) {
@@ -78,7 +91,7 @@ export default {
           column: 'markerId',
           comparator: 'inSet',
           operator: 'and',
-          values: this.recentIds.markers
+          values: this.storeRecentIds.markers
         }]
       }
 
@@ -94,7 +107,7 @@ export default {
           column: 'germplasmId',
           comparator: 'inSet',
           operator: 'and',
-          values: this.recentIds.germplasm
+          values: this.storeRecentIds.germplasm
         }]
       }
 

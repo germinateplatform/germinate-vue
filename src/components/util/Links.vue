@@ -2,16 +2,22 @@
   <ul v-if="links && links.length > 0">
     <template v-for="(link, index) in links">
       <li :key="`link-widget-${index}`" v-if="link.hyperlink">
-        <a :href="link.hyperlink" target="_blank" rel="noopener noreferrer">{{ link.linktypeDescription }}</a>&nbsp;<i class="mdi mdi-open-in-new" />
+        <a :href="link.hyperlink" target="_blank" rel="noopener noreferrer">{{ link.linktypeDescription }}</a>&nbsp;<MdiIcon :path="mdiOpenInNew" />
       </li>
     </template>
   </ul>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import miscApi from '@/mixins/api/misc.js'
 
+import { mdiOpenInNew } from '@mdi/js'
+
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     foreignId: {
       type: Number,
@@ -24,6 +30,7 @@ export default {
   },
   data: function () {
     return {
+      mdiOpenInNew,
       links: null
     }
   },

@@ -23,6 +23,7 @@
 <script>
 import datasetApi from '@/mixins/api/dataset.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   props: {
@@ -51,7 +52,7 @@ export default {
       })
     }
   },
-  mixins: [datasetApi, typesMixin],
+  mixins: [datasetApi, typesMixin, utilMixin],
   methods: {
     show: function () {
       this.datasetState = this.datasetStates[this.dataset.datasetState].id

@@ -6,7 +6,7 @@
               :pressed="selectedDataTypeKey === dataType.key"
               variant="outline-primary"
               @click="setDataType(dataType.key)">
-        <i :class="`mdi mdi-18px fix-alignment ${dataType.icon}`" /><span> {{ dataType.text() }}</span>
+        <MdiIcon :path="dataType.path" /><span> {{ dataType.text() }}</span>
       </b-button>
     </b-button-group>
 
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 
@@ -41,13 +43,15 @@ import datasetApi from '@/mixins/api/dataset.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import groupApi from '@/mixins/api/group.js'
 import traitApi from '@/mixins/api/trait.js'
+import { mdiFlask, mdiShovel, mdiSprout, mdiWeatherSnowyRainy } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
     DatasetTable,
-    ExportGroupSelection
+    ExportGroupSelection,
+    MdiIcon
   },
   props: {
     showGroups: {
@@ -64,9 +68,9 @@ export default {
       selectedDataTypeKey: 'TRAIT',
       dataTypeOptions: [{
         key: 'TRAIT',
-        icon: 'mdi-shovel',
+        path: mdiShovel,
         itemType: 'germplasm',
-        color: () => this.serverSettings.colorsTemplate[4 % this.serverSettings.colorsTemplate.length],
+        color: () => this.storeServerSettings.colorsTemplate[4 % this.storeServerSettings.colorsTemplate.length],
         text: () => this.$t('datasetTypeTrials'),
         groupType: 'germinatebase',
         datasetType: 'trials',
@@ -74,9 +78,9 @@ export default {
         nameKey: 'traitName'
       }, {
         key: 'COMPOUND',
-        icon: 'mdi-flask',
+        path: mdiFlask,
         itemType: 'germplasm',
-        color: () => this.serverSettings.colorsTemplate[2 % this.serverSettings.colorsTemplate.length],
+        color: () => this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length],
         text: () => this.$t('datasetTypeCompound'),
         groupType: 'germinatebase',
         datasetType: 'compound',
@@ -84,9 +88,9 @@ export default {
         nameKey: 'compoundName'
       }, {
         key: 'CLIMATE',
-        icon: 'mdi-weather-snowy-rainy',
+        path: mdiWeatherSnowyRainy,
         itemType: 'locations',
-        color: () => this.serverSettings.colorsTemplate[1 % this.serverSettings.colorsTemplate.length],
+        color: () => this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length],
         text: () => this.$t('datasetTypeClimate'),
         groupType: 'locations',
         datasetType: 'climate',
@@ -94,9 +98,9 @@ export default {
         nameKey: 'climateName'
       }, {
         key: 'GERMPLASM_COLUMN',
-        icon: 'mdi-sprout',
+        path: mdiSprout,
         itemType: 'germplasm',
-        color: () => this.serverSettings.colorsTemplate[0 % this.serverSettings.colorsTemplate.length],
+        color: () => this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length],
         text: () => this.$t('widgetCrossDataTypeSelectionTypeGermplasmColumn'),
         groupType: null,
         datasetType: null,
@@ -106,6 +110,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeServerSettings',
+      'storeMarkedGermplasm',
+      'storeMarkedLocations'
+    ]),
     selectedDataType: function () {
       return this.dataTypeOptions.find(o => o.key === this.selectedDataTypeKey)
     },
@@ -199,9 +208,9 @@ export default {
         const markedSelected = settings.selectedGroups.filter(g => g === null)
         if (settings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
           if (this.selectedDataType.itemType === 'germplasm') {
-            result.markedIds = this.markedGermplasm
+            result.markedIds = this.storeMarkedGermplasm
           } else if (this.selectedDataType.itemType === 'locations') {
-            result.markedIds = this.markedLocations
+            result.markedIds = this.storeMarkedLocations
           }
         }
 

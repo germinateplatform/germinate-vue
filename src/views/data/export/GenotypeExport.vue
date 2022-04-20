@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import GenotypeExportSelection from '@/components/export/GenotypeExportSelection'
 import datasetApi from '@/mixins/api/dataset.js'
@@ -28,11 +29,16 @@ export default {
     DatasetOverview,
     GenotypeExportSelection
   },
+  computed: {
+    ...mapGetters([
+      'storeToken'
+    ])
+  },
   mixins: [datasetApi],
   methods: {
     isAccepted: function (dataset) {
-      if (this.token) {
-        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
+      if (this.storeToken) {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.storeToken.id) !== -1
       } else {
         return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
       }

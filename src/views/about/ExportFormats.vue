@@ -11,7 +11,7 @@
              :style="`background: ${getBackgroundColor(name)}; color: ${getTextColor(name)}`"
              event=""
              @click.prevent="selectTag(name)">
-      <i class="mdi mdi-tag " /> {{ tag.text() }}
+      <MdiIcon :path="mdiTag" /> {{ tag.text() }}
     </b-badge>
 
     <!-- Format cards -->
@@ -25,18 +25,18 @@
           bg-variant="light"
           class="mb-2 h-100">
           <b-card-body class="d-flex flex-column bg-dark">
-            <b-card-title>{{ format.name }}</b-card-title>
-            <b-card-text>
+            <b-card-title class="text-light">{{ format.name }}</b-card-title>
+            <b-card-text class="text-light">
               {{ format.text }}
             </b-card-text>
             <div>
               <b-badge v-for="(tag, index) in format.tags" :key="`export-format-tag-individual-${index}`" class="dispay-inline mr-2" variant="light" :style="`background: ${getBackgroundColor(tag)}; color: ${getTextColor(tag)}`">
-                <i class="mdi mdi-tag " /> {{ tags[tag].text() }}
+                <MdiIcon :path="mdiTag" /> {{ tags[tag].text() }}
               </b-badge>
             </div>
           </b-card-body>
           <!-- Download button -->
-          <b-button :href="format.link" target="_blank" rel="noopener noreferrer" variant="primary" class="mt-auto card-button"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
+          <b-button :href="format.link" target="_blank" rel="noopener noreferrer" variant="primary" class="mt-auto card-button"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownload') }}</b-button>
         </b-card>
       </b-col>
     </b-row>
@@ -44,12 +44,23 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+
 import typesMixin from '@/mixins/types.js'
 import colorMixin from '@/mixins/colors.js'
 
+import { mdiTag, mdiDownload } from '@mdi/js'
+
 export default {
+  components: {
+    MdiIcon
+  },
   data: function () {
     return {
+      mdiTag,
+      mdiDownload,
       selectedTag: 'all',
       tags: {
         all: {
@@ -76,11 +87,16 @@ export default {
       default: null
     }
   },
+  computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ])
+  },
   mixins: [typesMixin, colorMixin],
   methods: {
     getBackgroundColor: function (tag) {
       const index = Object.keys(this.tags).indexOf(tag)
-      return this.serverSettings.colorsTemplate[index % this.serverSettings.colorsTemplate.length]
+      return this.storeServerSettings.colorsTemplate[index % this.storeServerSettings.colorsTemplate.length]
     },
     getTextColor: function (tag) {
       const color = this.getBackgroundColor(tag)

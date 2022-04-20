@@ -9,18 +9,18 @@
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
       <!-- Banner buttons -->
-      <b-row class="compound-tabs" v-if="tabs">
+      <b-row class="compound-tabs mb-3" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'compound-tabs-' + tab.key">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
-                  <i :class="`mdi mdi-48px ${tab.icon}`" />
+                  <MdiIcon :size="48" :path="tab.path" />
                 </b-col>
               </b-row>
             </b-card-body>
             <b-card-footer :style="`color: ${getColor(index)}`">
-              <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ tab.text() }}</span></a>
+              <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
             </b-card-footer>
           </b-card>
         </b-col>
@@ -55,6 +55,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BoxplotSelection from '@/components/export/BoxplotSelection'
 import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import CompoundExportChartSelection from '@/components/export/CompoundExportChartSelection'
@@ -66,12 +68,15 @@ import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 import colorMixin from '@/mixins/colors.js'
 
+import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiEye, mdiGrid, mdiTableSearch } from '@mdi/js'
+
 const emitter = require('tiny-emitter/instance')
 
 export default {
   props: ['datasetIds'],
   data: function () {
     return {
+      mdiArrowRightBoldCircle,
       datasets: null,
       compounds: null,
       groups: null,
@@ -106,28 +111,28 @@ export default {
       tabs: [{
         key: 'overview',
         text: () => this.$t('pageDataExportTabDataStatistics'),
-        icon: 'mdi-eye',
+        path: mdiEye,
         onSelection: () => this.tabSelected('overview')
       }, {
         key: 'matrix',
         text: () => this.$t('pageDataExportTabDataMatrix'),
-        icon: 'mdi-grid',
+        path: mdiGrid,
         onSelection: () => this.tabSelected('matrix')
       }, {
         key: 'table',
         text: () => this.$t('pageDataExportTabDataTable'),
-        icon: 'mdi-table-search',
+        path: mdiTableSearch,
         onSelection: () => this.tabSelected('table')
       }, {
         key: 'export',
         text: () => this.$t('pageDataExportTabDataExport'),
-        icon: 'mdi-file-download-outline',
+        path: mdiFileDownloadOutline,
         onSelection: () => this.tabSelected('export')
       }]
     }
   },
   watch: {
-    markedGermplasm: function () {
+    storeMarkedGermplasm: function () {
       this.updateGroups()
     }
   },
@@ -136,7 +141,15 @@ export default {
     CompoundDataTable,
     CompoundExportChartSelection,
     DatasetOverview,
-    ExportDownloadSelection
+    ExportDownloadSelection,
+    MdiIcon
+  },
+  computed: {
+    ...mapGetters([
+      'storeServerSettings',
+      'storeToken',
+      'storeMarkedGermplasm'
+    ])
   },
   mixins: [datasetApi, compoundApi, groupApi, miscApi, colorMixin],
   methods: {
@@ -179,10 +192,10 @@ export default {
       return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
     },
     getColor: function (index) {
-      if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
+      if (!this.storeServerSettings || !this.storeServerSettings.colorsTemplate) {
         return '#00acef'
       } else {
-        const colors = this.serverSettings.colorsTemplate
+        const colors = this.storeServerSettings.colorsTemplate
         return colors[index % colors.length]
       }
     },
@@ -199,8 +212,8 @@ export default {
       this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'compounds' } }))
     },
     isAccepted: function (dataset) {
-      if (this.token) {
-        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
+      if (this.storeToken) {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.storeToken.id) !== -1
       } else {
         return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
       }

@@ -23,15 +23,17 @@
     </template>
     <!-- Entity type icon -->
     <template v-slot:cell(entityType)="data">
-      <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityType].color()};`" /> {{ entityTypes[data.item.entityType].text() }}</span>
+      <span class="text-nowrap"><span :style="`color: ${entityTypes[data.item.entityType].color()};`"><MdiIcon :path="entityTypes[data.item.entityType].path" /></span> {{ entityTypes[data.item.entityType].text() }}</span>
     </template>
   </BaseTable>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   name: 'CompoundDataTable',
@@ -154,9 +156,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
-  mixins: [typesMixin],
+  mixins: [typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.compoundDataTable.refresh()

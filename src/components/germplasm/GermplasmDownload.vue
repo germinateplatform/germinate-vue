@@ -5,7 +5,7 @@
       <b-col lg=6 class="mb-3">
         <b-card class="h-100">
           <b-card-title>
-            <i class="mdi mdi-passport mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabGermplasmTitle') }}
+            <MdiIcon :path="mdiPassport" className="text-primary" /> {{ $t('pageGermplasmDownloadTabGermplasmTitle') }}
           </b-card-title>
           <b-card-sub-title class="mb-2">{{ $t('pageGermplasmDownloadTabGermplasmSubtitle') }}</b-card-sub-title>
           <b-card-text>{{ $t('pageGermplasmDownloadTabGermplasmText') }}</b-card-text>
@@ -28,14 +28,14 @@
           <b-form-checkbox class="mb-3" v-model="passportIncludeAttributes" switch>{{ $t('pageGermplasmDownloadTabIncludeAttributes') }}</b-form-checkbox>
 
           <template v-slot:footer>
-            <b-button variant="primary" @click="downloadGermplasm"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
+            <b-button variant="primary" @click="downloadGermplasm"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownload') }}</b-button>
           </template>
         </b-card>
       </b-col>
       <b-col lg=6 v-if="hasPedigreeData" class="mb-3">
         <b-card class="h-100">
           <b-card-title>
-            <i class="mdi mdi-family-tree mdi-rotate-180 mdi-18px text-primary" /> {{ $t('pageGermplasmDownloadTabPedigreeTitle') }}
+            <MdiIcon :path="mdiFamilyTree" :rotate="180" className="text-primary" /> {{ $t('pageGermplasmDownloadTabPedigreeTitle') }}
           </b-card-title>
           <b-card-sub-title class="mb-2">{{ $t('pageGermplasmDownloadTabPedigreeSubtitle') }}</b-card-sub-title>
 
@@ -67,7 +67,7 @@
           </b-form-group>
 
           <template v-slot:footer>
-            <b-button variant="primary" @click="downloadPedigree" :disabled="!pedigreeDataset"><i class="mdi mdi-18px fix-alignment mdi-download"/> {{ $t('buttonDownload') }}</b-button>
+            <b-button variant="primary" @click="downloadPedigree" :disabled="!pedigreeDataset"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownload') }}</b-button>
           </template>
         </b-card>
       </b-col>
@@ -76,15 +76,28 @@
 </template>
 
 <script>
-import groupApi from '@/mixins/api/group.js'
-import datasetApi from '@/mixins/api/dataset.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
+import { mapGetters } from 'vuex'
+import groupApi from '@/mixins/api/group'
+import datasetApi from '@/mixins/api/dataset'
+import germplasmApi from '@/mixins/api/germplasm'
+import formattingMixin from '@/mixins/formatting'
+import utilMixin from '@/mixins/util'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import { mdiPassport, mdiDownload, mdiFamilyTree } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
+  components: {
+    MdiIcon
+  },
   data: function () {
     return {
+      mdiPassport,
+      mdiDownload,
+      mdiFamilyTree,
       selectionOptions: [],
       passportSelection: 'all',
       passportIncludeAttributes: false,
@@ -99,6 +112,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeLocale',
+      'storeMarkedGermplasm'
+    ]),
     datasetOptions: function () {
       if (this.pedigreeDatasets) {
         return this.pedigreeDatasets.map(d => {
@@ -113,23 +130,23 @@ export default {
     }
   },
   watch: {
-    markedGermplasm: function () {
+    storeMarkedGermplasm: function () {
       this.updateSelectionOptions()
     },
-    locale: function () {
+    storeLocale: function () {
       this.updateSelectionOptions()
     }
   },
-  mixins: [datasetApi, groupApi, germplasmApi],
+  mixins: [datasetApi, groupApi, germplasmApi, formattingMixin, utilMixin],
   methods: {
     updateSelectionOptions: function () {
       this.selectionOptions = [{
         text: this.$t('pageGermplasmDownloadSelectAll'),
         value: 'all'
       }, {
-        text: this.$t('pageGermplasmDownloadSelectMarked', { count: this.markedGermplasm.length }),
+        text: this.$t('pageGermplasmDownloadSelectMarked', { count: this.storeMarkedGermplasm.length }),
         value: 'marked',
-        disabled: this.markedGermplasm.length < 1
+        disabled: this.storeMarkedGermplasm.length < 1
       }, {
         text: this.$t('pageGermplasmDownloadSelectGroup'),
         value: 'group',
@@ -137,17 +154,17 @@ export default {
       }]
 
       // Reset selection to "All" if there aren't any marked items
-      if (this.passportSelection === 'marked' && this.markedGermplasm.length < 1) {
+      if (this.passportSelection === 'marked' && this.storeMarkedGermplasm.length < 1) {
         this.passportSelection = 'all'
       }
-      if (this.pedigreeSelection === 'marked' && this.markedGermplasm.length < 1) {
+      if (this.pedigreeSelection === 'marked' && this.storeMarkedGermplasm.length < 1) {
         this.pedigreeSelection = 'all'
       }
     },
     downloadGermplasm: function () {
       emitter.emit('show-loading', true)
       const request = {
-        individualIds: this.passportSelection === 'marked' ? this.markedGermplasm : null,
+        individualIds: this.passportSelection === 'marked' ? this.storeMarkedGermplasm : null,
         groupIds: this.passportSelection === 'group' ? [this.passportGroup] : null,
         includeAttributes: this.passportIncludeAttributes
       }
@@ -164,7 +181,7 @@ export default {
     downloadPedigree: function () {
       emitter.emit('show-loading', true)
       const request = {
-        yIds: this.pedigreeSelection === 'marked' ? this.markedGermplasm : null,
+        yIds: this.pedigreeSelection === 'marked' ? this.storeMarkedGermplasm : null,
         yGroupIds: this.pedigreeSelection === 'group' ? [this.pedigreeGroup] : null,
         includeAttributes: this.pedigreeIncludeAttributes,
         datasetIds: [this.pedigreeDataset.datasetId]

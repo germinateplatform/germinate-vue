@@ -14,12 +14,12 @@ const messages = {
 }
 
 export const i18n = new VueI18n({
-  locale: null,
+  locale: 'en_GB',
   fallbackLocale: 'en_GB',
   messages: messages
 })
 
-const loadedLanguages = []
+const loadedLanguages = ['en_GB']
 
 function setI18nLanguage (lang) {
   i18n.locale = lang
@@ -45,7 +45,7 @@ export function loadLanguageAsync (lang) {
   }
 
   // If the language hasn't been loaded yet
-  return axios.get(`clientlocale/${lang}`).then(m => {
+  return axios.get(/* webpackChunkName: "lang-[request]" */ `clientlocale/${lang}`).then(m => {
     // If we get a response from the server, use it
     if (m.data) {
       // Delete the content of the about Germinate page, we don't want people to change it.

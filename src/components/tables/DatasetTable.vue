@@ -8,11 +8,11 @@
               v-on="$listeners">
       <!-- HEAD: Database object count -->
       <template v-slot:head(dataObjectCount)="data">
-        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataObjects')"/>
+        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataObjects')"><MdiIcon :path="mdiHelpCircle" /></span>
       </template>
       <!-- HEAD: Data point count -->
       <template v-slot:head(dataPointCount)="data">
-        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataPoints')"/>
+        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataPoints')"><MdiIcon :path="mdiHelpCircle" /></span>
       </template>
 
       <!-- Dataset id -->
@@ -27,49 +27,52 @@
       <!-- Dataset name -->
       <template v-slot:cell(datasetName)="data">
         <!-- If clickHandler is provided, just let it handle clicks -->
-        <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</a>
+        <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</a>
         <!-- Else, if there's a hyperlink for an external dataset, show that -->
-        <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" rel="noopener noreferrer" :href="data.item.hyperlink" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }} </a><i class="mdi mdi-open-in-new" /></span>
+        <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" rel="noopener noreferrer" :href="data.item.hyperlink" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }} </a>
+        <MdiIcon :path="mdiOpenInNew" />
+        </span>
         <!-- Else, if we can link to the target page, let's do so -->
-        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item)) && datasetTypes[data.item.datasetType].pageName" :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</router-link>
-        <!-- If none are true, just show the id -->
-        <span v-else :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</span>
+        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item)) && datasetTypes[data.item.datasetType].pageName" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</router-link>
+        <!-- If none are true, just show the name -->
+        <span v-else :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</span>
       </template>
       <!-- Dataset description -->
       <template v-slot:cell(datasetDescription)="data">
-        <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ data.item.datasetDescription | truncateAfterWords(10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullDatasetDescription(data.item.datasetDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.datasetDescription, 10)" >&nbsp;<i class="mdi mdi-18px fix-alignment mdi-page-next" /></a>
+        <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ truncateAfterWords(data.item.datasetDescription, 10) }}</span>
+        <a href="#" class="table-icon-link" @click.prevent="showFullDatasetDescription(data.item.datasetDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.datasetDescription, 10)" >&nbsp;
+          <MdiIcon :path="mdiPageNext" /></a>
       </template>
       <!-- Experiment name -->
       <template v-slot:cell(experimentName)="data">
-        <span :title="data.item.experimentName" v-if="data.item.experimentName">{{ data.item.experimentName | truncateAfterWords(10) }}</span>
+        <span :title="data.item.experimentName" v-if="data.item.experimentName">{{ truncateAfterWords(data.item.experimentName, 10) }}</span>
         <!-- Append a link that takes the user to the experiment details page -->
         <router-link :to="{ name: 'experiment-details', params: { experimentId: data.item.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
-          &nbsp;<i class="mdi mdi-18px fix-alignment mdi-information-outline" />
+          &nbsp;<MdiIcon :path="mdiInformationOutline" />
         </router-link>
       </template>
       <!-- Dataset location country flag -->
       <template v-slot:cell(countries)="data">
-        <span v-for="country in getCountries(data.item.locations)" :key="`country-flag-${country}`" class="table-country text-nowrap mr-2" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'flag-icon flag-icon-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
+        <span v-for="country in getCountries(data.item.locations)" :key="`country-flag-${country}`" class="table-country text-nowrap mr-2" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'fi fi-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
       </template>
       <!-- Display the number of locations associated with this dataset -->
       <template v-slot:cell(locations)="data">
         <template v-if="data.item.locations !== undefined && data.item.locations !== null && data.item.locations.length > 0">
           <template v-if="data.item.locations[0].locationLatitude && data.item.locations[0].locationLongitude">
             <a href="#" class="text-decoration-none text-nowrap" @click.prevent="data.toggleDetails()" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
-              <i class="mdi mdi-18px mdi-map-marker align-middle" />
+              <MdiIcon :path="mdiMapMarker" />
               <span>{{ data.item.locations.length }}</span>
             </a>
           </template>
           <div v-else>
-            <i class="mdi mdi-18px mdi-map-marker align-middle" />
+            <MdiIcon :path="mdiMapMarker" />
             <span>{{ data.item.locations.length }}</span>
           </div>
         </template>
       </template>
       <!-- Dataset type icon -->
       <template v-slot:cell(datasetType)="data">
-        <b-badge :style="`color: ${getHighContrastTextColor(datasetTypes[data.item.datasetType].color())}; background-color: ${datasetTypes[data.item.datasetType].color()};`"><i :class="`mdi mdi-18px ${datasetTypes[data.item.datasetType].icon} fix-alignment`" /> {{ datasetTypes[data.item.datasetType].text() }}</b-badge>
+        <b-badge :style="`color: ${getHighContrastTextColor(datasetTypes[data.item.datasetType].color())}; background-color: ${datasetTypes[data.item.datasetType].color()};`"><MdiIcon :path="datasetTypes[data.item.datasetType].path" /> {{ datasetTypes[data.item.datasetType].text() }}</b-badge>
       </template>
       <!-- Data point count -->
       <template v-slot:cell(dataPointCount)="data">
@@ -83,46 +86,46 @@
             <span>{{ data.item.licenseName }} </span>
           </a>
           <!-- Show the status -->
-          <i class="mdi mdi-18px mdi-check fix-alignment text-success" v-if="isAccepted(data.item)" />
-          <i class="mdi mdi-18px mdi-new-box fix-alignment text-danger" v-else />
+          <span class="text-success" v-if="isAccepted(data.item)"><MdiIcon :path="mdiCheck" /></span>
+          <span class="text-danger" v-else><MdiIcon :path="mdiNewBox" /></span>
         </div>
       </template>
       <!-- Dataset state -->
       <template v-slot:cell(datasetState)="data">
-        <i :class="`mdi mdi-18px ${datasetStates[data.item.datasetState].icon}`" v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()" />
+        <span v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()"><MdiIcon :path="datasetStates[data.item.datasetState].path" /></span>
       </template>
       <!-- External dataset? -->
       <template v-slot:cell(isExternal)="data">
-        <i :class="`mdi mdi-18px ${data.item.isExternal ? 'mdi-link-box-variant-outline' : 'mdi-file-document-box-outline'}`" v-if="data.item.isExternal !== undefined" v-b-tooltip.hover :title="data.item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
+        <span v-if="data.item.isExternal !== undefined" v-b-tooltip.hover :title="data.item.isExternal ? $t('datasetExternal') : $t('datasetInternal')"><MdiIcon :path="data.item.isExternal ? mdiLinkBoxVariantOutline : mdiTextBoxOutline" /></span>
       </template>
       <!-- Show publications -->
       <template v-slot:cell(publications)="data">
-        <a href="#" class="text-decoration-none" v-if="data.item.publications !== 0 || (token && userIsAtLeast(token.userType, 'Data Curator'))" @click.prevent="showPublications(data.item)">
-          <i class="mdi mdi-18px mdi-text-box-check-outline" v-b-tooltip.hover :title="$t('tableTooltipDatasetPublications')" />
+        <a href="#" class="text-decoration-none" v-if="data.item.publications !== 0 || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator'))" @click.prevent="showPublications(data.item)">
+          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetPublications')"><MdiIcon :path="mdiTextBoxCheckOutline"/></span>
         </a>
       </template>
       <!-- Show collaborators -->
       <template v-slot:cell(collaborators)="data">
         <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showCollaborators(data.item)">
-          <i class="mdi mdi-18px mdi-account-multiple" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')" />
+          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')"><MdiIcon :path="mdiAccountMultiple"/></span>
         </a>
       </template>
       <!-- Show attributes -->
       <template v-slot:cell(attributes)="data">
         <a href="#" class="text-decoration-none" v-if="(data.item.attributes !== 0 || data.item.dublinCore) && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="showAttributes(data.item)">
-          <i class="mdi mdi-18px mdi-file-plus" v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')" />
+          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')"><MdiIcon :path="mdiFilePlus"/></span>
         </a>
       </template>
       <!-- Download the dataset -->
       <template v-slot:cell(download)="data">
         <a href="#" class="text-decoration-none" v-if="!data.item.isExternal && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="downloadDataset(data.item)">
-          <i class="mdi mdi-18px mdi-download" v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')" />
+          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')"><MdiIcon :path="mdiDownload"/></span>
         </a>
       </template>
       <!-- Edit dataset -->
       <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onDatasetEditClicked(data.item)" v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
-          <i :class="`mdi mdi-18px mdi-square-edit-outline`" v-b-tooltip.hover :title="$t('tableTooltipDatasetEdit')" />
+        <a href="#" class="text-decoration-none" @click.prevent="onDatasetEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetEdit')"><MdiIcon :path="mdiSquareEditOutline"/></span>
         </a>
       </template>
 
@@ -135,7 +138,7 @@
     <!-- License modal -->
     <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" />
     <!-- Collaborators modal -->
-    <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || (token && userIsAtLeast(token.userType, 'Data Curator')))" ref="publicationsModal" />
+    <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')))" ref="publicationsModal" />
     <!-- Collaborators modal -->
     <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
     <!-- Attribute modal -->
@@ -143,11 +146,14 @@
     <!-- Genotype export modal for direct downloads from the table -->
     <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
     <!-- Dataset state modal -->
-    <DatasetEditModal :dataset="dataset" v-if="dataset && token && userIsAtLeast(token.userType, 'Administrator')" @changed="refresh" ref="datasetEditModal" />
+    <DatasetEditModal :dataset="dataset" v-if="dataset && storeToken && userIsAtLeast(storeToken.userType, 'Administrator')" @changed="refresh" ref="datasetEditModal" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 import CollaboratorModal from '@/components/modals/CollaboratorModal'
@@ -156,14 +162,18 @@ import DatasetEditModal from '@/components/modals/DatasetEditModal'
 import PublicationsModal from '@/components/modals/PublicationsModal'
 import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
-import defaultProps from '@/const/table-props.js'
-import { mapFilters } from '@/plugins/map-filters.js'
-import datasetApi from '@/mixins/api/dataset.js'
-import genotypeApi from '@/mixins/api/genotype.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import locationApi from '@/mixins/api/location.js'
-import typesMixin from '@/mixins/types.js'
-import colorMixin from '@/mixins/colors.js'
+import defaultProps from '@/const/table-props'
+import datasetApi from '@/mixins/api/dataset'
+import genotypeApi from '@/mixins/api/genotype'
+import germplasmApi from '@/mixins/api/germplasm'
+import locationApi from '@/mixins/api/location'
+import typesMixin from '@/mixins/types'
+import colorMixin from '@/mixins/colors'
+import utilMixin from '@/mixins/util'
+import authApi from '@/mixins/api/auth'
+import formattingMixin from '@/mixins/formatting'
+
+import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -189,6 +199,20 @@ export default {
   },
   data: function () {
     return {
+      mdiHelpCircle,
+      mdiOpenInNew,
+      mdiPageNext,
+      mdiInformationOutline,
+      mdiMapMarker,
+      mdiCheck,
+      mdiNewBox,
+      mdiTextBoxCheckOutline,
+      mdiAccountMultiple,
+      mdiFilePlus,
+      mdiDownload,
+      mdiSquareEditOutline,
+      mdiLinkBoxVariantOutline,
+      mdiTextBoxOutline,
       options: {
         idColumn: 'datasetId',
         tableName: 'datasets',
@@ -200,6 +224,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeLocale',
+      'storeToken'
+    ]),
     columns: function () {
       const result = [
         {
@@ -275,21 +303,21 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'startDate')}`,
           label: this.$t('tableColumnDatasetStartDate'),
-          formatter: this.$options.filters.toDate
+          formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'endDate',
           type: Date,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'endDate')}`,
           label: this.$t('tableColumnDatasetEndDate'),
-          formatter: this.$options.filters.toDate
+          formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'dataObjectCount',
           type: Number,
           sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataObjectCount')}`,
           label: this.$t('tableColumnDatasetObjectCount'),
-          formatter: value => (value && (value.value !== undefined)) ? this.$options.filters.toThousandSeparators(value.value) : null
+          formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
         }, {
           key: 'dataPointCount',
           type: Number,
@@ -335,7 +363,7 @@ export default {
         }
       ]
 
-      if (this.token && this.userIsAtLeast(this.token.userType, 'Data Curator')) {
+      if (this.storeToken && this.userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
         result.push({
           key: 'edit',
           type: undefined,
@@ -358,6 +386,7 @@ export default {
     }
   },
   components: {
+    MdiIcon,
     AttributeModal,
     BaseTable,
     CollaboratorModal,
@@ -367,9 +396,8 @@ export default {
     LicenseModal,
     PublicationsModal
   },
-  mixins: [colorMixin, datasetApi, genotypeApi, germplasmApi, locationApi, typesMixin],
+  mixins: [colorMixin, datasetApi, genotypeApi, germplasmApi, locationApi, typesMixin, utilMixin, formattingMixin, authApi],
   methods: {
-    ...mapFilters(['toThousandSeparators']),
     showFullDatasetDescription: function (description) {
       this.$bvModal.msgBoxOk(description, {
         title: this.$t('tableColumnDatasetDescription'),
@@ -394,8 +422,8 @@ export default {
       }
     },
     isAccepted: function (dataset) {
-      if (this.token) {
-        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
+      if (this.storeToken) {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.storeToken.id) !== -1
       } else {
         return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
       }
@@ -405,7 +433,7 @@ export default {
       if (dataset.datasetType === 'genotype' || dataset.datasetType === 'allelefreq') {
         result = '≤'
       }
-      result += this.toThousandSeparators(dataset.dataPointCount.value)
+      result += dataset.dataPointCount.value.toLocaleString()
       return result
     },
     downloadDataset: function (dataset) {
@@ -550,7 +578,7 @@ export default {
             column: 'localeName',
             comparator: 'equals',
             operator: 'and',
-            values: [this.locale]
+            values: [this.storeLocale]
           }]
         }
         this.apiPostLicenseTable(query, result => {

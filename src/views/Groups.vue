@@ -12,7 +12,7 @@
                :pressed="selectedGroupTypeId === groupType.id"
                variant="outline-primary"
                @click="setGroupType(groupType)">
-        <i :class="`mdi mdi-18px fix-alignment ${groupType.icon}`" /><span> {{ groupType.text() }}</span>
+        <MdiIcon :path="groupType.path" /><span> {{ groupType.text() }}</span>
       </b-button>
     </b-button-group>
 
@@ -21,7 +21,7 @@
                 :getData="getGroupData"
                 :filterOn="filterOn"
                 :isEditable="true"
-                :tableActions="token ? tableActions : null"
+                :tableActions="storeToken ? tableActions : null"
                 v-on:group-selected="onGroupSelected"
                 v-on:on-group-edit-clicked="onGroupEditClicked"
                 v-on:on-group-delete-clicked="onGroupDeleteClicked" />
@@ -63,21 +63,21 @@
                       :getData="getGermplasmData"
                       :getIds="getGermplasmIds"
                       :downloadTable="downloadGermplasmData"
-                      :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
+                      :selectable="userCanEdit && storeServerSettings.authMode !== 'NONE'"
                       :tableActions="userCanEdit ? groupTableActions : null"/>
       <MarkerTable v-else-if="group.groupType === 'markers'"
                    ref="groupmembersTable"
                    :getData="getMarkerData"
                    :getIds="getMarkerIds"
                    :downloadTable="downloadMarkerData"
-                   :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
+                   :selectable="userCanEdit && storeServerSettings.authMode !== 'NONE'"
                    :tableActions="userCanEdit ? groupTableActions : null"/>
       <LocationTable v-else-if="group.groupType === 'locations'"
                      ref="groupmembersTable"
                      :getData="getLocationData"
                      :getIds="getLocationIds"
                      :downloadTable="downloadLocationData"
-                     :selectable="userCanEdit && serverSettings.authMode !== 'NONE'"
+                     :selectable="userCanEdit && storeServerSettings.authMode !== 'NONE'"
                      :tableActions="userCanEdit ? groupTableActions : null"/>
     </div>
 
@@ -94,6 +94,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import GroupTable from '@/components/tables/GroupTable'
 import LocationTable from '@/components/tables/LocationTable'
@@ -106,6 +109,8 @@ import germplasmApi from '@/mixins/api/germplasm.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import locationApi from '@/mixins/api/location.js'
 import typesMixin from '@/mixins/types.js'
+
+import { mdiPlusBox, mdiCollapseAll, mdiDelete, mdiExpandAll, mdiUpload } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -124,14 +129,14 @@ export default {
           text: this.$t('tooltipCreateNewGroup'),
           variant: null,
           disabled: () => false,
-          icon: 'mdi mdi-18px mdi-plus-box',
+          path: mdiPlusBox,
           callback: () => {
             this.groupToEdit = {
               groupId: null,
               groupName: null,
               groupDescription: null,
               groupTypeId: null,
-              userId: this.token ? this.token.id : null
+              userId: this.storeToken ? this.storeToken.id : null
             }
 
             this.$nextTick(() => this.$refs.groupDetailsModal.show())
@@ -144,7 +149,7 @@ export default {
           text: this.$t('buttonDeleteSelected'),
           variant: null,
           disabled: (selectedItems) => !selectedItems || selectedItems.length < 1,
-          icon: 'mdi mdi-18px mdi-delete',
+          path: mdiDelete,
           callback: (selectedIds) => {
             if (!selectedIds || selectedIds.length < 1) {
               return
@@ -168,19 +173,19 @@ export default {
           text: this.$t('buttonUpload'),
           variant: null,
           disabled: () => false,
-          icon: 'mdi mdi-18px mdi-upload',
+          path: mdiUpload,
           callback: () => this.$refs.groupUploadModal.show()
         },
         {
           id: 2,
           text: this.$t('buttonAddMarkedItems'),
           variant: null,
-          disabled: () => this.markedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
-          icon: 'mdi mdi-18px mdi-expand-all',
+          disabled: () => this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
+          path: mdiExpandAll,
           callback: () => {
             const type = this.groupTypes[this.group.groupType].apiName
             const data = {
-              ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
+              ids: this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: true
             }
             emitter.emit('show-loading', true)
@@ -195,12 +200,12 @@ export default {
           id: 3,
           text: this.$t('buttonRemoveMarkedItems'),
           variant: null,
-          disabled: () => this.markedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
-          icon: 'mdi mdi-18px mdi-collapse-all',
+          disabled: () => this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
+          path: mdiCollapseAll,
           callback: () => {
             const type = this.groupTypes[this.group.groupType].apiName
             const data = {
-              ids: this.markedIds[this.groupTypes[this.group.groupType].itemType],
+              ids: this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType],
               isAddition: false
             }
             emitter.emit('show-loading', true)
@@ -215,14 +220,20 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken',
+      'storeServerSettings',
+      'storeMarkedIds'
+    ]),
     userCanEdit: function () {
-      return this.token !== null && this.group !== null && (this.group.userId === this.token.id)
+      return this.storeToken !== null && this.group !== null && (this.group.userId === this.storeToken.id)
     },
     groupTypeOptions: function () {
       return Object.keys(this.groupTypes).map(e => {
         return {
           id: e,
           icon: this.groupTypes[e].icon,
+          path: this.groupTypes[e].path,
           text: () => this.groupTypes[e].text()
         }
       })
@@ -232,7 +243,7 @@ export default {
     }
   },
   watch: {
-    token: function () {
+    storeToken: function () {
       // On login/logout, deselect the current group
       this.group = null
       this.groupId = null
@@ -261,7 +272,8 @@ export default {
     GroupUploadModal,
     LocationTable,
     MarkerTable,
-    PublicationsWidget
+    PublicationsWidget,
+    MdiIcon
   },
   mixins: [groupApi, germplasmApi, genotypeApi, locationApi, typesMixin],
   methods: {
@@ -354,7 +366,7 @@ export default {
         name: this.groupToEdit.groupName,
         description: this.groupToEdit.groupDescription,
         grouptypeId: this.groupToEdit.groupTypeId,
-        createdBy: this.token.id
+        createdBy: this.storeToken.id
       }
       // Remove empty descriptions
       if (!group.description) {

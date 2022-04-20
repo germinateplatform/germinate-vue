@@ -14,6 +14,7 @@
 import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import ExportSelection from '@/components/export/ExportSelection'
 import datasetApi from '@/mixins/api/dataset.js'
+import utilMixin from '@/mixins/util'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -68,7 +69,7 @@ export default {
     DatasetMetadataDownload,
     ExportSelection
   },
-  mixins: [datasetApi],
+  mixins: [datasetApi, utilMixin],
   methods: {
     downloadData: function (query) {
       emitter.emit('show-loading', true)

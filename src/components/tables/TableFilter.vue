@@ -4,9 +4,10 @@
       <b-button-group class="table-filter">
         <!-- Help information -->
         <b-button @click="$emit('help-clicked')"
-                  class="mdi mdi-18px mdi-help-circle-outline"
                   v-b-tooltip.hover
-                  :title="$t('tooltipTableHelp')" />
+                  :title="$t('tooltipTableHelp')">
+          <MdiIcon :path="mdiHelpCircleOutline" />
+        </b-button>
         <!-- Column visibility dropdown -->
         <b-dropdown left
                     v-if="columns && columns.length > 0"
@@ -15,7 +16,7 @@
                     v-b-tooltip.hover
                     :title="$t('tooltipTableColumnSelector')">
           <template slot="button-content">
-            <i class="mdi mdi-18px mdi-view-column"/>
+            <MdiIcon :path="mdiViewColumn" />
           </template>
           <b-dropdown-form>
             <b-form-checkbox v-for="column in getColumnsToToggle"
@@ -30,17 +31,19 @@
         <!-- Toggle filter -->
         <b-button :variant="(filter && filter.length > 0) ? 'success' : ''"
                   v-b-modal="'table-filter-modal-' + id"
-                  class="mdi mdi-18px mdi-filter"
                   id="filter-toggle"
                   v-b-tooltip.hover
-                  :title="$t('tooltipTableFilter')" />
+                  :title="$t('tooltipTableFilter')">
+          <MdiIcon :path="mdiFilter" />
+        </b-button>
         <!-- Clear filter -->
         <b-button v-if="filter && filter.length > 0"
                   variant="danger"
-                  class="mdi mdi-18px mdi-delete"
                   @click="clearFilter"
                   v-b-tooltip.hover
-                  :title="$t('tooltipTableClearFilter')"/>
+                  :title="$t('tooltipTableClearFilter')">
+          <MdiIcon :path="mdiDelete" />
+        </b-button>
       </b-button-group>
 
       <!-- Filter modal -->
@@ -126,7 +129,7 @@
 
                 <!-- Delete button -->
                 <b-input-group-append>
-                  <b-button variant="danger" class="mdi mdi-18px mdi-delete" :disabled="index === 0" @click="tempFilter.splice(index, 1)"/>
+                  <b-button variant="danger" :disabled="index === 0" @click="tempFilter.splice(index, 1)"><MdiIcon :path="mdiDelete" /></b-button>
                 </b-input-group-append>
               </b-input-group>
               <!-- AND / OR operator -->
@@ -139,7 +142,7 @@
               ></b-form-radio-group>
             </b-form-group>
           </div>
-          <b-button class="mdi mdi-18px mdi-plus" @click="addFilter"><span> {{ $t('genericAdd') }}</span></b-button>
+          <b-button @click="addFilter"><MdiIcon :path="mdiPlus" /> <span> {{ $t('genericAdd') }}</span></b-button>
         </b-form>
       </b-modal>
     </div>
@@ -147,10 +150,21 @@
 </template>
 
 <script>
-import searchMixin from '@/mixins/search.js'
-import typesMixin from '@/mixins/types.js'
+import { mapGetters } from 'vuex'
+
+import baseApiMixin from '@/mixins/api/base'
+import searchMixin from '@/mixins/search'
+import typesMixin from '@/mixins/types'
+import utilMixin from '@/mixins/util'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import { mdiHelpCircleOutline, mdiViewColumn, mdiDelete, mdiFilter, mdiPlus } from '@mdi/js'
 
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     columns: {
       type: Array,
@@ -173,6 +187,11 @@ export default {
   },
   data: function () {
     return {
+      mdiHelpCircleOutline,
+      mdiViewColumn,
+      mdiDelete,
+      mdiFilter,
+      mdiPlus,
       id: this.uuidv4(),
       validComparatorsForType: {
         Boolean: ['equals', 'isNull'],
@@ -195,7 +214,7 @@ export default {
         this.resetFilter(false)
       }
     },
-    locale: function () {
+    storeLocale: function () {
       this.updateOperators()
     },
     targetFilter: function (newValue) {
@@ -205,10 +224,15 @@ export default {
       } else {
         delete query[`${this.tableName}-filter`]
       }
-      this.$router.replace({ query })
+      this.$router.replace({ query }).catch(() => true)
     }
   },
   computed: {
+    ...mapGetters([
+      'storeHiddenColumns',
+      'storeEntityTypeStats',
+      'storeLocale'
+    ]),
     // Only get the columns that have a text that isn't empty and that have a valid type
     getColumns: function () {
       return this.columns.filter(c => {
@@ -235,7 +259,7 @@ export default {
       })
     }
   },
-  mixins: [searchMixin, typesMixin],
+  mixins: [baseApiMixin, searchMixin, typesMixin, utilMixin],
   methods: {
     updateOperators: function () {
       this.localOperators = Object.keys(this.operators).map(o => {
@@ -286,7 +310,7 @@ export default {
     },
     getEntityTypeOptions: function () {
       return Object.keys(this.entityTypes).map(e => {
-        const stats = this.entityTypeStats.filter(es => es.entityTypeName === e)
+        const stats = this.storeEntityTypeStats.filter(es => es.entityTypeName === e)
         const enabled = stats && stats.length > 0 && stats[0].count > 0
         return {
           value: e,
@@ -381,13 +405,13 @@ export default {
       }
     },
     getValue: function (column) {
-      return this.hiddenColumns[this.tableName] ? this.hiddenColumns[this.tableName].indexOf(column.key) === -1 : false
+      return this.storeHiddenColumns[this.tableName] ? this.storeHiddenColumns[this.tableName].indexOf(column.key) === -1 : false
     },
     toggleColumn: function (value, column) {
       if (value) {
-        this.$store.dispatch('ON_HIDDEN_COLUMNS_REMOVE', { type: this.tableName, columns: [column.key] })
+        this.$store.dispatch('removeHiddenColumns', { type: this.tableName, columns: [column.key] })
       } else {
-        this.$store.dispatch('ON_HIDDEN_COLUMNS_ADD', { type: this.tableName, columns: [column.key] })
+        this.$store.dispatch('addHiddenColumns', { type: this.tableName, columns: [column.key] })
       }
       this.$emit('on-column-toggle', column.key)
     },

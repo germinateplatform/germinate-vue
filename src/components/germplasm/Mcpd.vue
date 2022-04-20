@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h2 class="mdi-heading"><i class="mdi mdi-36px mdi-passport text-primary" /> <span> {{ $t('pagePassportMcpdTitle') }} </span> <small><i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover.bottom title="Multi-Crop Passport Descriptors"/></small></h2>
+    <h2 class="mdi-heading"><span class="text-primary"><MdiIcon :path="mdiPassport" /></span> <span> {{ $t('pagePassportMcpdTitle') }} </span>
+    <small v-b-tooltip.hover.bottom title="Multi-Crop Passport Descriptors" class="text-muted"><MdiIcon :path="mdiHelpCircle" /></small></h2>
     <dl class="row" v-if="germplasm">
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdPuid') }}</dt><dd class="col-9">{{ germplasm.puid }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdGid') }}</dt><dd class="col-9">{{ germplasm.accenumb }}</dd>
@@ -19,17 +20,24 @@
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSpeciesAuth') }}</dt><dd class="col-9">{{ germplasm.spauthor }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSubtaxon') }}</dt><dd class="col-9">{{ germplasm.subtaxa }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSubtaxonAuth') }}</dt><dd class="col-9">{{ germplasm.subtauthor }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCountry') }}</dt><dd class="col-9"><template v-if="germplasm.origcty"><i :class="'flag-icon flag-icon-' + getFlag(germplasm.origcty.toUpperCase())" v-if="germplasm.origcty"/> {{ getCountry(germplasm.origcty.toUpperCase()) }}</template></dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdColldate') }}</dt><dd class="col-9"><template v-if="germplasm.colldate">{{ germplasm.colldate | toMcpdDate }}</template></dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCountry') }}</dt><dd class="col-9"><template v-if="germplasm.origcty"><i :class="'fi fi-' + getFlag(germplasm.origcty.toUpperCase())" v-if="germplasm.origcty"/> {{ getCountry(germplasm.origcty.toUpperCase()) }}</template></dd>
+      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdColldate') }}</dt><dd class="col-9"><template v-if="germplasm.colldate">{{ toMcpdDate(germplasm.colldate) }}</template></dd>
     </dl>
   </div>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import { mdiPassport, mdiHelpCircle } from '@mdi/js'
+
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     germplasm: {
       type: Object,
@@ -40,6 +48,8 @@ export default {
   },
   data: function () {
     return {
+      mdiPassport,
+      mdiHelpCircle,
       sampstat: {
         100: 'Wild',
         110: 'Natural',
@@ -90,6 +100,13 @@ export default {
     }
   },
   methods: {
+    toMcpdDate: function (str) {
+      const y = +str.substr(0, 4)
+      const m = +str.substr(4, 2) - 1
+      const d = +str.substr(6, 2)
+      const date = new Date(y, m, d)
+      return (date.getFullYear() === y && date.getMonth() === m && date.getDate() === d) ? date.toLocaleDateString() : null
+    },
     getFlag: function (code3) {
       if (code3 && countries.alpha3ToAlpha2(code3)) {
         return countries.alpha3ToAlpha2(code3).toLowerCase()

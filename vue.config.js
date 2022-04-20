@@ -1,24 +1,15 @@
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const webpack = require('webpack')
+const { defineConfig } = require('@vue/cli-service')
 
-module.exports = {
-  lintOnSave: true,
-  runtimeCompiler: true,
+module.exports = defineConfig({
+  transpileDependencies: false,
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   configureWebpack: {
-    plugins: [
-      // new BundleAnalyzerPlugin(),
-      new webpack.ProvidePlugin({
-        process: 'process/browser'
-      })
-    ],
     resolve: {
       // ... rest of the resolve config
       fallback: {
-        path: require.resolve('path-browserify')
+        path: require.resolve('path-browserify'),
+        querystring: require.resolve('querystring-es3')
       }
-    },
-    devtool: 'source-map',
-    target: 'web'
+    }
   }
-}
+})

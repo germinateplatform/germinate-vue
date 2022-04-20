@@ -19,6 +19,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   name: 'PedigreeDefinitionTable',
@@ -111,7 +112,7 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnPedigreeDefinitionCreatedOn'),
-          formatter: this.$options.filters.toDate
+          formatter: value => value ? new Date(value).toLocaleString() : null
         }
       ]
     }
@@ -119,6 +120,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [utilMixin],
   methods: {
     toUrl: function (input) {
       let url

@@ -9,7 +9,7 @@
         <b-form-group :label="$t('formLabelFileResourceType')" label-for="fileResourceType">
           <b-input-group>
             <template v-slot:append>
-              <b-button @click="$refs.fileResourceTypeModal.show()" v-b-tooltip="$t('modalTitleFileResourceType')"><i class="mdi mdi-plus" /></b-button>
+              <b-button @click="$refs.fileResourceTypeModal.show()" v-b-tooltip="$t('modalTitleFileResourceType')"><MdiIcon :path="mdiPlus" /></b-button>
             </template>
             <b-form-select v-model="type" :options="types" required :state="formState.type" />
           </b-input-group>
@@ -30,15 +30,19 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import FileResourceTypeModal from '@/components/modals/FileResourceTypeModal'
 
 import datasetApi from '@/mixins/api/dataset'
+
+import { mdiPlus } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
     return {
+      mdiPlus,
       name: null,
       description: null,
       types: [],
@@ -53,7 +57,8 @@ export default {
     }
   },
   components: {
-    FileResourceTypeModal
+    FileResourceTypeModal,
+    MdiIcon
   },
   mixins: [datasetApi],
   methods: {

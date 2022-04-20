@@ -1,6 +1,7 @@
-const MAX_JAVA_INTEGER = 2147483647
+import baseApiMixin from '@/mixins/api/base'
 
 export default {
+  mixins: [baseApiMixin],
   methods: {
     apiGetGroup: function (groupId, onSuccess, onError) {
       return this.authAxios({ url: `group/${groupId}`, success: onSuccess, error: onError })
@@ -18,7 +19,7 @@ export default {
       return this.authAxios({ url: `group/${groupId}/${groupType}`, method: 'PATCH', data: groupModification, success: onSuccess, error: onError })
     },
     apiGetGroupTypes: function (onSuccess, onError) {
-      return this.authAxios({ url: `grouptype?limit=${MAX_JAVA_INTEGER}`, success: onSuccess, error: onError })
+      return this.authAxios({ url: `grouptype?limit=${this.MAX_JAVA_INTEGER}`, success: onSuccess, error: onError })
     },
     apiPostGroupTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1

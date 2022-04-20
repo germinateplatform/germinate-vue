@@ -32,14 +32,14 @@
       <div class="flex-grow-1 order-0 order-sm-1">
         <div class="d-flex flex-row justify-content-between">
           <!-- Table filtering info -->
-          <div class="d-none d-sm-flex align-items-end mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
-            <i class="mr-1 mdi mdi-18px fix-alignment mdi-arrow-left-bold"/> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
+          <div class="d-none d-sm-flex mx-1 text-info" v-if="filterEnabled && (filter === null || filter.length < 1)">
+            <MdiIcon :path="mdiArrowLeftBold" className="mr-1" /> <span class="mb-1"> {{ $t('widgetTableFilterInfo') }}</span>
           </div>
           <div v-else />
           <!-- Row count -->
           <template v-if="currentRequestData !== null && pagination.totalCount >= 0">
-            <div v-if="showAllItems !== true" class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: $options.filters.toThousandSeparators(currentRequestData.page * currentRequestData.limit + 1), to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)), count: $options.filters.toThousandSeparators(pagination.totalCount) }) }}</div>
-            <div v-else class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: 1, to: $options.filters.toThousandSeparators(Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)), count: $options.filters.toThousandSeparators(pagination.totalCount) }) }}</div>
+            <div v-if="showAllItems !== true" class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: (currentRequestData.page * currentRequestData.limit + 1).toLocaleString(), to: (Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)).toLocaleString(), count: pagination.totalCount.toLocaleString() }) }}</div>
+            <div v-else class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: 1, to: (Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)).toLocaleString(), count: pagination.totalCount.toLocaleString() }) }}</div>
           </template>
         </div>
         <!-- Progress bar below it all that indicates the loading state -->
@@ -50,8 +50,10 @@
       <!-- Item per page dropdown -->
       <b-button-group class="per-page-dropdown order-2 order-sm-2" v-if="!showAllItems">
         <b-dropdown v-b-tooltip.hover :title="$t('tooltipTableItemsPerPage')" id="table-page-size-dropdown" right>
-          <template slot="button-content"><i class="mdi mdi-18px mdi-book-open-page-variant"/><span> {{ tablePerPage }}</span></template>
-          <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value" :active="value === tablePerPage">{{ value }}</b-dropdown-item>
+          <template slot="button-content">
+            <MdiIcon :path="mdiBookOpenPageVariant" /><span> {{ storeTablePerPage }}</span>
+          </template>
+          <b-dropdown-item v-for="value in perPageValues" @click="onPerPageChanged(value)" :key="'table-per-page-' + value" :active="value === storeTablePerPage">{{ value }}</b-dropdown-item>
         </b-dropdown>
         <!-- Item marking mechanism -->
         <MarkedItems :itemType="itemType" />
@@ -66,7 +68,6 @@
             hover
             outlined
             show-empty
-            sticky-header="90vh"
             head-variant="dark"
             table-class="position-relative"
             :empty-text="$t('paginationNoResult')"
@@ -95,25 +96,33 @@
       <template v-slot:head(marked)>
         <b-dropdown size="sm" dropleft variant="outline-primary" boundary="window">
           <template slot="button-content">
-            <i class="mdi mdi-18px mdi-checkbox-multiple-outline" />
+            <MdiIcon :path="mdiCheckboxMultipleOutline" />
           </template>
-          <b-dropdown-item @click="markAllItems(true)"><i class="mdi mdi-18px mdi-checkbox-multiple-marked" />{{ $t('tableItemMarkingMarkAll') }}</b-dropdown-item>
-          <b-dropdown-item @click="markAllItems(false)"><i class="mdi mdi-18px mdi-checkbox-multiple-blank-outline" />{{ $t('tableItemMarkingUnmarkAll') }}</b-dropdown-item>
-          <b-dropdown-item @click="createGroup" v-if="token" :disabled="!markedIds[itemType] || markedIds[itemType].length < 1"><i class="mdi mdi-18px mdi-group" />{{ $t('tableItemMarkingCreateGroup') }}</b-dropdown-item>
+          <b-dropdown-item @click="markAllItems(true)"><MdiIcon :path="mdiCheckboxMultipleMarked" /> {{ $t('tableItemMarkingMarkAll') }}</b-dropdown-item>
+          <b-dropdown-item @click="markAllItems(false)"><MdiIcon :path="mdiCheckboxMultipleBlankOutline" /> {{ $t('tableItemMarkingUnmarkAll') }}</b-dropdown-item>
+          <b-dropdown-item @click="createGroup" v-if="storeToken" :disabled="!storeMarkedIds[itemType] || storeMarkedIds[itemType].length < 1"><MdiIcon :path="mdiGroup" /> {{ $t('tableItemMarkingCreateGroup') }}</b-dropdown-item>
           <template v-if="options.additionalMarkingOptions">
             <b-dropdown-divider />
             <b-dropdown-item v-for="item in options.additionalMarkingOptions" :key="item.key" @click="item.callback(null)">
-              <i :class="`mdi mdi-18px ${item.icon}`" />{{ item.text() }}
+              <MdiIcon :path="item.path" /> {{ item.text() }}
             </b-dropdown-item>
           </template>
         </b-dropdown>
       </template>
       <template v-slot:cell(marked)="data">
-        <!-- Context menu -->
-        <div @contextmenu.prevent="contextMenu($event, data.item)">
-          <!-- Marking checkbox -->
-          <b-form-checkbox :checked="isMarked(data.item)" @change="markItem(data.item[options.idColumn], $event)" v-if="itemType"/>
-        </div>
+        <template v-if="itemType">
+          <template v-if="options.additionalMarkingOptions">
+            <b-dropdown size="sm" split text="Split Dropdown" class="m-2" @click="markItem(data.item[options.idColumn], !isMarked(data.item))">
+              <template #button-content>
+                <b-form-checkbox :checked="isMarked(data.item)" :style="{ pointerEvents: 'none' }" />
+              </template>
+              <b-dropdown-item href="#" v-for="item in options.additionalMarkingOptions" :key="item.key" @click.prevent="item.callback(data.item)">
+                <MdiIcon :path="item.path" /> {{ item.text() }}
+              </b-dropdown-item>
+            </b-dropdown>
+          </template>
+          <b-form-checkbox :checked="isMarked(data.item)" @change="markItem(data.item[options.idColumn], $event)" v-else/>
+        </template>
       </template>
     </b-table>
 
@@ -123,14 +132,14 @@
         <!-- Information about selecting multiple items in the table -->
         <template v-if="columns.map(c => c.key).indexOf('selected') !== -1 && selectionMode === 'multi'">
           <div>
-            <i class="mdi mdi-18px mdi-arrow-up-bold ml-2"/><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
+            <span class="ml-2"><MdiIcon :path="mdiArrowUpBold" /></span><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
           </div>
         </template>
 
         <!-- Any additional actions and the download button -->
         <b-button-group v-if="tableActions || downloadTable">
           <!-- Download button -->
-          <b-button class="table-download" v-if="downloadTable !== null" @click="onDownloadTableClicked" id="table-download" v-b-tooltip.hover.bottom :title="$t('buttonDownload')"><i class="mdi mdi-18px fix-alignment mdi-download" /></b-button>
+          <b-button class="table-download" v-if="downloadTable !== null" @click="onDownloadTableClicked" id="table-download" v-b-tooltip.hover.bottom :title="$t('buttonDownload')"><MdiIcon :path="mdiDownload" /></b-button>
           <template v-if="tableActions">
             <!-- Table actions -->
             <b-button v-for="action in tableActions"
@@ -140,7 +149,7 @@
                       @click="action.callback(selectedItems)"
                       v-b-tooltip.hover.bottom
                       :title="action.text">
-              <i :class="action.icon" v-if="action.icon" />
+              <MdiIcon :path="action.path" v-if="action.path" />
               <span v-else>{{ action.text }}</span>
             </b-button>
           </template>
@@ -149,28 +158,19 @@
 
       <!-- Page indicator and pagination -->
       <div class="d-flex">
-        <b-button-group class="table-pagination" v-show="pagination.totalCount > tablePerPage">
-          <b-button variant="outline-secondary" class="text-primary" @click="showJumpToPage" id="table-jump-to-page"><i class="mdi mdi-book-open-page-variant" /> {{ $t('paginationPageCustom', { from: pagination.currentPage, to: maxPage }) }}</b-button>
+        <b-button-group class="table-pagination" v-show="pagination.totalCount > storeTablePerPage">
+          <b-button class="text-primary page-link" @click="showJumpToPage" id="table-jump-to-page"><MdiIcon :path="mdiBookOpenPageVariant" /> {{ $t('paginationPageCustom', { from: pagination.currentPage, to: maxPage }) }}</b-button>
           <b-pagination v-model="pagination.currentPage"
                         :total-rows="pagination.totalCount"
-                        :per-page="tablePerPage"
+                        :per-page="storeTablePerPage"
                         id="table-pagination"
                         v-if="pagination.totalCount > 0" />
         </b-button-group>
       </div>
     </div>
 
-    <!-- Context menu -->
-    <vue-context ref="menu" v-if="options.additionalMarkingOptions">
-      <template slot-scope="child">
-        <li v-for="item in options.additionalMarkingOptions" :key="item.key">
-          <a href="#" @click="item.callback(child.data)"><i :class="`mdi mdi-18px ${item.icon}`" /> {{ item.text() }}</a>
-        </li>
-      </template>
-    </vue-context>
-
     <!-- Group edit/add modal -->
-    <GroupEditAddModal v-if="token && markedIds[itemType] && markedIds[itemType].length > 0" :groupToEdit="newGroup" :groupTypeSelect="groupTypeSelect" ref="groupAddModal" v-on:ok="putGroup"/>
+    <GroupEditAddModal v-if="storeToken && storeMarkedIds[itemType] && storeMarkedIds[itemType].length > 0" :groupToEdit="newGroup" :groupTypeSelect="groupTypeSelect" ref="groupAddModal" v-on:ok="putGroup"/>
 
     <!-- Jump to page modal -->
     <b-modal :title="$t('modalTitleJumpToPage')"
@@ -201,15 +201,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
 import MarkedItems from '@/components/tables/MarkedItems'
 import TableFilter from '@/components/tables/TableFilter'
 import Tour from '@/components/util/Tour'
-import { VueContext } from 'vue-context'
-import { mapFilters } from '@/plugins/map-filters.js'
-import groupApi from '@/mixins/api/group.js'
-import searchMixin from '@/mixins/search.js'
-import typesMixin from '@/mixins/types.js'
+import groupApi from '@/mixins/api/group'
+import searchMixin from '@/mixins/search'
+import typesMixin from '@/mixins/types'
+import formattingMixin from '@/mixins/formatting'
+import utilMixin from '@/mixins/util'
+
+import { mdiArrowLeftBold, mdiBookOpenPageVariant, mdiArrowUpBold, mdiCheckboxMultipleOutline, mdiCheckboxMultipleMarked, mdiCheckboxMultipleBlankOutline, mdiGroup, mdiDownload } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -270,6 +275,14 @@ export default {
     const id = 'table-' + this.uuidv4()
 
     return {
+      mdiArrowLeftBold,
+      mdiDownload,
+      mdiBookOpenPageVariant,
+      mdiArrowUpBold,
+      mdiCheckboxMultipleOutline,
+      mdiCheckboxMultipleMarked,
+      mdiCheckboxMultipleBlankOutline,
+      mdiGroup,
       pagination: {
         currentPage: 1,
         totalCount: -1
@@ -298,7 +311,7 @@ export default {
     'pagination.totalCount': function () {
       this.updateTableTour()
     },
-    tablePerPage: function () {
+    storeTablePerPage: function () {
       this.$nextTick(() => this.$refs.table.refresh())
     },
     selectedItems: function (newValue) {
@@ -312,23 +325,27 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeMarkedIds',
+      'storeTablePerPage',
+      'storeToken'
+    ]),
     allSelected: function () {
       return this.selectedItems.length > 0 && this.selectedItems.length === this.pagination.totalCount
     },
     maxPage: function () {
-      return Math.ceil(this.pagination.totalCount / this.tablePerPage)
+      return Math.ceil(this.pagination.totalCount / this.storeTablePerPage)
     }
   },
   components: {
+    MdiIcon,
     GroupEditAddModal,
     MarkedItems,
     TableFilter,
-    Tour,
-    VueContext
+    Tour
   },
-  mixins: [groupApi, searchMixin, typesMixin],
+  mixins: [formattingMixin, groupApi, searchMixin, typesMixin, utilMixin],
   methods: {
-    ...mapFilters(['toThousandSeparators']),
     updateSort: function (ctx) {
       const query = Object.assign({}, this.$route.query)
       if (ctx.sortBy) {
@@ -378,16 +395,16 @@ export default {
     },
     isMarked: function (row) {
       if (this.itemType) {
-        return this.markedIds[this.itemType].indexOf(row[this.options.idColumn]) !== -1
+        return this.storeMarkedIds[this.itemType].indexOf(row[this.options.idColumn]) !== -1
       } else {
         return false
       }
     },
     markItem: function (id, event) {
       if (event) {
-        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: this.itemType, ids: [id] })
+        this.$store.dispatch('addMarkedIds', { type: this.itemType, ids: [id] })
       } else {
-        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: [id] })
+        this.$store.dispatch('removeMarkedIds', { type: this.itemType, ids: [id] })
       }
     },
     isValidFilter: function (filter) {
@@ -404,22 +421,22 @@ export default {
         emitter.emit('show-loading', true)
         this.getIds(this.currentRequestData, result => {
           if (mark) {
-            this.$store.dispatch('ON_MARKED_IDS_ADD', { type: this.itemType, ids: result.data })
+            this.$store.dispatch('addMarkedIds', { type: this.itemType, ids: result.data })
           } else {
-            this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: result.data })
+            this.$store.dispatch('removeMarkedIds', { type: this.itemType, ids: result.data })
           }
           emitter.emit('show-loading', false)
         })
       }
     },
     onPerPageChanged: function (value) {
-      this.$store.dispatch('ON_TABLE_PER_PAGE_CHANGED', value)
+      this.$store.dispatch('setTablePerPage', value)
     },
     getDataLocal: function (ctx) {
       // Set the API pagination information fields
       const localCtx = JSON.parse(JSON.stringify(ctx))
       localCtx.page = this.pagination.currentPage
-      localCtx.limit = this.tablePerPage
+      localCtx.limit = this.storeTablePerPage
       localCtx.prevCount = this.pagination.totalCount
       localCtx.orderBy = localCtx.sortBy.length > 0 ? localCtx.sortBy : null
       localCtx.ascending = localCtx.sortBy.length > 0 ? (localCtx.sortDesc ? 0 : 1) : null
@@ -460,17 +477,12 @@ export default {
         })
       })
     },
-    contextMenu: function (event, row) {
-      if (this.options.additionalMarkingOptions) {
-        this.$refs.menu.open(event, row)
-      }
-    },
     createGroup: function () {
       this.newGroup = {
         groupId: null,
         groupName: null,
         groupDescription: null,
-        userId: this.token.id
+        userId: this.storeToken.id
       }
       this.apiGetGroupTypes(result => {
         this.groupTypeSelect = result.data.map(g => {
@@ -500,7 +512,7 @@ export default {
       emitter.emit('show-loading', true)
       this.apiPutGroup(group, result => {
         const data = {
-          ids: this.markedIds[this.itemType],
+          ids: this.storeMarkedIds[this.itemType],
           isAddition: true
         }
         const groupId = result
@@ -535,7 +547,7 @@ export default {
       if (this.downloadTable !== null) {
         // Warn user that it's a lot of data and it'll take a while
         if (this.pagination.totalCount > 100000) {
-          this.$bvModal.msgBoxConfirm(this.$t('modalTextWarningLargeAmountOfData', { size: this.toThousandSeparators(this.pagination.totalCount) }), {
+          this.$bvModal.msgBoxConfirm(this.$t('modalTextWarningLargeAmountOfData', { size: this.pagination.totalCount.toLocaleString() }), {
             title: this.$t('modalTitleWarning'),
             okTitle: this.$t('genericYes'),
             cancelTitle: this.$t('genericNo'),
@@ -624,7 +636,7 @@ export default {
         })
       }
 
-      if (this.pagination.totalCount > this.tablePerPage) {
+      if (this.pagination.totalCount > this.storeTablePerPage) {
         tableTourSteps.push({
           title: () => this.$t('popoverTableTourPaginationTitle'),
           text: () => this.$t('popoverTableTourPaginationText'),
@@ -708,7 +720,6 @@ export default {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-right: 0;
-  border-top: 0;
   margin-top: -1px;
 }
 .base-table table.b-table[aria-busy='true'] {

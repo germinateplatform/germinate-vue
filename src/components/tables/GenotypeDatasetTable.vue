@@ -14,6 +14,8 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import utilMixin from '@/mixins/util'
+import formattingMixin from '@/mixins/formatting'
 
 export default {
   name: 'DatasetTable',
@@ -56,7 +58,7 @@ export default {
           sortable: false,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           label: this.$t('tableColumnDatasetName'),
-          formatter: value => this.$options.filters.truncateAfterWords(value, 10),
+          formatter: value => this.truncateAfterWords(value, 10),
           preferedSortingColumn: true
         }, {
           key: 'datasetDescription',
@@ -64,21 +66,21 @@ export default {
           sortable: false,
           class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
           label: this.$t('tableColumnDatasetDescription'),
-          formatter: value => this.$options.filters.truncateAfterWords(value, 10)
+          formatter: value => this.truncateAfterWords(value, 10)
         }, {
           key: 'dataObjectCount',
           type: Number,
           sortable: false,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataObjectCount')}`,
           label: this.$t('tableColumnGenotypeDatasetGermplasmCount'),
-          formatter: value => (value && (value.value !== undefined)) ? this.$options.filters.toThousandSeparators(value.value) : null
+          formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
         }, {
           key: 'dataPointCount',
           type: Number,
           sortable: false,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataPointCount')}`,
           label: this.$t('tableColumnGenotypeDatasetMarkerCount'),
-          formatter: value => (value && (value.value !== undefined)) ? this.$options.filters.toThousandSeparators(value.value) : null
+          formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
         }
       ]
     }
@@ -86,6 +88,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [utilMixin, formattingMixin],
   methods: {
     getRowVariant: function (row) {
       if (!row.dataObjectCount || !row.dataObjectCount.value || !row.dataPointCount || !row.dataPointCount.value) {

@@ -1,4 +1,8 @@
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
+
 export default {
+  mixins: [baseApiMixin, utilMixin],
   methods: {
     apiPostPublicationDatasetTable: function (publicationId, queryData, onSuccess, onError) {
       queryData.page -= 1

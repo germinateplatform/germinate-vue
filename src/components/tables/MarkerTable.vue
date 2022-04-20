@@ -25,6 +25,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   name: 'MarkerTable',
@@ -95,6 +96,7 @@ export default {
   components: {
     BaseTable
   },
+  mixins: [utilMixin],
   methods: {
     refresh: function () {
       this.$refs.markerTable.refresh()

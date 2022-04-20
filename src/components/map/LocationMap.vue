@@ -45,8 +45,9 @@
           </template>
           <span v-else v-html="location.locationName" />
         </dd>
-        <template v-if="location.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8"><i :class="`mdi mdi-18px ${locationTypes[location.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[location.locationType].color()};`" /> {{ this.locationTypes[location.locationType].text() }}</dd></template>
-        <template v-if="location.countryCode2 || location.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'flag-icon flag-icon-' + getFlag(location)" /> {{ getCountry(location) }}</dd></template>
+        <template v-if="location.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8">
+          <MdiIcon :path="locationTypes[location.locationType].path" :style="`color: ${locationTypes[location.locationType].color()};`" /> {{ this.locationTypes[location.locationType].text() }}</dd></template>
+        <template v-if="location.countryCode2 || location.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'fi fi-' + getFlag(location)" /> {{ getCountry(location) }}</dd></template>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLatitude') }}</dt><dd class="col-8">{{ location.locationLatitude.toFixed(2) }}</dd>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLongitude') }}</dt><dd class="col-8">{{ location.locationLongitude.toFixed(2) }}</dd>
         <template v-if="location.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ location.locationElevation.toFixed(2) }}</dd></template>
@@ -64,15 +65,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import ClimateOverlayModal from '@/components/modals/ClimateOverlayModal'
 import ColorGradient from '@/components/util/ColorGradient'
 import L from 'leaflet'
-import climateApi from '@/mixins/api/climate.js'
-import typesMixin from '@/mixins/types.js'
-import colorMixin from '@/mixins/colors.js'
+import climateApi from '@/mixins/api/climate'
+import typesMixin from '@/mixins/types'
+import colorMixin from '@/mixins/colors'
+import formattingMixin from '@/mixins/formatting'
 import { LMap, LImageOverlay, LControl } from 'vue2-leaflet'
 // LEAFLET
 import 'leaflet/dist/leaflet.css'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+import 'leaflet-draw/dist/leaflet.draw.css'
+import 'leaflet-easybutton/src/easy-button.css'
 
 require('leaflet.heat')
 require('leaflet.sync')
@@ -145,7 +153,7 @@ export default {
       const map = this.$refs.map.mapObject
 
       if (this.climates && this.climates.length > 0) {
-        L.easyButton('<i class="mdi mdi-weather-snowy-rainy mdi-18px"/>', () => {
+        L.easyButton('<svg data-v-75edd456="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" class="mdi-icon "><path data-v-75edd456="" d="M18.5,18.67C18.5,19.96 17.5,21 16.25,21C15,21 14,19.96 14,18.67C14,17.12 16.25,14.5 16.25,14.5C16.25,14.5 18.5,17.12 18.5,18.67M4,17.36C3.86,16.82 4.18,16.25 4.73,16.11L7,15.5L5.33,13.86C4.93,13.46 4.93,12.81 5.33,12.4C5.73,12 6.4,12 6.79,12.4L8.45,14.05L9.04,11.8C9.18,11.24 9.75,10.92 10.29,11.07C10.85,11.21 11.17,11.78 11,12.33L10.42,14.58L12.67,14C13.22,13.83 13.79,14.15 13.93,14.71C14.08,15.25 13.76,15.82 13.2,15.96L10.95,16.55L12.6,18.21C13,18.6 13,19.27 12.6,19.67C12.2,20.07 11.54,20.07 11.15,19.67L9.5,18L8.89,20.27C8.75,20.83 8.18,21.14 7.64,21C7.08,20.86 6.77,20.29 6.91,19.74L7.5,17.5L5.26,18.09C4.71,18.23 4.14,17.92 4,17.36M1,11A5,5 0 0,1 6,6C7,3.65 9.3,2 12,2C15.43,2 18.24,4.66 18.5,8.03L19,8A4,4 0 0,1 23,12A4,4 0 0,1 19,16A1,1 0 0,1 18,15A1,1 0 0,1 19,14A2,2 0 0,0 21,12A2,2 0 0,0 19,10H17V9A5,5 0 0,0 12,4C9.5,4 7.45,5.82 7.06,8.19C6.73,8.07 6.37,8 6,8A3,3 0 0,0 3,11C3,11.85 3.35,12.61 3.91,13.16C4.27,13.55 4.26,14.16 3.88,14.54C3.5,14.93 2.85,14.93 2.47,14.54C1.56,13.63 1,12.38 1,11Z"></path></svg>', () => {
           this.$refs.climateOverlayModal.show()
         }, 'Toggle overlays', 'settings-button', { position: 'topright' }).addTo(map)
       }
@@ -154,14 +162,22 @@ export default {
       this.updateMap(false)
     }
   },
+  computed: {
+    ...mapGetters([
+      'storeBaseUrl',
+      'storeMapLayer',
+      'storeToken'
+    ])
+  },
   components: {
+    MdiIcon,
     ClimateOverlayModal,
     ColorGradient,
     LControl,
     LMap,
     LImageOverlay
   },
-  mixins: [climateApi, typesMixin, colorMixin],
+  mixins: [climateApi, typesMixin, colorMixin, formattingMixin],
   methods: {
     getLatLngs: function () {
       return this.internalLocations.map(l => {
@@ -213,11 +229,11 @@ export default {
                 let path = ''
 
                 const params = {
-                  token: this.token ? this.token.imageToken : null
+                  token: this.storeToken ? this.storeToken.imageToken : null
                 }
                 const paramString = this.toUrlString(params)
 
-                path = this.baseUrl + `climate/overlay/${i.climateOverlayId}/src?` + paramString
+                path = this.storeBaseUrl + `climate/overlay/${i.climateOverlayId}/src?` + paramString
 
                 array.push({
                   id: i.climateOverlayId,
@@ -427,7 +443,7 @@ export default {
 
       const map = this.$refs.map.mapObject
 
-      switch (this.mapLayer) {
+      switch (this.storeMapLayer) {
         // case 'osm':
         //   map.addLayer(openstreetmap)
         //   break
@@ -452,13 +468,13 @@ export default {
       map.on('baselayerchange', e => {
         switch (e.name) {
           // case 'Stadia Dark':
-          //   this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'stadia')
+          //   this.$store.dispatch('setMapLayer', 'stadia')
           //   break
           case 'OpenStreetMap':
-            this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'osm')
+            this.$store.dispatch('setMapLayer', 'osm')
             break
           case 'Esri WorldImagery':
-            this.$store.dispatch('ON_MAP_LAYER_CHANGED', 'satellite')
+            this.$store.dispatch('setMapLayer', 'satellite')
             break
         }
       })
@@ -584,5 +600,30 @@ export default {
 }
 .location-name * {
   overflow-wrap: break-word;
+}
+
+.marker-cluster, .prunecluster {
+  color: white;
+}
+
+.marker-cluster-small, .prunecluster-small {
+  background-color: rgba(124, 179, 218, 0.6);
+}
+.marker-cluster-small div, .prunecluster-small div {
+  background-color: rgba(124, 179, 218, 0.8);
+}
+
+.marker-cluster-medium, .prunecluster-medium {
+  background-color: rgba(62, 139, 193, 0.6);
+}
+.marker-cluster-medium div, .prunecluster-medium div {
+  background-color: rgba(62, 139, 193, 0.8);
+}
+
+.marker-cluster-large, .prunecluster-large {
+  background-color: rgba(15, 112, 182, 0.6);
+}
+.marker-cluster-large div, .prunecluster-large div {
+  background-color: rgba(15, 112, 182, 0.8);
 }
 </style>

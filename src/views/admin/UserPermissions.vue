@@ -10,7 +10,7 @@
               v-model="tabIndex">
         <b-tab active>
           <template v-slot:title>
-            <i class="mdi mdi-18px mdi-account-group" /> {{ $t('pageUserPermissionsTabUserGroups') }}
+            <MdiIcon :path="mdiAccountGroup" /> {{ $t('pageUserPermissionsTabUserGroups') }}
           </template>
           <p>{{ $t('pageUserPermissionsUserGroupsText') }}</p>
           <!-- User groups -->
@@ -18,7 +18,7 @@
         </b-tab>
         <b-tab title="Tab 2">
           <template v-slot:title>
-            <i class="mdi mdi-18px mdi-database-lock" /> {{ $t('pageUserPermissionsTabDatasetPermissions') }}
+            <MdiIcon :path="mdiDatabaseLock" /> {{ $t('pageUserPermissionsTabDatasetPermissions') }}
           </template>
           <p>{{ $t('pageUserPermissionsDatasetsText') }}</p>
           <!-- Dataset permissions -->
@@ -30,17 +30,23 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetPermissions from '@/components/admin/DatasetPermissions'
 import UserGroups from '@/components/admin/UserGroups'
+
+import { mdiAccountGroup, mdiDatabaseLock } from '@mdi/js'
 
 export default {
   data: function () {
     return {
+      mdiAccountGroup,
+      mdiDatabaseLock,
       tabIndex: 0
     }
   },
   components: {
     DatasetPermissions,
+    MdiIcon,
     UserGroups
   }
 }

@@ -20,25 +20,29 @@
         <span v-if="data.item.publicationFallbackCache">{{ data.item.publicationFallbackCache['container-title'] }}</span>
       </template>
       <template v-slot:cell(publicationDoi)="data">
-        <span><a rel="noopener noreferrer" :href="data.item.publicationDoi">{{ data.item.publicationDoi }}</a> <i class="mdi mdi-open-in-new" /></span>
+        <span><a rel="noopener noreferrer" :href="data.item.publicationDoi">{{ data.item.publicationDoi }}</a> <MdiIcon :path="mdiOpenInNew" /></span>
       </template>
       <template v-slot:cell(referencingIds)="data">
         <span v-if="data.item.referencingIds && data.item.referencingIds.length > 0 && data.item.referencingIds[0] !== null">{{ data.item.referencingIds.length }}</span>
       </template>
       <!-- Publication type icon -->
       <template v-slot:cell(referenceType)="data">
-        <b-badge :style="`color: ${getHighContrastTextColor(publicationTypes[data.item.referenceType].color)}; background-color: ${publicationTypes[data.item.referenceType].color};`"><i :class="`mdi mdi-18px ${publicationTypes[data.item.referenceType].icon} fix-alignment`" /> {{ publicationTypes[data.item.referenceType].text }}</b-badge>
+        <b-badge :style="`color: ${getHighContrastTextColor(publicationTypes[data.item.referenceType].color)}; background-color: ${publicationTypes[data.item.referenceType].color};`"><MdiIcon :path="publicationTypes[data.item.referenceType].path" /> {{ publicationTypes[data.item.referenceType].text }}</b-badge>
       </template>
     </BaseTable>
   </div>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 
-import typesMixin from '@/mixins/types.js'
-import colorMixin from '@/mixins/colors.js'
+import typesMixin from '@/mixins/types'
+import colorMixin from '@/mixins/colors'
+import utilMixin from '@/mixins/util'
+
+import { mdiOpenInNew } from '@mdi/js'
 
 export default {
   name: 'PublicationTable',
@@ -47,6 +51,7 @@ export default {
   },
   data: function () {
     return {
+      mdiOpenInNew,
       options: {
         idColumn: 'publicationId',
         tableName: 'publication'
@@ -98,7 +103,7 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnPublicationCreatedOn'),
-          formatter: this.$options.filters.toDate
+          formatter: value => value ? new Date(value).toLocaleString() : null
         }
       ]
 
@@ -106,9 +111,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
-  mixins: [colorMixin, typesMixin],
+  mixins: [colorMixin, typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.publicationTable.refresh()

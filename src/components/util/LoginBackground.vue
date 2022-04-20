@@ -1,9 +1,11 @@
 <template>
   <!-- This is the SVG that goes in the background. It's filled in the code below. -->
-  <svg ref="background" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+  <svg class="login-background" ref="background" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import colorMixin from '@/mixins/colors.js'
 
 import SimplexNoise from 'simplex-noise'
@@ -24,8 +26,8 @@ export default {
         return
       }
 
-      const w = window.innerWidth
-      const h = window.innerHeight
+      const w = document.body.offsetWidth
+      const h = document.body.offsetHeight
 
       const random = (a, b) => {
         if (!a) {
@@ -134,8 +136,13 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ])
+  },
   mounted: function () {
-    const primaryColor = (this.serverSettings && this.serverSettings.colorPrimary) ? this.serverSettings.colorPrimary : '#20a8d8'
+    const primaryColor = (this.storeServerSettings && this.storeServerSettings.colorPrimary) ? this.storeServerSettings.colorPrimary : '#20a8d8'
     this.backgroundColors = this.createColorGradient('#ffffff', primaryColor, 4)
 
     this.updateBackground()
@@ -153,6 +160,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.login-background {
+  left: 0;
+  top: 0;
+  position: absolute;
+  opacity: .4;
+}
 </style>

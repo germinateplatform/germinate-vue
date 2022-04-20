@@ -108,9 +108,6 @@ export default {
     }
   },
   watch: {
-    markedGermplasm: function () {
-      this.update()
-    },
     splitBy: function () {
       this.redraw()
     }
@@ -225,7 +222,7 @@ export default {
           column: 'traitId',
           operator: 'and',
           comparator: 'inSet',
-          values: this.selectedTraits.map(t => t.traitId)
+          values: this.selectedTraits ? this.selectedTraits.map(t => t.traitId) : []
         }, {
           column: 'datasetId',
           operator: 'and',

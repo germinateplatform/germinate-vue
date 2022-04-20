@@ -8,19 +8,19 @@
         <b-col xs=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('equal')}`" no-body>
             <b-card-body>
-              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-justify mdi-rotate-90 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningEqualTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningEqualText')" /></h5>
+              <h5 class="mb-3"><MdiIcon :path="mdiFormatAlignJustify" :rotate="90" /> {{ $t('pageAlleleFrequencyBinningEqualTitle') }} <span v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningEqualText')"><MdiIcon :path="mdiHelpCircle" /></span></h5>
               <b-form-group :label="$t('formLabelAllelefreqNrOfBins')" for="nrOfBins">
                 <b-input min="2" max="20" id="nrOfBins" type="number" v-model.number="equalBins"/>
               </b-form-group>
             </b-card-body>
-            <b-button variant="primary" @click="updateBinning('equal')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> {{ $t('buttonUpdate') }}</b-button>
+            <b-button variant="primary" @click="updateBinning('equal')"><MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}</b-button>
           </b-card>
         </b-col>
         <!-- Split point binning -->
         <b-col xs=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('split')}`" no-body>
             <b-card-body>
-              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-indent-increase mdi-rotate-270 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningSplitTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningSplitText')" /></h5>
+              <h5 class="mb-3"><MdiIcon :path="mdiFormatIndentIncrease" :rotate="270"/> {{ $t('pageAlleleFrequencyBinningSplitTitle') }} <span v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningSplitText')"><MdiIcon :path="mdiHelpCircle" /></span></h5>
               <b-form-group :label="$t('formLabelAllelefreqNrOfBinsLeft')" for="nrOfLeftBins">
                 <b-input min="1" max="10" id="nrOfLeftBins" type="number" v-model.number="splitLeftBins"/>
               </b-form-group>
@@ -31,19 +31,19 @@
                 <b-input min="1" max="10" id="nrOfRightBins" type="number" v-model.number="splitRightBins"/>
               </b-form-group>
             </b-card-body>
-            <b-button variant="primary" @click="updateBinning('split')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> {{ $t('buttonUpdate') }}</b-button>
+            <b-button variant="primary" @click="updateBinning('split')"><MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}</b-button>
           </b-card>
         </b-col>
         <!-- Automatic binning -->
         <b-col xs=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('auto')}`" no-body>
             <b-card-body>
-              <h5 class="mb-3"><i class="mdi mdi-24px mdi-format-align-left mdi-rotate-270 fix-alignment" /> {{ $t('pageAlleleFrequencyBinningAutoTitle') }} <i class="mdi mdi-18px mdi-help-circle" v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningAutoText')" /></h5>
+              <h5 class="mb-3"><MdiIcon :path="mdiFormatAlignLeft" :rotate="270" /> {{ $t('pageAlleleFrequencyBinningAutoTitle') }} <span v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningAutoText')"><MdiIcon :path="mdiHelpCircle" /></span></h5>
               <b-form-group :label="$t('formLabelAllelefreqNrOfBins')" for="nrOfBins">
                 <b-input min="2" max="20" id="nrOfBins" type="number" v-model.number="autoBins"/>
               </b-form-group>
             </b-card-body>
-            <b-button variant="primary" @click="updateBinning('auto')"><i class="mdi mdi-18px mdi-refresh fix-alignment" /> {{ $t('buttonUpdate') }}</b-button>
+            <b-button variant="primary" @click="updateBinning('auto')"><MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}</b-button>
           </b-card>
         </b-col>
       </b-row>
@@ -58,7 +58,7 @@
         <b-button v-b-tooltip.hover
                   :title="$t('chartTooltipMatrixTour')"
                   @click="showTour()">
-          <i class="mdi mdi-18px mdi-help-circle-outline" />
+          <MdiIcon :path="mdiHelpCircleOutline" />
         </b-button>
       </template>
       </BaseChart>
@@ -67,7 +67,7 @@
       <h2>{{ $t('pageAlleleFrequencyBinningExportTitle') }}</h2>
       <p>{{ $t('pageAlleleFrequencyBinningExportText') }}</p>
       <!-- Export button -->
-      <b-button variant="primary" @click="$emit('trigger-export', getExportSettings())"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment"/> {{ $t('buttonExport') }}</b-button>
+      <b-button variant="primary" @click="$emit('trigger-export', getExportSettings())"><MdiIcon :path="mdiArrowRightBox" /> {{ $t('buttonExport') }}</b-button>
     </div>
     <h3 class="mt-3" v-else>{{ $t('headingNoData') }}</h3>
 
@@ -77,10 +77,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import colorMixin from '@/mixins/colors.js'
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
 import { plotlyAlleleFreqChart } from '@/plugins/charts/plotly-allelefreq-chart.js'
+
+import { mdiFormatAlignJustify, mdiFormatIndentIncrease, mdiFormatAlignLeft, mdiHelpCircle, mdiRefresh, mdiHelpCircleOutline, mdiArrowRightBox } from '@mdi/js'
+
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 
@@ -106,6 +113,13 @@ export default {
     const id = 'chart-' + this.uuidv4()
 
     return {
+      mdiFormatAlignJustify,
+      mdiFormatIndentIncrease,
+      mdiFormatAlignLeft,
+      mdiHelpCircle,
+      mdiRefresh,
+      mdiHelpCircleOutline,
+      mdiArrowRightBox,
       id: id,
       maxBins: 20,
       minBins: 2,
@@ -130,6 +144,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     gradient: function () {
       return this.createColorGradient('#ff7878', '#78fd78', this.widths.length)
     },
@@ -145,6 +162,7 @@ export default {
   },
   components: {
     BaseChart,
+    MdiIcon,
     Tour
   },
   watch: {
@@ -156,7 +174,7 @@ export default {
       this.redraw()
     }
   },
-  mixins: [colorMixin],
+  mixins: [baseApiMixin, colorMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -289,7 +307,7 @@ export default {
             d3Select.select(this.$refs.allelefreqChart)
               .datum(data)
               .call(plotlyAlleleFreqChart(Plotly)
-                .darkMode(this.darkMode)
+                .darkMode(this.storeDarkMode)
                 .x('position')
                 .y('count')
                 .xCategory(this.$t('datasetTypeAllelefreq'))

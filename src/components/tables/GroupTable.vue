@@ -8,30 +8,30 @@
                v-on="$listeners">
       <!-- Group id link -->
       <template v-slot:cell(groupId)="data">
-        <router-link v-if="isEditable === true" :to="`/groups/${data.item.groupId}`" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupId }}</router-link>
-        <router-link v-else :to="`/groups/${data.item.groupId}`">{{ data.item.groupId }}</router-link>
+        <router-link v-if="isEditable === true" :to="{ name: 'group-details', params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupId }}</router-link>
+        <router-link v-else :to="{ name: 'group-details', params: { groupId: data.item.groupId } }">{{ data.item.groupId }}</router-link>
       </template>
       <!-- Group name link -->
       <template v-slot:cell(groupName)="data">
-        <router-link v-if="isEditable === true" :to="`/groups/${data.item.groupId}`" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupName }}</router-link>
-        <router-link v-else :to="`/groups/${data.item.groupId}`">{{ data.item.groupName }}</router-link>
+        <router-link v-if="isEditable === true" :to="{ name: 'group-details', params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupName }}</router-link>
+        <router-link v-else :to="{ name: 'group-details', params: { groupId: data.item.groupId } }">{{ data.item.groupName }}</router-link>
       </template>
       <!-- Group description link -->
       <template v-slot:cell(groupDescription)="data">
-        <router-link v-if="isEditable === true" :to="`/groups/${data.item.groupId}`" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupDescription }}</router-link>
-        <router-link v-else :to="`/groups/${data.item.groupId}`">{{ data.item.groupDescription }}</router-link>
+        <router-link v-if="isEditable === true" :to="{ name: 'group-details', params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupDescription }}</router-link>
+        <router-link v-else :to="{ name: 'group-details', params: { groupId: data.item.groupId } }">{{ data.item.groupDescription }}</router-link>
       </template>
       <!-- Group type icon -->
       <template v-slot:cell(groupType)="data">
-        <span v-if="groupTypes[data.item.groupType]"><i :class="`mdi mdi-18px ${groupTypes[data.item.groupType].icon} fix-alignment`" :style="`color: ${groupTypes[data.item.groupType].color()};`" /> {{ groupTypes[data.item.groupType].text() }}</span>
+        <span v-if="groupTypes[data.item.groupType]"><span :style="`color: ${groupTypes[data.item.groupType].color()};`"><MdiIcon :path="groupTypes[data.item.groupType].path" /></span> {{ groupTypes[data.item.groupType].text() }}</span>
         <span v-else>{{ data.item.groupType }}</span>
       </template>
 
       <!-- Only show if authentication enabled -->
       <template v-slot:cell(actions)="data">
-        <b-button-group v-if="isEditable && token && (token.id === data.item.userId)">
-          <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('on-group-edit-clicked', data.item)"><i class="mdi mdi-18px mdi-rename-box" /></b-button>
-          <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('on-group-delete-clicked', data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
+        <b-button-group v-if="isEditable && storeToken && (storeToken.id === data.item.userId)">
+          <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('on-group-edit-clicked', data.item)"><MdiIcon :path="mdiRenameBox" /></b-button>
+          <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="$emit('on-group-delete-clicked', data.item)"><MdiIcon :path="mdiDelete" /></b-button>
         </b-button-group>
       </template>
     </BaseTable>
@@ -39,9 +39,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
+
+import { mdiRenameBox, mdiDelete } from '@mdi/js'
 
 export default {
   name: 'GroupTable',
@@ -55,6 +61,8 @@ export default {
   },
   data: function () {
     return {
+      mdiRenameBox,
+      mdiDelete,
       options: {
         idColumn: 'groupId',
         tableName: 'groups'
@@ -62,6 +70,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     columns: function () {
       const columns = [
         {
@@ -107,21 +118,21 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnGroupCreatedOn'),
-          formatter: this.$options.filters.toDate
+          formatter: value => value ? new Date(value).toLocaleString() : null
         }, {
           key: 'updatedOn',
           type: Date,
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'updatedOn')}`,
           label: this.$t('tableColumnGroupUpdatedOn'),
-          formatter: this.$options.filters.toDate
+          formatter: value => value ? new Date(value).toLocaleString() : null
         }, {
           key: 'count',
           type: Number,
           sortable: true,
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
           label: this.$t('tableColumnGroupCount'),
-          formatter: this.$options.filters.toThousandSeparators
+          formatter: value => value ? value.toLocaleString() : null
         }
       ]
 
@@ -139,9 +150,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
-  mixins: [typesMixin],
+  mixins: [typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.table.refresh()

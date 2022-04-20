@@ -15,12 +15,8 @@
       </b-tooltip>
       <!-- Group selection options -->
       <b-button-group v-if="multiple">
-        <b-form-radio-group
-          v-model="specialGroupSelection"
-          :options="specialGroupOptions"
-          button-variant="outline-primary"
-          @change="$emit('change')"
-          buttons />
+        <b-button :variant="specialGroupSelection === 'selection' ? 'primary' : 'outline-primary'" @click="setSpecialGroupSelection('selection')"><MdiIcon :path="mdiArrowUpBox" /> {{ $t('pageExportGroupSelectModeSelect') }}</b-button>
+        <b-button :variant="specialGroupSelection === 'all' ? 'primary' : 'outline-primary'" @click="setSpecialGroupSelection('all')"><MdiIcon :path="mdiSelectAll" /> {{ $t('pageExportGroupSelectModeAll') }}</b-button>
       </b-button-group>
       <p :class="`mt-1 ${groupInfo.variant}`" v-if="groupInfo">{{ groupInfo.text }}</p>
     </div>
@@ -28,10 +24,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
 import SearchableSelect from '@/components/util/SearchableSelect'
+
+import { mdiArrowUpBox, mdiSelectAll } from '@mdi/js'
 
 export default {
   components: {
+    MdiIcon,
     SearchableSelect
   },
   props: {
@@ -72,22 +75,20 @@ export default {
     const uuid = this.uuidv4()
 
     return {
+      mdiArrowUpBox,
+      mdiSelectAll,
       uuid: uuid,
       groupInfo: null,
       allGroups: [],
       selectedGroups: [],
       groupOptions: [],
-      specialGroupSelection: this.multiple ? 'all' : 'selection',
-      specialGroupOptions: [{
-        html: '<i class="mdi mdi-18px mdi-arrow-up-box fix-alignment"></i> ' + this.$t('pageExportGroupSelectModeSelect'),
-        value: 'selection'
-      }, {
-        html: '<i class="mdi mdi-18px mdi-select-all fix-alignment"></i> ' + this.$t('pageExportGroupSelectModeAll'),
-        value: 'all'
-      }]
+      specialGroupSelection: this.multiple ? 'all' : 'selection'
     }
   },
   computed: {
+    ...mapGetters([
+      'storeMarkedIds'
+    ]),
     isAll: function () {
       return this.specialGroupSelection === 'all'
     }
@@ -104,7 +105,12 @@ export default {
       }
     }
   },
+  mixins: [baseApiMixin, utilMixin],
   methods: {
+    setSpecialGroupSelection: function (value) {
+      this.specialGroupSelection = value
+      this.$emit('change')
+    },
     getSettings: function () {
       let arr
 
@@ -129,13 +135,13 @@ export default {
         //   groupId: -1,
         //   groupName: this.$t('pageExportSelectMarkedItems'),
         //   isMarkedItem: true,
-        //   count: this.markedIds[this.itemType].length
+        //   count: this.storeMarkedIds[this.itemType].length
         // })
       }
       this.groupOptions = [{
-        text: `${this.$t('pageExportSelectMarkedItems')} (${this.markedIds[this.itemType].length})`,
+        text: `${this.$t('pageExportSelectMarkedItems')} (${this.storeMarkedIds[this.itemType].length})`,
         value: null,
-        disabled: this.markedIds[this.itemType].length < 1
+        disabled: this.storeMarkedIds[this.itemType].length < 1
       }]
       this.allGroups.forEach(g => {
         let groupName = g.groupName

@@ -5,14 +5,14 @@
       <b-button-group>
         <b-dropdown no-caret right v-b-tooltip.hover="$t('chartTooltipOptions')" id="additional-options">
           <template v-slot:button-content>
-            <i class="mdi mdi-18px mdi-dots-vertical"/>
+            <MdiIcon :path="mdiDotsVertical" />
             <slot name="buttonContent" />
           </template>
           <!-- Download options -->
-          <b-dropdown-item @click="getFilename('png')" v-if="supportsPngDownload"><i class="mdi mdi-18px mdi-file-image"/> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
-          <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><i class="mdi mdi-18px mdi-file-code"/> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
-          <b-dropdown-item @click="downloadSource()"><i class="mdi mdi-18px mdi-file-document"/> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
-          <b-dropdown-item @click="$refs.customChartColorModal.show()" v-if="canChangeColors"><i class="mdi mdi-18px mdi-palette" /> {{ $t('buttonChangeChartColors') }}</b-dropdown-item>
+          <b-dropdown-item @click="getFilename('png')" v-if="supportsPngDownload"><MdiIcon :path="mdiFileImage" /> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
+          <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><MdiIcon :path="mdiFileCode" /> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
+          <b-dropdown-item @click="downloadSource()"><MdiIcon :path="mdiFileDocument" /> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
+          <b-dropdown-item @click="$refs.customChartColorModal.show()" v-if="canChangeColors"><MdiIcon :path="mdiPalette" /> {{ $t('buttonChangeChartColors') }}</b-dropdown-item>
           <!-- Additional options -->
           <slot name="additionalMenuItems" />
         </b-dropdown>
@@ -40,7 +40,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import CustomChartColorModal from '@/components/modals/CustomChartColorModal'
+import formattingMixin from '@/mixins/formatting'
+import utilMixin from '@/mixins/util'
+
+import { mdiDotsVertical, mdiFileImage, mdiFileCode, mdiFileDocument, mdiPalette } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -49,9 +55,19 @@ const Plotly = require('plotly.js/lib/core')
 export default {
   data: function () {
     return {
+      mdiDotsVertical,
+      mdiFileImage,
+      mdiFileCode,
+      mdiFileDocument,
+      mdiPalette,
       userFilename: 'plotly-chart',
       imageType: null
     }
+  },
+  computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ])
   },
   props: {
     width: {
@@ -92,13 +108,15 @@ export default {
     }
   },
   watch: {
-    darkMode: function () {
+    storeDarkMode: function () {
       this.$emit('force-redraw')
     }
   },
   components: {
+    MdiIcon,
     CustomChartColorModal
   },
+  mixins: [formattingMixin, utilMixin],
   methods: {
     onColorsChanged: function () {
       emitter.emit('chart-colors-changed')
@@ -144,5 +162,8 @@ export default {
 </script>
 
 <style>
-
+.text-center .plotly .svg-container {
+  margin-left: auto!important;
+  margin-right: auto!important;
+}
 </style>

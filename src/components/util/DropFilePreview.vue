@@ -22,8 +22,8 @@ export default {
   },
   methods: {
     handleDrop: function (e) {
-      event.preventDefault()
-      event.stopPropagation()
+      e.preventDefault()
+      e.stopPropagation()
 
       this.errorMessage = null
 

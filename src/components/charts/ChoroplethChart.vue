@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import BaseChart from '@/components/charts/BaseChart'
 import statsApi from '@/mixins/api/stats.js'
 import colorMixin from '@/mixins/colors.js'
@@ -26,6 +27,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     baseSourceFile: function () {
       return {
         blob: this.sourceFile,
@@ -86,7 +90,7 @@ export default {
             autotic: false,
             tickprefix: '',
             thickness: 6,
-            tickfont: { color: this.darkMode ? 'white' : 'black' }
+            tickfont: { color: this.storeDarkMode ? 'white' : 'black' }
           }
         }]
 

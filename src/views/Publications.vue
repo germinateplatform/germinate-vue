@@ -33,10 +33,10 @@ import GermplasmTable from '@/components/tables/GermplasmTable'
 import GroupTable from '@/components/tables/GroupTable'
 import PublicationTable from '@/components/tables/PublicationTable'
 
-import datasetApi from '@/mixins/api/dataset.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import groupApi from '@/mixins/api/group.js'
-import miscApi from '@/mixins/api/misc.js'
+import datasetApi from '@/mixins/api/dataset'
+import germplasmApi from '@/mixins/api/germplasm'
+import groupApi from '@/mixins/api/group'
+import miscApi from '@/mixins/api/misc'
 
 const Cite = require('citation-js')
 
@@ -124,6 +124,8 @@ export default {
           values: [config.publicationType]
         }]
       }
+
+      this.publicationId = config.publicationId
 
       window.history.replaceState({}, null, this.$router.resolve({ name: 'publication-details', params: { publicationType: config.publicationType, publicationId: config.publicationId } }).href)
 

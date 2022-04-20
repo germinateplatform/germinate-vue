@@ -7,7 +7,7 @@
         <b-button v-b-tooltip.hover
                   :title="$t('chartTooltipMatrixTour')"
                   @click="showTour()">
-          <i class="mdi mdi-18px mdi-help-circle-outline" />
+          <MdiIcon :path="mdiHelpCircleOutline" />
         </b-button>
       </template>
     </BaseChart>
@@ -17,10 +17,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import datasetApi from '@/mixins/api/dataset.js'
 import colorMixin from '@/mixins/colors.js'
 import Tour from '@/components/util/Tour'
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
+
+import { mdiHelpCircleOutline } from '@mdi/js'
 
 const Plotly = require('plotly.js/lib/core')
 
@@ -58,12 +64,14 @@ export default {
   },
   components: {
     BaseChart,
+    MdiIcon,
     Tour
   },
   data: function () {
     const id = 'chart-' + this.uuidv4()
 
     return {
+      mdiHelpCircleOutline,
       id: id,
       plotData: null,
       loading: false,
@@ -101,6 +109,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     baseSourceFile: function () {
       return {
         blob: new Blob([JSON.stringify(this.plotData)], { type: 'application/json' }),
@@ -118,7 +129,7 @@ export default {
       }
     }
   },
-  mixins: [datasetApi, colorMixin],
+  mixins: [datasetApi, colorMixin, baseApiMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -192,10 +203,10 @@ export default {
         xaxis: {
           zeroline: false,
           side: 'top',
-          title: { font: { color: this.darkMode ? 'white' : 'black' } },
-          tickfont: { color: this.darkMode ? 'white' : 'black' },
+          title: { font: { color: this.storeDarkMode ? 'white' : 'black' } },
+          tickfont: { color: this.storeDarkMode ? 'white' : 'black' },
           showgrid: true,
-          gridcolor: this.darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)'
+          gridcolor: this.storeDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)'
         },
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
@@ -205,8 +216,8 @@ export default {
         boxmode: 'group',
         yaxis: {
           automargin: true,
-          title: { font: { color: this.darkMode ? 'white' : 'black' } },
-          tickfont: { color: this.darkMode ? 'white' : 'black' }
+          title: { font: { color: this.storeDarkMode ? 'white' : 'black' } },
+          tickfont: { color: this.storeDarkMode ? 'white' : 'black' }
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',

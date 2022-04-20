@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import BaseChart from '@/components/charts/BaseChart'
 import { plotlySunburstChart } from '@/plugins/charts/plotly-sunburst-chart.js'
 import statsApi from '@/mixins/api/stats.js'
@@ -28,6 +29,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     baseSourceFile: function () {
       return {
         blob: this.sourceFile,
@@ -99,7 +103,7 @@ export default {
         d3Select.select(this.$refs.taxonomyChart)
           .datum(chartData)
           .call(plotlySunburstChart(Plotly)
-            .darkMode(this.darkMode)
+            .darkMode(this.storeDarkMode)
             .height(500)
             .onLeafClicked(path => {
               // Then store a filter using genus, species and subtaxa

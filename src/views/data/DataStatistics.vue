@@ -52,7 +52,7 @@
 import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
 import TaxonomySunburst from '@/components/charts/TaxonomySunburst'
-import statsApi from '@/mixins/api/stats.js'
+import statsApi from '@/mixins/api/stats'
 
 const emitter = require('tiny-emitter/instance')
 

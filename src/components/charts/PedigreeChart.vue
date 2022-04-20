@@ -17,7 +17,7 @@
           <b-button v-b-tooltip.hover
                     :title="$t('chartTooltipMatrixTour')"
                     @click="showTour()">
-            <i class="mdi mdi-18px mdi-help-circle-outline" />
+            <MdiIcon :path="mdiHelpCircleOutline" />
           </b-button>
         </template>
       </BaseChart>
@@ -25,20 +25,25 @@
       <Tour :steps="popoverContent" ref="tour" />
 
       <!-- Export button -->
-      <b-button @click="downloadPedigree"><i class="mdi mdi-18px fix-alignment mdi-download" /> {{ $t('buttonDownloadForHelium') }}</b-button>
+      <b-button @click="downloadPedigree"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownloadForHelium') }}</b-button>
       <!-- Information about the export formats -->
-      <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'pedigree' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <i class="mdi mdi-18px fix-alignment mdi-information-outline"/></router-link> </p>
+      <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'pedigree' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline"/></router-link> </p>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import { pedigreeChart } from '@/plugins/charts/d3-dagre-chart.js'
 import colors from '@/mixins/colors.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import datasetApi from '@/mixins/api/dataset.js'
+import utilMixin from '@/mixins/util'
+
+import { mdiHelpCircleOutline, mdiInformationOutline, mdiDownload } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -58,6 +63,9 @@ export default {
     const id = 'chart-' + this.uuidv4()
 
     return {
+      mdiHelpCircleOutline,
+      mdiInformationOutline,
+      mdiDownload,
       id: id,
       plotData: null,
       dataset: null,
@@ -76,6 +84,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     datasetOptions: function () {
       if (this.datasets) {
         return this.datasets.map(d => {
@@ -106,9 +117,10 @@ export default {
   },
   components: {
     BaseChart,
-    Tour
+    Tour,
+    MdiIcon
   },
-  mixins: [colors, germplasmApi, datasetApi],
+  mixins: [colors, germplasmApi, datasetApi, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -175,7 +187,7 @@ export default {
                 .margin({ left: 50, right: 50, top: 30, bottom: 30 })
                 .width(this.$refs.pedigreeChart.offsetWidth)
                 .height(600)
-                .darkMode(this.darkMode)
+                .darkMode(this.storeDarkMode)
                 .nodeStyle('node')
                 .connections(connections)
                 .nodeShape('circle')

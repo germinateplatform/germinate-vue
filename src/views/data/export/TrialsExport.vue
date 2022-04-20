@@ -9,18 +9,18 @@
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
       <!-- Banner buttons -->
-      <b-row class="trials-tabs" v-if="tabs" cols-xl=5>
+      <b-row class="trials-tabs mb-3" v-if="tabs" cols-xl=5>
         <b-col cols=12 sm=6 xl=2 :offset-xl="index === 0 ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
-                  <i :class="`mdi mdi-48px ${tab.icon}`" />
+                  <MdiIcon :size="48" :path="tab.path" />
                 </b-col>
               </b-row>
             </b-card-body>
             <b-card-footer :style="`color: ${getColor(index)}`">
-              <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ tab.text() }}</span></a>
+              <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
             </b-card-footer>
           </b-card>
         </b-col>
@@ -74,6 +74,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BarChart from '@/components/charts/BarChart'
 import BoxplotSelection from '@/components/export/BoxplotSelection'
 import DatasetOverview from '@/components/export/DatasetOverview'
@@ -88,12 +90,15 @@ import traitApi from '@/mixins/api/trait.js'
 import colorMixin from '@/mixins/colors.js'
 import Vue from 'vue'
 
+import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiTableSearch } from '@mdi/js'
+
 const emitter = require('tiny-emitter/instance')
 
 export default {
   props: ['datasetIds'],
   data: function () {
     return {
+      mdiArrowRightBoldCircle,
       datasets: null,
       traits: null,
       groups: null,
@@ -139,38 +144,46 @@ export default {
       tabs: [{
         key: 'overview',
         text: () => this.$t('pageDataExportTabDataStatistics'),
-        icon: 'mdi-eye',
+        path: mdiEye,
         onSelection: () => this.tabSelected('overview')
       }, {
         key: 'matrix',
         text: () => this.$t('pageDataExportTabDataMatrix'),
-        icon: 'mdi-grid',
+        path: mdiGrid,
         onSelection: () => this.tabSelected('matrix')
       }, {
         key: 'comparison',
         text: () => this.$t('pageDataExportTabComparison'),
-        icon: 'mdi-distribute-horizontal-center',
+        path: mdiDistributeHorizontalCenter,
         onSelection: () => this.tabSelected('comparison')
       }, {
         key: 'table',
         text: () => this.$t('pageDataExportTabDataTable'),
-        icon: 'mdi-table-search',
+        path: mdiTableSearch,
         onSelection: () => this.tabSelected('table')
       }, {
         key: 'export',
         text: () => this.$t('pageDataExportTabDataExport'),
-        icon: 'mdi-file-download-outline',
+        path: mdiFileDownloadOutline,
         onSelection: () => this.tabSelected('export')
       }]
     }
   },
   watch: {
-    markedGermplasm: function () {
+    storeMarkedGermplasm: function () {
       this.updateGroups()
     }
   },
+  computed: {
+    ...mapGetters([
+      'storeServerSettings',
+      'storeToken',
+      'storeMarkedGermplasm'
+    ])
+  },
   components: {
     BarChart,
+    MdiIcon,
     BoxplotSelection,
     DatasetOverview,
     ExportDownloadSelection,
@@ -235,10 +248,10 @@ export default {
       return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
     },
     getColor: function (index) {
-      if (!this.serverSettings || !this.serverSettings.colorsTemplate) {
+      if (!this.storeServerSettings || !this.storeServerSettings.colorsTemplate) {
         return '#00acef'
       } else {
-        const colors = this.serverSettings.colorsTemplate
+        const colors = this.storeServerSettings.colorsTemplate
         return colors[index % colors.length]
       }
     },
@@ -255,8 +268,8 @@ export default {
       this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'trials' } }))
     },
     isAccepted: function (dataset) {
-      if (this.token) {
-        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.token.id) !== -1
+      if (this.storeToken) {
+        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.storeToken.id) !== -1
       } else {
         return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
       }

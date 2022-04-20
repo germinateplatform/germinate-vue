@@ -4,18 +4,18 @@
     <span v-html="$t('pageDataUploadText')" />
     <b-row class="template-tabs">
       <!-- Data template banner buttons -->
-      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" cols=6 sm=4 class="col-xxl-3">
+      <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" cols=6 sm=4 class="col-xxl-3 mb-3">
         <a href="#" @click.prevent="onTemplateTypeSelected(type, name)">
           <b-card no-body :style="`border: 1px solid ${type.color()}; filter: ${getFilter(name)};`">
             <b-card-body :style="`background-color: ${type.color()}; color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
-                  <i :class="`mdi mdi-48px ${type.icon}`" />
+                  <MdiIcon :size="48" :path="type.path" />
                 </b-col>
               </b-row>
             </b-card-body>
             <b-card-footer :style="`color: ${type.color()}`">
-              <i class="mdi mdi-18px mdi-arrow-right-bold-circle" /><span> {{ type.text() }}</span>
+              <MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ type.text() }}</span>
             </b-card-footer>
           </b-card>
         </a>
@@ -41,7 +41,7 @@
                   :pressed="datasetStateId === datasetState.id"
                   variant="outline-primary"
                   @click="datasetStateId = datasetState.id">
-            <i :class="`mdi mdi-18px fix-alignment ${datasetState.icon}`" /><span> {{ datasetState.text() }}</span>
+            <MdiIcon :path="datasetState.path" /><span> {{ datasetState.text() }}</span>
           </b-button>
         </b-button-group>
       </div>
@@ -58,20 +58,29 @@
       </div>
 
       <!-- Submit -->
-      <b-button variant="success" :disabled="!file" class="mt-3" @click="onSubmit"><i class="mdi mdi-18px fix-alignment mdi-upload" /> {{ $t('pageDataUploadCheckFileButton') }}</b-button>
+      <b-button variant="success" :disabled="!file" class="mt-3" @click="onSubmit"><MdiIcon :path="mdiUpload" /> {{ $t('pageDataUploadCheckFileButton') }}</b-button>
     </template>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import miscApi from '@/mixins/api/misc.js'
 import typesMixin from '@/mixins/types.js'
+
+import { mdiArrowRightBoldCircle, mdiUpload } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
+  components: {
+    MdiIcon
+  },
   data: function () {
     return {
+      mdiArrowRightBoldCircle,
+      mdiUpload,
       file: null,
       uuids: null,
       isUpdate: false,
@@ -82,6 +91,11 @@ export default {
         { text: this.$t('pageDataUploadUpdateOptionUpdate'), value: true }
       ]
     }
+  },
+  computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ])
   },
   watch: {
     templateType: function (newValue) {
@@ -123,7 +137,7 @@ export default {
     }
   },
   created: function () {
-    if (this.serverSettings.dataImportMode === 'NONE') {
+    if (this.storeServerSettings.dataImportMode === 'NONE') {
       this.$router.push({ name: '403' })
     }
 

@@ -16,7 +16,7 @@
           <b-input-group v-if="colorBySelection === 'specified_names'">
             <b-textarea v-model="germplasmNames" />
             <b-input-group-append>
-              <b-button @click="onColorByChanged"><i class="mdi mdi-18px mdi-refresh" /></b-button>
+              <b-button @click="onColorByChanged"><MdiIcon :path="mdiRefresh" /></b-button>
             </b-input-group-append>
           </b-input-group>
         </b-form>
@@ -33,10 +33,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
 import ExportSelection from '@/components/export/ExportSelection'
 import datasetApi from '@/mixins/api/dataset.js'
+
+import { mdiRefresh } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -85,6 +89,7 @@ export default {
   },
   data: function () {
     return {
+      mdiRefresh,
       colorBySelection: null,
       plotData: null,
       selectedItems: null,
@@ -93,6 +98,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeMarkedGermplasm'
+    ]),
     germplasmNamesSplit: function () {
       if (this.germplasmNames) {
         return this.germplasmNames.split('\n')
@@ -132,7 +140,7 @@ export default {
     }
   },
   watch: {
-    markedGermplasm: function () {
+    storeMarkedGermplasm: function () {
       if (this.colorBySelection === 'marked_items') {
         this.onColorByChanged()
       }
@@ -141,6 +149,7 @@ export default {
   components: {
     ExportSelection,
     MatrixChart,
+    MdiIcon,
     ScatterChart
   },
   mixins: [datasetApi],
@@ -160,7 +169,7 @@ export default {
         this.plotData = result
         this.$nextTick(() => this.$refs.chart.redraw(result, {
           column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
-          ids: this.colorBySelection === 'marked_items' ? this.markedGermplasm : null,
+          ids: this.colorBySelection === 'marked_items' ? this.storeMarkedGermplasm : null,
           names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
         }))
         emitter.emit('show-loading', false)
@@ -176,7 +185,7 @@ export default {
       if (this.plotData) {
         this.$refs.chart.redraw(this.plotData, {
           column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
-          ids: this.colorBySelection === 'marked_items' ? this.markedGermplasm : null,
+          ids: this.colorBySelection === 'marked_items' ? this.storeMarkedGermplasm : null,
           names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
         })
       }

@@ -4,11 +4,11 @@
     <b-form @submit.prevent="login">
       <!-- Username and password input fields -->
       <b-input-group class="mb-3">
-        <b-input-group-prepend is-text><i class="mdi mdi-18px mdi-account" /></b-input-group-prepend>
+        <b-input-group-prepend is-text><MdiIcon :path="mdiAccount" /></b-input-group-prepend>
         <b-form-input type="text" class="form-control" :placeholder="$t('formLabelUsername')" autocomplete="username email" required autofocus v-model="user.username" />
       </b-input-group>
       <b-input-group class="mb-4">
-        <b-input-group-prepend is-text><i class="mdi mdi-18px mdi-lock-outline" /></b-input-group-prepend>
+        <b-input-group-prepend is-text><MdiIcon :path="mdiLockOutline" /></b-input-group-prepend>
         <b-form-input type="password" class="form-control" :placeholder="$t('formLabelPassword')" autocomplete="current-password" required v-model="user.password" />
       </b-input-group>
       <!-- Actions go here -->
@@ -16,8 +16,8 @@
         <b-col cols="6">
           <b-button variant="primary" class="px-4" @click="login" :disabled="!enabled" type="submit"><b-spinner small type="grow" v-if="!enabled" /> {{ $t('buttonSignIn') }}</b-button>
         </b-col>
-        <b-col cols="6" class="d-flex justify-content-end align-items-end flex-column" v-if="serverSettings && serverSettings.gatekeeperUrl">
-          <a :href="serverSettings.gatekeeperUrl">{{ $t('widgetSignInForgotPassword') }}</a>
+        <b-col cols="6" class="d-flex justify-content-end align-items-end flex-column" v-if="storeServerSettings && storeServerSettings.gatekeeperUrl">
+          <a :href="storeServerSettings.gatekeeperUrl">{{ $t('widgetSignInForgotPassword') }}</a>
           <a href="#" @click.prevent="$refs.registrationModal.show()" v-if="showRegistration">{{ $t('buttonRegister') }}</a>
         </b-col>
       </b-row>
@@ -29,11 +29,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import RegistrationModal from '@/components/modals/RegistrationModal'
+
+import { mdiAccount, mdiLockOutline } from '@mdi/js'
 
 export default {
   data: function () {
     return {
+      mdiAccount,
+      mdiLockOutline,
       user: {
         username: null,
         password: null
@@ -51,7 +58,13 @@ export default {
     }
   },
   components: {
+    MdiIcon,
     RegistrationModal
+  },
+  computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ])
   },
   methods: {
     login: function () {

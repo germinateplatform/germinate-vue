@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-info"><i class="mdi mdi-18px fix-alignment mdi-information-outline" /> {{ $t('pageMapExportOptionDescription') }}</p>
+    <p class="text-info"><MdiIcon :path="mdiInformationOutline" /> {{ $t('pageMapExportOptionDescription') }}</p>
     <b-card no-body v-if="chromosomes && chromosomes.length > 0">
       <b-tabs card v-model="tabIndex">
         <!-- Chromosomes -->
@@ -16,6 +16,7 @@
           <p>{{ $t('pageMapExportRegionDescription') }}</p>
           <b-table :fields="columns"
                    :items="regions"
+                   head-variant="dark"
                    striped
                    responsive
                    hover
@@ -32,10 +33,10 @@
               <b-input type="number" :min="0" v-model="data.item.end" @change="setRegionEnd($event, props.index)"/>
             </template>
             <template v-slot:cell(delete)="data">
-              <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="deleteRegion(data.item)"><i class="mdi mdi-18px mdi-delete" /></b-button>
+              <b-button variant="outline-danger" size="sm" v-b-tooltip.hover :title="$t('buttonDelete')" @click="deleteRegion(data.item)"><MdiIcon :path="mdiDelete" /></b-button>
             </template>
           </b-table>
-          <b-button @click="addRegion()" v-b-tooltip.hover :title="$t('tooltipMapExportRegionAdd')"><i class="mdi mdi-18px mdi-table-row-plus-after" /></b-button>
+          <b-button @click="addRegion()" v-b-tooltip.hover :title="$t('tooltipMapExportRegionAdd')"><MdiIcon :path="mdiTableRowPlusAfter" /></b-button>
         </b-tab>
         <!-- Marker interval -->
         <b-tab :title="$t('pageMapExportOptionMarkerInterval')">
@@ -45,14 +46,14 @@
               <b-form-group
                 :label="$t('formLabelMapExportIntervalFirstMarker')"
                 label-for="first-marker">
-                <Autocomplete id="first-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="result => result.markerName" @submit="setIntervalMarkerOne" />
+                <MarkerLookup id="first-marker" @change="markerId => { intervalMarkerIdOne = markerId }"/>
               </b-form-group>
             </b-col>
             <b-col xs=12 sm=6>
               <b-form-group
                 :label="$t('formLabelMapExportIntervalSecondMarker')"
                 label-for="second-marker">
-                <Autocomplete id="second-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="result => result.markerName" @submit="setIntervalMarkerTwo" />
+                <MarkerLookup id="second-marker" @change="markerId => { intervalMarkerIdTwo = markerId }"/>
               </b-form-group>
             </b-col>
           </b-row>
@@ -72,7 +73,7 @@
               <b-form-group
                 :label="$t('formLabelMapExportRadiusMarker')"
                 label-for="radius-marker">
-                <Autocomplete id="radius-marker" :search="getMarkers" :placeholder="$t('inputPlaceholderMarkerNameAutocomplete')" :get-result-value="result => result.markerName" @submit="setRadiusMarker" />
+                <MarkerLookup id="radius-marker" @change="markerId => { radius.markerId = markerId }"/>
               </b-form-group>
             </b-col>
             <b-col xs=12 sm=4>
@@ -93,8 +94,11 @@
 </template>
 
 <script>
-import Autocomplete from '@trevoreyre/autocomplete-vue'
+import MdiIcon from '@/components/icons/MdiIcon'
+import MarkerLookup from '@/components/util/MarkerLookup'
 import genotypeApi from '@/mixins/api/genotype.js'
+
+import { mdiInformationOutline, mdiDelete, mdiTableRowPlusAfter } from '@mdi/js'
 
 export default {
   props: {
@@ -105,10 +109,14 @@ export default {
   },
   data: function () {
     return {
+      mdiTableRowPlusAfter,
+      mdiDelete,
+      mdiInformationOutline,
       tabIndex: 0,
       chromosomes: [],
       selectedChromosomes: [],
       regions: [],
+      markers: [],
       radius: {
         markerId: null,
         left: 0,
@@ -157,7 +165,8 @@ export default {
     }
   },
   components: {
-    Autocomplete
+    MdiIcon,
+    MarkerLookup
   },
   mixins: [genotypeApi],
   methods: {
@@ -172,15 +181,6 @@ export default {
     setRegionEnd: function (event, index) {
       index -= 1
       this.regions[index].end = parseFloat(event)
-    },
-    setRadiusMarker: function (marker) {
-      this.radius.markerId = marker.markerId
-    },
-    setIntervalMarkerOne: function (marker) {
-      this.intervalMarkerIdOne = marker.markerId
-    },
-    setIntervalMarkerTwo: function (marker) {
-      this.intervalMarkerIdTwo = marker.markerId
     },
     getExportOptions: function () {
       const result = {
@@ -256,7 +256,8 @@ export default {
     },
     getMarkers: function (input) {
       if (input.length < 3) {
-        return []
+        this.markers = []
+        return this.markers
       } else {
         return new Promise(resolve => {
           // Ask for markers like the given input
@@ -275,7 +276,8 @@ export default {
 
           this.apiPostMarkerTable(query, result => {
             // Resolve the result
-            resolve(result.data)
+            this.markers = result.data
+            resolve(this.markers)
           })
         })
       }
@@ -298,5 +300,10 @@ export default {
 .base-table table th[aria-sort="none"] {
   padding-right: 0.75em !important;
   background-image: none !important;
+}
+
+img.mime-icon {
+  height: 24px;
+  width: 24px;
 }
 </style>

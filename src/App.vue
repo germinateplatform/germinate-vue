@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <!-- Main view -->
-    <router-view :class="printContent ? 'd-print-none' : ''"></router-view>
+  <div id="app">
+    <router-view v-if="i18nLoaded" :class="printContent ? 'd-print-none' : ''" />
 
     <!-- Print view for printable content -->
     <div ref="printer-view" class="d-none d-print-block" v-html="printContent" v-if="printContent"></div>
@@ -17,65 +16,82 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
-import { loadLanguageAsync } from '@/plugins/i18n'
-import miscApi from '@/mixins/api/misc.js'
-import statsApi from '@/mixins/api/stats.js'
-import { Detector } from '@/plugins/browser-detect.js'
 import { VuePlausible } from 'vue-plausible'
+import { loadLanguageAsync } from '@/plugins/i18n'
+import { mapGetters } from 'vuex'
+import { Detector } from '@/plugins/browser-detect.js'
+import utilMixin from '@/mixins/util'
+import miscApiMixin from '@/mixins/api/misc'
+import baseApiMixin from '@/mixins/api/base'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
-  name: 'app',
-  metaInfo () {
-    return {
-      meta: [
-        { property: 'og:type', content: 'website' },
-        { property: 'og:url', content: this.homeUrl },
-        { property: 'og:title', content: 'Germinate - The generic plant genetic resources database' },
-        { property: 'og:description', content: 'Germinate is an open source plant database infrastructure and application programming platform on which complex data from genetic resource collections can be stored, queried and visualized.' },
-        { property: 'og:image', content: `${this.pathUrl}img/android-chrome-512x512.png` },
-        { property: 'og:image:type', content: 'image/png' },
-        { name: 'twitter:title', content: 'Germinate is an open source plant database infrastructure and application programming platform on which complex data from genetic resource collections can be stored, queried and visualized.' },
-        { name: 'twitter:description', content: 'Germinate - The generic plant genetic resources database' },
-        { name: 'twitter:url', content: this.homeUrl },
-        { name: 'twitter:image', content: `${this.pathUrl}img/android-chrome-512x512.png` },
-        { name: 'twitter:card', content: 'summary_large_image' }
-      ]
-    }
-  },
-  computed: {
-    /** Mapgetters exposing the store configuration */
-    ...mapGetters([
-      'uniqueClientId'
-    ]),
-    pathUrl: function () {
-      return window.location.origin + window.location.pathname
-    },
-    homeUrl: function () {
-      const relative = this.$router.resolve({ name: 'home' }).href
-      return this.pathUrl + relative
-    }
-  },
   data: function () {
     return {
+      i18nLoaded: false,
       printContent: null
     }
   },
-  watch: {
-    token: function () {
-      this.apiGetEntityTypeStats(result => {
-        this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
+  computed: {
+    ...mapGetters([
+      'storeLocale',
+      'storeBaseUrl',
+      'storeAppState'
+    ])
+  },
+  mixins: [baseApiMixin, miscApiMixin, utilMixin],
+  methods: {
+    isLocalhost: function () {
+      return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
+    },
+    attachStyleSheet: function () {
+      this.$nextTick(() => {
+        if (this.customStyleSheet) {
+          document.head.removeChild(this.customStyleSheet)
+        }
+
+        // Load the custom .css file provided specifically for this project
+        this.customStyleSheet = document.createElement('link')
+        this.customStyleSheet.rel = 'stylesheet'
+        this.customStyleSheet.href = this.storeBaseUrl + 'settings/css'
+        document.head.appendChild(this.customStyleSheet)
       })
     },
-    darkMode: function () {
-      this.loadAndSetDarkMode()
+    print: function (newContent) {
+      document.body.classList.add('print')
+      // Set the print content
+      this.printContent = newContent
+
+      // Wait a bit
+      this.$nextTick(() => {
+        // Ask the browser to print
+        window.print()
+        this.$nextTick(() => {
+          // Hide the print content
+          this.printContent = null
+          document.body.classList.remove('print')
+        })
+      })
+    },
+    toggleLoading: function (show) {
+      if (show) {
+        this.$refs.loadingModal.show()
+      } else {
+        this.$refs.loadingModal.hide()
+      }
+    },
+    updateI18nAppState: function () {
+      this.$i18n.silentTranslationWarn = this.storeAppState !== 'development'
     }
   },
   created: async function () {
+    loadLanguageAsync(this.storeLocale).then(() => {
+      this.i18nLoaded = true
+    })
+
     await this.apiGetSettings(result => {
-      this.$store.dispatch('ON_SETTINGS_CHANGED', result)
+      this.$store.dispatch('setServerSettings', result)
 
       if (result.plausibleDomain) {
         Vue.use(VuePlausible, {
@@ -91,67 +107,22 @@ export default {
       }
 
       this.apiGetEntityTypeStats(result => {
-        this.$store.dispatch('ON_ENTITY_TYPE_STATS_CHANGED', result)
+        this.$store.dispatch('setEntityTypeStats', result)
       })
     })
   },
-  mixins: [miscApi, statsApi],
-  methods: {
-    isLocalhost: function () {
-      return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
-    },
-    loadAndSetDarkMode: function () {
-      document.body.classList.toggle('dark-mode')
-    },
-    print: function (newContent) {
-      // Set the print content
-      this.printContent = newContent
-
-      // Wait a bit
-      this.$nextTick(() => {
-        // Ask the browser to print
-        window.print()
-        this.$nextTick(() => {
-          // Hide the print content
-          this.printContent = null
-        })
-      })
-    },
-    toggleLoading: function (show) {
-      if (show) {
-        this.$refs.loadingModal.show()
-      } else {
-        this.$refs.loadingModal.hide()
-      }
-    },
-    attachStyleSheet: function () {
-      if (this.customStyleSheet) {
-        document.head.removeChild(this.customStyleSheet)
-      }
-
-      // Load the custom .css file provided specifically for this project
-      this.customStyleSheet = document.createElement('link')
-      this.customStyleSheet.rel = 'stylesheet'
-      this.customStyleSheet.href = this.baseUrl + 'settings/css'
-      document.head.appendChild(this.customStyleSheet)
+  watch: {
+    storeAppState: function () {
+      this.updateI18nAppState()
     }
-  },
-  destroyed: function () {
-    emitter.off('on-print', this.print)
-    emitter.off('show-loading', this.toggleLoading)
-    emitter.off('on-stylesheet-changed', this.attachStyleSheet)
   },
   mounted: function () {
-    loadLanguageAsync(this.locale)
+    this.updateI18nAppState()
+
     emitter.on('on-print', this.print)
-    emitter.on('show-loading', this.toggleLoading)
     emitter.on('on-stylesheet-changed', this.attachStyleSheet)
-
+    emitter.on('show-loading', this.toggleLoading)
     this.attachStyleSheet()
-
-    if (this.darkMode) {
-      this.loadAndSetDarkMode()
-    }
 
     // Log the run
     if (!this.isLocalhost()) {
@@ -159,7 +130,7 @@ export default {
       if (!id) {
         id = this.uuidv4()
 
-        this.$store.dispatch('ON_UNIQUE_CLIENT_ID_CHANGED', id)
+        this.$store.dispatch('setUniqueClientId', id)
       }
 
       const config = new Detector().detect()
@@ -167,44 +138,86 @@ export default {
         const data = {
           application: 'Germinate',
           id: id,
-          version: `${this.germinateVersion}`,
-          locale: this.locale,
+          version: '4.2.1',
+          locale: this.storeLocale,
           os: `${config.os} ${config.osVersion}`
         }
         this.authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
       }
     }
+  },
+  beforeDestroy: function () {
+    emitter.off('on-print', this.print)
+    emitter.off('on-stylesheet-changed', this.attachStyleSheet)
+    emitter.off('show-loading', this.toggleLoading)
   }
 }
 </script>
 
 <style lang="scss">
-  /* Import Flag Icons Set */
-  @import '~flag-icon-css/css/flag-icon.min.css';
-  @import '~@mdi/font/css/materialdesignicons.min.css';
-  @import '~vue-context/dist/css/vue-context.css';
+$font-size-base: 1rem;
+$primary: #23a1d7;
+$dark:    #36363b;
+$secondary: #bdc3c7;
+$success: #27ae60;
+$info:    #3498db;
+$warning: #f39c12;
+$danger:  #e74c3c;
+$indigo:  #6610f2;
+$purple:  #6f42c1;
+$pink:    #e83e8c;
+$red:     #dc3545;
+$orange:  #fd7e14;
+$yellow:  #ffc107;
+$green:   #28a745;
+$teal:    #20c997;
+$cyan:    #17a2b8;
+$headings-font-weight: 400;
+$badge-font-size: 85%;
+$small-font-size: 70%;
 
-  $container-max-widths: (
-    sm: 540px,
-    md: 720px,
-    lg: 960px,
-    xl: 1140px,
-    xxl: 1400px
-  );
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1400px
+);
 
-  $grid-breakpoints: (
-    xs: 0,
-    sm: 576px,
-    md: 768px,
-    lg: 992px,
-    xl: 1200px,
-    xxl: 1500px
-  );
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1500px
+);
 
-  /* Import Bootstrap Vue Styles */
-  @import '~bootstrap-vue/dist/bootstrap-vue.css';
-  // Import Main styles for this application
-  @import 'assets/scss/style';
+@import '~bootswatch/dist/cosmo/variables';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-vue/src/index.scss';
+@import '~bootswatch/dist/cosmo/bootswatch';
+@import '@/assets/dark-mode.scss';
+@import '~flag-icons/css/flag-icons.min.css';
 
-  @import '~leaflet-easybutton/src/easy-button.css';
+.list-group-item.info {
+  border-left: 4px solid $info !important;
+}
+.list-group-item.warning {
+  border-left: 4px solid $warning !important;
+}
+.list-group-item.danger {
+  border-left: 4px solid $danger !important;
+}
+.list-group-item.success {
+  border-left: 4px solid $success !important;
+}
+button .mdi-icon-wrapper + * {
+  vertical-align: middle;
+}
+
+// Hide modal backdrop when printing
+body.print .modal-backdrop {
+  display: none;
+}
 </style>

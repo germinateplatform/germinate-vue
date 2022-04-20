@@ -23,7 +23,7 @@
       </template>
       <!-- Dataset type icon -->
       <template v-slot:cell(dataType)="data">
-        <span class="text-nowrap"><i :class="`mdi mdi-18px ${dataTypes[data.item.dataType].icon} fix-alignment`" :style="`color: ${dataTypes[data.item.dataType].color()};`" /> {{ dataTypes[data.item.dataType].text() }}</span>
+        <span class="text-nowrap"><span :style="`color: ${dataTypes[data.item.dataType].color()};`"><MdiIcon :path="dataTypes[data.item.dataType].path" /></span> {{ dataTypes[data.item.dataType].text() }}</span>
       </template>
       <!-- Dataset ids -->
       <template v-slot:cell(datasetIds)="data">
@@ -31,12 +31,12 @@
       </template>
       <template v-slot:cell(traitRestrictions)="data">
         <div v-if="data.item.traitRestrictions">
-          <span :id="`trait-restrictions-${data.item.traitId}`"><i class="mdi mdi-18px mdi-code-brackets text-primary" /></span>
+          <span :id="`trait-restrictions-${data.item.traitId}`" class="text-primary"><MdiIcon :path="mdiCodeBrackets" /></span>
           <b-tooltip :target="`trait-restrictions-${data.item.traitId}`">
             <div class="text-left">
-              <div v-if="data.item.traitRestrictions.min !== undefined && data.item.traitRestrictions.min !== null"><i class="mdi mdi-greater-than-or-equal" /> {{ data.item.traitRestrictions.min }}</div>
-              <div v-if="data.item.traitRestrictions.max !== undefined && data.item.traitRestrictions.max !== null"><i class="mdi mdi-less-than-or-equal" /> {{ data.item.traitRestrictions.max }}</div>
-              <div v-if="data.item.traitRestrictions.categories"><i class="mdi mdi-code-brackets" /> {{ data.item.traitRestrictions.categories.map(c => c.join(', ')).join(', ') }}</div>
+              <div v-if="data.item.traitRestrictions.min !== undefined && data.item.traitRestrictions.min !== null"><MdiIcon :path="mdiGreaterThanOrEqual" /> {{ data.item.traitRestrictions.min }}</div>
+              <div v-if="data.item.traitRestrictions.max !== undefined && data.item.traitRestrictions.max !== null"><MdiIcon :path="mdiLessThanOrEqual" /> {{ data.item.traitRestrictions.max }}</div>
+              <div v-if="data.item.traitRestrictions.categories"><MdiIcon :path="mdiCodeBrackets" /> {{ data.item.traitRestrictions.categories.map(c => c.join(', ')).join(', ') }}</div>
             </div>
           </b-tooltip>
         </div>
@@ -47,23 +47,29 @@
       </template>
       <!-- Edit trait -->
       <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onTraitEditClicked(data.item)" v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
-          <i :class="`mdi mdi-18px mdi-square-edit-outline`" v-b-tooltip.hover :title="$t('tableTooltipTraitEdit')" />
+        <a href="#" class="text-decoration-none" @click.prevent="onTraitEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" v-b-tooltip.hover :title="$t('tableTooltipTraitEdit')">
+          <MdiIcon :path="mdiSquareEditOutline" />
         </a>
       </template>
     </BaseTable>
 
     <!-- Trait state modal -->
-    <TraitEditModal :trait="trait" v-if="trait && token && userIsAtLeast(token.userType, 'Administrator')" @changed="refresh" ref="traitEditModal" />
+    <TraitEditModal :trait="trait" v-if="trait && storeToken && userIsAtLeast(storeToken.userType, 'Administrator')" @changed="refresh" ref="traitEditModal" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import TraitEditModal from '@/components/modals/TraitEditModal'
 import defaultProps from '@/const/table-props.js'
 import colorMixin from '@/mixins/colors.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
+import authApi from '@/mixins/api/auth'
+
+import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiSquareEditOutline } from '@mdi/js'
 
 export default {
   name: 'TraitTable',
@@ -77,6 +83,10 @@ export default {
   },
   data: function () {
     return {
+      mdiCodeBrackets,
+      mdiGreaterThanOrEqual,
+      mdiLessThanOrEqual,
+      mdiSquareEditOutline,
       options: {
         idColumn: 'traitId',
         tableName: 'traits'
@@ -85,6 +95,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     columns: function () {
       const result = [
         {
@@ -160,11 +173,11 @@ export default {
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
           sortable: true,
           label: this.$t('tableColumnTraitDataPoints'),
-          formatter: this.$options.filters.toThousandSeparators
+          formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null
         }
       ]
 
-      if (this.token && this.userIsAtLeast(this.token.userType, 'Data Curator')) {
+      if (this.storeToken && this.userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
         result.push({
           key: 'edit',
           type: undefined,
@@ -188,9 +201,10 @@ export default {
   },
   components: {
     BaseTable,
+    MdiIcon,
     TraitEditModal
   },
-  mixins: [colorMixin, typesMixin],
+  mixins: [colorMixin, typesMixin, utilMixin, authApi],
   methods: {
     refresh: function () {
       this.$refs.traitTable.refresh()

@@ -12,7 +12,7 @@
                v-on="$listeners">
       <!-- Reference table -->
       <template v-slot:cell(imageRefTable)="data">
-        <span><i :class="`mdi mdi-18px ${imageTypes[data.item.imageRefTable].icon} fix-alignment`" :style="`color: ${imageTypes[data.item.imageRefTable].color()};`" /> {{ imageTypes[data.item.imageRefTable].text() }}</span>
+        <span><span :style="`color: ${imageTypes[data.item.imageRefTable].color()};`"><MdiIcon :path="imageTypes[data.item.imageRefTable].path" /></span> {{ imageTypes[data.item.imageRefTable].text() }}</span>
       </template>
       <!-- Image -->
       <template v-slot:cell(image)="data">
@@ -44,12 +44,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import CoolLightBox from 'vue-cool-lightbox'
 import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types.js'
-import colorMixin from '@/mixins/colors.js'
+import defaultProps from '@/const/table-props'
+import typesMixin from '@/mixins/types'
+import colorMixin from '@/mixins/colors'
+import utilMixin from '@/mixins/util'
+import imageMixin from '@/mixins/image'
 import { EXIF } from 'exif-js'
 
 export default {
@@ -70,6 +75,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken',
+      'storeServerSettings'
+    ]),
     columns: function () {
       return [
         {
@@ -115,7 +124,7 @@ export default {
           sortable: true,
           class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnImageCreatedOn'),
-          formatter: this.$options.filters.toDateTime
+          formatter: value => value ? new Date(value).toLocaleString() : null
         }, {
           key: 'image',
           type: undefined,
@@ -128,9 +137,10 @@ export default {
   },
   components: {
     BaseTable,
-    CoolLightBox
+    CoolLightBox,
+    MdiIcon
   },
-  mixins: [typesMixin, colorMixin],
+  mixins: [typesMixin, colorMixin, utilMixin, imageMixin],
   methods: {
     rotateBasedOnExif: function (image) {
       EXIF.getData(image, function () {
@@ -156,14 +166,14 @@ export default {
         index = this.tags.length
       }
 
-      return this.serverSettings.colorsTemplate[index % this.serverSettings.colorsTemplate.length]
+      return this.storeServerSettings.colorsTemplate[index % this.storeServerSettings.colorsTemplate.length]
     },
     getSrc: function (image, size) {
       return this.getImageUrl(image.imagePath, {
         name: image.imagePath,
         type: 'database',
         size: size,
-        token: this.token ? this.token.imageToken : ''
+        token: this.storeToken ? this.storeToken.imageToken : ''
       })
     },
     update: function (i) {

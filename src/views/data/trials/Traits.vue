@@ -3,11 +3,11 @@
     <h1>{{ $t('pageTraitsTitle') }}</h1>
     <TraitTable :getData="getData" :getIds="selectionMode === 'multi' ? getIds : null" :selectionMode="selectionMode" v-on:selection-changed="updateButtonState" ref="traitTable" />
 
-    <template v-if="token && userIsAtLeast(token.userType, 'Administrator')">
+    <template v-if="storeToken && userIsAtLeast(storeToken.userType, 'Administrator')">
       <Collapse :visible="false" :title="$t('pageTraitsUnifierTitle')" :showLoading="false" @toggle="unifierExpanded = !unifierExpanded" ref="traitCollapse">
         <template v-slot:content>
           <p>{{ $t('pageTraitsUnifierText') }}</p>
-          <b-button class="my-3" variant="primary" @click="getSelectedTrait" :disabled="!selectedIds || selectedIds.length < 2"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t('buttonNext') }}</b-button>
+          <b-button class="my-3" variant="primary" @click="getSelectedTrait" :disabled="!selectedIds || selectedIds.length < 2"><MdiIcon :path="mdiArrowRightBox" /> {{ $t('buttonNext') }}</b-button>
 
           <div v-if="selectedTraits">
             <h2>{{ $t('pageTraitsUnifierSelectPreferedTitle') }}</h2>
@@ -18,7 +18,7 @@
               </b-list-group-item>
             </b-list-group>
 
-            <b-button class="my-3" @click="mergeTrait"> <i class="mdi mdi-18px fix-alignment mdi-set-merge"/> {{ $t('buttonMerge') }}</b-button>
+            <b-button class="my-3" @click="mergeTrait"> <MdiIcon :path="mdiSetMerge" /> {{ $t('buttonMerge') }}</b-button>
           </div>
         </template>
       </Collapse>
@@ -27,19 +27,27 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 import TraitTable from '@/components/tables/TraitTable'
 import traitApi from '@/mixins/api/trait.js'
+import authApi from '@/mixins/api/auth'
+
+import { mdiArrowRightBox, mdiSetMerge } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
     Collapse,
+    MdiIcon,
     TraitTable
   },
   data: function () {
     return {
+      mdiArrowRightBox,
+      mdiSetMerge,
       unifierExpanded: false,
       selectedTraits: null,
       primaryTrait: null,
@@ -47,11 +55,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     selectionMode: function () {
       return this.unifierExpanded ? 'multi' : null
     }
   },
-  mixins: [traitApi],
+  mixins: [traitApi, authApi],
   methods: {
     getData: function (data, callback) {
       return this.apiPostTraitTable(data, callback)

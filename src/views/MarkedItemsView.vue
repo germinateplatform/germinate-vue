@@ -18,7 +18,7 @@
 
       <template v-if="(itemTypeLocal === markedItemTypes.germplasm) && externalIdentifiers && (externalIdentifiers.length > 0)">
         <h3 class="mt-3">{{ $t('pageMarkedGermplasmExportTitle') }}</h3>
-        <a :href="externalLink" v-if="externalLink">{{ $t('pageMarkedGermplasmExportText') }}</a> <i class="mdi mdi-open-in-new" />
+        <a :href="externalLink" v-if="externalLink">{{ $t('pageMarkedGermplasmExportText') }}</a> <MdiIcon :path="mdiOpenInNew" />
       </template>
     </div>
     <h2 v-else>{{ $t('pageMarkedItemsUnknownType') }}</h2>
@@ -26,19 +26,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import LocationTable from '@/components/tables/LocationTable'
 import MarkerTable from '@/components/tables/MarkerTable'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import genotypeApi from '@/mixins/api/genotype.js'
-import locationApi from '@/mixins/api/location.js'
-import miscApi from '@/mixins/api/misc.js'
-import typesMixin from '@/mixins/types.js'
+import germplasmApi from '@/mixins/api/germplasm'
+import genotypeApi from '@/mixins/api/genotype'
+import locationApi from '@/mixins/api/location'
+import miscApi from '@/mixins/api/misc'
+import typesMixin from '@/mixins/types'
+
+import { mdiOpenInNew } from '@mdi/js'
 
 export default {
   name: 'marked-item-view',
   data: function () {
     return {
+      mdiOpenInNew,
       itemTypeLocal: null,
       options: [],
       externalIdentifiers: null,
@@ -64,27 +69,34 @@ export default {
         }
       }
     },
-    markedGermplasm: function () {
+    storeMarkedGermplasm: function () {
       if (this.itemTypeLocal === this.markedItemTypes.germplasm) {
         this.$refs.germplasmTable.refresh()
         this.updateExternalIdentifiers()
       }
     },
-    markedMarkers: function () {
+    storeMarkedMarkers: function () {
       if (this.itemTypeLocal === this.markedItemTypes.markers) {
         this.$refs.markerTable.refresh()
       }
     },
-    markedLocations: function () {
+    storeMarkedLocations: function () {
       if (this.itemTypeLocal === this.markedItemTypes.locations) {
         this.$refs.locationTable.refresh()
       }
     }
   },
   computed: {
+    ...mapGetters([
+      'storeServerSettings',
+      'storeMarkedGermplasm',
+      'storeMarkedMarkers',
+      'storeMarkedLocations',
+      'storeMarkedIds'
+    ]),
     externalLink: function () {
-      if (this.serverSettings.externalLinkTemplate) {
-        return this.serverSettings.externalLinkTemplate.replace('{identifiers}', this.externalIdentifiers.join(','))
+      if (this.storeServerSettings.externalLinkTemplate) {
+        return this.storeServerSettings.externalLinkTemplate.replace('{identifiers}', this.externalIdentifiers.join(','))
       } else {
         return null
       }
@@ -93,7 +105,8 @@ export default {
   components: {
     GermplasmTable,
     LocationTable,
-    MarkerTable
+    MarkerTable,
+    MdiIcon
   },
   mixins: [germplasmApi, genotypeApi, locationApi, miscApi, typesMixin],
   methods: {
@@ -143,16 +156,16 @@ export default {
         column: id,
         comparator: 'inSet',
         operator: 'and',
-        values: this.markedIds[type]
+        values: this.storeMarkedIds[type]
       })
 
       return newData
     },
     updateExternalIdentifiers: function () {
-      if (this.serverSettings && this.serverSettings.externalLinkIdentifier && this.serverSettings.externalLinkTemplate) {
-        const ids = this.markedGermplasm
+      if (this.storeServerSettings && this.storeServerSettings.externalLinkIdentifier && this.storeServerSettings.externalLinkTemplate) {
+        const ids = this.storeMarkedGermplasm
 
-        if (this.serverSettings.externalLinkIdentifier !== 'id') {
+        if (this.storeServerSettings.externalLinkIdentifier !== 'id') {
           this.apiPostExternalLinkIdentifiers(ids, result => {
             this.externalIdentifiers = result
           })

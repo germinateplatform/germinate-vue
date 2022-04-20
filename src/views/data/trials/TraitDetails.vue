@@ -9,7 +9,7 @@
       <template v-else>
         <h1 class="d-flex justify-content-between">
           <span>{{ trait.traitName }} <small v-if="trait.unitName">{{ trait.unitName }}</small></span>
-          <span class="text-nowrap" v-if="trait.dataType"><i :class="`mdi mdi-36px ${dataTypes[trait.dataType].icon} fix-alignment`" :style="`color: ${dataTypes[trait.dataType].color()};`" /> {{ dataTypes[trait.dataType].text() }}</span>
+          <span class="text-nowrap" v-if="trait.dataType" :style="`color: ${dataTypes[trait.dataType].color()};`"><MdiIcon :path="dataTypes[trait.dataType].path" /> {{ dataTypes[trait.dataType].text() }}</span>
         </h1>
         <p v-if="trait.traitDescription">{{ trait.traitDescription }}</p>
 
@@ -17,13 +17,13 @@
           <h2>{{ $t('pageTraitDetailsRestrictionsTitle') }}</h2>
 
           <h4>
-            <b-badge class="mr-2" v-if="trait.traitRestrictions.min !== undefined && trait.traitRestrictions.min !== null"><i class="mdi mdi-greater-than-or-equal" /> {{ trait.traitRestrictions.min }}</b-badge>
-            <b-badge class="mr-2" v-if="trait.traitRestrictions.max !== undefined && trait.traitRestrictions.max !== null"><i class="mdi mdi-less-than-or-equal" /> {{ trait.traitRestrictions.max }}</b-badge>
-            <b-badge class="mr-2" v-if="trait.traitRestrictions.categories"><i class="mdi mdi-code-brackets" /> {{ trait.traitRestrictions.categories.map(c => c.join(', ')).join(', ') }}</b-badge>
+            <b-badge class="mr-2" v-if="trait.traitRestrictions.min !== undefined && trait.traitRestrictions.min !== null"><MdiIcon :path="mdiGreaterThanOrEqual" />" {{ trait.traitRestrictions.min }}</b-badge>
+            <b-badge class="mr-2" v-if="trait.traitRestrictions.max !== undefined && trait.traitRestrictions.max !== null"><MdiIcon :path="mdiLessThanOrEqual" />" {{ trait.traitRestrictions.max }}</b-badge>
+            <b-badge class="mr-2" v-if="trait.traitRestrictions.categories"><MdiIcon :path="mdiCodeBrackets" /> {{ trait.traitRestrictions.categories.map(c => c.join(', ')).join(', ') }}</b-badge>
           </h4>
         </template>
 
-        <b-button @click="$refs.barcodeModal.show()"><i class="mdi mdi-18px mdi-barcode" /> {{ $t('pageTraitDetailsGenerateBarcodes') }}</b-button>
+        <b-button @click="$refs.barcodeModal.show()"><MdiIcon :path="mdiBarcode" /> {{ $t('pageTraitDetailsGenerateBarcodes') }}</b-button>
 
         <!-- Image gallery with representative images for this trait -->
         <ImageGallery :foreignId="trait.traitId" referenceTable="phenotypes" :downloadName="trait.traitName" />
@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BarChart from '@/components/charts/BarChart'
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import DatasetTable from '@/components/tables/DatasetTable'
@@ -96,11 +97,17 @@ import traitApi from '@/mixins/api/trait.js'
 import colorMixin from '@/mixins/colors.js'
 import typesMixin from '@/mixins/types.js'
 
+import { mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiCodeBrackets, mdiBarcode } from '@mdi/js'
+
 const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
     return {
+      mdiGreaterThanOrEqual,
+      mdiLessThanOrEqual,
+      mdiCodeBrackets,
+      mdiBarcode,
       traitId: null,
       trait: undefined,
       tableFilter: null,
@@ -113,6 +120,7 @@ export default {
     DatasetsWithUnacceptedLicense,
     DatasetTable,
     BoxplotChart,
+    MdiIcon,
     ImageGallery,
     TrialsDataTable,
     YesNoCancelModal

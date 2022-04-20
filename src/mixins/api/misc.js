@@ -1,4 +1,8 @@
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
+
 export default {
+  mixins: [baseApiMixin, utilMixin],
   methods: {
     apiGetSettings: function (onSuccess, onError) {
       return this.authAxios({ url: 'settings', success: onSuccess, error: onError })

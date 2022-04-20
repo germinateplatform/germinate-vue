@@ -1,27 +1,35 @@
 <template>
-  <AppHeaderDropdown right v-if="languages && languages.length > 1">
-    <template slot="header">
-      <i class="mdi mdi-18px mdi-translate" />
-    </template>\
-    <template slot="dropdown">
-      <b-dropdown-header tag="div" class="text-center"><strong>{{ $t('dropdownLocales') }}</strong></b-dropdown-header>
-      <b-dropdown-item v-for="language in languages" :key="'locale-' + language.locale" @click="onLocaleChanged(language)"><i :class="'flag-icon flag-icon-' + language.flag" /> {{ language.name }}</b-dropdown-item>
+  <b-nav-item-dropdown right v-if="languages && languages.length > 1" aria-label="Locale switcher">
+    <template #button-content>
+      <MdiIcon :path="mdiTranslate" />
     </template>
-  </AppHeaderDropdown>
+
+    <b-dropdown-header class="text-center border-bottom mb-2"><strong>{{ $t('dropdownLocales') }}</strong></b-dropdown-header>
+    <b-dropdown-item v-for="language in languages" :key="'locale-' + language.locale" @click="onLocaleChanged(language)"><i :class="'fi fi-' + language.flag" /> {{ language.name }}</b-dropdown-item>
+  </b-nav-item-dropdown>
 </template>
 
 <script>
-import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import miscApi from '@/mixins/api/misc.js'
 
+import { mdiTranslate } from '@mdi/js'
+
 export default {
-  name: 'LocaleDropdown',
   components: {
-    AppHeaderDropdown
+    MdiIcon
+  },
+  computed: {
+    ...mapGetters([
+      'storeLocale'
+    ])
   },
   data: function () {
     return {
+      mdiTranslate,
       // Default set of languages. Server can provide additional ones
       languages: [{
         locale: 'en_GB',
@@ -35,15 +43,15 @@ export default {
     onLocaleChanged: function (language) {
       loadLanguageAsync(language.locale).then(() => {
         this.$i18n.locale = language.locale
-        this.$store.dispatch('ON_LOCALE_CHANGED', language.locale)
+        this.$store.dispatch('setLocale', language.locale)
       })
     },
     init: function () {
-      if (this.locale) {
+      if (this.storeLocale) {
         this.$i18n.locale = this.languages.map(l => {
           return l.locale
         }).filter(l => {
-          return this.locale === l
+          return this.storeLocale === l
         })
       }
     }

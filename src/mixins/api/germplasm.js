@@ -1,4 +1,7 @@
+import baseApiMixin from '@/mixins/api/base'
+
 export default {
+  mixins: [baseApiMixin],
   methods: {
     apiGetGermplasm: function (queryData, onSuccess, onError) {
       queryData.page -= 1

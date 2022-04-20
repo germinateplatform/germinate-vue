@@ -8,7 +8,7 @@
       <!-- Attribute type -->
       <template v-slot:cell(attributeType)="data">
         <span v-if="data.item.attributeType">
-          <i :class="'mdi mdi-18px fix-alignment ' + dataTypes[data.item.attributeType].icon" :style="`color: ${dataTypes[data.item.attributeType].color()};`"/>
+          <span :style="`color: ${dataTypes[data.item.attributeType].color()};`"><MdiIcon :path="dataTypes[data.item.attributeType].path" /></span>
           <span> {{ dataTypes[data.item.attributeType].text() }}</span>
         </span>
       </template>
@@ -17,9 +17,11 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   name: 'GermplasmAttributeTable',
@@ -86,9 +88,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
-  mixins: [typesMixin],
+  mixins: [typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.germplasmAttributeTable.refresh()

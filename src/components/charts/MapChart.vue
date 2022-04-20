@@ -11,11 +11,11 @@
         <b-dropdown-divider />
         <b-dropdown-item :disabled="!chartSelection || chartSelection.length < 1"
                          @click="toggleItems(true)">
-          <i class="mdi mdi-18px mdi-checkbox-marked" /> <span> {{ $t('widgetChartMarkSelectedItems') }}</span>
+          <MdiIcon :path="mdiCheckboxMarked" /> <span> {{ $t('widgetChartMarkSelectedItems') }}</span>
         </b-dropdown-item>
         <b-dropdown-item :disabled="!chartSelection || chartSelection.length < 1"
                          @click="toggleItems(false)">
-          <i class="mdi mdi-18px mdi-checkbox-blank-outline" /> <span> {{ $t('widgetChartUnmarkSelectedItems') }}</span>
+          <MdiIcon :path="mdiCheckboxBlankOutline" /> <span> {{ $t('widgetChartUnmarkSelectedItems') }}</span>
         </b-dropdown-item>
       </template>
 
@@ -23,7 +23,7 @@
         <b-button v-b-tooltip.hover
                   :title="$t('chartTooltipMatrixTour')"
                   @click="showTour()">
-          <i class="mdi mdi-18px mdi-help-circle-outline" />
+          <MdiIcon :path="mdiHelpCircleOutline" />
         </b-button>
         <MarkedItems itemType="markers" />
       </template>
@@ -34,12 +34,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import MarkedItems from '@/components/tables/MarkedItems'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import genotypeApi from '@/mixins/api/genotype.js'
 import colorMixin from '@/mixins/colors.js'
+import utilMixin from '@/mixins/util'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
+
+import { mdiCheckboxMarked, mdiCheckboxBlankOutline, mdiHelpCircleOutline } from '@mdi/js'
+
 const emitter = require('tiny-emitter/instance')
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
@@ -62,6 +68,9 @@ export default {
     const id = 'chart-' + this.uuidv4()
 
     return {
+      mdiCheckboxMarked,
+      mdiCheckboxBlankOutline,
+      mdiHelpCircleOutline,
       id: id,
       chartSelection: [],
       distinctChromosomes: null,
@@ -100,6 +109,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     baseSourceFile: function () {
       return {
         blob: this.sourceFile,
@@ -113,9 +125,10 @@ export default {
   components: {
     BaseChart,
     MarkedItems,
-    Tour
+    Tour,
+    MdiIcon
   },
-  mixins: [genotypeApi, colorMixin],
+  mixins: [genotypeApi, colorMixin, utilMixin],
   methods: {
     getHeight: function () {
       if (this.distinctChromosomes === null || this.distinctChromosomes < 1) {
@@ -128,7 +141,7 @@ export default {
       this.$refs.tour.start()
     },
     clearMarkedList: function () {
-      this.$store.dispatch('ON_MARKED_IDS_CLEAR', 'markers')
+      this.$store.dispatch('clearMarkedIds', 'markers')
       this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-clear'))
     },
     redirectToList: function () {
@@ -169,9 +182,9 @@ export default {
           this.apiPostMapdefinitionTableIds(query, result => {
             if (result && result.data && result.data.length > 0) {
               if (add) {
-                this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'markers', ids: result.data })
+                this.$store.dispatch('addMarkedIds', { type: 'markers', ids: result.data })
               } else {
-                this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'markers', ids: result.data })
+                this.$store.dispatch('removeMarkedIds', { type: 'markers', ids: result.data })
               }
             }
 
@@ -203,7 +216,7 @@ export default {
           d3Select.select(this.$refs.mapChart)
             .datum(data)
             .call(plotlyMapChart(Plotly)
-              .darkMode(this.darkMode)
+              .darkMode(this.storeDarkMode)
               .colors(this.getColors())
               .onPointsSelected((chromosome, start, end) => {
                 this.chartSelection.push({

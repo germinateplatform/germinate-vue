@@ -19,7 +19,7 @@
       <b-form-group :label="$t('formLabelChartColorsNew')" label-for="new-color" :invalid-feedback="message" :state="colorValid">
         <b-input-group>
           <template v-slot:append>
-            <b-button variant="info" v-b-tooltip="$t('genericAdd')" @click="addColor"><i class="mdi mdi-plus-box" /></b-button>
+            <b-button variant="info" v-b-tooltip="$t('genericAdd')" @click="addColor"><MdiIcon :path="mdiPlusBox" /></b-button>
           </template>
           <b-form-input type="color" v-model="color" id="label-for" :state="colorValid" required />
         </b-input-group>
@@ -30,16 +30,29 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
+import { mapGetters } from 'vuex'
 import colorMixin from '@/mixins/colors.js'
 
+import { mdiPlusBox } from '@mdi/js'
+
 export default {
+  components: {
+    MdiIcon
+  },
   data: function () {
     return {
+      mdiPlusBox,
       colors: [],
       color: '#00acef',
       message: null,
       colorValid: null
     }
+  },
+  computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ])
   },
   mixins: [colorMixin],
   methods: {
@@ -57,7 +70,7 @@ export default {
       }
     },
     show: function () {
-      this.color = (this.serverSettings && this.serverSettings.primaryColor) ? this.serverSettings.primaryColor : '#00acef'
+      this.color = (this.storeServerSettings && this.storeServerSettings.primaryColor) ? this.storeServerSettings.primaryColor : '#00acef'
       this.colors = this.getColors().slice()
       this.message = null
 
@@ -68,13 +81,13 @@ export default {
     },
     onSubmit: function () {
       if (this.colors && this.colors.length > 0) {
-        this.$store.dispatch('ON_CUSTOM_CHART_COLORS_CHANGED', this.colors)
+        this.$store.dispatch('setCustomChartColors', this.colors)
         this.$emit('colors-changed')
         this.$nextTick(() => this.hide())
       }
     },
     resetColors: function () {
-      this.$store.dispatch('ON_CUSTOM_CHART_COLORS_CHANGED', null)
+      this.$store.dispatch('setCustomChartColors', null)
       this.$emit('colors-changed')
       this.hide()
     }

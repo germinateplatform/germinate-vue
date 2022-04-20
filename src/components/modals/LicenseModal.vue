@@ -8,16 +8,16 @@
       <b-button-group>
         <!-- Options to download the license -->
         <b-dropdown>
-          <template slot="button-content"><i class="mdi mdi-18px mdi-download"/> {{ $t('buttonDownload') }}</template>
-          <b-dropdown-item @click="onPrint"><i class="mdi mdi-18px mdi-printer" /> {{ $t('buttonPrint') }}</b-dropdown-item>
-          <b-dropdown-item @click="onDownload"><i class="mdi mdi-18px mdi-file-code" /> {{ $t('buttonHtml') }}</b-dropdown-item>
+          <template slot="button-content"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownload') }}</template>
+          <b-dropdown-item @click="onPrint"><MdiIcon :path="mdiPrinter" /> {{ $t('buttonPrint') }}</b-dropdown-item>
+          <b-dropdown-item @click="onDownload"><MdiIcon :path="mdiFileCode" /> {{ $t('buttonHtml') }}</b-dropdown-item>
         </b-dropdown>
         <!-- Close the dialog -->
-        <b-button v-if="isAccepted" @click="hide"><i class="mdi mdi-18px mdi-cancel" /> {{ $t('buttonClose') }}</b-button>
+        <b-button v-if="isAccepted" @click="hide"><MdiIcon :path="mdiCancel" /> {{ $t('buttonClose') }}</b-button>
         <!-- Accept/decline the license -->
         <template v-else>
-          <b-button variant="success" @click="accept"><i class="mdi mdi-18px mdi-check" /> {{ $t('buttonAccept') }}</b-button>
-          <b-button variant="danger" @click="hide"><i class="mdi mdi-18px mdi-cancel" /> {{ $t('buttonDecline') }}</b-button>
+          <b-button variant="success" @click="accept"><MdiIcon :path="mdiCheck" /> {{ $t('buttonAccept') }}</b-button>
+          <b-button variant="danger" @click="hide"><MdiIcon :path="mdiCancel" /> {{ $t('buttonDecline') }}</b-button>
         </template>
       </b-button-group>
     </div>
@@ -25,11 +25,17 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import datasetApi from '@/mixins/api/dataset.js'
+
+import { mdiDownload, mdiPrinter, mdiFileCode, mdiCancel, mdiCheck } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     license: {
       type: Object,
@@ -46,6 +52,11 @@ export default {
   },
   data: function () {
     return {
+      mdiDownload,
+      mdiPrinter,
+      mdiFileCode,
+      mdiCancel,
+      mdiCheck,
       htmlData: null,
       htmlFilename: null
     }

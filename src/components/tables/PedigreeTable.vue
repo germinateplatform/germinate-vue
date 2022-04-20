@@ -7,7 +7,7 @@
                v-on="$listeners">
       <!-- HEAD: Relationship type -->
       <template v-slot:head(relationshipType)="data">
-        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipPedigreeRelationshipType')"/>
+        <span>{{ data.label }} </span> <span v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipPedigreeRelationshipType')" class="text-muted"><MdiIcon :path="mdiHelpCircle" /></span>
       </template>
       <!-- Parent id link -->
       <template v-slot:cell(parentId)="data">
@@ -38,8 +38,12 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import utilMixin from '@/mixins/util'
+
+import { mdiHelpCircle } from '@mdi/js'
 
 export default {
   name: 'PedigreeTable',
@@ -49,6 +53,7 @@ export default {
   },
   data: function () {
     return {
+      mdiHelpCircle,
       options: {
         idColumn: 'parentId',
         tableName: 'pedigrees'
@@ -138,8 +143,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
+  mixins: [utilMixin],
   methods: {
     refresh: function () {
       this.$refs.pedigreeTable.refresh()

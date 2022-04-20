@@ -7,12 +7,12 @@
       <template slot="additionalMenuItems">
         <b-dropdown-divider />
         <b-dropdown-item :disabled="!selectedIds || selectedIds.length < 1"
-                        @click="toggleItems(true)">
-          <i class="mdi mdi-18px mdi-checkbox-marked" /> <span> {{ $t('widgetChartMarkSelectedItems') }}</span>
+                         @click="toggleItems(true)">
+          <MdiIcon :path="mdiCheckboxMarked" /> <span> {{ $t('widgetChartMarkSelectedItems') }}</span>
         </b-dropdown-item>
         <b-dropdown-item :disabled="!selectedIds || selectedIds.length < 1"
                          @click="toggleItems(false)">
-          <i class="mdi mdi-18px mdi-checkbox-blank-outline" /> <span> {{ $t('widgetChartUnmarkSelectedItems') }}</span>
+          <MdiIcon :path="mdiCheckboxBlankOutline" /> <span> {{ $t('widgetChartUnmarkSelectedItems') }}</span>
         </b-dropdown-item>
       </template>
 
@@ -20,7 +20,7 @@
         <b-button v-b-tooltip.hover
                   :title="$t('chartTooltipMatrixTour')"
                   @click="showTour()">
-          <i class="mdi mdi-18px mdi-help-circle-outline" />
+          <MdiIcon :path="mdiHelpCircleOutline" />
         </b-button>
         <MarkedItems :itemType="itemType" />
       </template>
@@ -37,12 +37,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import MarkedItems from '@/components/tables/MarkedItems'
 import Passport from '@/views/data/germplasm/Passport'
 import Tour from '@/components/util/Tour'
 import colorMixin from '@/mixins/colors.js'
 import { plotlyScatterPlot } from '@/plugins/charts/plotly-scatter-plot.js'
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
+
+import { mdiCheckboxMarked, mdiCheckboxBlankOutline, mdiHelpCircleOutline } from '@mdi/js'
+
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 
@@ -82,6 +89,9 @@ export default {
     const id = 'chart-' + this.uuidv4()
 
     return {
+      mdiCheckboxMarked,
+      mdiCheckboxBlankOutline,
+      mdiHelpCircleOutline,
       id: id,
       sourceFile: null,
       germplasmId: null,
@@ -121,6 +131,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeDarkMode'
+    ]),
     baseSourceFile: function () {
       return {
         blob: this.sourceFile,
@@ -134,16 +147,17 @@ export default {
   components: {
     BaseChart,
     MarkedItems,
+    MdiIcon,
     Passport,
     Tour
   },
-  mixins: [colorMixin],
+  mixins: [colorMixin, baseApiMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
     },
     clearMarkedList: function () {
-      this.$store.dispatch('ON_MARKED_IDS_CLEAR', this.itemType)
+      this.$store.dispatch('clearMarkedIds', this.itemType)
       this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-clear'))
     },
     redirectToList: function () {
@@ -151,9 +165,9 @@ export default {
     },
     toggleItems: function (add) {
       if (add === true) {
-        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: this.itemType, ids: this.selectedIds })
+        this.$store.dispatch('addMarkedIds', { type: this.itemType, ids: this.selectedIds })
       } else {
-        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: this.itemType, ids: this.selectedIds })
+        this.$store.dispatch('removeMarkedIds', { type: this.itemType, ids: this.selectedIds })
       }
     },
     redraw: function (result, colorBy) {
@@ -174,7 +188,7 @@ export default {
         d3Select.select(this.$refs.scatterChart)
           .datum(data)
           .call(plotlyScatterPlot(Plotly)
-            .darkMode(this.darkMode)
+            .darkMode(this.storeDarkMode)
             .colorBy(colorBy)
             .xCategory(this.x)
             .yCategory(this.y)

@@ -7,15 +7,13 @@ module.exports = {
     'plugin:vue/essential',
     '@vue/standard'
   ],
-  rules: {
-    'no-console': 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    // 'vue/no-unused-properties': 'off',
-    'vue/no-mutating-props': 'off',
-    'vue/custom-event-name-casing': 'off',
-    'vue/multi-word-component-names': 0
-  },
   parserOptions: {
     parser: '@babel/eslint-parser'
+  },
+  rules: {
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'vue/no-mutating-props': 'off',
+    'vue/multi-word-component-names': 0
   }
 }

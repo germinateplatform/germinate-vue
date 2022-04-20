@@ -31,7 +31,7 @@
         <div v-html="$t('widgetRegisterGdpr')" v-if="$t('widgetRegisterGdpr')"/>
         <hr />
         <b-form-checkbox v-model="hasGatekeeper" switch>
-          {{ $t('widgetRegisterGatekeeperAccount') }} <i class="mdi mdi-help-circle" v-b-tooltip.hover :title="$t('tooltipRegisterGatekeeper')" />
+          {{ $t('widgetRegisterGatekeeperAccount') }} <span v-b-tooltip.hover :title="$t('tooltipRegisterGatekeeper')"><MdiIcon :path="mdiHelpCircle" /></span>
         </b-form-checkbox>
 
         <!-- Registration form -->
@@ -106,13 +106,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import PasswordInput from '@/components/util/PasswordInput'
 import miscApi from '@/mixins/api/misc.js'
+
+import { mdiHelpCircle } from '@mdi/js'
+
 const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
     return {
+      mdiHelpCircle,
       currentStep: 0,
       errorMessage: null,
       registrationSteps: [{
@@ -149,6 +155,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeLocale'
+    ]),
     canGoNext: function () {
       switch (this.currentStep) {
         case 0:
@@ -171,6 +180,7 @@ export default {
     }
   },
   components: {
+    MdiIcon,
     PasswordInput
   },
   mixins: [miscApi],
@@ -208,7 +218,7 @@ export default {
         }
 
         const newRequest = {
-          locale: this.locale,
+          locale: this.storeLocale,
           user: this.user
         }
 
@@ -242,7 +252,7 @@ export default {
       } else {
         // Existing user, new request
         const existingRequest = {
-          locale: this.locale,
+          locale: this.storeLocale,
           username: this.user.userUsername,
           password: this.user.userPassword
         }

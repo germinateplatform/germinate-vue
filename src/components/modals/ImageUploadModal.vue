@@ -10,11 +10,12 @@
     size="xl"
     @ok="notifyCaller">
     <p>{{ $t('modalTextImageUpload') }}</p>
-    <UploadWidget accept="image/png,image/jpeg" :postAction="`${baseUrl}image/upload/${referenceTable}/${foreignId}`" name="imageFiles" />
+    <UploadWidget accept="image/png,image/jpeg" :postAction="`${storeBaseUrl}image/upload/${referenceTable}/${foreignId}`" name="imageFiles" />
   </b-modal>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import UploadWidget from '@/components/util/UploadWidget'
 const emitter = require('tiny-emitter/instance')
 
@@ -31,6 +32,11 @@ export default {
       type: String,
       default: 'germinatebase'
     }
+  },
+  computed: {
+    ...mapGetters([
+      'storeBaseUrl'
+    ])
   },
   methods: {
     show: function () {

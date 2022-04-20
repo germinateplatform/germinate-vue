@@ -19,7 +19,7 @@
     </template>
     <!-- Dataset name -->
     <template v-slot:cell(datasetName)="data">
-      <span :title="data.item.datasetName">{{ data.item.datasetName | truncateAfterWords(10) }}</span>
+      <span :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</span>
     </template>
     <!-- Germplasm GID link -->
     <template v-slot:cell(germplasmGid)="data">
@@ -27,11 +27,11 @@
     </template>
     <!-- Entity type -->
     <template v-slot:cell(entityType)="data">
-      <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityType].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityType].color()};`" /> {{ entityTypes[data.item.entityType].text() }}</span>
+      <span class="text-nowrap"><span :style="`color: ${entityTypes[data.item.entityType].color()};`"><MdiIcon :path="entityTypes[data.item.entityType].path" /></span> {{ entityTypes[data.item.entityType].text() }}</span>
     </template>
     <!-- Country flag -->
     <template v-slot:cell(countryName)="data">
-      <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
+      <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'fi fi-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
     </template>
     <!-- Trait value -->
     <template v-slot:cell(traitValue)="data">
@@ -41,12 +41,15 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
+import formattingMixin from '@/mixins/formatting'
 
 export default {
-  name: 'CompoundDataTable',
+  name: 'TrialsDataTable',
   props: {
     ...defaultProps.FULL
   },
@@ -158,7 +161,7 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'recordingDate')}`,
           sortable: true,
           label: this.$t('tableColumnCompoundDataRecordingDate'),
-          formatter: this.$options.filters.toDate
+          formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'traitValue',
           type: String,
@@ -188,9 +191,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
-  mixins: [typesMixin],
+  mixins: [typesMixin, utilMixin, formattingMixin],
   methods: {
     refresh: function () {
       this.$refs.trialsDataTable.refresh()

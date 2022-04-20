@@ -1,12 +1,14 @@
 <template>
   <div>
-    <b-button-group class="marked-items" v-if="itemType && markedIds && markedIds[itemType]">
+    <b-button-group class="marked-items h-100" v-if="itemType && storeMarkedIds && storeMarkedIds[itemType]">
       <!-- Button to clear the marked items -->
-      <b-button @click="clear" class="mdi mdi-18px mdi-delete" :disabled="markedIds[itemType].length < 1" id="marked-items-clear" v-b-tooltip.hover :title="$t('tooltipTableMarkedItemsClear')"/>
+      <b-button @click="clear" :disabled="storeMarkedIds[itemType].length < 1" id="marked-items-clear" v-b-tooltip.hover :title="$t('tooltipTableMarkedItemsClear')">
+        <MdiIcon :path="mdiDelete" />
+      </b-button>
       <!-- Button to navigate to the  -->
 
-      <b-button v-if="showPopup" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" @click="$refs.markedItemModal.show()"><b-badge pill variant="light">{{ markedIds[itemType].length }}</b-badge></b-button>
-      <b-button :to="{ name: 'marked-items-type', params: { itemType: itemType } }" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" v-else><b-badge pill variant="light">{{ markedIds[itemType].length }}</b-badge></b-button>
+      <b-button v-if="showPopup" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" @click="$refs.markedItemModal.show()"><b-badge pill variant="light">{{ storeMarkedIds[itemType].length }}</b-badge></b-button>
+      <b-button :to="{ name: 'marked-items-type', params: { itemType: itemType } }" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" v-else><b-badge pill variant="light">{{ storeMarkedIds[itemType].length }}</b-badge></b-button>
     </b-button-group>
 
     <b-modal ok-only :ok-title="$t('buttonClose')" v-if="showPopup" ref="markedItemModal" size="xl">
@@ -16,15 +18,28 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import { mdiDelete } from '@mdi/js'
+
 export default {
-  name: 'marked-items',
   props: {
     itemType: {
       type: String,
       default: null
     }
   },
+  data: function () {
+    return {
+      mdiDelete
+    }
+  },
   computed: {
+    ...mapGetters([
+      'storeMarkedIds'
+    ]),
     showPopup: function () {
       // Are we on the marked item page?
       if (this.$router.currentRoute.name === 'marked-items' || this.$router.currentRoute.name === 'marked-items-type') {
@@ -46,7 +61,8 @@ export default {
     }
   },
   components: {
-    MarkedItemsView: () => import('@/views/MarkedItemsView')
+    MarkedItemsView: () => import('@/views/MarkedItemsView'),
+    MdiIcon
   },
   methods: {
     clear: function () {
@@ -58,7 +74,7 @@ export default {
       })
         .then(value => {
           if (value) {
-            this.$store.dispatch('ON_MARKED_IDS_CLEAR', this.itemType)
+            this.$store.dispatch('clearMarkedIds', this.itemType)
           }
         })
     }

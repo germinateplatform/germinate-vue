@@ -8,11 +8,11 @@
     <!-- Location name link -->
     <template v-slot:cell(locationName)="data">
       <!-- Dataset location -->
-      <span v-if="data.item.locationType === 'datasets'">{{ data.item.locationName | truncateAfterWords(10) }}</span>
+      <span v-if="data.item.locationType === 'datasets'">{{ truncateAfterWords(data.item.locationName, 10) }}</span>
       <!-- Collecting site -->
-      <router-link to="/data/germplasm" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'" :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</router-link>
+      <router-link :to="{ name: 'germplasm' }" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'" :title="data.item.locationName">{{ truncateAfterWords(data.item.locationName, 10) }}</router-link>
       <!-- Anything else -->
-      <span v-else :title="data.item.locationName">{{ data.item.locationName | truncateAfterWords(10) }}</span>
+      <span v-else :title="data.item.locationName">{{ truncateAfterWords(data.item.locationName, 10) }}</span>
     </template>
     <!-- Location latitude -->
     <template v-slot:cell(locationLatitude)="data">
@@ -28,19 +28,24 @@
     </template>
     <!-- Country name -->
     <template v-slot:cell(countryName)="data">
-      <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'flag-icon flag-icon-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
+      <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'fi fi-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
     </template>
     <!-- Location type -->
     <template v-slot:cell(locationType)="data">
-      <span><i :class="`mdi mdi-18px ${locationTypes[data.item.locationType].icon} fix-alignment`" :style="`color: ${locationTypes[data.item.locationType].color()};`" /> {{ locationTypes[data.item.locationType].text() }}</span>
+      <span><span :style="`color: ${locationTypes[data.item.locationType].color()};`">
+        <MdiIcon :path="locationTypes[data.item.locationType].path" /></span> {{ locationTypes[data.item.locationType].text() }}
+      </span>
     </template>
   </BaseTable>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types.js'
+import typesMixin from '@/mixins/types'
+import utilMixin from '@/mixins/util'
+import formattingMixin from '@/mixins/formatting'
 
 export default {
   name: 'LocationTable',
@@ -162,9 +167,10 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
-  mixins: [typesMixin],
+  mixins: [typesMixin, utilMixin, formattingMixin],
   methods: {
     navigateToGermplasm: function (location) {
       // Set up the filter

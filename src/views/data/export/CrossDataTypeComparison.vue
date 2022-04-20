@@ -15,7 +15,7 @@
       </b-col>
     </b-row>
 
-    <b-button variant="primary" @click="plot" class="mt-3"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t('buttonPlot') }}</b-button>
+    <b-button variant="primary" @click="plot" class="mt-3"><MdiIcon :path="mdiArrowRightBox" /> {{ $t('buttonPlot') }}</b-button>
 
     <ScatterChart ref="chart" :itemType="itemType" datasetType="trials" :x="dimensions[0]" :y="dimensions[1]" v-if="chartData" />
   </div>
@@ -24,20 +24,25 @@
 <script>
 import Vue from 'vue'
 
+import MdiIcon from '@/components/icons/MdiIcon'
 import CrossDataTypeSelection from '@/components/export/CrossDataTypeSelection'
 import ScatterChart from '@/components/charts/ScatterChart'
 
 import datasetApi from '@/mixins/api/dataset.js'
+
+import { mdiArrowRightBox } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
     CrossDataTypeSelection,
+    MdiIcon,
     ScatterChart
   },
   data: function () {
     return {
+      mdiArrowRightBox,
       itemType: 'germplasm',
       chartData: null,
       dimensions: [],

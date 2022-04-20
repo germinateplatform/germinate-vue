@@ -1,5 +1,25 @@
+import baseApiMixin from '@/mixins/api/base'
+
 export default {
+  mixins: [baseApiMixin],
   methods: {
+    /**
+     * Checks whether the given user type is at least the given minimum user type
+     * @param {String} userType The user type to check
+     * @param {String} atLeast The user type to check against
+     */
+    userIsAtLeast: function (userType, atLeast) {
+      switch (atLeast) {
+        case 'Administrator':
+          return userType === 'Administrator'
+        case 'Data Curator':
+          return userType === 'Administrator' || userType === 'Data Curator'
+        case 'Regular User':
+          return userType === 'Administrator' || userType === 'Data Curator' || userType === 'Regular User'
+      }
+
+      return false
+    },
     /**
      * Deletes the current json token
      *

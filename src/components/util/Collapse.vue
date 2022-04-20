@@ -4,8 +4,8 @@
     <b-card-header header-tag="header" class="p-2 collapse-header" role="tab" @click="toggle">
       <div class="d-flex flex-row align-items-center">
         <!-- Icon and name to the left -->
-        <i :class="`collapse-expand-status mdi mdi-18px mdi-chevron-right ${style}`" />&nbsp;
-        <strong class="d-flex flex-row align-items-center"><i :class="`mdi mdi-18px ${icon} text-primary mr-1`" v-if="icon"/> {{ title }}</strong>
+        <MdiIcon :path="mdiChevronRight" />&nbsp;
+        <strong class="d-flex flex-row align-items-center"><MdiIcon :path="icon" className="text-primary mr-1" v-if="icon"/> {{ title }}</strong>
         <!-- Count and progress to the right -->
         <span class="ml-auto d-flex flex-row align-items-center">
           <b-badge :variant="count > 0 ? 'primary' : null" v-if="!loading && count !== undefined">{{ count }}</b-badge>
@@ -26,7 +26,17 @@
 </template>
 
 <script>
+import baseApiMixin from '@/mixins/api/base'
+import utilMixin from '@/mixins/util'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import { mdiChevronRight } from '@mdi/js'
+
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     title: {
       type: String,
@@ -51,17 +61,14 @@ export default {
   },
   data: function () {
     return {
+      mdiChevronRight,
       id: 'accordion-' + this.uuidv4(),
       count: null,
       loading: true,
       contentVisible: false
     }
   },
-  computed: {
-    style: function () {
-      return this.contentVisible ? 'mdi-rotate-90' : ''
-    }
-  },
+  mixins: [baseApiMixin, utilMixin],
   methods: {
     toggle: function () {
       this.contentVisible = !this.contentVisible

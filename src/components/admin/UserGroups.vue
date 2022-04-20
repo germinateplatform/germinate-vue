@@ -51,6 +51,7 @@
 import UserGroupTable from '@/components/tables/UserGroupTable'
 import UserGroupMembers from '@/components/admin/UserGroupMembers'
 import usergroupApi from '@/mixins/api/usergroup.js'
+import { mdiPlusBox } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -68,7 +69,7 @@ export default {
           text: this.$t('tooltipCreateNewGroup'),
           variant: null,
           disabled: () => false,
-          icon: 'mdi mdi-18px mdi-plus-box',
+          path: mdiPlusBox,
           callback: () => {
             this.newGroup = {
               userGroupName: null,

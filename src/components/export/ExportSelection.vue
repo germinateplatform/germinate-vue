@@ -14,14 +14,18 @@
       <ExportGroupSelection :info="groupSelectionInfo" :selectSize="selectSize" :multiple="multiple" :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
     </b-col>
     <b-col cols=12>
-      <b-btn variant="primary" @click="buttonPressed" :disabled="getButtonDisabled()"><i class="mdi mdi-18px mdi-arrow-right-box fix-alignment" /> {{ $t(texts.exportButton) }}</b-btn>
+      <b-btn variant="primary" @click="buttonPressed" :disabled="getButtonDisabled()"><MdiIcon :path="mdiArrowRightBox" /> {{ $t(texts.exportButton) }}</b-btn>
     </b-col>
   </b-row>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 import SearchableSelect from '@/components/util/SearchableSelect'
+
+import { mdiArrowRightBox } from '@mdi/js'
 
 export default {
   props: {
@@ -76,12 +80,16 @@ export default {
   },
   data: function () {
     return {
+      mdiArrowRightBox,
       items: [],
       selectedItems: [],
       itemOptions: []
     }
   },
   computed: {
+    ...mapGetters([
+      'storeMarkedGermplasm'
+    ]),
     selectSize: function () {
       if (this.max !== null) {
         return Math.min(this.max, this.itemOptions.length)
@@ -97,6 +105,7 @@ export default {
   },
   components: {
     ExportGroupSelection,
+    MdiIcon,
     SearchableSelect
   },
   methods: {
@@ -130,7 +139,7 @@ export default {
       // If the "Marked items" item is selected, set the individual ids
       const markedSelected = settings.selectedGroups.filter(g => g === null)
       if (settings.specialGroupSelection !== 'all' && markedSelected.length > 0) {
-        query.yIds = this.markedGermplasm
+        query.yIds = this.storeMarkedGermplasm
       }
 
       // Set the selected group ids

@@ -10,41 +10,41 @@
       <!-- HEADS -->
       <!-- HEAD: Germplasm PUID -->
       <template v-slot:head(germplasmPuid)="data">
-        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"/>
+        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPuid')"><MdiIcon :path="mdiHelpCircle" /></span>
       </template>
       <!-- HEAD Germplasm PDCI -->
       <template v-slot:head(pdci)="data">
-        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPdci')"/>
+        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmPdci')"><MdiIcon :path="mdiHelpCircle" /></span>
       </template>
       <!-- HEAD: Dataset types -->
       <template v-slot:head(dataTypes)="data">
-        <span>{{ data.label }} </span> <i class="mdi mdi-help-circle text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmDataTypes')"/>
+        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipGermplasmDataTypes')"><MdiIcon :path="mdiHelpCircle" /></span>
       </template>
       <!-- HEAD: Trials data -->
       <template v-slot:head(hasTrialsData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" v-b-tooltip="$t('tableColumnHasTrialsData')" />
+        <span v-b-tooltip.bottom.hover :title="$t('tableColumnHasTrialsData')"><MdiIcon :path="datasetTypes.trials.path" /></span>
       </template>
       <!-- HEAD: Genotypic data -->
       <template v-slot:head(hasGenotypicData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" v-b-tooltip="$t('tableColumnHasGenotypicData')" />
+        <span v-b-tooltip.bottom.hover :title="$t('tableColumnHasGenotypicData')"><MdiIcon :path="datasetTypes.genotype.path" /></span>
       </template>
       <!-- HEAD: Compound data -->
       <template v-slot:head(hasCompoundData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" v-b-tooltip="$t('tableColumnHasCompoundData')" />
+        <span v-b-tooltip.bottom.hover :title="$t('tableColumnHasCompoundData')"><MdiIcon :path="datasetTypes.compound.path" /></span>
       </template>
       <!-- HEAD: Allelefreq data -->
       <template v-slot:head(hasAllelefreqData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" v-b-tooltip="$t('tableColumnHasAllelefreqData')" />
+        <span v-b-tooltip.bottom.hover :title="$t('tableColumnHasAllelefreqData')"><MdiIcon :path="datasetTypes.allelefreq.path" /></span>
       </template>
       <!-- HEAD: Allelefreq data -->
       <template v-slot:head(hasPedigreeData)>
-        <i :class="`mdi mdi-18px ${datasetTypes.pedigree.icon}`" v-b-tooltip="$t('tableColumnHasPedigreeData')" />
+        <span v-b-tooltip.bottom.hover :title="$t('tableColumnHasPedigreeData')"><MdiIcon :path="datasetTypes.pedigree.path" /></span>
       </template>
       <!-- /HEADS -->
 
       <template v-slot:cell(preview)="data">
         <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }" event="" @click.native.prevent="selectGermplasm(data.item.germplasmId)" class="table-link" v-b-tooltip:hover="$t('tableTooltipGermplasmPreviewPassport')">
-          <i class="mdi mdi-18px mdi-open-in-app" />
+          <MdiIcon :path="mdiOpenInApp" />
         </router-link>
       </template>
       <!-- Germplasm id link -->
@@ -65,7 +65,7 @@
       </template>
       <!-- Entity type -->
       <template v-slot:cell(entityTypeName)="data">
-        <span class="text-nowrap"><i :class="`mdi mdi-18px ${entityTypes[data.item.entityTypeName].icon} fix-alignment`" :style="`color: ${entityTypes[data.item.entityTypeName].color()};`" /> {{ entityTypes[data.item.entityTypeName].text() }}</span>
+        <span class="text-nowrap"><span :style="`color: ${entityTypes[data.item.entityTypeName].color()};`"><MdiIcon :path="entityTypes[data.item.entityTypeName].path" /></span> {{ entityTypes[data.item.entityTypeName].text() }}</span>
       </template>
       <!-- Synonyms -->
       <template v-slot:cell(synonyms)="data">
@@ -75,7 +75,7 @@
       <template v-slot:cell(location)="data">
         <template v-if="data.item.location">
           <a href="#" @click.prevent="data.toggleDetails()" class="table-link" v-if="data.item.latitude && data.item.longitude" v-b-tooltip.hover :title="$t('tableTooltipGermplasmLocation')">
-            <i class="mdi mdi-18px mdi-map-marker align-middle" />
+            <MdiIcon :path="mdiMapMarker" />
             <span>{{ data.item.location }}</span>
           </a>
           <span v-else>{{ data.item.location }}</span>
@@ -96,7 +96,7 @@
       <!-- Country flag -->
       <template v-slot:cell(countryName)="data">
           <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName" v-if="data.item.countryCode">
-            <i :class="'flag-icon flag-icon-' + data.item.countryCode.toLowerCase()"/> <span> {{ data.item.countryCode }}</span>
+            <i :class="'fi fi-' + data.item.countryCode.toLowerCase()"/> <span> {{ data.item.countryCode }}</span>
           </span>
           <span v-else>
             {{ data.item.countryName }}
@@ -110,7 +110,7 @@
       <template v-slot:cell(imageCount)="data">
         <div class="table-image" v-if="data.item.imageCount !== undefined && data.item.imageCount > 0">
           <a href="#" class="text-dark" @click.prevent="" :id="`table-image-popover-${data.item.germplasmId}`" v-b-tooltip.hover :title="$t('tableTooltipGermplasmImage')">
-            <i class="mdi mdi-18px mdi-camera"/> <span> {{ data.item.imageCount }}</span>
+            <MdiIcon :path="mdiCamera" /> <span> {{ data.item.imageCount }}</span>
           </a>
           <b-popover
             :target="`table-image-popover-${data.item.germplasmId}`"
@@ -149,19 +149,19 @@
       </template>
       <!-- Dataset types -->
       <template v-slot:cell(hasTrialsData)="data">
-        <i :class="`mdi mdi-18px ${datasetTypes.trials.icon}`" :style="`color: ${datasetTypes.trials.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()" v-if="data.item.hasTrialsData" />
+        <span v-if="data.item.hasTrialsData" :style="`color: ${datasetTypes.trials.color()};`" v-b-tooltip.hover :title="datasetTypes.trials.text()"><MdiIcon :path="datasetTypes.trials.path" /></span>
       </template>
       <template v-slot:cell(hasGenotypicData)="data">
-        <i :class="`mdi mdi-18px ${datasetTypes.genotype.icon}`" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()" v-if="data.item.hasGenotypicData" />
+        <span v-if="data.item.hasGenotypicData" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.hover :title="datasetTypes.genotype.text()"><MdiIcon :path="datasetTypes.genotype.path" /></span>
       </template>
       <template v-slot:cell(hasCompoundData)="data">
-        <i :class="`mdi mdi-18px ${datasetTypes.compound.icon}`" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()" v-if="data.item.hasCompoundData" />
+        <span v-if="data.item.hasCompoundData" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.hover :title="datasetTypes.compound.text()"><MdiIcon :path="datasetTypes.compound.path" /></span>
       </template>
       <template v-slot:cell(hasAllelefreqData)="data">
-        <i :class="`mdi mdi-18px ${datasetTypes.allelefreq.icon}`" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()" v-if="data.item.hasAllelefreqData" />
+        <span v-if="data.item.hasAllelefreqData" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.hover :title="datasetTypes.allelefreq.text()"><MdiIcon :path="datasetTypes.allelefreq.path" /></span>
       </template>
       <template v-slot:cell(hasPedigreeData)="data">
-        <i :class="`mdi mdi-18px ${datasetTypes.pedigree.icon}`" :style="`color: ${datasetTypes.pedigree.color()};`" v-b-tooltip.bottom.hover :title="datasetTypes.pedigree.text()" v-if="data.item.hasPedigreeData" />
+        <span v-if="data.item.hasPedigreeData" :style="`color: ${datasetTypes.pedigree.color()};`" v-b-tooltip.hover :title="datasetTypes.pedigree.text()"><MdiIcon :path="datasetTypes.pedigree.path" /></span>
       </template>
 
       <!-- Row details is where the dataset locations are shown on a map -->
@@ -179,12 +179,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
 import LocationMap from '@/components/map/LocationMap'
 import Passport from '@/views/data/germplasm/Passport'
-import defaultProps from '@/const/table-props.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import typesMixin from '@/mixins/types.js'
+import defaultProps from '@/const/table-props'
+import germplasmApi from '@/mixins/api/germplasm'
+import utilMixin from '@/mixins/util'
+import imagesMixin from '@/mixins/image'
+import typesMixin from '@/mixins/types'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+
+import { mdiHelpCircle, mdiOpenInApp, mdiMapMarker, mdiCamera, mdiChevronUpBox, mdiChevronUpBoxOutline, mdiChevronDownBox, mdiChevronDownBoxOutline } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -207,6 +214,14 @@ export default {
   },
   data: function () {
     return {
+      mdiHelpCircle,
+      mdiOpenInApp,
+      mdiMapMarker,
+      mdiCamera,
+      mdiChevronUpBox,
+      mdiChevronUpBoxOutline,
+      mdiChevronDownBox,
+      mdiChevronDownBoxOutline,
       germplasmId: null,
       options: {
         idColumn: 'germplasmId',
@@ -214,22 +229,22 @@ export default {
         additionalMarkingOptions: [{
           key: 'mark-parents',
           text: () => this.$t('tableContextMarkEntityParents'),
-          icon: 'mdi-chevron-up-box',
+          path: mdiChevronUpBox,
           callback: (item) => this.markParents(item)
         }, {
           key: 'unmark-parents',
           text: () => this.$t('tableContextUnmarkEntityParents'),
-          icon: 'mdi-chevron-up-box-outline',
+          path: mdiChevronUpBoxOutline,
           callback: (item) => this.unmarkParents(item)
         }, {
           key: 'mark-children',
           text: () => this.$t('tableContextMarkEntityChildren'),
-          icon: 'mdi-chevron-down-box',
+          path: mdiChevronDownBox,
           callback: (item) => this.markChildren(item)
         }, {
           key: 'unmark-children',
           text: () => this.$t('tableContextUnmarkEntityChildren'),
-          icon: 'mdi-chevron-down-box-outline',
+          path: mdiChevronDownBoxOutline,
           callback: (item) => this.unmarkChildren(item)
         }],
         orderBy: this.orderBy
@@ -237,6 +252,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     columns: function () {
       const result = [
         {
@@ -454,9 +472,10 @@ export default {
   components: {
     BaseTable,
     LocationMap,
+    MdiIcon,
     Passport
   },
-  mixins: [germplasmApi, typesMixin],
+  mixins: [germplasmApi, imagesMixin, typesMixin, utilMixin],
   methods: {
     selectGermplasm: function (id) {
       this.germplasmId = id
@@ -470,13 +489,13 @@ export default {
         name: germplasm.firstImagePath,
         type: 'database',
         size: 'small',
-        token: this.token ? this.token.imageToken : ''
+        token: this.storeToken ? this.storeToken.imageToken : ''
       })
     },
     markParents: function (item) {
       if (item) {
         const parentId = item.entityParentId
-        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: [parentId] })
+        this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: [parentId] })
       } else {
         emitter.emit('show-loading', true)
         const requestData = this.$refs.germplasmTable.getCurrentRequestData()
@@ -484,7 +503,7 @@ export default {
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
           this.apiPostEntityIds(result.data, 'up', result => {
-            this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
+            this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: result })
             emitter.emit('show-loading', false)
           })
         })
@@ -495,7 +514,7 @@ export default {
         emitter.emit('show-loading', true)
         const id = item.germplasmId
         this.apiPostEntityIds([id], 'down', result => {
-          this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
+          this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: result })
           emitter.emit('show-loading', false)
         })
       } else {
@@ -505,7 +524,7 @@ export default {
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
           this.apiPostEntityIds(result.data, 'down', result => {
-            this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'germplasm', ids: result })
+            this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: result })
             emitter.emit('show-loading', false)
           })
         })
@@ -514,7 +533,7 @@ export default {
     unmarkParents: function (item) {
       if (item) {
         const parentId = item.entityParentId
-        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: [parentId] })
+        this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: [parentId] })
       } else {
         emitter.emit('show-loading', true)
         const requestData = this.$refs.germplasmTable.getCurrentRequestData()
@@ -522,7 +541,7 @@ export default {
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
           this.apiPostEntityIds(result.data, 'up', result => {
-            this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
+            this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: result })
             emitter.emit('show-loading', false)
           })
         })
@@ -533,7 +552,7 @@ export default {
         emitter.emit('show-loading', true)
         const id = item.germplasmId
         this.apiPostEntityIds([id], 'down', result => {
-          this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
+          this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: result })
           emitter.emit('show-loading', false)
         })
       } else {
@@ -543,7 +562,7 @@ export default {
         this.getIds(requestData, result => {
           // Then post them to the server again to convert them to their entity parents
           this.apiPostEntityIds(result.data, 'down', result => {
-            this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'germplasm', ids: result })
+            this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: result })
             emitter.emit('show-loading', false)
           })
         })
@@ -557,9 +576,6 @@ export default {
 .table-image,
 .table-pdci {
   white-space: nowrap;
-}
-.table-image * {
-  vertical-align: top;
 }
 .table-image:hover {
   cursor: pointer;

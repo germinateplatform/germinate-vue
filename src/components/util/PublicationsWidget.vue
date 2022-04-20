@@ -13,16 +13,18 @@
             <p class="mb-0 limit-rows">
               <span v-html="p.displayData.fullReference" />
             </p>
-            <div class="mb-3"><b-badge class="cursor-hover" @click="showFullReference(p)"><i class="mdi mdi-dots-horizontal" /></b-badge></div>
-            <b-button :href="p.displayData.URL" class="mr-2" target="_blank" rel="noopener noreferrer" v-if="p.displayData.URL"><i class="mdi mdi-open-in-new" /> {{ $t('buttonReadMore') }}</b-button>
+            <div class="mb-3"><b-badge class="cursor-hover" @click="showFullReference(p)">
+              <MdiIcon :path="mdiDotsHorizontal" /></b-badge>
+            </div>
+            <b-button :href="p.displayData.URL" class="mr-2" target="_blank" rel="noopener noreferrer" v-if="p.displayData.URL"><MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonReadMore') }}</b-button>
 
-            <b-button variant="danger" @click="deleteReference(p)" v-if="token && userIsAtLeast(token.userType, 'Data Curator')"><i class="mdi mdi-delete" /> {{ $t('buttonDelete') }}</b-button>
+            <b-button variant="danger" @click="deleteReference(p)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}</b-button>
           </b-card>
         </b-col>
       </b-row>
       <h5 v-else>{{ $t('headingNoData') }}</h5>
 
-      <b-button v-b-modal.add-publication-modal v-if="token && userIsAtLeast(token.userType, 'Data Curator')"><i class="mdi mdi-18px mdi-plus-box" /> {{ $t('buttonAddPublication') }}</b-button>
+      <b-button v-b-modal.add-publication-modal v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiPlusBox" /> {{ $t('buttonAddPublication') }}</b-button>
 
       <ReferenceModal :publication="selectedPublication" ref="referenceModal" />
 
@@ -39,7 +41,7 @@
             {{ newPublication.errorMessage }}
           </b-form-invalid-feedback>
         </b-form-group>
-        <b-button variant="primary" @click="getPublication" :disabled="!newPublication.doi || newPublication.loading"><i class="mdi mdi-18px mdi-chevron-double-down" /> {{ $t('buttonUpdate') }} <b-spinner small v-if="newPublication.loading" /></b-button>
+        <b-button variant="primary" @click="getPublication" :disabled="!newPublication.doi || newPublication.loading"><MdiIcon :path="mdiChevronDoubleDown" /> {{ $t('buttonUpdate') }} <b-spinner small v-if="newPublication.loading" /></b-button>
 
         <p v-html="newPublication.html" v-if="newPublication.html" />
       </b-modal>
@@ -48,15 +50,27 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import ReferenceModal from '@/components/modals/ReferenceModal'
+import MdiIcon from '@/components/icons/MdiIcon'
 
 import miscApi from '@/mixins/api/misc.js'
+import authApi from '@/mixins/api/auth'
+
+import { mdiChevronDoubleDown, mdiPlusBox, mdiDelete, mdiOpenInNew, mdiDotsHorizontal } from '@mdi/js'
 
 const Cite = require('citation-js')
 
 export default {
   components: {
+    MdiIcon,
     ReferenceModal
+  },
+  computed: {
+    ...mapGetters([
+      'storeToken'
+    ])
   },
   props: {
     referenceType: {
@@ -70,6 +84,11 @@ export default {
   },
   data: function () {
     return {
+      mdiChevronDoubleDown,
+      mdiPlusBox,
+      mdiDelete,
+      mdiOpenInNew,
+      mdiDotsHorizontal,
       loading: true,
       publications: [],
       selectedPublication: null,
@@ -90,7 +109,7 @@ export default {
       this.update()
     }
   },
-  mixins: [miscApi],
+  mixins: [miscApi, authApi],
   methods: {
     resetForm: function () {
       this.newPublication = {

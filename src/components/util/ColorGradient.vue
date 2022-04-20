@@ -5,7 +5,7 @@
     <b-row>
       <b-col>
         <div class="d-flex align-items-center">
-          <i class="mdi mdi-arrow-collapse-left mr-2" />
+          <MdiIcon :path="mdiArrowCollapseLeft" className="mr-2" />
           <div class="text-left">
             <div>{{ $t('widgetGradientLow') }}</div>
             <div v-if="min !== undefined && min !== null">{{ formatMinMax(min) }}</div>
@@ -18,7 +18,7 @@
             <div>{{ $t('widgetGradientHigh') }} </div>
             <div v-if="max !== undefined && max !== null">{{ formatMinMax(max) }}</div>
           </div>
-          <i class="mdi mdi-arrow-collapse-right ml-2" />
+          <MdiIcon :path="mdiArrowCollapseRight" className="ml-2" />
         </div>
       </b-col>
     </b-row>
@@ -26,9 +26,16 @@
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
+
 import colorsMixin from '@/mixins/colors.js'
 
+import { mdiArrowCollapseLeft, mdiArrowCollapseRight } from '@mdi/js'
+
 export default {
+  components: {
+    MdiIcon
+  },
   props: {
     colors: {
       type: Array,
@@ -53,6 +60,8 @@ export default {
   },
   data: function () {
     return {
+      mdiArrowCollapseLeft,
+      mdiArrowCollapseRight,
       numSteps: 100
     }
   },

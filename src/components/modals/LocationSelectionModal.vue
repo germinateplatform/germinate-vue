@@ -33,7 +33,7 @@ export default {
           type: String
         },
         comparator: 'equals',
-        operator: 'or',
+        operator: 'and',
         values: ['collectingsites'],
         canBeChanged: false
       }]

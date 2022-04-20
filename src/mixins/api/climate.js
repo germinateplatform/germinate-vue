@@ -1,4 +1,7 @@
+import baseApiMixin from '@/mixins/api/base'
+
 export default {
+  mixins: [baseApiMixin],
   methods: {
     apiPostDatasetClimates: function (datasetIds, onSuccess, onError) {
       const queryData = {

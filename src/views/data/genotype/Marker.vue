@@ -12,7 +12,10 @@
       <template v-else>
         <h2 class="mdi-heading" id="mcpd">
           <span>{{ marker.markerName }}</span>
-          <i :class="`mdi mdi-36px text-primary passport-checkbox ${markedStyle}`" @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipMarkerMarkedItem')"/>
+          <span class="text-primary" @click="onToggleMarked()" v-b-tooltip.hover.bottom :title="$t('tooltipMarkerMarkedItem')">
+            <MdiIcon :path="mdiCheckboxMarked" v-if="isMarked" />
+            <MdiIcon :path="mdiCheckboxBlankOutline" v-else />
+          </span>
         </h2>
         <p>{{ $t('pageMarkerDetailsText') }}</p>
 
@@ -49,10 +52,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
 import GroupTable from '@/components/tables/GroupTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import genotypeApi from '@/mixins/api/genotype.js'
+
+import { mdiCheckboxMarked, mdiCheckboxBlankOutline } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -65,14 +72,18 @@ export default {
   },
   data: function () {
     return {
+      mdiCheckboxMarked,
+      mdiCheckboxBlankOutline,
       currentMarkerId: null,
       marker: undefined
     }
   },
   computed: {
-    markedStyle: function () {
-      const isMarked = this.markedMarkers.indexOf(this.currentMarkerId) !== -1
-      return isMarked ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'
+    ...mapGetters([
+      'storeMarkedMarkers'
+    ]),
+    isMarked: function () {
+      return this.storeMarkedMarkers.indexOf(this.currentMarkerId) !== -1
     },
     filter: function () {
       return [{
@@ -90,16 +101,17 @@ export default {
   components: {
     DatasetTable,
     GroupTable,
-    MapDefinitionTable
+    MapDefinitionTable,
+    MdiIcon
   },
   mixins: [genotypeApi],
   methods: {
     onToggleMarked: function () {
-      const isMarked = this.markedMarkers.indexOf(this.currentMarkerId) !== -1
+      const isMarked = this.storeMarkedMarkers.indexOf(this.currentMarkerId) !== -1
       if (isMarked) {
-        this.$store.dispatch('ON_MARKED_IDS_REMOVE', { type: 'markers', ids: [this.currentMarkerId] })
+        this.$store.dispatch('removeMarkedIds', { type: 'markers', ids: [this.currentMarkerId] })
       } else {
-        this.$store.dispatch('ON_MARKED_IDS_ADD', { type: 'markers', ids: [this.currentMarkerId] })
+        this.$store.dispatch('addMarkedIds', { type: 'markers', ids: [this.currentMarkerId] })
       }
     },
     getDatasetData: function (data, callback) {
@@ -173,7 +185,7 @@ export default {
     if (this.currentMarkerId) {
       this.getMarker()
 
-      this.$store.dispatch('ON_RECENT_IDS_PUSH', { type: 'markers', id: this.currentMarkerId })
+      this.$store.dispatch('pushRecentIds', { type: 'markers', id: this.currentMarkerId })
     }
 
     emitter.on('license-accepted', this.getMarker)

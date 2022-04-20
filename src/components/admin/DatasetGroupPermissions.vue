@@ -22,6 +22,7 @@
 <script>
 import UserGroupTable from '@/components/tables/UserGroupTable'
 import usergroupApi from '@/mixins/api/usergroup.js'
+import { mdiDelete, mdiPlusBox } from '@mdi/js'
 
 export default {
   props: {
@@ -38,7 +39,7 @@ export default {
           text: this.$t('genericRemove'),
           variant: null,
           disabled: () => false,
-          icon: 'mdi mdi-18px mdi-delete',
+          path: mdiDelete,
           callback: (selectedIds) => {
             this.patchGroup(selectedIds, false)
           }
@@ -50,7 +51,7 @@ export default {
           text: this.$t('genericAdd'),
           variant: null,
           disabled: () => false,
-          icon: 'mdi mdi-18px mdi-plus-box',
+          path: mdiPlusBox,
           callback: (selectedIds) => {
             this.patchGroup(selectedIds, true)
           }

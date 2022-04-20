@@ -1,6 +1,7 @@
-const MAX_JAVA_INTEGER = 2147483647
+import baseApiMixin from '@/mixins/api/base'
 
 export default {
+  mixins: [baseApiMixin],
   methods: {
     apiPostMarkerTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
@@ -22,7 +23,7 @@ export default {
     },
     apiPostGenotypeDatasetSummary: function (queryData, onSuccess, onError) {
       queryData.page = 0
-      queryData.limit = MAX_JAVA_INTEGER
+      queryData.limit = this.MAX_JAVA_INTEGER
       return this.authAxios({ url: 'dataset/export/genotype/summary', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiPostGenotypeDatasetExport: function (queryData, onSuccess, onError) {

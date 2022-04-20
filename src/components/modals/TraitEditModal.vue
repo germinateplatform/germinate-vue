@@ -20,6 +20,7 @@
 <script>
 import traitApi from '@/mixins/api/trait.js'
 import typesMixin from '@/mixins/types.js'
+import utilMixin from '@/mixins/util'
 
 export default {
   props: {
@@ -47,7 +48,7 @@ export default {
       })
     }
   },
-  mixins: [traitApi, typesMixin],
+  mixins: [traitApi, typesMixin, utilMixin],
   methods: {
     show: function () {
       this.traitName = this.trait.traitName

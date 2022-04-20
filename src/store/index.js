@@ -16,6 +16,7 @@ if (!name) {
 
 const essentialKeys = ['token', 'locale', 'baseUrl', 'serverSettings', 'asyncJobUuids', 'asyncJobCount', 'markedIds', 'cookiesAccepted']
 const userState = {
+  appState: 'production',
   uniqueClientId: null,
   locale: 'en_GB',
   tablePerPage: 10,
@@ -33,6 +34,7 @@ const userState = {
     }
   }],
   sidebarState: 'sidebar-lg-show',
+  asyncSidebarTabIndex: 0,
   mapLayer: 'osm',
   markedIds: {
     germplasm: [],
@@ -84,28 +86,34 @@ const storeState = {
     }
   },
   getters: {
-    uniqueClientId: (state) => state.uniqueClientId,
-    token: (state) => state.token,
-    baseUrl: (state) => state.baseUrl,
-    serverSettings: (state) => state.serverSettings,
-    userId: (state) => state.token ? state.token.id : null,
-    locale: (state, getters) => state.userStates[getters.userId].locale,
-    tablePerPage: (state, getters) => state.userStates[getters.userId].tablePerPage,
-    helpKey: (state, getters) => state.userStates[getters.userId].helpKey,
-    markedIds: (state, getters) => state.userStates[getters.userId].markedIds,
-    recentIds: (state, getters) => state.userStates[getters.userId].recentIds,
-    entityTypeStats: (state, getters) => state.userStates[getters.userId].entityTypeStats,
-    hiddenColumns: (state, getters) => state.userStates[getters.userId].hiddenColumns,
-    originalTarget: (state, getters) => state.userStates[getters.userId].originalTarget,
-    asyncJobUuids: (state, getters) => state.userStates[getters.userId].asyncJobUuids,
-    asyncJobCount: (state, getters) => state.userStates[getters.userId].asyncJobCount,
-    cookiesAccepted: (state, getters) => state.userStates[getters.userId].cookiesAccepted,
-    sidebarState: (state, getters) => state.userStates[getters.userId].sidebarState,
-    customChartColors: (state, getters) => state.userStates[getters.userId].customChartColors,
-    darkMode: (state, getters) => state.userStates[getters.userId].darkMode,
-    mapLayer: (state, getters) => state.userStates[getters.userId].mapLayer
+    storeUserId: (state) => state.token ? state.token.id : null,
+    storeCookiesAccepted: (state, getters) => state.userStates[getters.storeUserId].cookiesAccepted,
+    storeDarkMode: (state, getters) => state.userStates[getters.storeUserId].darkMode,
+    storeMarkedIds: (state, getters) => state.userStates[getters.storeUserId].markedIds,
+    storeMarkedGermplasm: (state, getters) => state.userStates[getters.storeUserId].markedIds.germplasm,
+    storeMarkedMarkers: (state, getters) => state.userStates[getters.storeUserId].markedIds.markers,
+    storeMarkedLocations: (state, getters) => state.userStates[getters.storeUserId].markedIds.locations,
+    storeToken: (state) => state.token,
+    storeBaseUrl: (state) => state.baseUrl,
+    storeHelpKey: (state, getters) => state.userStates[getters.storeUserId].helpKey,
+    storeServerSettings: (state) => state.serverSettings,
+    storeLocale: (state, getters) => state.userStates[getters.storeUserId].locale,
+    storeRecentIds: (state, getters) => state.userStates[getters.storeUserId].recentIds,
+    storeEntityTypeStats: (state, getters) => state.userStates[getters.storeUserId].entityTypeStats,
+    storeHiddenColumns: (state, getters) => state.userStates[getters.storeUserId].hiddenColumns,
+    storeTablePerPage: (state, getters) => state.userStates[getters.storeUserId].tablePerPage,
+    storeCustomChartColors: (state, getters) => state.userStates[getters.storeUserId].customChartColors,
+    storeAsyncJobUuids: (state, getters) => state.userStates[getters.storeUserId].asyncJobUuids,
+    storeAsyncJobCount: (state, getters) => state.userStates[getters.storeUserId].asyncJobCount,
+    storeOriginalTarget: (state, getters) => state.userStates[getters.storeUserId].originalTarget,
+    storeAsyncSidebarTabIndex: (state, getters) => state.userStates[getters.storeUserId].asyncSidebarTabIndex,
+    storeMapLayer: (state, getters) => state.userStates[getters.storeUserId].mapLayer,
+    storeAppState: (state, getters) => state.appState
   },
   mutations: {
+    ON_APP_STATE_CHANGED_MUTATION: function (state, newAppState) {
+      state.appState = newAppState
+    },
     ON_TOKEN_CHANGED_MUTATION: function (state, newToken) {
       if (newToken && !state.userStates[newToken.id]) {
         // Add the new user to the state, remember to use Vue.set to make it reactive
@@ -212,6 +220,9 @@ const storeState = {
     ON_SIDEBAR_STATE_CHANGED_MUTATION: function (state, newSidebarState) {
       state.userStates[state.token ? state.token.id : null].sidebarState = newSidebarState
     },
+    ON_ASYNC_SIDEBAR_TAB_INDEX_CHANGED_MUTATION: function (state, newAsyncSidebarTabIndex) {
+      state.userStates[state.token ? state.token.id : null].asyncSidebarTabIndex = newAsyncSidebarTabIndex
+    },
     ON_ASYNC_JOB_UUID_MUTATION: function (state, newAsyncJobUuids) {
       if (!state.token) {
         state.userStates[state.token ? state.token.id : null].asyncJobUuids = newAsyncJobUuids
@@ -261,80 +272,86 @@ const storeState = {
     }
   },
   actions: {
-    ON_TOKEN_CHANGED: function ({ commit }, token) {
+    setAppState: function ({ commit }, appState) {
+      commit('ON_APP_STATE_CHANGED_MUTATION', appState)
+    },
+    setToken: function ({ commit }, token) {
       commit('ON_TOKEN_CHANGED_MUTATION', token)
     },
-    ON_LOCALE_CHANGED: function ({ commit }, locale) {
+    setLocale: function ({ commit }, locale) {
       commit('ON_LOCALE_CHANGED_MUTATION', locale)
     },
-    ON_UNIQUE_CLIENT_ID_CHANGED: function ({ commit }, uniqueClientId) {
+    setUniqueClientId: function ({ commit }, uniqueClientId) {
       commit('ON_UNIQUE_CLIENT_ID_CHANGED_MUTATION', uniqueClientId)
     },
-    ON_BASE_URL_CHANGED: function ({ commit }, baseUrl) {
+    setBaseUrl: function ({ commit }, baseUrl) {
       commit('ON_BASE_URL_CHANGED_MUTATION', baseUrl)
     },
-    ON_TABLE_PER_PAGE_CHANGED: function ({ commit }, tablePerPage) {
+    setTablePerPage: function ({ commit }, tablePerPage) {
       commit('ON_TABLE_PER_PAGE_CHANGED_MUTATION', tablePerPage)
     },
-    ON_MARKED_IDS_ADD: function ({ commit }, payload) {
+    addMarkedIds: function ({ commit }, payload) {
       commit('ON_MARKED_IDS_ADD_MUTATION', payload)
     },
-    ON_MARKED_IDS_REMOVE: function ({ commit }, payload) {
+    removeMarkedIds: function ({ commit }, payload) {
       commit('ON_MARKED_IDS_REMOVE_MUTATION', payload)
     },
-    ON_MARKED_IDS_CLEAR: function ({ commit }, type) {
+    clearMarkedIds: function ({ commit }, type) {
       commit('ON_MARKED_IDS_CLEAR_MUTATION', type)
     },
-    ON_RECENT_IDS_PUSH: function ({ commit }, payload) {
+    pushRecentIds: function ({ commit }, payload) {
       commit('ON_RECENT_IDS_PUSH_MUTATION', payload)
     },
-    ON_RECENT_IDS_CLEAR: function ({ commit }, type) {
+    clearRecentIds: function ({ commit }, type) {
       commit('ON_RECENT_IDS_CLEAR_MUTATION', type)
     },
-    ON_HIDDEN_COLUMNS_ADD: function ({ commit }, payload) {
+    addHiddenColumns: function ({ commit }, payload) {
       commit('ON_HIDDEN_COLUMNS_ADD_MUTATION', payload)
     },
-    ON_HIDDEN_COLUMNS_REMOVE: function ({ commit }, payload) {
+    removeHiddenColumns: function ({ commit }, payload) {
       commit('ON_HIDDEN_COLUMNS_REMOVE_MUTATION', payload)
     },
-    ON_ORIGINAL_TARGET_CHANGED: function ({ commit }, originalTarget) {
+    setOriginalTarget: function ({ commit }, originalTarget) {
       commit('ON_ORIGINAL_TARGET_CHANGED_MUTATION', originalTarget)
     },
-    ON_SETTINGS_CHANGED: function ({ commit }, serverSettings) {
+    setServerSettings: function ({ commit }, serverSettings) {
       commit('ON_SETTINGS_CHANGED_MUTATION', serverSettings)
     },
-    ON_HELP_KEY_CHANGED: function ({ commit }, helpKey) {
+    setHelpKey: function ({ commit }, helpKey) {
       commit('ON_HELP_KEY_CHANGED_MUTATION', helpKey)
     },
-    ON_ENTITY_TYPE_STATS_CHANGED: function ({ commit }, entityTypeStats) {
+    setEntityTypeStats: function ({ commit }, entityTypeStats) {
       commit('ON_ENTITY_TYPE_STATS_CHANGED_MUTATION', entityTypeStats)
     },
-    ON_SIDEBAR_STATE_CHANGED: function ({ commit }, sidebarState) {
+    setSidebarState: function ({ commit }, sidebarState) {
       commit('ON_SIDEBAR_STATE_CHANGED_MUTATION', sidebarState)
     },
-    ON_ASYNC_JOB_COUNT_CHANGED: function ({ commit }, asyncJobCount) {
+    setAsyncJobCount: function ({ commit }, asyncJobCount) {
       commit('ON_ASYNC_JOB_COUNT_CHANGED_MUTATION', asyncJobCount)
     },
-    ON_ASYNC_JOB_UUID: function ({ commit }, asyncJobUuids) {
+    setAsyncJobUuid: function ({ commit }, asyncJobUuids) {
       commit('ON_ASYNC_JOB_UUID_MUTATION', asyncJobUuids)
     },
-    ON_ASYNC_JOB_UUID_ADD: function ({ commit }, uuid) {
+    addAsyncUuid: function ({ commit }, uuid) {
       commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', uuid)
     },
-    ON_ASYNC_JOB_UUID_REMOVE: function ({ commit }, uuid) {
+    removeAsyncUuid: function ({ commit }, uuid) {
       commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', uuid)
     },
-    ON_COOKIES_ACCEPTED: function ({ commit }, cookiesAccepted) {
+    setCookiesAccepted: function ({ commit }, cookiesAccepted) {
       commit('ON_COOKIES_ACCEPTED_MUTATION', cookiesAccepted)
     },
-    ON_CUSTOM_CHART_COLORS_CHANGED: function ({ commit }, customChartColors) {
+    setCustomChartColors: function ({ commit }, customChartColors) {
       commit('ON_CUSTOM_CHART_COLORS_CHANGED_MUTATION', customChartColors)
     },
-    ON_DARK_MODE_CHANGED: function ({ commit }, darkMode) {
+    setDarkMode: function ({ commit }, darkMode) {
       commit('ON_DARK_MODE_CHANGED_MUTATION', darkMode)
     },
-    ON_MAP_LAYER_CHANGED: function ({ commit }, mapLayer) {
+    setMapLayer: function ({ commit }, mapLayer) {
       commit('ON_MAP_LAYER_CHANGED_MUTATION', mapLayer)
+    },
+    setAsyncSidebarTabIndex: function ({ commit }, asyncSidebarTabIndex) {
+      commit('ON_ASYNC_SIDEBAR_TAB_INDEX_CHANGED_MUTATION', asyncSidebarTabIndex)
     }
   },
   plugins: [

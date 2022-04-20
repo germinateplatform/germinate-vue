@@ -7,11 +7,13 @@
           <h2>{{ $t('pageNewsLatestNewsTitle') }}</h2>
           <b-list-group class="news-items">
             <b-list-group-item button class="d-flex flex-row align-items-center" v-for="newsItem in news" :key="'news-' + newsItem.newsId" @click="selectedNews = JSON.parse(JSON.stringify(newsItem))">
-              <div class="pr-3"><i :class="`mdi mdi-36px ${newsTypes[newsItem.newstypeName].icon}`" /></div>
+              <div class="pr-3">
+                <MdiIcon :size="36" :path="newsTypes[newsItem.newstypeName].path" />
+              </div>
               <div class="flex-column align-items-start flex-grow-1">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ newsItem.newsTitle }}</h5>
-                  <small class="text-nowrap" v-if="newsItem.createdOn"><i class="mdi mdi-calendar-clock" /> {{ new Date(newsItem.createdOn).toLocaleDateString() }}</small>
+                  <small class="text-nowrap" v-if="newsItem.createdOn"><MdiIcon :path="mdiCalendarClock" /> {{ new Date(newsItem.createdOn).toLocaleDateString() }}</small>
                 </div>
                 <p class="mb-1" v-if="newsItem.newsContent">{{ getContent(newsItem) }}</p>
                 <small class="text-muted">{{ newsTypes[newsItem.newstypeName].text() }}</small>
@@ -30,8 +32,8 @@
           <b-modal ref="newsModal" :title="selectedNews.newsTitle" scrollable size="xl" v-if="selectedNews" ok-only :ok-title="$t('buttonClose')">
             <div v-html="selectedNews.newsContent" />
             <b-button-group class="mt-3">
-              <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" :href="selectedNews.newsHyperlink" target="_blank" rel="noopener noreferrer">{{ $t('pageNewsReadMore') }} <i class="mdi mdi-18px fix-alignment mdi-open-in-new"/></b-button>
-              <b-button v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="deleteNewsItem(selectedNews.newsId)" variant="danger"><i class="mdi mdi-delete"/> {{ $t('buttonDelete') }}</b-button>
+              <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" :href="selectedNews.newsHyperlink" target="_blank" rel="noopener noreferrer">{{ $t('pageNewsReadMore') }} <MdiIcon :path="mdiOpenInNew" /></b-button>
+              <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="deleteNewsItem(selectedNews.newsId)" variant="danger"><MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}</b-button>
             </b-button-group>
           </b-modal>
         </b-col>
@@ -51,7 +53,9 @@
 
                 <b-button-group>
                   <b-button variant="primary" :href="project.newsHyperlink" rel="noopener noreferrer" v-if="project.newsHyperlink">{{ $t('pageNewsReadMore') }}</b-button>
-                  <b-button v-if="token && userIsAtLeast(token.userType, 'Data Curator')" @click="deleteNewsItem(project.newsId)" variant="danger"><i class="mdi mdi-delete"/> {{ $t('buttonDelete') }}</b-button>
+                  <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="deleteNewsItem(project.newsId)" variant="danger">
+                    <MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}
+                  </b-button>
                 </b-button-group>
               </b-card>
             </b-col>
@@ -59,7 +63,7 @@
         </b-col>
       </b-row>
     </template>
-    <div v-if="token && userIsAtLeast(token.userType, 'Data Curator')">
+    <div v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
       <b-button @click="$refs.addNewsModal.show()">{{ $t('buttonAddNews') }}</b-button>
       <AddNewsModal ref="addNewsModal" v-on:news-added="update()" />
     </div>
@@ -67,8 +71,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import MdiIcon from '@/components/icons/MdiIcon'
+
 import AddNewsModal from '@/components/modals/AddNewsModal'
-import miscApi from '@/mixins/api/misc.js'
+import authApi from '@/mixins/api/auth'
+import miscApi from '@/mixins/api/misc'
+import imageMixin from '@/mixins/image'
+
+import { mdiNewspaperVariantOutline, mdiDatabase, mdiRefresh, mdiNewspaper, mdiDelete, mdiOpenInNew, mdiCalendarClock } from '@mdi/js'
 
 export default {
   props: {
@@ -81,8 +93,16 @@ export default {
       default: 4
     }
   },
+  computed: {
+    ...mapGetters([
+      'storeToken'
+    ])
+  },
   data: function () {
     return {
+      mdiDelete,
+      mdiOpenInNew,
+      mdiCalendarClock,
       projects: null,
       news: null,
       newsTotalCount: 0,
@@ -92,22 +112,22 @@ export default {
         Projects: {
           id: 4,
           text: () => this.$t('widgetNewsTypeRelatedProject'),
-          icon: 'mdi-newspaper-variant-outline'
+          path: mdiNewspaperVariantOutline
         },
         Data: {
           id: 3,
           text: () => this.$t('widgetNewsTypeDataChanges'),
-          icon: 'mdi-database'
+          path: mdiDatabase
         },
         Updates: {
           id: 2,
           text: () => this.$t('widgetNewsTypeGeneralUpdates'),
-          icon: 'mdi-refresh'
+          path: mdiRefresh
         },
         General: {
           id: 1,
           text: () => this.$t('widgetNewsTypeGeneralNews'),
-          icon: 'mdi-newspaper'
+          path: mdiNewspaper
         }
       }
     }
@@ -118,9 +138,10 @@ export default {
     }
   },
   components: {
-    AddNewsModal
+    AddNewsModal,
+    MdiIcon
   },
-  mixins: [miscApi],
+  mixins: [authApi, imageMixin, miscApi],
   methods: {
     deleteNewsItem: function (id) {
       if (id) {
@@ -168,7 +189,7 @@ export default {
     getImageSrc: function (item) {
       return this.getImageUrl(item.newsImage, {
         name: item.newsImage,
-        token: this.token ? this.token.imageToken : null,
+        token: this.storeToken ? this.storeToken.imageToken : null,
         type: 'news',
         size: 'small'
       })
