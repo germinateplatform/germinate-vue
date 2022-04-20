@@ -23,6 +23,7 @@ import { Detector } from '@/plugins/browser-detect.js'
 import utilMixin from '@/mixins/util'
 import miscApiMixin from '@/mixins/api/misc'
 import baseApiMixin from '@/mixins/api/base'
+import statsApiMixin from '@/mixins/api/stats'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -40,7 +41,7 @@ export default {
       'storeAppState'
     ])
   },
-  mixins: [baseApiMixin, miscApiMixin, utilMixin],
+  mixins: [baseApiMixin, miscApiMixin, utilMixin, statsApiMixin],
   methods: {
     isLocalhost: function () {
       return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
@@ -138,7 +139,7 @@ export default {
         const data = {
           application: 'Germinate',
           id: id,
-          version: '4.2.1',
+          version: '4.3.0',
           locale: this.storeLocale,
           os: `${config.os} ${config.osVersion}`
         }
