@@ -518,4 +518,28 @@ export default {
 .v-sidebar-menu .vsm--dropdown>.vsm--list {
     padding-left: 15px;
 }
+
+.v-sidebar-menu .vsm--link.vsm--link_active {
+  box-shadow: 3px 0px 0px 0px #23a1d7 inset;
+}
+
+.v-sidebar-menu.vsm_expanded .vsm--item_open .vsm--link_level-1 {
+  background-color: #23a1d7;
+}
+
+.v-sidebar-menu.vsm_expanded .vsm--item_open .vsm--link_level-1 .vsm--icon {
+  background-color: #23a1d7;
+}
+
+.v-sidebar-menu.vsm_collapsed .vsm--link_level-1.vsm--link_hover .vsm--icon, .v-sidebar-menu.vsm_collapsed .vsm--link_level-1:hover .vsm--icon {
+  background-color: #23a1d7;
+}
+
+.v-sidebar-menu .vsm--mobile-bg {
+  background-color: #23a1d7;
+}
+
+.v-sidebar-menu .vsm--link_hover, .v-sidebar-menu .vsm--link:hover {
+  background-color: #23a1d7;
+}
 </style>
