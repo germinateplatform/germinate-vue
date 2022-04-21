@@ -508,6 +508,10 @@ export default {
 </script>
 
 <style>
+.vsm--mobile-item {
+  max-width: 75vw !important;
+}
+
 .vsm--scroll-wrapper::-webkit-scrollbar {
     display: none; /* Chrome */
 }
@@ -541,5 +545,11 @@ export default {
 
 .v-sidebar-menu .vsm--link_hover, .v-sidebar-menu .vsm--link:hover {
   background-color: #23a1d7;
+}
+
+@media (min-width: 768px) {
+  .vsm--mobile-item {
+    max-width: 400px !important;
+  }
 }
 </style>
