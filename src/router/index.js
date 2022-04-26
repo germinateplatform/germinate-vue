@@ -59,6 +59,11 @@ function requireAuth (to, from, next) {
 
 const routes = [
   {
+    path: '/login',
+    name: 'login',
+    component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
+  },
+  {
     path: '/',
     name: '',
     redirect: '/home',
@@ -493,10 +498,6 @@ const routes = [
         redirect: '/home'
       }
     ]
-  }, {
-    path: '/login',
-    name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
   }
 ]
 
