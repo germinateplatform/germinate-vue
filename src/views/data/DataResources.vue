@@ -30,7 +30,7 @@
                   <!-- Date -->
                   <small v-b-tooltip="new Date(resource.fileresourceCreatedOn).toLocaleDateString()" v-if="resource.fileresourceCreatedOn"><MdiIcon :path="mdiCalendarClock" /> {{ new Date(resource.fileresourceCreatedOn).toLocaleDateString() }}</small>
                   <!-- Button to delete the file resource -->
-                  <b-button variant="danger" class="ml-3" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="onDeleteResource(resource)"><MdiIcon :path="mdiCalendarClock" /></b-button>
+                  <b-button variant="danger" class="ml-3" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="onDeleteResource(resource)"><MdiIcon :path="mdiDelete" /></b-button>
                 </div>
               </div>
               <!-- Description of file resource -->
@@ -62,7 +62,7 @@ import miscApi from '@/mixins/api/misc'
 import formattingMixin from '@/mixins/formatting'
 import utilMixin from '@/mixins/util'
 
-import { mdiPlus, mdiDownload, mdiCalendarClock } from '@mdi/js'
+import { mdiPlus, mdiDownload, mdiCalendarClock, mdiDelete } from '@mdi/js'
 
 export default {
   data: function () {
@@ -70,6 +70,7 @@ export default {
       mdiPlus,
       mdiDownload,
       mdiCalendarClock,
+      mdiDelete,
       fileResourceTypes: null,
       fileResources: {
       }

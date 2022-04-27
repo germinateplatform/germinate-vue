@@ -44,7 +44,7 @@
       </div>
 
       <!-- Registration modal -->
-      <RegistrationModal ref="registrationModal"/>
+      <RegistrationModal ref="registrationModal" v-if="storeServerSettings && storeServerSettings.registrationEnabled"/>
     </div>
   </div>
 </template>
@@ -63,7 +63,8 @@ export default {
   data: function () {
     return {
       response: null,
-      enabled: true
+      enabled: true,
+      prevRoute: null
     }
   },
   components: {
@@ -78,6 +79,13 @@ export default {
     ])
   },
   mixins: [authApi],
+  beforeRouteEnter: function (to, from, next) {
+    next(vm => {
+      if (from) {
+        vm.prevRoute = from
+      }
+    })
+  },
   methods: {
     login: function (user) {
       this.enabled = false
@@ -94,7 +102,14 @@ export default {
         } else {
           // Do this here as well
           this.$store.commit('ON_TOKEN_CHANGED_MUTATION', result)
-          this.$router.push('/')
+
+          if (this.prevRoute) {
+            // If we're coming from a Germinate page before getting to login, redirect back there after successful login
+            this.$router.push(this.prevRoute)
+          } else {
+            // Otherwise, just go to home
+            this.$router.push({ name: 'home' })
+          }
         }
 
         emitter.emit('update-sidebar-menu')
