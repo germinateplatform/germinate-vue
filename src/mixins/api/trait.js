@@ -39,6 +39,9 @@ export default {
     },
     apiGetTraitDistinctValues: function (traitId, onSuccess, onError) {
       return this.authAxios({ url: `trait/${traitId}/values`, success: onSuccess, error: onError })
+    },
+    apiPostTrialLocationCount: function (queryData, onSuccess, onError) {
+      return this.authAxios({ url: 'dataset/data/trial/location/count', method: 'POST', data: queryData, success: onSuccess, error: onError })
     }
   }
 }

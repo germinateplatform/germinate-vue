@@ -21,6 +21,18 @@
     <template v-slot:cell(datasetName)="data">
       <span :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</span>
     </template>
+    <!-- Location latitude -->
+    <template v-slot:cell(latitude)="data">
+      <span v-if="data.item.latitude !== undefined">{{ data.item.latitude.toFixed(2) }}</span>
+    </template>
+    <!-- Location longitude -->
+    <template v-slot:cell(longitude)="data">
+      <span v-if="data.item.longitude !== undefined">{{ data.item.longitude.toFixed(2) }}</span>
+    </template>
+    <!-- Location elevation -->
+    <template v-slot:cell(elevation)="data">
+      <span v-if="data.item.elevation !== undefined">{{ data.item.elevation.toFixed(2) }}</span>
+    </template>
     <!-- Germplasm GID link -->
     <template v-slot:cell(germplasmGid)="data">
       <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
@@ -149,6 +161,30 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'rep')}`,
           sortable: true,
           label: this.$t('tableColumnTraitRep')
+        }, {
+          key: 'block',
+          type: String,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'block')}`,
+          sortable: true,
+          label: this.$t('tableColumnTraitBlock')
+        }, {
+          key: 'latitude',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'latitude')}`,
+          label: this.$t('tableColumnLocationLatitude')
+        }, {
+          key: 'longitude',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'longitude')}`,
+          label: this.$t('tableColumnLocationLongitude')
+        }, {
+          key: 'elevation',
+          type: Number,
+          sortable: true,
+          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'elevation')}`,
+          label: this.$t('tableColumnLocationElevation')
         }, {
           key: 'unitName',
           type: String,

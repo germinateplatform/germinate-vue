@@ -9,8 +9,8 @@
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
       <!-- Banner buttons -->
-      <b-row class="trials-tabs mb-3" v-if="tabs" cols-xl=5>
-        <b-col cols=12 sm=6 xl=2 :offset-xl="index === 0 ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
+      <b-row class="trials-tabs mb-3" v-if="tabs" :cols-xl="tabs.length">
+        <b-col cols=12 sm=6 xl=2 :offset-xl="(tabs.length < 6 && index === 0) ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
             <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
               <b-row>
@@ -90,7 +90,7 @@ import traitApi from '@/mixins/api/trait.js'
 import colorMixin from '@/mixins/colors.js'
 import Vue from 'vue'
 
-import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiTableSearch } from '@mdi/js'
+import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -166,7 +166,13 @@ export default {
         text: () => this.$t('pageDataExportTabDataExport'),
         path: mdiFileDownloadOutline,
         onSelection: () => this.tabSelected('export')
-      }]
+      }],
+      locationTab: {
+        key: 'locations',
+        text: () => this.$t('pageDataExportTabLocations'),
+        path: mdiMapMarkerPath,
+        onSelection: () => this.tabSelected('locations')
+      }
     }
   },
   watch: {
@@ -327,6 +333,14 @@ export default {
     if (this.$route.query && this.$route.query.tab) {
       this.$nextTick(() => this.tabSelected(this.$route.query.tab, false))
     }
+
+    this.apiPostTrialLocationCount({
+      datasetIds: this.datasetIds
+    }, result => {
+      if (result) {
+        this.tabs.push(this.locationTab)
+      }
+    })
   }
 }
 </script>

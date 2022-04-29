@@ -139,6 +139,10 @@ export default {
         value: 'rep',
         disabled: this.getStatsCount('rep') < 2
       }, {
+        text: `${this.$t('widgetChartColoringByBlock')}${this.getStatsText('block')}`,
+        value: 'block',
+        disabled: this.getStatsCount('block') < 2
+      }, {
         text: `${this.$t('widgetChartColoringByTrialSite')}${this.getStatsText('trial_site')}`,
         value: 'trial_site',
         disabled: this.getStatsCount('trial_site') < 2
