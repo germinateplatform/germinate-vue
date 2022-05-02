@@ -18,6 +18,9 @@
                   <MdiIcon :size="48" :path="tab.path" />
                 </b-col>
               </b-row>
+              <span class="help" v-b-tooltip="tab.help()" v-if="tab.help">
+                <MdiIcon :path="mdiHelpCircle" />
+              </span>
             </b-card-body>
             <b-card-footer :style="`color: ${getColor(index)}`">
               <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
@@ -68,7 +71,7 @@ import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 import colorMixin from '@/mixins/colors.js'
 
-import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiEye, mdiGrid, mdiTableSearch } from '@mdi/js'
+import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiHelpCircle, mdiEye, mdiGrid, mdiTableSearch } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -77,6 +80,7 @@ export default {
   data: function () {
     return {
       mdiArrowRightBoldCircle,
+      mdiHelpCircle,
       datasets: null,
       compounds: null,
       groups: null,
@@ -112,22 +116,26 @@ export default {
         key: 'overview',
         text: () => this.$t('pageDataExportTabDataStatistics'),
         path: mdiEye,
-        onSelection: () => this.tabSelected('overview')
+        onSelection: () => this.tabSelected('overview'),
+        help: () => this.$t('pageDataExportTabHelpDataStatistics')
       }, {
         key: 'matrix',
         text: () => this.$t('pageDataExportTabDataMatrix'),
         path: mdiGrid,
-        onSelection: () => this.tabSelected('matrix')
+        onSelection: () => this.tabSelected('matrix'),
+        help: () => this.$t('pageDataExportTabHelpDataMatrix')
       }, {
         key: 'table',
         text: () => this.$t('pageDataExportTabDataTable'),
         path: mdiTableSearch,
-        onSelection: () => this.tabSelected('table')
+        onSelection: () => this.tabSelected('table'),
+        help: () => this.$t('pageDataExportTabHelpDataTable')
       }, {
         key: 'export',
         text: () => this.$t('pageDataExportTabDataExport'),
         path: mdiFileDownloadOutline,
-        onSelection: () => this.tabSelected('export')
+        onSelection: () => this.tabSelected('export'),
+        help: () => this.$t('pageDataExportTabHelpDataExport')
       }]
     }
   },
@@ -288,5 +296,11 @@ export default {
 }
 .compound-tabs .card .card-footer a {
   color: inherit;
+}
+.compound-tabs .card .help {
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  z-index: 2;
 }
 </style>

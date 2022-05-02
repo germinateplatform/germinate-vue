@@ -146,7 +146,11 @@ export default {
   },
   watch: {
     locations: function (newValue) {
-      this.internalLocations = newValue
+      if (newValue) {
+        this.internalLocations = newValue.concat()
+      } else {
+        this.internalLocations = []
+      }
       this.updateMap()
     },
     climates: function () {

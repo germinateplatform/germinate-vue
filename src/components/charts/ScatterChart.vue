@@ -183,7 +183,7 @@ export default {
         const dirtyTsv = reader.result
         const firstEOL = dirtyTsv.indexOf('\r\n')
         const tsv = this.datasetType === 'trials' ? dirtyTsv.substring(firstEOL + 2) : dirtyTsv
-        const data = d3Dsv.tsvParse(tsv)
+        const data = d3Dsv.tsvParse(tsv, d3Dsv.autoType)
 
         d3Select.select(this.$refs.scatterChart)
           .datum(data)

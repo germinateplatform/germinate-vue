@@ -298,30 +298,31 @@ export function plotlyScatterMatrix(Plotly) {
 	}
   
   function extractValue(row, key) {
-    const dataPoint = row[key]
-    if (dataPoint === null || dataPoint === undefined || dataPoint === '') {
-      return null
-    } else {
-      let isDate = false
+    return row[key]
+    // const dataPoint = row[key]
+    // if (dataPoint === null || dataPoint === undefined || dataPoint === '') {
+    //   return null
+    // } else {
+    //   let isDate = false
 
-      if (key === 'Date') {
-        isDate = true
-      } else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
-        isDate = true
-      }
+    //   if (key === 'Date') {
+    //     isDate = true
+    //   } else if (dataPoint.split('-').length === 3 && !isNaN(Date.parse(dataPoint))) {
+    //     isDate = true
+    //   }
 
-      if (isDate) {
-        return dataPoint;
-      } else {
-        var value = parseFloat(dataPoint)
+    //   if (isDate) {
+    //     return dataPoint;
+    //   } else {
+    //     var value = parseFloat(dataPoint)
 
-        if (isNaN(value)) {
-          return dataPoint;
-        } else {
-          return value;
-        }
-      }
-    }
+    //     if (isNaN(value)) {
+    //       return dataPoint;
+    //     } else {
+    //       return value;
+    //     }
+    //   }
+    // }
   }
 
 	function uuidv4() {

@@ -13,18 +13,21 @@
         <!-- Left padding if there are 5 tabs, because 5 doesn't work well with 12 columns -->
         <b-col class="d-none d-xl-block" sm=1 v-if="tabs.length === 5"/>
         <b-col cols=12 sm=6 :xl="tabs.length === 5 ? 2 : 3" v-for="(tab, index) in tabs" :key="'climate-tabs-' + tab.key">
-            <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
-              <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
-                <b-row>
-                  <b-col cols=12 class="text-center">
-                    <MdiIcon :size="48" :path="tab.path" />
-                  </b-col>
-                </b-row>
-              </b-card-body>
-              <b-card-footer :style="`color: ${getColor(index)}`">
-                <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
-              </b-card-footer>
-            </b-card>
+          <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
+            <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
+              <b-row>
+                <b-col cols=12 class="text-center">
+                  <MdiIcon :size="48" :path="tab.path" />
+                </b-col>
+              </b-row>
+              <span class="help" v-b-tooltip="tab.help()" v-if="tab.help">
+                <MdiIcon :path="mdiHelpCircle" />
+              </span>
+            </b-card-body>
+            <b-card-footer :style="`color: ${getColor(index)}`">
+              <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
+            </b-card-footer>
+          </b-card>
         </b-col>
         <!-- Left padding if there are 5 tabs, because 5 doesn't work well with 12 columns -->
         <b-col class="d-none d-xl-block" sm=1 v-if="tabs.length === 5"/>
@@ -76,7 +79,7 @@ import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
 import colorMixin from '@/mixins/colors.js'
 
-import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiEye, mdiGrid, mdiMapPlus, mdiTableSearch } from '@mdi/js'
+import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiEye, mdiHelpCircle, mdiGrid, mdiMapPlus, mdiTableSearch } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -85,6 +88,7 @@ export default {
   data: function () {
     return {
       mdiArrowRightBoldCircle,
+      mdiHelpCircle,
       datasets: null,
       climates: null,
       groups: null,
@@ -120,28 +124,33 @@ export default {
         key: 'overview',
         text: () => this.$t('pageDataExportTabDataStatistics'),
         path: mdiEye,
-        onSelection: () => this.tabSelected('overview')
+        onSelection: () => this.tabSelected('overview'),
+        help: () => this.$t('pageDataExportTabHelpDataStatistics')
       }, {
         key: 'matrix',
         text: () => this.$t('pageDataExportTabDataMatrix'),
         path: mdiGrid,
-        onSelection: () => this.tabSelected('matrix')
+        onSelection: () => this.tabSelected('matrix'),
+        help: () => this.$t('pageDataExportTabHelpDataMatrix')
       }, {
         key: 'table',
         text: () => this.$t('pageDataExportTabDataTable'),
         path: mdiTableSearch,
-        onSelection: () => this.tabSelected('table')
+        onSelection: () => this.tabSelected('table'),
+        help: () => this.$t('pageDataExportTabHelpDataTable')
       }, {
         key: 'export',
         text: () => this.$t('pageDataExportTabDataExport'),
         path: mdiFileDownloadOutline,
-        onSelection: () => this.tabSelected('export')
+        onSelection: () => this.tabSelected('export'),
+        help: () => this.$t('pageDataExportTabHelpDataExport')
       }],
       overlayTab: {
         key: 'overlays',
         text: () => this.$t('pageDataExportTabClimateOverlays'),
         path: mdiMapPlus,
-        onSelection: () => this.tabSelected('overlays')
+        onSelection: () => this.tabSelected('overlays'),
+        help: () => this.$t('pageDataExportTabHelpClimateOverlays')
       }
     }
   },
@@ -313,5 +322,11 @@ export default {
 }
 .climate-tabs .card .card-footer a {
   color: inherit;
+}
+.climate-tabs .card .help {
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  z-index: 2;
 }
 </style>

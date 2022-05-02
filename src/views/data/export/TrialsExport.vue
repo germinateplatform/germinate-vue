@@ -18,6 +18,9 @@
                   <MdiIcon :size="48" :path="tab.path" />
                 </b-col>
               </b-row>
+              <span class="help" v-b-tooltip="tab.help()" v-if="tab.help">
+                <MdiIcon :path="mdiHelpCircle" />
+              </span>
             </b-card-body>
             <b-card-footer :style="`color: ${getColor(index)}`">
               <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
@@ -68,6 +71,8 @@
                                :texts="textsExport"
                                :getItems="getTraits"
                                v-show="currentTab === 'export'" />
+
+      <TrialsLocationMap :datasetIds="datasetIds" ref="locationsMap" v-show="currentTab === 'locations'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
@@ -83,6 +88,7 @@ import TraitExportChartSelection from '@/components/export/TraitExportChartSelec
 import TraitComparisonSelection from '@/components/export/TraitComparisonSelection'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import TrialsLocationMap from '@/components/map/TrialsLocationMap'
 import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import miscApi from '@/mixins/api/misc.js'
@@ -90,7 +96,7 @@ import traitApi from '@/mixins/api/trait.js'
 import colorMixin from '@/mixins/colors.js'
 import Vue from 'vue'
 
-import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
+import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiHelpCircle, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -99,6 +105,7 @@ export default {
   data: function () {
     return {
       mdiArrowRightBoldCircle,
+      mdiHelpCircle,
       datasets: null,
       traits: null,
       groups: null,
@@ -145,39 +152,50 @@ export default {
         key: 'overview',
         text: () => this.$t('pageDataExportTabDataStatistics'),
         path: mdiEye,
-        onSelection: () => this.tabSelected('overview')
+        onSelection: () => this.tabSelected('overview'),
+        help: () => this.$t('pageDataExportTabHelpDataStatistics')
       }, {
         key: 'matrix',
         text: () => this.$t('pageDataExportTabDataMatrix'),
         path: mdiGrid,
-        onSelection: () => this.tabSelected('matrix')
+        onSelection: () => this.tabSelected('matrix'),
+        help: () => this.$t('pageDataExportTabHelpDataMatrix')
       }, {
         key: 'comparison',
         text: () => this.$t('pageDataExportTabComparison'),
         path: mdiDistributeHorizontalCenter,
-        onSelection: () => this.tabSelected('comparison')
+        onSelection: () => this.tabSelected('comparison'),
+        help: () => this.$t('pageDataExportTabHelpComparison')
       }, {
         key: 'table',
         text: () => this.$t('pageDataExportTabDataTable'),
         path: mdiTableSearch,
-        onSelection: () => this.tabSelected('table')
+        onSelection: () => this.tabSelected('table'),
+        help: () => this.$t('pageDataExportTabHelpDataTable')
       }, {
         key: 'export',
         text: () => this.$t('pageDataExportTabDataExport'),
         path: mdiFileDownloadOutline,
-        onSelection: () => this.tabSelected('export')
+        onSelection: () => this.tabSelected('export'),
+        help: () => this.$t('pageDataExportTabHelpDataExport')
       }],
       locationTab: {
         key: 'locations',
         text: () => this.$t('pageDataExportTabLocations'),
         path: mdiMapMarkerPath,
-        onSelection: () => this.tabSelected('locations')
+        onSelection: () => this.tabSelected('locations'),
+        help: () => this.$t('pageDataExportTabHelpLocations')
       }
     }
   },
   watch: {
     storeMarkedGermplasm: function () {
       this.updateGroups()
+    },
+    currentTab: function (newValue) {
+      if (newValue === 'locations') {
+        this.$nextTick(() => this.$refs.locationsMap.invalidateSize())
+      }
     }
   },
   computed: {
@@ -195,7 +213,8 @@ export default {
     ExportDownloadSelection,
     TraitComparisonSelection,
     TraitExportChartSelection,
-    TrialsDataTable
+    TrialsDataTable,
+    TrialsLocationMap
   },
   mixins: [datasetApi, groupApi, miscApi, traitApi, colorMixin],
   methods: {
@@ -358,5 +377,11 @@ export default {
 }
 .trials-tabs .card .card-footer a {
   color: inherit;
+}
+.trials-tabs .card .help {
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  z-index: 2;
 }
 </style>
