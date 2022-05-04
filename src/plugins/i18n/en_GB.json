@@ -876,6 +876,8 @@
   "tableColumnCollaboratorFirstName": "First name",
   "tableColumnCollaboratorId": "Id",
   "tableColumnCollaboratorLastName": "Last name",
+  "tableColumnCollaboratorExternalId": "External ID",
+  "tableColumnCollaboratorRoles": "Roles",
   "tableColumnColldate": "Collection Date",
   "tableColumnCollectorNumber": "Collector Number",
   "tableColumnCommentContent": "Comment",

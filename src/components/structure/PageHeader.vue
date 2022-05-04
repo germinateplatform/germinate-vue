@@ -10,16 +10,16 @@
         <h5 v-for="itemType in Object.keys(markedItemTypes)"
             :key="`item-type-${itemType}`"
             class="d-flex align-items-stretch mx-1 marked-item-badges">
-          <router-link :to="{ name: 'marked-items-type', params: { itemType: itemType } }" class="d-flex align-items-stretch">
+          <router-link :to="{ name: 'marked-items-type', params: { itemType: itemType } }" class="d-flex align-items-stretch" v-b-tooltip="`${markedItemTypes[itemType].text()}: ${storeMarkedIds[itemType].length.toLocaleString()}`">
             <b-badge :style="{ backgroundColor: markedItemTypes[itemType].color(), color: getHighContrastTextColor(markedItemTypes[itemType].color()) }">
               <MdiIcon :path="markedItemTypes[itemType].path" />
             </b-badge>
-            <b-badge v-b-tooltip="`${markedItemTypes[itemType].text()}: ${storeMarkedIds[itemType].length.toLocaleString()}`">{{ getNumberWithSuffix(storeMarkedIds[itemType].length, 1) }}</b-badge>
+            <b-badge>{{ getNumberWithSuffix(storeMarkedIds[itemType].length, 1) }}</b-badge>
           </router-link>
           <b-badge :href="storeMarkedIds[itemType].length < 1 ? null : '#'"
-                    :disabled="storeMarkedIds[itemType].length < 1"
-                    @click.prevent="storeMarkedIds[itemType].length < 1 ? null : clearMarkedItems(itemType)"
-                    v-b-tooltip="$t('chartTooltipMarkedItemsClear')">
+                   :disabled="storeMarkedIds[itemType].length < 1"
+                   @click.prevent="storeMarkedIds[itemType].length < 1 ? null : clearMarkedItems(itemType)"
+                   v-b-tooltip="$t('chartTooltipMarkedItemsClear')">
             <span :class="{ 'text-danger': storeMarkedIds[itemType].length >= 1 }"><MdiIcon :path="mdiDelete" /></span>
           </b-badge>
         </h5>

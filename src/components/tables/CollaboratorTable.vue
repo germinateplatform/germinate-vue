@@ -13,6 +13,14 @@
       <template v-slot:cell(countryName)="data">
         <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'fi fi-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
       </template>
+      <!-- External ID link if URL or ORCID -->
+      <template v-slot:cell(collaboratorExternalId)="data">
+        <template v-if="data.item.collaboratorExternalId">
+          <a rel="noopener noreferrer" :href="`https://orcid.org/${data.item.collaboratorExternalId}`" v-if="isOrcid(data.item.collaboratorExternalId)">{{ `https://orcid.org/${data.item.collaboratorExternalId}` }}</a>
+          <a rel="noopener noreferrer" :href="data.item.collaboratorExternalId" v-else-if="data.item.collaboratorExternalId.startsWith('https')">{{ data.item.collaboratorExternalId }}</a>
+          <span v-else>{{ data.item.collaboratorExternalId }}</span>
+        </template>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -63,6 +71,18 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorEmail')}`,
           label: this.$t('tableColumnCollaboratorEmail')
         }, {
+          key: 'collaboratorExternalId',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorExternalId')}`,
+          label: this.$t('tableColumnCollaboratorExternalId')
+        }, {
+          key: 'collaboratorRoles',
+          type: String,
+          sortable: true,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorRoles')}`,
+          label: this.$t('tableColumnCollaboratorRoles')
+        }, {
           key: 'institutionName',
           type: String,
           sortable: true,
@@ -89,6 +109,9 @@ export default {
   },
   mixins: [utilMixin],
   methods: {
+    isOrcid: function (input) {
+      return input && input.length > 0 && /^(\d{4}-){3}\d{3}(\d|X)$/.test(input)
+    },
     refresh: function () {
       this.$refs.collaboratorTable.refresh()
     }
