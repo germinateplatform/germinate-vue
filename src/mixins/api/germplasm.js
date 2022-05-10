@@ -116,6 +116,9 @@ export default {
     apiPostGermplasmUnification: function (queryData, onSuccess, onError) {
       return this.authAxios({ url: 'germplasm/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
     },
+    apiPostGermplasmUnificationSgone: function (queryData, onSuccess, onError) {
+      return this.authAxios({ url: 'germplasm/unify/sgone', data: queryData, method: 'POST', success: onSuccess, error: onError })
+    },
     apiPatchGermplasmLocation: function (germplasmId, location, onSuccess, onError) {
       return this.authAxios({ url: `germplasm/${germplasmId}/location`, data: location, method: 'PATCH', success: onSuccess, error: onError })
     },

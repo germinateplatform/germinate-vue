@@ -22,6 +22,20 @@
 
       <b-button class="my-3" @click="mergeGermplasm"> <MdiIcon :path="mdiSetMerge"/> {{ $t('buttonMerge') }}</b-button>
     </div>
+
+    <b-card :title="$t('pageGermplasmUnifierSgoneImportTitle')" :sub-title="$t('pageGermplasmUnifierSgoneImportText')">
+      <b-form @submit.prevent="onSubmit" class="sgone-form">
+        <b-form-group :label="$t('formLabelGermplasmUnifierSgoneInput')" label-for="sgone-input">
+          <template #description>
+            <span v-html="$t('pageGermplasmUnifierSgoneLink')" />
+          </template>
+          <b-form-textarea id="sgone-input" v-model="sgoneInput" />
+          <b-form-file accept="application/json" v-model="sgoneFile" />
+        </b-form-group>
+      </b-form>
+
+      <b-button class="my-3" :disabled="!sgoneInput" @click="mergeGermplasmSgone"> <MdiIcon :path="mdiSetMerge"/> {{ $t('buttonMerge') }}</b-button>
+    </b-card>
   </div>
 </template>
 
@@ -47,11 +61,32 @@ export default {
       selectedIds: [],
       primaryGermplasm: null,
       selectedGermplasm: null,
-      comment: null
+      comment: null,
+      sgoneFile: null,
+      sgoneInput: null
     }
   },
   mixins: [germplasmApi],
+  watch: {
+    sgoneFile: function (newValue) {
+      const reader = new FileReader()
+      reader.onload = event => {
+        this.sgoneInput = event.target.result
+      }
+      reader.readAsText(newValue)
+    }
+  },
   methods: {
+    mergeGermplasmSgone: function () {
+      emitter.emit('show-loading', true)
+      this.apiPostGermplasmUnificationSgone({
+        unifications: JSON.parse(this.sgoneInput)
+      }, () => {
+        this.$refs.germplasmTable.refresh()
+        this.reset()
+        emitter.emit('show-loading', false)
+      })
+    },
     mergeGermplasm: function () {
       emitter.emit('show-loading', true)
       const others = this.selectedIds.filter(id => id !== this.primaryGermplasm)
@@ -105,6 +140,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.sgone-form textarea {
+  border-bottom: 0;
+}
 </style>
