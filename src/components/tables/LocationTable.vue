@@ -2,6 +2,7 @@
   <BaseTable v-bind="$props"
               :columns="columns"
               :options="options"
+              primary-key="locationId"
               itemType="locations"
               ref="locationTable"
               v-on="$listeners">

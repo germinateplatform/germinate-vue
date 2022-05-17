@@ -84,7 +84,7 @@ export default {
     patchGroup: function (ids, isAdd) {
       const request = {
         datasetId: this.dataset.datasetId,
-        isAddOperation: isAdd,
+        addOperation: isAdd,
         groupIds: ids
       }
       this.apiPatchDatasetUserGroups(request, () => {

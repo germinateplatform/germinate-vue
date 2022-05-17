@@ -19,10 +19,10 @@ import GenotypeExportSelection from '@/components/export/GenotypeExportSelection
 import datasetApi from '@/mixins/api/dataset.js'
 
 export default {
-  props: ['datasetIds'],
   data: function () {
     return {
-      datasets: null
+      datasets: null,
+      datasetIds: []
     }
   },
   components: {
@@ -55,6 +55,11 @@ export default {
       }])
       this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'genotype' } }))
     }
+  },
+  created: function () {
+    const dsIds = this.$route.params.datasetIds || ''
+
+    this.datasetIds = dsIds === '' ? [] : dsIds.split(',').map(Number)
   },
   mounted: function () {
     // Set up the dataset request based on the provided ids

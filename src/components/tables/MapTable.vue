@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               primary-key="mapId"
                v-bind="$props"
                v-on="$listeners">
       <!-- Map id link -->

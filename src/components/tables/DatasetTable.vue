@@ -3,6 +3,7 @@
     <BaseTable v-bind="$props"
               :columns="columns"
               :options="options"
+              primary-key="datasetId"
               class="dataset-table"
               ref="datasetTable"
               v-on="$listeners">
@@ -72,7 +73,7 @@
       </template>
       <!-- Dataset type icon -->
       <template v-slot:cell(datasetType)="data">
-        <b-badge :style="`color: ${getHighContrastTextColor(datasetTypes[data.item.datasetType].color())}; background-color: ${datasetTypes[data.item.datasetType].color()};`"><MdiIcon :path="datasetTypes[data.item.datasetType].path" /> {{ datasetTypes[data.item.datasetType].text() }}</b-badge>
+        <b-badge class="w-100" :style="`color: ${getHighContrastTextColor(datasetTypes[data.item.datasetType].color())}; background-color: ${datasetTypes[data.item.datasetType].color()};`"><MdiIcon :path="datasetTypes[data.item.datasetType].path" /> {{ datasetTypes[data.item.datasetType].text() }}</b-badge>
       </template>
       <!-- Data point count -->
       <template v-slot:cell(dataPointCount)="data">

@@ -248,66 +248,31 @@ const routes = [
             path: 'export/genotype/:datasetIds',
             name: 'export-genotypes',
             component: () => import(/* webpackChunkName: "genotype-export" */ '@/views/data/export/GenotypeExport.vue'),
-            beforeEnter: requireAuth,
-            props (route) {
-              const datasetIds = route.params.datasetIds || ''
-
-              return {
-                datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
-              }
-            }
+            beforeEnter: requireAuth
           },
           {
             path: 'export/compounds/:datasetIds',
             name: 'export-compounds',
             component: () => import(/* webpackChunkName: "compound-export" */'@/views/data/export/CompoundExport.vue'),
-            beforeEnter: requireAuth,
-            props (route) {
-              const datasetIds = route.params.datasetIds || ''
-
-              return {
-                datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
-              }
-            }
+            beforeEnter: requireAuth
           },
           {
             path: 'export/climate/:datasetIds',
             name: 'export-climate',
             component: () => import(/* webpackChunkName: "climate-export" */'@/views/data/export/ClimateExport.vue'),
-            beforeEnter: requireAuth,
-            props (route) {
-              const datasetIds = route.params.datasetIds || ''
-
-              return {
-                datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
-              }
-            }
+            beforeEnter: requireAuth
           },
           {
             path: 'export/trials/:datasetIds',
             name: 'export-trials',
             component: () => import(/* webpackChunkName: "trials-export" */'@/views/data/export/TrialsExport.vue'),
-            beforeEnter: requireAuth,
-            props (route) {
-              const datasetIds = route.params.datasetIds || ''
-
-              return {
-                datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
-              }
-            }
+            beforeEnter: requireAuth
           },
           {
             path: 'export/allelefreq/:datasetIds',
             name: 'export-allelefrequency',
             component: () => import(/* webpackChunkName: "allelefreq-export" */ '@/views/data/export/AlleleFrequencyExport.vue'),
-            beforeEnter: requireAuth,
-            props (route) {
-              const datasetIds = route.params.datasetIds || ''
-
-              return {
-                datasetIds: datasetIds === '' ? [] : datasetIds.split(',').map(Number)
-              }
-            }
+            beforeEnter: requireAuth
           },
           {
             path: 'geography',

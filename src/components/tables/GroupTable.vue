@@ -3,6 +3,7 @@
     <BaseTable :options="options"
                :columns="columns"
                :filterOn="filterOn"
+               primary-key="groupId"
                ref="table"
                v-bind="$props"
                v-on="$listeners">

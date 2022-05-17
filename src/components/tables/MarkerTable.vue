@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               primary-key="markerId"
                v-bind="$props"
                itemType="markers"
                ref="markerTable"

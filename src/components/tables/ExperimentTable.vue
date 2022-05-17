@@ -3,6 +3,7 @@
     <BaseTable v-bind="$props"
               :columns="columns"
               :options="options"
+              primary-key="experimentId"
               class="experiment-table"
               ref="experimentTable"
               v-on="$listeners">

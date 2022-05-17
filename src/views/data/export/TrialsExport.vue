@@ -101,11 +101,11 @@ import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiHelp
 const emitter = require('tiny-emitter/instance')
 
 export default {
-  props: ['datasetIds'],
   data: function () {
     return {
       mdiArrowRightBoldCircle,
       mdiHelpCircle,
+      datasetIds: [],
       datasets: null,
       traits: null,
       groups: null,
@@ -338,6 +338,11 @@ export default {
         }
       })
     }
+  },
+  created: function () {
+    const dsIds = this.$route.params.datasetIds || ''
+
+    this.datasetIds = dsIds === '' ? [] : dsIds.split(',').map(Number)
   },
   mounted: function () {
     emitter.emit('show-loading', true)

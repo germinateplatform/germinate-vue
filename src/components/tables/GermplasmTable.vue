@@ -3,6 +3,7 @@
     <BaseTable v-bind="$props"
                 :columns="columns"
                 :options="options"
+                primary-key="germplasmId"
                 itemType="germplasm"
                 class="germplasm-table"
                 ref="germplasmTable"

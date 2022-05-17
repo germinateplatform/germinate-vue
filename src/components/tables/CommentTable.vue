@@ -4,6 +4,7 @@
                :columns="columns"
                :filterOn="getFilter()"
                :tableActions="tableActions"
+               primary-key="commentId"
                v-bind="$props"
                ref="commentTable"
                v-on="$listeners">

@@ -4,6 +4,7 @@
                :columns="columns"
                :showAllItems="true"
                :filterEnabled="false"
+               primary-key="datasetId"
                v-bind="$props"
                ref="datasetTable"
                v-on="$listeners"

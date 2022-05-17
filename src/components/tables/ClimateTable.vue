@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               primary-key="climateId"
                v-bind="$props"
                ref="climateTable"
                v-on="$listeners">

@@ -513,7 +513,7 @@ export default {
       this.apiPutGroup(group, result => {
         const data = {
           ids: this.storeMarkedIds[this.itemType],
-          isAddition: true
+          addition: true
         }
         const groupId = result
         const groupTypeLocal = Object.keys(this.groupTypes).filter(i => this.groupTypes[i].itemType === this.itemType)[0]

@@ -52,7 +52,7 @@ export default {
     patchUserPermission: function (ids, isAdd) {
       const request = {
         datasetId: this.dataset.datasetId,
-        isAddOperation: isAdd,
+        addOperation: isAdd,
         userIds: ids
       }
       this.apiPatchDatasetUserMembers(request, () => {

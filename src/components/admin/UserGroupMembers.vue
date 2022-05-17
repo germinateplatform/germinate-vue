@@ -46,7 +46,7 @@ export default {
     patchGroup: function (ids, isAdd) {
       const request = {
         userGroupId: this.group.userGroupId,
-        isAddOperation: isAdd,
+        addOperation: isAdd,
         userIds: ids
       }
       this.apiPatchUserGroupMembers(request, () => {

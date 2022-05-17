@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               primary-key="traitId"
                v-bind="$props"
                ref="traitTable"
                v-on="$listeners">

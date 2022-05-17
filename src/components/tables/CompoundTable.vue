@@ -2,6 +2,7 @@
   <div>
     <BaseTable :options="options"
                :columns="columns"
+               primary-key="compoundId"
                v-bind="$props"
                ref="compoundTable"
                v-on="$listeners">

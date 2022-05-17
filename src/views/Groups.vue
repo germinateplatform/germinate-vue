@@ -158,7 +158,7 @@ export default {
             const type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: selectedIds,
-              isAddition: false
+              addition: false
             }
             emitter.emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
@@ -186,7 +186,7 @@ export default {
             const type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType],
-              isAddition: true
+              addition: true
             }
             emitter.emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
@@ -206,7 +206,7 @@ export default {
             const type = this.groupTypes[this.group.groupType].apiName
             const data = {
               ids: this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType],
-              isAddition: false
+              addition: false
             }
             emitter.emit('show-loading', true)
             this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
@@ -298,7 +298,7 @@ export default {
         const callback = result => {
           const data = {
             ids: result.data,
-            isAddition: true
+            addition: true
           }
           // Add the ids to the group
           this.apiPatchGroupMembers(this.group.groupId, type.apiName, data, () => {
