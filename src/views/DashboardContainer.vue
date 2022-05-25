@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-navbar :type="storeDarkMode ? 'dark' : 'light'" :variant="storeDarkMode ? 'dark' : 'light'" id="app-header" fixed="top" class="border-primary border-bottom">
-      <b-navbar-brand to="{ name: 'home' }">
+      <b-navbar-brand :to="{ name: 'home' }">
         <b-img-lazy class="navbar-brand-full" src="img/germinate-square.svg" width="45" height="45" alt="Germinate logo" />
         <b-img-lazy class="navbar-brand-full navbar-brand-text ml-2" src="img/germinate-text.svg" height="22" alt="Germinate logo" />
       </b-navbar-brand>

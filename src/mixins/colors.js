@@ -1,5 +1,7 @@
 import { mapGetters } from 'vuex'
 
+const FACTOR = 0.75
+
 export default {
   computed: {
     ...mapGetters([
@@ -90,6 +92,9 @@ export default {
     rgbToHex: function (r, g, b) {
       return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
     },
+    rgbColorToHex: function (c) {
+      return this.rgbToHex(c.r, c.g, c.b)
+    },
     /**
      * Determines the best text color (either white or black) given the background color
      * @param {String} backgroundColor The background color in HEX
@@ -104,6 +109,35 @@ export default {
         return (o > 125) ? 'black' : 'white'
       } else {
         return 'black'
+      }
+    },
+    brighten: function (c) {
+      let r = c.r
+      let g = c.g
+      let b = c.b
+      const i = Math.round(1.0 / 1.0 - FACTOR)
+      if (r === 0 && g === 0 && b === 0) {
+        return {
+          r: i,
+          g: i,
+          b: i
+        }
+      }
+
+      if (r > 0 && r < i) {
+        r = i
+      }
+      if (g > 0 && g < i) {
+        g = i
+      }
+      if (b > 0 && b < i) {
+        b = i
+      }
+
+      return {
+        r: Math.min(255, Math.round(r / FACTOR)),
+        g: Math.min(255, Math.round(g / FACTOR)),
+        b: Math.min(255, Math.round(b / FACTOR))
       }
     }
   }

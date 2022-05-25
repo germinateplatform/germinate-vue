@@ -373,6 +373,7 @@
   "modalTextGenotypeExport": "Please select any additional data formats you would like to receive this data in.",
   "modalTextImageUpload": "Select images to upload below. They will be associated with the current database item.",
   "modalTextEditTags": "Start typing a tag name and either select an existing tag or create a new one. Tags can also be removed.",
+  "modalTextTableFilter": "Select the column you want to filter in the first dropdown box and then the comparison operation in the second. Use the input fields to specify what you are searching for.",
   "modalTitleSelectLocation": "Select location",
   "modalTextSelectLocation": "Select a location from the table by using the checkbox in the first column.",
   "modalTitleSelectGermplasmLocation": "Change germplasm location",

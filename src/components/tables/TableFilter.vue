@@ -53,6 +53,7 @@
                size="lg"
                @ok="setFilter(false, true)"
                @show="init">
+        <p>{{ $t('modalTextTableFilter') }}</p>
         <b-form v-on:submit.prevent="setFilter(true, true)">
           <!-- Each row -->
           <div v-for="(f, index) in tempFilter" :key="'filter-' + f.column.name + '-' + index">

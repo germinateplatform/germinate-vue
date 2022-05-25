@@ -24,7 +24,7 @@
     </div>
     <!-- Banner buttons -->
     <b-row class="about-banners" v-if="banners">
-      <b-col cols=12 sm=6 xl=3 v-for="banner in banners" :key="'about-banners-' + banner.key">
+      <b-col cols=12 sm=6 xl=3 v-for="banner in banners" :key="'about-banners-' + banner.key" class="my-3">
         <a target="_blank" rel="noopener noreferrer" :href="banner.link">
           <b-card no-body :class="banner.key">
             <b-card-body>
@@ -323,25 +323,25 @@ export default {
   border: 1px solid #ff9e15;
 }
 .about-banners .homepage .card-body {
-  background-color: #ff9e15;
+  background: linear-gradient(330deg, rgb(255, 226, 30) 0%, rgb(255, 158, 21) 50%);
 }
 .about-banners .github {
   border: 1px solid #799900;
 }
 .about-banners .github .card-body {
-  background-color: #799900;
+  background: linear-gradient(330deg, rgb(173, 219, 0) 0%, rgb(121, 153, 0) 50%);
 }
 .about-banners .publication {
   border: 1px solid #00748c;
 }
 .about-banners .publication .card-body {
-  background-color: #00748c;
+  background: linear-gradient(330deg, rgb(0, 166, 200) 0%, rgb(0, 116, 140) 50%);
 }
 .about-banners .documentation {
   border: 1px solid #853175;
 }
 .about-banners .documentation .card-body {
-  background-color: #853175;
+  background: linear-gradient(330deg, rgb(190, 70, 167) 0%, rgb(133, 49, 117) 50%);
 }
 .about-logo {
   display: inline-block;

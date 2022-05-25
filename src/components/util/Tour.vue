@@ -68,10 +68,12 @@ export default {
       document.body.classList.remove('overflow-hidden')
     },
     popoverShow: function (newValue) {
-      if (newValue === true) {
+      if (newValue) {
         document.body.classList.add('overflow-hidden')
+        document.addEventListener('keyup', this.handleKeys)
       } else {
         document.body.classList.remove('overflow-hidden')
+        document.removeEventListener('keyup', this.handleKeys)
       }
     }
   },
@@ -129,12 +131,6 @@ export default {
         }
       }
     }
-  },
-  mounted: function () {
-    document.addEventListener('keyup', this.handleKeys)
-  },
-  destroyed: function () {
-    document.removeEventListener('keyup', this.handleKeys)
   }
 }
 </script>

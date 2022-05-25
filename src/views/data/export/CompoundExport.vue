@@ -12,7 +12,7 @@
       <b-row class="compound-tabs mb-3" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'compound-tabs-' + tab.key">
           <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
-            <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
+            <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getColor(index)} 50%); color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
                   <MdiIcon :size="48" :path="tab.path" />
@@ -206,6 +206,10 @@ export default {
         const colors = this.storeServerSettings.colorsTemplate
         return colors[index % colors.length]
       }
+    },
+    getBrighterColor: function (index) {
+      console.log(this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index)))))
+      return this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index))))
     },
     redirectBack: function () {
       this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', [{

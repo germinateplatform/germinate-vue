@@ -4,13 +4,13 @@
       <!-- Banner buttons -->
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.value" class="mb-3">
         <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
-          <b-card-body :style="`background-color: ${getColor(index)}; color: white;`">
+          <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getColor(index)} 50%); color: white;`">
             <b-row>
               <b-col cols=6 class="align-self-center">
                 <h2 class="mb-0">{{ getNumberWithSuffix(stats[category.value], 1) }}</h2>
                 <span>{{ category.textI18n() }}</span>
               </b-col>
-              <b-col cols=6 class="d-flex align-items-center justify-content-end">
+              <b-col cols=6 class="d-flex align-items-center justify-content-end dashboard-icon">
                 <MdiIcon :size="48" :path="category.path" />
               </b-col>
             </b-row>
@@ -57,6 +57,7 @@ import PublicationsWidget from '@/components/util/PublicationsWidget'
 import statsApiMixin from '@/mixins/api/stats'
 import formattingMixing from '@/mixins/formatting'
 import typesMixin from '@/mixins/types'
+import colorMixin from '@/mixins/colors'
 import authApi from '@/mixins/api/auth'
 
 import { mdiPresentationPlay } from '@mdi/js'
@@ -90,7 +91,7 @@ export default {
       }
     }
   },
-  mixins: [formattingMixing, statsApiMixin, typesMixin, authApi],
+  mixins: [formattingMixing, colorMixin, statsApiMixin, typesMixin, authApi],
   methods: {
     startIntroduction: function () {
       emitter.emit('show-introduction')
@@ -103,6 +104,10 @@ export default {
         return colors[index % colors.length]
       }
     },
+    getBrighterColor: function (index) {
+      console.log(this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index)))))
+      return this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index))))
+    },
     isDisabled: function (routerPage) {
       return this.storeServerSettings && this.storeServerSettings.hiddenPages.indexOf(routerPage) !== -1
     }
@@ -114,3 +119,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.dashboard-icon {
+  color: #999;
+  mix-blend-mode: color-burn;
+}
+</style>
