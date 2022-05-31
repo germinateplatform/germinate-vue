@@ -13,10 +13,10 @@
               <div class="flex-column align-items-start flex-grow-1">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ newsItem.newsTitle }}</h5>
-                  <small class="text-nowrap" v-if="newsItem.createdOn"><MdiIcon :path="mdiCalendarClock" /> {{ new Date(newsItem.createdOn).toLocaleDateString() }}</small>
+                  <span class="text-nowrap" v-if="newsItem.createdOn"><MdiIcon :path="mdiCalendarClock" /> {{ new Date(newsItem.createdOn).toLocaleDateString() }}</span>
                 </div>
                 <p class="mb-1" v-if="newsItem.newsContent">{{ getContent(newsItem) }}</p>
-                <small class="text-muted">{{ newsTypes[newsItem.newstypeName].text() }}</small>
+                <b-badge>{{ newsTypes[newsItem.newstypeName].text() }}</b-badge>
               </div>
             </b-list-group-item>
           </b-list-group>
