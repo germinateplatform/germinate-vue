@@ -55,7 +55,7 @@
       <p><router-link :to="{ name: 'cookies' }">{{ $t('widgetGdprNotificationReadMore') }}</router-link></p>
       <div class="d-flex flex-row">
         <b-button variant="success" class="flex-fill mr-2" @click="acceptCookies(true)">{{ $t('widgetGdprNotificationButtonAccept') }}</b-button>
-        <b-button variant="outline-secondary" class="flex-fill text-muted" v-b-tooltip:hover :title="$t('tooltipGdprNotificationButtonReject')" @click="acceptCookies(false)">{{ $t('widgetGdprNotificationButtonDecline') }}</b-button>
+        <b-button variant="secondary" class="flex-fill" v-b-tooltip:hover :title="$t('tooltipGdprNotificationButtonReject')" @click="acceptCookies(false)">{{ $t('widgetGdprNotificationButtonDecline') }}</b-button>
       </div>
     </b-popover>
 
