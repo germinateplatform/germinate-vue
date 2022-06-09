@@ -258,27 +258,35 @@ export default {
           // Do nothing here, it just means there is no data.
         }
       })
+    },
+    init: function () {
+      this.apiPostGermplasmDatasetTable(this.germplasm.id, {
+        filter: [{
+          column: 'datasetType',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['pedigree']
+        }]
+      }, result => {
+        if (result && result.data) {
+          this.datasets = result.data
+
+          if (result.data.length > 0) {
+            this.dataset = result.data.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn))[0]
+          } else {
+            this.dataset = null
+          }
+        }
+      })
     }
   },
   mounted: function () {
-    this.apiPostGermplasmDatasetTable(this.germplasm.id, {
-      filter: [{
-        column: 'datasetType',
-        comparator: 'equals',
-        operator: 'and',
-        values: ['pedigree']
-      }]
-    }, result => {
-      if (result && result.data) {
-        this.datasets = result.data
+    this.init()
 
-        if (result.data.length > 0) {
-          this.dataset = result.data.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn))[0]
-        } else {
-          this.dataset = null
-        }
-      }
-    })
+    emitter.on('license-accepted', this.init)
+  },
+  beforeDestroy: function () {
+    emitter.off('license-accepted', this.init)
   }
 }
 </script>

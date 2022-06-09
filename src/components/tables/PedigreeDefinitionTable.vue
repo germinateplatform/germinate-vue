@@ -20,6 +20,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import utilMixin from '@/mixins/util'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'PedigreeDefinitionTable',
@@ -140,6 +141,12 @@ export default {
     refresh: function () {
       this.$refs.pedigreeDefinitionTable.refresh()
     }
+  },
+  mounted: function () {
+    emitter.on('license-accepted', this.refresh)
+  },
+  beforeDestroy: function () {
+    emitter.off('license-accepted', this.refresh)
   }
 }
 </script>

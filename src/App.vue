@@ -139,7 +139,7 @@ export default {
         const data = {
           application: 'Germinate',
           id: id,
-          version: '4.3.0',
+          version: this.germinateVersion,
           locale: this.storeLocale,
           os: `${config.os} ${config.osVersion}`
         }

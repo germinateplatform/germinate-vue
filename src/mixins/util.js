@@ -1,6 +1,11 @@
 import { mapGetters } from 'vuex'
 
 export default {
+  data: function () {
+    return {
+      germinateVersion: '4.3.0'
+    }
+  },
   computed: {
     ...mapGetters([
       'storeHiddenColumns',

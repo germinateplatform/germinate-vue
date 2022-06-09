@@ -42,6 +42,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import utilMixin from '@/mixins/util'
+const emitter = require('tiny-emitter/instance')
 
 import { mdiHelpCircle } from '@mdi/js'
 
@@ -151,6 +152,12 @@ export default {
     refresh: function () {
       this.$refs.pedigreeTable.refresh()
     }
+  },
+  mounted: function () {
+    emitter.on('license-accepted', this.refresh)
+  },
+  beforeDestroy: function () {
+    emitter.off('license-accepted', this.refresh)
   }
 }
 </script>

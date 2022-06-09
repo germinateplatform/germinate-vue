@@ -39,12 +39,28 @@
     <div id="dashboard-app">
       <SidebarComponent :collapsed="collapsed" :width="sidebarWidth" @toggle-collapse="onToggleCollapse" />
 
-      <div id="content" :style="{ paddingLeft: sidebarWidth }" :class="{ 'mx-3': true, 'pb-3': true, 'pt-2': true, 'collapsed': collapsed, 'onmobile': isOnMobile }" >
-        <b-container fluid>
+      <div id="content" :style="{ paddingLeft: sidebarWidth }" :class="{ 'mx-3': true, 'pt-2': true, 'collapsed': collapsed, 'onmobile': isOnMobile }" >
+        <b-container fluid class="min-vh-100">
           <PageHeader />
 
-          <router-view :key="$route.path" />
+          <router-view :key="$route.path" class="pb-3" />
         </b-container>
+
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-4 border-top">
+          <div class="col-md-4 d-flex align-items-center justify-content-center justify-content-md-start">
+            <span class="text-muted">&copy; {{ new Date().getFullYear() }} The James Hutton Institute</span>
+          </div>
+
+          <div class="col-md-4 d-flex align-items-center justify-content-center">
+            <span class="text-muted">Version {{ germinateVersion }}</span>
+          </div>
+
+          <ul class="nav col-md-4 justify-content-center justify-content-md-end list-unstyled d-flex">
+            <li class="ml-3"><a class="text-muted" href="https://ics.hutton.ac.uk/get-germinate"><MdiIcon :size="24" :path="mdiWeb" /></a></li>
+            <li class="ml-3"><a class="text-muted" href="https://twitter.com/GerminateHub"><MdiIcon :size="24" :path="mdiTwitter" /></a></li>
+            <li class="ml-3"><a class="text-muted" href="https://github.com/germinateplatform"><MdiIcon :size="24" :path="mdiGithub" /></a></li>
+          </ul>
+        </footer>
       </div>
     </div>
 
@@ -87,10 +103,11 @@ import LocaleDropdown from '@/components/dropdowns/LocaleDropdown'
 import UserSettingsDropdown from '@/components/dropdowns/UserSettingsDropdown'
 import SidebarAsyncJobs from '@/components/structure/SidebarAsyncJobs'
 import Tour from '@/components/util/Tour'
+import utilMixin from '@/mixins/util'
 import miscApiMixin from '@/mixins/api/misc'
 import statsApiMixin from '@/mixins/api/stats'
 
-import { mdiMagnify, mdiHelpCircleOutline, mdiMenu, mdiThemeLightDark } from '@mdi/js'
+import { mdiMagnify, mdiHelpCircleOutline, mdiMenu, mdiThemeLightDark, mdiTwitter, mdiGithub, mdiWeb } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -122,6 +139,9 @@ export default {
       mdiHelpCircleOutline,
       mdiMagnify,
       mdiMenu,
+      mdiTwitter,
+      mdiWeb,
+      mdiGithub,
       mdiThemeLightDark,
       collapsed: false,
       isOnMobile: false,
@@ -166,7 +186,7 @@ export default {
       this.loadAndSetDarkMode()
     }
   },
-  mixins: [miscApiMixin, statsApiMixin],
+  mixins: [utilMixin, miscApiMixin, statsApiMixin],
   methods: {
     showHelp: function () {
       this.$refs.helpModal.show()
