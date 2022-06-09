@@ -42,9 +42,9 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import utilMixin from '@/mixins/util'
-const emitter = require('tiny-emitter/instance')
-
 import { mdiHelpCircle } from '@mdi/js'
+
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'PedigreeTable',
