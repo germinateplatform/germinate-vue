@@ -10,6 +10,8 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/cropgeeks/germinate)
 [![Docker CI Push](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-push.yml/badge.svg)](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-push.yml)
 [![Docker CI Tag](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-tag.yml/badge.svg)](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-tag.yml)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+
 
 ![](https://germinateplatform.github.io/get-germinate/images/screenshot-1.png "Home page")
 

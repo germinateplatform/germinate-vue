@@ -7,7 +7,7 @@
       <b-col v-for="(type, name, index) in templateImportTypes" :key="`template-type-${index}`" cols=6 sm=4 class="col-xxl-3 mb-3">
         <a href="#" @click.prevent="onTemplateTypeSelected(type, name)">
           <b-card no-body :style="`border: 1px solid ${type.color()}; filter: ${getFilter(name)};`">
-            <b-card-body :style="`background-color: ${type.color()}; color: white;`">
+            <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(type.color())} 0%, ${type.color()} 50%); color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
                   <MdiIcon :size="48" :path="type.path" />
@@ -68,6 +68,7 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import miscApi from '@/mixins/api/misc.js'
 import typesMixin from '@/mixins/types.js'
+import colorMixin from '@/mixins/colors.js'
 
 import { mdiArrowRightBoldCircle, mdiUpload } from '@mdi/js'
 
@@ -107,8 +108,11 @@ export default {
       window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload-type', params: { templateType: newValue } }).href)
     }
   },
-  mixins: [miscApi, typesMixin],
+  mixins: [miscApi, typesMixin, colorMixin],
   methods: {
+    getBrighterColor: function (color) {
+      return this.rgbColorToHex(this.brighten(this.hexToRgb(color)))
+    },
     onTemplateTypeSelected: function (type, name) {
       if (!type.disabled) {
         this.templateType = name

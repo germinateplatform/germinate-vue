@@ -228,7 +228,6 @@ export default {
       }
     },
     getBrighterColor: function (index) {
-      console.log(this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index)))))
       return this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index))))
     },
     redirectBack: function () {
