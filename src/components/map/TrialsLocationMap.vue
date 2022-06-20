@@ -16,6 +16,10 @@ export default {
     datasetIds: {
       type: Array,
       default: () => []
+    },
+    shown: {
+      type: Boolean,
+      default: false
     }
   },
   data: function () {
@@ -24,8 +28,10 @@ export default {
     }
   },
   watch: {
-    datasetIds: function () {
-      this.update()
+    shown: function () {
+      if (!this.locations) {
+        this.update()
+      }
     }
   },
   mixins: [datasetApi],
@@ -81,9 +87,6 @@ export default {
     invalidateSize: function () {
       this.$nextTick(() => this.$refs.map.invalidateSize())
     }
-  },
-  mounted: function () {
-    this.update()
   }
 }
 </script>

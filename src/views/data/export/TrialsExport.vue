@@ -72,7 +72,7 @@
                                :getItems="getTraits"
                                v-show="currentTab === 'export'" />
 
-      <TrialsLocationMap :datasetIds="datasetIds" ref="locationsMap" v-show="currentTab === 'locations'" />
+      <TrialsLocationMap :shown="currentTab === 'locations'" :datasetIds="datasetIds" ref="locationsMap" v-show="currentTab === 'locations'" />
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
