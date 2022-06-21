@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex'
 export default {
   data: function () {
     return {
-      germinateVersion: '4.3.0'
+      germinateVersion: '4.3.1'
     }
   },
   computed: {
