@@ -1,4 +1,4 @@
-FROM node:12-alpine3.10 AS builder
+FROM node:16-alpine AS builder
 
 LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 
@@ -16,8 +16,8 @@ RUN apk add --no-cache git && \
 WORKDIR /opt/germinate-client
 RUN rm -f .env && \
     echo "VUE_APP_BASE_URL=./api/" > .env && \
-    apk add --no-cache python build-base gcc wget && \
-    npm i && \
+    apk add --no-cache python3 build-base gcc wget && \
+    npm i --legacy-peer-deps && \
     npm run build && \
     mkdir /opt/germinate-server/client/ && \
     cp -a /opt/germinate-client/dist/. /opt/germinate-server/client/
