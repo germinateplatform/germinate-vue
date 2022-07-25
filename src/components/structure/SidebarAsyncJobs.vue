@@ -44,10 +44,9 @@
             <!-- Download link -->
             <template v-if="job.status === 'completed'">
               <div class="d-flex flex-row align-items-start" v-if="job.datasettypeId === 7 && storeServerSettings && storeServerSettings.heliumUrl">
-                <!-- TODO -->
                 <i class="mdi fix-alignment icon-helium" />
                 <div class="d-inline-block ml-1">
-                  <a target="_blank" :href="`${storeServerSettings.heliumUrl}?germinateUrl=${encodeURIComponent(storeBaseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateInternal">{{ $t('buttonSendToHelium') }}</a>
+                  <a target="_blank" :href="`${storeServerSettings.heliumUrl}pedigree?germinateUrl=${encodeURIComponent(storeBaseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateInternal">{{ $t('buttonSendToHelium') }}</a>
                 </div>
               </div>
               <div class="d-flex flex-row align-items-start">
@@ -389,6 +388,10 @@ export default {
 </script>
 
 <style scoped>
+.icon-helium:before {
+  content: url("~@/assets/img/helium.png");
+}
+
 .aside-scroll {
   overflow-x: hidden;
   overflow-y: auto;
