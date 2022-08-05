@@ -14,12 +14,12 @@ const messages = {
 }
 
 export const i18n = new VueI18n({
-  locale: 'en_GB',
+  locale: null,
   fallbackLocale: 'en_GB',
   messages: messages
 })
 
-const loadedLanguages = ['en_GB']
+const loadedLanguages = []
 
 function setI18nLanguage (lang) {
   i18n.locale = lang
