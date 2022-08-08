@@ -19,6 +19,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import SidebarIcon from '@/components/icons/SidebarIcon'
 import SidebarLogoComponent from '@/components/structure/SidebarLogoComponent'
 
+import { mapGetters } from 'vuex'
 import { SidebarMenu } from 'vue-sidebar-menu'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
@@ -54,8 +55,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ]),
     menu: function () {
-      return [
+      const tempNav = [
         {
           header: true,
           title: 'Main Navigation',
@@ -83,6 +87,7 @@ export default {
             {
               title: this.$t('menuGermplasm'),
               href: { name: 'germplasm' },
+              identifiers: ['germplasm'],
               icon: {
                 element: SidebarIcon,
                 attributes: {
@@ -105,6 +110,7 @@ export default {
               child: [
                 {
                   title: this.$t('menuGenotypicMarkers'),
+                  identifiers: ['markers'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'markers'),
                     class: 'vsm--badge vsm--badge_default'
@@ -120,6 +126,7 @@ export default {
                 },
                 {
                   title: this.$t('menuGenotypicMaps'),
+                  identifiers: ['maps', 'map-details'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'maps'),
                     class: 'vsm--badge vsm--badge_default'
@@ -134,6 +141,7 @@ export default {
                 },
                 {
                   title: this.$t('menuGenotypicDataExport'),
+                  identifiers: ['export-genotypes'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'datasetsGenotype'),
                     class: 'vsm--badge vsm--badge_default'
@@ -148,6 +156,7 @@ export default {
                 },
                 {
                   title: this.$t('menuAlleleFrequencyDataExport'),
+                  identifiers: ['export-allelefrequency'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'datasetsAllelefreq'),
                     class: 'vsm--badge vsm--badge_default'
@@ -173,6 +182,7 @@ export default {
               child: [
                 {
                   title: this.$t('menuTrialsTraits'),
+                  identifiers: ['traits'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'traits'),
                     class: 'vsm--badge vsm--badge_default'
@@ -187,6 +197,7 @@ export default {
                 },
                 {
                   title: this.$t('menuTrialsDataExport'),
+                  identifiers: ['export-trials'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'datasetsTrials'),
                     class: 'vsm--badge vsm--badge_default'
@@ -212,6 +223,7 @@ export default {
               child: [
                 {
                   title: this.$t('menuLocations'),
+                  identifiers: ['locations'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'locations'),
                     class: 'vsm--badge vsm--badge_default'
@@ -226,6 +238,7 @@ export default {
                 },
                 {
                   title: this.$t('menuGeographicSearch'),
+                  identifiers: ['geographic-search'],
                   href: { name: 'geographic-search' },
                   icon: {
                     element: SidebarIcon,
@@ -247,6 +260,7 @@ export default {
               child: [
                 {
                   title: this.$t('menuClimateClimates'),
+                  identifiers: ['climates'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'climates'),
                     class: 'vsm--badge vsm--badge_default'
@@ -261,6 +275,7 @@ export default {
                 },
                 {
                   title: this.$t('menuClimateDataExport'),
+                  identifiers: ['export-climate'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'datasetsClimate'),
                     class: 'vsm--badge vsm--badge_default'
@@ -286,6 +301,7 @@ export default {
               child: [
                 {
                   title: this.$t('menuCompoundsCompounds'),
+                  identifiers: ['compounds'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'compounds'),
                     class: 'vsm--badge vsm--badge_default'
@@ -300,6 +316,7 @@ export default {
                 },
                 {
                   title: this.$t('menuCompoundDataExport'),
+                  identifiers: ['export-compounds'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'datasetsCompound'),
                     class: 'vsm--badge vsm--badge_default'
@@ -316,6 +333,7 @@ export default {
             },
             {
               title: this.$t('menuCrossDataTypeComparison'),
+              identifiers: ['export-cross-comparison'],
               href: { name: 'export-cross-comparison' },
               icon: {
                 element: SidebarIcon,
@@ -326,6 +344,7 @@ export default {
             },
             {
               title: this.$t('menuDatasets'),
+              identifiers: ['datasets'],
               badge: {
                 text: this.getBadgeCount(this.badgeCounts, 'datasets'),
                 class: 'vsm--badge vsm--badge_default'
@@ -340,6 +359,7 @@ export default {
             },
             {
               title: this.$t('menuExperiments'),
+              identifiers: ['experiments'],
               badge: {
                 text: this.getBadgeCount(this.badgeCounts, 'experiments'),
                 class: 'vsm--badge vsm--badge_default'
@@ -354,6 +374,7 @@ export default {
             },
             {
               title: this.$t('menuDataResources'),
+              identifiers: ['data-resources'],
               badge: {
                 text: this.getBadgeCount(this.badgeCounts, 'fileresources'),
                 class: 'vsm--badge vsm--badge_default'
@@ -368,6 +389,7 @@ export default {
             },
             {
               title: this.$t('menuDataStatistics'),
+              identifiers: ['statistics'],
               href: { name: 'statistics' },
               icon: {
                 element: SidebarIcon,
@@ -380,6 +402,7 @@ export default {
         },
         {
           title: this.$t('menuPublications'),
+          identifiers: ['publications', 'publication-details'],
           badge: {
             text: this.getBadgeCount(this.badgeCounts, 'publications'),
             class: 'vsm--badge vsm--badge_default'
@@ -394,6 +417,7 @@ export default {
         },
         {
           title: this.$t('menuGroups'),
+          identifiers: ['groups', 'group-details'],
           badge: {
             text: this.getBadgeCount(this.badgeCounts, 'groups'),
             class: 'vsm--badge vsm--badge_default'
@@ -408,6 +432,7 @@ export default {
         },
         {
           title: this.$t('menuImages'),
+          identifiers: ['images'],
           badge: {
             text: this.getBadgeCount(this.badgeCounts, 'images'),
             class: 'vsm--badge vsm--badge_default'
@@ -422,6 +447,7 @@ export default {
         },
         {
           title: this.$t('menuSearch'),
+          identifiers: ['search'],
           href: { name: 'search' },
           icon: {
             element: SidebarIcon,
@@ -442,6 +468,7 @@ export default {
             {
               title: this.$t('menuAboutProject'),
               href: { name: 'about-project' },
+              identifiers: ['about-project'],
               icon: {
                 element: SidebarIcon,
                 attributes: {
@@ -461,6 +488,7 @@ export default {
             },
             {
               title: this.$t('menuAboutExportFormat'),
+              identifiers: ['about-export-formats'],
               href: { name: 'about-export-formats' },
               icon: {
                 element: SidebarIcon,
@@ -474,6 +502,26 @@ export default {
           component: SidebarLogoComponent
         }
       ]
+
+      if (this.storeServerSettings && this.storeServerSettings.hiddenPages && this.storeServerSettings.hiddenPages.length > 0) {
+        const hiddenPages = this.storeServerSettings.hiddenPages
+
+        return tempNav.filter(function f (o) {
+          if (o.identifiers) {
+            if (o.identifiers.some(i => hiddenPages.includes(i))) {
+              return false
+            }
+          }
+
+          if (o.child && o.child.length > 0) {
+            return (o.child = o.child.filter(f)).length
+          }
+
+          return true
+        })
+      } else {
+        return tempNav
+      }
     }
   },
   mixins: [formattingMixin, statsApi],
