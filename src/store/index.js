@@ -54,6 +54,7 @@ const userState = {
     compounds: [],
     compoundData: ['compoundId'],
     comments: ['commentForeignId', 'commentTypeId'],
+    fileresources: ['fileresourcetypeId'],
     maps: [],
     markers: [],
     mapDefinitions: [],

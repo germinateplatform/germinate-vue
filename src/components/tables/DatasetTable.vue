@@ -117,6 +117,12 @@
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')"><MdiIcon :path="mdiFilePlus"/></span>
         </a>
       </template>
+      <!-- Show file resources -->
+      <template v-slot:cell(fileresources)="data">
+        <a href="#" class="text-decoration-none" v-if="data.item.fileresources !== 0" @click.prevent="showFileresources(data.item)">
+          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetFileresources')"><MdiIcon :path="mdiAttachment"/></span>
+        </a>
+      </template>
       <!-- Download the dataset -->
       <template v-slot:cell(download)="data">
         <a href="#" class="text-decoration-none" v-if="!data.item.isExternal && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="downloadDataset(data.item)">
@@ -174,7 +180,7 @@ import utilMixin from '@/mixins/util'
 import authApi from '@/mixins/api/auth'
 import formattingMixin from '@/mixins/formatting'
 
-import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
+import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -212,6 +218,7 @@ export default {
       mdiFilePlus,
       mdiDownload,
       mdiSquareEditOutline,
+      mdiAttachment,
       mdiLinkBoxVariantOutline,
       mdiTextBoxOutline,
       options: {
@@ -336,6 +343,12 @@ export default {
           type: undefined,
           sortable: false,
           class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'datasetState')}`,
+          label: ''
+        }, {
+          key: 'fileresources',
+          type: undefined,
+          sortable: false,
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'fileresources')}`,
           label: ''
         }, {
           key: 'publications',
@@ -535,6 +548,9 @@ export default {
     showAttributes: function (dataset) {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.attributeModal.show())
+    },
+    showFileresources: function (dataset) {
+      // TODO
     },
     getSelected: function () {
       return this.$refs.datasetTable.getSelected()
