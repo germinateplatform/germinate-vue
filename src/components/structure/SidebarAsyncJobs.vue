@@ -269,7 +269,7 @@ export default {
     startActualImport: function (job) {
       this.apiGetDataAsyncImportStart(job.uuid, result => {
         if (result) {
-          result.forEach(r => this.$store.commit('addAsyncUuid', r.uuid))
+          result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
         }
 
         this.updateInternal()
