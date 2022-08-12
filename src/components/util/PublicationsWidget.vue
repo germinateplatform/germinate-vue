@@ -222,16 +222,21 @@ export default {
 
         pubs = pubs.map(p => {
           let result = p
-          try {
-            const citation = Cite.async(p.publicationDoi.trim())
-            if (citation && citation.data && citation.data.length > 0) {
-              p.displayData = citation.format('data', { format: 'object' })[0]
-              p.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
-            } else {
+
+          if (p.publicationFallbackCache) {
+            result = this.getFromCache(p)
+          } else {
+            try {
+              const citation = Cite.async(p.publicationDoi.trim())
+              if (citation && citation.data && citation.data.length > 0) {
+                p.displayData = citation.format('data', { format: 'object' })[0]
+                p.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
+              } else {
+                result = this.getFromCache(p)
+              }
+            } catch (err) {
               result = this.getFromCache(p)
             }
-          } catch (err) {
-            result = this.getFromCache(p)
           }
           return result
         })
