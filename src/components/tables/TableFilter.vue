@@ -472,13 +472,20 @@ export default {
             urlFilter = JSON.parse(this.$route.query[`${this.tableName}-filter`])
 
             const columns = this.getColumns
-            urlFilter = urlFilter.filter(f => this.filterOn && !this.filterOn.some(of => of.column.name === f.column)).map(f => {
-              const existingColumn = columns.filter(c => c.key === f.column)
+            urlFilter = urlFilter.map(f => {
+              const existingColumn = columns.find(c => c.key === f.column)
+              const existingFilter = this.filterOn ? this.filterOn.find(of => of.column.name === f.column) : null
 
-              if (existingColumn && existingColumn.length > 0) {
-                f.column = {
-                  name: existingColumn[0].key,
-                  type: existingColumn[0].type
+              // If there is a matching column at all
+              if (existingColumn) {
+                // Check if one of the programmatically set filters uses the same column
+                if (existingFilter) {
+                  f.column = null
+                } else {
+                  f.column = {
+                    name: existingColumn.key,
+                    type: existingColumn.type
+                  }
                 }
               } else {
                 f.column = null

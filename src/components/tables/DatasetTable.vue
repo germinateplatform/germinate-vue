@@ -118,10 +118,8 @@
         </a>
       </template>
       <!-- Show file resources -->
-      <template v-slot:cell(fileresources)="data">
-        <a href="#" class="text-decoration-none" v-if="data.item.fileresources !== 0" @click.prevent="showFileresources(data.item)">
-          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetFileresources')"><MdiIcon :path="mdiAttachment"/></span>
-        </a>
+      <template v-slot:cell(fileresourceIds)="data">
+        <b-button class="text-nowrap" @click="showFileresources(data.item)" v-if="data.item.fileresourceIds && data.item.fileresourceIds.length > 0"><MdiIcon :path="mdiAttachment"/> {{ $t('buttonShow') }}</b-button>
       </template>
       <!-- Download the dataset -->
       <template v-slot:cell(download)="data">
@@ -333,6 +331,12 @@ export default {
           class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataPointCount')}`,
           label: this.$t('tableColumnDatasetPointCount')
         }, {
+          key: 'fileresourceIds',
+          type: 'json',
+          sortable: false,
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'fileresourceIds')}`,
+          label: this.$t('tableColumnDatasetFileresources')
+        }, {
           key: 'isExternal',
           type: Boolean,
           sortable: false,
@@ -343,12 +347,6 @@ export default {
           type: undefined,
           sortable: false,
           class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'datasetState')}`,
-          label: ''
-        }, {
-          key: 'fileresources',
-          type: undefined,
-          sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'fileresources')}`,
           label: ''
         }, {
           key: 'publications',
@@ -550,7 +548,18 @@ export default {
       this.$nextTick(() => this.$refs.attributeModal.show())
     },
     showFileresources: function (dataset) {
-      // TODO
+      const filter = [{
+        column: 'datasetIds',
+        comparator: 'contains',
+        operator: 'and',
+        values: [dataset.datasetId]
+      }]
+      this.$router.push({
+        name: 'data-resources',
+        query: {
+          'fileresources-filter': JSON.stringify(filter)
+        }
+      })
     },
     getSelected: function () {
       return this.$refs.datasetTable.getSelected()

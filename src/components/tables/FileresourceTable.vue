@@ -20,15 +20,13 @@
       <!-- Download -->
       <template v-slot:cell(fileresourceSize)="data">
         <div class="d-flex flex-column justify-content-center align-items-center">
-          <b-button class="text-nowrap" @click="downloadFileresource(data.item)"><MdiIcon :path="mdiDownload"/> {{ $t('buttonDownload') }}</b-button>
+          <b-button class="text-nowrap" variant="primary" @click="downloadFileresource(data.item)"><MdiIcon :path="mdiDownload"/> {{ $t('buttonDownload') }}</b-button>
           <small>({{ getNumberWithSuffix(data.item.fileresourceSize, 2, 1024, ' ') }}B)</small>
         </div>
       </template>
       <!-- Show datasets -->
-      <template v-slot:cell(datasets)="data">
-        <a href="#" class="text-decoration-none" v-if="data.item.datasets !== 0" @click.prevent="$emit('fileresource-dataset-clicked', data.item)">
-          <span v-b-tooltip.hover="$t('tableTooltipFileresourcesDataset')"><MdiIcon :path="mdiDatabase"/></span>
-        </a>
+      <template v-slot:cell(datasetIds)="data">
+        <b-button class="text-nowrap" @click="showDatasets(data.item)" v-if="data.item.datasetIds && data.item.datasetIds > 0"><MdiIcon :path="mdiDatabase"/> {{ $t('buttonShow') }}</b-button>
       </template>
       <!-- Delete resource -->
       <template v-slot:cell(deleteFileresource)="data">
@@ -124,11 +122,11 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'fileresourcetypeDescription')}`,
           label: this.$t('tableColumnFileresourcetypeDescription')
         }, {
-          key: 'datasets',
-          type: undefined,
+          key: 'datasetIds',
+          type: 'json',
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'datasets')}`,
-          label: ''
+          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'datasetIds')}`,
+          label: this.$t('tableColumnFileresourceDatasets')
         }, {
           key: 'fileresourceSize',
           type: String,
@@ -152,8 +150,19 @@ export default {
   },
   mixins: [authApi, formattingMixin, datasetApi, utilMixin],
   methods: {
-    showDatasets: function (resource) {
-      // TODO
+    showDatasets: function (fileresource) {
+      const filter = [{
+        column: 'fileresourceIds',
+        comparator: 'contains',
+        operator: 'and',
+        values: [fileresource.fileresourceId]
+      }]
+      this.$router.push({
+        name: 'datasets',
+        query: {
+          'datasets-filter': JSON.stringify(filter)
+        }
+      })
     },
     onDeleteResource: function (resource) {
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
