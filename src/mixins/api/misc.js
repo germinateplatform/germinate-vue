@@ -103,6 +103,9 @@ export default {
       queryData.page -= 1
       return this.authAxios({ url: 'publication/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
+    apiGetPublications: function (type, id, onSuccess, onError) {
+      return this.authAxios({ url: `publication/type/${type}/${id || ''}`, method: 'GET', success: onSuccess, error: onError })
+    },
     apiPutPublication: function (data, onSuccess, onError) {
       return this.authAxios({ url: 'publication', method: 'PUT', data: data, success: onSuccess, error: onError })
     },

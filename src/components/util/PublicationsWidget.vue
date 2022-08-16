@@ -6,11 +6,11 @@
     <div v-else>
       <b-row v-if="publications && publications.length > 0">
         <b-col cols=12 sm=6 md=4 xl=3 v-for="p in publications" :key="`publication-${p.publicationDoi}`">
-          <b-card :title="p.displayData.title" :sub-title="p.displayData['container-title']" bg-variant="light">
+          <b-card :title="p.displayData.title" :sub-title="p.displayData['container-title']" bg-variant="light" class="h-100" body-class="d-flex flex-column">
             <p v-if="p.displayData && p.displayData.issued && p.displayData.issued['date-parts'] && p.displayData.issued['date-parts'].length > 0 && p.displayData.issued['date-parts'][0].length > 0">
               {{ p.displayData.issued['date-parts'][0][0] }}
             </p>
-            <p class="mb-0 limit-rows">
+            <p class="mb-0 mt-auto limit-rows">
               <span v-html="p.displayData.fullReference" />
             </p>
             <div class="mb-3"><b-badge class="cursor-hover" @click="showFullReference(p)">
@@ -211,14 +211,8 @@ export default {
         })
       }
 
-      this.apiPostPublicationsTable({
-        page: 1,
-        limit: this.MAX_JAVA_INTEGER,
-        filter: filter,
-        orderBy: 'createdOn',
-        ascending: 0
-      }, result => {
-        let pubs = result.data
+      this.apiGetPublications(this.referenceType, this.referencingId, result => {
+        let pubs = result
 
         pubs = pubs.map(p => {
           let result = p
@@ -247,6 +241,43 @@ export default {
 
         this.loading = false
       })
+
+      // this.apiPostPublicationsTable({
+      //   page: 1,
+      //   limit: this.MAX_JAVA_INTEGER,
+      //   filter: filter,
+      //   orderBy: 'createdOn',
+      //   ascending: 0
+      // }, result => {
+      //   let pubs = result.data
+
+      //   pubs = pubs.map(p => {
+      //     let result = p
+
+      //     if (p.publicationFallbackCache) {
+      //       result = this.getFromCache(p)
+      //     } else {
+      //       try {
+      //         const citation = Cite.async(p.publicationDoi.trim())
+      //         if (citation && citation.data && citation.data.length > 0) {
+      //           p.displayData = citation.format('data', { format: 'object' })[0]
+      //           p.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
+      //         } else {
+      //           result = this.getFromCache(p)
+      //         }
+      //       } catch (err) {
+      //         result = this.getFromCache(p)
+      //       }
+      //     }
+      //     return result
+      //   })
+
+      //   this.publications = pubs
+
+      //   this.$emit('publication-count-changed', pubs.length)
+
+      //   this.loading = false
+      // })
     }
   },
   mounted: function () {

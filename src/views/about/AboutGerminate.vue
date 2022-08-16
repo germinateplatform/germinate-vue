@@ -26,7 +26,7 @@
     <b-row class="about-banners" v-if="banners">
       <b-col cols=12 sm=6 xl=3 v-for="banner in banners" :key="'about-banners-' + banner.key" class="my-3">
         <a target="_blank" rel="noopener noreferrer" :href="banner.link">
-          <b-card no-body :class="banner.key">
+          <b-card no-body :class="`${banner.key} h-100`">
             <b-card-body>
               <b-row>
                 <b-col cols=8 class="align-self-center">
@@ -357,7 +357,7 @@ export default {
 .about-footer {
   margin-left: -30px;
   margin-right: -30px;
-  margin-bottom: -25px;
+  margin-bottom: -16px;
 }
 .about-footer img {
   max-height: 100px;
