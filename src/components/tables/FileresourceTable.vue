@@ -26,7 +26,7 @@
       </template>
       <!-- Show datasets -->
       <template v-slot:cell(datasetIds)="data">
-        <b-button class="text-nowrap" @click="showDatasets(data.item)" v-if="data.item.datasetIds && data.item.datasetIds > 0"><MdiIcon :path="mdiDatabase"/> {{ $t('buttonShow') }}</b-button>
+        <b-button class="text-nowrap" @click="showDatasets(data.item)" v-if="data.item.datasetIds && data.item.datasetIds.length > 0"><MdiIcon :path="mdiDatabase"/> {{ $t('buttonShow') }}</b-button>
       </template>
       <!-- Delete resource -->
       <template v-slot:cell(deleteFileresource)="data">

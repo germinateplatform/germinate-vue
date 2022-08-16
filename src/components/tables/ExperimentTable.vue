@@ -22,35 +22,30 @@
       <!-- Experiment dataset types -->
       <template v-slot:cell(dataTypes)="data">
         <!-- Trials datasets -->
-        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'trials')" v-if="data.item.trialsCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()">
-          <span :style="`color: ${datasetTypes.trials.color()};`"><MdiIcon :path="datasetTypes.trials.path" /></span>
-          <span> {{ data.item.trialsCount }}</span>
-        </router-link>
+        <b-badge :to="{ name: 'datasets' }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.trials.color())}; background-color: ${datasetTypes.trials.color()};`" @click.native.prevent="redirectToExport(data.item, 'trials')" v-if="data.item.trialsCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()">
+          <MdiIcon :path="datasetTypes.trials.path" /> {{ data.item.trialsCount }}
+        </b-badge>
         <!-- Genotype datasets -->
-        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'genotype')" v-if="data.item.genotypeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()">
-          <span :style="`color: ${datasetTypes.genotype.color()};`"><MdiIcon :path="datasetTypes.genotype.path" /></span>
-          <span> {{ data.item.genotypeCount }}</span>
-        </router-link>
+        <b-badge :to="{ name: 'datasets' }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.genotype.color())}; background-color: ${datasetTypes.genotype.color()};`" @click.native.prevent="redirectToExport(data.item, 'genotype')" v-if="data.item.genotypeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()">
+          <MdiIcon :path="datasetTypes.genotype.path" /> {{ data.item.genotypeCount }}
+        </b-badge>
         <!-- Compound datasets -->
-        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'compound')" v-if="data.item.compoundCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()">
-          <span :style="`color: ${datasetTypes.compound.color()};`"><MdiIcon :path="datasetTypes.compound.path" /></span>
-          <span> {{ data.item.compoundCount }}</span>
-        </router-link>
+        <b-badge :to="{ name: 'datasets' }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.compound.color())}; background-color: ${datasetTypes.compound.color()};`" @click.native.prevent="redirectToExport(data.item, 'compound')" v-if="data.item.compoundCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()">
+          <MdiIcon :path="datasetTypes.compound.path" /> {{ data.item.compoundCount }}
+        </b-badge>
         <!-- Allelefreq datasets -->
-        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'allelefreq')" v-if="data.item.alleleFreqCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()">
-          <span :style="`color: ${datasetTypes.allelefreq.color()};`"><MdiIcon :path="datasetTypes.allelefreq.path" /></span>
-          <span> {{ data.item.alleleFreqCount }}</span>
-        </router-link>
+        <b-badge :to="{ name: 'datasets' }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.allelefreq.color())}; background-color: ${datasetTypes.allelefreq.color()};`" @click.native.prevent="redirectToExport(data.item, 'allelefreq')" v-if="data.item.alleleFreqCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()">
+          <MdiIcon :path="datasetTypes.allelefreq.path" /> {{ data.item.alleleFreqCount }}
+        </b-badge>
         <!-- Climate datasets -->
-        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'climate')" v-if="data.item.climateCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.climate.text()">
-          <span :style="`color: ${datasetTypes.climate.color()};`"><MdiIcon :path="datasetTypes.climate.path" /></span>
-          <span> {{ data.item.climateCount }}</span>
-        </router-link>
+        <b-badge :to="{ name: 'datasets' }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.climate.color())}; background-color: ${datasetTypes.climate.color()};`" @click.native.prevent="redirectToExport(data.item, 'climate')" v-if="data.item.climateCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.climate.text()">
+          <MdiIcon :path="datasetTypes.climate.path" /> {{ data.item.climateCount }}
+        </b-badge>
         <!-- Climate datasets -->
-        <router-link :to="{ name: 'datasets' }" event="" @click.native.prevent="redirectToExport(data.item, 'pedigree')" v-if="data.item.pedigreeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.pedigree.text()">
-          <span :style="`color: ${datasetTypes.pedigree.color()};`"><MdiIcon :path="datasetTypes.pedigree.path" /></span>
-          <span> {{ data.item.pedigreeCount }}</span>
-        </router-link>
+        <!-- <b-badge :to="{ name: 'datasets' }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.pedigree.color())}; background-color: ${datasetTypes.pedigree.color()};`" @click.native.prevent="redirectToExport(data.item, 'pedigree')" v-if="data.item.pedigreeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.pedigree.text()"> -->
+        <b-badge :style="`color: ${getHighContrastTextColor(datasetTypes.pedigree.color())}; background-color: ${datasetTypes.pedigree.color()};`" v-if="data.item.pedigreeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.pedigree.text()">
+          <MdiIcon :path="datasetTypes.pedigree.path" /> {{ data.item.pedigreeCount }}
+        </b-badge>
       </template>
     </BaseTable>
   </div>
@@ -63,6 +58,7 @@ import defaultProps from '@/const/table-props.js'
 import datasetApi from '@/mixins/api/dataset'
 import typesMixin from '@/mixins/types'
 import utilMixin from '@/mixins/util'
+import colorMixin from '@/mixins/colors'
 import formattingMixin from '@/mixins/formatting'
 
 export default {
@@ -123,7 +119,7 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [datasetApi, typesMixin, utilMixin, formattingMixin],
+  mixins: [datasetApi, typesMixin, utilMixin, colorMixin, formattingMixin],
   methods: {
     redirectToExport: function (experiment, datasetType) {
       // Set up the filter

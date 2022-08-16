@@ -20,22 +20,44 @@
         <b-form-group :label="$t('formLabelFileResourceDescription')" label-for="fileResourceDescription">
           <b-form-textarea id="fileResourceDescription" v-model="description" />
         </b-form-group>
+        <b-form-group :label="$t('formLabelFileResourceDatasets')" :description="$t('formDescriptionFileResourceDatasets')" label-for="fileResourceDatasets">
+          <b-input-group>
+            <b-form-input id="fileResourceDatasets" :value="datasetIdString" readonly />
+            <b-input-group-append>
+              <b-button v-b-modal.datasetModal v-b-tooltip="$t('modalTitleFileResourceDataset')"><MdiIcon :path="mdiDatabase" /></b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
         <b-form-group :label="$t('formLabelFileResourceFile')" label-for="fileResourceFile">
           <b-form-file id="fileResourceFile" v-model="file" required :state="formState.file" />
         </b-form-group>
       </b-form>
     </b-modal>
     <FileResourceTypeModal ref="fileResourceTypeModal" v-on:type-added="updateTypes" />
+    <b-modal :title="$t('modalTitleFileResourceDataset')"
+             :ok-title="$t('buttonOk')"
+             :cancel-title="$t('buttonCancel')"
+             @ok="extractDatasetIds"
+             id="datasetModal"
+             size="xl">
+      <DatasetTable :getData="getDatasets"
+                    :getIds="getDatasetIds"
+                    :selectable="true"
+                    :filterOn="datasetsFilter"
+                    :clickHandler="handleDatasetClick"
+                    ref="datasetTable" />
+    </b-modal>
   </div>
 </template>
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
+import DatasetTable from '@/components/tables/DatasetTable'
 import FileResourceTypeModal from '@/components/modals/FileResourceTypeModal'
 
 import datasetApi from '@/mixins/api/dataset'
 
-import { mdiPlus } from '@mdi/js'
+import { mdiPlus, mdiDatabase } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -43,30 +65,81 @@ export default {
   data: function () {
     return {
       mdiPlus,
+      mdiDatabase,
       name: null,
       description: null,
       types: [],
       type: null,
       file: null,
+      datasetIds: null,
       formValidated: false,
       formState: {
         name: null,
         type: null,
         file: null
+      },
+      datasetsFilter: [{
+        column: {
+          name: 'isExternal',
+          type: Boolean
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [false],
+        canBeChanged: false
+      }]
+    }
+  },
+  computed: {
+    datasetIdString: function () {
+      if (this.datasetIds) {
+        return this.datasetIds.join(', ')
+      } else {
+        return null
       }
     }
   },
   components: {
+    DatasetTable,
     FileResourceTypeModal,
     MdiIcon
   },
   mixins: [datasetApi],
   methods: {
+    getDatasets: function (data, callback) {
+      return this.apiPostDatasetTable(data, callback)
+    },
+    getDatasetIds: function (data, callback) {
+      return this.apiPostDatasetTableIds(data, callback)
+    },
+    extractDatasetIds: function () {
+      const selectedIds = this.$refs.datasetTable.getSelected()
+      if (selectedIds && selectedIds.length > 0) {
+        this.datasetIds = selectedIds
+      } else {
+        this.datasetIds = null
+      }
+    },
+    handleDatasetClick: function (dataset) {
+      const id = dataset.datasetId
+      let selected = this.$refs.datasetTable.getSelected()
+      if (!selected) {
+        selected = []
+      }
+      if (!selected.includes(id)) {
+        selected.push(id)
+        this.$refs.datasetTable.setSelectedItems(selected)
+      } else {
+        selected = selected.filter(s => s !== id)
+        this.$refs.datasetTable.setSelectedItems(selected)
+      }
+    },
     show: function () {
       this.name = null
       this.description = null
       this.type = null
       this.types = []
+      this.datasetIds = null
       this.file = null
       this.formValidated = false
       this.formState = {
@@ -99,7 +172,8 @@ export default {
             fileresourceName: this.name,
             fileresourcePath: result,
             fileresourceDescription: this.description,
-            fileresourcetypeId: this.type
+            fileresourcetypeId: this.type,
+            datasetIds: this.datasetIds
           }, () => {
             this.$emit('resource-added')
             emitter.emit('show-loading', false)

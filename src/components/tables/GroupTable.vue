@@ -24,8 +24,7 @@
       </template>
       <!-- Group type icon -->
       <template v-slot:cell(groupType)="data">
-        <span v-if="groupTypes[data.item.groupType]"><span :style="`color: ${groupTypes[data.item.groupType].color()};`"><MdiIcon :path="groupTypes[data.item.groupType].path" /></span> {{ groupTypes[data.item.groupType].text() }}</span>
-        <span v-else>{{ data.item.groupType }}</span>
+        <b-badge class="w-100" :style="`color: ${getHighContrastTextColor(groupTypes[data.item.groupType].color())}; background-color: ${groupTypes[data.item.groupType].color()};`"><MdiIcon :path="groupTypes[data.item.groupType].path" /> {{ groupTypes[data.item.groupType].text() }}</b-badge>
       </template>
 
       <!-- Only show if authentication enabled -->
@@ -47,6 +46,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import typesMixin from '@/mixins/types.js'
 import utilMixin from '@/mixins/util'
+import colorMixin from '@/mixins/colors'
 
 import { mdiRenameBox, mdiDelete } from '@mdi/js'
 
@@ -154,7 +154,7 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [typesMixin, utilMixin],
+  mixins: [typesMixin, utilMixin, colorMixin],
   methods: {
     refresh: function () {
       this.$refs.table.refresh()
