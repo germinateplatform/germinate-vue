@@ -5,6 +5,18 @@
                v-bind="$props"
                ref="germplasmAttributeTable"
                v-on="$listeners">
+      <!-- Germplasm id link -->
+      <template v-slot:cell(germplasmId)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
+      </template>
+      <!-- Germplasm name link -->
+      <template v-slot:cell(germplasmName)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
+      </template>
+      <!-- Germplasm GID link -->
+      <template v-slot:cell(germplasmGid)="data">
+        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
+      </template>
       <!-- Attribute type -->
       <template v-slot:cell(attributeType)="data">
         <span v-if="data.item.attributeType">
