@@ -137,11 +137,10 @@ export default {
       }
 
       this.apiPostImagesExport(data, result => {
-        this.downloadBlob({
-          blob: result,
-          filename: this.downloadName,
-          extension: 'zip'
-        })
+        result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+
+        // Show the sidebar
+        emitter.emit('toggle-aside', 'download')
         emitter.emit('show-loading', false)
       })
     },

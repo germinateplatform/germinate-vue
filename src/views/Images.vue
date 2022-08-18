@@ -14,6 +14,8 @@ import ImageTable from '@/components/tables/ImageTable'
 import ImageTags from '@/components/images/ImageTags'
 import miscApi from '@/mixins/api/misc.js'
 
+const emitter = require('tiny-emitter/instance')
+
 export default {
   data: function () {
     return {
@@ -65,7 +67,13 @@ export default {
       return this.apiPostImages(data, callback)
     },
     downloadImages: function (data, callback) {
-      return this.apiPostImagesExport(data, callback)
+      return this.apiPostImagesExport(data, result => {
+        result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+
+        // Show the sidebar
+        emitter.emit('toggle-aside', 'download')
+        emitter.emit('show-loading', false)
+      })
     }
   }
 }

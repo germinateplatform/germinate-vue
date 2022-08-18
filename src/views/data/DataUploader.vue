@@ -28,7 +28,7 @@
         v-model="file"
         :state="Boolean(file)"
         :placeholder="$t('pageDataUploadFilePlaceholder')"
-        :accept="templateType.accepts" />
+        :accept="templateImportTypes[templateType].accepts" />
       <!-- Selected file -->
       <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 

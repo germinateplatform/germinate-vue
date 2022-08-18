@@ -97,7 +97,14 @@
               <template v-if="job.originalFilename"><MdiIcon :path="mdiFile" /><small> {{ job.originalFilename }}</small></template>
             </div>
             <!-- Status -->
-            <div v-if="job.status === 'completed'">
+            <div v-if="job.status === 'failed'">
+              <!-- If there is feedback -->
+              <div v-if="job.feedback">
+                <!-- Show a button to view the feedback -->
+                <span class="text-danger" v-if="job.feedback.length > 0"><MdiIcon :path="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
+              </div>
+            </div>
+            <div v-else-if="job.status === 'completed'">
               <!-- If there is feedback -->
               <div v-if="job.feedback">
                 <!-- Show a button to view the feedback -->
@@ -317,7 +324,7 @@ export default {
       if (match && match.length > 0) {
         return this.datasetTypes[match[0]].text()
       } else {
-        return 'UNKNOWN DATASET TYPE'
+        return 'Data export'
       }
     },
     getTemplateType: function (templateType) {

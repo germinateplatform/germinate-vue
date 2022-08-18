@@ -84,7 +84,7 @@
       v-if="isOnMobile && !collapsed"
       class="v-sidebar-backdrop b-sidebar-backdrop bg-dark"
       @click="collapsed = true" />
-    <b-sidebar id="asyncbar" shadow right backdrop lazy backdrop-variant="dark" sidebar-class="border-left border-primary" title="Asynchronous jobs" v-model="asyncSidebarOpen">
+    <b-sidebar id="asyncbar" shadow right backdrop lazy backdrop-variant="dark" sidebar-class="border-left border-primary" :title="$t('widgetAsyncJobTitle')" v-model="asyncSidebarOpen">
       <SidebarAsyncJobs />
     </b-sidebar>
 

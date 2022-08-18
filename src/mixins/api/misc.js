@@ -47,7 +47,7 @@ export default {
       return this.authForm({ url: `image/upload/${referenceTable}/${foreignId}`, formData: form, success: onSuccess, error: onError })
     },
     apiPostImagesExport: function (queryData, onSuccess, onError) {
-      return this.authAxios({ url: 'image/table/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+      return this.authAxios({ url: 'image/table/export', method: 'POST', data: queryData, success: onSuccess, error: onError })
     },
     apiGetImageTags: function (onSuccess, onError) {
       return this.authAxios({ url: 'imagetag', success: onSuccess, error: onError })

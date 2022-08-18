@@ -80,7 +80,15 @@ export default {
         GENERIC_INVALID_NUMBER: () => this.$t('importStatusMcpdInvalidNumber'),
         MCPD_INVALID_ENTITY_TYPE: () => this.$t('importStatusMcpdInvalidEntityType'),
         MCPD_INVALID_ENTITY_PARENT_ACCENUMB: () => this.$t('importStatusMcpdInvalidEntityParentAccenumb'),
-        MCPD_MISSING_ACCENUMB: () => this.$t('importStatusMcpdMissingAccenumb')
+        MCPD_MISSING_ACCENUMB: () => this.$t('importStatusMcpdMissingAccenumb'),
+        GENERIC_DUPLICATE_VALUE: () => this.$t('importStatusGenericDuplicateValue'),
+        GENERIC_INVALID_REFERENCE: () => this.$t('importStatusGenericInvalidReference'),
+        MCPD_INVALID_DMS: () => this.$t('importStatusMcpdInvalidDms'),
+        GENOTYPE_HAPMAP_INCORRECT_HEADER: () => this.$t('importStatusGenotypeHapmapIncorrectHeader'),
+        GENOTYPE_HAPMAP_INCORRECT_ROW_LENGTH: () => this.$t('importStatusGenotypeHapmapIncorrectRowLength'),
+        IMAGE_TEMPLATE_MISSING: () => this.$t('importStatusImageTemplateMissing'),
+        IMAGE_IMAGE_MISSING: () => this.$t('importStatusImageImageMissing'),
+        IMAGE_DEFINITION_MISSING: () => this.$t('importStatusImageDefinitionMissing')
       }
     }
   },
