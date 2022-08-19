@@ -26,7 +26,7 @@
             <!-- Delete job -->
             <a href="#" class="text-muted float-right" @click.prevent="deleteExportJob(job)" :title="$t('buttonDelete')"><MdiIcon :path="mdiClose" /></a>
             <!-- Job type -->
-            <div><strong>{{ getDatasetType(job.datasettypeId) }}</strong></div>
+            <div><strong>{{ getDatasetType(job.datatype) }}</strong></div>
             <!-- Dataset ids -->
             <div class="text-muted" v-if="job.datasetIds">
               <MdiIcon :path="mdiDatabase" /><small> {{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</small>
@@ -43,7 +43,7 @@
             </div>
             <!-- Download link -->
             <template v-if="job.status === 'completed'">
-              <div class="d-flex flex-row align-items-start" v-if="job.datasettypeId === 7 && storeServerSettings && storeServerSettings.heliumUrl">
+              <div class="d-flex flex-row align-items-start" v-if="job.datatype === 'pedigree' && storeServerSettings && storeServerSettings.heliumUrl">
                 <i class="mdi fix-alignment icon-helium" />
                 <div class="d-inline-block ml-1">
                   <a target="_blank" :href="`${storeServerSettings.heliumUrl}pedigree?germinateUrl=${encodeURIComponent(storeBaseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateInternal">{{ $t('buttonSendToHelium') }}</a>
@@ -208,6 +208,32 @@ export default {
           path: mdiCancel,
           text: () => this.$t('asyncJobStatusCancelled')
         }
+      },
+      dataExportTypes: {
+        allelefreq: {
+          text: () => this.$t('datasetTypeAllelefreq')
+        },
+        climate: {
+          text: () => this.$t('datasetTypeClimate')
+        },
+        compound: {
+          text: () => this.$t('datasetTypeCompound')
+        },
+        genotype: {
+          text: () => this.$t('datasetTypeGenotype')
+        },
+        trials: {
+          text: () => this.$t('datasetTypeTrials')
+        },
+        pedigree: {
+          text: () => this.$t('datasetTypePedigree')
+        },
+        unknown: {
+          text: () => this.$t('datasetTypeUnknown')
+        },
+        images: {
+          text: () => this.$t('dataTypeImages')
+        }
       }
     }
   },
@@ -316,13 +342,11 @@ export default {
         }
       })
     },
-    getDatasetType: function (datasettypeId) {
-      const match = Object.keys(this.datasetTypes).filter(k => {
-        return this.datasetTypes[k].id === datasettypeId
-      })
+    getDatasetType: function (datatype) {
+      const match = this.dataExportTypes[datatype]
 
-      if (match && match.length > 0) {
-        return this.datasetTypes[match[0]].text()
+      if (match) {
+        return match.text()
       } else {
         return 'Data export'
       }
@@ -378,7 +402,7 @@ export default {
       this.updateInternal()
       this.timeout = setTimeout(() => {
         this.updateAsyncJobs()
-      }, 10000)
+      }, 5000)
     }
   },
   beforeDestroy: function () {

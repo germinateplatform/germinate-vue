@@ -94,6 +94,7 @@
   "datasetTypePedigree": "Pedigree",
   "datasetTypeTrials": "Trials",
   "datasetTypeUnknown": "Unknown",
+  "dataTypeImages": "Images",
   "dataTypeCategorical": "Categorical",
   "dataTypeDate": "Date",
   "dataTypeNumeric": "Numeric",
