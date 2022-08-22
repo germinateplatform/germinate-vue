@@ -61,11 +61,6 @@ export default {
     menu: function () {
       const tempNav = [
         {
-          header: true,
-          title: 'Main Navigation',
-          hiddenOnCollapse: true
-        },
-        {
           href: { name: 'home' },
           title: this.$t('menuHome'),
           icon: {

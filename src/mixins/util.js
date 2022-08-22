@@ -96,8 +96,12 @@ export default {
       downloadLink.href = url
       downloadLink.target = '_blank'
       downloadLink.rel = 'noopener noreferrer'
-      if (filename && extension) {
-        downloadLink.download = filename + '.' + extension
+      if (filename) {
+        downloadLink.download = filename
+
+        if (extension) {
+          downloadLink.download += '.' + extension
+        }
       }
       document.body.appendChild(downloadLink)
       downloadLink.click()
