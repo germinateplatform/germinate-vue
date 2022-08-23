@@ -90,7 +90,7 @@ export default {
           img: require('@/assets/img/image-icon-gps.svg'),
           text: () => this.$t('widgetExifLocation'),
           description: () => this.$t('widgetExifLocationClickToSee'),
-          value: `${this.image.imageExif.gpsLatitude.toFixed(4)}, ${this.image.imageExif.gpsLongitude.toFixed(4)}`,
+          value: `${this.image.imageExif.gpsLatitude ? this.image.imageExif.gpsLatitude.toFixed(4) : ''}, ${this.image.imageExif.gpsLongitude ? this.image.imageExif.gpsLongitude.toFixed(4) : ''}`,
           action: () => this.toggleMap()
         }]
       } else {
