@@ -12,13 +12,19 @@
                v-on="$listeners">
       <!-- Reference table -->
       <template v-slot:cell(imageRefTable)="data">
-        <span><span :style="`color: ${imageTypes[data.item.imageRefTable].color()};`"><MdiIcon :path="imageTypes[data.item.imageRefTable].path" /></span> {{ imageTypes[data.item.imageRefTable].text() }}</span>
+        <b-badge class="w-100" :style="`color: ${getHighContrastTextColor(imageTypes[data.item.imageRefTable].color())}; background-color: ${imageTypes[data.item.imageRefTable].color()};`"><MdiIcon :path="imageTypes[data.item.imageRefTable].path" /> {{ imageTypes[data.item.imageRefTable].text() }}</b-badge>
       </template>
       <!-- Image -->
       <template v-slot:cell(image)="data">
         <a :href="getSrc(data.item, 'large')" @click.prevent="update(data.item)">
           <b-img-lazy :src="getSrc(data.item, 'small')" class="table-image" alt="Image" />
         </a>
+      </template>
+      <!-- EXIF -->
+      <template v-slot:cell(imageExif)="data">
+        <template v-if="data.item.imageExif && Object.keys(data.item.imageExif).length > 0">
+          <b-button @click="showImageExif(data.item)"><MdiIcon :path="mdiImageText" /> {{ $t('buttonShow') }}</b-button>
+        </template>
       </template>
       <!-- Reference name -->
       <template v-slot:cell(referenceName)="data">
@@ -40,6 +46,8 @@
         </div>
       </template>
     </BaseTable>
+
+    <ImageExifModal :image="selectedImage" ref="imageExifModal" v-if="selectedImage" @hidden="() => { selectedImage = null }" />
   </div>
 </template>
 
@@ -50,12 +58,15 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import CoolLightBox from 'vue-cool-lightbox'
 import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 import BaseTable from '@/components/tables/BaseTable'
+import ImageExifModal from '@/components/modals/ImageExifModal'
 import defaultProps from '@/const/table-props'
 import typesMixin from '@/mixins/types'
 import colorMixin from '@/mixins/colors'
 import utilMixin from '@/mixins/util'
 import imageMixin from '@/mixins/image'
 import { EXIF } from 'exif-js'
+
+import { mdiImageText } from '@mdi/js'
 
 export default {
   name: 'ImageTable',
@@ -65,10 +76,12 @@ export default {
   },
   data: function () {
     return {
+      mdiImageText,
       options: {
         idColumn: 'imageId',
         tableName: 'images'
       },
+      selectedImage: null,
       tags: [],
       coolboxIndex: null,
       coolboxImages: []
@@ -113,6 +126,12 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'imagePath')}`,
           label: this.$t('tableColumnImagePath')
         }, {
+          key: 'imageExif',
+          type: 'json',
+          sortable: false,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'imageExif')}`,
+          label: this.$t('tableColumnImageExif')
+        }, {
           key: 'tags',
           type: 'json',
           sortable: false,
@@ -138,10 +157,15 @@ export default {
   components: {
     BaseTable,
     CoolLightBox,
-    MdiIcon
+    MdiIcon,
+    ImageExifModal
   },
   mixins: [typesMixin, colorMixin, utilMixin, imageMixin],
   methods: {
+    showImageExif: function (image) {
+      this.selectedImage = image
+      this.$nextTick(() => this.$refs.imageExifModal.show())
+    },
     rotateBasedOnExif: function (image) {
       EXIF.getData(image, function () {
         const orientation = EXIF.getTag(this, 'Orientation')

@@ -20,6 +20,9 @@
       </b-input-group>
       <div class="mb-2" v-else>{{ image.imageDescription }}</div>
       <div class="text-muted mb-2" v-if="image.createdOn"><MdiIcon :path="mdiCalendarClock" /> {{ new Date(image.createdOn).toLocaleString() }}</div>
+      <div class="mb-2"  v-if="hasExif">
+        <b-button @click="$refs.imageExifModal.show()"><MdiIcon :path="mdiImageText" /> {{ $t('buttonShowExif') }}</b-button>
+      </div>
       <div>
         <!-- Show tags -->
         <template v-if="image.tags">
@@ -48,6 +51,8 @@
     <div disabled class="btn" :style="`color: white; background-color: ${imageTypes[image.imageRefTable].color()}; border: 1px solid ${imageTypes[image.imageRefTable].color()};`">
       <MdiIcon :path="imageTypes[image.imageRefTable].path" /> {{ image.referenceName }}
     </div>
+
+    <ImageExifModal :image="image" ref="imageExifModal" v-if="hasExif" />
   </b-card>
 </template>
 
@@ -55,12 +60,13 @@
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import EditTagModal from '@/components/modals/EditTagModal'
+import ImageExifModal from '@/components/modals/ImageExifModal'
 import typesMixin from '@/mixins/types'
 import miscApi from '@/mixins/api/misc'
 import imageMixin from '@/mixins/image'
 import authApi from '@/mixins/api/auth'
 
-import { mdiDelete, mdiContentSave, mdiCalendarClock, mdiPencil } from '@mdi/js'
+import { mdiDelete, mdiContentSave, mdiCalendarClock, mdiPencil, mdiImageText } from '@mdi/js'
 
 export default {
   props: {
@@ -79,6 +85,7 @@ export default {
       mdiContentSave,
       mdiCalendarClock,
       mdiPencil,
+      mdiImageText,
       src: null,
       largeSrc: null,
       imageLoaded: false
@@ -86,12 +93,16 @@ export default {
   },
   components: {
     EditTagModal,
+    ImageExifModal,
     MdiIcon
   },
   computed: {
     ...mapGetters([
       'storeToken'
-    ])
+    ]),
+    hasExif: function () {
+      return this.image && this.image.imageExif && Object.keys(this.image.imageExif).length > 0
+    }
   },
   mixins: [miscApi, typesMixin, imageMixin, authApi],
   methods: {

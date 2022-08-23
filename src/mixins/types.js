@@ -177,14 +177,17 @@ export default {
       },
       imageTypes: {
         germinatebase: {
+          path: mdiSprout,
           color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('imageTypeGerminatebase')
         },
         compounds: {
+          path: mdiAtom,
           color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('imageTypeCompounds')
         },
         phenotypes: {
+          path: mdiTagTextOutline,
           color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null,
           text: () => this.$t('imageTypePhenotypes')
         }
