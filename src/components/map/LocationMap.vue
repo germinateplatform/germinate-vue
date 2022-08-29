@@ -170,7 +170,8 @@ export default {
     ...mapGetters([
       'storeBaseUrl',
       'storeMapLayer',
-      'storeToken'
+      'storeToken',
+      'storeServerSettings'
     ])
   },
   components: {
@@ -423,8 +424,12 @@ export default {
       require('leaflet-draw')
     }
 
-    this.gradientColors.push('#ffffff')
-    this.gradientColors.push(this.getColor(0))
+    if (this.storeServerSettings && this.storeServerSettings.colorsGradient && this.storeServerSettings.colorsGradient.length > 0) {
+      this.gradientColors = this.storeServerSettings.colorsGradient.concat()
+    } else {
+      this.gradientColors.push('#ffffff')
+      this.gradientColors.push(this.getColor(0))
+    }
 
     this.$nextTick(() => {
       // Add stadia dark as the default

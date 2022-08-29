@@ -107,6 +107,15 @@
       <template v-slot:cell(collDate)="data">
         <span v-if="data.item.collDate">{{ new Date(data.item.collDate).toLocaleDateString() }}</span>
       </template>
+      <!-- Institutions -->
+      <template v-slot:cell(institutions)="data">
+        <template v-if="data.item.institutions && data.item.institutions.length > 0">
+          <span :title="data.value" v-if="data.value">{{ truncateAfterWords(data.value, 6) }}</span>
+          <a href="#" class="table-icon-link" @click.prevent="showInstitutionModal(data.item)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.value, 6)" >&nbsp;
+            <MdiIcon :path="mdiPageNext" />
+          </a>
+        </template>
+      </template>
       <!-- Image preview -->
       <template v-slot:cell(imageCount)="data">
         <div class="table-image" v-if="data.item.imageCount !== undefined && data.item.imageCount > 0">
@@ -176,6 +185,8 @@
       <Passport :germplasmId="germplasmId" :isPopup="true" />
     </b-modal>
 
+    <InstitutionModal @hidden="germplasmId = null" :germplasmId="germplasmId" ref="institutionModal" v-if="germplasmId" />
+
   </div>
 </template>
 
@@ -183,16 +194,18 @@
 import { mapGetters } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
 import LocationMap from '@/components/map/LocationMap'
+import InstitutionModal from '@/components/modals/InstitutionModal'
 import Passport from '@/views/data/germplasm/Passport'
 import defaultProps from '@/const/table-props'
 import germplasmApi from '@/mixins/api/germplasm'
 import utilMixin from '@/mixins/util'
+import formattingMixin from '@/mixins/formatting'
 import imagesMixin from '@/mixins/image'
 import typesMixin from '@/mixins/types'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
-import { mdiHelpCircle, mdiOpenInApp, mdiMapMarker, mdiCamera, mdiChevronUpBox, mdiChevronUpBoxOutline, mdiChevronDownBox, mdiChevronDownBoxOutline } from '@mdi/js'
+import { mdiHelpCircle, mdiOpenInApp, mdiMapMarker, mdiCamera, mdiChevronUpBox, mdiPageNext, mdiChevronUpBoxOutline, mdiChevronDownBox, mdiChevronDownBoxOutline } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -216,6 +229,7 @@ export default {
   data: function () {
     return {
       mdiHelpCircle,
+      mdiPageNext,
       mdiOpenInApp,
       mdiMapMarker,
       mdiCamera,
@@ -224,6 +238,7 @@ export default {
       mdiChevronDownBox,
       mdiChevronDownBoxOutline,
       germplasmId: null,
+      selectedGermplasmInstitutionIds: null,
       options: {
         idColumn: 'germplasmId',
         tableName: 'germplasm',
@@ -332,17 +347,12 @@ export default {
           class: `${this.isTableColumnHidden(this.options.tableName, 'collectorNumber')}`,
           label: this.$t('tableColumnCollectorNumber')
         }, {
-          key: 'institutionId',
-          type: Number,
-          sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'institutionId')}`,
-          label: this.$t('tableColumnInstitutionId')
-        }, {
-          key: 'institutionName',
-          type: String,
-          sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'institutionName')}`,
-          label: this.$t('tableColumnInstitutionName')
+          key: 'institutions',
+          type: 'jsonObject',
+          sortable: false,
+          class: `${this.isTableColumnHidden(this.options.tableName, 'institutions')}`,
+          label: this.$t('tableColumnGermplasmInstitutions'),
+          formatter: value => value ? value.map(i => `Code: ${i.code || 'N/A'}, name: ${i.name}, address: ${i.address || 'N/A'}, type: ${i.type}`).join('; ') : null
         }, {
           key: 'genus',
           type: String,
@@ -473,11 +483,19 @@ export default {
   components: {
     BaseTable,
     LocationMap,
+    InstitutionModal,
     MdiIcon,
     Passport
   },
-  mixins: [germplasmApi, imagesMixin, typesMixin, utilMixin],
+  mixins: [germplasmApi, imagesMixin, typesMixin, utilMixin, formattingMixin],
   methods: {
+    showInstitutionModal: function (germplasm) {
+      if (germplasm) {
+        this.germplasmId = germplasm.germplasmId
+
+        this.$nextTick(() => this.$refs.institutionModal.show())
+      }
+    },
     selectGermplasm: function (id) {
       this.germplasmId = id
       this.$nextTick(() => this.$refs.passportModal.show())

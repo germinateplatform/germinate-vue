@@ -84,7 +84,7 @@
                 </template>
                 <template v-else>
                   <!-- JSON columns -->
-                  <template v-if="isType(f, String) || isType(f, 'json')">
+                  <template v-if="isType(f, String) || isType(f, 'json') || isType(f, 'jsonObject')">
                     <b-form-input v-model="f.values[0]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values > 0"/>
                     <b-form-input disabled v-else />
                     <b-form-input v-model="f.values[1]" @focus.native="$event.target.select()" v-if="comparators[f.comparator].values === 2" />
@@ -200,6 +200,7 @@ export default {
         locationType: ['equals', 'isNull'],
         entityType: ['equals', 'isNull'],
         json: ['contains', 'isNull'],
+        jsonObject: ['jsonSearch'],
         Number: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'inSet', 'isNull'],
         Date: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'isNull']
       },

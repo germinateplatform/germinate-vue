@@ -7,13 +7,15 @@
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdGid') }}</dt><dd class="col-9">{{ germplasm.accenumb }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdAccessionName') }}</dt><dd class="col-9">{{ germplasm.accename }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdAccessionNumber') }}</dt><dd class="col-9">{{ germplasm.accenumb }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBreederCode') }}</dt><dd class="col-9">{{ germplasm.bredcode }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBreederName') }}</dt><dd class="col-9">{{ germplasm.bredname }}</dd>
+      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBreederCode') }}</dt><dd class="col-9">{{ germplasm.bredcode }}</dd> -->
+      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBreederName') }}</dt><dd class="col-9">{{ germplasm.bredname }}</dd> -->
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBiologicalStatus') }}</dt><dd class="col-9">{{ sampstat[germplasm.sampstat] }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingSource') }}</dt><dd class="col-9">{{ collsrc[germplasm.collsrc] }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingNumber') }}</dt><dd class="col-9">{{ germplasm.collnumb }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdInstitutionCode') }}</dt><dd class="col-9">{{ germplasm.instcode }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingInst') }}</dt><dd class="col-9">{{ germplasm.collinstaddress }}</dd>
+      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingCode') }}</dt><dd class="col-9">{{ germplasm.collcode }}</dd> -->
+      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingName') }}</dt><dd class="col-9">{{ germplasm.collname }}</dd> -->
+      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingInst') }}</dt><dd class="col-9">{{ germplasm.collinstaddress }}</dd> -->
+      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdInstitutionCode') }}</dt><dd class="col-9">{{ germplasm.instcode }}</dd> -->
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdGenus') }}</dt><dd class="col-9 font-italic">{{ germplasm.genus }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSpecies') }}</dt><dd class="col-9 font-italic">{{ germplasm.species }}</dd>
       <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCropName') }}</dt><dd class="col-9">{{ germplasm.cropname }}</dd>
@@ -101,11 +103,21 @@ export default {
   },
   methods: {
     toMcpdDate: function (str) {
-      const y = +str.substr(0, 4)
-      const m = +str.substr(4, 2) - 1
-      const d = +str.substr(6, 2)
-      const date = new Date(y, m, d)
-      return (date.getFullYear() === y && date.getMonth() === m && date.getDate() === d) ? date.toLocaleDateString() : null
+      if (str.length === 8) {
+        const y = +str.substr(0, 4)
+        const m = +str.substr(4, 2) - 1
+        const d = +str.substr(6, 2)
+        const date = new Date(y, m, d)
+        return (date.getFullYear() === y && date.getMonth() === m && date.getDate() === d) ? date.toLocaleDateString() : null
+      } else if (str.length === 10) {
+        const y = +str.substr(0, 4)
+        const m = +str.substr(5, 2) - 1
+        const d = +str.substr(8, 2)
+        const date = new Date(y, m, d)
+        return (date.getFullYear() === y && date.getMonth() === m && date.getDate() === d) ? date.toLocaleDateString() : null
+      } else {
+        return 'Invalid date format'
+      }
     },
     getFlag: function (code3) {
       if (code3 && countries.alpha3ToAlpha2(code3)) {

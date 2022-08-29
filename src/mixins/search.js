@@ -47,6 +47,10 @@ export default {
         inSet: {
           text: () => this.$t('comparatorsInSet'),
           values: 1
+        },
+        jsonSearch: {
+          text: () => this.$t('comparatorsJsonSearch'),
+          values: 1
         }
       }
     }

@@ -40,26 +40,22 @@
         </h2>
         <p v-html="$t('pagePassportText')" />
 
-        <b-button target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.accenumb}`">
-          <MdiIcon :path="mdiBarcode" /> {{ $t('pagePassportGenerateBarcode') }}
-        </b-button>
-
-        <!-- PDCI -->
-        <template v-if="germplasmTableData && germplasmTableData.pdci">
-          <hr />
-          <h2 class="mdi-heading">
-            <span class="text-primary"><MdiIcon :path="mdiChartDonut" /></span> <span> {{ $t('pagePassportPdciTitle') }} </span><small><a href="#" @click.prevent="showPdciModal">
-              <span class="text-muted"><MdiIcon :path="mdiHelpCircle" /></span>
-            </a></small></h2>
-          <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasmTableData.pdci.toFixed(2) }) }}</strong></p>
-        </template>
         <hr />
+
         <b-row>
           <b-col cols=12 lg=6>
             <!-- MCPD -->
             <Mcpd :germplasm="germplasm"/>
           </b-col>
           <b-col cols=12 lg=6>
+            <!-- PDCI -->
+            <template v-if="germplasmTableData && germplasmTableData.pdci">
+              <h2 class="mdi-heading">
+                <span class="text-primary"><MdiIcon :path="mdiChartDonut" /></span> <span> {{ $t('pagePassportPdciTitle') }} </span><small><a href="#" @click.prevent="showPdciModal">
+                  <span class="text-muted"><MdiIcon :path="mdiHelpCircle" /></span>
+                </a></small></h2>
+              <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasmTableData.pdci.toFixed(2) }) }}</strong></p>
+            </template>
             <!-- Synonyms -->
             <template v-if="germplasmTableData && germplasmTableData.synonyms">
               <h2 class="mdi-heading"><span class="text-primary"><MdiIcon :path="mdiTagTextOutline" /></span><span> {{ $t('pagePassportSynonymsTitle') }}</span></h2>
@@ -70,22 +66,29 @@
               </ul>
             </template>
 
-            <!-- Institution -->
-            <Institution v-if="germplasmTableData" :institutionId="germplasmTableData.institutionId" id="institution"/>
+            <h2 class="mdi-heading" id="links"><span class="text-primary"><MdiIcon :path="mdiLinkVariant" /></span><span> {{ $t('pagePassportLinksTitle') }}</span></h2>
+            <p v-html="$t('pagePassportLinksText')" />
+            <!-- Links -->
+            <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
+
+            <b-button target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.accenumb}`">
+              <MdiIcon :path="mdiBarcode" /> {{ $t('pagePassportGenerateBarcode') }}
+            </b-button>
           </b-col>
         </b-row>
+
+        <hr />
+        <!-- Institution -->
+        <div v-if="germplasmTableData">
+          <h2 class="mdi-heading"><span class="text-primary"><MdiIcon :path="mdiCity" /></span> <span> {{ $t('pagePassportInstitutionTitle') }} </span></h2>
+          <InstitutionTable :getData="getGermplasmInstitutionData" id="institution"/>
+        </div>
 
         <hr />
         <h2 class="mdi-heading" id="publications"><span class="text-primary"><MdiIcon :path="mdiTextBoxCheckOutline" /></span><span> {{ $t('pagePassportPublicationsTitle') }}</span></h2>
         <p v-html="$t('pagePassportPublicationsText')" />
 
         <PublicationsWidget :referencingId="germplasmId" referenceType="germplasm" />
-
-        <hr />
-        <h2 class="mdi-heading" id="links"><span class="text-primary"><MdiIcon :path="mdiLinkVariant" /></span><span> {{ $t('pagePassportLinksTitle') }}</span></h2>
-        <p v-html="$t('pagePassportLinksText')" />
-        <!-- Links -->
-        <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
 
         <div v-show="performanceDataCount > 0">
           <hr />
@@ -200,7 +203,7 @@ import EntityTable from '@/components/tables/EntityTable'
 import GermplasmAttributeTable from '@/components/tables/GermplasmAttributeTable'
 import GermplasmTraitStats from '@/components/germplasm/GermplasmTraitStats'
 import GroupTable from '@/components/tables/GroupTable'
-import Institution from '@/components/institution/Institution'
+import InstitutionTable from '@/components/tables/InstitutionTable'
 import LocationCountrySelectionModal from '@/components/modals/LocationCountrySelectionModal'
 import LocationSelectionModal from '@/components/modals/LocationSelectionModal'
 import Mcpd from '@/components/germplasm/Mcpd'
@@ -216,7 +219,7 @@ import germplasmApi from '@/mixins/api/germplasm'
 import miscApi from '@/mixins/api/misc'
 import typesMixin from '@/mixins/types'
 
-import { mdiPlaylistPlus, mdiCommentAccountOutline, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiBarcode, mdiChartDonut, mdiHelpCircle, mdiTagTextOutline, mdiTextBoxCheckOutline, mdiLinkVariant, mdiSpeedometer, mdiDatabase, mdiFamilyTree, mdiMapMarker, mdiTable, mdiImageMultiple, mdiGroup, mdiFileTree, mdiCircleMedium, mdiSubdirectoryArrowRight } from '@mdi/js'
+import { mdiPlaylistPlus, mdiCommentAccountOutline, mdiCheckboxBlankOutline, mdiCity, mdiCheckboxMarked, mdiBarcode, mdiChartDonut, mdiHelpCircle, mdiTagTextOutline, mdiTextBoxCheckOutline, mdiLinkVariant, mdiSpeedometer, mdiDatabase, mdiFamilyTree, mdiMapMarker, mdiTable, mdiImageMultiple, mdiGroup, mdiFileTree, mdiCircleMedium, mdiSubdirectoryArrowRight } from '@mdi/js'
 
 export default {
   data: function () {
@@ -231,6 +234,7 @@ export default {
       mdiLinkVariant,
       mdiSpeedometer,
       mdiDatabase,
+      mdiCity,
       mdiFamilyTree,
       mdiMapMarker,
       mdiTable,
@@ -276,7 +280,7 @@ export default {
     GroupTable,
     ImageGallery,
     LocationCountrySelectionModal,
-    Institution,
+    InstitutionTable,
     Links,
     LocationMap,
     LocationSelectionModal,
@@ -406,6 +410,9 @@ export default {
     },
     getCommentData: function (data, callback) {
       return this.apiPostCommentsTable(data, callback)
+    },
+    getGermplasmInstitutionData: function (data, callback) {
+      return this.apiPostGermplasmInstitutionTable(this.currentGermplasmId, data, callback)
     },
     getDatasetData: function (data, callback) {
       return this.apiPostGermplasmDatasetTable(this.currentGermplasmId, data, callback)

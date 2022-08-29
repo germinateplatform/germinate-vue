@@ -63,6 +63,7 @@ const userState = {
     experiments: [],
     entities: [],
     groups: ['userId'],
+    institutions: [],
     locations: [],
     pedigrees: [],
     pedigreedefinitions: ['pedigreeNotationDescription', 'pedigreeDescriptionDescription'],

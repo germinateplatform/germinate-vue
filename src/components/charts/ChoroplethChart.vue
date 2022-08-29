@@ -28,7 +28,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'storeDarkMode'
+      'storeDarkMode',
+      'storeServerSettings'
     ]),
     baseSourceFile: function () {
       return {
@@ -67,14 +68,28 @@ export default {
       reader.onload = () => {
         const rows = d3Dsv.tsvParse(reader.result)
 
-        const color = this.getColor(0)
+        let gradientColors
+
+        if (this.storeServerSettings && this.storeServerSettings.colorsGradient && this.storeServerSettings.colorsGradient.length > 0) {
+          gradientColors = this.storeServerSettings.colorsGradient.concat()
+        } else {
+          gradientColors.push('#ffffff')
+          gradientColors.push(this.getColor(0))
+        }
+
+        const gradient = []
+
+        gradientColors.forEach((c, i) => {
+          const position = i * (1 / (gradientColors.length - 1))
+          gradient.push([position, c])
+        })
 
         const data = [{
           type: 'choropleth',
           locations: this.unpack(rows, 'code'),
           z: this.unpack(rows, 'count'),
           text: this.unpack(rows, 'country'),
-          colorscale: [[0, this.hexToRgbA(color, 0.1)], [1, this.hexToRgbA(color, 1)]],
+          colorscale: gradient,
           autocolorscale: false,
           reversescale: false,
           marker: {

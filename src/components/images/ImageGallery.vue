@@ -6,7 +6,7 @@
       <CoolLightBox
         :items="coolboxImages"
         :index="coolboxIndex"
-        @on-open="rotateExif"
+        effect="fade"
         @close="coolboxIndex = null" />
 
       <!-- Show each image node -->
@@ -48,7 +48,6 @@ import imageMixin from '@/mixins/image'
 import miscApi from '@/mixins/api/misc.js'
 import utilMixin from '@/mixins/util'
 import authApi from '@/mixins/api/auth.js'
-import { EXIF } from 'exif-js'
 
 import { mdiDownload, mdiUpload } from '@mdi/js'
 
@@ -193,34 +192,6 @@ export default {
       }, result => {
         this.images = result.data
         this.imageCount = result.count
-      })
-    },
-    rotateExif: function () {
-      const overlays = document.querySelectorAll('.cool-lightbox img')
-
-      overlays.forEach(i => {
-        if (i.complete && i.naturalHeight !== 0) {
-          // Rotate the image on load based on EXIF information
-          this.rotateBasedOnExif(i)
-        } else {
-          i.addEventListener('load', () => {
-            // Rotate the image on load based on EXIF information
-            this.rotateBasedOnExif(i)
-          }, { once: true })
-        }
-      })
-    },
-    rotateBasedOnExif: function (image) {
-      // Read the EXIF information and then add a rotation class
-      EXIF.getData(image, function () {
-        const orientation = EXIF.getTag(this, 'Orientation')
-        if (orientation === 6) {
-          image.className = 'rotate90'
-        } else if (orientation === 8) {
-          image.className = 'rotate270'
-        } else if (orientation === 3) {
-          image.className = 'rotate180'
-        }
       })
     },
     refresh: function () {

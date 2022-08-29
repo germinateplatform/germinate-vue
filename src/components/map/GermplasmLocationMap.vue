@@ -155,7 +155,7 @@ export default {
         this.$nextTick(() => {
           this.$refs.map.mapObject.invalidateSize()
 
-          if (this.bounds.isValid()) {
+          if (this.bounds && this.bounds.isValid()) {
             this.$nextTick(() => this.$refs.map.mapObject.fitBounds(this.bounds))
           }
         })
@@ -387,7 +387,13 @@ export default {
     }
   },
   mounted: function () {
-    this.gradientColors = ['#000000', this.getColor(0)]
+    if (this.storeServerSettings && this.storeServerSettings.colorsGradient && this.storeServerSettings.colorsGradient.length > 0) {
+      this.gradientColors = this.storeServerSettings.colorsGradient.concat()
+    } else {
+      this.gradientColors.push('#ffffff')
+      this.gradientColors.push(this.getColor(0))
+    }
+
     this.$nextTick(() => {
       // Add the OSM default layer
       const openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

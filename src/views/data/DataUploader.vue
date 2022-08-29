@@ -53,8 +53,8 @@
           button-variant="outline-primary"
           :options="updateOptions"
           buttons />
-        <p class="text-muted" v-if="isUpdate">{{ $t('pageDataUploadUpdateExplanationInsert') }}</p>
-        <p class="text-muted" v-else>{{ $t('pageDataUploadUpdateExplanationUpdate') }}</p>
+        <p class="text-muted" v-if="isUpdate">{{ $t('pageDataUploadUpdateExplanationUpdate') }}</p>
+        <p class="text-muted" v-else>{{ $t('pageDataUploadUpdateExplanationInsert') }}</p>
       </div>
 
       <!-- Submit -->

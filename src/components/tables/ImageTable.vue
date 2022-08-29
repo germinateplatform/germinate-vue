@@ -3,7 +3,7 @@
     <CoolLightBox
       :items="coolboxImages"
       :index="coolboxIndex"
-      @on-open="rotateExif"
+      effect="fade"
       @close="coolboxIndex = null" />
     <BaseTable :options="options"
                :columns="columns"
@@ -64,7 +64,6 @@ import typesMixin from '@/mixins/types'
 import colorMixin from '@/mixins/colors'
 import utilMixin from '@/mixins/util'
 import imageMixin from '@/mixins/image'
-import { EXIF } from 'exif-js'
 
 import { mdiImageText } from '@mdi/js'
 
@@ -166,18 +165,6 @@ export default {
       this.selectedImage = image
       this.$nextTick(() => this.$refs.imageExifModal.show())
     },
-    rotateBasedOnExif: function (image) {
-      EXIF.getData(image, function () {
-        const orientation = EXIF.getTag(this, 'Orientation')
-        if (orientation === 6) {
-          image.className = 'rotate90'
-        } else if (orientation === 8) {
-          image.className = 'rotate270'
-        } else if (orientation === 3) {
-          image.className = 'rotate180'
-        }
-      })
-    },
     getTextColor: function (tag) {
       const color = this.getTagColor(tag)
 
@@ -206,21 +193,6 @@ export default {
         title: i.imageDescription
       }]
       this.coolboxIndex = 0
-    },
-    rotateExif: function () {
-      const overlays = document.querySelectorAll('.cool-lightbox img')
-
-      overlays.forEach(i => {
-        if (i.complete && i.naturalHeight !== 0) {
-          // Rotate the image on load based on EXIF information
-          this.rotateBasedOnExif(i)
-        } else {
-          i.addEventListener('load', () => {
-            // Rotate the image on load based on EXIF information
-            this.rotateBasedOnExif(i)
-          }, { once: true })
-        }
-      })
     },
     refresh: function () {
       this.$refs.table.refresh()

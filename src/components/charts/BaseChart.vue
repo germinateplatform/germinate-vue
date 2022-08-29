@@ -11,7 +11,7 @@
           <!-- Download options -->
           <b-dropdown-item @click="getFilename('png')" v-if="supportsPngDownload"><MdiIcon :path="mdiFileImage" /> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
           <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><MdiIcon :path="mdiFileCode" /> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
-          <b-dropdown-item @click="downloadSource()"><MdiIcon :path="mdiFileDocument" /> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
+          <b-dropdown-item @click="downloadSource()" v-if="sourceFile"><MdiIcon :path="mdiFileDocument" /> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
           <b-dropdown-item @click="$refs.customChartColorModal.show()" v-if="canChangeColors"><MdiIcon :path="mdiPalette" /> {{ $t('buttonChangeChartColors') }}</b-dropdown-item>
           <!-- Additional options -->
           <slot name="additionalMenuItems" />

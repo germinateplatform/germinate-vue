@@ -42,7 +42,8 @@
       <template v-slot:cell(datasetDescription)="data">
         <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ truncateAfterWords(data.item.datasetDescription, 10) }}</span>
         <a href="#" class="table-icon-link" @click.prevent="showFullDatasetDescription(data.item.datasetDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.datasetDescription, 10)" >&nbsp;
-          <MdiIcon :path="mdiPageNext" /></a>
+          <MdiIcon :path="mdiPageNext" />
+        </a>
       </template>
       <!-- Experiment name -->
       <template v-slot:cell(experimentName)="data">
