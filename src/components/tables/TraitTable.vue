@@ -104,74 +104,64 @@ export default {
         {
           key: 'traitId',
           type: Number,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'traitId')}`,
+          class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnTraitId')
         }, {
           key: 'traitName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'traitName')}`,
           sortable: true,
           label: this.$t('tableColumnTraitName'),
           preferedSortingColumn: true
         }, {
           key: 'traitNameShort',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'traitNameShort')}`,
           sortable: true,
           label: this.$t('tableColumnTraitNameShort')
         }, {
           key: 'traitDescription',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'traitDescription')}`,
           sortable: true,
           label: this.$t('tableColumnTraitDescription')
         }, {
           key: 'dataType',
           type: 'dataType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'dataType')}`,
           label: this.$t('tableColumnTraitDataType')
         }, {
           key: 'traitRestrictions',
           type: undefined,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'traitRestrictions')}`,
           sortable: false,
           label: this.$t('tableColumnTraitConstraints')
         }, {
           key: 'synonyms',
           type: 'json',
-          class: `${this.isTableColumnHidden(this.options.tableName, 'synonyms')}`,
           sortable: true,
           label: this.$t('tableColumnTraitSynonyms')
         }, {
           key: 'unitName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,
           sortable: true,
           label: this.$t('tableColumnTraitUnitName')
         }, {
           key: 'unitDescription',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'unitDescription')}`,
           sortable: true,
           label: this.$t('tableColumnTraitUnitDescription')
         }, {
           key: 'unitAbbreviation',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'unitAbbreviation')}`,
           sortable: true,
           label: this.$t('tableColumnTraitUnitAbbreviation')
         }, {
           key: 'datasetIds',
           type: undefined,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetIds')}`,
           sortable: false,
           label: this.$t('tableColumnTraitNrDataset')
         }, {
           key: 'count',
           type: Number,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
+          class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnTraitDataPoints'),
           formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null

@@ -178,11 +178,12 @@ $badge-font-size: 85%;
 $small-font-size: 70%;
 
 $container-max-widths: (
-  sm: 540px,
-  md: 720px,
-  lg: 960px,
-  xl: 1140px,
-  xxl: 1400px
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+  xxxl: 1600px
 );
 
 $grid-breakpoints: (
@@ -190,8 +191,9 @@ $grid-breakpoints: (
   sm: 576px,
   md: 768px,
   lg: 992px,
-  xl: 1200px,
-  xxl: 1500px
+  xl: 1140px,
+  xxl: 1320px,
+  xxxl: 1500px
 );
 
 @import '~bootswatch/dist/cosmo/variables';

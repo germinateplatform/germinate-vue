@@ -44,44 +44,38 @@ export default {
           key: 'datasetId',
           type: undefined,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnAttributeDatasetId')
         }, {
           key: 'datasetName',
           type: undefined,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           label: this.$t('tableColumnAttributeDatasetName'),
           preferedSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: undefined,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
           label: this.$t('tableColumnAttributeDatasetDescription')
         }, {
           key: 'attributeName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeName')}`,
           label: this.$t('tableColumnAttributeName')
         }, {
           key: 'attributeDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeDescription')}`,
           label: this.$t('tableColumnAttributeDescription')
         }, {
           key: 'attributeType',
           type: 'dataType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeType')}`,
           label: this.$t('tableColumnAttributeDataType')
         }, {
           key: 'attributeValue',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeValue')}`,
           label: this.$t('tableColumnAttributeValue')
         }
       ]

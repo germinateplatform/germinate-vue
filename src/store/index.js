@@ -46,30 +46,31 @@ const userState = {
     markers: []
   },
   hiddenColumns: {
-    germplasm: ['id', 'entityParentName', 'entityParentGeneralIdentifier', 'institutionId', 'institutionName', 'latitude', 'longitude', 'collDate'],
+    germplasm: [],
     germplasmAttributes: [],
     images: [],
     climates: [],
-    climateData: ['climateId'],
+    climateData: [],
     compounds: [],
-    compoundData: ['compoundId'],
-    comments: ['commentForeignId', 'commentTypeId'],
-    fileresources: ['fileresourcetypeId'],
+    compoundData: [],
+    comments: [],
+    fileresources: [],
     maps: [],
     markers: [],
     mapDefinitions: [],
-    datasets: ['experimentId'],
+    datasets: [],
     datasetAttributes: [],
     experiments: [],
     entities: [],
-    groups: ['userId'],
+    groups: [],
     institutions: [],
     locations: [],
     pedigrees: [],
-    pedigreedefinitions: ['pedigreeNotationDescription', 'pedigreeDescriptionDescription'],
+    pedigreedefinitions: [],
     traits: [],
-    trialsData: ['traitId'],
-    collaborators: []
+    trialsData: [],
+    collaborators: [],
+    publications: []
   },
   asyncJobUuids: [],
   asyncJobCount: 0,
@@ -192,6 +193,12 @@ const storeState = {
     ON_RECENT_IDS_CLEAR_MUTATION: function (state, type) {
       state.userStates[state.token ? state.token.id : null].recentIds[type] = []
     },
+    ON_HIDDEN_COLUMNS_SET_MUTATION: function (state, { type, columns }) {
+      // Only overwrite with the settings received from the server if the array either doesn't exist or is empty
+      if (!state.userStates[state.token ? state.token.id : null].hiddenColumns[type] || state.userStates[state.token ? state.token.id : null].hiddenColumns[type].length < 1) {
+        Vue.set(state.userStates[state.token ? state.token.id : null].hiddenColumns, type, columns)
+      }
+    },
     ON_HIDDEN_COLUMNS_ADD_MUTATION: function (state, { type, columns }) {
       columns.forEach(id => {
         if (state.userStates[state.token ? state.token.id : null].hiddenColumns[type].indexOf(id) === -1) {
@@ -307,6 +314,9 @@ const storeState = {
     clearRecentIds: function ({ commit }, type) {
       commit('ON_RECENT_IDS_CLEAR_MUTATION', type)
     },
+    setHiddenColumns: function ({ commit }, payload) {
+      commit('ON_HIDDEN_COLUMNS_SET_MUTATION', payload)
+    },
     addHiddenColumns: function ({ commit }, payload) {
       commit('ON_HIDDEN_COLUMNS_ADD_MUTATION', payload)
     },
@@ -318,6 +328,83 @@ const storeState = {
     },
     setServerSettings: function ({ commit }, serverSettings) {
       commit('ON_SETTINGS_CHANGED_MUTATION', serverSettings)
+
+      if (serverSettings && serverSettings.hiddenColumns) {
+        // Overwrite current hidden columns with server defaults. This will only take place the first time Germinate loads,
+        // because afterwards we can't tell whether the current hidden columns are user-specified or server-specified
+        if (serverSettings.hiddenColumns.germplasm) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'germplasm', columns: serverSettings.hiddenColumns.germplasm })
+        }
+        if (serverSettings.hiddenColumns.germplasmAttributes) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'germplasmAttributes', columns: serverSettings.hiddenColumns.germplasmAttributes })
+        }
+        if (serverSettings.hiddenColumns.images) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'images', columns: serverSettings.hiddenColumns.images })
+        }
+        if (serverSettings.hiddenColumns.climates) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'climates', columns: serverSettings.hiddenColumns.climates })
+        }
+        if (serverSettings.hiddenColumns.climateData) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'climateData', columns: serverSettings.hiddenColumns.climateData })
+        }
+        if (serverSettings.hiddenColumns.compounds) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'compounds', columns: serverSettings.hiddenColumns.compounds })
+        }
+        if (serverSettings.hiddenColumns.compoundData) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'compoundData', columns: serverSettings.hiddenColumns.compoundData })
+        }
+        if (serverSettings.hiddenColumns.comments) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'comments', columns: serverSettings.hiddenColumns.comments })
+        }
+        if (serverSettings.hiddenColumns.fileresources) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'fileresources', columns: serverSettings.hiddenColumns.fileresources })
+        }
+        if (serverSettings.hiddenColumns.maps) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'maps', columns: serverSettings.hiddenColumns.maps })
+        }
+        if (serverSettings.hiddenColumns.markers) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'markers', columns: serverSettings.hiddenColumns.markers })
+        }
+        if (serverSettings.hiddenColumns.mapDefinitions) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'mapDefinitions', columns: serverSettings.hiddenColumns.mapDefinitions })
+        }
+        if (serverSettings.hiddenColumns.datasets) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'datasets', columns: serverSettings.hiddenColumns.datasets })
+        }
+        if (serverSettings.hiddenColumns.datasetAttributes) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'datasetAttributes', columns: serverSettings.hiddenColumns.datasetAttributes })
+        }
+        if (serverSettings.hiddenColumns.experiments) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'experiments', columns: serverSettings.hiddenColumns.experiments })
+        }
+        if (serverSettings.hiddenColumns.entities) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'entities', columns: serverSettings.hiddenColumns.entities })
+        }
+        if (serverSettings.hiddenColumns.groups) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'groups', columns: serverSettings.hiddenColumns.groups })
+        }
+        if (serverSettings.hiddenColumns.institutions) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'institutions', columns: serverSettings.hiddenColumns.institutions })
+        }
+        if (serverSettings.hiddenColumns.locations) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'locations', columns: serverSettings.hiddenColumns.locations })
+        }
+        if (serverSettings.hiddenColumns.pedigrees) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'pedigrees', columns: serverSettings.hiddenColumns.pedigrees })
+        }
+        if (serverSettings.hiddenColumns.pedigreedefinitions) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'pedigreedefinitions', columns: serverSettings.hiddenColumns.pedigreedefinitions })
+        }
+        if (serverSettings.hiddenColumns.traits) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'traits', columns: serverSettings.hiddenColumns.traits })
+        }
+        if (serverSettings.hiddenColumns.trialsData) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'trialsData', columns: serverSettings.hiddenColumns.trialsData })
+        }
+        if (serverSettings.hiddenColumns.collaborators) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'collaborators', columns: serverSettings.hiddenColumns.collaborators })
+        }
+      }
     },
     setHelpKey: function ({ commit }, helpKey) {
       commit('ON_HELP_KEY_CHANGED_MUTATION', helpKey)

@@ -97,57 +97,50 @@ export default {
           key: 'imageId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'imageId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnImageId')
         }, {
           key: 'referenceName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'referenceName')}`,
           label: this.$t('tableColumnImageReferenceName'),
           preferedSortingColumn: true
         }, {
           key: 'imageRefTable',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'imageRefTable')}`,
           label: this.$t('tableColumnImageReferenceTable')
         }, {
           key: 'imageDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'imageDescription')}`,
           label: this.$t('tableColumnImageDescription')
         }, {
           key: 'imagePath',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'imagePath')}`,
           label: this.$t('tableColumnImagePath')
         }, {
           key: 'imageExif',
           type: 'json',
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'imageExif')}`,
           label: this.$t('tableColumnImageExif')
         }, {
           key: 'tags',
           type: 'json',
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'tags')}`,
           label: this.$t('tableColumnImageTags')
         }, {
           key: 'createdOn',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnImageCreatedOn'),
           formatter: value => value ? new Date(value).toLocaleString() : null
         }, {
           key: 'image',
           type: undefined,
           sortable: false,
-          class: `p-0 ${this.isTableColumnHidden(this.options.tableName, 'image')}`,
+          class: 'p-0',
           label: ''
         }
       ]

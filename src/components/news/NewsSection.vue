@@ -2,7 +2,7 @@
   <div>
     <template v-if="(projects && projects.length > 0) || (news && news.length > 0)">
       <b-row>
-        <b-col xs=12 sm=6 v-if="news && news.length > 0">
+        <b-col cols=12 sm=6 v-if="news && news.length > 0">
           <!-- News -->
           <h2>{{ $t('pageNewsLatestNewsTitle') }}</h2>
           <b-list-group class="news-items">
@@ -37,11 +37,11 @@
             </b-button-group>
           </b-modal>
         </b-col>
-        <b-col xs=12 sm=6 v-if="projects && projects.length > 0">
+        <b-col cols=12 sm=6 v-if="projects && projects.length > 0">
           <!-- Projects -->
           <h2>{{ $t('pageNewsRelatedProjectsTitle') }}</h2>
           <b-row>
-            <b-col xs=12 xl=6 v-for="project in projects" :key="'project-' + project.newsId" class="mb-3">
+            <b-col cols=12 xl=6 v-for="project in projects" :key="'project-' + project.newsId" class="mb-3">
               <b-card no-body class="news-card h-100">
                 <b-img-lazy :src="getImageSrc(project)" class="card-img" style="height: 200px" v-if="project.newsImage" :alt="project.newsTitle" />
 

@@ -54,19 +54,17 @@ export default {
         {
           key: 'germplasmId',
           type: Number,
-          class: `text-right${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
+          class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnGermplasmId')
         }, {
           key: 'germplasmGid',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmGid')}`,
           sortable: true,
           label: this.$t('tableColumnGermplasmGeneralIdentifier')
         }, {
           key: 'germplasmName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmName')}`,
           sortable: true,
           label: this.$t('tableColumnGermplasmName'),
           preferedSortingColumn: true
@@ -74,68 +72,59 @@ export default {
           key: 'germplasmSynonyms',
           type: 'json',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmSynonyms')}`,
           label: this.$t('tableColumnSynonyms')
         }, {
           key: 'entityType',
           type: 'entityTyp',
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityType')}`,
           sortable: true,
           label: this.$t('tableColumnEntityType')
         }, {
           key: 'entityParentGeneralIdentifier',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentGeneralIdentifier')}`,
           sortable: true,
           label: this.$t('tableColumnEntityParentGid')
         }, {
           key: 'entityParentName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentName')}`,
           sortable: true,
           label: this.$t('tableColumnEntityParentName')
         }, {
           key: 'datasetName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           sortable: true,
           label: this.$t('tableColumnDatasetName')
         }, {
           key: 'compoundId',
           type: Number,
-          class: `text-right${this.isTableColumnHidden(this.options.tableName, 'compoundId')}`,
+          class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnCompoundId')
         }, {
           key: 'compoundName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'compoundName')}`,
           sortable: true,
           label: this.$t('tableColumnCompoundName')
         }, {
           key: 'unitName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,
           sortable: true,
           label: this.$t('tableColumnCompoundUnitName')
         }, {
           key: 'recordingDate',
           type: Date,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'recordingDate')}`,
           sortable: true,
           label: this.$t('tableColumnCompoundDataRecordingDate'),
           formatter: this.$options.filters.toDate
         }, {
           key: 'compoundValue',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'compoundValue')}`,
           sortable: true,
           label: this.$t('tableColumnCompoundDataCompoundValue'),
           formatter: value => value !== null ? value.toFixed(2) : null
         }, {
           key: 'marked',
           type: null,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          class: 'text-right',
           sortable: false,
           label: ''
         }

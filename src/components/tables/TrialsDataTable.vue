@@ -79,19 +79,17 @@ export default {
         {
           key: 'germplasmId',
           type: Number,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
+          class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnGermplasmId')
         }, {
           key: 'germplasmGid',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmGid')}`,
           sortable: true,
           label: this.$t('tableColumnGermplasmGeneralIdentifier')
         }, {
           key: 'germplasmName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmName')}`,
           sortable: true,
           label: this.$t('tableColumnGermplasmName'),
           preferedSortingColumn: true
@@ -99,115 +97,101 @@ export default {
           key: 'germplasmSynonyms',
           type: 'json',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmSynonyms')}`,
           label: this.$t('tableColumnSynonyms')
         }, {
           key: 'entityType',
           type: 'entityTyp',
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityType')}`,
           sortable: true,
           label: this.$t('tableColumnEntityType')
         }, {
           key: 'entityParentGeneralIdentifier',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentGeneralIdentifier')}`,
           sortable: true,
           label: this.$t('tableColumnEntityParentGid')
         }, {
           key: 'entityParentName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentName')}`,
           sortable: true,
           label: this.$t('tableColumnEntityParentName')
         }, {
           key: 'datasetName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           sortable: true,
           label: this.$t('tableColumnDatasetName')
         }, {
           key: 'locationName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationName')}`,
           sortable: true,
           label: this.$t('tableColumnLocationName')
         }, {
           key: 'countryName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
           sortable: true,
           label: this.$t('tableColumnCountryName')
         }, {
           key: 'traitId',
           type: Number,
-          class: `text-right${this.isTableColumnHidden(this.options.tableName, 'traitId')}`,
+          class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnTraitId')
         }, {
           key: 'traitName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'traitName')}`,
           sortable: true,
           label: this.$t('tableColumnTraitName')
         }, {
           key: 'treatment',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'treatment')}`,
           sortable: true,
           label: this.$t('tableColumnTraitTreatment')
         }, {
           key: 'rep',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'rep')}`,
           sortable: true,
           label: this.$t('tableColumnTraitRep')
         }, {
           key: 'block',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'block')}`,
           sortable: true,
           label: this.$t('tableColumnTraitBlock')
         }, {
           key: 'latitude',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'latitude')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationLatitude')
         }, {
           key: 'longitude',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'longitude')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationLongitude')
         }, {
           key: 'elevation',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'elevation')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationElevation')
         }, {
           key: 'unitName',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,
           sortable: true,
           label: this.$t('tableColumnCompoundUnitName')
         }, {
           key: 'recordingDate',
           type: Date,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'recordingDate')}`,
           sortable: true,
           label: this.$t('tableColumnCompoundDataRecordingDate'),
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'traitValue',
           type: String,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'traitValue')}`,
           sortable: true,
           label: this.$t('tableColumnTrialsDataTraitValue')
         }, {
           key: 'marked',
           type: null,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          class: 'text-right',
           sortable: false,
           label: ''
         }

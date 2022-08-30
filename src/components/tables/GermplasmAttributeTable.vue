@@ -56,44 +56,38 @@ export default {
           key: 'germplasmId',
           type: String,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnAttributeGermplasmId')
         }, {
           key: 'germplasmGid',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           label: this.$t('tableColumnAttributeGermplasmGid')
         }, {
           key: 'germplasmName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
           label: this.$t('tableColumnAttributeGermplasmName'),
           preferedSortingColumn: true
         }, {
           key: 'attributeName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeName')}`,
           label: this.$t('tableColumnAttributeName')
         }, {
           key: 'attributeDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeDescription')}`,
           label: this.$t('tableColumnAttributeDescription')
         }, {
           key: 'attributeType',
           type: 'dataType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeType')}`,
           label: this.$t('tableColumnAttributeDataType')
         }, {
           key: 'attributeValue',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'attributeValue')}`,
           label: this.$t('tableColumnAttributeValue')
         }
       ]

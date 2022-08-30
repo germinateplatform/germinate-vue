@@ -5,7 +5,7 @@
       <template v-else>{{ heading }}</template>
     </h6>
     <div class="d-flex my-2">
-      <div class="d-flex align-items-center scale-container w-100 bg-light">
+      <div class="d-flex align-items-center scale-container w-100">
         <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: 'var(--primary)' }" />
       </div>
     </div>
@@ -103,5 +103,14 @@ export default {
 .scale-marker {
   width: 2px;
   height: 1.5rem;
+}
+</style>
+<style>
+.scale-container {
+  background-color: #ddd;
+}
+
+.dark-mode .scale-container {
+  background-color: #444;
 }
 </style>

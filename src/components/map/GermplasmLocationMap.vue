@@ -106,25 +106,6 @@ export default {
       center: [22.5937, 2.1094],
       selectedLocation: null,
       selectedGermplasm: null,
-      colorOptions: [{
-        text: this.$t('widgetGermplasmMapSelectOption'),
-        value: null
-      }, {
-        text: this.$t('tableColumnColldate'),
-        value: { fields: ['collDate'], type: 'date', extractValue: (germplasm) => germplasm.collDate ? (new Date(germplasm.collDate).getTime()) : null, format: (value) => (value !== null) ? new Date(value).toLocaleDateString() : '' }
-      }, {
-        text: this.$t('tableColumnElevation'),
-        value: { fields: ['elevation'], type: 'number', extractValue: (germplasm) => germplasm.elevation, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
-      }, {
-        text: this.$t('widgetGermplasmMapOptionTaxonomy'),
-        value: { fields: ['genus', 'species', 'subtaxa'], type: 'text', format: (value) => value }
-      }, {
-        text: this.$t('tableColumnPdci'),
-        value: { fields: ['pdci'], type: 'number', extractValue: (germplasm) => germplasm.pdci, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
-      }, {
-        text: this.$t('tableColumnBiologicalStatus'),
-        value: { fields: ['biologicalStatusName'], type: 'text', format: (value) => value }
-      }],
       colorBy: null,
       colorLegend: [],
       gradientColors: [],
@@ -146,6 +127,30 @@ export default {
     markedStyle: function () {
       const isMarked = this.selectedGermplasm && this.storeMarkedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
       return isMarked ? mdiCheckboxMarked : mdiCheckboxBlankOutline
+    },
+    colorOptions: function () {
+      return [{
+        text: this.$t('widgetGermplasmMapSelectOption'),
+        value: null
+      }, {
+        text: this.$t('tableColumnColldate'),
+        value: { fields: ['collDate'], type: 'date', extractValue: (germplasm) => germplasm.collDate ? (new Date(germplasm.collDate).getTime()) : null, format: (value) => (value !== null) ? new Date(value).toLocaleDateString() : '' }
+      }, {
+        text: this.$t('tableColumnElevation'),
+        value: { fields: ['elevation'], type: 'number', extractValue: (germplasm) => germplasm.elevation, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
+      }, {
+        text: this.$t('widgetGermplasmMapOptionTaxonomy'),
+        value: { fields: ['genus', 'species', 'subtaxa'], type: 'text', format: (value) => value }
+      }, {
+        text: this.$t('tableColumnPdci'),
+        value: { fields: ['pdci'], type: 'number', extractValue: (germplasm) => germplasm.pdci, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
+      }, {
+        text: this.$t('tableColumnBiologicalStatus'),
+        value: { fields: ['biologicalStatusName'], type: 'text', format: (value) => value }
+      }, {
+        text: this.$t('tableColumnCountryName'),
+        value: { fields: ['countryName'], type: 'text', format: (value) => value }
+      }]
     }
   },
   mixins: [colorsMixin, typesMixin, germplasmApi, locationApi],

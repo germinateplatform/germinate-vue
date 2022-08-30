@@ -43,97 +43,87 @@ export default {
           key: 'locationId',
           type: Number,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationId')}`,
           label: this.$t('tableColumnLocationId')
         }, {
           key: 'locationName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationName')}`,
           label: this.$t('tableColumnLocationName')
         }, {
           key: 'locationRegion',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationRegion')}`,
           label: this.$t('tableColumnLocationRegion')
         }, {
           key: 'locationState',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationState')}`,
           label: this.$t('tableColumnLocationState')
         }, {
           key: 'locationType',
           type: 'locationType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationType')}`,
           label: this.$t('tableColumnLocationType')
         }, {
           key: 'locationLatitude',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationLatitude')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationLatitude'),
           formatter: value => value !== null ? value.toFixed(2) : null
         }, {
           key: 'locationLongitude',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationLongitude')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationLongitude'),
           formatter: value => value !== null ? value.toFixed(2) : null
         }, {
           key: 'locationElevation',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationElevation')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationElevation'),
           formatter: value => value !== null ? value.toFixed(2) : null
         }, {
           key: 'countryName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
           label: this.$t('tableColumnLocationCountryName')
         }, {
           key: 'climateId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'climateId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnClimateId')
         }, {
           key: 'climateName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'climateName')}`,
           label: this.$t('tableColumnClimateName'),
           preferedSortingColumn: true
         }, {
           key: 'unitName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,
           label: this.$t('tableColumnClimateUnitName')
         }, {
           key: 'recordingDate',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'recordingDate')}`,
           label: this.$t('tableColumnClimateDataRecordingDate'),
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'climateValue',
           type: Number,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'climateValue')}`,
           label: this.$t('tableColumnClimateDataClimateValue'),
           formatter: value => value !== null ? value.toFixed(2) : null
         }, {
           key: 'marked',
           type: null,
           sortable: false,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          class: 'text-right',
           label: ''
         }
       ]

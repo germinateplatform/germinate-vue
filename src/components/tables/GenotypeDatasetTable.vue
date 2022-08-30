@@ -43,7 +43,7 @@ export default {
         {
           key: 'selected',
           type: undefined,
-          class: `bg-primary ${this.isTableColumnHidden(this.options.tableName, 'selected')}`,
+          class: 'bg-primary',
           sortable: false,
           label: ''
         },
@@ -51,13 +51,11 @@ export default {
           key: 'datasetId',
           type: Number,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetId')}`,
           label: this.$t('tableColumnDatasetId')
         }, {
           key: 'datasetName',
           type: String,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           label: this.$t('tableColumnDatasetName'),
           formatter: value => this.truncateAfterWords(value, 10),
           preferedSortingColumn: true
@@ -65,21 +63,20 @@ export default {
           key: 'datasetDescription',
           type: String,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
           label: this.$t('tableColumnDatasetDescription'),
           formatter: value => this.truncateAfterWords(value, 10)
         }, {
           key: 'dataObjectCount',
           type: Number,
           sortable: false,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataObjectCount')}`,
+          class: 'text-right',
           label: this.$t('tableColumnGenotypeDatasetGermplasmCount'),
           formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
         }, {
           key: 'dataPointCount',
           type: Number,
           sortable: false,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataPointCount')}`,
+          class: 'text-right',
           label: this.$t('tableColumnGenotypeDatasetMarkerCount'),
           formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
         }

@@ -68,76 +68,68 @@ export default {
           key: 'datasetId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnPedigreeDatasetId')
         },
         {
           key: 'datasetName',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
+          class: 'text-right',
           label: this.$t('tableColumnPedigreeDatasetName')
         },
         {
           key: 'parentId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'parentId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnPedigreeParentId')
         }, {
           key: 'parentGid',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'parentGid')}`,
           label: this.$t('tableColumnPedigreeParentGid')
         }, {
           key: 'parentName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'parentName')}`,
           label: this.$t('tableColumnPedigreeParentName'),
           preferedSortingColumn: true
         }, {
           key: 'childId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'childId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnPedigreeChildId')
         }, {
           key: 'childGid',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'childGid')}`,
           label: this.$t('tableColumnPedigreeChildGid')
         }, {
           key: 'childName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'childName')}`,
           label: this.$t('tableColumnPedigreeChildName')
         }, {
           key: 'relationshipType',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'relationshipType')}`,
           label: this.$t('tableColumnPedigreeRelationshipType')
         }, {
           key: 'relationshipDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'relationshipDescription')}`,
           label: this.$t('tableColumnPedigreeRelationshipDescription')
         }, {
           key: 'pedigreeDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pedigreeDescription')}`,
           label: this.$t('tableColumnPedigreeDescription')
         }, {
           key: 'pedigreeAuthor',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pedigreeAuthor')}`,
           label: this.$t('tableColumnPedigreeAuthor')
         }
       ]

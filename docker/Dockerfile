@@ -35,6 +35,9 @@ FROM tomcat:10-jdk11
 
 LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 
+RUN apt-get update && \
+    apt-get --yes --force-yes install imagemagick
+
 RUN mkdir -p /usr/local/tomcat/webapps && \
     rm -rf /usr/local/tomcat/webapps/ROOT
 

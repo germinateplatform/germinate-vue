@@ -42,14 +42,14 @@
         <b-tab :title="$t('pageMapExportOptionMarkerInterval')">
           <p>{{ $t('pageMapExportMarkerIntervalDescription') }}</p>
           <b-row>
-            <b-col xs=12 sm=6>
+            <b-col cols=12 sm=6>
               <b-form-group
                 :label="$t('formLabelMapExportIntervalFirstMarker')"
                 label-for="first-marker">
                 <MarkerLookup id="first-marker" @change="markerId => { intervalMarkerIdOne = markerId }"/>
               </b-form-group>
             </b-col>
-            <b-col xs=12 sm=6>
+            <b-col cols=12 sm=6>
               <b-form-group
                 :label="$t('formLabelMapExportIntervalSecondMarker')"
                 label-for="second-marker">
@@ -62,21 +62,21 @@
         <b-tab :title="$t('pageMapExportOptionMarkerRadius')">
           <p>{{ $t('pageMapExportMarkerRadiusDescription') }}</p>
           <b-row>
-            <b-col xs=12 sm=4>
+            <b-col cols=12 sm=4>
               <b-form-group
                 :label="$t('formLabelMapExportRadiusOffsetLeft')"
                 label-for="offset-left">
                 <b-input type="number" id="offset-left" :min="0" v-model.number="radius.left" />
               </b-form-group>
             </b-col>
-            <b-col xs=12 sm=4>
+            <b-col cols=12 sm=4>
               <b-form-group
                 :label="$t('formLabelMapExportRadiusMarker')"
                 label-for="radius-marker">
                 <MarkerLookup id="radius-marker" @change="markerId => { radius.markerId = markerId }"/>
               </b-form-group>
             </b-col>
-            <b-col xs=12 sm=4>
+            <b-col cols=12 sm=4>
               <b-form-group
                 :label="$t('formLabelMapExportRadiusOffsetRight')"
                 label-for="offset-right">

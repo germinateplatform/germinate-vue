@@ -17,7 +17,10 @@
       </template>
       <!-- Experiment description link -->
       <template v-slot:cell(experimentDescription)="data">
-        <span :title="data.item.experimentDescription">{{ truncateAfterWords(data.item.experimentDescription, 20) }}</span>
+        <span :title="data.item.experimentDescription" v-if="data.item.experimentDescription">{{ truncateAfterWords(data.item.experimentDescription, 10) }}</span>
+        <a href="#" class="table-icon-link" @click.prevent="showFullExperimentDescription(data.item.experimentDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.experimentDescription, 10)" >&nbsp;
+          <MdiIcon :path="mdiPageNext" />
+        </a>
       </template>
       <!-- Experiment dataset types -->
       <template v-slot:cell(dataTypes)="data">
@@ -61,6 +64,8 @@ import utilMixin from '@/mixins/util'
 import colorMixin from '@/mixins/colors'
 import formattingMixin from '@/mixins/formatting'
 
+import { mdiPageNext } from '@mdi/js'
+
 export default {
   name: 'ExperimentTable',
   props: {
@@ -68,6 +73,7 @@ export default {
   },
   data: function () {
     return {
+      mdiPageNext,
       options: {
         idColumn: 'experimentId',
         tableName: 'experiments'
@@ -81,33 +87,29 @@ export default {
           key: 'experimentId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'experimentId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnExperimentId')
         }, {
           key: 'experimentName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'experimentName')}`,
           label: this.$t('tableColumnExperimentName'),
           preferedSortingColumn: true
         }, {
           key: 'experimentDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'experimentDescription')}`,
           label: this.$t('tableColumnExperimentDescription')
         }, {
           key: 'experimentDate',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'experimentDate')}`,
           label: this.$t('tableColumnExperimentDate'),
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'dataTypes',
           type: undefined,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'dataTypes')}`,
           label: this.$t('tableColumnExperimentDataTypes')
         }
       ]
@@ -121,6 +123,12 @@ export default {
   },
   mixins: [datasetApi, typesMixin, utilMixin, colorMixin, formattingMixin],
   methods: {
+    showFullExperimentDescription: function (description) {
+      this.$bvModal.msgBoxOk(description, {
+        title: this.$t('tableColumnExperimentDescription'),
+        okTitle: this.$t('genericOk')
+      })
+    },
     redirectToExport: function (experiment, datasetType) {
       // Set up the filter
       const filter = [{

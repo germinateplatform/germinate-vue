@@ -49,50 +49,44 @@ export default {
       return [{
         key: 'compoundId',
         type: Number,
-        class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'compoundId')}`,
+        class: 'text-right',
         sortable: true,
         label: this.$t('tableColumnCompoundId')
       }, {
         key: 'compoundName',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'compoundName')}`,
         sortable: true,
         label: this.$t('tableColumnCompoundName'),
         preferedSortingColumn: true
       }, {
         key: 'compoundDescription',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'compoundDescription')}`,
         sortable: true,
         label: this.$t('tableColumnCompoundDescription')
       }, {
         key: 'synonyms',
         type: 'json',
-        class: `${this.isTableColumnHidden(this.options.tableName, 'synonyms')}`,
         sortable: true,
         label: this.$t('tableColumnCompoundSynonyms')
       }, {
         key: 'unitName',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'unitName')}`,
         sortable: true,
         label: this.$t('tableColumnCompoundUnitName')
       }, {
         key: 'unitDescription',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'unitDescription')}`,
         sortable: true,
         label: this.$t('tableColumnCompoundUnitDescription')
       }, {
         key: 'unitAbbreviation',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'unitAbbreviation')}`,
         sortable: true,
         label: this.$t('tableColumnCompoundUnitAbbreviation')
       }, {
         key: 'count',
         type: Number,
-        class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
+        class: 'text-right',
         sortable: true,
         label: this.$t('tableColumnCompoundDataPoints'),
         formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null

@@ -50,55 +50,47 @@ export default {
           key: 'collaboratorId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'collaboratorId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnCollaboratorId')
         }, {
           key: 'collaboratorFirstName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorFirstName')}`,
           label: this.$t('tableColumnCollaboratorFirstName')
         }, {
           key: 'collaboratorLastName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorLastName')}`,
           label: this.$t('tableColumnCollaboratorLastName')
         }, {
           key: 'collaboratorEmail',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorEmail')}`,
           label: this.$t('tableColumnCollaboratorEmail')
         }, {
           key: 'collaboratorExternalId',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorExternalId')}`,
           label: this.$t('tableColumnCollaboratorExternalId')
         }, {
           key: 'collaboratorRoles',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'collaboratorRoles')}`,
           label: this.$t('tableColumnCollaboratorRoles')
         }, {
           key: 'institutionName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'institutionName')}`,
           label: this.$t('tableColumnInstitutionName')
         }, {
           key: 'institutionAddress',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'institutionAddress')}`,
           label: this.$t('tableColumnInstitutionAddress')
         }, {
           key: 'countryName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
           label: this.$t('tableColumnCountryName')
         }
       ]

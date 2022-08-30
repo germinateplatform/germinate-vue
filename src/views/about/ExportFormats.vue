@@ -16,7 +16,7 @@
 
     <!-- Format cards -->
     <b-row class="mt-3">
-      <b-col xs=12 sm=6 md=4 xl=3 v-for="format in getExportFormats()" :key="`export-format-${format.name}`" class="export-format mb-4 col-xxl-2">
+      <b-col cols=12 sm=6 xl=4 v-for="format in getExportFormats()" :key="`export-format-${format.name}`" class="export-format mb-4 col-xxl-3 col-xxxl-2">
         <b-card
           :img-src="`./img/${format.logo}`"
           :img-alt="format.name"

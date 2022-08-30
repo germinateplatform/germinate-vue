@@ -76,50 +76,45 @@ export default {
           key: 'entityParentId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'entityParentId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnEntityParentId')
         }, {
           key: 'entityParentGid',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentGid')}`,
           label: this.$t('tableColumnEntityParentGid')
         }, {
           key: 'entityParentName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentName')}`,
           label: this.$t('tableColumnEntityParentName'),
           preferedSortingColumn: true
         }, {
           key: 'entityParentType',
           type: 'entityType',
           sortable: true,
-          class: `border-right ${this.isTableColumnHidden(this.options.tableName, 'entityParentType')}`,
+          class: 'border-right',
           label: this.$t('tableColumnEntityParentType')
         }, {
           key: 'entityChildId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'entityChildId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnEntityChildId')
         }, {
           key: 'entityChildGid',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityChildGid')}`,
           label: this.$t('tableColumnEntityChildGid')
         }, {
           key: 'entityChildName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityChildName')}`,
           label: this.$t('tableColumnEntityChildName')
         }, {
           key: 'entityChildType',
           type: 'entityType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityChildType')}`,
           label: this.$t('tableColumnEntityChildType')
         }
       ]

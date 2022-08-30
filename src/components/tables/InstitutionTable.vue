@@ -70,62 +70,53 @@ export default {
       return [{
         key: 'institutionId',
         type: Number,
-        class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'institutionId')}`,
+        class: 'text-right',
         sortable: true,
         label: this.$t('tableColumnInstitutionId')
       }, {
         key: 'institutionName',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'institutionName')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionName'),
         preferedSortingColumn: true
       }, {
         key: 'institutionAcronym',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'institutionAcronym')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionAcronym')
       }, {
         key: 'institutionCode',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'institutionCode')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionCode')
       }, {
         key: 'institutionType',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'institutionType')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionType')
       }, {
         key: 'institutionAddress',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'institutionAddress')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionAddress')
       }, {
         key: 'institutionEmail',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'institutionEmail')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionEmail')
       }, {
         key: 'institutionPhone',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'institutionPhone')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionPhone')
       }, {
         key: 'institutionContact',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'institutionContact')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionContact')
       }, {
         key: 'countryCode',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'countryCode')}`,
         sortable: true,
         label: this.$t('tableColumnInstitutionCountry')
       }]

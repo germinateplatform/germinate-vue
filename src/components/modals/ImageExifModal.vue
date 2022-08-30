@@ -44,6 +44,21 @@ export default {
     }
   },
   computed: {
+    dateTime: function () {
+      if (this.image) {
+        if (this.image.imageExif.dateTime) {
+          return this.image.imageExif.dateTime
+        } else if (this.image.imageExif.dateTimeOriginal) {
+          return this.image.imageExif.dateTimeOriginal
+        } else if (this.image.createdOn) {
+          return this.image.createdOn
+        } else {
+          return null
+        }
+      } else {
+        return null
+      }
+    },
     properties: function () {
       if (this.image) {
         let flash = null
@@ -92,6 +107,11 @@ export default {
           description: () => this.$t('widgetExifLocationClickToSee'),
           value: `${this.image.imageExif.gpsLatitude ? this.image.imageExif.gpsLatitude.toFixed(4) : ''}, ${this.image.imageExif.gpsLongitude ? this.image.imageExif.gpsLongitude.toFixed(4) : ''}`,
           action: () => this.toggleMap()
+        }, {
+          key: 'dateTime',
+          img: require('@/assets/img/image-icon-date.svg'),
+          text: () => this.$t('widgetExifDateTime'),
+          value: `${this.dateTime ? new Date(this.dateTime).toLocaleString() : ''}`
         }]
       } else {
         return []

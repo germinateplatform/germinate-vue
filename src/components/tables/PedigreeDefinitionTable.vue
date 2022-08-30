@@ -43,75 +43,66 @@ export default {
           key: 'datasetId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnPedigreeDatasetId')
         },
         {
           key: 'datasetName',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
+          class: 'text-right',
           label: this.$t('tableColumnPedigreeDatasetName')
         },
         {
           key: 'germplasmId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnGermplasmId')
         }, {
           key: 'germplasmName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmName')}`,
           label: this.$t('tableColumnGermplasmName')
         }, {
           key: 'pedigreeNotationName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pedigreeNotationName')}`,
           label: this.$t('tableColumnPedigreeNotationName')
         }, {
           key: 'pedigreeNotationDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pedigreeNotationDescription')}`,
           label: this.$t('tableColumnPedigreeNotationDescription')
         }, {
           key: 'pedigreeNotationUrl',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pedigreeNotationUrl')}`,
           label: this.$t('tableColumnPedigreeNotationUrl')
         }, {
           key: 'definition',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'definition')}`,
           label: this.$t('tableColumnPedigreeDefinition')
         }, {
           key: 'pedigreeDescriptionName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pedigreeDescriptionName')}`,
           label: this.$t('tableColumnPedigreeDescriptionName')
         }, {
           key: 'pedigreeDescriptionDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pedigreeDescriptionDescription')}`,
           label: this.$t('tableColumnPedigreeDescriptionDescription')
         }, {
           key: 'pedigreeDescriptionAuthor',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pedigreeDescriptionAuthor')}`,
           label: this.$t('tableColumnPedigreeDescriptionAuthor')
         }, {
           key: 'createdOn',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnPedigreeDefinitionCreatedOn'),
           formatter: value => value ? new Date(value).toLocaleString() : null
         }

@@ -107,40 +107,37 @@ export default {
           key: 'userGroupId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'userGroupId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnUserGroupId')
         }, {
           key: 'userGroupName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'userGroupName')}`,
           label: this.$t('tableColumnUserGroupName'),
           preferedSortingColumn: true
         }, {
           key: 'userGroupDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'userGroupDescription')}`,
           label: this.$t('tableColumnUserGroupDescription')
         }, {
           key: 'createdOn',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnUserGroupCreatedOn'),
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'count',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
+          class: 'text-right',
           label: this.$t('tableColumnUserGroupCount'),
           formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null
         }, {
           key: 'actions',
           type: undefined,
           sortable: false,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'actions')}`,
+          class: 'text-right',
           label: ''
         }
       ]

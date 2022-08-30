@@ -3,7 +3,7 @@
     <Collapse :icon="mdiFilter" :title="$t('widgetGermplasmTableFilterToggle')" :visible="false" :showLoading="false" class="mb-2" @toggle="collapseVisible = !collapseVisible">
       <template v-slot:content>
         <b-row>
-          <b-col xs=12 sm=6 md=6 lg=4 xl=3>
+          <b-col cols=12 sm=6 md=6 lg=4 xl=3>
             <h6>{{ $t('tableColumnEntityType') }}</h6>
             <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
             <b-button-group class="flex-wrap">
@@ -19,7 +19,7 @@
               </b-button>
             </b-button-group>
           </b-col>
-          <b-col xs=12 sm=6 md=6 lg=4 xl=3 v-if="locationOptions && locationOptions.length > 2">
+          <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="locationOptions && locationOptions.length > 2">
             <h6>{{ $t('widgetGermplasmTableFilterHasData') }}</h6>
             <b-button-group class="mr-2">
               <b-button class="mb-2 text-dark" variant="outline-secondary" @click="onHasImagesClicked" v-b-tooltip="$t('widgetGermplasmTableFilterHasImages')"><MdiIcon :path="mdiCamera" /></b-button>
@@ -32,23 +32,23 @@
               <b-button class="mb-2" variant="outline-secondary" @click="onHasAllelefreqDataClicked" v-b-tooltip="datasetTypes.allelefreq.text()" :style="`color: ${datasetTypes.allelefreq.color()};`"><MdiIcon :path="datasetTypes.allelefreq.path" /></b-button>
             </b-button-group>
           </b-col>
-          <b-col xs=12 sm=6 md=6 lg=4 xl=3 v-if="genusOptions && genusOptions.length > 2">
+          <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="genusOptions && genusOptions.length > 2">
             <h6>{{ $t('tableColumnGenus') }}</h6>
             <b-form-select :options="genusOptions" v-model="selectedGenus" />
           </b-col>
-          <b-col xs=12 sm=6 md=6 lg=4 xl=3 v-if="speciesOptions && speciesOptions.length > 2">
+          <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="speciesOptions && speciesOptions.length > 2">
             <h6>{{ $t('tableColumnSpecies') }}</h6>
             <b-form-select :options="speciesOptions" v-model="selectedSpecies" />
           </b-col>
-          <b-col xs=12 sm=6 md=6 lg=4 xl=3 v-if="subtaxaOptions && subtaxaOptions.length > 2">
+          <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="subtaxaOptions && subtaxaOptions.length > 2">
             <h6>{{ $t('tableColumnSubtaxa') }}</h6>
             <b-form-select :options="subtaxaOptions" v-model="selectedSubtaxa" />
           </b-col>
-          <b-col xs=12 sm=6 md=6 lg=4 xl=3 v-if="locationOptions && locationOptions.length > 2">
+          <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="locationOptions && locationOptions.length > 2">
             <h6>{{ $t('tableColumnCountryName') }}</h6>
             <b-form-select :options="locationOptions" v-model="selectedLocation" />
           </b-col>
-          <b-col xs=12 sm=6 md=6 lg=4 xl=3 v-if="biologicalStatusOptions && biologicalStatusOptions.length > 2">
+          <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="biologicalStatusOptions && biologicalStatusOptions.length > 2">
             <h6>{{ $t('tableColumnBiologicalStatus') }}</h6>
             <b-form-select :options="biologicalStatusOptions" v-model="selectedBiologicalStatus" />
           </b-col>
@@ -157,11 +157,10 @@ export default {
         return [{
           value: null,
           text: this.$t('tableColumnCountryName')
-        }].concat(this.locations.map(g => {
+        }].concat(this.locations.filter(g => g.count > 0).map(g => {
           return {
             value: g.key,
-            text: `${g.key} (${g.count})`,
-            disabled: g.count < 1
+            text: `${g.key} (${g.count})`
           }
         }))
       } else {
@@ -173,11 +172,10 @@ export default {
         return [{
           value: null,
           text: this.$t('tableColumnBiologicalStatus')
-        }].concat(this.biologicalStatus.map(g => {
+        }].concat(this.biologicalStatus.filter(g => g.count > 0).map(g => {
           return {
             value: g.key,
-            text: `${g.key} (${g.count})`,
-            disabled: g.count < 1
+            text: `${g.key} (${g.count})`
           }
         }))
       } else {

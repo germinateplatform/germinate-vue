@@ -283,177 +283,156 @@ export default {
           key: 'germplasmId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'germplasmId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnGermplasmId')
         }, {
           key: 'germplasmName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmName')}`,
           label: this.$t('tableColumnGermplasmName'),
           preferedSortingColumn: true
         }, {
           key: 'germplasmGid',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmGid')}`,
           label: this.$t('tableColumnGermplasmGeneralIdentifier')
         }, {
           key: 'germplasmNumber',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmNumber')}`,
           label: this.$t('tableColumnGermplasmNumber')
         }, {
           key: 'germplasmPuid',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'germplasmPuid')}`,
           label: this.$t('tableColumnGermplasmPuid')
         }, {
           key: 'entityTypeName',
           type: 'entityType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityTypeName')}`,
           label: this.$t('tableColumnEntityType')
         }, {
           key: 'entityParentName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentName')}`,
           label: this.$t('tableColumnGermplasmEntityParentName')
         }, {
           key: 'entityParentGeneralIdentifier',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'entityParentGeneralIdentifier')}`,
           label: this.$t('tableColumnGermplasmEntityParentGeneralIdentifier')
         }, {
           key: 'biologicalStatusName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'biologicalStatusName')}`,
           label: this.$t('tableColumnBiologicalStatus')
         }, {
           key: 'synonyms',
           type: 'json',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'synonyms')}`,
           label: this.$t('tableColumnSynonyms')
         }, {
           key: 'collectorNumber',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'collectorNumber')}`,
           label: this.$t('tableColumnCollectorNumber')
         }, {
           key: 'institutions',
           type: 'jsonObject',
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'institutions')}`,
           label: this.$t('tableColumnGermplasmInstitutions'),
           formatter: value => value ? value.map(i => `Code: ${i.code || 'N/A'}, name: ${i.name}, address: ${i.address || 'N/A'}, type: ${i.type}`).join('; ') : null
         }, {
           key: 'genus',
           type: String,
           sortable: true,
-          class: `font-italic ${this.isTableColumnHidden(this.options.tableName, 'genus')}`,
+          class: 'font-italic',
           label: this.$t('tableColumnGenus')
         }, {
           key: 'species',
           type: String,
           sortable: true,
-          class: `font-italic ${this.isTableColumnHidden(this.options.tableName, 'species')}`,
+          class: 'font-italic',
           label: this.$t('tableColumnSpecies')
         }, {
           key: 'subtaxa',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'subtaxa')}`,
           label: this.$t('tableColumnSubtaxa')
         }, {
           key: 'location',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'location')}`,
           label: this.$t('tableColumnGermplasmLocation')
         }, {
           key: 'elevation',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'elevation')}`,
+          class: 'text-right',
           label: this.$t('tableColumnElevation')
         }, {
           key: 'latitude',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'latitude')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLatitude')
         }, {
           key: 'longitude',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'longitude')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLongitude')
         }, {
           key: 'countryName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
           label: this.$t('tableColumnCountryName')
         }, {
           key: 'collDate',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'collDate')}`,
           label: this.$t('tableColumnColldate')
         }, {
           key: 'hasTrialsData',
           type: Boolean,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'hasTrialsData')}`,
           label: this.$t('tableColumnHasTrialsData')
         }, {
           key: 'hasGenotypicData',
           type: Boolean,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'hasGenotypicData')}`,
           label: this.$t('tableColumnHasGenotypicData')
         }, {
           key: 'hasPedigreeData',
           type: Boolean,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'hasPedigreeData')}`,
           label: this.$t('tableColumnHasPedigreeData')
         }, {
           key: 'hasCompoundData',
           type: Boolean,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'hasCompoundData')}`,
           label: this.$t('tableColumnHasCompoundData')
         }, {
           key: 'hasAllelefreqData',
           type: Boolean,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'hasAllelefreqData')}`,
           label: this.$t('tableColumnHasAllelefreqData')
         }, {
           key: 'imageCount',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'imageCount')}`,
+          class: 'text-right',
           label: this.$t('tableColumnGermplasmImageCount')
         }, {
           key: 'pdci',
           type: Number,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'pdci')}`,
           label: this.$t('tableColumnPdci')
         }, {
           key: 'distance',
           type: undefined,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'distance')}`,
+          class: 'text-right',
           label: this.$t('tableColumnGermplasmDistance')
         }, {
           key: 'marked',

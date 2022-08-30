@@ -4,7 +4,7 @@
     <b-form @submit.prevent="search">
       <b-row>
         <!-- Search data types -->
-        <b-col xs=12 sm=6>
+        <b-col cols=12 sm=6>
           <b-form-group
             :label="$t('formLabelSearchType')"
             label-for="search-type">
@@ -14,7 +14,7 @@
           </b-form-group>
         </b-col>
         <!-- Search term and comparator -->
-        <b-col xs=12 sm=6>
+        <b-col cols=12 sm=6>
           <b-form-group
             :label="$t('formLabelSearchTerm')"
             label-for="search-term">

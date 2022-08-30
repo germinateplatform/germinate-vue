@@ -5,7 +5,7 @@
       <p>{{ $t('pageAlleleFrequencyBinningText') }}</p>
       <b-row>
         <!-- Equal width binning -->
-        <b-col xs=12 md=4 class="mb-3">
+        <b-col cols=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('equal')}`" no-body>
             <b-card-body>
               <h5 class="mb-3"><MdiIcon :path="mdiFormatAlignJustify" :rotate="90" /> {{ $t('pageAlleleFrequencyBinningEqualTitle') }} <span v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningEqualText')"><MdiIcon :path="mdiHelpCircle" /></span></h5>
@@ -17,7 +17,7 @@
           </b-card>
         </b-col>
         <!-- Split point binning -->
-        <b-col xs=12 md=4 class="mb-3">
+        <b-col cols=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('split')}`" no-body>
             <b-card-body>
               <h5 class="mb-3"><MdiIcon :path="mdiFormatIndentIncrease" :rotate="270"/> {{ $t('pageAlleleFrequencyBinningSplitTitle') }} <span v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningSplitText')"><MdiIcon :path="mdiHelpCircle" /></span></h5>
@@ -35,7 +35,7 @@
           </b-card>
         </b-col>
         <!-- Automatic binning -->
-        <b-col xs=12 md=4 class="mb-3">
+        <b-col cols=12 md=4 class="mb-3">
           <b-card :class="`bg-light card-radio h-100 ${getStyle('auto')}`" no-body>
             <b-card-body>
               <h5 class="mb-3"><MdiIcon :path="mdiFormatAlignLeft" :rotate="270" /> {{ $t('pageAlleleFrequencyBinningAutoTitle') }} <span v-b-tooltip.hover :title="$t('pageAlleleFrequencyBinningAutoText')"><MdiIcon :path="mdiHelpCircle" /></span></h5>

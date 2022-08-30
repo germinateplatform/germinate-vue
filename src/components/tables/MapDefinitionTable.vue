@@ -47,57 +47,52 @@ export default {
           key: 'markerId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'markerId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnMarkerId')
         }, {
           key: 'markerName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'markerName')}`,
           label: this.$t('tableColumnMarkerName'),
           preferedSortingColumn: true
         }, {
           key: 'synonyms',
           type: 'json',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'synonyms')}`,
           label: this.$t('tableColumnMarkerSynonyms')
         }, {
           key: 'mapFeatureType',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'mapFeatureType')}`,
           label: this.$t('tableColumnMapFeatureType')
         }, {
           key: 'mapId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'mapId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnMarkerMapId')
         }, {
           key: 'mapName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'mapName')}`,
           label: this.$t('tableColumnMapName')
         }, {
           key: 'chromosome',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'chromosome')}`,
           label: this.$t('tableColumnMapChromosome')
         }, {
           key: 'position',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'position')}`,
+          class: 'text-right',
           label: this.$t('tableColumnMapPosition'),
           formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
         }, {
           key: 'marked',
           type: null,
           sortable: false,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          class: 'text-right',
           label: ''
         }
       ]

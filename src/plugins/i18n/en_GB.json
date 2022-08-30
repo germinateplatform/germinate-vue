@@ -1229,6 +1229,7 @@
   "widgetExifFlash": "Flash",
   "widgetExifLocation": "Location",
   "widgetExifLocationClickToSee": "Click to show",
+  "widgetExifDateTime": "Date time",
   "widgetGenotypeDatasetSelectionSelect": "Please select at least one dataset in the table above to continue.",
   "widgetGermplasmMapText": "The map shows all germplasm and the location where it has been collected. The map markers can be colored using the dropdown menu. Please note, that latitude and longitude positions have been moved slightly at random to prevent overlap.",
   "widgetGermplasmMapTitle": "Germplasm map",

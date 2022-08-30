@@ -52,32 +52,29 @@ export default {
           key: 'markerId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'markerId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnMarkerId')
         }, {
           key: 'markerName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'markerName')}`,
           label: this.$t('tableColumnMarkerName'),
           preferedSortingColumn: true
         }, {
           key: 'markerType',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'markerType')}`,
           label: this.$t('tableColumnMarkerType')
         }, {
           key: 'markerSynonyms',
           type: 'json',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'markerSynonyms')}`,
           label: this.$t('tableColumnMarkerSynonyms')
         }, {
           key: 'marked',
           type: undefined,
           sortable: false,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'marked')}`,
+          class: 'text-right',
           label: ''
         }
       ]

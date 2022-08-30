@@ -241,137 +241,126 @@ export default {
           key: 'datasetId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'datasetId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnDatasetId')
         }, {
           key: 'datasetName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetName')}`,
           label: this.$t('tableColumnDatasetName'),
           preferedSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetDescription')}`,
           label: this.$t('tableColumnDatasetDescription')
         }, {
           key: 'experimentId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'experimentId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnExperimentId')
         }, {
           key: 'experimentName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'experimentName')}`,
           label: this.$t('tableColumnExperimentName')
         }, {
           key: 'datasetType',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datasetType')}`,
           label: this.$t('tableColumnDatasetDatasetType')
         }, {
           key: 'datatype',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'datatype')}`,
           label: this.$t('tableColumnDatasetDataType')
         }, {
           key: 'licenseName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'licenseName')}`,
           label: this.$t('tableColumnDatasetLicenseName')
         }, {
           key: 'contact',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'contact')}`,
           label: this.$t('tableColumnDatasetContact')
         }, {
           key: 'countries',
           type: undefined,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'countries')}`,
           label: this.$t('tableColumnDatasetCountryName')
         }, {
           key: 'locations',
           type: 'json',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locations')}`,
           label: this.$t('tableColumnDatasetLocations')
         }, {
           key: 'startDate',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'startDate')}`,
           label: this.$t('tableColumnDatasetStartDate'),
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'endDate',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'endDate')}`,
           label: this.$t('tableColumnDatasetEndDate'),
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'dataObjectCount',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataObjectCount')}`,
+          class: 'text-right',
           label: this.$t('tableColumnDatasetObjectCount'),
           formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
         }, {
           key: 'dataPointCount',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'dataPointCount')}`,
+          class: 'text-right',
           label: this.$t('tableColumnDatasetPointCount')
         }, {
           key: 'fileresourceIds',
           type: 'json',
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'fileresourceIds')}`,
+          class: 'px-1',
           label: this.$t('tableColumnDatasetFileresources')
         }, {
           key: 'isExternal',
           type: Boolean,
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'isExternal')}`,
+          class: 'px-1',
           label: this.$t('tableColumnDatasetExternal')
         }, {
           key: 'datasetState',
           type: undefined,
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'datasetState')}`,
+          class: 'px-1',
           label: ''
         }, {
           key: 'publications',
           type: undefined,
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'publications')}`,
+          class: 'px-1',
           label: ''
         }, {
           key: 'collaborators',
           type: undefined,
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'collaborators')}`,
+          class: 'px-1',
           label: ''
         }, {
           key: 'attributes',
           type: undefined,
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'attributes')}`,
+          class: 'px-1',
           label: ''
         }, {
           key: 'download',
           type: undefined,
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'download')}`,
+          class: 'px-1',
           label: ''
         }
       ]

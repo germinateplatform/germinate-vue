@@ -85,62 +85,57 @@ export default {
           key: 'locationId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationId')
         }, {
           key: 'locationName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationName')}`,
           label: this.$t('tableColumnLocationName'),
           preferedSortingColumn: true
         }, {
           key: 'locationRegion',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationRegion')}`,
           label: this.$t('tableColumnLocationRegion')
         }, {
           key: 'locationState',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationState')}`,
           label: this.$t('tableColumnLocationState')
         }, {
           key: 'locationType',
           type: 'locationType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'locationType')}`,
           label: this.$t('tableColumnLocationType')
         }, {
           key: 'locationLatitude',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationLatitude')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationLatitude')
         }, {
           key: 'locationLongitude',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationLongitude')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationLongitude')
         }, {
           key: 'locationElevation',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'locationElevation')}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationElevation')
         }, {
           key: 'countryName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'countryName')}`,
           label: this.$t('tableColumnLocationCountryName')
         }, {
           key: 'distance',
           type: undefined,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'distance') ? 'd-none' : ''}`,
+          class: 'text-right',
           label: this.$t('tableColumnLocationDistance')
         }, {
           key: 'marked',

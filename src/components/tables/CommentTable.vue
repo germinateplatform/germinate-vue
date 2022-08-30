@@ -99,44 +99,38 @@ export default {
       return [{
         key: 'commentId',
         type: Number,
-        class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'commentId')}`,
+        class: 'text-right',
         sortable: true,
         label: this.$t('tableColumnCommentId')
       }, {
         key: 'commentTypeId',
         type: Number,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'commentTypeId')}`,
         sortable: true,
         label: this.$t('tableColumnCommentTypeId')
       }, {
         key: 'commentType',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'commentType')}`,
         sortable: true,
         label: this.$t('tableColumnCommentType')
       }, {
         key: 'commentForeignId',
         type: Number,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'commentForeignId')}`,
         sortable: true,
         label: this.$t('tableColumnCommentForeignId')
       }, {
         key: 'userName',
         type: String,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'userName')}`,
         sortable: true,
         label: this.$t('tableColumnCommentUserName')
       }, {
         key: 'commentContent',
         type: 'json',
-        class: `${this.isTableColumnHidden(this.options.tableName, 'commentContent')}`,
         sortable: true,
         label: this.$t('tableColumnCommentContent'),
         preferedSortingColumn: true
       }, {
         key: 'updatedOn',
         type: Date,
-        class: `${this.isTableColumnHidden(this.options.tableName, 'updatedOn')}`,
         sortable: true,
         label: this.$t('tableColumnCommentUpdatedOn'),
         formatter: value => value ? new Date(value).toLocaleString() : null

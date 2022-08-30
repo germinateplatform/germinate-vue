@@ -10,8 +10,15 @@
     </b-form-group>
 
     <div v-if="plotData">
-      <BaseChart :id="id" :width="() => 1280" :height="() => 600" :filename="baseFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false"  v-on:force-redraw="update">
+      <BaseChart :id="id" :width="() => 1280" :height="() => 600" :filename="baseFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false" :supportsSvgDownload="false"  v-on:force-redraw="update">
         <div id="pedigree-chart" slot="chart" ref="pedigreeChart" class="pedigree-chart" />
+
+        <template slot="additionalMenuItems">
+          <b-dropdown-divider />
+          <b-dropdown-item @click="downloadPedigreeImage"><MdiIcon :path="mdiFileImage" /> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
+
+          <a href="#" ref="imageDownloadAnchor" />
+        </template>
 
         <template slot="additionalButtons">
           <b-button v-b-tooltip.hover
@@ -40,9 +47,10 @@ import Tour from '@/components/util/Tour'
 import colors from '@/mixins/colors.js'
 import germplasmApi from '@/mixins/api/germplasm.js'
 import datasetApi from '@/mixins/api/dataset.js'
+import formattingMixin from '@/mixins/formatting'
 import utilMixin from '@/mixins/util'
 
-import { mdiHelpCircleOutline, mdiInformationOutline, mdiDownload } from '@mdi/js'
+import { mdiHelpCircleOutline, mdiInformationOutline, mdiDownload, mdiFileImage } from '@mdi/js'
 
 import { DataSet, Network } from 'vis-network/standalone'
 
@@ -62,6 +70,7 @@ export default {
       mdiHelpCircleOutline,
       mdiInformationOutline,
       mdiDownload,
+      mdiFileImage,
       id: id,
       plotData: null,
       dataset: null,
@@ -109,8 +118,14 @@ export default {
     Tour,
     MdiIcon
   },
-  mixins: [colors, germplasmApi, datasetApi, utilMixin],
+  mixins: [colors, formattingMixin, germplasmApi, datasetApi, utilMixin],
   methods: {
+    downloadPedigreeImage: function () {
+      const a = this.$refs.imageDownloadAnchor
+      a.href = this.canvasData
+      a.download = `pedigree-${this.germplasm.id}-ds-${this.dataset.datasetId}-${this.getDateTimeString()}`
+      a.click()
+    },
     showTour: function () {
       this.$refs.tour.start()
     },
@@ -154,9 +169,12 @@ export default {
           })
 
           const data = []
+          const bgColor = this.getColor(0)
+          const fgColor = this.getHighContrastTextColor(bgColor)
           Object.keys(nodes).forEach(n => {
             const node = nodes[n]
-            const bg = node.name === this.germplasm.accenumb ? this.getColor(0) : this.storeDarkMode ? '#000000' : '#ffffff'
+            const bg = node.name === this.germplasm.accenumb ? bgColor : this.storeDarkMode ? '#000000' : '#ffffff'
+            const fg = node.name === this.germplasm.accenumb ? fgColor : this.storeDarkMode ? '#ffffff' : '#000000'
             const border = this.storeDarkMode ? '#ffffff' : '#000000'
             let label = node.name
             if (node.number) {
@@ -166,6 +184,7 @@ export default {
               id: node.id,
               label: label,
               shape: 'circle',
+              font: { color: fg },
               color: {
                 background: bg,
                 border: border,
@@ -178,7 +197,7 @@ export default {
           const nodeDs = new DataSet(data)
           const edgeDs = new DataSet(connections)
 
-          const network = new Network(this.$refs.pedigreeChart, { nodes: nodeDs, edges: edgeDs }, {
+          this.network = new Network(this.$refs.pedigreeChart, { nodes: nodeDs, edges: edgeDs }, {
             interaction: { hover: true, zoomView: false },
             manipulation: { enabled: false },
             layout: {
@@ -187,35 +206,38 @@ export default {
                 sortMethod: 'directed'
               }
             },
-            edges: {
-              smooth: {
-                type: 'continuous'
-              }
-            }
+            edges: { smooth: true }
           })
 
           const networkCanvas = this.$refs.pedigreeChart.getElementsByTagName('canvas')[0]
 
-          network.on('click', params => {
-            const id = network.getNodeAt(params.pointer.DOM)
+          this.network.on('click', params => {
+            const id = this.network.getNodeAt(params.pointer.DOM)
 
             if (id !== undefined && id !== null && id !== this.germplasm.id) {
               this.navigateToPassportPage(id)
             }
           })
-          network.on('hoverNode', params => {
-            const id = network.getNodeAt(params.pointer.DOM)
+          this.network.on('hoverNode', params => {
+            const id = this.network.getNodeAt(params.pointer.DOM)
             if (id === this.germplasm.id) {
               // NOTHING
             } else {
               networkCanvas.style.cursor = 'pointer'
             }
           })
-          network.on('blurNode', () => {
+          this.network.on('blurNode', () => {
             networkCanvas.style.cursor = 'default'
           })
+          this.network.on('afterDrawing', this.afterDrawing)
         }
       })
+    },
+    afterDrawing: function (ctx) {
+      // Save the context canvas data so we can download it if required
+      const dataUrl = ctx.canvas.toDataURL()
+      this.canvasData = dataUrl
+      this.network.off('afterDrawing', this.afterDrawing)
     },
     navigateToPassportPage: function (germplasmId) {
       this.$router.push({ name: 'passport', params: { germplasmId: germplasmId } })

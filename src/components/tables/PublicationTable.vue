@@ -54,7 +54,7 @@ export default {
       mdiOpenInNew,
       options: {
         idColumn: 'publicationId',
-        tableName: 'publication'
+        tableName: 'publications'
       }
     }
   },
@@ -65,43 +65,37 @@ export default {
           key: 'publicationId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'publicationId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnPublicationId')
         }, {
           key: 'publicationName',
           type: undefined,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'publicationName')}`,
           label: this.$t('tableColumnPublicationName')
         }, {
           key: 'publicationDoi',
           type: Number,
           sortable: true,
-          class: this.isTableColumnHidden(this.options.tableName, 'publicationDoi'),
           label: this.$t('tableColumnPublicationDoi')
         }, {
           key: 'publicationJournal',
           type: undefined,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'publicationJournal')}`,
           label: this.$t('tableColumnPublicationJournal')
         }, {
           key: 'referenceType',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'referenceType')}`,
           label: this.$t('tableColumnPublicationReferenceType')
         }, {
           key: 'referencingIds',
           type: 'json',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'referencingIds')}`,
           label: this.$t('tableColumnPublicationReferencingIds')
         }, {
           key: 'createdOn',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnPublicationCreatedOn'),
           formatter: value => value ? new Date(value).toLocaleString() : null
         }

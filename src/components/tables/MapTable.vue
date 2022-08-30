@@ -53,26 +53,24 @@ export default {
           key: 'mapId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'mapId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnMapId')
         }, {
           key: 'mapName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'mapName')}`,
           label: this.$t('tableColumnMapName'),
           preferedSortingColumn: true
         }, {
           key: 'mapDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'mapDescription')}`,
           label: this.$t('tableColumnMapDescription')
         }, {
           key: 'markerCount',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'markerCount')}`,
+          class: 'text-right',
           label: this.$t('tableColumnMapMarkerCount'),
           formatter: value => (value !== null && value !== undefined) ? value.toLocaleString() : null
         }

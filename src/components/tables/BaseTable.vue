@@ -62,7 +62,7 @@
 
     <!-- Actual table -->
     <b-table :items="getDataLocal"
-            :fields="columns"
+            :fields="reformattedColumns"
             striped
             responsive
             hover
@@ -84,12 +84,12 @@
 
       <!-- Selected column (first checkbox) -->
       <template v-slot:head(selected)>
-        <div v-if="(columns.map(c => c.key).indexOf('selected') !== -1) && (getIds !== null) && selectionMode == 'multi'">
+        <div v-if="(reformattedColumns.map(c => c.key).indexOf('selected') !== -1) && (getIds !== null) && selectionMode == 'multi'">
           <b-form-checkbox :checked="allSelected" @change="onSelectionHeaderClicked"/>
         </div>
       </template>
       <template v-slot:cell(selected)="data">
-        <b-form-checkbox :value="data.item[options.idColumn]" v-model="selectedItems" v-if="columns.map(c => c.key).indexOf('selected') !== -1"/>
+        <b-form-checkbox :value="data.item[options.idColumn]" v-model="selectedItems" v-if="reformattedColumns.map(c => c.key).indexOf('selected') !== -1"/>
       </template>
 
       <!-- Marked item column -->
@@ -130,7 +130,7 @@
     <div class="d-flex flex-wrap-reverse justify-content-between align-items-end">
       <div class="table-bottom-left">
         <!-- Information about selecting multiple items in the table -->
-        <template v-if="columns.map(c => c.key).indexOf('selected') !== -1 && selectionMode === 'multi'">
+        <template v-if="reformattedColumns.map(c => c.key).indexOf('selected') !== -1 && selectionMode === 'multi'">
           <div>
             <span class="ml-2"><MdiIcon :path="mdiArrowUpBold" /></span><span>{{ $t('widgetTableMultiSelectInfo') }}</span>
           </div>
@@ -335,6 +335,24 @@ export default {
     },
     maxPage: function () {
       return Math.ceil(this.pagination.totalCount / this.storeTablePerPage)
+    },
+    reformattedColumns: function () {
+      if (this.columns) {
+        return this.columns.map(c => {
+          const result = Object.assign({}, c)
+
+          let clazz = result.class || ''
+          if (this.options && this.options.tableName) {
+            clazz = `${clazz} ${this.isTableColumnHidden(this.options.tableName, c.key)}`
+          }
+
+          result.class = clazz
+
+          return result
+        })
+      } else {
+        return []
+      }
     }
   },
   components: {

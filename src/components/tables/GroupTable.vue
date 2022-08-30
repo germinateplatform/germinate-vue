@@ -80,58 +80,51 @@ export default {
           key: 'groupId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'groupId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnGroupId')
         }, {
           key: 'groupName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'groupName')}`,
           label: this.$t('tableColumnGroupName'),
           preferedSortingColumn: true
         }, {
           key: 'groupDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'groupDescription')}`,
           label: this.$t('tableColumnGroupDescription')
         }, {
           key: 'groupType',
           type: 'groupType',
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'groupType')}`,
           label: this.$t('tableColumnGroupType')
         }, {
           key: 'userId',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'userId')}`,
           label: this.$t('tableColumnGroupUserId')
         }, {
           key: 'userName',
           type: undefined,
           sortable: false,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'userName')}`,
           label: this.$t('tableColumnGroupUserName')
         }, {
           key: 'createdOn',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'createdOn')}`,
           label: this.$t('tableColumnGroupCreatedOn'),
           formatter: value => value ? new Date(value).toLocaleString() : null
         }, {
           key: 'updatedOn',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'updatedOn')}`,
           label: this.$t('tableColumnGroupUpdatedOn'),
           formatter: value => value ? new Date(value).toLocaleString() : null
         }, {
           key: 'count',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'count')}`,
+          class: 'text-right',
           label: this.$t('tableColumnGroupCount'),
           formatter: value => value ? value.toLocaleString() : null
         }
@@ -142,7 +135,7 @@ export default {
           key: 'actions',
           type: undefined,
           sortable: false,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'actions')}`,
+          class: 'text-right',
           label: ''
         })
       }

@@ -82,56 +82,50 @@ export default {
           key: 'fileresourceId',
           type: Number,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'fileresourceId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnFileresourceId')
         }, {
           key: 'fileresourceName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'fileresourceName')}`,
           label: this.$t('tableColumnFileresourceName')
         }, {
           key: 'fileresourceDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'fileresourceDescription')}`,
           label: this.$t('tableColumnFileresourceDescription')
         }, {
           key: 'fileresourceCreatedOn',
           type: Date,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'fileresourceCreatedOn')}`,
           label: this.$t('tableColumnFileresourceCreatedOn'),
           formatter: value => value ? new Date(value).toLocaleString() : null
         }, {
           key: 'fileresourcetypeId',
           type: String,
           sortable: true,
-          class: `text-right ${this.isTableColumnHidden(this.options.tableName, 'fileresourcetypeId')}`,
+          class: 'text-right',
           label: this.$t('tableColumnFileresourcetypeId')
         }, {
           key: 'fileresourcetypeName',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'fileresourcetypeName')}`,
           label: this.$t('tableColumnFileresourcetypeName')
         }, {
           key: 'fileresourcetypeDescription',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'fileresourcetypeDescription')}`,
           label: this.$t('tableColumnFileresourcetypeDescription')
         }, {
           key: 'datasetIds',
           type: 'json',
           sortable: false,
-          class: `px-1 ${this.isTableColumnHidden(this.options.tableName, 'datasetIds')}`,
+          class: 'px-1',
           label: this.$t('tableColumnFileresourceDatasets')
         }, {
           key: 'fileresourceSize',
           type: String,
           sortable: true,
-          class: `${this.isTableColumnHidden(this.options.tableName, 'fileresourceSize')}`,
           label: this.$t('tableColumnFileresourceSize')
         }
       ]
