@@ -103,6 +103,9 @@
                 <!-- Show a button to view the feedback -->
                 <span class="text-danger" v-if="job.feedback.length > 0"><MdiIcon :path="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
               </div>
+              <div v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+                <span class="text-info"><MdiIcon :path="mdiFileDocumentAlert" />&nbsp;<a href="#" @click.prevent="downloadImportJobLog(job)">{{ $t('widgetAsyncJobPanelDownloadLog') }}</a></span>
+              </div>
             </div>
             <div v-else-if="job.status === 'completed'">
               <!-- If there is feedback -->
@@ -127,7 +130,7 @@
     </b-tabs>
 
     <!-- Modal showing the issues with the selected upload job -->
-    <b-modal ref="uploadStatusModal" :title="$t('widgetImportStatusTitle')" :ok-title="$t('buttonClose')" ok-only size="xl">
+    <b-modal ref="uploadStatusModal" :title="$t('widgetImportStatusTitle')" :ok-title="$t('buttonClose')" ok-only size="xl" v-if="selectedImportJob">
       <UploadStatusTable :job="selectedImportJob" />
     </b-modal>
   </b-container>
@@ -137,11 +140,12 @@
 import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
-import { mdiDelete, mdiDownload, mdiUpload, mdiRefresh, mdiDatabase, mdiClose, mdiCalendarClock, mdiFile, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiPauseCircle, mdiCancel, mdiProgressWrench } from '@mdi/js'
+import { mdiDelete, mdiDownload, mdiUpload, mdiRefresh, mdiDatabase, mdiClose, mdiFileDocumentAlert, mdiCalendarClock, mdiFile, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiPauseCircle, mdiCancel, mdiProgressWrench } from '@mdi/js'
 
 import UploadStatusTable from '@/components/tables/UploadStatusTable'
 import axios from 'axios'
 import datasetApi from '@/mixins/api/dataset'
+import authApi from '@/mixins/api/auth'
 import miscApi from '@/mixins/api/misc'
 import typesMixin from '@/mixins/types'
 import formattingMixin from '@/mixins/formatting'
@@ -177,6 +181,7 @@ export default {
       mdiFile,
       mdiAlertCircle,
       mdiCheckCircle,
+      mdiFileDocumentAlert,
       asyncExportJobs: null,
       asyncImportJobs: null,
       timeout: null,
@@ -239,6 +244,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'storeToken',
       'storeBaseUrl',
       'storeAsyncJobUuids',
       'storeAsyncJobCount',
@@ -246,8 +252,17 @@ export default {
       'storeAsyncSidebarTabIndex'
     ])
   },
-  mixins: [datasetApi, miscApi, typesMixin, formattingMixin],
+  mixins: [authApi, datasetApi, miscApi, typesMixin, formattingMixin],
   methods: {
+    downloadImportJobLog: function (job) {
+      this.apiGetDataAsyncImportLog(job.uuid, result => {
+        this.downloadBlob({
+          blob: result,
+          filename: `log-${job.uuid}`,
+          extension: 'zip'
+        })
+      })
+    },
     clearExportJobs: function () {
       if (this.asyncExportJobs) {
         this.$bvModal.msgBoxConfirm(this.$t('modalTextDeleteAsyncJob'), {

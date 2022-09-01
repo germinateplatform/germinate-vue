@@ -1188,6 +1188,7 @@
   "widgetAsyncJobPanelFeedback": "View feedback",
   "widgetAsyncJobPanelImport": "Import data",
   "widgetAsyncJobPanelImportDisabled": " Your data is valid, but data import is disabled.",
+  "widgetAsyncJobPanelDownloadLog": "Download log files",
   "widgetChartColoringByDataset": "Dataset",
   "widgetChartColoringByMarkedItems": "Marked items",
   "widgetChartColoringByTreatment": "Treatment",

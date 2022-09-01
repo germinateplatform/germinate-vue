@@ -103,6 +103,9 @@ export default {
     apiGetDataAsyncImportStart: function (uuid, onSuccess, onError) {
       return this.authAxios({ url: `import/template/${uuid}/import`, success: onSuccess, error: onError })
     },
+    apiGetDataAsyncImportLog: function (uuid, onSuccess, onError) {
+      return this.authAxios({ url: `import/template/${uuid}/log`, dataType: 'blob', success: onSuccess, error: onError })
+    },
     apiPostPublicationsTable: function (queryData, onSuccess, onError) {
       queryData.page -= 1
       return this.authAxios({ url: 'publication/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
