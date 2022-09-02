@@ -16,9 +16,10 @@
             <div class="mb-3"><b-badge class="cursor-hover" @click="showFullReference(p)">
               <MdiIcon :path="mdiDotsHorizontal" /></b-badge>
             </div>
-            <b-button :href="p.displayData.URL" class="mr-2" target="_blank" rel="noopener noreferrer" v-if="p.displayData.URL"><MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonReadMore') }}</b-button>
-
-            <b-button variant="danger" @click="deleteReference(p)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}</b-button>
+            <div>
+              <b-button :href="p.displayData.URL" target="_blank" rel="noopener noreferrer" v-if="p.displayData.URL"><MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonReadMore') }}</b-button>
+              <b-button variant="danger" class="ml-2" @click="deleteReference(p)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}</b-button>
+            </div>
           </b-card>
         </b-col>
       </b-row>

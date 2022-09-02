@@ -175,17 +175,17 @@
     <!-- Jump to page modal -->
     <b-modal :title="$t('modalTitleJumpToPage')"
              @shown="$refs.pageNumberInput.select()"
-             @ok="$refs.jumpToPageForm.submit()"
+             @ok="jumpToPage"
              :ok-title="$t('buttonOk')"
              ok-only
              ref="jumpToPageModal">
-      <b-form v-on:submit.prevent="jumpToPage" ref="jumpToPageForm">
+      <b-form @submit.prevent="jumpToPage" ref="jumpToPageForm">
         <b-form-group
           :label="$t('modalMessageJumpToPage', { maxPage: maxPage })"
           label-for="pageNumber"
           :description="$t('modalTextJumpToPage')">
           <b-form-input
-            v-model="jumpToPageValue"
+            v-model.number="jumpToPageValue"
             type="number"
             required
             :min="1"
