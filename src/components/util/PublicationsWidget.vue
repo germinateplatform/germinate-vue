@@ -6,20 +6,29 @@
     <div v-else>
       <b-row v-if="publications && publications.length > 0">
         <b-col cols=12 sm=6 md=4 xl=3 v-for="p in publications" :key="`publication-${p.publicationDoi}`">
-          <b-card :title="p.displayData.title" :sub-title="p.displayData['container-title']" bg-variant="light" class="h-100" body-class="d-flex flex-column">
-            <p v-if="p.displayData && p.displayData.issued && p.displayData.issued['date-parts'] && p.displayData.issued['date-parts'].length > 0 && p.displayData.issued['date-parts'][0].length > 0">
-              {{ p.displayData.issued['date-parts'][0][0] }}
-            </p>
-            <p class="mb-0 mt-auto limit-rows">
-              <span v-html="p.displayData.fullReference" />
-            </p>
-            <div class="mb-3"><b-badge class="cursor-hover" @click="showFullReference(p)">
-              <MdiIcon :path="mdiDotsHorizontal" /></b-badge>
-            </div>
-            <div>
-              <b-button :href="p.displayData.URL" target="_blank" rel="noopener noreferrer" v-if="p.displayData.URL"><MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonReadMore') }}</b-button>
-              <b-button variant="danger" class="ml-2" @click="deleteReference(p)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}</b-button>
-            </div>
+          <b-card no-body bg-variant="light" class="h-100" body-class="d-flex flex-column">
+            <b-card-body>
+              <b-card-title>{{ p.displayData.title }}</b-card-title>
+              <b-card-sub-title>{{ p.displayData['container-title'] }}</b-card-sub-title>
+              <b-card-text v-if="p.displayData && p.displayData.issued && p.displayData.issued['date-parts'] && p.displayData.issued['date-parts'].length > 0 && p.displayData.issued['date-parts'][0].length > 0">
+                {{ p.displayData.issued['date-parts'][0][0] }}
+              </b-card-text>
+              <b-card-text class="mb-0 mt-auto limit-rows">
+                <span v-html="p.displayData.fullReference" />
+              </b-card-text>
+              <div class="mb-3"><b-badge class="cursor-hover" @click="showFullReference(p)">
+                <MdiIcon :path="mdiDotsHorizontal" /></b-badge>
+              </div>
+            </b-card-body>
+
+            <b-button-group>
+              <b-button variant="primary" :href="p.displayData.URL" rel="noopener noreferrer" v-if="p.displayData.URL">
+                <MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonReadMore') }}
+              </b-button>
+              <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="deleteReference(p)" variant="danger">
+                <MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}
+              </b-button>
+            </b-button-group>
           </b-card>
         </b-col>
       </b-row>
@@ -242,43 +251,6 @@ export default {
 
         this.loading = false
       })
-
-      // this.apiPostPublicationsTable({
-      //   page: 1,
-      //   limit: this.MAX_JAVA_INTEGER,
-      //   filter: filter,
-      //   orderBy: 'createdOn',
-      //   ascending: 0
-      // }, result => {
-      //   let pubs = result.data
-
-      //   pubs = pubs.map(p => {
-      //     let result = p
-
-      //     if (p.publicationFallbackCache) {
-      //       result = this.getFromCache(p)
-      //     } else {
-      //       try {
-      //         const citation = Cite.async(p.publicationDoi.trim())
-      //         if (citation && citation.data && citation.data.length > 0) {
-      //           p.displayData = citation.format('data', { format: 'object' })[0]
-      //           p.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
-      //         } else {
-      //           result = this.getFromCache(p)
-      //         }
-      //       } catch (err) {
-      //         result = this.getFromCache(p)
-      //       }
-      //     }
-      //     return result
-      //   })
-
-      //   this.publications = pubs
-
-      //   this.$emit('publication-count-changed', pubs.length)
-
-      //   this.loading = false
-      // })
     }
   },
   mounted: function () {

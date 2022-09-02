@@ -52,7 +52,9 @@
                 </b-card-body>
 
                 <b-button-group>
-                  <b-button variant="primary" :href="project.newsHyperlink" rel="noopener noreferrer" v-if="project.newsHyperlink">{{ $t('pageNewsReadMore') }}</b-button>
+                  <b-button variant="primary" :href="project.newsHyperlink" rel="noopener noreferrer" v-if="project.newsHyperlink">
+                    <MdiIcon :path="mdiOpenInNew" /> {{ $t('pageNewsReadMore') }}
+                  </b-button>
                   <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="deleteNewsItem(project.newsId)" variant="danger">
                     <MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}
                   </b-button>

@@ -30,6 +30,7 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
+import germplasmApi from '@/mixins/api/germplasm'
 
 import { mdiPassport, mdiHelpCircle } from '@mdi/js'
 
@@ -41,17 +42,16 @@ export default {
     MdiIcon
   },
   props: {
-    germplasm: {
-      type: Object,
-      default: function () {
-        return null
-      }
+    germplasmId: {
+      type: Number,
+      default: null
     }
   },
   data: function () {
     return {
       mdiPassport,
       mdiHelpCircle,
+      germplasm: null,
       sampstat: {
         100: 'Wild',
         110: 'Natural',
@@ -101,6 +101,12 @@ export default {
       }
     }
   },
+  watch: {
+    germplasmId: function () {
+      this.getMcpd()
+    }
+  },
+  mixins: [germplasmApi],
   methods: {
     toMcpdDate: function (str) {
       if (str.length === 8) {
@@ -128,6 +134,16 @@ export default {
     },
     getCountry: function (code3) {
       return countries.getName(code3, 'en')
+    },
+    getMcpd: function () {
+      this.apiGetGermplasmMcpd(this.germplasmId, result => {
+        this.germplasm = result
+      })
+    }
+  },
+  created: function () {
+    if (this.germplasmId) {
+      this.getMcpd()
     }
   }
 }

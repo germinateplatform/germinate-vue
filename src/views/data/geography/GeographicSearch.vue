@@ -14,7 +14,7 @@
             <div>{{ $t('pageGeographicSearchPointSearchText') }}</div>
           </b-card-body>
           <!-- Point search map -->
-          <LocationMap :locations="[]" selectionMode="point" @map-loaded="updatePolygonMap" ref="pointMap" />
+          <LocationMap :locations="[]" selectionMode="point" @map-loaded="updatePolygonMap" ref="pointMap" border="border-top border-bottom" />
           <b-card-body v-if="point">
             <Collapse :icon="mdiMapMarker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:content="slotProps">
@@ -39,7 +39,7 @@
             <div>{{ $t('pageGeographicSearchPolygonSearchText') }}</div>
           </b-card-body>
           <!-- Polygon map -->
-          <LocationMap selectionMode="polygon" :locations="polygonLocations" ref="polygonMap" />
+          <LocationMap selectionMode="polygon" :locations="polygonLocations" ref="polygonMap" border="border-top border-bottom" />
           <b-card-body v-if="polygons && polygons.length > 0">
             <Collapse :icon="mdiMapMarker" :title="$t('pageGeographicSearchPolygonLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:content="slotProps">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="germplasm">
+    <div v-if="germplasmTableData">
       <!-- Scrollspy navigation bar -->
       <b-navbar sticky class="scrollspy-sticky d-none d-sm-block passport-navbar" type="dark" variant="dark" v-b-scrollspy="scrollSpyConfig" ref="scrollSpy" v-if="!isPopup">
         <b-navbar-nav class="align-items-center">
@@ -11,7 +11,7 @@
           <b-nav-item href="#performance" @click="scrollIntoView" v-if="performanceDataCount > 0">{{ $t('pagePassportTraitStatsTitle') }}</b-nav-item>
           <b-nav-item href="#datasets" @click="scrollIntoView">{{ $t('pagePassportDatasetTitle') }}</b-nav-item>
           <b-nav-item href="#pedigree" @click="scrollIntoView">{{ $t('pagePassportPedigreeTitle') }}</b-nav-item>
-          <b-nav-item href="#location" @click="scrollIntoView" v-if="germplasm.declatitude && germplasm.declongitude">{{ $t('pagePassportLocationTitle') }}</b-nav-item>
+          <b-nav-item href="#location" @click="scrollIntoView" v-if="germplasmTableData.latitude && germplasmTableData.longitude">{{ $t('pagePassportLocationTitle') }}</b-nav-item>
           <b-nav-item href="#images" @click="scrollIntoView">{{ $t('pagePassportImageTitle') }}</b-nav-item>
           <b-nav-item href="#groups" @click="scrollIntoView">{{ $t('pagePassportGroupTitle') }}</b-nav-item>
           <b-nav-item href="#entity" @click="scrollIntoView">{{ $t('pagePassportEntityTitle') }}</b-nav-item>
@@ -31,8 +31,10 @@
         <hr />
         <!-- Heading -->
         <h2 class="mdi-heading" id="mcpd">
-          <span>{{ title }}</span>
-          <small v-if="germplasm.entitytype"> {{ germplasm.entitytype }} </small>
+          <span>
+            <span>{{ title }}</span>
+            <small v-if="germplasmTableData && germplasmTableData.entityTypeName"> {{ entityTypes[germplasmTableData.entityTypeName].text() }} </small>
+          </span>
           <span class="text-primary"  @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipGermplasmMarkedItem')">
             <MdiIcon :path="mdiCheckboxMarked" v-if="isMarked" />
             <MdiIcon :path="mdiCheckboxBlankOutline" v-else />
@@ -45,7 +47,7 @@
         <b-row>
           <b-col cols=12 lg=6>
             <!-- MCPD -->
-            <Mcpd :germplasm="germplasm"/>
+            <Mcpd :germplasmId="germplasmTableData.germplasmId"/>
           </b-col>
           <b-col cols=12 lg=6>
             <!-- PDCI -->
@@ -71,7 +73,7 @@
             <!-- Links -->
             <Links :foreignId="currentGermplasmId" targetTable="germinatebase" />
 
-            <b-button target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.accenumb}`">
+            <b-button target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasmTableData.germplasmName}`">
               <MdiIcon :path="mdiBarcode" /> {{ $t('pagePassportGenerateBarcode') }}
             </b-button>
           </b-col>
@@ -88,7 +90,7 @@
         <h2 class="mdi-heading" id="publications"><span class="text-primary"><MdiIcon :path="mdiTextBoxCheckOutline" /></span><span> {{ $t('pagePassportPublicationsTitle') }}</span></h2>
         <p v-html="$t('pagePassportPublicationsText')" />
 
-        <PublicationsWidget :referencingId="germplasmId" referenceType="germplasm" />
+        <PublicationsWidget :referencingId="germplasmTableData.germplasmId" referenceType="germplasm" />
 
         <div v-show="performanceDataCount > 0">
           <hr />
@@ -96,7 +98,7 @@
           <p>{{ $t('pagePassportTraitStatsText') }}</p>
           <b-button v-b-toggle.trait-collapse variant="primary">{{ $t('buttonToggle') }}</b-button>
           <b-collapse id="trait-collapse" class="mt-2" :visible="performanceDataCount <= 48">
-            <GermplasmTraitStats :germplasmId="germplasmId" @has-data="onTraitStatsDataChanged" ref="performanceData" />
+            <GermplasmTraitStats :germplasmId="germplasmTableData.germplasmId" @has-data="onTraitStatsDataChanged" ref="performanceData" />
           </b-collapse>
         </div>
 
@@ -113,10 +115,10 @@
         <!-- Pedigree table -->
         <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
         <!-- Pedigree chart -->
-        <PedigreeChart :germplasm="germplasm" v-if="germplasm" />
+        <PedigreeChart :germplasmId="germplasmTableData.germplasmId" v-if="germplasmTableData" />
 
         <!-- Location map -->
-        <template v-if="germplasm.declatitude && germplasm.declongitude">
+        <template v-if="germplasmTableData.latitude && germplasmTableData.longitude">
           <hr />
           <h2 class="mdi-heading" id="location"><span class="text-primary"><MdiIcon :path="mdiMapMarker" /></span> <span> {{ $t('pagePassportLocationTitle') }}</span></h2>
           <p v-html="$t('pagePassportLocationText')" />
@@ -141,7 +143,7 @@
         <h2 class="mdi-heading" id="images"><span class="text-primary"><MdiIcon :path="mdiImageMultiple" /></span> <span> {{ $t('pagePassportImageTitle') }}</span></h2>
         <p v-html="$t('pagePassportImageText')" />
         <!-- Image gallery -->
-        <ImageGallery :foreignId="germplasm.id" referenceTable="germinatebase" :downloadName="germplasm.accenumb" />
+        <ImageGallery :foreignId="germplasmTableData.germplasmId" referenceTable="germinatebase" :downloadName="germplasmTableData.germplasmName" />
 
         <hr />
         <h2 class="mdi-heading" id="groups"><span class="text-primary"><MdiIcon :path="mdiGroup" /></span><span> {{ $t('pagePassportGroupTitle') }}</span></h2>
@@ -305,10 +307,10 @@ export default {
       }
     },
     title: function () {
-      if (this.germplasm) {
+      if (this.germplasmTableData) {
         const parts = []
-        parts.push(this.germplasm.accenumb)
-        parts.push(this.germplasm.accename)
+        parts.push(this.germplasmTableData.germplasmName)
+        parts.push(this.germplasmTableData.germplasmNumber)
 
         return parts.filter(p => p !== null).join(' / ')
       } else {
@@ -331,17 +333,17 @@ export default {
       }]
     },
     location: function () {
-      if (this.germplasm) {
+      if (this.germplasmTableData) {
         return {
           locationId: this.germplasmTableData ? this.germplasmTableData.locationId : -1,
-          locationLatitude: this.germplasm.declatitude,
-          locationLongitude: this.germplasm.declongitude,
-          locationElevation: this.germplasm.elevation,
-          locationName: this.germplasm.collsite,
+          locationLatitude: this.germplasmTableData.latitude,
+          locationLongitude: this.germplasmTableData.longitude,
+          locationElevation: this.germplasmTableData.elevation,
+          locationName: this.germplasmTableData.location,
           locationType: 'collectingsites',
-          countryName: null,
-          countryCode2: null,
-          countryCode3: this.germplasm.origcty
+          countryName: this.germplasmTableData.countryName,
+          countryCode2: this.germplasmTableData.countryCode,
+          countryCode3: null
         }
       } else {
         return null
@@ -350,17 +352,29 @@ export default {
   },
   methods: {
     updateGermplasmLocation: function (location) {
-      this.apiPatchGermplasmLocation(this.germplasmId, {
+      this.apiPatchGermplasmLocation(this.germplasmTableData.germplasmId, {
         id: location
       }, () => {
-        this.apiGetGermplasmMcpd(this.germplasmId, result => {
-          this.germplasm = result
+        const request = {
+          page: 1,
+          limit: 1,
+          filter: [{
+            column: 'germplasmId',
+            comparator: 'equals',
+            operator: 'and',
+            values: [this.currentGermplasmId]
+          }]
+        }
+        this.apiPostGermplasmTable(request, result => {
+          if (result && result.data && result.data.length > 0) {
+            this.germplasmTableData = result.data[0]
+          }
         })
       })
     },
     updateGermplasmLocationName: function (locationInput) {
       if (locationInput && this.tempNewLocation) {
-        this.apiPatchGermplasmLocation(this.germplasmId, {
+        this.apiPatchGermplasmLocation(this.germplasmTableData.germplasmId, {
           id: null,
           countryId: locationInput.countryId,
           siteName: locationInput.name,
@@ -369,8 +383,20 @@ export default {
           longitude: this.tempNewLocation.locationLongitude,
           locationtypeId: 1
         }, () => {
-          this.apiGetGermplasmMcpd(this.germplasmId, result => {
-            this.germplasm = result
+          const request = {
+            page: 1,
+            limit: 1,
+            filter: [{
+              column: 'germplasmId',
+              comparator: 'equals',
+              operator: 'and',
+              values: [this.currentGermplasmId]
+            }]
+          }
+          this.apiPostGermplasmTable(request, result => {
+            if (result && result.data && result.data.length > 0) {
+              this.germplasmTableData = result.data[0]
+            }
           })
           this.toggleMapSelection()
         })
@@ -508,11 +534,6 @@ export default {
   mounted: function () {
     // Add to recently viewed Germplasm ids
     this.$store.dispatch('pushRecentIds', { type: 'germplasm', id: this.currentGermplasmId })
-
-    // Get the germplasm MCPD based on the id
-    this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
-      this.germplasm = result
-    })
 
     // Request information based on id
     const request = {

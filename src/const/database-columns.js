@@ -43,11 +43,8 @@ export default {
       name: 'subtaxa',
       type: String
     }, {
-      name: 'institutionId',
-      type: Number
-    }, {
-      name: 'institutionName',
-      type: String
+      name: 'institutions',
+      type: 'jsonObject'
     }, {
       name: 'location',
       type: String

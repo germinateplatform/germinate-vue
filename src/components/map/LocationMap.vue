@@ -2,7 +2,7 @@
   <div :class="`${selectionMode === 'point' ? 'point-search' : ''}`">
     <!-- The map itself -->
     <l-map
-      class="location-map"
+      :class="`location-map ${border}`"
       :center="center"
       ref="map"
       @click="onClick"
@@ -142,6 +142,10 @@ export default {
     climateOverlaysDisabled: {
       type: Boolean,
       default: false
+    },
+    border: {
+      type: String,
+      default: 'border'
     }
   },
   watch: {

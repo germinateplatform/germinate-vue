@@ -60,7 +60,7 @@ export default {
   props: {
     germplasm: {
       type: Object,
-      default: null
+      default: () => {}
     }
   },
   data: function () {
@@ -105,7 +105,7 @@ export default {
       }
     },
     baseFilename: function () {
-      return `pedigree-${this.germplasm.id}-dataset-${this.dataset ? this.dataset.datasetId : 'null'}`
+      return `pedigree-${this.germplasm.germplasmId}-dataset-${this.dataset ? this.dataset.datasetId : 'null'}`
     }
   },
   watch: {
@@ -123,7 +123,7 @@ export default {
     downloadPedigreeImage: function () {
       const a = this.$refs.imageDownloadAnchor
       a.href = this.canvasData
-      a.download = `pedigree-${this.germplasm.id}-ds-${this.dataset.datasetId}-${this.getDateTimeString()}`
+      a.download = `pedigree-${this.germplasm.germplasmId}-ds-${this.dataset.datasetId}-${this.getDateTimeString()}`
       a.click()
     },
     showTour: function () {
@@ -173,8 +173,8 @@ export default {
           const fgColor = this.getHighContrastTextColor(bgColor)
           Object.keys(nodes).forEach(n => {
             const node = nodes[n]
-            const bg = node.name === this.germplasm.accenumb ? bgColor : this.storeDarkMode ? '#000000' : '#ffffff'
-            const fg = node.name === this.germplasm.accenumb ? fgColor : this.storeDarkMode ? '#ffffff' : '#000000'
+            const bg = node.name === this.germplasm.germplasmName ? bgColor : this.storeDarkMode ? '#000000' : '#ffffff'
+            const fg = node.name === this.germplasm.germplasmName ? fgColor : this.storeDarkMode ? '#ffffff' : '#000000'
             const border = this.storeDarkMode ? '#ffffff' : '#000000'
             let label = node.name
             if (node.number) {
@@ -214,13 +214,13 @@ export default {
           this.network.on('click', params => {
             const id = this.network.getNodeAt(params.pointer.DOM)
 
-            if (id !== undefined && id !== null && id !== this.germplasm.id) {
+            if (id !== undefined && id !== null && id !== this.germplasm.germplasmId) {
               this.navigateToPassportPage(id)
             }
           })
           this.network.on('hoverNode', params => {
             const id = this.network.getNodeAt(params.pointer.DOM)
-            if (id === this.germplasm.id) {
+            if (id === this.germplasm.germplasmId) {
               // NOTHING
             } else {
               networkCanvas.style.cursor = 'pointer'
@@ -246,7 +246,7 @@ export default {
       emitter.emit('show-loading', true)
 
       const request = {
-        yIds: [this.germplasm.id],
+        yIds: [this.germplasm.germplasmId],
         datasetIds: [this.dataset.datasetId],
         levelsUp: 3,
         levelsDown: 3
@@ -274,12 +274,12 @@ export default {
           column: 'parentName',
           comparator: 'equals',
           operator: 'or',
-          values: [this.germplasm.accenumb]
+          values: [this.germplasm.germplasmName]
         }, {
           column: 'childName',
           comparator: 'equals',
           operator: 'or',
-          values: [this.germplasm.accenumb]
+          values: [this.germplasm.germplasmName]
         }]
       }
 
@@ -292,7 +292,7 @@ export default {
       })
     },
     init: function () {
-      this.apiPostGermplasmDatasetTable(this.germplasm.id, {
+      this.apiPostGermplasmDatasetTable(this.germplasm.germplasmId, {
         filter: [{
           column: 'datasetType',
           comparator: 'equals',

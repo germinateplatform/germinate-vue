@@ -4,7 +4,7 @@
       <b-form-select id="color-by" :options="colorOptions" v-model="colorBy" />
     </b-form-group>
     <l-map
-      class="location-map"
+      class="location-map border"
       :center="center"
       ref="map"
       :options="mapOptions"
@@ -13,7 +13,7 @@
 
       <l-control position="bottomleft" class="leaflet-control-layers">
         <div class="p-2 legend" v-if="colorBy && colorBy.type === 'text'">
-          <div v-for="legendItem in colorLegend" :key="`color-mapping-${legendItem.name}`" :style="{ color: legendItem.color }">
+          <div v-for="legendItem in colorLegend" :key="`color-mapping-${legendItem.name}`" :style="{ color: legendItem.color }" :class="colorBy.legendClass || ''">
             <MdiIcon :path="mdiCircle"/> {{ legendItem.name }}
           </div>
         </div>
@@ -140,7 +140,7 @@ export default {
         value: { fields: ['elevation'], type: 'number', extractValue: (germplasm) => germplasm.elevation, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
       }, {
         text: this.$t('widgetGermplasmMapOptionTaxonomy'),
-        value: { fields: ['genus', 'species', 'subtaxa'], type: 'text', format: (value) => value }
+        value: { fields: ['genus', 'species', 'subtaxa'], type: 'text', format: (value) => value, legendClass: 'italic' }
       }, {
         text: this.$t('tableColumnPdci'),
         value: { fields: ['pdci'], type: 'number', extractValue: (germplasm) => germplasm.pdci, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
@@ -481,5 +481,8 @@ export default {
 .location-map .legend {
   max-height: 300px;
   overflow-y: auto;
+}
+.location-map .legend .italic {
+  font-style: italic;
 }
 </style>
