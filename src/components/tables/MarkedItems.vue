@@ -7,8 +7,8 @@
       </b-button>
       <!-- Button to navigate to the  -->
 
-      <b-button v-if="showPopup" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" @click="$refs.markedItemModal.show()"><b-badge pill variant="light">{{ storeMarkedIds[itemType].length }}</b-badge></b-button>
-      <b-button :to="{ name: 'marked-items-type', params: { itemType: itemType } }" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" v-else><b-badge pill variant="light">{{ storeMarkedIds[itemType].length }}</b-badge></b-button>
+      <b-button v-if="showPopup" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" @click="$refs.markedItemModal.show()"><b-badge pill variant="light">{{ getNumberWithSuffix(storeMarkedIds[itemType].length, 1) }}</b-badge></b-button>
+      <b-button :to="{ name: 'marked-items-type', params: { itemType: itemType } }" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" v-else><b-badge pill variant="light">{{ getNumberWithSuffix(storeMarkedIds[itemType].length, 1) }}</b-badge></b-button>
     </b-button-group>
 
     <b-modal ok-only :ok-title="$t('buttonClose')" v-if="showPopup" ref="markedItemModal" size="xl">
@@ -21,6 +21,7 @@
 import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
+import formattingMixin from '@/mixins/formatting'
 
 import { mdiDelete } from '@mdi/js'
 
@@ -64,6 +65,7 @@ export default {
     MarkedItemsView: () => import('@/views/MarkedItemsView'),
     MdiIcon
   },
+  mixins: [formattingMixin],
   methods: {
     clear: function () {
       // Ask for confirmation
