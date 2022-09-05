@@ -30,6 +30,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import utilMixin from '@/mixins/util'
+import formattingMixin from '@/mixins/formatting'
 
 export default {
   name: 'CompoundTable',
@@ -89,14 +90,14 @@ export default {
         class: 'text-right',
         sortable: true,
         label: this.$t('tableColumnCompoundDataPoints'),
-        formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null
+        formatter: value => this.getNumberWithSuffix(value, 2)
       }]
     }
   },
   components: {
     BaseTable
   },
-  mixins: [utilMixin],
+  mixins: [formattingMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.compoundTable.refresh()

@@ -41,6 +41,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import utilMixin from '@/mixins/util'
+import formattingMixin from '@/mixins/formatting'
 
 import { mdiRenameBox, mdiDelete } from '@mdi/js'
 
@@ -96,7 +97,7 @@ export default {
       }
     }
   },
-  mixins: [utilMixin],
+  mixins: [formattingMixin, utilMixin],
   computed: {
     ...mapGetters([
       'storeToken'
@@ -132,7 +133,7 @@ export default {
           sortable: true,
           class: 'text-right',
           label: this.$t('tableColumnUserGroupCount'),
-          formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null
+          formatter: value => this.getNumberWithSuffix(value, 2)
         }, {
           key: 'actions',
           type: undefined,

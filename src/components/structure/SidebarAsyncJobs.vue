@@ -55,7 +55,7 @@
                   <a :href="`${storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateInternal">{{ $t('buttonDownload') }}</a>
                   <div v-if="job.resultSize">
                     <!-- File size -->
-                    <small class="text-muted">{{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}B</small>
+                    <small class="text-muted">{{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}</small>
                   </div>
                 </div>
               </div>

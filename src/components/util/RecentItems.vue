@@ -54,12 +54,16 @@ export default {
       'storeRecentIds'
     ]),
     getItems: function () {
-      // Return them in the reverse order that they were visited in
-      return this.storeRecentIds[this.groupTypes[this.itemType].itemType].map(id => {
-        return this.recentItems.filter(item => {
-          return item[this.groupTypes[this.itemType].idColumn] === id
-        })[0]
-      }).reverse()
+      if (this.itemType) {
+        // Return them in the reverse order that they were visited in
+        return this.storeRecentIds[this.groupTypes[this.itemType].itemType].map(id => {
+          return this.recentItems.filter(item => {
+            return item[this.groupTypes[this.itemType].idColumn] === id
+          })[0]
+        }).filter(item => item !== undefined && item !== null).reverse()
+      } else {
+        return []
+      }
     }
   },
   mixins: [germplasmApi, genotypeApi, typesMixin],

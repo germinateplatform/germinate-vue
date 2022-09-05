@@ -47,6 +47,7 @@ import defaultProps from '@/const/table-props.js'
 import typesMixin from '@/mixins/types.js'
 import utilMixin from '@/mixins/util'
 import colorMixin from '@/mixins/colors'
+import formattingMixin from '@/mixins/formatting'
 
 import { mdiRenameBox, mdiDelete } from '@mdi/js'
 
@@ -126,7 +127,7 @@ export default {
           sortable: true,
           class: 'text-right',
           label: this.$t('tableColumnGroupCount'),
-          formatter: value => value ? value.toLocaleString() : null
+          formatter: value => this.getNumberWithSuffix(value, 2)
         }
       ]
 
@@ -147,7 +148,7 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [typesMixin, utilMixin, colorMixin],
+  mixins: [formattingMixin, typesMixin, utilMixin, colorMixin],
   methods: {
     refresh: function () {
       this.$refs.table.refresh()

@@ -93,6 +93,7 @@ import datasetApi from '@/mixins/api/dataset.js'
 import groupApi from '@/mixins/api/group.js'
 import genotypeApi from '@/mixins/api/genotype.js'
 import utilMixin from '@/mixins/util'
+import formattingMixin from '@/mixins/formatting'
 
 import { mdiArrowRightBox, mdiInformationOutline } from '@mdi/js'
 
@@ -145,7 +146,7 @@ export default {
       'storeMarkedMarkers'
     ])
   },
-  mixins: [datasetApi, groupApi, genotypeApi, utilMixin],
+  mixins: [datasetApi, formattingMixin, groupApi, genotypeApi, utilMixin],
   methods: {
     onSelectionChanged: function (selectedIds) {
       this.selectedDatasetIds = selectedIds
@@ -287,7 +288,7 @@ export default {
             let name = m.mapName
 
             if (m.markerCount) {
-              name += ` (${m.markerCount.toLocaleString()})`
+              name += ` (${this.getNumberWithSuffix(m.markerCount, 1)})`
             }
 
             this.mapOptions.push({

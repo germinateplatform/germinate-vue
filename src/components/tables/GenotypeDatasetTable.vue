@@ -71,14 +71,14 @@ export default {
           sortable: false,
           class: 'text-right',
           label: this.$t('tableColumnGenotypeDatasetGermplasmCount'),
-          formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
+          formatter: value => value ? this.getNumberWithSuffix(value.value, 2) : null
         }, {
           key: 'dataPointCount',
           type: Number,
           sortable: false,
           class: 'text-right',
           label: this.$t('tableColumnGenotypeDatasetMarkerCount'),
-          formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
+          formatter: value => value ? this.getNumberWithSuffix(value.value, 2) : null
         }
       ]
     }

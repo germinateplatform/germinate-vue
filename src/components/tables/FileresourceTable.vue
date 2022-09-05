@@ -21,7 +21,7 @@
       <template v-slot:cell(fileresourceSize)="data">
         <div class="d-flex flex-column justify-content-center align-items-center">
           <b-button class="text-nowrap" variant="primary" @click="downloadFileresource(data.item)"><MdiIcon :path="mdiDownload"/> {{ $t('buttonDownload') }}</b-button>
-          <small>({{ getNumberWithSuffix(data.item.fileresourceSize, 2, 1024, ' ') }}B)</small>
+          <small>({{ getNumberWithSuffix(data.item.fileresourceSize, 2, 1024, ' ') }})</small>
         </div>
       </template>
       <!-- Show datasets -->

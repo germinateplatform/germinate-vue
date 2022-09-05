@@ -30,6 +30,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import utilMixin from '@/mixins/util'
+import formattingMixin from '@/mixins/formatting'
 
 export default {
   name: 'ClimateTable',
@@ -90,7 +91,7 @@ export default {
           class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnClimateDataPoints'),
-          formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null
+          formatter: value => this.getNumberWithSuffix(value, 2)
         }
       ]
     }
@@ -98,7 +99,7 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [utilMixin],
+  mixins: [formattingMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.climateTable.refresh()

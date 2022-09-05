@@ -30,10 +30,10 @@
         {{data.item.height || 'N/A'}}
       </template>
       <template #cell(size)="data">
-        {{ getNumberWithSuffix(data.item.size, 1, 1024, ' ') }}B
+        {{ getNumberWithSuffix(data.item.size, 1, 1024, ' ') }}
       </template>
       <template #cell(speed)="data">
-        <span v-if="data.item.speed">{{getNumberWithSuffix(data.item.speed, 1, 1024, ' ')}}B/s</span>
+        <span v-if="data.item.speed">{{getNumberWithSuffix(data.item.speed, 1, 1024, ' ')}}/s</span>
       </template>
       <template #cell(status)="data">
         <b-badge variant="danger" v-if="data.item.error">{{data.item.error}}</b-badge>

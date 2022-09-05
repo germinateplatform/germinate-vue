@@ -313,7 +313,7 @@ export default {
           sortable: true,
           class: 'text-right',
           label: this.$t('tableColumnDatasetObjectCount'),
-          formatter: value => (value && (value.value !== undefined)) ? value.value.toLocaleString() : null
+          formatter: value => value ? this.getNumberWithSuffix(value.value, 2) : null
         }, {
           key: 'dataPointCount',
           type: Number,
@@ -435,7 +435,7 @@ export default {
       if (dataset.datasetType === 'genotype' || dataset.datasetType === 'allelefreq') {
         result = '≤'
       }
-      result += dataset.dataPointCount.value.toLocaleString()
+      result += this.getNumberWithSuffix(dataset.dataPointCount.value, 2)
       return result
     },
     downloadDataset: function (dataset) {

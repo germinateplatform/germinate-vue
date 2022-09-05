@@ -15,7 +15,7 @@
                       :disabled="entityType.disabled"
                       :variant="entityType.disabled ? 'outline-secondary' : 'outline-primary'"
                       @click="onEntityTypeSelected(entityType)">
-                <MdiIcon :path="entityType.path" /><span> {{ entityType.text() }} <b-badge>{{ entityType.count }}</b-badge></span>
+                <MdiIcon :path="entityType.path" /><span> {{ entityType.text() }} <b-badge>{{ getNumberWithSuffix(entityType.count, 2) }}</b-badge></span>
               </b-button>
             </b-button-group>
           </b-col>
@@ -66,6 +66,7 @@ import Collapse from '@/components/util/Collapse'
 
 import germplasmApi from '@/mixins/api/germplasm.js'
 import typesMixin from '@/mixins/types.js'
+import formattingMixin from '@/mixins/formatting'
 
 import { mdiFilter, mdiCamera, mdiCheckAll } from '@mdi/js'
 
@@ -105,7 +106,7 @@ export default {
       'storeEntityTypeStats'
     ]),
     allGermplasmCount: function () {
-      return this.entityTypeOptions.map(o => o.count).reduce((a, b) => a + b)
+      return this.getNumberWithSuffix(this.entityTypeOptions.map(o => o.count).reduce((a, b) => a + b), 2)
     },
     genusOptions: function () {
       if (this.taxonomy.genus) {
@@ -115,7 +116,7 @@ export default {
         }].concat(this.taxonomy.genus.map(g => {
           return {
             value: g.taxonomy,
-            text: `${g.taxonomy} (${g.count})`
+            text: `${g.taxonomy} (${this.getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -130,7 +131,7 @@ export default {
         }].concat(this.taxonomy.species.map(g => {
           return {
             value: g.taxonomy,
-            text: `${g.taxonomy} (${g.count})`
+            text: `${g.taxonomy} (${this.getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -145,7 +146,7 @@ export default {
         }].concat(this.taxonomy.subtaxa.map(g => {
           return {
             value: g.taxonomy,
-            text: `${g.taxonomy} (${g.count})`
+            text: `${g.taxonomy} (${this.getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -160,7 +161,7 @@ export default {
         }].concat(this.locations.filter(g => g.count > 0).map(g => {
           return {
             value: g.key,
-            text: `${g.key} (${g.count})`
+            text: `${g.key} (${this.getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -175,7 +176,7 @@ export default {
         }].concat(this.biologicalStatus.filter(g => g.count > 0).map(g => {
           return {
             value: g.key,
-            text: `${g.key} (${g.count})`
+            text: `${g.key} (${this.getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -199,7 +200,7 @@ export default {
       })
     }
   },
-  mixins: [germplasmApi, typesMixin],
+  mixins: [formattingMixin, germplasmApi, typesMixin],
   watch: {
     collapseVisible: function (newValue) {
       if (newValue) {

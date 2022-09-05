@@ -69,6 +69,7 @@ import colorMixin from '@/mixins/colors.js'
 import typesMixin from '@/mixins/types.js'
 import utilMixin from '@/mixins/util'
 import authApi from '@/mixins/api/auth'
+import formattingMixin from '@/mixins/formatting'
 
 import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiSquareEditOutline } from '@mdi/js'
 
@@ -164,7 +165,7 @@ export default {
           class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnTraitDataPoints'),
-          formatter: value => (value !== undefined && value !== null) ? value.toLocaleString() : null
+          formatter: value => this.getNumberWithSuffix(value, 2)
         }
       ]
 
@@ -195,7 +196,7 @@ export default {
     MdiIcon,
     TraitEditModal
   },
-  mixins: [colorMixin, typesMixin, utilMixin, authApi],
+  mixins: [colorMixin, formattingMixin, typesMixin, utilMixin, authApi],
   methods: {
     refresh: function () {
       this.$refs.traitTable.refresh()
