@@ -389,7 +389,7 @@ const routes = [
         beforeEnter: requireAuth
       },
       {
-        path: 'publications/:publicationType/:publicationId',
+        path: 'publications/:publicationId',
         name: 'publication-details',
         component: () => import(/* webpackChunkName: "publication-details" */ '@/views/Publications.vue'),
         beforeEnter: requireAuth

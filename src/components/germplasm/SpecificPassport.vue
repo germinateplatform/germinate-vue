@@ -115,7 +115,7 @@
         <!-- Pedigree table -->
         <PedigreeTable :getData="getPedigreeData" :filterOn="pedigreeFilter" />
         <!-- Pedigree chart -->
-        <PedigreeChart :germplasmId="germplasmTableData.germplasmId" v-if="germplasmTableData" />
+        <PedigreeChart :germplasm="germplasmTableData" v-if="germplasmTableData" />
 
         <!-- Location map -->
         <template v-if="germplasmTableData.latitude && germplasmTableData.longitude">

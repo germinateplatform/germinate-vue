@@ -105,12 +105,19 @@ export default {
       }
     },
     baseFilename: function () {
-      return `pedigree-${this.germplasm.germplasmId}-dataset-${this.dataset ? this.dataset.datasetId : 'null'}`
+      if (this.germplasm) {
+        return `pedigree-${this.germplasm.germplasmId}-dataset-${this.dataset ? this.dataset.datasetId : 'null'}`
+      } else {
+        return ''
+      }
     }
   },
   watch: {
     dataset: function () {
       this.getPlotData()
+    },
+    germplasm: function () {
+      this.init()
     }
   },
   components: {
@@ -292,24 +299,26 @@ export default {
       })
     },
     init: function () {
-      this.apiPostGermplasmDatasetTable(this.germplasm.germplasmId, {
-        filter: [{
-          column: 'datasetType',
-          comparator: 'equals',
-          operator: 'and',
-          values: ['pedigree']
-        }]
-      }, result => {
-        if (result && result.data) {
-          this.datasets = result.data
+      if (this.germplasm) {
+        this.apiPostGermplasmDatasetTable(this.germplasm.germplasmId, {
+          filter: [{
+            column: 'datasetType',
+            comparator: 'equals',
+            operator: 'and',
+            values: ['pedigree']
+          }]
+        }, result => {
+          if (result && result.data) {
+            this.datasets = result.data
 
-          if (result.data.length > 0) {
-            this.dataset = result.data.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn))[0]
-          } else {
-            this.dataset = null
+            if (result.data.length > 0) {
+              this.dataset = result.data.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn))[0]
+            } else {
+              this.dataset = null
+            }
           }
-        }
-      })
+        })
+      }
     }
   },
   mounted: function () {

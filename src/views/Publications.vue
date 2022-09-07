@@ -8,20 +8,26 @@
       <h2>{{ $t('pagePublicationDetailsTitle') }}</h2>
 
       <template v-if="publicationData">
-        <h3>{{ publicationData.title }}</h3>
+        <h3 v-html="publicationData.title" />
       </template>
 
-      <template v-if="publication && publication.referenceType !== 'database'">
+      <template v-if="publication">
         <!-- One of these three tables will be shown, depending on the type of the selected publication -->
-        <GroupTable v-if="publication.referenceType === 'group'"
-                    ref="publicationmembersTable"
-                    :getData="getGroupData" />
-        <GermplasmTable v-else-if="publication.referenceType === 'germplasm'"
-                        ref="publicationmembersTable"
-                        :getData="getGermplasmData"/>
-        <DatasetTable v-else-if="publication.referenceType === 'dataset'"
-                        ref="publicationmembersTable"
+        <template v-if="publication.groupIds && publication.groupIds.length > 0">
+          <h4>{{ $t('pageGroupsTitle') }}</h4>
+          <GroupTable ref="publicationmembersTable"
+                      :getData="getGroupData" />
+        </template>
+        <template v-if="publication.germplasmIds && publication.germplasmIds.length > 0">
+          <h4>{{ $t('pageGermplasmTitle') }}</h4>
+          <GermplasmTable ref="publicationmembersTable"
+                          :getData="getGermplasmData"/>
+        </template>
+        <template v-if="publication.datasetIds && publication.datasetIds.length > 0">
+          <h4>{{ $t('pageDatasetsTitle') }}</h4>
+          <DatasetTable ref="publicationmembersTable"
                         :getData="getDatasetData" />
+        </template>
       </template>
     </div>
   </div>
@@ -117,17 +123,12 @@ export default {
           comparator: 'equals',
           operator: 'and',
           values: [config.publicationId]
-        }, {
-          column: 'referenceType',
-          comparator: 'equals',
-          operator: 'and',
-          values: [config.publicationType]
         }]
       }
 
       this.publicationId = config.publicationId
 
-      window.history.replaceState({}, null, this.$router.resolve({ name: 'publication-details', params: { publicationType: config.publicationType, publicationId: config.publicationId } }).href)
+      window.history.replaceState({}, null, this.$router.resolve({ name: 'publication-details', params: { publicationId: config.publicationId } }).href)
 
       this.apiPostPublicationsTable(queryParams, result => {
         if (result && result.data && result.data.length > 0) {

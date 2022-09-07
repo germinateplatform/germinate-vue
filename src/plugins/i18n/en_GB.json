@@ -1078,6 +1078,7 @@
   "tableColumnPublicationReferenceType": "Type",
   "tableColumnPublicationReferencingIds": "# Referencing items",
   "tableColumnPublicationCreatedOn": "Created on",
+  "tableColumnPublicationDetails": "Referenced items",
   "tableColumnSpecies": "Species",
   "tableColumnSubtaxa": "Subtaxa",
   "tableColumnSynonyms": "Synonyms",
