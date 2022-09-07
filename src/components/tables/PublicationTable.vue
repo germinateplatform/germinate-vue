@@ -12,8 +12,8 @@
       </template>
       <template v-slot:cell(publicationName)="data">
         <template v-if="data.item.publicationFallbackCache">
-          <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId, publicationType: data.item.referenceType })">{{ data.item.publicationFallbackCache.title }}</router-link>
-          <span v-else>{{ data.item.publicationFallbackCache.title }}</span>
+          <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId, publicationType: data.item.referenceType } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId, publicationType: data.item.referenceType })" v-html="data.item.publicationFallbackCache.title" />
+          <span v-else v-html="data.item.publicationFallbackCache.title" />
         </template>
       </template>
       <template v-slot:cell(publicationJournal)="data">
