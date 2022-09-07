@@ -1,8 +1,25 @@
-cff-version: 1.1.0
-doi: 10.1002/csc2.20248
-message: "If you use this software, please cite it using these metadata."
-url: "https://github.com/germinateplatform/germinate-vue"
-title: "From bits to bites: Advancement of the Germinate platform to support prebreeding informatics for crop wild relatives"
+cff-version: 1.2.0
+identifiers:
+  - description: This is our latest publication on Germinate in Crop Science.
+    type: doi
+    value: "10.1002/csc2.20248"
+  - description: This is our publication on Germinate 3 in Crop Science.
+    type: doi
+    value: "10.2135/cropsci2016.09.0814"
+message: If you use this software, please cite it using these metadata.
+repository-code: "https://github.com/germinateplatform/germinate-vue"
+title: "Germinate - The plant genetic resources database"
+version: 4.3.5
+license: Apache-2.0
+keywords:
+  - "plant genetic resources"
+  - genotyping
+  - phenotyping
+  - mcpd
+  - passport
+  - pedigree
+  - trials
+  - database
 date-released: 2020-06-30
 authors:
   - family-names: "Raubach"
@@ -84,7 +101,7 @@ authors:
   - family-names: "Werner"
     given-names: "Peter"
   - family-names: "All our CWR Pre-Breeding Partners and Collaborators"
-    given-names: ""
+    given-names: "."
   - family-names: "Shaw"
     given-names: "Paul D."
     orcid: "https://orcid.org/0000-0002-0202-1150"
