@@ -3,27 +3,27 @@
     <h2 class="mdi-heading"><span class="text-primary"><MdiIcon :path="mdiPassport" /></span> <span> {{ $t('pagePassportMcpdTitle') }} </span>
     <small v-b-tooltip.hover.bottom title="Multi-Crop Passport Descriptors" class="text-muted"><MdiIcon :path="mdiHelpCircle" /></small></h2>
     <dl class="row" v-if="germplasm">
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdPuid') }}</dt><dd class="col-9">{{ germplasm.puid }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdGid') }}</dt><dd class="col-9">{{ germplasm.accenumb }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdAccessionName') }}</dt><dd class="col-9">{{ germplasm.accename }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdAccessionNumber') }}</dt><dd class="col-9">{{ germplasm.accenumb }}</dd>
-      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBreederCode') }}</dt><dd class="col-9">{{ germplasm.bredcode }}</dd> -->
-      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBreederName') }}</dt><dd class="col-9">{{ germplasm.bredname }}</dd> -->
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdBiologicalStatus') }}</dt><dd class="col-9">{{ sampstat[germplasm.sampstat] }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingSource') }}</dt><dd class="col-9">{{ collsrc[germplasm.collsrc] }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingNumber') }}</dt><dd class="col-9">{{ germplasm.collnumb }}</dd>
-      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingCode') }}</dt><dd class="col-9">{{ germplasm.collcode }}</dd> -->
-      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingName') }}</dt><dd class="col-9">{{ germplasm.collname }}</dd> -->
-      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCollectingInst') }}</dt><dd class="col-9">{{ germplasm.collinstaddress }}</dd> -->
-      <!-- <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdInstitutionCode') }}</dt><dd class="col-9">{{ germplasm.instcode }}</dd> -->
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdGenus') }}</dt><dd class="col-9 font-italic">{{ germplasm.genus }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSpecies') }}</dt><dd class="col-9 font-italic">{{ germplasm.species }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCropName') }}</dt><dd class="col-9">{{ germplasm.cropname }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSpeciesAuth') }}</dt><dd class="col-9">{{ germplasm.spauthor }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSubtaxon') }}</dt><dd class="col-9">{{ germplasm.subtaxa }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdSubtaxonAuth') }}</dt><dd class="col-9">{{ germplasm.subtauthor }}</dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdCountry') }}</dt><dd class="col-9"><template v-if="germplasm.origcty"><i :class="'fi fi-' + getFlag(germplasm.origcty.toUpperCase())" v-if="germplasm.origcty"/> {{ getCountry(germplasm.origcty.toUpperCase()) }}</template></dd>
-      <dt class="col-3 text-right text-break mb-2">{{ $t('widgetMcpdColldate') }}</dt><dd class="col-9"><template v-if="germplasm.colldate">{{ toMcpdDate(germplasm.colldate) }}</template></dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdPuid') }}</dt><dd class="col-12 col-md-9">{{ germplasm.puid }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdGid') }}</dt><dd class="col-12 col-md-9">{{ germplasm.accenumb }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdAccessionName') }}</dt><dd class="col-12 col-md-9">{{ germplasm.accename }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdAccessionNumber') }}</dt><dd class="col-12 col-md-9">{{ germplasm.accenumb }}</dd>
+      <!-- <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdBreederCode') }}</dt><dd class="col-12 col-md-9">{{ germplasm.bredcode }}</dd> -->
+      <!-- <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdBreederName') }}</dt><dd class="col-12 col-md-9">{{ germplasm.bredname }}</dd> -->
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdBiologicalStatus') }}</dt><dd class="col-12 col-md-9">{{ sampstat[germplasm.sampstat] }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdCollectingSource') }}</dt><dd class="col-12 col-md-9">{{ collsrc[germplasm.collsrc] }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdCollectingNumber') }}</dt><dd class="col-12 col-md-9">{{ germplasm.collnumb }}</dd>
+      <!-- <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdCollectingCode') }}</dt><dd class="col-12 col-md-9">{{ germplasm.collcode }}</dd> -->
+      <!-- <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdCollectingName') }}</dt><dd class="col-12 col-md-9">{{ germplasm.collname }}</dd> -->
+      <!-- <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdCollectingInst') }}</dt><dd class="col-12 col-md-9">{{ germplasm.collinstaddress }}</dd> -->
+      <!-- <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdInstitutionCode') }}</dt><dd class="col-12 col-md-9">{{ germplasm.instcode }}</dd> -->
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdGenus') }}</dt><dd class="col-12 col-md-9 font-italic">{{ germplasm.genus }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdSpecies') }}</dt><dd class="col-12 col-md-9 font-italic">{{ germplasm.species }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdCropName') }}</dt><dd class="col-12 col-md-9">{{ germplasm.cropname }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdSpeciesAuth') }}</dt><dd class="col-12 col-md-9">{{ germplasm.spauthor }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdSubtaxon') }}</dt><dd class="col-12 col-md-9">{{ germplasm.subtaxa }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdSubtaxonAuth') }}</dt><dd class="col-12 col-md-9">{{ germplasm.subtauthor }}</dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdCountry') }}</dt><dd class="col-12 col-md-9"><template v-if="germplasm.origcty"><i :class="'fi fi-' + getFlag(germplasm.origcty.toUpperCase())" v-if="germplasm.origcty"/> {{ getCountry(germplasm.origcty.toUpperCase()) }}</template></dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdColldate') }}</dt><dd class="col-12 col-md-9"><template v-if="germplasm.colldate">{{ toMcpdDate(germplasm.colldate) }}</template></dd>
     </dl>
   </div>
 </template>

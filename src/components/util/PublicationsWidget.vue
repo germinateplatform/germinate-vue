@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <b-row v-if="publications && publications.length > 0">
-        <b-col cols=12 sm=6 md=4 xl=3 v-for="p in publications" :key="`publication-${p.publicationDoi}`">
+        <b-col cols=12 sm=6 md=4 xl=3 class="mb-3" v-for="p in publications" :key="`publication-${p.publicationDoi}`">
           <b-card no-body bg-variant="light" class="h-100" body-class="d-flex flex-column">
             <b-card-body>
               <b-card-title v-html="p.displayData.title"></b-card-title>
