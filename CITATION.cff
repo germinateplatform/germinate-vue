@@ -9,7 +9,7 @@ identifiers:
 message: If you use this software, please cite it using these metadata.
 repository-code: "https://github.com/germinateplatform/germinate-vue"
 title: "Germinate - The plant genetic resources database"
-version: 4.3.5
+version: 4.4.0
 license: Apache-2.0
 keywords:
   - "plant genetic resources"
