@@ -343,7 +343,7 @@ export default {
 
           let clazz = result.class || ''
           if (this.options && this.options.tableName) {
-            clazz = `${clazz} ${this.isTableColumnHidden(this.options.tableName, c.key)}`
+            clazz = `${clazz} ${this.getTableColumnStyle(this.options.tableName, c.key)}`
           }
 
           result.class = clazz

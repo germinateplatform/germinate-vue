@@ -586,6 +586,10 @@ export default {
   background-color: #23a1d7;
 }
 
+.v-sidebar-menu .vsm--link {
+  padding: 10px 16px;
+}
+
 .v-sidebar-menu .vsm--link_hover, .v-sidebar-menu .vsm--link:hover {
   background-color: #23a1d7;
 }

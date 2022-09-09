@@ -7,11 +7,13 @@
     <div v-if="publicationId" ref="publicationDetails" >
       <h2>{{ $t('pagePublicationDetailsTitle') }}</h2>
 
-      <template v-if="publicationData">
-        <h3 v-html="publicationData.title" />
-      </template>
-
       <template v-if="publication">
+        <b-row>
+          <b-col cols=12 sm=6 md=4 xl=3 class="mb-3">
+            <PublicationCard :canDelete="false" :publication="publication" />
+          </b-col>
+        </b-row>
+
         <!-- One of these three tables will be shown, depending on the type of the selected publication -->
         <template v-if="publication.groupIds && publication.groupIds.length > 0">
           <h4>{{ $t('pageGroupsTitle') }}</h4>
@@ -38,6 +40,7 @@ import DatasetTable from '@/components/tables/DatasetTable'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import GroupTable from '@/components/tables/GroupTable'
 import PublicationTable from '@/components/tables/PublicationTable'
+import PublicationCard from '@/components/util/PublicationCard'
 
 import datasetApi from '@/mixins/api/dataset'
 import germplasmApi from '@/mixins/api/germplasm'
@@ -51,7 +54,8 @@ export default {
     DatasetTable,
     GermplasmTable,
     GroupTable,
-    PublicationTable
+    PublicationTable,
+    PublicationCard
   },
   data: function () {
     return {
@@ -156,13 +160,11 @@ export default {
     }
   },
   created: function () {
-    if (this.$route.params.publicationId && this.$route.params.publicationType) {
+    if (this.$route.params.publicationId) {
       this.publicationId = this.$route.params.publicationId
-      this.publicationType = this.$route.params.publicationType
 
       this.onPublicationSelected({
-        publicationId: this.publicationId,
-        publicationType: this.publicationType
+        publicationId: this.publicationId
       })
     }
   }

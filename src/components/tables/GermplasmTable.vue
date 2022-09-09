@@ -427,6 +427,7 @@ export default {
           key: 'pdci',
           type: Number,
           sortable: true,
+          class: 'text-center',
           label: this.$t('tableColumnPdci')
         }, {
           key: 'distance',
@@ -571,8 +572,7 @@ export default {
 </script>
 
 <style>
-.table-image,
-.table-pdci {
+.table-image {
   white-space: nowrap;
 }
 .table-image:hover {

@@ -121,12 +121,12 @@ export default {
     },
     parentSpan: function () {
       return this.parentColumns.map(c => {
-        return this.isTableColumnHidden(this.options.tableName, c) === 'd-none' ? 0 : 1
+        return this.getTableColumnStyle(this.options.tableName, c) === 'd-none' ? 0 : 1
       }).reduce((a, b) => a + b, 0)
     },
     childSpan: function () {
       return this.childColumns.map(c => {
-        return this.isTableColumnHidden(this.options.tableName, c) === 'd-none' ? 0 : 1
+        return this.getTableColumnStyle(this.options.tableName, c) === 'd-none' ? 0 : 1
       }).reduce((a, b) => a + b, 0)
     }
   },

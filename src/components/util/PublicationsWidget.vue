@@ -6,37 +6,12 @@
     <div v-else>
       <b-row v-if="publications && publications.length > 0">
         <b-col cols=12 sm=6 md=4 xl=3 class="mb-3" v-for="p in publications" :key="`publication-${p.publicationDoi}`">
-          <b-card no-body bg-variant="light" class="h-100" body-class="d-flex flex-column">
-            <b-card-body>
-              <b-card-title v-html="p.displayData.title"></b-card-title>
-              <b-card-sub-title>{{ p.displayData['container-title'] }}</b-card-sub-title>
-              <b-card-text v-if="p.displayData && p.displayData.issued && p.displayData.issued['date-parts'] && p.displayData.issued['date-parts'].length > 0 && p.displayData.issued['date-parts'][0].length > 0">
-                {{ p.displayData.issued['date-parts'][0][0] }}
-              </b-card-text>
-              <b-card-text class="mb-0 mt-auto limit-rows">
-                <span v-html="p.displayData.fullReference" />
-              </b-card-text>
-              <div class="mb-3"><b-badge class="cursor-hover" @click="showFullReference(p)">
-                <MdiIcon :path="mdiDotsHorizontal" /></b-badge>
-              </div>
-            </b-card-body>
-
-            <b-button-group>
-              <b-button variant="primary" :href="p.displayData.URL" rel="noopener noreferrer" v-if="p.displayData.URL">
-                <MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonReadMore') }}
-              </b-button>
-              <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="deleteReference(p)" variant="danger">
-                <MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}
-              </b-button>
-            </b-button-group>
-          </b-card>
+          <PublicationCard :publication="p" @deleteReference="deleteReference" />
         </b-col>
       </b-row>
       <h5 v-else>{{ $t('headingNoData') }}</h5>
 
       <b-button v-b-modal.add-publication-modal v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiPlusBox" /> {{ $t('buttonAddPublication') }}</b-button>
-
-      <ReferenceModal :publication="selectedPublication" ref="referenceModal" />
 
       <b-modal id="add-publication-modal"
               ref="addPublicationModal"
@@ -62,20 +37,20 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import ReferenceModal from '@/components/modals/ReferenceModal'
+import PublicationCard from '@/components/util/PublicationCard'
 import MdiIcon from '@/components/icons/MdiIcon'
 
 import miscApi from '@/mixins/api/misc.js'
 import authApi from '@/mixins/api/auth'
 
-import { mdiChevronDoubleDown, mdiPlusBox, mdiDelete, mdiOpenInNew, mdiDotsHorizontal } from '@mdi/js'
+import { mdiChevronDoubleDown, mdiPlusBox } from '@mdi/js'
 
 const Cite = require('citation-js')
 
 export default {
   components: {
     MdiIcon,
-    ReferenceModal
+    PublicationCard
   },
   computed: {
     ...mapGetters([
@@ -96,12 +71,8 @@ export default {
     return {
       mdiChevronDoubleDown,
       mdiPlusBox,
-      mdiDelete,
-      mdiOpenInNew,
-      mdiDotsHorizontal,
       loading: true,
       publications: [],
-      selectedPublication: null,
       newPublication: {
         doi: null,
         html: null,
@@ -138,7 +109,7 @@ export default {
       })
         .then(value => {
           if (value) {
-            this.apiDeletePublicationReference(p.publicationId, p.referenceType, this.referencingId, () => this.update())
+            this.apiDeletePublicationReference(p.publicationId, this.referenceType, this.referencingId, () => this.update())
           }
         })
     },
@@ -165,10 +136,6 @@ export default {
           this.newPublication.loading = false
         })
     },
-    showFullReference: function (p) {
-      this.selectedPublication = p.displayData
-      this.$refs.referenceModal.show()
-    },
     onSubmit: function () {
       this.apiPutPublication({
         doi: this.newPublication.doi,
@@ -184,24 +151,6 @@ export default {
           this.update()
         })
       })
-    },
-    getFromCache: function (p) {
-      const result = p
-      try {
-        const citation = new Cite(JSON.parse(p.publicationFallbackCache))
-
-        if (citation && citation.data && citation.data.length > 0) {
-          result.displayData = citation.format('data', { format: 'object' })[0]
-          result.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
-        }
-      } catch (err) {
-        result.displayData = {
-          title: 'N/A',
-          fullReference: 'N/A',
-          URL: result.publicationDoi
-        }
-      }
-      return result
     },
     update: function () {
       this.loading = true
@@ -222,32 +171,9 @@ export default {
       }
 
       this.apiGetPublications(this.referenceType, this.referencingId, result => {
-        let pubs = result
+        this.publications = result
 
-        pubs = pubs.map(p => {
-          let result = p
-
-          if (p.publicationFallbackCache) {
-            result = this.getFromCache(p)
-          } else {
-            try {
-              const citation = Cite.async(p.publicationDoi.trim())
-              if (citation && citation.data && citation.data.length > 0) {
-                p.displayData = citation.format('data', { format: 'object' })[0]
-                p.displayData.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
-              } else {
-                result = this.getFromCache(p)
-              }
-            } catch (err) {
-              result = this.getFromCache(p)
-            }
-          }
-          return result
-        })
-
-        this.publications = pubs
-
-        this.$emit('publication-count-changed', pubs.length)
+        this.$emit('publication-count-changed', result.length)
 
         this.loading = false
       })
@@ -259,15 +185,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.cursor-hover:hover {
-  cursor: pointer;
-}
-.limit-rows {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* number of lines to show */
-  -webkit-box-orient: vertical;
-}
+<style>
 </style>

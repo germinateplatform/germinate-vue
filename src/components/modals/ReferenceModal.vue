@@ -30,7 +30,7 @@ export default {
   computed: {
     citation: function () {
       if (this.publication) {
-        return new Cite(this.publication)
+        return new Cite(this.publication.publicationFallbackCache || this.publication.publicationDoi)
       } else {
         return null
       }

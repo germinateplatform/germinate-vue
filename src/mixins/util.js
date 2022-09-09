@@ -24,11 +24,12 @@ export default {
       })
     },
     /**
-     * Checks whether the given column key in the given table is hidden or not
+     * Gets the table column style. Will either return an empty style or `d-none` depending on whether the column has been hidden or noe.
      * @param {String} tableName The name of the table
      * @param {String} columnKey The name of the column
+     * @returns The style that should be applied to this column
      */
-    isTableColumnHidden: function (tableName, columnKey) {
+    getTableColumnStyle: function (tableName, columnKey) {
       if (this.storeHiddenColumns[tableName]) {
         return (this.storeHiddenColumns[tableName].indexOf(columnKey) !== -1) ? 'd-none' : ''
       } else {

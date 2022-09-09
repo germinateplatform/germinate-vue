@@ -48,11 +48,11 @@
 
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-4 border-top">
           <div class="col-md-4 d-flex align-items-center justify-content-center justify-content-md-start">
-            <span class="text-muted">&copy; {{ new Date().getFullYear() }} The James Hutton Institute</span>
+            <span class="text-muted">&copy; {{ new Date().getFullYear() }} Germinate: The James Hutton Institute</span>
           </div>
 
           <div class="col-md-4 d-flex align-items-center justify-content-center">
-            <span class="text-muted">Version {{ germinateVersion }}</span>
+            <span class="text-muted">{{ $t('pageFooterVersion', { version: germinateVersion }) }}</span>
           </div>
 
           <ul class="nav col-md-4 justify-content-center justify-content-md-end list-unstyled d-flex">
