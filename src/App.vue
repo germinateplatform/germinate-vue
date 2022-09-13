@@ -110,6 +110,9 @@ export default {
       this.apiGetEntityTypeStats(result => {
         this.$store.dispatch('setEntityTypeStats', result)
       })
+    }, {
+      codes: [503],
+      callback: () => this.$router.push({ name: 'setup' })
     })
   },
   watch: {

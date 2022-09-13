@@ -772,6 +772,8 @@
   "pageSetupDatabaseSubtitle": "Please provide connection information for the database that Germinate should use. Note that the Germinate server (not this client) needs to be able to connect to the database.",
   "pageSetupGatekeeperTitle": "Gatekeeper Connection Configuration",
   "pageSetupGatekeeperSubtitle": "Please decide whether you are using Gatekeeper for user authentication. If enabled, please provide connection information to your Gatekeeper instance. Note that the Germinate server (not this client) needs to be able to connect to Gatekeeper. Disable if you are not using Gatekeeper, but keep in mind that you will not be able to upload Germinate data templates without Gatekeeper.",
+  "pageSetupFinishTitle": "Complete Setup",
+  "pageSetupFinishSubtitle": "The configurations you have provided are valid, click the button below to submit them to Germinate and complete the Germinate setup.",
   "pageStatisticsTitle": "Data statistics",
   "pageStatisticsSubtitle": "A summary of all the data in Germinate",
   "pageStatisticsBiologicalStatusText": "Below you can see the number of germplasm for each biological status (SAMPSTAT) defined in the Multi-Crop Passport Descriptors (MCPD v2.1). Hovering over a bar will show the number of germplasm. Clicking on a bar will take you to the germplasm overview page which will then show the germplasm with this biological status.",

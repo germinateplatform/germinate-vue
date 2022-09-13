@@ -1,5 +1,5 @@
 <template>
-  <b-nav-item-dropdown right v-if="languages && languages.length > 1" aria-label="Locale switcher">
+  <b-nav-item-dropdown :right="position === 'right'" v-if="languages && languages.length > 1" aria-label="Locale switcher">
     <template #button-content>
       <MdiIcon :path="mdiTranslate" />
     </template>
@@ -21,6 +21,12 @@ import { mdiTranslate } from '@mdi/js'
 export default {
   components: {
     MdiIcon
+  },
+  props: {
+    position: {
+      type: String,
+      default: 'right'
+    }
   },
   computed: {
     ...mapGetters([
