@@ -41,6 +41,15 @@ export default {
      */
     apiPostToken: function (user, onSuccess, onError) {
       return this.authAxios({ url: 'token', method: 'POST', data: user, success: onSuccess, error: onError })
+    },
+    apiSetupCheckGatekeeper: function (gkConfig, onSuccess, onError) {
+      return this.authAxios({ url: 'setup/check/gatekeeper', method: 'POST', data: gkConfig, success: onSuccess, error: onError })
+    },
+    apiSetupCheckDatabase: function (dbConfig, onSuccess, onError) {
+      return this.authAxios({ url: 'setup/check/database', method: 'POST', data: dbConfig, success: onSuccess, error: onError })
+    },
+    apiSetupStore: function (data, onSuccess, onError) {
+      return this.authAxios({ url: 'setup/store', method: 'POST', data: data, success: onSuccess, error: onError })
     }
   }
 }
