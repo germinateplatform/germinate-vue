@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import miscApi from '@/mixins/api/misc.js'
+import { apiPostNews } from '@/mixins/api/misc.js'
 
 export default {
   data: function () {
@@ -82,7 +82,6 @@ export default {
       return this.newsTitle && this.newsContent && this.newsTypeId
     }
   },
-  mixins: [miscApi],
   methods: {
     okPressed: async function () {
       let imageBase64 = null
@@ -102,7 +101,7 @@ export default {
         updatedOn: this.newsDate
       }
 
-      this.apiPostNews(news, () => {
+      apiPostNews(news, () => {
         this.$emit('news-added')
         this.hide()
       })

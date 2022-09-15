@@ -7,7 +7,8 @@
 
 <script>
 import InstitutionTable from '@/components/tables/InstitutionTable'
-import miscApi from '@/mixins/api/misc.js'
+import { apiPostGermplasmInstitutionTable } from '@/mixins/api/misc.js'
+import { uuidv4 } from '@/mixins/util'
 
 export default {
   props: {
@@ -18,7 +19,7 @@ export default {
   },
   data: function () {
     return {
-      id: this.uuidv4()
+      id: uuidv4()
     }
   },
   watch: {
@@ -31,13 +32,12 @@ export default {
   components: {
     InstitutionTable
   },
-  mixins: [miscApi],
   methods: {
     show: function () {
       this.$refs['institutionModal-' + this.id].show()
     },
     getData: function (data, callback) {
-      return this.apiPostGermplasmInstitutionTable(this.germplasmId, data, callback)
+      return apiPostGermplasmInstitutionTable(this.germplasmId, data, callback)
     }
   }
 }

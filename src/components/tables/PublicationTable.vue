@@ -24,19 +24,19 @@
       </template>
       <template v-slot:cell(publicationDetails)="data">
         <b-badge class="mr-1" v-if="data.item.isDatabasePub" :style="`color: ${getHighContrastTextColor(publicationTypes.database.color)}; background-color: ${publicationTypes.database.color};`">
-          <MdiIcon :path="publicationTypes.database.path" /> {{ publicationTypes.database.text }}
+          <MdiIcon :path="publicationTypes.database.path" /> {{ publicationTypes.database.text() }}
         </b-badge>
         <b-badge class="mr-1" v-if="data.item.germplasmIds && data.item.germplasmIds.length > 0" :style="`color: ${getHighContrastTextColor(publicationTypes.germplasm.color)}; background-color: ${publicationTypes.germplasm.color};`">
-          <MdiIcon :path="publicationTypes.germplasm.path" /> {{ publicationTypes.germplasm.text }} ({{ data.item.germplasmIds.length }})
+          <MdiIcon :path="publicationTypes.germplasm.path" /> {{ publicationTypes.germplasm.text() }} ({{ data.item.germplasmIds.length }})
         </b-badge>
         <b-badge class="mr-1" v-if="data.item.datasetIds && data.item.datasetIds.length > 0" :style="`color: ${getHighContrastTextColor(publicationTypes.dataset.color)}; background-color: ${publicationTypes.dataset.color};`">
-          <MdiIcon :path="publicationTypes.dataset.path" /> {{ publicationTypes.dataset.text }} ({{ data.item.datasetIds.length }})
+          <MdiIcon :path="publicationTypes.dataset.path" /> {{ publicationTypes.dataset.text() }} ({{ data.item.datasetIds.length }})
         </b-badge>
         <b-badge class="mr-1" v-if="data.item.experimentIds && data.item.experimentIds.length > 0" :style="`color: ${getHighContrastTextColor(publicationTypes.experiment.color)}; background-color: ${publicationTypes.experiment.color};`">
-          <MdiIcon :path="publicationTypes.experiment.path" /> {{ publicationTypes.experiment.text }} ({{ data.item.experimentIds.length }})
+          <MdiIcon :path="publicationTypes.experiment.path" /> {{ publicationTypes.experiment.text() }} ({{ data.item.experimentIds.length }})
         </b-badge>
         <b-badge class="mr-1" v-if="data.item.groupIds && data.item.groupIds.length > 0" :style="`color: ${getHighContrastTextColor(publicationTypes.group.color)}; background-color: ${publicationTypes.group.color};`">
-          <MdiIcon :path="publicationTypes.group.path" /> {{ publicationTypes.group.text }} ({{ data.item.groupIds.length }})
+          <MdiIcon :path="publicationTypes.group.path" /> {{ publicationTypes.group.text() }} ({{ data.item.groupIds.length }})
         </b-badge>
       </template>
       <!-- Publication type icon -->
@@ -52,9 +52,8 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 
-import typesMixin from '@/mixins/types'
-import colorMixin from '@/mixins/colors'
-import utilMixin from '@/mixins/util'
+import { publicationTypes } from '@/mixins/types'
+import { getHighContrastTextColor } from '@/mixins/colors'
 
 import { mdiOpenInNew } from '@mdi/js'
 
@@ -66,6 +65,7 @@ export default {
   data: function () {
     return {
       mdiOpenInNew,
+      publicationTypes,
       options: {
         idColumn: 'publicationId',
         tableName: 'publications'
@@ -117,8 +117,8 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [colorMixin, typesMixin, utilMixin],
   methods: {
+    getHighContrastTextColor,
     refresh: function () {
       this.$refs.publicationTable.refresh()
     }

@@ -56,9 +56,8 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
-import formattingMixin from '@/mixins/formatting'
+import { entityTypes } from '@/mixins/types.js'
+import { truncateAfterWords } from '@/mixins/formatting'
 
 export default {
   name: 'TrialsDataTable',
@@ -67,6 +66,7 @@ export default {
   },
   data: function () {
     return {
+      entityTypes,
       options: {
         idColumn: 'germplasmId',
         tableName: 'trialsData'
@@ -214,8 +214,8 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [typesMixin, utilMixin, formattingMixin],
   methods: {
+    truncateAfterWords,
     refresh: function () {
       this.$refs.trialsDataTable.refresh()
     }

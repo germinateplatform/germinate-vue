@@ -26,8 +26,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
-import baseApiMixin from '@/mixins/api/base'
-import utilMixin from '@/mixins/util'
+import { uuidv4 } from '@/mixins/util'
 import SearchableSelect from '@/components/util/SearchableSelect'
 
 import { mdiArrowUpBox, mdiSelectAll } from '@mdi/js'
@@ -72,7 +71,7 @@ export default {
     }
   },
   data: function () {
-    const uuid = this.uuidv4()
+    const uuid = uuidv4()
 
     return {
       mdiArrowUpBox,
@@ -105,7 +104,6 @@ export default {
       }
     }
   },
-  mixins: [baseApiMixin, utilMixin],
   methods: {
     setSpecialGroupSelection: function (value) {
       this.specialGroupSelection = value

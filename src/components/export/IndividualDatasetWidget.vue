@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import formattingMixin from '@/mixins/formatting'
+import { truncateAfterWords } from '@/mixins/formatting'
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
@@ -63,8 +63,8 @@ export default {
       return this.dataset.datasetDescription.split(' ').length
     }
   },
-  mixins: [formattingMixin],
   methods: {
+    truncateAfterWords,
     getCountryName: function (code2) {
       return countries.getName(code2, 'en')
     }

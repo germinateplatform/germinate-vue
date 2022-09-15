@@ -38,7 +38,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
 import ExportSelection from '@/components/export/ExportSelection'
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiPostDatasetExport } from '@/mixins/api/dataset.js'
 
 import { mdiRefresh } from '@mdi/js'
 
@@ -177,7 +177,6 @@ export default {
     MdiIcon,
     ScatterChart
   },
-  mixins: [datasetApi],
   methods: {
     getStatsCount: function (name) {
       if (this.colorByStats != null && this.colorByStats[name] !== undefined && this.colorByStats[name] !== null) {
@@ -204,7 +203,7 @@ export default {
 
       this.plotData = null
       emitter.emit('show-loading', true)
-      this.apiPostDatasetExport('trial', query, result => {
+      apiPostDatasetExport('trial', query, result => {
         this.selectedItems = selectedItems
         this.plotData = result
         this.$nextTick(() => this.$refs.chart.redraw(result, {

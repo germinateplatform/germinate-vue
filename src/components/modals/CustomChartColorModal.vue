@@ -32,7 +32,7 @@
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 import { mapGetters } from 'vuex'
-import colorMixin from '@/mixins/colors.js'
+import { getColors, getHighContrastTextColor } from '@/mixins/colors.js'
 
 import { mdiPlusBox } from '@mdi/js'
 
@@ -54,8 +54,8 @@ export default {
       'storeServerSettings'
     ])
   },
-  mixins: [colorMixin],
   methods: {
+    getHighContrastTextColor,
     removeColor: function (index) {
       this.colors.splice(index, 1)
     },
@@ -71,7 +71,7 @@ export default {
     },
     show: function () {
       this.color = (this.storeServerSettings && this.storeServerSettings.primaryColor) ? this.storeServerSettings.primaryColor : '#00acef'
-      this.colors = this.getColors().slice()
+      this.colors = getColors().slice()
       this.message = null
 
       this.$refs.customChartColorModal.show()

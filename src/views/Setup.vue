@@ -74,7 +74,8 @@
 
 <script>
 import LocaleDropdown from '@/components/dropdowns/LocaleDropdown'
-import authApi from '@/mixins/api/auth'
+
+import { apiSetupCheckGatekeeper, apiSetupCheckDatabase, apiSetupStore } from '@/mixins/api/auth'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -152,7 +153,6 @@ export default {
       }
     }
   },
-  mixins: [authApi],
   methods: {
     finishSetup: function () {
       if (this.dbConfig.checked && this.gkChecked) {
@@ -171,7 +171,7 @@ export default {
     storeConfig: function () {
       this.feedback = null
       emitter.emit('show-loading', true)
-      this.apiSetupStore({
+      apiSetupStore({
         dbConfig: this.dbConfig,
         gkConfig: this.gkConfig.used ? this.gkConfig : null
       }, result => {
@@ -200,7 +200,7 @@ export default {
       this.dbConfig.feedback = null
       this.dbConfig.checked = false
       emitter.emit('show-loading', true)
-      this.apiSetupCheckDatabase(this.dbConfig, result => {
+      apiSetupCheckDatabase(this.dbConfig, result => {
         this.dbConfig.checked = true
         emitter.emit('show-loading', false)
         this.$nextTick(() => this.$refs.gkCard.scrollIntoView({ behavior: 'smooth' }))
@@ -228,7 +228,7 @@ export default {
       this.gkConfig.feedback = null
       this.gkConfig.checked = false
       emitter.emit('show-loading', true)
-      this.apiSetupCheckGatekeeper(this.gkConfig, result => {
+      apiSetupCheckGatekeeper(this.gkConfig, result => {
         // It worked!!
         this.gkConfig.checked = true
         emitter.emit('show-loading', false)

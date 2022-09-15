@@ -13,8 +13,8 @@
 <script>
 import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import ExportSelection from '@/components/export/ExportSelection'
-import datasetApi from '@/mixins/api/dataset.js'
-import utilMixin from '@/mixins/util'
+import { apiPostDatasetExport } from '@/mixins/api/dataset.js'
+import { downloadBlob } from '@/mixins/util'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -69,18 +69,17 @@ export default {
     DatasetMetadataDownload,
     ExportSelection
   },
-  mixins: [datasetApi, utilMixin],
   methods: {
     downloadData: function (query) {
       emitter.emit('show-loading', true)
-      this.apiPostDatasetExport(this.downloadKey, query, result => {
+      apiPostDatasetExport(this.downloadKey, query, result => {
         const downloadRequest = {
           blob: result,
           filename: this.datasetType + '-dataset-' + this.datasetIds.join('-'),
           extension: this.downloadFileExtension
         }
 
-        this.downloadBlob(downloadRequest)
+        downloadBlob(downloadRequest)
         emitter.emit('show-loading', false)
       })
     }

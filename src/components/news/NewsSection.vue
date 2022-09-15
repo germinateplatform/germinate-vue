@@ -78,9 +78,10 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 
 import AddNewsModal from '@/components/modals/AddNewsModal'
-import authApi from '@/mixins/api/auth'
-import miscApi from '@/mixins/api/misc'
-import imageMixin from '@/mixins/image'
+import { userIsAtLeast } from '@/mixins/api/auth'
+import { apiPostNewsTable, apiDeleteNews } from '@/mixins/api/misc'
+import { getImageUrl } from '@/mixins/image'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiNewspaperVariantOutline, mdiDatabase, mdiRefresh, mdiNewspaper, mdiDelete, mdiOpenInNew, mdiCalendarClock } from '@mdi/js'
 
@@ -143,8 +144,8 @@ export default {
     AddNewsModal,
     MdiIcon
   },
-  mixins: [authApi, imageMixin, miscApi],
   methods: {
+    userIsAtLeast,
     deleteNewsItem: function (id) {
       if (id) {
         this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
@@ -154,7 +155,7 @@ export default {
         })
           .then(value => {
             if (value) {
-              this.apiDeleteNews(id, result => {
+              apiDeleteNews(id, result => {
                 if (result) {
                   this.updateNews()
                   this.update()
@@ -189,7 +190,7 @@ export default {
       }
     },
     getImageSrc: function (item) {
-      return this.getImageUrl(item.newsImage, {
+      return getImageUrl(item.newsImage, {
         name: item.newsImage,
         token: this.storeToken ? this.storeToken.imageToken : null,
         type: 'news',
@@ -199,7 +200,7 @@ export default {
     updateNews: function (page) {
       const newsQuery = {
         page: page,
-        limit: this.newsCount ? this.newsCount : this.MAX_JAVA_INTEGER,
+        limit: this.newsCount ? this.newsCount : MAX_JAVA_INTEGER,
         orderBy: 'createdOn',
         ascending: 0,
         filter: [{
@@ -209,7 +210,7 @@ export default {
           values: ['Data', 'Updates', 'General']
         }]
       }
-      this.apiPostNewsTable(newsQuery, result => {
+      apiPostNewsTable(newsQuery, result => {
         this.news = result.data
         this.newsTotalCount = result.count
       })
@@ -217,7 +218,7 @@ export default {
     update: function () {
       const projectQuery = {
         page: 1,
-        limit: this.projectCount ? this.projectCount : this.MAX_JAVA_INTEGER,
+        limit: this.projectCount ? this.projectCount : MAX_JAVA_INTEGER,
         filter: [{
           column: 'newstypeName',
           comparator: 'equals',
@@ -225,7 +226,7 @@ export default {
           values: ['Projects']
         }]
       }
-      this.apiPostNewsTable(projectQuery, result => {
+      apiPostNewsTable(projectQuery, result => {
         this.projects = result.data
       })
 

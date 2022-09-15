@@ -32,8 +32,7 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
+import { dataTypes } from '@/mixins/types.js'
 
 export default {
   name: 'GermplasmAttributeTable',
@@ -43,6 +42,7 @@ export default {
   },
   data: function () {
     return {
+      dataTypes,
       options: {
         idColumn: 'germplasmId',
         tableName: 'germplasmAttributes'
@@ -97,7 +97,6 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.germplasmAttributeTable.refresh()

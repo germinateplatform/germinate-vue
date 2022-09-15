@@ -12,7 +12,7 @@
 <script>
 import ImageTable from '@/components/tables/ImageTable'
 import ImageTags from '@/components/images/ImageTags'
-import miscApi from '@/mixins/api/misc.js'
+import { apiPostImages, apiPostImagesExport } from '@/mixins/api/misc.js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -45,7 +45,6 @@ export default {
     ImageTable,
     ImageTags
   },
-  mixins: [miscApi],
   methods: {
     onFilterChanged: function (filter) {
       if (filter === null || filter.filter == null || filter.filter.length === 0) {
@@ -61,13 +60,13 @@ export default {
       }
     },
     getImages: function (data, onSuccess, onError) {
-      this.apiPostImages(data, onSuccess, onError)
+      apiPostImages(data, onSuccess, onError)
     },
     getData: function (data, callback) {
-      return this.apiPostImages(data, callback)
+      return apiPostImages(data, callback)
     },
     downloadImages: function (data, callback) {
-      return this.apiPostImagesExport(data, result => {
+      return apiPostImagesExport(data, result => {
         result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
         // Show the sidebar

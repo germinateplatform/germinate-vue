@@ -26,7 +26,7 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiGetAcceptLicense } from '@/mixins/api/dataset.js'
 
 import { mdiDownload, mdiPrinter, mdiFileCode, mdiCancel, mdiCheck } from '@mdi/js'
 
@@ -61,7 +61,6 @@ export default {
       htmlFilename: null
     }
   },
-  mixins: [datasetApi],
   methods: {
     show: function () {
       this.$refs.licenseModal.show()
@@ -70,7 +69,7 @@ export default {
       this.$refs.licenseModal.hide()
     },
     accept: function () {
-      this.apiGetAcceptLicense(this.license.licenseId, () => {
+      apiGetAcceptLicense(this.license.licenseId, () => {
         emitter.emit('license-accepted', this.license.licenseId)
 
         this.hide()

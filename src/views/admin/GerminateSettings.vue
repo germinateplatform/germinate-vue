@@ -169,9 +169,9 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import draggable from 'vuedraggable'
 
-import colorMixin from '@/mixins/colors.js'
-import typeMixin from '@/mixins/types.js'
-import miscApi from '@/mixins/api/misc.js'
+import { getHighContrastTextColor } from '@/mixins/colors'
+import { statCategories } from '@/mixins/types'
+import { apiGetSettings, apiGetAdminSettings, apiPostAdminSettings } from '@/mixins/api/misc'
 
 import { mdiReload, mdiPlusBox, mdiCommentTextMultipleOutline, mdiShieldAlertOutline, mdiCalculatorVariantOutline, mdiUpload } from '@mdi/js'
 
@@ -198,6 +198,7 @@ export default {
   },
   data: function () {
     return {
+      statCategories,
       mdiReload,
       mdiPlusBox,
       mdiCommentTextMultipleOutline,
@@ -255,8 +256,8 @@ export default {
       }
     }
   },
-  mixins: [colorMixin, miscApi, typeMixin],
   methods: {
+    getHighContrastTextColor,
     addTempChartColor: function () {
       this.settings.colorsCharts.push(this.tempChartColor)
     },
@@ -274,10 +275,10 @@ export default {
       })
         .then(value => {
           if (value) {
-            this.apiPostAdminSettings(this.settings, result => {
+            apiPostAdminSettings(this.settings, result => {
               if (result) {
                 // Now get the updated settings
-                this.apiGetSettings(result => {
+                apiGetSettings(result => {
                   this.$store.commit('ON_SETTINGS_CHANGED_MUTATION', result)
 
                   // Then remove the token (because the server reset them all anyway)
@@ -304,7 +305,7 @@ export default {
       this.settings.colorsTemplate.splice(index, 1)
     },
     reload: function () {
-      this.apiGetAdminSettings(result => {
+      apiGetAdminSettings(result => {
         this.settings = Object.assign(defaults, result)
       })
     }

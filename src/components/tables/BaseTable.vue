@@ -208,11 +208,12 @@ import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
 import MarkedItems from '@/components/tables/MarkedItems'
 import TableFilter from '@/components/tables/TableFilter'
 import Tour from '@/components/util/Tour'
-import groupApi from '@/mixins/api/group'
-import searchMixin from '@/mixins/search'
-import typesMixin from '@/mixins/types'
-import formattingMixin from '@/mixins/formatting'
-import utilMixin from '@/mixins/util'
+import { apiPutGroup, apiPatchGroupMembers, apiGetGroupTypes } from '@/mixins/api/group'
+import { operators, comparators } from '@/mixins/search'
+import { groupTypes } from '@/mixins/types'
+import { getDateTimeString } from '@/mixins/formatting'
+import { uuidv4, getTableColumnStyle, downloadBlob } from '@/mixins/util'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowLeftBold, mdiBookOpenPageVariant, mdiArrowUpBold, mdiCheckboxMultipleOutline, mdiCheckboxMultipleMarked, mdiCheckboxMultipleBlankOutline, mdiGroup, mdiDownload } from '@mdi/js'
 
@@ -272,9 +273,11 @@ export default {
     }
   },
   data: function () {
-    const id = 'table-' + this.uuidv4()
+    const id = 'table-' + uuidv4()
 
     return {
+      operators,
+      comparators,
       mdiArrowLeftBold,
       mdiDownload,
       mdiBookOpenPageVariant,
@@ -288,7 +291,7 @@ export default {
         totalCount: -1
       },
       filter: null,
-      perPageValues: this.showAllItems ? [this.MAX_JAVA_INTEGER] : [10, 25, 50, 100],
+      perPageValues: this.showAllItems ? [MAX_JAVA_INTEGER] : [10, 25, 50, 100],
       currentRequestData: null,
       isLoading: false,
       groupTypeSelect: null,
@@ -343,7 +346,7 @@ export default {
 
           let clazz = result.class || ''
           if (this.options && this.options.tableName) {
-            clazz = `${clazz} ${this.getTableColumnStyle(this.options.tableName, c.key)}`
+            clazz = `${clazz} ${getTableColumnStyle(this.options.tableName, c.key)}`
           }
 
           result.class = clazz
@@ -362,7 +365,6 @@ export default {
     TableFilter,
     Tour
   },
-  mixins: [formattingMixin, groupApi, searchMixin, typesMixin, utilMixin],
   methods: {
     updateSort: function (ctx) {
       const query = Object.assign({}, this.$route.query)
@@ -502,14 +504,14 @@ export default {
         groupDescription: null,
         userId: this.storeToken.id
       }
-      this.apiGetGroupTypes(result => {
+      apiGetGroupTypes(result => {
         this.groupTypeSelect = result.data.map(g => {
           return {
             value: g.id,
-            text: this.groupTypes[g.targetTable].text()
+            text: groupTypes[g.targetTable].text()
           }
         })
-        const groupTypeLocal = Object.keys(this.groupTypes).filter(i => this.groupTypes[i].itemType === this.itemType)[0]
+        const groupTypeLocal = Object.keys(groupTypes).filter(i => groupTypes[i].itemType === this.itemType)[0]
         const groupType = result.data.filter(g => g.targetTable === groupTypeLocal)[0]
         this.newGroup.groupTypeId = groupType.id
         this.newGroup.groupType = groupType.targetTable
@@ -528,16 +530,16 @@ export default {
       }
 
       emitter.emit('show-loading', true)
-      this.apiPutGroup(group, result => {
+      apiPutGroup(group, result => {
         const data = {
           ids: this.storeMarkedIds[this.itemType],
           addition: true
         }
         const groupId = result
-        const groupTypeLocal = Object.keys(this.groupTypes).filter(i => this.groupTypes[i].itemType === this.itemType)[0]
-        const type = this.groupTypes[groupTypeLocal].apiName
+        const groupTypeLocal = Object.keys(groupTypes).filter(i => groupTypes[i].itemType === this.itemType)[0]
+        const type = groupTypes[groupTypeLocal].apiName
         // Now add the group members
-        this.apiPatchGroupMembers(groupId, type, data, result => {
+        apiPatchGroupMembers(groupId, type, data, result => {
           this.$root.$bvToast.toast(this.$t('toastGroupCreateWithMembers', { count: result }), {
             title: this.$t('genericSuccess'),
             variant: 'success',
@@ -597,9 +599,9 @@ export default {
       emitter.emit('show-loading', true)
       // Download the current table data
       this.downloadTable(this.currentRequestData, result => {
-        this.downloadBlob({
+        downloadBlob({
           blob: result,
-          filename: `${this.options.tableName}-table-${this.getDateTimeString()}`,
+          filename: `${this.options.tableName}-table-${getDateTimeString()}`,
           extension: 'zip'
         })
         emitter.emit('show-loading', false)

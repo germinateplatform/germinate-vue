@@ -57,7 +57,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
 import GroupTable from '@/components/tables/GroupTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
-import genotypeApi from '@/mixins/api/genotype.js'
+import { apiPostMarkerTable, apiPostMarkerGroupTable, apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMarkerDatasetTable } from '@/mixins/api/genotype.js'
 
 import { mdiCheckboxMarked, mdiCheckboxBlankOutline } from '@mdi/js'
 
@@ -104,7 +104,6 @@ export default {
     MapDefinitionTable,
     MdiIcon
   },
-  mixins: [genotypeApi],
   methods: {
     onToggleMarked: function () {
       const isMarked = this.storeMarkedMarkers.indexOf(this.currentMarkerId) !== -1
@@ -115,16 +114,16 @@ export default {
       }
     },
     getDatasetData: function (data, callback) {
-      return this.apiPostMarkerDatasetTable(this.currentMarkerId, data, callback)
+      return apiPostMarkerDatasetTable(this.currentMarkerId, data, callback)
     },
     getMapDefinitionData: function (data, callback) {
-      return this.apiPostMapdefinitionTable(data, callback)
+      return apiPostMapdefinitionTable(data, callback)
     },
     getMapDefinitionIds: function (data, callback) {
-      return this.apiPostMapdefinitionTableIds(data, callback)
+      return apiPostMapdefinitionTableIds(data, callback)
     },
     getGroupData: function (data, callback) {
-      return this.apiPostMarkerGroupTable(this.currentMarkerId, data, callback)
+      return apiPostMarkerGroupTable(this.currentMarkerId, data, callback)
     },
     getMarkerIdByName: function (name) {
       const query = {
@@ -137,7 +136,7 @@ export default {
         page: 1,
         limit: 1
       }
-      this.apiPostMarkerTable(query, result => {
+      apiPostMarkerTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           this.currentMarkerId = result.data[0].markerId
           this.getMarker()
@@ -156,7 +155,7 @@ export default {
         }]
       }
 
-      this.apiPostMarkerTable(request, result => {
+      apiPostMarkerTable(request, result => {
         if (result && result.data && result.data.length > 0) {
           this.marker = result.data[0]
         } else {

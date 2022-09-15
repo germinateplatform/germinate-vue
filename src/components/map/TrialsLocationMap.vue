@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import datasetApi from '@/mixins/api/dataset'
+import { apiPostDatasetExport } from '@/mixins/api/dataset'
 
 const d3Dsv = require('d3-dsv')
 const emitter = require('tiny-emitter/instance')
@@ -34,7 +34,6 @@ export default {
       }
     }
   },
-  mixins: [datasetApi],
   methods: {
     update: function () {
       if (!this.datasetIds && this.datasetIds.length < 1) {
@@ -50,7 +49,7 @@ export default {
       }
 
       emitter.emit('show-loading', true)
-      this.apiPostDatasetExport('trial', query, result => {
+      apiPostDatasetExport('trial', query, result => {
         this.plotData = result
 
         const reader = new FileReader()

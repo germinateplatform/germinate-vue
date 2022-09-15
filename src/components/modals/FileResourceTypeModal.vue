@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import datasetApi from '@/mixins/api/dataset'
+import { apiPostFileresourceType } from '@/mixins/api/dataset'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -31,7 +31,6 @@ export default {
       }
     }
   },
-  mixins: [datasetApi],
   methods: {
     show: function () {
       this.name = null
@@ -53,7 +52,7 @@ export default {
       }
 
       emitter.emit('show-loading', true)
-      this.apiPostFileresourceType({
+      apiPostFileresourceType({
         name: this.name,
         description: this.description
       }, result => {

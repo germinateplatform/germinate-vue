@@ -58,11 +58,9 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import datasetApi from '@/mixins/api/dataset'
-import typesMixin from '@/mixins/types'
-import utilMixin from '@/mixins/util'
-import colorMixin from '@/mixins/colors'
-import formattingMixin from '@/mixins/formatting'
+import { datasetTypes } from '@/mixins/types'
+import { getHighContrastTextColor } from '@/mixins/colors'
+import { isTruncatedAfter, truncateAfterWords } from '@/mixins/formatting'
 
 import { mdiPageNext } from '@mdi/js'
 
@@ -73,6 +71,7 @@ export default {
   },
   data: function () {
     return {
+      datasetTypes,
       mdiPageNext,
       options: {
         idColumn: 'experimentId',
@@ -121,8 +120,10 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [datasetApi, typesMixin, utilMixin, colorMixin, formattingMixin],
   methods: {
+    isTruncatedAfter,
+    truncateAfterWords,
+    getHighContrastTextColor,
     showFullExperimentDescription: function (description) {
       this.$bvModal.msgBoxOk(description, {
         title: this.$t('tableColumnExperimentDescription'),

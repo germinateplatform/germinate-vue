@@ -18,7 +18,7 @@
 import DatasetTable from '@/components/tables/DatasetTable'
 import DatasetGroupPermissions from '@/components/admin/DatasetGroupPermissions'
 import DatasetUserPermissions from '@/components/admin/DatasetUserPermissions'
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
 
 export default {
   data: function () {
@@ -41,7 +41,6 @@ export default {
     DatasetGroupPermissions,
     DatasetUserPermissions
   },
-  mixins: [datasetApi],
   methods: {
     refresh: function () {
       if (this.$refs.groupPermissions) {
@@ -52,7 +51,7 @@ export default {
       }
     },
     getDatasets: function (query, callback) {
-      return this.apiPostDatasetTable(query, callback)
+      return apiPostDatasetTable(query, callback)
     }
   }
 }

@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import climateApi from '@/mixins/api/climate.js'
-
 export default {
   data: function () {
     return {
@@ -37,7 +35,6 @@ export default {
       default: () => []
     }
   },
-  mixins: [climateApi],
   methods: {
     handleCancel: function () {
       this.selected = null

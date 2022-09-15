@@ -40,8 +40,8 @@ import { mapGetters } from 'vuex'
 import PublicationCard from '@/components/util/PublicationCard'
 import MdiIcon from '@/components/icons/MdiIcon'
 
-import miscApi from '@/mixins/api/misc.js'
-import authApi from '@/mixins/api/auth'
+import { apiGetPublications, apiPutPublication, apiPutPublicationReference, apiDeletePublicationReference } from '@/mixins/api/misc'
+import { userIsAtLeast } from '@/mixins/api/auth'
 
 import { mdiChevronDoubleDown, mdiPlusBox } from '@mdi/js'
 
@@ -90,8 +90,8 @@ export default {
       this.update()
     }
   },
-  mixins: [miscApi, authApi],
   methods: {
+    userIsAtLeast,
     resetForm: function () {
       this.newPublication = {
         doi: null,
@@ -109,7 +109,7 @@ export default {
       })
         .then(value => {
           if (value) {
-            this.apiDeletePublicationReference(p.publicationId, this.referenceType, this.referencingId, () => this.update())
+            apiDeletePublicationReference(p.publicationId, this.referenceType, this.referencingId, () => this.update())
           }
         })
     },
@@ -137,12 +137,12 @@ export default {
         })
     },
     onSubmit: function () {
-      this.apiPutPublication({
+      apiPutPublication({
         doi: this.newPublication.doi,
         fallbackCache: this.newPublication.json,
         createdOn: this.newPublication.date
       }, publicationId => {
-        this.apiPutPublicationReference(publicationId, {
+        apiPutPublicationReference(publicationId, {
           publicationId: publicationId,
           referenceType: this.referenceType,
           foreignId: this.referencingId
@@ -170,7 +170,7 @@ export default {
         })
       }
 
-      this.apiGetPublications(this.referenceType, this.referencingId, result => {
+      apiGetPublications(this.referenceType, this.referencingId, result => {
         this.publications = result
 
         this.$emit('publication-count-changed', result.length)

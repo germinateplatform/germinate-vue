@@ -55,7 +55,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
 import FileResourceTypeModal from '@/components/modals/FileResourceTypeModal'
 
-import datasetApi from '@/mixins/api/dataset'
+import { apiPostDatasetTable, apiPostDatasetTableIds, apiGetFileResourceTypes, apiPostFileresourceFile, apiPutFileresource } from '@/mixins/api/dataset'
 
 import { mdiPlus, mdiDatabase } from '@mdi/js'
 
@@ -104,13 +104,12 @@ export default {
     FileResourceTypeModal,
     MdiIcon
   },
-  mixins: [datasetApi],
   methods: {
     getDatasets: function (data, callback) {
-      return this.apiPostDatasetTable(data, callback)
+      return apiPostDatasetTable(data, callback)
     },
     getDatasetIds: function (data, callback) {
-      return this.apiPostDatasetTableIds(data, callback)
+      return apiPostDatasetTableIds(data, callback)
     },
     extractDatasetIds: function () {
       const selectedIds = this.$refs.datasetTable.getSelected()
@@ -166,9 +165,9 @@ export default {
       formData.append('file', this.file)
 
       emitter.emit('show-loading', true)
-      this.apiPostFileresourceFile(formData, result => {
+      apiPostFileresourceFile(formData, result => {
         if (result) {
-          this.apiPutFileresource({
+          apiPutFileresource({
             fileresourceName: this.name,
             fileresourcePath: result,
             fileresourceDescription: this.description,
@@ -184,7 +183,7 @@ export default {
       })
     },
     updateTypes: function (toSelect) {
-      this.apiGetFileResourceTypes(result => {
+      apiGetFileResourceTypes(result => {
         if (result && result.length > 0) {
           this.types = result.map(r => {
             return {

@@ -38,7 +38,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
 import ExportSelection from '@/components/export/ExportSelection'
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiPostDatasetExport } from '@/mixins/api/dataset.js'
 
 import { mdiRefresh } from '@mdi/js'
 
@@ -149,7 +149,6 @@ export default {
     MatrixChart,
     ScatterChart
   },
-  mixins: [datasetApi],
   methods: {
     plot: function (query, selectedItems) {
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
@@ -161,7 +160,7 @@ export default {
 
       this.plotData = null
       emitter.emit('show-loading', true)
-      this.apiPostDatasetExport('climate', query, result => {
+      apiPostDatasetExport('climate', query, result => {
         this.selectedItems = selectedItems
         this.plotData = result
         this.$nextTick(() => this.$refs.chart.redraw(result, {

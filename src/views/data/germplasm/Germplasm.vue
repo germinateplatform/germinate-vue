@@ -31,9 +31,9 @@ import GermplasmTableFilter from '@/components/tables/GermplasmTableFilter'
 import GermplasmDownload from '@/components/germplasm/GermplasmDownload'
 import GermplasmLocationMap from '@/components/map/GermplasmLocationMap'
 import RecentItems from '@/components/util/RecentItems'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import locationApi from '@/mixins/api/location.js'
-import miscApi from '@/mixins/api/misc.js'
+import { apiPostGermplasmTable, apiPostGermplasmTableIds } from '@/mixins/api/germplasm.js'
+import { apiPostLocationTable } from '@/mixins/api/location.js'
+import { apiPostTableExport } from '@/mixins/api/misc.js'
 
 import { mdiMapMarkerMultiple } from '@mdi/js'
 
@@ -54,7 +54,6 @@ export default {
     GermplasmLocationMap,
     RecentItems
   },
-  mixins: [germplasmApi, locationApi, miscApi],
   methods: {
     invalidateMapSize: function () {
       this.$nextTick(() => this.$refs.germplasmMap.invalidateSize())
@@ -83,20 +82,20 @@ export default {
       this.$refs.germplasmTable.refresh()
     },
     downloadTable: function (data, callback) {
-      return this.apiPostTableExport(data, 'germplasm', callback)
+      return apiPostTableExport(data, 'germplasm', callback)
     },
     getData: function (data, callback) {
-      return this.apiPostGermplasmTable(data, callback)
+      return apiPostGermplasmTable(data, callback)
     },
     getIds: function (data, callback) {
-      return this.apiPostGermplasmTableIds(data, callback)
+      return apiPostGermplasmTableIds(data, callback)
     }
   },
   mounted: function () {
     this.$store.dispatch('setHelpKey', 'helpGermplasm')
 
     // TODO: Check if location data is available
-    this.apiPostLocationTable({
+    apiPostLocationTable({
       page: 1,
       limit: 1,
       filter: [{

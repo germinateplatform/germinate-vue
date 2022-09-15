@@ -51,10 +51,9 @@ import BaseChart from '@/components/charts/BaseChart'
 import MarkedItems from '@/components/tables/MarkedItems'
 import Passport from '@/views/data/germplasm/Passport'
 import Tour from '@/components/util/Tour'
-import colorMixin from '@/mixins/colors.js'
+import { getColors } from '@/mixins/colors.js'
 import { plotlyScatterMatrix } from '@/plugins/charts/plotly-scatter-matrix.js'
-import baseApiMixin from '@/mixins/api/base'
-import utilMixin from '@/mixins/util'
+import { uuidv4 } from '@/mixins/util'
 
 import { mdiCheckboxMarked, mdiCheckboxBlankOutline, mdiHelpCircleOutline } from '@mdi/js'
 
@@ -84,7 +83,7 @@ export default {
     }
   },
   data: function () {
-    const id = 'chart-' + this.uuidv4()
+    const id = 'chart-' + uuidv4()
 
     return {
       mdiCheckboxMarked,
@@ -151,7 +150,6 @@ export default {
     Passport,
     Tour
   },
-  mixins: [colorMixin, baseApiMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -207,7 +205,7 @@ export default {
             .onColorByStatsLoaded(stats => {
               this.$emit('color-by-stats-changed', stats)
             })
-            .colors(this.getColors()))
+            .colors(getColors()))
       }
       reader.readAsText(result)
     }

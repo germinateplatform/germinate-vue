@@ -103,9 +103,7 @@ import LocaleDropdown from '@/components/dropdowns/LocaleDropdown'
 import UserSettingsDropdown from '@/components/dropdowns/UserSettingsDropdown'
 import SidebarAsyncJobs from '@/components/structure/SidebarAsyncJobs'
 import Tour from '@/components/util/Tour'
-import utilMixin from '@/mixins/util'
-import miscApiMixin from '@/mixins/api/misc'
-import statsApiMixin from '@/mixins/api/stats'
+import { germinateVersion } from '@/mixins/util'
 
 import { mdiMagnify, mdiHelpCircleOutline, mdiMenu, mdiThemeLightDark, mdiTwitter, mdiGithub, mdiWeb } from '@mdi/js'
 
@@ -143,6 +141,7 @@ export default {
       mdiWeb,
       mdiGithub,
       mdiThemeLightDark,
+      germinateVersion,
       collapsed: false,
       isOnMobile: false,
       sidebarWidth: '300px',
@@ -186,7 +185,6 @@ export default {
       this.loadAndSetDarkMode()
     }
   },
-  mixins: [utilMixin, miscApiMixin, statsApiMixin],
   methods: {
     showHelp: function () {
       this.$refs.helpModal.show()

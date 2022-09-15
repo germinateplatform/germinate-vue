@@ -67,10 +67,11 @@ import ColorGradient from '@/components/util/ColorGradient'
 import L from 'leaflet'
 import { LMap, LControl } from 'vue2-leaflet'
 
-import germplasmApi from '@/mixins/api/germplasm'
-import locationApi from '@/mixins/api/location'
-import colorsMixin from '@/mixins/colors'
-import typesMixin from '@/mixins/types'
+import { apiPostGermplasmTable } from '@/mixins/api/germplasm'
+import { apiPostLocationTable } from '@/mixins/api/location'
+import { getColor, rgbToHex } from '@/mixins/colors'
+import { locationTypes } from '@/mixins/types'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiCircle } from '@mdi/js'
 
@@ -96,6 +97,7 @@ export default {
   },
   data: function () {
     return {
+      locationTypes,
       mdiCircle,
       mapOptions: {
         preferCanvas: true
@@ -153,7 +155,6 @@ export default {
       }]
     }
   },
-  mixins: [colorsMixin, typesMixin, germplasmApi, locationApi],
   methods: {
     invalidateSize: function () {
       if (this.$refs.map && this.$refs.map.mapObject) {
@@ -270,7 +271,7 @@ export default {
                 if (potentialColor) {
                   color = potentialColor
                 } else {
-                  color = this.getColor(Object.keys(categoricalColorMapping).length)
+                  color = getColor(Object.keys(categoricalColorMapping).length)
                   categoricalColorMapping[colorByValue] = color
                 }
                 // TODO: Generate legend
@@ -281,7 +282,7 @@ export default {
                 colorByValue = this.colorBy.extractValue(g)
                 rgb = this.$refs.gradient ? this.$refs.gradient.getColor(this.gradientMinMax.min, this.gradientMinMax.max, colorByValue) : { r: 128, g: 128, b: 128 }
                 if (rgb) {
-                  color = this.rgbToHex(rgb.r, rgb.g, rgb.b)
+                  color = rgbToHex(rgb.r, rgb.g, rgb.b)
                 } else {
                   color = '#20a8d8'
                 }
@@ -336,9 +337,9 @@ export default {
     },
     getGermplasmMapData: function () {
       this.loading = true
-      this.apiPostLocationTable({
+      apiPostLocationTable({
         page: 1,
-        limit: this.MAX_JAVA_INTEGER,
+        limit: MAX_JAVA_INTEGER,
         filter: [{
           column: 'locationType',
           comparator: 'equals',
@@ -369,9 +370,9 @@ export default {
         this.update()
       })
 
-      this.apiPostGermplasmTable({
+      apiPostGermplasmTable({
         page: 1,
-        limit: this.MAX_JAVA_INTEGER,
+        limit: MAX_JAVA_INTEGER,
         filter: [{
           column: 'locationId',
           comparator: 'isNotNull',
@@ -396,7 +397,7 @@ export default {
       this.gradientColors = this.storeServerSettings.colorsGradient.concat()
     } else {
       this.gradientColors.push('#ffffff')
-      this.gradientColors.push(this.getColor(0))
+      this.gradientColors.push(getColor(0))
     }
 
     this.$nextTick(() => {

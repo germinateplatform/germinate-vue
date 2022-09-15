@@ -33,10 +33,8 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
-import colorMixin from '@/mixins/colors'
-import baseApiMixin from '@/mixins/api/base'
-import formattingMixin from '@/mixins/formatting'
-import utilMixin from '@/mixins/util'
+import { toFixed, getNumberWithSuffix } from '@/mixins/formatting'
+import { uuidv4 } from '@/mixins/util'
 
 import { mdiArrowDownBold, mdiArrowUpBold, mdiDiameterVariant, mdiNumeric } from '@mdi/js'
 
@@ -71,7 +69,7 @@ export default {
     }
   },
   data: function () {
-    const id = this.uuidv4()
+    const id = uuidv4()
     return {
       mdiArrowDownBold,
       mdiArrowUpBold,
@@ -85,7 +83,10 @@ export default {
       return (this.marker - this.min) * (100 - 0) / (this.max - this.min)
     }
   },
-  mixins: [baseApiMixin, colorMixin, formattingMixin, utilMixin]
+  methods: {
+    toFixed,
+    getNumberWithSuffix
+  }
 }
 </script>
 

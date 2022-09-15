@@ -18,7 +18,7 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
-import miscApi from '@/mixins/api/misc.js'
+import { apiPostInstitutionTable } from '@/mixins/api/misc.js'
 
 import { mdiCity, mdiSprout } from '@mdi/js'
 
@@ -52,7 +52,7 @@ export default {
             values: [newValue]
           }]
         }
-        this.apiPostInstitutionTable(queryData, result => {
+        apiPostInstitutionTable(queryData, result => {
           if (result && result.data && result.data.length > 0) {
             this.institution = result.data[0]
           }
@@ -60,7 +60,6 @@ export default {
       }
     }
   },
-  mixins: [miscApi],
   methods: {
     navigateToGermplasm: function (institutionId) {
       // Navigate to the germplasm overview page and filter based on institution

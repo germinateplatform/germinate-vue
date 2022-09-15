@@ -31,8 +31,9 @@
 <script>
 import LocationMap from '@/components/map/LocationMap'
 import LocationTable from '@/components/tables/LocationTable'
-import locationApi from '@/mixins/api/location.js'
-import miscApi from '@/mixins/api/misc.js'
+import { apiPostLocationTable, apiPostLocationTableIds } from '@/mixins/api/location.js'
+import { apiPostTableExport } from '@/mixins/api/misc.js'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 export default {
   data: function () {
@@ -65,25 +66,24 @@ export default {
     LocationMap,
     LocationTable
   },
-  mixins: [locationApi, miscApi],
   methods: {
     getData: function (data, callback) {
-      return this.apiPostLocationTable(data, callback)
+      return apiPostLocationTable(data, callback)
     },
     downloadData: function (data, callback) {
-      return this.apiPostTableExport(data, 'location', callback)
+      return apiPostTableExport(data, 'location', callback)
     },
     getIds: function (data, callback) {
-      return this.apiPostLocationTableIds(data, callback)
+      return apiPostLocationTableIds(data, callback)
     },
     onDataChanged: function (request) {
       // If something changed, we're going to only show the locations in the table on the map
       if (!this.locations) {
         // Create a custom request based on the one from the table, but change limit and page to get all the locations
         const customRequest = Object.assign({}, request)
-        customRequest.limit = this.MAX_JAVA_INTEGER
+        customRequest.limit = MAX_JAVA_INTEGER
         customRequest.page = 1
-        this.apiPostLocationTable(customRequest, result => {
+        apiPostLocationTable(customRequest, result => {
           this.locations = result.data
         })
       }

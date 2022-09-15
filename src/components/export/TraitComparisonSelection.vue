@@ -29,9 +29,10 @@
 <script>
 import ComparisonChart from '@/components/charts/ComparisonChart'
 import ExportSelection from '@/components/export/ExportSelection'
-import colorMixin from '@/mixins/colors.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import traitApi from '@/mixins/api/trait.js'
+import { getColor } from '@/mixins/colors'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
+import { apiPostGroupGermplasmTableIds } from '@/mixins/api/germplasm.js'
+import { apiPostTrialsDataTable } from '@/mixins/api/trait.js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -116,7 +117,6 @@ export default {
     ComparisonChart,
     ExportSelection
   },
-  mixins: [colorMixin, germplasmApi, traitApi],
   methods: {
     groupSelectionInfo: function (selectedGroup) {
       if (selectedGroup && selectedGroup.count > 10) {
@@ -209,9 +209,9 @@ export default {
       }
     },
     update: function (datasetIds) {
-      this.apiPostTrialsDataTable({
+      apiPostTrialsDataTable({
         page: 1,
-        limit: this.MAX_JAVA_INTEGER,
+        limit: MAX_JAVA_INTEGER,
         prevCount: -1,
         filter: [{
           column: 'germplasmId',
@@ -247,7 +247,7 @@ export default {
       this.splitValues = []
       emitter.emit('show-loading', true)
       if (query.yGroupIds) {
-        this.apiPostGroupGermplasmTableIds(query.yGroupIds[0], {}, result => {
+        apiPostGroupGermplasmTableIds(query.yGroupIds[0], {}, result => {
           if (result && result.data) {
             this.germplasmIds = result.data
           } else {
@@ -266,11 +266,11 @@ export default {
 
       if (this.splitValues && this.splitValues.length > 1) {
         this.splitValues.forEach((t, i) => {
-          tempColorMapping[t] = this.getColor(i)
+          tempColorMapping[t] = getColor(i)
         })
       } else {
         this.germplasm.forEach((g, i) => {
-          tempColorMapping[g.id] = this.getColor(i)
+          tempColorMapping[g.id] = getColor(i)
         })
       }
 

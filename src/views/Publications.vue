@@ -42,10 +42,10 @@ import GroupTable from '@/components/tables/GroupTable'
 import PublicationTable from '@/components/tables/PublicationTable'
 import PublicationCard from '@/components/util/PublicationCard'
 
-import datasetApi from '@/mixins/api/dataset'
-import germplasmApi from '@/mixins/api/germplasm'
-import groupApi from '@/mixins/api/group'
-import miscApi from '@/mixins/api/misc'
+import { apiPostPublicationDatasetTable } from '@/mixins/api/dataset'
+import { apiPostPublicationGermplasmTable } from '@/mixins/api/germplasm'
+import { apiPostPublicationGroupTable } from '@/mixins/api/group'
+import { apiPostPublicationsTable } from '@/mixins/api/misc'
 
 const Cite = require('citation-js')
 
@@ -93,19 +93,18 @@ export default {
       }
     }
   },
-  mixins: [datasetApi, germplasmApi, groupApi, miscApi],
   methods: {
     getGermplasmData: function (data, callback) {
-      return this.apiPostPublicationGermplasmTable(this.publication.publicationId, data, callback)
+      return apiPostPublicationGermplasmTable(this.publication.publicationId, data, callback)
     },
     getGroupData: function (data, callback) {
-      return this.apiPostPublicationGroupTable(this.publication.publicationId, data, callback)
+      return apiPostPublicationGroupTable(this.publication.publicationId, data, callback)
     },
     getDatasetData: function (data, callback) {
-      return this.apiPostPublicationDatasetTable(this.publication.publicationId, data, callback)
+      return apiPostPublicationDatasetTable(this.publication.publicationId, data, callback)
     },
     getData: function (data) {
-      return this.apiPostPublicationsTable(data, (result) => {
+      return apiPostPublicationsTable(data, (result) => {
         if (result && result.data && result.data.length > 0) {
           result.data.forEach(p => {
             try {
@@ -134,7 +133,7 @@ export default {
 
       window.history.replaceState({}, null, this.$router.resolve({ name: 'publication-details', params: { publicationId: config.publicationId } }).href)
 
-      this.apiPostPublicationsTable(queryParams, result => {
+      apiPostPublicationsTable(queryParams, result => {
         if (result && result.data && result.data.length > 0) {
           // Update the URL to reflect the newly selected publication
           const publication = result.data[0]

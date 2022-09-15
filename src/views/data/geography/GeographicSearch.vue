@@ -70,8 +70,9 @@ import Collapse from '@/components/util/Collapse'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import LocationTable from '@/components/tables/LocationTable'
 import LocationMap from '@/components/map/LocationMap'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import locationApi from '@/mixins/api/location.js'
+import { apiPostGermplasmDistanceTable, apiPostGermplasmDistanceTableIds, apiPostGermplasmPolygonTable, apiPostGermplasmPolygonTableIds } from '@/mixins/api/germplasm.js'
+import { apiPostLocationDistanceTable, apiPostLocationDistanceTableIds, apiPostLocationPolygonTable, apiPostLocationPolygonTableIds } from '@/mixins/api/location.js'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiCrosshairsGps, mdiVectorPolygon, mdiMapMarker, mdiSprout, mdiArrowRightBox } from '@mdi/js'
 
@@ -121,50 +122,49 @@ export default {
       }
     }
   },
-  mixins: [germplasmApi, locationApi],
   methods: {
     getGermplasmData: function (data, callback) {
       if (this.tabIndex === 0) {
         data.latitude = this.point.lat
         data.longitude = this.point.lng
-        return this.apiPostGermplasmDistanceTable(data, callback)
+        return apiPostGermplasmDistanceTable(data, callback)
       } else {
         data.polygons = this.polygons
-        return this.apiPostGermplasmPolygonTable(data, callback)
+        return apiPostGermplasmPolygonTable(data, callback)
       }
     },
     getLocationData: function (data, callback) {
       if (this.tabIndex === 0) {
         data.latitude = this.point.lat
         data.longitude = this.point.lng
-        return this.apiPostLocationDistanceTable(data, callback)
+        return apiPostLocationDistanceTable(data, callback)
       } else {
         data.polygons = this.polygons
 
         // Get all locations within the polygon to draw them on the map
         const allData = JSON.parse(JSON.stringify(data))
         allData.page = 1
-        allData.limit = this.MAX_JAVA_INTEGER
-        this.apiPostLocationPolygonTable(allData, result => {
+        allData.limit = MAX_JAVA_INTEGER
+        apiPostLocationPolygonTable(allData, result => {
           this.polygonLocations = result.data
         })
 
         // Get the actual data for the table
-        return this.apiPostLocationPolygonTable(data, callback)
+        return apiPostLocationPolygonTable(data, callback)
       }
     },
     getGermplasmIds: function (data, callback) {
       if (this.tabIndex === 0) {
-        return this.apiPostGermplasmDistanceTableIds(data, callback)
+        return apiPostGermplasmDistanceTableIds(data, callback)
       } else {
-        return this.apiPostGermplasmPolygonTableIds(data, callback)
+        return apiPostGermplasmPolygonTableIds(data, callback)
       }
     },
     getLocationIds: function (data, callback) {
       if (this.tabIndex === 0) {
-        return this.apiPostLocationDistanceTableIds(data, callback)
+        return apiPostLocationDistanceTableIds(data, callback)
       } else {
-        return this.apiPostLocationPolygonTableIds(data, callback)
+        return apiPostLocationPolygonTableIds(data, callback)
       }
     },
     query: function () {

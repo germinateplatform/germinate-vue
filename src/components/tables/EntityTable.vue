@@ -51,8 +51,8 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
+import { entityTypes } from '@/mixins/types.js'
+import { getTableColumnStyle } from '@/mixins/util'
 
 export default {
   name: 'EntityTable',
@@ -61,6 +61,7 @@ export default {
   },
   data: function () {
     return {
+      entityTypes,
       options: {
         idColumn: 'entityParentId',
         tableName: 'entities'
@@ -121,12 +122,12 @@ export default {
     },
     parentSpan: function () {
       return this.parentColumns.map(c => {
-        return this.getTableColumnStyle(this.options.tableName, c) === 'd-none' ? 0 : 1
+        return getTableColumnStyle(this.options.tableName, c) === 'd-none' ? 0 : 1
       }).reduce((a, b) => a + b, 0)
     },
     childSpan: function () {
       return this.childColumns.map(c => {
-        return this.getTableColumnStyle(this.options.tableName, c) === 'd-none' ? 0 : 1
+        return getTableColumnStyle(this.options.tableName, c) === 'd-none' ? 0 : 1
       }).reduce((a, b) => a + b, 0)
     }
   },
@@ -134,7 +135,6 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.entityTable.refresh()

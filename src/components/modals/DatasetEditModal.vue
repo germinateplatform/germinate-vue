@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import datasetApi from '@/mixins/api/dataset.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
+import { apiPatchDataset } from '@/mixins/api/dataset.js'
+import { datasetStates } from '@/mixins/types.js'
+import { uuidv4 } from '@/mixins/util'
 
 export default {
   props: {
@@ -34,7 +34,7 @@ export default {
   },
   data: function () {
     return {
-      id: this.uuidv4(),
+      id: uuidv4(),
       datasetState: null,
       datasetName: null,
       datasetDescription: null,
@@ -44,18 +44,17 @@ export default {
   },
   computed: {
     options: function () {
-      return Object.keys(this.datasetStates).map(s => {
+      return Object.keys(datasetStates).map(s => {
         return {
-          value: this.datasetStates[s].id,
-          text: this.datasetStates[s].text()
+          value: datasetStates[s].id,
+          text: datasetStates[s].text()
         }
       })
     }
   },
-  mixins: [datasetApi, typesMixin, utilMixin],
   methods: {
     show: function () {
-      this.datasetState = this.datasetStates[this.dataset.datasetState].id
+      this.datasetState = datasetStates[this.dataset.datasetState].id
       this.datasetName = this.dataset.datasetName
       this.datasetDescription = this.dataset.datasetDescription
       this.datasetStartDate = this.dataset.startDate ? new Date(this.dataset.startDate) : null
@@ -66,7 +65,7 @@ export default {
       this.$refs['datasetEditModal-' + this.id].hide()
     },
     updateDataset: function () {
-      return this.apiPatchDataset(this.dataset.datasetId, {
+      return apiPatchDataset(this.dataset.datasetId, {
         name: this.datasetName,
         description: this.datasetDescription,
         dateStart: this.datasetStartDate,

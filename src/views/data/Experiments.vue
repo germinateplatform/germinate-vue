@@ -8,7 +8,7 @@
 
 <script>
 import ExperimentTable from '@/components/tables/ExperimentTable'
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiPostExperimentTable } from '@/mixins/api/dataset.js'
 
 export default {
   data: function () {
@@ -19,10 +19,9 @@ export default {
   components: {
     ExperimentTable
   },
-  mixins: [datasetApi],
   methods: {
     getData: function (data, callback) {
-      return this.apiPostExperimentTable(data, callback)
+      return apiPostExperimentTable(data, callback)
     }
   }
 }

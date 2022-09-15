@@ -11,7 +11,7 @@
 
 <script>
 import Scale from '@/components/util/Scale'
-import germplasmApi from '@/mixins/api/germplasm.js'
+import { apiGetGermplasmStatsTraits } from '@/mixins/api/germplasm.js'
 const emitter = require('tiny-emitter/instance')
 
 export default {
@@ -34,10 +34,9 @@ export default {
   components: {
     Scale
   },
-  mixins: [germplasmApi],
   methods: {
     update: function () {
-      this.apiGetGermplasmStatsTraits(this.germplasmId, result => {
+      apiGetGermplasmStatsTraits(this.germplasmId, result => {
         this.stats = result
 
         if (result) {

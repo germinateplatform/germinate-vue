@@ -89,11 +89,12 @@ import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import ExportFormats from '@/views/about/ExportFormats'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 import GenotypeDatasetTable from '@/components/tables/GenotypeDatasetTable'
-import datasetApi from '@/mixins/api/dataset.js'
-import groupApi from '@/mixins/api/group.js'
-import genotypeApi from '@/mixins/api/genotype.js'
-import utilMixin from '@/mixins/util'
-import formattingMixin from '@/mixins/formatting'
+import { apiPostDatasetExport, apiPostDatasetAttributeExport } from '@/mixins/api/dataset.js'
+import { apiPostDatasetGroups } from '@/mixins/api/group.js'
+import { apiPostGenotypeDatasetSummary, apiPostGenotypeDatasetExport, apiPostDatasetMapTable, apiPostAlleleFrequencyDatasetExport } from '@/mixins/api/genotype.js'
+import { getNumberWithSuffix } from '@/mixins/formatting'
+import { downloadBlob } from '@/mixins/util'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowRightBox, mdiInformationOutline } from '@mdi/js'
 
@@ -146,7 +147,6 @@ export default {
       'storeMarkedMarkers'
     ])
   },
-  mixins: [datasetApi, formattingMixin, groupApi, genotypeApi, utilMixin],
   methods: {
     onSelectionChanged: function (selectedIds) {
       this.selectedDatasetIds = selectedIds
@@ -159,7 +159,7 @@ export default {
     getGenotypeSummaryData: function (query) {
       const combinedQuery = Object.assign({}, query, this.getQuery(false))
 
-      return this.apiPostGenotypeDatasetSummary(combinedQuery, result => {
+      return apiPostGenotypeDatasetSummary(combinedQuery, result => {
         if (this.$refs.genotypeDatasetTable) {
           this.$nextTick(() => this.$refs.genotypeDatasetTable.setSelectedItems(result.data.map(d => d.datasetId)))
         }
@@ -171,14 +171,14 @@ export default {
       const request = {
         datasetIds: this.selectedDatasetIds
       }
-      this.apiPostDatasetAttributeExport(request, result => {
+      apiPostDatasetAttributeExport(request, result => {
         const downloadRequext = {
           blob: result,
           filename: this.datasetType + '-dataset-metadata-' + this.selectedDatasetIds.join('-'),
           extension: 'txt'
         }
 
-        this.downloadBlob(downloadRequext)
+        downloadBlob(downloadRequext)
         emitter.emit('show-loading', false)
       })
     },
@@ -223,7 +223,7 @@ export default {
 
       if (this.datasetType === 'genotype') {
         this.$gtag.event('export', 'async', 'genotype', query.datasetIds.join('-'))
-        this.apiPostGenotypeDatasetExport(query, result => {
+        apiPostGenotypeDatasetExport(query, result => {
           if (result) {
             result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
           }
@@ -236,7 +236,7 @@ export default {
         if (binningConfig) {
           query.config = binningConfig
           this.$gtag.event('export', 'async', 'allelefreq', query.datasetIds.join('-'))
-          this.apiPostAlleleFrequencyDatasetExport(query, result => {
+          apiPostAlleleFrequencyDatasetExport(query, result => {
             this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', result.uuid)
 
             emitter.emit('toggle-aside', 'download')
@@ -244,7 +244,7 @@ export default {
             this.exportStarted = true
           })
         } else {
-          this.apiPostDatasetExport('allelefreq/histogram', query, result => {
+          apiPostDatasetExport('allelefreq/histogram', query, result => {
             this.$emit('on-file-loaded', result)
 
             emitter.emit('show-loading', false)
@@ -258,7 +258,7 @@ export default {
         groupType: 'markers',
         datasetType: this.datasetType
       }
-      this.apiPostDatasetGroups(request, result => {
+      apiPostDatasetGroups(request, result => {
         this.markerGroups = result
       })
     },
@@ -268,7 +268,7 @@ export default {
         groupType: 'germinatebase',
         datasetType: this.datasetType
       }
-      this.apiPostDatasetGroups(request, result => {
+      apiPostDatasetGroups(request, result => {
         this.germplasmGroups = result
       })
     },
@@ -276,9 +276,9 @@ export default {
       const request = {
         datasetIds: this.datasetIds,
         page: 1,
-        limit: this.MAX_JAVA_INTEGER
+        limit: MAX_JAVA_INTEGER
       }
-      this.apiPostDatasetMapTable(request, result => {
+      apiPostDatasetMapTable(request, result => {
         this.maps = result
         this.mapOptions = []
         this.map = null
@@ -288,7 +288,7 @@ export default {
             let name = m.mapName
 
             if (m.markerCount) {
-              name += ` (${this.getNumberWithSuffix(m.markerCount, 1)})`
+              name += ` (${getNumberWithSuffix(m.markerCount, 1)})`
             }
 
             this.mapOptions.push({

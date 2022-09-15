@@ -28,7 +28,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import CrossDataTypeSelection from '@/components/export/CrossDataTypeSelection'
 import ScatterChart from '@/components/charts/ScatterChart'
 
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiPostCrossDataTypeComparison } from '@/mixins/api/dataset.js'
 
 import { mdiArrowRightBox } from '@mdi/js'
 
@@ -54,7 +54,6 @@ export default {
       return this.dataTypes[0] !== this.dataTypes[1]
     }
   },
-  mixins: [datasetApi],
   methods: {
     updateDataType: function (type, index) {
       Vue.set(this.dataTypes, index, type)
@@ -71,7 +70,7 @@ export default {
       this.dimensions = [first.itemName, second.itemName]
 
       emitter.emit('show-loading', true)
-      this.apiPostCrossDataTypeComparison({
+      apiPostCrossDataTypeComparison({
         first: {
           id: first.dataType === 'GERMPLASM_COLUMN' ? null : first.itemId,
           columnName: first.dataType === 'GERMPLASM_COLUMN' ? first.itemId : null,

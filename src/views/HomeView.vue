@@ -3,8 +3,8 @@
     <b-row class="dashboard-stats" v-if="stats">
       <!-- Banner buttons -->
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.value" class="mb-3">
-        <b-card no-body :style="`border: 1px solid ${getColor(index)}`">
-          <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getColor(index)} 50%); color: white;`">
+        <b-card no-body :style="`border: 1px solid ${getTemplateColor(index)}`">
+          <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getTemplateColor(index)} 50%); color: white;`">
             <b-row>
               <b-col cols=6 class="align-self-center">
                 <h2 class="mb-0">{{ getNumberWithSuffix(stats[category.value], 1) }}</h2>
@@ -54,11 +54,11 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import NewsSection from '@/components/news/NewsSection'
 import PublicationsWidget from '@/components/util/PublicationsWidget'
 
-import statsApiMixin from '@/mixins/api/stats'
-import formattingMixing from '@/mixins/formatting'
-import typesMixin from '@/mixins/types'
-import colorMixin from '@/mixins/colors'
-import authApi from '@/mixins/api/auth'
+import { apiGetOverviewStats } from '@/mixins/api/stats'
+import { getNumberWithSuffix } from '@/mixins/formatting'
+import { statCategories } from '@/mixins/types'
+import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors'
+import { userIsAtLeast } from '@/mixins/api/auth'
 
 import { mdiPresentationPlay } from '@mdi/js'
 
@@ -85,34 +85,28 @@ export default {
     ]),
     dashboardCategories: function () {
       if (this.storeServerSettings && this.storeServerSettings.dashboardCategories) {
-        return this.statCategories.filter(d => this.storeServerSettings.dashboardCategories.indexOf(d.value) !== -1)
+        return statCategories.filter(d => this.storeServerSettings.dashboardCategories.indexOf(d.value) !== -1)
       } else {
-        return this.statCategories
+        return statCategories
       }
     }
   },
-  mixins: [formattingMixing, colorMixin, statsApiMixin, typesMixin, authApi],
   methods: {
+    userIsAtLeast,
+    getTemplateColor,
+    getNumberWithSuffix,
     startIntroduction: function () {
       emitter.emit('show-introduction')
     },
-    getColor: function (index) {
-      if (!this.storeServerSettings || !this.storeServerSettings.colorsTemplate) {
-        return '#00acef'
-      } else {
-        const colors = this.storeServerSettings.colorsTemplate
-        return colors[index % colors.length]
-      }
-    },
     getBrighterColor: function (index) {
-      return this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index))))
+      return rgbColorToHex(brighten(hexToRgb(getTemplateColor(index))))
     },
     isDisabled: function (routerPage) {
       return this.storeServerSettings && this.storeServerSettings.hiddenPages.indexOf(routerPage) !== -1
     }
   },
   mounted: function () {
-    this.apiGetOverviewStats(result => {
+    apiGetOverviewStats(result => {
       this.stats = result
     })
   }

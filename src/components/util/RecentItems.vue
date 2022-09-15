@@ -16,9 +16,9 @@ import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
-import germplasmApi from '@/mixins/api/germplasm'
-import genotypeApi from '@/mixins/api/genotype'
-import typesMixin from '@/mixins/types'
+import { apiPostGermplasmTable } from '@/mixins/api/germplasm'
+import { apiPostMarkerTable } from '@/mixins/api/genotype'
+import { groupTypes } from '@/mixins/types'
 
 import { mdiDelete } from '@mdi/js'
 
@@ -34,6 +34,7 @@ export default {
   },
   data: function () {
     return {
+      groupTypes,
       mdiDelete,
       recentItems: null
     }
@@ -56,9 +57,9 @@ export default {
     getItems: function () {
       if (this.itemType) {
         // Return them in the reverse order that they were visited in
-        return this.storeRecentIds[this.groupTypes[this.itemType].itemType].map(id => {
+        return this.storeRecentIds[groupTypes[this.itemType].itemType].map(id => {
           return this.recentItems.filter(item => {
-            return item[this.groupTypes[this.itemType].idColumn] === id
+            return item[groupTypes[this.itemType].idColumn] === id
           })[0]
         }).filter(item => item !== undefined && item !== null).reverse()
       } else {
@@ -66,10 +67,9 @@ export default {
       }
     }
   },
-  mixins: [germplasmApi, genotypeApi, typesMixin],
   methods: {
     clearItems: function () {
-      this.$store.dispatch('clearRecentIds', this.groupTypes[this.itemType].itemType)
+      this.$store.dispatch('clearRecentIds', groupTypes[this.itemType].itemType)
     },
     getLink: function (id) {
       switch (this.itemType) {
@@ -99,7 +99,7 @@ export default {
         }]
       }
 
-      this.apiPostMarkerTable(query, result => {
+      apiPostMarkerTable(query, result => {
         if (result && result.data) {
           this.recentItems = result.data
         }
@@ -115,7 +115,7 @@ export default {
         }]
       }
 
-      this.apiPostGermplasmTable(query, result => {
+      apiPostGermplasmTable(query, result => {
         if (result && result.data) {
           this.recentItems = result.data
         }

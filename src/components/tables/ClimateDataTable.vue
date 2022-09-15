@@ -20,8 +20,7 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
+import { locationTypes } from '@/mixins/types.js'
 
 export default {
   name: 'LocationTable',
@@ -30,6 +29,7 @@ export default {
   },
   data: function () {
     return {
+      locationTypes,
       options: {
         idColumn: 'locationId',
         tableName: 'climateData'
@@ -145,7 +145,6 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.climateDataTable.refresh()

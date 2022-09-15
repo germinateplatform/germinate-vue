@@ -44,11 +44,11 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
-import colors from '@/mixins/colors.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import datasetApi from '@/mixins/api/dataset.js'
-import formattingMixin from '@/mixins/formatting'
-import utilMixin from '@/mixins/util'
+import { getColor, getHighContrastTextColor } from '@/mixins/colors.js'
+import { apiPostGermplasmDatasetTable, apiPostPedigreeTable } from '@/mixins/api/germplasm.js'
+import { apiPostDatasetExport } from '@/mixins/api/dataset.js'
+import { getDateTimeString } from '@/mixins/formatting'
+import { uuidv4, downloadBlob } from '@/mixins/util'
 
 import { mdiHelpCircleOutline, mdiInformationOutline, mdiDownload, mdiFileImage } from '@mdi/js'
 
@@ -64,7 +64,7 @@ export default {
     }
   },
   data: function () {
-    const id = 'chart-' + this.uuidv4()
+    const id = 'chart-' + uuidv4()
 
     return {
       mdiHelpCircleOutline,
@@ -125,12 +125,11 @@ export default {
     Tour,
     MdiIcon
   },
-  mixins: [colors, formattingMixin, germplasmApi, datasetApi, utilMixin],
   methods: {
     downloadPedigreeImage: function () {
       const a = this.$refs.imageDownloadAnchor
       a.href = this.canvasData
-      a.download = `pedigree-${this.germplasm.germplasmId}-ds-${this.dataset.datasetId}-${this.getDateTimeString()}`
+      a.download = `pedigree-${this.germplasm.germplasmId}-ds-${this.dataset.datasetId}-${getDateTimeString()}`
       a.click()
     },
     showTour: function () {
@@ -176,8 +175,8 @@ export default {
           })
 
           const data = []
-          const bgColor = this.getColor(0)
-          const fgColor = this.getHighContrastTextColor(bgColor)
+          const bgColor = getColor(0)
+          const fgColor = getHighContrastTextColor(bgColor)
           Object.keys(nodes).forEach(n => {
             const node = nodes[n]
             const bg = node.name === this.germplasm.germplasmName ? bgColor : this.storeDarkMode ? '#000000' : '#ffffff'
@@ -259,8 +258,8 @@ export default {
         levelsDown: 3
       }
 
-      this.apiPostDatasetExport('pedigree', request, result => {
-        this.downloadBlob({
+      apiPostDatasetExport('pedigree', request, result => {
+        downloadBlob({
           blob: result,
           filename: this.baseFilename,
           extension: 'helium'
@@ -290,7 +289,7 @@ export default {
         }]
       }
 
-      this.apiPostPedigreeTable(query, result => {
+      apiPostPedigreeTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           this.plotData = result.data
 
@@ -300,7 +299,7 @@ export default {
     },
     init: function () {
       if (this.germplasm) {
-        this.apiPostGermplasmDatasetTable(this.germplasm.germplasmId, {
+        apiPostGermplasmDatasetTable(this.germplasm.germplasmId, {
           filter: [{
             column: 'datasetType',
             comparator: 'equals',

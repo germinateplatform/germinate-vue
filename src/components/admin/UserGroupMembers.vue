@@ -20,7 +20,7 @@
 
 <script>
 import UserTable from '@/components/tables/UserTable'
-import usergroupApi from '@/mixins/api/usergroup.js'
+import { apiPatchUserGroupMembers, apiGetUsers } from '@/mixins/api/usergroup'
 
 export default {
   props: {
@@ -38,7 +38,6 @@ export default {
   components: {
     UserTable
   },
-  mixins: [usergroupApi],
   methods: {
     refresh: function () {
       this.getData()
@@ -49,16 +48,16 @@ export default {
         addOperation: isAdd,
         userIds: ids
       }
-      this.apiPatchUserGroupMembers(request, () => {
+      apiPatchUserGroupMembers(request, () => {
         this.getData()
         this.$emit('groups-changed')
       })
     },
     getData: function () {
-      this.apiGetUsers(null, result => {
+      apiGetUsers(null, result => {
         this.users = result
       })
-      this.apiGetUsers({ userGroupId: this.group.userGroupId }, result => {
+      apiGetUsers({ userGroupId: this.group.userGroupId }, result => {
         this.usersForGroup = result
       })
     }

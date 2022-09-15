@@ -43,8 +43,8 @@
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import CustomChartColorModal from '@/components/modals/CustomChartColorModal'
-import formattingMixin from '@/mixins/formatting'
-import utilMixin from '@/mixins/util'
+import { getDateTimeString } from '@/mixins/formatting'
+import { downloadBlob, downloadSvgsFromContainer } from '@/mixins/util'
 
 import { mdiDotsVertical, mdiFileImage, mdiFileCode, mdiFileDocument, mdiPalette } from '@mdi/js'
 
@@ -116,7 +116,6 @@ export default {
     MdiIcon,
     CustomChartColorModal
   },
-  mixins: [formattingMixin, utilMixin],
   methods: {
     onColorsChanged: function () {
       emitter.emit('chart-colors-changed')
@@ -124,13 +123,13 @@ export default {
     downloadSource: function () {
       const request = this.sourceFile
 
-      request.filename = request.filename + '-' + this.getDateTimeString()
+      request.filename = request.filename + '-' + getDateTimeString()
 
       if (!request.extension) {
         request.extension = 'txt'
       }
 
-      this.downloadBlob(request)
+      downloadBlob(request)
     },
     getFilename: function (imageType) {
       this.imageType = imageType
@@ -143,9 +142,9 @@ export default {
       this.$refs.chartModal.hide()
 
       if (this.imageType === 'svg') {
-        this.downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename + '-' + this.getDateTimeString())
+        downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename + '-' + getDateTimeString())
       } else if (this.imageType === 'png') {
-        Plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + this.getDateTimeString() })
+        Plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + getDateTimeString() })
       }
     },
     chartColorsChangedHandler: function () {

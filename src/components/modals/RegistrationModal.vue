@@ -109,7 +109,8 @@
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import PasswordInput from '@/components/util/PasswordInput'
-import miscApi from '@/mixins/api/misc.js'
+import { apiPostGatekeeperExisting, apiPostGatekeeperNew, apiGetGatekeeperInstitutions } from '@/mixins/api/misc.js'
+import { gatekeeperErrors, MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiHelpCircle } from '@mdi/js'
 
@@ -183,7 +184,6 @@ export default {
     MdiIcon,
     PasswordInput
   },
-  mixins: [miscApi],
   methods: {
     validateForm: function () {
       this.formValidated = true
@@ -226,7 +226,7 @@ export default {
 
         emitter.emit('show-loading', true)
         // Register the new user
-        this.apiPostGatekeeperNew(newRequest, result => {
+        apiPostGatekeeperNew(newRequest, result => {
           emitter.emit('show-loading', false)
 
           if (result === true) {
@@ -244,8 +244,8 @@ export default {
           }
         }).catch(error => {
           // Show error message
-          if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
-            this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
+          if (error && error.response && error.response.data && error.response.data.reasonPhrase && gatekeeperErrors[error.response.data.reasonPhrase]) {
+            this.errorMessage = this.$t(gatekeeperErrors[error.response.data.reasonPhrase])
             emitter.emit('show-loading', false)
           }
         })
@@ -258,7 +258,7 @@ export default {
         }
 
         emitter.emit('show-loading', true)
-        this.apiPostGatekeeperExisting(existingRequest, result => {
+        apiPostGatekeeperExisting(existingRequest, result => {
           emitter.emit('show-loading', false)
 
           if (result === true) {
@@ -276,8 +276,8 @@ export default {
           }
         }).catch(error => {
           // Show error
-          if (error && error.response && error.response.data && error.response.data.reasonPhrase && this.gatekeeperErrors[error.response.data.reasonPhrase]) {
-            this.errorMessage = this.$t(this.gatekeeperErrors[error.response.data.reasonPhrase])
+          if (error && error.response && error.response.data && error.response.data.reasonPhrase && gatekeeperErrors[error.response.data.reasonPhrase]) {
+            this.errorMessage = this.$t(gatekeeperErrors[error.response.data.reasonPhrase])
             emitter.emit('show-loading', false)
           }
         })
@@ -319,10 +319,10 @@ export default {
   mounted: function () {
     const query = {
       page: 1,
-      limit: this.MAX_JAVA_INTEGER
+      limit: MAX_JAVA_INTEGER
     }
     // Get all existing institutions
-    this.apiGetGatekeeperInstitutions(query, result => {
+    apiGetGatekeeperInstitutions(query, result => {
       if (result && result.data) {
         const tempInst = []
 

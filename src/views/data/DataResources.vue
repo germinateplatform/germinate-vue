@@ -17,8 +17,8 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import FileResourceModal from '@/components/modals/FileResourceModal'
 import FileresourceTable from '@/components/tables/FileresourceTable'
 
-import authApi from '@/mixins/api/auth'
-import datasetApi from '@/mixins/api/dataset'
+import { userIsAtLeast } from '@/mixins/api/auth'
+import { apiPostFileResourceTable, apiPostFileresourceDatasetTable } from '@/mixins/api/dataset'
 
 import { mdiPlus } from '@mdi/js'
 
@@ -40,8 +40,8 @@ export default {
       'storeToken'
     ])
   },
-  mixins: [authApi, datasetApi],
   methods: {
+    userIsAtLeast,
     update: function () {
       this.$refs.dataresourceTable.refresh()
       emitter.emit('update-sidebar-menu')
@@ -50,10 +50,10 @@ export default {
       this.$refs.fileResourceModal.show()
     },
     getFileResourcesTable: function (data, callback) {
-      return this.apiPostFileResourceTable(data, callback)
+      return apiPostFileResourceTable(data, callback)
     },
     getDatasetTable: function (data, callback) {
-      return this.apiPostFileresourceDatasetTable(this.fileresource.fileresourceId, data, callback)
+      return apiPostFileresourceDatasetTable(this.fileresource.fileresourceId, data, callback)
     }
   }
 }

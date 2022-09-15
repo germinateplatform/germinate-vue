@@ -64,9 +64,9 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 
-import germplasmApi from '@/mixins/api/germplasm.js'
-import typesMixin from '@/mixins/types.js'
-import formattingMixin from '@/mixins/formatting'
+import { apiGetTaxonomyData, apiGetLocationData, apiGetBiologicalStatusData } from '@/mixins/api/germplasm.js'
+import { entityTypes, datasetTypes } from '@/mixins/types.js'
+import { getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiFilter, mdiCamera, mdiCheckAll } from '@mdi/js'
 
@@ -77,6 +77,7 @@ export default {
   },
   data: function () {
     return {
+      datasetTypes,
       mdiFilter,
       mdiCamera,
       mdiCheckAll,
@@ -106,7 +107,7 @@ export default {
       'storeEntityTypeStats'
     ]),
     allGermplasmCount: function () {
-      return this.getNumberWithSuffix(this.entityTypeOptions.map(o => o.count).reduce((a, b) => a + b), 2)
+      return getNumberWithSuffix(this.entityTypeOptions.map(o => o.count).reduce((a, b) => a + b), 2)
     },
     genusOptions: function () {
       if (this.taxonomy.genus) {
@@ -116,7 +117,7 @@ export default {
         }].concat(this.taxonomy.genus.map(g => {
           return {
             value: g.taxonomy,
-            text: `${g.taxonomy} (${this.getNumberWithSuffix(g.count, 2)})`
+            text: `${g.taxonomy} (${getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -131,7 +132,7 @@ export default {
         }].concat(this.taxonomy.species.map(g => {
           return {
             value: g.taxonomy,
-            text: `${g.taxonomy} (${this.getNumberWithSuffix(g.count, 2)})`
+            text: `${g.taxonomy} (${getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -146,7 +147,7 @@ export default {
         }].concat(this.taxonomy.subtaxa.map(g => {
           return {
             value: g.taxonomy,
-            text: `${g.taxonomy} (${this.getNumberWithSuffix(g.count, 2)})`
+            text: `${g.taxonomy} (${getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -161,7 +162,7 @@ export default {
         }].concat(this.locations.filter(g => g.count > 0).map(g => {
           return {
             value: g.key,
-            text: `${g.key} (${this.getNumberWithSuffix(g.count, 2)})`
+            text: `${g.key} (${getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -176,7 +177,7 @@ export default {
         }].concat(this.biologicalStatus.filter(g => g.count > 0).map(g => {
           return {
             value: g.key,
-            text: `${g.key} (${this.getNumberWithSuffix(g.count, 2)})`
+            text: `${g.key} (${getNumberWithSuffix(g.count, 2)})`
           }
         }))
       } else {
@@ -184,34 +185,33 @@ export default {
       }
     },
     entityTypeOptions: function () {
-      return Object.keys(this.entityTypes).map(e => {
+      return Object.keys(entityTypes).map(e => {
         const stats = this.storeEntityTypeStats.filter(es => es.entityTypeName === e)
         const enabled = stats && stats.length > 0 && stats[0].count > 0
         const count = stats && stats.length > 0 ? stats[0].count : 0
 
         return {
           id: e,
-          icon: this.entityTypes[e].icon,
-          path: this.entityTypes[e].path,
+          icon: entityTypes[e].icon,
+          path: entityTypes[e].path,
           disabled: !enabled,
           count: count,
-          text: () => this.entityTypes[e].text()
+          text: () => entityTypes[e].text()
         }
       })
     }
   },
-  mixins: [formattingMixin, germplasmApi, typesMixin],
   watch: {
     collapseVisible: function (newValue) {
       if (newValue) {
         if (!this.taxonomy.genus && !this.taxonomy.species && !this.taxonomy.subtaxa) {
-          this.apiGetTaxonomyData(result => { this.taxonomy = result })
+          apiGetTaxonomyData(result => { this.taxonomy = result })
         }
         if (!this.locations) {
-          this.apiGetLocationData(result => { this.locations = result })
+          apiGetLocationData(result => { this.locations = result })
         }
         if (!this.biologicalStatus) {
-          this.apiGetBiologicalStatusData(result => { this.biologicalStatus = result })
+          apiGetBiologicalStatusData(result => { this.biologicalStatus = result })
         }
       }
     },
@@ -247,6 +247,7 @@ export default {
     }
   },
   methods: {
+    getNumberWithSuffix,
     onHasImagesClicked: function () {
       this.$emit('filtering-changed', 'imageCount', Number, 0, 'greaterThan')
     },

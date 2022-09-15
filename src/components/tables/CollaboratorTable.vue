@@ -28,7 +28,6 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import utilMixin from '@/mixins/util'
 
 export default {
   name: 'CollaboratorTable',
@@ -99,7 +98,6 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [utilMixin],
   methods: {
     isOrcid: function (input) {
       return input && input.length > 0 && /^(\d{4}-){3}\d{3}(\d|X)$/.test(input)

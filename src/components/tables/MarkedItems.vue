@@ -21,7 +21,7 @@
 import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
-import formattingMixin from '@/mixins/formatting'
+import { getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiDelete } from '@mdi/js'
 
@@ -65,8 +65,8 @@ export default {
     MarkedItemsView: () => import('@/views/MarkedItemsView'),
     MdiIcon
   },
-  mixins: [formattingMixin],
   methods: {
+    getNumberWithSuffix,
     clear: function () {
       // Ask for confirmation
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {

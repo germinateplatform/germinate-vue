@@ -6,7 +6,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import colorMixin from '@/mixins/colors.js'
+import { createColorGradient } from '@/mixins/colors.js'
 
 import SimplexNoise from 'simplex-noise'
 
@@ -16,7 +16,6 @@ export default {
       backgroundColors: null
     }
   },
-  mixins: [colorMixin],
   methods: {
     updateBackground: function () {
       // Magic happens in this method
@@ -143,7 +142,7 @@ export default {
   },
   mounted: function () {
     const primaryColor = (this.storeServerSettings && this.storeServerSettings.colorPrimary) ? this.storeServerSettings.colorPrimary : '#20a8d8'
-    this.backgroundColors = this.createColorGradient('#ffffff', primaryColor, 4)
+    this.backgroundColors = createColorGradient('#ffffff', primaryColor, 4)
 
     this.updateBackground()
 

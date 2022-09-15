@@ -9,7 +9,8 @@
 
 <script>
 import VueTypeaheadBootstrap from 'vue-typeahead-bootstrap'
-import genotypeApi from '@/mixins/api/genotype.js'
+import { apiPostMarkerTable } from '@/mixins/api/genotype.js'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { debounce } from '@/plugins/debounce'
 
 export default {
@@ -39,10 +40,10 @@ export default {
         page: 1,
         ascending: 1,
         orderBy: 'markerName',
-        limit: this.MAX_JAVA_INTEGER
+        limit: MAX_JAVA_INTEGER
       }
 
-      this.apiPostMarkerTable(query, result => {
+      apiPostMarkerTable(query, result => {
         // Resolve the result
         this.markers = result.data
       })
@@ -55,7 +56,6 @@ export default {
       markers: []
     }
   },
-  mixins: [genotypeApi],
   methods: {
     setMarkerId: function (id) {
       this.markerId = id

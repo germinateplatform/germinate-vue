@@ -153,10 +153,9 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import baseApiMixin from '@/mixins/api/base'
-import searchMixin from '@/mixins/search'
-import typesMixin from '@/mixins/types'
-import utilMixin from '@/mixins/util'
+import { operators, comparators } from '@/mixins/search'
+import { dataTypes, entityTypes, groupTypes, locationTypes } from '@/mixins/types'
+import { uuidv4, objectArraysAreSame } from '@/mixins/util'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
@@ -188,12 +187,13 @@ export default {
   },
   data: function () {
     return {
+      comparators,
       mdiHelpCircleOutline,
       mdiViewColumn,
       mdiDelete,
       mdiFilter,
       mdiPlus,
-      id: this.uuidv4(),
+      id: uuidv4(),
       validComparatorsForType: {
         Boolean: ['equals', 'isNull'],
         dataType: ['equals', 'isNull'],
@@ -212,7 +212,7 @@ export default {
   },
   watch: {
     filterOn: function (newValue) {
-      if (!this.objectArraysAreSame(newValue, this.filter)) {
+      if (!objectArraysAreSame(newValue, this.filter)) {
         this.resetFilter(false)
       }
     },
@@ -261,13 +261,12 @@ export default {
       })
     }
   },
-  mixins: [baseApiMixin, searchMixin, typesMixin, utilMixin],
   methods: {
     updateOperators: function () {
-      this.localOperators = Object.keys(this.operators).map(o => {
+      this.localOperators = Object.keys(operators).map(o => {
         return {
-          text: this.operators[o].text(),
-          value: this.operators[o].value
+          text: operators[o].text(),
+          value: operators[o].value
         }
       })
     },
@@ -287,37 +286,37 @@ export default {
       }
     },
     getGroupTypeOptions: function () {
-      return Object.keys(this.groupTypes).map(l => {
+      return Object.keys(groupTypes).map(l => {
         return {
           value: l,
-          text: this.groupTypes[l].text()
+          text: groupTypes[l].text()
         }
       })
     },
     getDataTypeOptions: function () {
-      return Object.keys(this.dataTypes).map(l => {
+      return Object.keys(dataTypes).map(l => {
         return {
           value: l,
-          text: this.dataTypes[l].text()
+          text: dataTypes[l].text()
         }
       })
     },
     getLocationTypeOptions: function () {
-      return Object.keys(this.locationTypes).map(l => {
+      return Object.keys(locationTypes).map(l => {
         return {
           value: l,
-          text: this.locationTypes[l].text()
+          text: locationTypes[l].text()
         }
       })
     },
     getEntityTypeOptions: function () {
-      return Object.keys(this.entityTypes).map(e => {
+      return Object.keys(entityTypes).map(e => {
         const stats = this.storeEntityTypeStats.filter(es => es.entityTypeName === e)
         const enabled = stats && stats.length > 0 && stats[0].count > 0
         return {
           value: e,
           disabled: !enabled,
-          text: this.entityTypes[e].text()
+          text: entityTypes[e].text()
         }
       })
     },
@@ -353,7 +352,7 @@ export default {
     },
     setFilter: function (hideModal, trigger) {
       this.filter = this.tempFilter.filter(f => {
-        if (this.comparators[f.comparator].value > 0) {
+        if (comparators[f.comparator].value > 0) {
           return f.values.length > 0 && f.values[0] !== undefined
         } else {
           return true
@@ -389,7 +388,7 @@ export default {
         column: validColumns[0],
         comparator: 'equals',
         values: ['', ''],
-        operator: this.operators.and.value
+        operator: operators.and.value
       })
     },
     getText: function (column) {

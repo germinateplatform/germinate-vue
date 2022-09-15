@@ -77,11 +77,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import groupApi from '@/mixins/api/group'
-import datasetApi from '@/mixins/api/dataset'
-import germplasmApi from '@/mixins/api/germplasm'
-import formattingMixin from '@/mixins/formatting'
-import utilMixin from '@/mixins/util'
+import { apiPostGroupTable } from '@/mixins/api/group'
+import { apiPostDatasetTable } from '@/mixins/api/dataset'
+import { apiExportPassport, apiPostPedigreeTable, apiPostPedigreeDatasetExport } from '@/mixins/api/germplasm'
+import { getDateTimeString } from '@/mixins/formatting'
+import { downloadBlob } from '@/mixins/util'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
@@ -137,7 +137,6 @@ export default {
       this.updateSelectionOptions()
     }
   },
-  mixins: [datasetApi, groupApi, germplasmApi, formattingMixin, utilMixin],
   methods: {
     updateSelectionOptions: function () {
       this.selectionOptions = [{
@@ -169,10 +168,10 @@ export default {
         includeAttributes: this.passportIncludeAttributes
       }
 
-      this.apiExportPassport(request, result => {
-        this.downloadBlob({
+      apiExportPassport(request, result => {
+        downloadBlob({
           blob: result,
-          filename: `germplasm-${this.getDateTimeString()}`,
+          filename: `germplasm-${getDateTimeString()}`,
           extension: 'zip'
         })
         emitter.emit('show-loading', false)
@@ -189,7 +188,7 @@ export default {
 
       emitter.emit('show-loading', true)
       this.$gtag.event('export', 'async', 'pedigree', request.datasetIds.join('-'))
-      this.apiPostPedigreeDatasetExport(request, result => {
+      apiPostPedigreeDatasetExport(request, result => {
         result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
         // Show the sidebar
@@ -212,7 +211,7 @@ export default {
         values: ['germinatebase']
       }]
     }
-    this.apiPostGroupTable(query, result => {
+    apiPostGroupTable(query, result => {
       this.groups = result.data.map(g => {
         return {
           value: g.groupId,
@@ -231,13 +230,13 @@ export default {
       page: 1,
       limit: 1
     }
-    this.apiPostPedigreeTable(pedigreeQuery, result => {
+    apiPostPedigreeTable(pedigreeQuery, result => {
       if (result && result.count) {
         this.hasPedigreeData = result.count > 0
       }
     })
 
-    this.apiPostDatasetTable({
+    apiPostDatasetTable({
       filter: [{
         column: 'datasetType',
         comparator: 'equals',

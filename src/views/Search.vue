@@ -132,14 +132,13 @@ import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnaccep
 import { mdiMagnify, mdiSprout, mdiShovel, mdiFlask, mdiDna, mdiDatabase, mdiPlaylistPlus, mdiSitemap, mdiMap } from '@mdi/js'
 
 import ColumnsMixin from '@/const/database-columns.js'
-import compoundApi from '@/mixins/api/compound.js'
-import datasetApi from '@/mixins/api/dataset.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import genotypeApi from '@/mixins/api/genotype.js'
-import locationApi from '@/mixins/api/location.js'
-import miscApi from '@/mixins/api/misc.js'
-import traitApi from '@/mixins/api/trait.js'
-import searchMixin from '@/mixins/search.js'
+import { apiPostCompoundDataTable, apiPostCompoundDataTableIds } from '@/mixins/api/compound.js'
+import { apiPostDatasetAttributeExport, apiPostDatasetTable, apiPostDatasetAttributeTable } from '@/mixins/api/dataset.js'
+import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostGermplasmAttributeTableExport, apiPostGermplasmAttributeTable, apiPostPedigreeTable } from '@/mixins/api/germplasm.js'
+import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds } from '@/mixins/api/genotype.js'
+import { apiPostLocationTable, apiPostLocationTableIds } from '@/mixins/api/location.js'
+import { apiPostTableExport } from '@/mixins/api/misc.js'
+import { apiPostTrialsDataTable, apiPostTrialsDataTableIds } from '@/mixins/api/trait.js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -211,7 +210,6 @@ export default {
     PedigreeTable,
     TrialsDataTable
   },
-  mixins: [compoundApi, datasetApi, germplasmApi, genotypeApi, locationApi, miscApi, traitApi, searchMixin],
   computed: {
     initialFilters: function () {
       const result = {}
@@ -257,81 +255,81 @@ export default {
     },
     // TRIALS
     getTrialsData: function (data, callback) {
-      return this.apiPostTrialsDataTable(data, callback)
+      return apiPostTrialsDataTable(data, callback)
     },
     getTrialsDataIds: function (data, callback) {
-      return this.apiPostTrialsDataTableIds(data, callback)
+      return apiPostTrialsDataTableIds(data, callback)
     },
     downloadTrialsData: function (data, callback) {
-      return this.apiPostTableExport(data, 'dataset/data/trial', callback)
+      return apiPostTableExport(data, 'dataset/data/trial', callback)
     },
     // COMPOUNDS
     getCompoundData: function (data, callback) {
-      return this.apiPostCompoundDataTable(data, callback)
+      return apiPostCompoundDataTable(data, callback)
     },
     getCompoundDataIds: function (data, callback) {
-      return this.apiPostCompoundDataTableIds(data, callback)
+      return apiPostCompoundDataTableIds(data, callback)
     },
     downloadCompoundData: function (data, callback) {
-      return this.apiPostTableExport(data, 'dataset/data/compound', callback)
+      return apiPostTableExport(data, 'dataset/data/compound', callback)
     },
     // GERMPLASM
     getGermplasmData: function (data, callback) {
-      return this.apiPostGermplasmTable(data, callback)
+      return apiPostGermplasmTable(data, callback)
     },
     getGermplasmIds: function (data, callback) {
-      return this.apiPostGermplasmTableIds(data, callback)
+      return apiPostGermplasmTableIds(data, callback)
     },
     downloadGermplasm: function (data, callback) {
-      return this.apiPostTableExport(data, 'germplasm', callback)
+      return apiPostTableExport(data, 'germplasm', callback)
     },
     // MAPDEFINITIONS
     getMapDefinitionData: function (data, callback) {
-      return this.apiPostMapdefinitionTable(data, callback)
+      return apiPostMapdefinitionTable(data, callback)
     },
     getMapDefinitionIds: function (data, callback) {
-      return this.apiPostMapdefinitionTableIds(data, callback)
+      return apiPostMapdefinitionTableIds(data, callback)
     },
     downloadMapDefinitionData: function (data, callback) {
-      return this.apiPostTableExport(data, 'map/mapdefinition', callback)
+      return apiPostTableExport(data, 'map/mapdefinition', callback)
     },
     // LOCATIONS
     getLocationData: function (data, callback) {
-      return this.apiPostLocationTable(data, callback)
+      return apiPostLocationTable(data, callback)
     },
     getLocationIds: function (data, callback) {
-      return this.apiPostLocationTableIds(data, callback)
+      return apiPostLocationTableIds(data, callback)
     },
     downloadLocations: function (data, callback) {
-      return this.apiPostTableExport(data, 'location', callback)
+      return apiPostTableExport(data, 'location', callback)
     },
     // GERMPLASM ATTRIBUTES
     getGermplasmAttributeData: function (data, callback) {
-      return this.apiPostGermplasmAttributeTable(data, callback)
+      return apiPostGermplasmAttributeTable(data, callback)
     },
     downloadGermplasmAttributes: function (data, callback) {
-      return this.apiPostGermplasmAttributeTableExport(data, callback)
+      return apiPostGermplasmAttributeTableExport(data, callback)
     },
     // PEDIGREES
     getPedigreeData: function (data, callback) {
-      return this.apiPostPedigreeTable(data, callback)
+      return apiPostPedigreeTable(data, callback)
     },
     downloadPedigrees: function (data, callback) {
-      return this.apiPostTableExport(data, 'pedigree', callback)
+      return apiPostTableExport(data, 'pedigree', callback)
     },
     // DATASET ATTRIBUTES
     getDatasetAttributeData: function (data, callback) {
-      return this.apiPostDatasetAttributeTable(null, data, callback)
+      return apiPostDatasetAttributeTable(null, data, callback)
     },
     downloadDatasetAttributes: function (data, callback) {
-      return this.apiPostDatasetAttributeExport(data, callback)
+      return apiPostDatasetAttributeExport(data, callback)
     },
     // DATASETS
     getDatasetData: function (data, callback) {
-      return this.apiPostDatasetTable(data, callback)
+      return apiPostDatasetTable(data, callback)
     },
     downloadDatasets: function (data, callback) {
-      return this.apiPostTableExport(data, 'dataset', callback)
+      return apiPostTableExport(data, 'dataset', callback)
     },
     // SEARCH
     search: function () {

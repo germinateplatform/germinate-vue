@@ -66,9 +66,9 @@
 <script>
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
-import miscApi from '@/mixins/api/misc.js'
-import typesMixin from '@/mixins/types.js'
-import colorMixin from '@/mixins/colors.js'
+import { apiPostDataUpload } from '@/mixins/api/misc.js'
+import { templateImportTypes, datasetStates } from '@/mixins/types.js'
+import { hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors.js'
 
 import { mdiArrowRightBoldCircle, mdiUpload } from '@mdi/js'
 
@@ -80,6 +80,8 @@ export default {
   },
   data: function () {
     return {
+      templateImportTypes,
+      datasetStates,
       mdiArrowRightBoldCircle,
       mdiUpload,
       file: null,
@@ -108,10 +110,9 @@ export default {
       window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload-type', params: { templateType: newValue } }).href)
     }
   },
-  mixins: [miscApi, typesMixin, colorMixin],
   methods: {
     getBrighterColor: function (color) {
-      return this.rgbColorToHex(this.brighten(this.hexToRgb(color)))
+      return rgbColorToHex(brighten(hexToRgb(color)))
     },
     onTemplateTypeSelected: function (type, name) {
       if (!type.disabled) {
@@ -126,7 +127,7 @@ export default {
       formData.append('fileToUpload', this.file)
 
       emitter.emit('show-loading', true)
-      this.apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, this.datasetStateId, result => {
+      apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, this.datasetStateId, result => {
         this.uuids = result
 
         if (result) {
@@ -148,10 +149,10 @@ export default {
     const type = this.$route.params.templateType
 
     if (type) {
-      const matches = Object.keys(this.templateImportTypes)
+      const matches = Object.keys(templateImportTypes)
         .filter(t => t === type)
 
-      if (matches && matches.length > 0 && !this.templateImportTypes[matches[0]].disabled) {
+      if (matches && matches.length > 0 && !templateImportTypes[matches[0]].disabled) {
         this.templateType = type
       } else {
         window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload' }).href)
