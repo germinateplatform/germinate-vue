@@ -1,28 +1,21 @@
-import { mapGetters } from 'vuex'
+import store from '@/store'
+import { toUrlString } from '@/mixins/formatting'
 
-import formattingMixin from '@/mixins/formatting'
+const getImageUrl = (name, params) => {
+  const paramString = toUrlString(params)
 
-export default {
-  computed: {
-    ...mapGetters([
-      'storeBaseUrl'
-    ])
-  },
-  mixins: [formattingMixin],
-  methods: {
-    getImageUrl: function (name, params) {
-      const paramString = this.toUrlString(params)
-
-      let index = name.lastIndexOf('\\')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-      index = name.lastIndexOf('/')
-      if (index !== -1) {
-        name = name.substring(index + 1)
-      }
-
-      return `${this.storeBaseUrl}image/src/${encodeURI(name)}?${paramString}`
-    }
+  let index = name.lastIndexOf('\\')
+  if (index !== -1) {
+    name = name.substring(index + 1)
   }
+  index = name.lastIndexOf('/')
+  if (index !== -1) {
+    name = name.substring(index + 1)
+  }
+
+  return `${store.getters.storeBaseUrl}image/src/${encodeURI(name)}?${paramString}`
+}
+
+export {
+  getImageUrl
 }

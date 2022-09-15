@@ -18,7 +18,7 @@
 
 <script>
 import LocationTable from '@/components/tables/LocationTable'
-import locationApi from '@/mixins/api/location.js'
+import { apiPostLocationTable } from '@/mixins/api/location.js'
 
 export default {
   components: {
@@ -39,7 +39,6 @@ export default {
       }]
     }
   },
-  mixins: [locationApi],
   methods: {
     handleOk: function () {
       if (this.selectedLocation !== null) {
@@ -50,7 +49,7 @@ export default {
       this.selectedLocation = (selectedIds !== null && selectedIds.length > 0) ? selectedIds[0] : null
     },
     getData: function (data, callback) {
-      return this.apiPostLocationTable(data, callback)
+      return apiPostLocationTable(data, callback)
     },
     show: function () {
       this.selectedLocation = null

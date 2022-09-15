@@ -32,8 +32,7 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
+import { entityTypes } from '@/mixins/types.js'
 
 export default {
   name: 'CompoundDataTable',
@@ -42,6 +41,7 @@ export default {
   },
   data: function () {
     return {
+      entityTypes,
       options: {
         idColumn: 'germplasmId',
         tableName: 'compoundData'
@@ -148,7 +148,6 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [typesMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.compoundDataTable.refresh()

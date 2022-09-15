@@ -169,15 +169,14 @@ import PublicationsModal from '@/components/modals/PublicationsModal'
 import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props'
-import datasetApi from '@/mixins/api/dataset'
-import genotypeApi from '@/mixins/api/genotype'
-import germplasmApi from '@/mixins/api/germplasm'
-import locationApi from '@/mixins/api/location'
-import typesMixin from '@/mixins/types'
-import colorMixin from '@/mixins/colors'
-import utilMixin from '@/mixins/util'
-import authApi from '@/mixins/api/auth'
-import formattingMixin from '@/mixins/formatting'
+import { apiPostDatasetExport, apiGetDatasetSourceFile, apiPostLicenseTable } from '@/mixins/api/dataset'
+import { apiPostGenotypeDatasetExport } from '@/mixins/api/genotype'
+import { apiPostPedigreeDatasetExport } from '@/mixins/api/germplasm'
+import { datasetStates, datasetTypes } from '@/mixins/types'
+import { getHighContrastTextColor } from '@/mixins/colors'
+import { isPageAvailable, downloadBlob } from '@/mixins/util'
+import { userIsAtLeast } from '@/mixins/api/auth'
+import { getDateTimeString, isTruncatedAfter, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
 
@@ -205,6 +204,8 @@ export default {
   },
   data: function () {
     return {
+      datasetStates,
+      datasetTypes,
       mdiHelpCircle,
       mdiOpenInNew,
       mdiPageNext,
@@ -313,7 +314,7 @@ export default {
           sortable: true,
           class: 'text-right',
           label: this.$t('tableColumnDatasetObjectCount'),
-          formatter: value => value ? this.getNumberWithSuffix(value.value, 2) : null
+          formatter: value => value ? getNumberWithSuffix(value.value, 2) : null
         }, {
           key: 'dataPointCount',
           type: Number,
@@ -365,7 +366,7 @@ export default {
         }
       ]
 
-      if (this.storeToken && this.userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
+      if (this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
         result.push({
           key: 'edit',
           type: undefined,
@@ -398,8 +399,12 @@ export default {
     LicenseModal,
     PublicationsModal
   },
-  mixins: [colorMixin, datasetApi, genotypeApi, germplasmApi, locationApi, typesMixin, utilMixin, formattingMixin, authApi],
   methods: {
+    userIsAtLeast,
+    isTruncatedAfter,
+    truncateAfterWords,
+    getHighContrastTextColor,
+    isPageAvailable,
     showFullDatasetDescription: function (description) {
       this.$bvModal.msgBoxOk(description, {
         title: this.$t('tableColumnDatasetDescription'),
@@ -435,7 +440,7 @@ export default {
       if (dataset.datasetType === 'genotype' || dataset.datasetType === 'allelefreq') {
         result = '≤'
       }
-      result += this.getNumberWithSuffix(dataset.dataPointCount.value, 2)
+      result += getNumberWithSuffix(dataset.dataPointCount.value, 2)
       return result
     },
     downloadDataset: function (dataset) {
@@ -454,9 +459,9 @@ export default {
           break
         case 'allelefreq':
           // For allelefreq data, just request the underlying data file
-          this.apiGetDatasetSourceFile(dataset.datasetId, result => {
-            this.downloadBlob({
-              filename: `allelefreq-${dataset.datasetId}-${this.getDateTimeString()}`,
+          apiGetDatasetSourceFile(dataset.datasetId, result => {
+            downloadBlob({
+              filename: `allelefreq-${dataset.datasetId}-${getDateTimeString()}`,
               extension: 'txt',
               blob: result
             })
@@ -476,7 +481,7 @@ export default {
       }
       emitter.emit('show-loading', true)
       this.$gtag.event('export', 'async', 'pedigree', query.datasetIds.join('-'))
-      this.apiPostPedigreeDatasetExport(query, result => {
+      apiPostPedigreeDatasetExport(query, result => {
         result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
         // Show the sidebar
@@ -494,7 +499,7 @@ export default {
       }
       emitter.emit('show-loading', true)
       this.$gtag.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))
-      this.apiPostGenotypeDatasetExport(genotypeQuery, result => {
+      apiPostGenotypeDatasetExport(genotypeQuery, result => {
         result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
         // Show the sidebar
@@ -514,14 +519,14 @@ export default {
         datasetIds: [dataset.datasetId]
       }
       emitter.emit('show-loading', true)
-      this.apiPostDatasetExport(type, query, result => {
+      apiPostDatasetExport(type, query, result => {
         const request = {
           blob: result,
-          filename: `${type}-dataset-${dataset.datasetId}-${this.getDateTimeString()}`,
+          filename: `${type}-dataset-${dataset.datasetId}-${getDateTimeString()}`,
           extension: 'txt'
         }
 
-        this.downloadBlob(request)
+        downloadBlob(request)
         emitter.emit('show-loading', false)
       })
     },
@@ -597,7 +602,7 @@ export default {
             values: [this.storeLocale]
           }]
         }
-        this.apiPostLicenseTable(query, result => {
+        apiPostLicenseTable(query, result => {
           if (result && result.data && result.data.length > 0) {
             this.license = result.data[0]
             this.$refs.licenseModal.show()

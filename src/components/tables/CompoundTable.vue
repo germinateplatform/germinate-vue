@@ -29,8 +29,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import utilMixin from '@/mixins/util'
-import formattingMixin from '@/mixins/formatting'
+import { getNumberWithSuffix } from '@/mixins/formatting'
 
 export default {
   name: 'CompoundTable',
@@ -90,14 +89,13 @@ export default {
         class: 'text-right',
         sortable: true,
         label: this.$t('tableColumnCompoundDataPoints'),
-        formatter: value => this.getNumberWithSuffix(value, 2)
+        formatter: value => getNumberWithSuffix(value, 2)
       }]
     }
   },
   components: {
     BaseTable
   },
-  mixins: [formattingMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.compoundTable.refresh()

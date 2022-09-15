@@ -1,47 +1,56 @@
-import baseApiMixin from '@/mixins/api/base'
+import { authAxios } from '@/mixins/api/base'
 
-export default {
-  mixins: [baseApiMixin],
-  methods: {
-    apiPostTrialsDataTable: function (queryData, onSuccess, onError) {
-      queryData.page -= 1
-      return this.authAxios({ url: 'dataset/data/trial/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostTrialsDataTableIds: function (queryData, onSuccess, onError) {
-      delete queryData.orderBy
-      delete queryData.ascending
-      return this.authAxios({ url: 'dataset/data/trial/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostTraitTable: function (queryData, onSuccess, onError) {
-      queryData.page -= 1
-      return this.authAxios({ url: 'trait/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostTraitTableIds: function (queryData, onSuccess, onError) {
-      delete queryData.orderBy
-      delete queryData.ascending
-      return this.authAxios({ url: 'trait/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostDatasetTraits: function (datasetIds, onSuccess, onError) {
-      const queryData = {
-        datasetIds: datasetIds
-      }
-      return this.authAxios({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostTraitDatasetTable: function (traitId, queryData, onSuccess, onError) {
-      queryData.page -= 1
-      return this.authAxios({ url: `trait/${traitId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPatchTrait: function (id, data, onSuccess, onError) {
-      return this.authAxios({ url: `trait/${id}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
-    },
-    apiPostTraitUnification: function (queryData, onSuccess, onError) {
-      return this.authAxios({ url: 'trait/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
-    },
-    apiGetTraitDistinctValues: function (traitId, onSuccess, onError) {
-      return this.authAxios({ url: `trait/${traitId}/values`, success: onSuccess, error: onError })
-    },
-    apiPostTrialLocationCount: function (queryData, onSuccess, onError) {
-      return this.authAxios({ url: 'dataset/data/trial/location/count', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    }
+const apiPostTrialsDataTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'dataset/data/trial/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPostTrialsDataTableIds = (queryData, onSuccess, onError) => {
+  delete queryData.orderBy
+  delete queryData.ascending
+  return authAxios({ url: 'dataset/data/trial/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPostTraitTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'trait/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPostTraitTableIds = (queryData, onSuccess, onError) => {
+  delete queryData.orderBy
+  delete queryData.ascending
+  return authAxios({ url: 'trait/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPostDatasetTraits = (datasetIds, onSuccess, onError) => {
+  const queryData = {
+    datasetIds: datasetIds
   }
+  return authAxios({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPostTraitDatasetTable = (traitId, queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: `trait/${traitId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPatchTrait = (id, data, onSuccess, onError) => authAxios({ url: `trait/${id}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
+
+const apiPostTraitUnification = (queryData, onSuccess, onError) => authAxios({ url: 'trait/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
+
+const apiGetTraitDistinctValues = (traitId, onSuccess, onError) => authAxios({ url: `trait/${traitId}/values`, success: onSuccess, error: onError })
+
+const apiPostTrialLocationCount = (queryData, onSuccess, onError) => authAxios({ url: 'dataset/data/trial/location/count', method: 'POST', data: queryData, success: onSuccess, error: onError })
+
+export {
+  apiPostTrialsDataTable,
+  apiPostTrialsDataTableIds,
+  apiPostTraitTable,
+  apiPostTraitTableIds,
+  apiPostDatasetTraits,
+  apiPostTraitDatasetTable,
+  apiPatchTrait,
+  apiPostTraitUnification,
+  apiGetTraitDistinctValues,
+  apiPostTrialLocationCount
 }

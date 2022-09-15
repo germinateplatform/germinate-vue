@@ -40,9 +40,8 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props'
-import miscApi from '@/mixins/api/misc'
-import typesMixin from '@/mixins/types'
-import utilMixin from '@/mixins/util'
+import { apiPutComment, apiDeleteComment } from '@/mixins/api/misc'
+import { commentTypes } from '@/mixins/types'
 
 import { mdiPlusBox, mdiDelete } from '@mdi/js'
 
@@ -61,6 +60,7 @@ export default {
   },
   data: function () {
     return {
+      commentTypes,
       mdiDelete,
       options: {
         idColumn: 'commentId',
@@ -147,7 +147,6 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [miscApi, typesMixin, utilMixin],
   methods: {
     getFilter: function () {
       return [{
@@ -183,7 +182,7 @@ export default {
         .then(value => {
           if (value) {
             // Delete the comment
-            this.apiDeleteComment(comment.commentId, () => {
+            apiDeleteComment(comment.commentId, () => {
               this.refresh()
             })
           }
@@ -198,7 +197,7 @@ export default {
           description: this.newComment,
           referenceId: this.referenceId
         }
-        this.apiPutComment(data, () => {
+        apiPutComment(data, () => {
           this.refresh()
           this.$refs.commentModal.hide()
         })

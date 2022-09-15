@@ -23,9 +23,8 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import { plotlyBarChart } from '@/plugins/charts/plotly-bar-chart.js'
-import colorMixin from '@/mixins/colors.js'
-import baseApiMixin from '@/mixins/api/base'
-import utilMixin from '@/mixins/util'
+import { getColors } from '@/mixins/colors.js'
+import { uuidv4 } from '@/mixins/util'
 
 import { mdiHelpCircleOutline } from '@mdi/js'
 
@@ -71,7 +70,7 @@ export default {
     }
   },
   data: function () {
-    const id = 'chart-' + this.uuidv4()
+    const id = 'chart-' + uuidv4()
 
     return {
       mdiHelpCircleOutline,
@@ -108,7 +107,6 @@ export default {
       this.redraw()
     }
   },
-  mixins: [colorMixin, baseApiMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -127,7 +125,7 @@ export default {
               .call(plotlyBarChart(Plotly)
                 .darkMode(this.storeDarkMode)
                 .height(this.height)
-                .colors(this.getColors())
+                .colors(getColors())
                 .x(this.xColumn)
                 .xCategory(this.xTitle)
                 .yCategory(this.yTitle)

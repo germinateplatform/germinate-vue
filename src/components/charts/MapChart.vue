@@ -39,9 +39,10 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import MarkedItems from '@/components/tables/MarkedItems'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
-import genotypeApi from '@/mixins/api/genotype.js'
-import colorMixin from '@/mixins/colors.js'
-import utilMixin from '@/mixins/util'
+import { apiPostMapdefinitionTableIds, apiPostMapExport } from '@/mixins/api/genotype.js'
+import { getColors } from '@/mixins/colors.js'
+import { uuidv4 } from '@/mixins/util'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
 
 import { mdiCheckboxMarked, mdiCheckboxBlankOutline, mdiHelpCircleOutline } from '@mdi/js'
@@ -65,7 +66,7 @@ export default {
     }
   },
   data: function () {
-    const id = 'chart-' + this.uuidv4()
+    const id = 'chart-' + uuidv4()
 
     return {
       mdiCheckboxMarked,
@@ -128,7 +129,6 @@ export default {
     Tour,
     MdiIcon
   },
-  mixins: [genotypeApi, colorMixin, utilMixin],
   methods: {
     getHeight: function () {
       if (this.distinctChromosomes === null || this.distinctChromosomes < 1) {
@@ -156,7 +156,7 @@ export default {
         this.chartSelection.forEach(s => {
           const query = {
             page: 1,
-            limit: this.MAX_JAVA_INTEGER,
+            limit: MAX_JAVA_INTEGER,
             filter: [{
               column: 'mapId',
               comparator: 'equals',
@@ -179,7 +179,7 @@ export default {
           // Show loading indicator
           emitter.emit('show-loading', true)
           // Get the ids of the markers in the requested regions
-          this.apiPostMapdefinitionTableIds(query, result => {
+          apiPostMapdefinitionTableIds(query, result => {
             if (result && result.data && result.data.length > 0) {
               if (add) {
                 this.$store.dispatch('addMarkedIds', { type: 'markers', ids: result.data })
@@ -203,7 +203,7 @@ export default {
       const request = {
         format: 'flapjack'
       }
-      this.apiPostMapExport(this.mapId, request, result => {
+      apiPostMapExport(this.mapId, request, result => {
         this.sourceFile = result
         const reader = new FileReader()
         reader.onload = () => {
@@ -217,7 +217,7 @@ export default {
             .datum(data)
             .call(plotlyMapChart(Plotly)
               .darkMode(this.storeDarkMode)
-              .colors(this.getColors())
+              .colors(getColors())
               .onPointsSelected((chromosome, start, end) => {
                 this.chartSelection.push({
                   chromosome: chromosome,

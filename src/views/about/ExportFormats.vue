@@ -27,7 +27,7 @@
           <b-card-body class="d-flex flex-column bg-dark">
             <b-card-title class="text-light">{{ format.name }}</b-card-title>
             <b-card-text class="text-light">
-              {{ format.text }}
+              {{ format.text() }}
             </b-card-text>
             <div>
               <b-badge v-for="(tag, index) in format.tags" :key="`export-format-tag-individual-${index}`" class="dispay-inline mr-2" variant="light" :style="`background: ${getBackgroundColor(tag)}; color: ${getTextColor(tag)}`">
@@ -48,8 +48,8 @@ import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
-import typesMixin from '@/mixins/types.js'
-import colorMixin from '@/mixins/colors.js'
+import { exportFormats } from '@/mixins/types.js'
+import { getHighContrastTextColor } from '@/mixins/colors.js'
 
 import { mdiTag, mdiDownload } from '@mdi/js'
 
@@ -92,7 +92,6 @@ export default {
       'storeServerSettings'
     ])
   },
-  mixins: [typesMixin, colorMixin],
   methods: {
     getBackgroundColor: function (tag) {
       const index = Object.keys(this.tags).indexOf(tag)
@@ -100,15 +99,15 @@ export default {
     },
     getTextColor: function (tag) {
       const color = this.getBackgroundColor(tag)
-      return this.getHighContrastTextColor(color)
+      return getHighContrastTextColor(color)
     },
     getExportFormats: function () {
       if (this.selectedTag && this.selectedTag !== 'all') {
-        return Object.keys(this.exportFormats)
-          .filter(f => this.exportFormats[f].tags.indexOf(this.selectedTag) !== -1)
-          .map(f => this.exportFormats[f])
+        return Object.keys(exportFormats)
+          .filter(f => exportFormats[f].tags.indexOf(this.selectedTag) !== -1)
+          .map(f => exportFormats[f])
       } else {
-        return this.exportFormats
+        return exportFormats
       }
     },
     selectTag: function (newTag) {

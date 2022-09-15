@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import auth from '@/auth'
 import store from '@/store'
 import { loadLanguageAsync } from '@/plugins/i18n'
+import { userIsAtLeast } from '@/mixins/api/auth'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -16,19 +17,6 @@ VueRouter.prototype.replace = function replace (location, onResolve, onReject) {
       throw err
     }
   })
-}
-
-function userIsAtLeast (userType, atLeast) {
-  switch (atLeast) {
-    case 'Administrator':
-      return userType === 'Administrator'
-    case 'Data Curator':
-      return userType === 'Administrator' || userType === 'Data Curator'
-    case 'Regular User':
-      return userType === 'Administrator' || userType === 'Data Curator' || userType === 'Regular User'
-  }
-
-  return false
 }
 
 function requireAuth (to, from, next) {

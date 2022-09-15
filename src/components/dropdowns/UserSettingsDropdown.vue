@@ -25,7 +25,7 @@
 import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
-import authApi from '@/mixins/api/auth.js'
+import { userIsAtLeast, apiDeleteToken, apiPostToken } from '@/mixins/api/auth'
 
 import { mdiAccount, mdiCog, mdiAccountKey, mdiUpload, mdiSetMerge, mdiLogoutVariant, mdiLoginVariant } from '@mdi/js'
 
@@ -53,11 +53,11 @@ export default {
       'storeServerSettings'
     ])
   },
-  mixins: [authApi],
   methods: {
+    userIsAtLeast,
     signIn: function (user) {
       this.enabled = false
-      this.apiPostToken(user, result => {
+      apiPostToken(user, result => {
         // If it's successful, finally store them
         this.enabled = true
         this.$store.dispatch('setToken', result)
@@ -79,7 +79,7 @@ export default {
         password: this.storeToken.token
       }
 
-      this.apiDeleteToken(user, () => {
+      apiDeleteToken(user, () => {
         // If it's successful, delete token, then redirect
         this.$store.dispatch('setToken', null)
 

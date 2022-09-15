@@ -7,8 +7,8 @@
 
 <script>
 import CollaboratorTable from '@/components/tables/CollaboratorTable'
-import datasetApi from '@/mixins/api/dataset.js'
-import utilMixin from '@/mixins/util'
+import { apiPostCollaboratorsTable } from '@/mixins/api/dataset.js'
+import { uuidv4 } from '@/mixins/util'
 
 export default {
   props: {
@@ -19,19 +19,18 @@ export default {
   },
   data: function () {
     return {
-      id: this.uuidv4()
+      id: uuidv4()
     }
   },
   components: {
     CollaboratorTable
   },
-  mixins: [datasetApi, utilMixin],
   methods: {
     show: function () {
       this.$refs['collaboratorModal-' + this.id].show()
     },
     getData: function (data, callback) {
-      return this.apiPostCollaboratorsTable(this.dataset.datasetId, data, callback)
+      return apiPostCollaboratorsTable(this.dataset.datasetId, data, callback)
     }
   }
 }

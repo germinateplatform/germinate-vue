@@ -48,9 +48,9 @@ import MapChart from '@/components/charts/MapChart'
 import MapTable from '@/components/tables/MapTable'
 import MapDefinitionTable from '@/components/tables/MapDefinitionTable'
 import MapExportSelection from '@/components/export/MapExportSelection'
-import genotypeApi from '@/mixins/api/genotype.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
+import { apiPostMapsTable, apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiGetMap, apiPostMapExport } from '@/mixins/api/genotype.js'
+import { exportFormats } from '@/mixins/types.js'
+import { downloadBlob } from '@/mixins/util'
 
 import { mdiInformationOutline } from '@mdi/js'
 
@@ -59,6 +59,7 @@ const emitter = require('tiny-emitter/instance')
 export default {
   data: function () {
     return {
+      exportFormats,
       mdiInformationOutline,
       mapId: null,
       map: null,
@@ -86,7 +87,6 @@ export default {
     MapExportSelection,
     MdiIcon
   },
-  mixins: [genotypeApi, typesMixin, utilMixin],
   methods: {
     exportMap: function (format) {
       let options = {
@@ -104,8 +104,8 @@ export default {
       }
 
       emitter.emit('show-loading', true)
-      this.apiPostMapExport(this.mapId, options, result => {
-        this.downloadBlob({
+      apiPostMapExport(this.mapId, options, result => {
+        downloadBlob({
           blob: result,
           filename: 'map-' + this.mapId,
           extension: format === 'flapjack' ? 'map' : 'strudel'
@@ -114,19 +114,19 @@ export default {
       })
     },
     getMapData: function (data, callback) {
-      return this.apiPostMapsTable(data, callback)
+      return apiPostMapsTable(data, callback)
     },
     getMapDefinitionData: function (data, callback) {
-      return this.apiPostMapdefinitionTable(data, callback)
+      return apiPostMapdefinitionTable(data, callback)
     },
     getMapDefinitionIds: function (data, callback) {
-      return this.apiPostMapdefinitionTableIds(data, callback)
+      return apiPostMapdefinitionTableIds(data, callback)
     },
     onMapSelected: function (mapId) {
       this.mapId = mapId
 
       if (this.mapId) {
-        this.apiGetMap(mapId, result => {
+        apiGetMap(mapId, result => {
           if (result && result.data && result.data.length > 0) {
             // Update the window URL to reflect map change
             window.history.replaceState({}, null, this.$router.resolve({ name: 'map-details', params: { mapId: this.mapId } }).href)

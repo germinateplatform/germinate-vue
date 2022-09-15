@@ -9,7 +9,7 @@
 
 <script>
 import GermplasmTable from '@/components/tables/GermplasmTable'
-import germplasmApi from '@/mixins/api/germplasm'
+import { apiPostGermplasmTableCW, apiPostGermplasmTableCWIds } from '@/mixins/api/germplasm'
 
 export default {
   data: function () {
@@ -20,13 +20,12 @@ export default {
   components: {
     GermplasmTable
   },
-  mixins: [germplasmApi],
   methods: {
     getGermplasmData: function (query, callback) {
-      return this.apiPostGermplasmTableCW(query, this.file, callback)
+      return apiPostGermplasmTableCW(query, this.file, callback)
     },
     getGermplasmIds: function (query, callback) {
-      return this.apiPostGermplasmTableCWIds(query, this.file, callback)
+      return apiPostGermplasmTableCWIds(query, this.file, callback)
     }
   },
   created: function () {

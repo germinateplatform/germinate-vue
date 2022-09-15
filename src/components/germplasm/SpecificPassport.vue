@@ -216,16 +216,17 @@ import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
 import PedigreeDefinitionTable from '@/components/tables/PedigreeDefinitionTable'
 import PublicationsWidget from '@/components/util/PublicationsWidget'
-import authApi from '@/mixins/api/auth'
-import germplasmApi from '@/mixins/api/germplasm'
-import miscApi from '@/mixins/api/misc'
-import typesMixin from '@/mixins/types'
+import { userIsAtLeast } from '@/mixins/api/auth'
+import { apiPostGermplasmTable, apiPostGermplasmGroupTable, apiPostGermplasmDatasetTable, apiPostGermplasmAttributeTable, apiPostPedigreeTable, apiPostEntityTable, apiPatchGermplasmLocation, apiPostPedigreedefinitionTable } from '@/mixins/api/germplasm'
+import { apiPostGermplasmInstitutionTable, apiPostCommentsTable } from '@/mixins/api/misc'
+import { entityTypes } from '@/mixins/types'
 
 import { mdiPlaylistPlus, mdiCommentAccountOutline, mdiCheckboxBlankOutline, mdiCity, mdiCheckboxMarked, mdiBarcode, mdiChartDonut, mdiHelpCircle, mdiTagTextOutline, mdiTextBoxCheckOutline, mdiLinkVariant, mdiSpeedometer, mdiDatabase, mdiFamilyTree, mdiMapMarker, mdiTable, mdiImageMultiple, mdiGroup, mdiFileTree, mdiCircleMedium, mdiSubdirectoryArrowRight } from '@mdi/js'
 
 export default {
   data: function () {
     return {
+      entityTypes,
       mdiCheckboxBlankOutline,
       mdiCheckboxMarked,
       mdiBarcode,
@@ -292,7 +293,6 @@ export default {
     PedigreeDefinitionTable,
     PublicationsWidget
   },
-  mixins: [authApi, germplasmApi, miscApi, typesMixin],
   computed: {
     ...mapGetters([
       'storeServerSettings',
@@ -301,7 +301,7 @@ export default {
     ]),
     isAtLeastDataCurator: function () {
       if (this.storeToken) {
-        return this.userIsAtLeast(this.storeToken.userType, 'Data Curator')
+        return userIsAtLeast(this.storeToken.userType, 'Data Curator')
       } else {
         return false
       }
@@ -352,7 +352,7 @@ export default {
   },
   methods: {
     updateGermplasmLocation: function (location) {
-      this.apiPatchGermplasmLocation(this.germplasmTableData.germplasmId, {
+      apiPatchGermplasmLocation(this.germplasmTableData.germplasmId, {
         id: location
       }, () => {
         const request = {
@@ -365,7 +365,7 @@ export default {
             values: [this.currentGermplasmId]
           }]
         }
-        this.apiPostGermplasmTable(request, result => {
+        apiPostGermplasmTable(request, result => {
           if (result && result.data && result.data.length > 0) {
             this.germplasmTableData = result.data[0]
           }
@@ -374,7 +374,7 @@ export default {
     },
     updateGermplasmLocationName: function (locationInput) {
       if (locationInput && this.tempNewLocation) {
-        this.apiPatchGermplasmLocation(this.germplasmTableData.germplasmId, {
+        apiPatchGermplasmLocation(this.germplasmTableData.germplasmId, {
           id: null,
           countryId: locationInput.countryId,
           siteName: locationInput.name,
@@ -393,7 +393,7 @@ export default {
               values: [this.currentGermplasmId]
             }]
           }
-          this.apiPostGermplasmTable(request, result => {
+          apiPostGermplasmTable(request, result => {
             if (result && result.data && result.data.length > 0) {
               this.germplasmTableData = result.data[0]
             }
@@ -432,28 +432,28 @@ export default {
       this.$refs.pdciModal.show()
     },
     getGermplasmAttributeData: function (data, callback) {
-      return this.apiPostGermplasmAttributeTable(data, callback)
+      return apiPostGermplasmAttributeTable(data, callback)
     },
     getCommentData: function (data, callback) {
-      return this.apiPostCommentsTable(data, callback)
+      return apiPostCommentsTable(data, callback)
     },
     getGermplasmInstitutionData: function (data, callback) {
-      return this.apiPostGermplasmInstitutionTable(this.currentGermplasmId, data, callback)
+      return apiPostGermplasmInstitutionTable(this.currentGermplasmId, data, callback)
     },
     getDatasetData: function (data, callback) {
-      return this.apiPostGermplasmDatasetTable(this.currentGermplasmId, data, callback)
+      return apiPostGermplasmDatasetTable(this.currentGermplasmId, data, callback)
     },
     getGroupData: function (data, callback) {
-      return this.apiPostGermplasmGroupTable(this.currentGermplasmId, data, callback)
+      return apiPostGermplasmGroupTable(this.currentGermplasmId, data, callback)
     },
     getEntityData: function (data, callback) {
-      return this.apiPostEntityTable(data, callback)
+      return apiPostEntityTable(data, callback)
     },
     getPedigreeData: function (data, callback) {
-      return this.apiPostPedigreeTable(data, callback)
+      return apiPostPedigreeTable(data, callback)
     },
     getPedigreeDefinitionData: function (data, callback) {
-      return this.apiPostPedigreedefinitionTable(data, callback)
+      return apiPostPedigreedefinitionTable(data, callback)
     },
     onToggleMarked: function () {
       const isMarked = this.storeMarkedGermplasm.indexOf(this.currentGermplasmId) !== -1
@@ -546,7 +546,7 @@ export default {
         values: [this.currentGermplasmId]
       }]
     }
-    this.apiPostGermplasmTable(request, result => {
+    apiPostGermplasmTable(request, result => {
       if (result && result.data && result.data.length > 0) {
         this.germplasmTableData = result.data[0]
       }

@@ -14,7 +14,7 @@ import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 import { loadLanguageAsync } from '@/plugins/i18n'
-import miscApi from '@/mixins/api/misc.js'
+import { apiGetLocales } from '@/mixins/api/misc.js'
 
 import { mdiTranslate } from '@mdi/js'
 
@@ -44,7 +44,6 @@ export default {
       }]
     }
   },
-  mixins: [miscApi],
   methods: {
     onLocaleChanged: function (language) {
       loadLanguageAsync(language.locale).then(() => {
@@ -64,7 +63,7 @@ export default {
   },
   mounted: function () {
     // Ask the server which locales are available
-    this.apiGetLocales(result => {
+    apiGetLocales(result => {
       // If there is a result, use it
       if (result) {
         this.languages = result

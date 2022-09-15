@@ -28,7 +28,7 @@
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 
-import colorsMixin from '@/mixins/colors.js'
+import { hexToRgb } from '@/mixins/colors.js'
 
 import { mdiArrowCollapseLeft, mdiArrowCollapseRight } from '@mdi/js'
 
@@ -90,11 +90,10 @@ export default {
       this.refresh()
     }
   },
-  mixins: [colorsMixin],
   methods: {
     createGradient: function (a, b, numSteps) {
-      const one = this.hexToRgb(a)
-      const two = this.hexToRgb(b)
+      const one = hexToRgb(a)
+      const two = hexToRgb(b)
 
       const gradient = []
       let iNorm

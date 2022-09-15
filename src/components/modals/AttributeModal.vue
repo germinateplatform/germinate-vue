@@ -67,8 +67,8 @@
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetAttributeTable from '@/components/tables/DatasetAttributeTable'
-import datasetApi from '@/mixins/api/dataset.js'
-import utilMixin from '@/mixins/util'
+import { apiPostDatasetAttributeTableExport, apiPostDatasetAttributeTable } from '@/mixins/api/dataset.js'
+import { uuidv4 } from '@/mixins/util'
 
 import { mdiDownload } from '@mdi/js'
 
@@ -82,7 +82,7 @@ export default {
   data: function () {
     return {
       mdiDownload,
-      id: this.uuidv4()
+      id: uuidv4()
     }
   },
   computed: {
@@ -98,13 +98,12 @@ export default {
     DatasetAttributeTable,
     MdiIcon
   },
-  mixins: [datasetApi, utilMixin],
   methods: {
     getAttributeData: function (data, callback) {
-      return this.apiPostDatasetAttributeTable(this.dataset.datasetId, data, callback)
+      return apiPostDatasetAttributeTable(this.dataset.datasetId, data, callback)
     },
     downloadAttributes: function (data, callback) {
-      return this.apiPostDatasetAttributeTableExport(this.dataset.datasetId, data, callback)
+      return apiPostDatasetAttributeTableExport(this.dataset.datasetId, data, callback)
     },
     show: function () {
       this.$refs['attributeModal-' + this.id].show()

@@ -52,7 +52,7 @@
 import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
 import TaxonomySunburst from '@/components/charts/TaxonomySunburst'
-import statsApi from '@/mixins/api/stats'
+import { apiGetStatsFile } from '@/mixins/api/stats'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -69,7 +69,6 @@ export default {
     ChoroplethChart,
     TaxonomySunburst
   },
-  mixins: [statsApi],
   methods: {
     biologicalStatusClicked: function (status) {
       const filter = [{
@@ -106,13 +105,13 @@ export default {
   },
   mounted: function () {
     emitter.emit('show-loading', true)
-    const p1 = this.apiGetStatsFile('biologicalstatus', result => {
+    const p1 = apiGetStatsFile('biologicalstatus', result => {
       this.biologicalstatusFile = result
     })
-    const p2 = this.apiGetStatsFile('pdci', result => {
+    const p2 = apiGetStatsFile('pdci', result => {
       this.pdciFile = result
     })
-    const p3 = this.apiGetStatsFile('dataset', result => {
+    const p3 = apiGetStatsFile('dataset', result => {
       this.datasetsFile = result
     })
 

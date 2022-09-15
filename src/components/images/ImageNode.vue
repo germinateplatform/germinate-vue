@@ -61,10 +61,10 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import EditTagModal from '@/components/modals/EditTagModal'
 import ImageExifModal from '@/components/modals/ImageExifModal'
-import typesMixin from '@/mixins/types'
-import miscApi from '@/mixins/api/misc'
-import imageMixin from '@/mixins/image'
-import authApi from '@/mixins/api/auth'
+import { imageTypes } from '@/mixins/types'
+import { apiDeleteImage, apiPatchImage } from '@/mixins/api/misc'
+import { getImageUrl } from '@/mixins/image'
+import { userIsAtLeast } from '@/mixins/api/auth'
 
 import { mdiDelete, mdiContentSave, mdiCalendarClock, mdiPencil, mdiImageText } from '@mdi/js'
 
@@ -81,6 +81,7 @@ export default {
   },
   data: function () {
     return {
+      imageTypes,
       mdiDelete,
       mdiContentSave,
       mdiCalendarClock,
@@ -104,16 +105,16 @@ export default {
       return this.image && this.image.imageExif && Object.keys(this.image.imageExif).length > 0
     }
   },
-  mixins: [miscApi, typesMixin, imageMixin, authApi],
   methods: {
+    userIsAtLeast,
     showTagEditModal: function () {
       this.$refs.editTagModal.show()
     },
     updateImageDescription: function () {
-      this.apiPatchImage(this.image)
+      apiPatchImage(this.image)
     },
     getSrc: function (size) {
-      return this.getImageUrl(this.image.imagePath, {
+      return getImageUrl(this.image.imagePath, {
         name: this.image.imagePath,
         storeToken: this.storeToken ? this.storeToken.imageToken : null,
         type: 'database',
@@ -129,7 +130,7 @@ export default {
         .then(value => {
           if (value) {
             // Delete the image
-            this.apiDeleteImage(this.image.imageId, result => {
+            apiDeleteImage(this.image.imageId, result => {
               if (result) {
                 this.$emit('image-deleted')
               }

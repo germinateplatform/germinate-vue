@@ -31,9 +31,9 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
-import colorsMixin from '@/mixins/colors'
-import formattingMixing from '@/mixins/formatting'
-import typesMixin from '@/mixins/types'
+import { getHighContrastTextColor } from '@/mixins/colors'
+import { getNumberWithSuffix } from '@/mixins/formatting'
+import { markedItemTypes } from '@/mixins/types'
 
 import { mdiDelete } from '@mdi/js'
 
@@ -45,6 +45,7 @@ export default {
   },
   data: function () {
     return {
+      markedItemTypes,
       mdiDelete
     }
   },
@@ -55,8 +56,9 @@ export default {
       'storeMarkedIds'
     ])
   },
-  mixins: [colorsMixin, formattingMixing, typesMixin],
   methods: {
+    getNumberWithSuffix,
+    getHighContrastTextColor,
     clearMarkedItems: function (itemType) {
       // Ask for confirmation
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {

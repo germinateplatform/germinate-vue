@@ -31,8 +31,9 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 import TraitTable from '@/components/tables/TraitTable'
-import traitApi from '@/mixins/api/trait.js'
-import authApi from '@/mixins/api/auth'
+import { apiPostTraitTable, apiPostTraitTableIds, apiPostTraitUnification } from '@/mixins/api/trait'
+import { userIsAtLeast } from '@/mixins/api/auth'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowRightBox, mdiSetMerge } from '@mdi/js'
 
@@ -62,13 +63,13 @@ export default {
       return this.unifierExpanded ? 'multi' : null
     }
   },
-  mixins: [traitApi, authApi],
   methods: {
+    userIsAtLeast,
     getData: function (data, callback) {
-      return this.apiPostTraitTable(data, callback)
+      return apiPostTraitTable(data, callback)
     },
     getIds: function (data, callback) {
-      return this.apiPostTraitTableIds(data, callback)
+      return apiPostTraitTableIds(data, callback)
     },
     updateButtonState: function (selectedIds) {
       this.reset()
@@ -80,9 +81,9 @@ export default {
       this.selectedIds = []
     },
     getSelectedTrait: function () {
-      this.apiPostTraitTable({
+      apiPostTraitTable({
         page: 1,
-        limit: this.MAX_JAVA_INTEGER,
+        limit: MAX_JAVA_INTEGER,
         filter: [{
           column: 'traitId',
           operator: 'and',
@@ -102,7 +103,7 @@ export default {
     mergeTrait: function () {
       emitter.emit('show-loading', true)
       const others = this.selectedIds.filter(id => id !== this.primaryTrait)
-      this.apiPostTraitUnification({
+      apiPostTraitUnification({
         preferredTraitId: this.primaryTrait,
         otherTraitIds: others
       }, () => {

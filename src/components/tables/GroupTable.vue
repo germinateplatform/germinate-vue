@@ -44,10 +44,9 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
-import colorMixin from '@/mixins/colors'
-import formattingMixin from '@/mixins/formatting'
+import { groupTypes } from '@/mixins/types.js'
+import { getHighContrastTextColor } from '@/mixins/colors'
+import { getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiRenameBox, mdiDelete } from '@mdi/js'
 
@@ -63,6 +62,7 @@ export default {
   },
   data: function () {
     return {
+      groupTypes,
       mdiRenameBox,
       mdiDelete,
       options: {
@@ -127,7 +127,7 @@ export default {
           sortable: true,
           class: 'text-right',
           label: this.$t('tableColumnGroupCount'),
-          formatter: value => this.getNumberWithSuffix(value, 2)
+          formatter: value => getNumberWithSuffix(value, 2)
         }
       ]
 
@@ -148,8 +148,8 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [formattingMixin, typesMixin, utilMixin, colorMixin],
   methods: {
+    getHighContrastTextColor,
     refresh: function () {
       this.$refs.table.refresh()
     }

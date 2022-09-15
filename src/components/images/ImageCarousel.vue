@@ -22,8 +22,8 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import imagesMixin from '@/mixins/image'
-import miscApi from '@/mixins/api/misc'
+import { getImageUrl } from '@/mixins/image'
+import { apiGetSettingsFile } from '@/mixins/api/misc'
 
 export default {
   computed: {
@@ -37,11 +37,10 @@ export default {
       images: null
     }
   },
-  mixins: [imagesMixin, miscApi],
   methods: {
     setImagePath: function (imageIndex) {
       Object.keys(this.images).forEach(storeLocale => {
-        this.images[storeLocale][imageIndex].src = this.getImageUrl(this.images[this.storeLocale][imageIndex].name, {
+        this.images[storeLocale][imageIndex].src = getImageUrl(this.images[this.storeLocale][imageIndex].name, {
           name: this.images[this.storeLocale][imageIndex].name,
           token: this.storeToken ? this.storeToken.imageToken : null,
           type: 'template',
@@ -52,7 +51,7 @@ export default {
   },
   mounted: function () {
     // Get carousel configuration file
-    this.apiGetSettingsFile({
+    apiGetSettingsFile({
       'file-type': 'carousel'
     }, result => {
       Object.keys(result).forEach(storeLocale => result[storeLocale].forEach(i => { i.src = null }))

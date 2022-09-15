@@ -50,7 +50,7 @@
 <script>
 import UserGroupTable from '@/components/tables/UserGroupTable'
 import UserGroupMembers from '@/components/admin/UserGroupMembers'
-import usergroupApi from '@/mixins/api/usergroup.js'
+import { apiPostUserGroupTable, apiDeleteUserGroup, apiPutUserGroup, apiPatchUserGroup } from '@/mixins/api/usergroup'
 import { mdiPlusBox } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
@@ -85,7 +85,6 @@ export default {
     UserGroupMembers,
     UserGroupTable
   },
-  mixins: [usergroupApi],
   methods: {
     selectGroup: function (group) {
       this.selectedGroup = group
@@ -103,7 +102,7 @@ export default {
       })
     },
     getUserGroups: function (query, callback) {
-      return this.apiPostUserGroupTable(query, callback)
+      return apiPostUserGroupTable(query, callback)
     },
     deleteGroup: function (group) {
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
@@ -114,7 +113,7 @@ export default {
         .then(value => {
           if (value === true) {
             emitter.emit('show-loading', true)
-            this.apiDeleteUserGroup(group.userGroupId, () => {
+            apiDeleteUserGroup(group.userGroupId, () => {
               this.$refs.userGroupTable.refresh()
               emitter.emit('show-loading', false)
 
@@ -136,7 +135,7 @@ export default {
       }
 
       if (payload.id) {
-        this.apiPatchUserGroup(payload, () => {
+        apiPatchUserGroup(payload, () => {
           this.newGroup = {
             userGroupName: null,
             userGroupDescription: null
@@ -146,7 +145,7 @@ export default {
           this.$emit('groups-changed')
         })
       } else {
-        this.apiPutUserGroup(payload, () => {
+        apiPutUserGroup(payload, () => {
           this.newGroup = {
             userGroupName: null,
             userGroupDescription: null

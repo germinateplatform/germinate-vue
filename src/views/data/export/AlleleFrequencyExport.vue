@@ -19,7 +19,7 @@ import { mapGetters } from 'vuex'
 import AlleleFrequencyChart from '@/components/charts/AlleleFrequencyChart'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import GenotypeExportSelection from '@/components/export/GenotypeExportSelection'
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
 
 export default {
   data: function () {
@@ -39,7 +39,6 @@ export default {
       'storeToken'
     ])
   },
-  mixins: [datasetApi],
   methods: {
     isAccepted: function (dataset) {
       if (this.storeToken) {
@@ -95,7 +94,7 @@ export default {
       }]
     }
 
-    this.apiPostDatasetTable(request, result => {
+    apiPostDatasetTable(request, result => {
       this.datasets = result.data.filter(d => {
         // Exclude the ones where a license exists, but hasn't been accepted
         return (!d.licenseName || this.isAccepted(d))

@@ -21,7 +21,7 @@
 
 <script>
 import UserTable from '@/components/tables/UserTable'
-import usergroupApi from '@/mixins/api/usergroup.js'
+import { apiGetUsers, apiPatchDatasetUserMembers } from '@/mixins/api/usergroup'
 
 export default {
   props: {
@@ -44,7 +44,6 @@ export default {
       this.getData()
     }
   },
-  mixins: [usergroupApi],
   methods: {
     refresh: function () {
       this.getData()
@@ -55,16 +54,16 @@ export default {
         addOperation: isAdd,
         userIds: ids
       }
-      this.apiPatchDatasetUserMembers(request, () => {
+      apiPatchDatasetUserMembers(request, () => {
         this.getData()
         this.$emit('permissions-changed')
       })
     },
     getData: function () {
-      this.apiGetUsers(null, result => {
+      apiGetUsers(null, result => {
         this.users = result
       })
-      this.apiGetUsers({ datasetId: this.dataset.datasetId }, result => {
+      apiGetUsers({ datasetId: this.dataset.datasetId }, result => {
         this.usersForDataset = result
       })
     }

@@ -44,9 +44,8 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import typesMixin from '@/mixins/types'
-import utilMixin from '@/mixins/util'
-import formattingMixin from '@/mixins/formatting'
+import { locationTypes } from '@/mixins/types'
+import { truncateAfterWords } from '@/mixins/formatting'
 
 export default {
   name: 'LocationTable',
@@ -71,6 +70,7 @@ export default {
   },
   data: function () {
     return {
+      locationTypes,
       options: {
         idColumn: 'locationId',
         tableName: 'locations',
@@ -166,8 +166,8 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [typesMixin, utilMixin, formattingMixin],
   methods: {
+    truncateAfterWords,
     navigateToGermplasm: function (location) {
       // Set up the filter
       const filter = [{

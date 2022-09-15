@@ -54,7 +54,7 @@ import { mapGetters } from 'vuex'
 import LoginBackground from '@/components/util/LoginBackground'
 import SignInForm from '@/components/util/SignInForm'
 import RegistrationModal from '@/components/modals/RegistrationModal'
-import authApi from '@/mixins/api/auth.js'
+import { apiPostToken } from '@/mixins/api/auth'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -78,7 +78,6 @@ export default {
       'storeServerSettings'
     ])
   },
-  mixins: [authApi],
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
       if (from) {
@@ -89,7 +88,7 @@ export default {
   methods: {
     login: function (user) {
       this.enabled = false
-      this.apiPostToken(user, result => {
+      apiPostToken(user, result => {
         this.enabled = true
         const originalTarget = this.originalTarget
         // If it's successful, finally store them

@@ -14,7 +14,7 @@
 
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
 
 export default {
   data: function () {
@@ -25,10 +25,9 @@ export default {
   components: {
     DatasetTable
   },
-  mixins: [datasetApi],
   methods: {
     getData: function (data, callback) {
-      return this.apiPostDatasetTable(data, callback)
+      return apiPostDatasetTable(data, callback)
     },
     getFilter: function (isExternal) {
       let filter = [{

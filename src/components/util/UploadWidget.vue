@@ -81,8 +81,8 @@
 </template>
 
 <script>
-import formattingMixin from '@/mixins/formatting'
-import baseApiMixin from '@/mixins/api/base'
+import { getNumberWithSuffix } from '@/mixins/formatting'
+import { getToken } from '@/mixins/api/base'
 import FileUpload from 'vue-upload-component'
 import MdiIcon from '@/components/icons/MdiIcon'
 
@@ -117,7 +117,7 @@ export default {
       drop: true,
       thread: 3,
       headers: {
-        Authorization: `Bearer ${this.getToken()}`
+        Authorization: `Bearer ${getToken()}`
       },
       uploadAuto: false,
       fields: [
@@ -132,8 +132,8 @@ export default {
       ]
     }
   },
-  mixins: [baseApiMixin, formattingMixin],
   methods: {
+    getNumberWithSuffix,
     clear: function () {
       this.$refs.upload.clear()
     },

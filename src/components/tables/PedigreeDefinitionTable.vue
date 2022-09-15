@@ -19,7 +19,6 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import utilMixin from '@/mixins/util'
 const emitter = require('tiny-emitter/instance')
 
 export default {
@@ -112,7 +111,6 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [utilMixin],
   methods: {
     toUrl: function (input) {
       let url

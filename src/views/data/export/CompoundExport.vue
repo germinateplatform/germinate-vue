@@ -11,8 +11,8 @@
       <!-- Banner buttons -->
       <b-row class="compound-tabs mb-3" v-if="tabs">
         <b-col cols=12 sm=6 xl=3 v-for="(tab, index) in tabs" :key="'compound-tabs-' + tab.key">
-          <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
-            <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getColor(index)} 50%); color: white;`">
+          <b-card no-body :style="`border: 1px solid ${getTemplateColor(index)}; filter: ${getFilter(index)};`">
+            <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getTemplateColor(index)} 50%); color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
                   <MdiIcon :size="48" :path="tab.path" />
@@ -22,7 +22,7 @@
                 <MdiIcon :path="mdiHelpCircle" />
               </span>
             </b-card-body>
-            <b-card-footer :style="`color: ${getColor(index)}`">
+            <b-card-footer :style="`color: ${getTemplateColor(index)}`">
               <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
             </b-card-footer>
           </b-card>
@@ -65,11 +65,11 @@ import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import CompoundExportChartSelection from '@/components/export/CompoundExportChartSelection'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
-import compoundApi from '@/mixins/api/compound.js'
-import datasetApi from '@/mixins/api/dataset.js'
-import groupApi from '@/mixins/api/group.js'
-import miscApi from '@/mixins/api/misc.js'
-import colorMixin from '@/mixins/colors.js'
+import { apiPostDatasetCompounds, apiPostCompoundDataTable, apiPostCompoundDataTableIds } from '@/mixins/api/compound.js'
+import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
+import { apiPostDatasetGroups } from '@/mixins/api/group.js'
+import { apiPostTableExport } from '@/mixins/api/misc.js'
+import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors.js'
 
 import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiHelpCircle, mdiEye, mdiGrid, mdiTableSearch } from '@mdi/js'
 
@@ -159,8 +159,8 @@ export default {
       'storeMarkedGermplasm'
     ])
   },
-  mixins: [datasetApi, compoundApi, groupApi, miscApi, colorMixin],
   methods: {
+    getTemplateColor,
     updateGroups: function () {
       const request = {
         datasetIds: this.datasetIds,
@@ -168,7 +168,7 @@ export default {
         datasetType: 'compound'
       }
       // Get groups
-      this.apiPostDatasetGroups(request, result => {
+      apiPostDatasetGroups(request, result => {
         this.groups = result
       })
     },
@@ -176,15 +176,15 @@ export default {
       callback(this.compounds)
     },
     downloadCompoundTableData: function (data, callback) {
-      return this.apiPostTableExport(data, 'dataset/data/compound', callback)
+      return apiPostTableExport(data, 'dataset/data/compound', callback)
     },
     getCompoundData: function (data, callback) {
       data.datasetIds = this.datasetIds
-      return this.apiPostCompoundDataTable(data, callback)
+      return apiPostCompoundDataTable(data, callback)
     },
     getCompoundDataIds: function (data, callback) {
       data.datasetIds = this.datasetIds
-      return this.apiPostCompoundDataTableIds(data, callback)
+      return apiPostCompoundDataTableIds(data, callback)
     },
     tabSelected: function (tab, trigger = true) {
       this.currentTab = tab
@@ -199,16 +199,8 @@ export default {
     getFilter: function (index) {
       return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
     },
-    getColor: function (index) {
-      if (!this.storeServerSettings || !this.storeServerSettings.colorsTemplate) {
-        return '#00acef'
-      } else {
-        const colors = this.storeServerSettings.colorsTemplate
-        return colors[index % colors.length]
-      }
-    },
     getBrighterColor: function (index) {
-      return this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index))))
+      return rgbColorToHex(brighten(hexToRgb(getTemplateColor(index))))
     },
     redirectBack: function () {
       this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', [{
@@ -252,7 +244,7 @@ export default {
         }]
       }
 
-      this.apiPostDatasetTable(request, result => {
+      apiPostDatasetTable(request, result => {
         this.datasets = result.data.filter(d => {
           // Exclude the ones where a license exists, but hasn't been accepted
           return (!d.licenseName || this.isAccepted(d))
@@ -276,7 +268,7 @@ export default {
   },
   mounted: function () {
     emitter.emit('show-loading', true)
-    this.apiPostDatasetCompounds(this.datasetIds, result => {
+    apiPostDatasetCompounds(this.datasetIds, result => {
       this.compounds = result
 
       this.getDatasets()

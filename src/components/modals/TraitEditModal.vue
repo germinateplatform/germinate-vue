@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import traitApi from '@/mixins/api/trait.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
+import { apiPatchTrait } from '@/mixins/api/trait.js'
+import { dataTypes } from '@/mixins/types.js'
+import { uuidv4 } from '@/mixins/util'
 
 export default {
   props: {
@@ -31,7 +31,7 @@ export default {
   },
   data: function () {
     return {
-      id: this.uuidv4(),
+      id: uuidv4(),
       traitName: null,
       traitDescription: null,
       traitNameShort: null,
@@ -40,15 +40,14 @@ export default {
   },
   computed: {
     options: function () {
-      return Object.keys(this.dataTypes).map(s => {
+      return Object.keys(dataTypes).map(s => {
         return {
           value: s,
-          text: this.dataTypes[s].text()
+          text: dataTypes[s].text()
         }
       })
     }
   },
-  mixins: [traitApi, typesMixin, utilMixin],
   methods: {
     show: function () {
       this.traitName = this.trait.traitName
@@ -61,7 +60,7 @@ export default {
       this.$refs['traitEditModal-' + this.id].hide()
     },
     updateTrait: function () {
-      return this.apiPatchTrait(this.trait.traitId, {
+      return apiPatchTrait(this.trait.traitId, {
         name: this.traitName,
         description: this.traitDescription,
         shortName: this.traitNameShort,

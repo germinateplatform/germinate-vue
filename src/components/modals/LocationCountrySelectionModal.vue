@@ -17,7 +17,7 @@
 
 <script>
 import SearchableSelect from '@/components/util/SearchableSelect'
-import locationApi from '@/mixins/api/location.js'
+import { apiGetCountries } from '@/mixins/api/location.js'
 
 export default {
   components: {
@@ -45,7 +45,6 @@ export default {
       }
     }
   },
-  mixins: [locationApi],
   methods: {
     handleOk: function () {
       this.$emit('selection-changed', {
@@ -65,7 +64,7 @@ export default {
     }
   },
   mounted: function () {
-    this.apiGetCountries(result => {
+    apiGetCountries(result => {
       this.countries = result
     })
   }

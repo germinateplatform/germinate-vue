@@ -37,12 +37,13 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 
-import climateApi from '@/mixins/api/climate.js'
-import compoundApi from '@/mixins/api/compound.js'
-import datasetApi from '@/mixins/api/dataset.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import groupApi from '@/mixins/api/group.js'
-import traitApi from '@/mixins/api/trait.js'
+import { apiPostDatasetClimates } from '@/mixins/api/climate.js'
+import { apiPostDatasetCompounds } from '@/mixins/api/compound.js'
+import { apiPostDatasetTable, apiPostDatasetTableIds } from '@/mixins/api/dataset.js'
+import { apiGetGermplasmTableColumns } from '@/mixins/api/germplasm.js'
+import { apiPostGroupTable, apiPostDatasetGroups } from '@/mixins/api/group.js'
+import { apiPostDatasetTraits } from '@/mixins/api/trait.js'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { mdiFlask, mdiShovel, mdiSprout, mdiWeatherSnowyRainy } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
@@ -155,7 +156,6 @@ export default {
       }
     }
   },
-  mixins: [climateApi, compoundApi, datasetApi, germplasmApi, groupApi, traitApi],
   methods: {
     setDataType: function (type) {
       this.selectedDataTypeKey = type
@@ -167,11 +167,11 @@ export default {
     },
     getDatasetData: function (data, callback) {
       this.adjustData(data)
-      return this.apiPostDatasetTable(data, callback)
+      return apiPostDatasetTable(data, callback)
     },
     getDatasetIds: function (data, callback) {
       this.adjustData(data)
-      return this.apiPostDatasetTableIds(data, callback)
+      return apiPostDatasetTableIds(data, callback)
     },
     adjustData: function (data) {
       // Always filter for just the current dataset type
@@ -237,13 +237,13 @@ export default {
           datasetIds: this.selectedDatasetIds
         }
         // Get groups
-        this.apiPostDatasetGroups(request, result => {
+        apiPostDatasetGroups(request, result => {
           this.groups = result
         })
       } else {
-        this.apiPostGroupTable({
+        apiPostGroupTable({
           page: 1,
-          limit: this.MAX_JAVA_INTEGER,
+          limit: MAX_JAVA_INTEGER,
           filter: [{
             column: 'groupType',
             operator: 'and',
@@ -257,22 +257,22 @@ export default {
 
       switch (this.selectedDataTypeKey) {
         case 'TRAIT':
-          this.apiPostDatasetTraits(this.selectedDatasetIds, result => {
+          apiPostDatasetTraits(this.selectedDatasetIds, result => {
             this.items = result
           })
           break
         case 'COMPOUND':
-          this.apiPostDatasetCompounds(this.selectedDatasetIds, result => {
+          apiPostDatasetCompounds(this.selectedDatasetIds, result => {
             this.items = result
           })
           break
         case 'CLIMATE':
-          this.apiPostDatasetClimates(this.selectedDatasetIds, result => {
+          apiPostDatasetClimates(this.selectedDatasetIds, result => {
             this.items = result
           })
           break
         case 'GERMPLASM_COLUMN':
-          this.apiGetGermplasmTableColumns(result => {
+          apiGetGermplasmTableColumns(result => {
             this.items = result.map(c => {
               let name = c.replaceAll('_', ' ')
               name = name.charAt(0).toUpperCase() + name.slice(1)

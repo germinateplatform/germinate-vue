@@ -32,7 +32,7 @@
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 import SpecificPassport from '@/components/germplasm/SpecificPassport'
-import germplasmApi from '@/mixins/api/germplasm'
+import { apiGetGermplasmMcpd, apiPostGermplasmTable } from '@/mixins/api/germplasm'
 
 import { mdiArrowDownBoldBoxOutline, mdiArrowUpBoldBoxOutline } from '@mdi/js'
 
@@ -62,7 +62,6 @@ export default {
     MdiIcon,
     SpecificPassport
   },
-  mixins: [germplasmApi],
   methods: {
     updateChildMap: function () {
       this.$nextTick(() => this.$refs.child.invalidateSize())
@@ -71,7 +70,7 @@ export default {
       this.$nextTick(() => this.$refs.parent.invalidateSize())
     },
     getGermplasm: function () {
-      this.apiGetGermplasmMcpd(this.currentGermplasmId, result => {
+      apiGetGermplasmMcpd(this.currentGermplasmId, result => {
         this.germplasm = result
         this.noGermplasmFound = result === null
       })
@@ -92,7 +91,7 @@ export default {
         page: 1,
         limit: 1
       }
-      this.apiPostGermplasmTable(query, result => {
+      apiPostGermplasmTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           this.currentGermplasmId = result.data[0].germplasmId
           this.getGermplasm()

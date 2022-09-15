@@ -11,8 +11,8 @@
       <!-- Banner buttons -->
       <b-row class="trials-tabs mb-3" v-if="tabs" :cols-xl="tabs.length">
         <b-col cols=12 sm=6 xl=2 :offset-xl="(tabs.length < 6 && index === 0) ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
-          <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
-            <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getColor(index)} 50%); color: white;`">
+          <b-card no-body :style="`border: 1px solid ${getTemplateColor(index)}; filter: ${getFilter(index)};`">
+            <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getTemplateColor(index)} 50%); color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
                   <MdiIcon :size="48" :path="tab.path" />
@@ -22,7 +22,7 @@
                 <MdiIcon :path="mdiHelpCircle" />
               </span>
             </b-card-body>
-            <b-card-footer :style="`color: ${getColor(index)}`">
+            <b-card-footer :style="`color: ${getTemplateColor(index)}`">
               <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
             </b-card-footer>
           </b-card>
@@ -89,11 +89,11 @@ import TraitComparisonSelection from '@/components/export/TraitComparisonSelecti
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import TrialsLocationMap from '@/components/map/TrialsLocationMap'
-import datasetApi from '@/mixins/api/dataset.js'
-import groupApi from '@/mixins/api/group.js'
-import miscApi from '@/mixins/api/misc.js'
-import traitApi from '@/mixins/api/trait.js'
-import colorMixin from '@/mixins/colors.js'
+import { apiPostDatasetTable, apiPostTraitStatsCategorical } from '@/mixins/api/dataset'
+import { apiPostDatasetGroups } from '@/mixins/api/group'
+import { apiPostTableExport } from '@/mixins/api/misc'
+import { apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostDatasetTraits, apiPostTrialLocationCount } from '@/mixins/api/trait'
+import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors'
 import Vue from 'vue'
 
 import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiHelpCircle, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
@@ -216,8 +216,8 @@ export default {
     TrialsDataTable,
     TrialsLocationMap
   },
-  mixins: [datasetApi, groupApi, miscApi, traitApi, colorMixin],
   methods: {
+    getTemplateColor,
     updateCategoricalTraitCharts: function (query, selectedTraits) {
       this.categoricalTraitsSelected = selectedTraits.filter(t => t.dataType !== 'numeric')
       this.categoricalTraitFiles = {}
@@ -229,7 +229,7 @@ export default {
           yGroupIds: query.yGroupIds
         }
 
-        this.apiPostTraitStatsCategorical(data, result => {
+        apiPostTraitStatsCategorical(data, result => {
           Vue.set(this.categoricalTraitFiles, t.traitId, result)
         })
       })
@@ -241,7 +241,7 @@ export default {
         datasetType: 'trials'
       }
       // Get groups
-      this.apiPostDatasetGroups(request, result => {
+      apiPostDatasetGroups(request, result => {
         this.groups = result
       })
     },
@@ -249,15 +249,15 @@ export default {
       callback(this.traits)
     },
     downloadTrialsTableData: function (data, callback) {
-      return this.apiPostTableExport(data, 'dataset/data/trial', callback)
+      return apiPostTableExport(data, 'dataset/data/trial', callback)
     },
     getTrialsData: function (data, callback) {
       data.datasetIds = this.datasetIds
-      return this.apiPostTrialsDataTable(data, callback)
+      return apiPostTrialsDataTable(data, callback)
     },
     getTrialsDataIds: function (data, callback) {
       data.datasetIds = this.datasetIds
-      return this.apiPostTrialsDataTableIds(data, callback)
+      return apiPostTrialsDataTableIds(data, callback)
     },
     tabSelected: function (tab, trigger = true) {
       this.currentTab = tab
@@ -272,16 +272,8 @@ export default {
     getFilter: function (index) {
       return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
     },
-    getColor: function (index) {
-      if (!this.storeServerSettings || !this.storeServerSettings.colorsTemplate) {
-        return '#00acef'
-      } else {
-        const colors = this.storeServerSettings.colorsTemplate
-        return colors[index % colors.length]
-      }
-    },
     getBrighterColor: function (index) {
-      return this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index))))
+      return rgbColorToHex(brighten(hexToRgb(getTemplateColor(index))))
     },
     redirectBack: function () {
       this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', [{
@@ -325,7 +317,7 @@ export default {
         }]
       }
 
-      this.apiPostDatasetTable(request, result => {
+      apiPostDatasetTable(request, result => {
         this.datasets = result.data.filter(d => {
           // Exclude the ones where a license exists, but hasn't been accepted
           return (!d.licenseName || this.isAccepted(d))
@@ -349,7 +341,7 @@ export default {
   },
   mounted: function () {
     emitter.emit('show-loading', true)
-    this.apiPostDatasetTraits(this.datasetIds, result => {
+    apiPostDatasetTraits(this.datasetIds, result => {
       this.traits = result
 
       this.getDatasets()
@@ -361,7 +353,7 @@ export default {
       this.$nextTick(() => this.tabSelected(this.$route.query.tab, false))
     }
 
-    this.apiPostTrialLocationCount({
+    apiPostTrialLocationCount({
       datasetIds: this.datasetIds
     }, result => {
       if (result) {

@@ -1,36 +1,34 @@
-import baseApiMixin from '@/mixins/api/base'
+import { MAX_JAVA_INTEGER, authAxios } from '@/mixins/api/base'
 
-export default {
-  mixins: [baseApiMixin],
-  methods: {
-    apiGetGroup: function (groupId, onSuccess, onError) {
-      return this.authAxios({ url: `group/${groupId}`, success: onSuccess, error: onError })
-    },
-    apiPatchGroup: function (group, onSuccess, onError) {
-      return this.authAxios({ url: `group/${group.id}`, data: group, method: 'PATCH', success: onSuccess, error: onError })
-    },
-    apiPutGroup: function (group, onSuccess, onError) {
-      return this.authAxios({ url: 'group', data: group, method: 'PUT', success: onSuccess, error: onError })
-    },
-    apiDeleteGroup: function (groupId, onSuccess, onError) {
-      return this.authAxios({ url: `group/${groupId}`, method: 'DELETE', success: onSuccess, error: onError })
-    },
-    apiPatchGroupMembers: function (groupId, groupType, groupModification, onSuccess, onError) {
-      return this.authAxios({ url: `group/${groupId}/${groupType}`, method: 'PATCH', data: groupModification, success: onSuccess, error: onError })
-    },
-    apiGetGroupTypes: function (onSuccess, onError) {
-      return this.authAxios({ url: `grouptype?limit=${this.MAX_JAVA_INTEGER}`, success: onSuccess, error: onError })
-    },
-    apiPostGroupTable: function (queryData, onSuccess, onError) {
-      queryData.page -= 1
-      return this.authAxios({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostDatasetGroups: function (queryData, onSuccess, onError) {
-      return this.authAxios({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
-    },
-    apiPostPublicationGroupTable: function (publicationId, queryData, onSuccess, onError) {
-      queryData.page -= 1
-      return this.authAxios({ url: `publication/${publicationId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
-    }
-  }
+const apiPatchGroup = (group, onSuccess, onError) => authAxios({ url: `group/${group.id}`, data: group, method: 'PATCH', success: onSuccess, error: onError })
+
+const apiPutGroup = (group, onSuccess, onError) => authAxios({ url: 'group', data: group, method: 'PUT', success: onSuccess, error: onError })
+
+const apiDeleteGroup = (groupId, onSuccess, onError) => authAxios({ url: `group/${groupId}`, method: 'DELETE', success: onSuccess, error: onError })
+
+const apiPatchGroupMembers = (groupId, groupType, groupModification, onSuccess, onError) => authAxios({ url: `group/${groupId}/${groupType}`, method: 'PATCH', data: groupModification, success: onSuccess, error: onError })
+
+const apiGetGroupTypes = (onSuccess, onError) => authAxios({ url: `grouptype?limit=${MAX_JAVA_INTEGER}`, success: onSuccess, error: onError })
+
+const apiPostGroupTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPostDatasetGroups = (queryData, onSuccess, onError) => authAxios({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
+
+const apiPostPublicationGroupTable = (publicationId, queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: `publication/${publicationId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+export {
+  apiPatchGroup,
+  apiPutGroup,
+  apiDeleteGroup,
+  apiPatchGroupMembers,
+  apiGetGroupTypes,
+  apiPostGroupTable,
+  apiPostDatasetGroups,
+  apiPostPublicationGroupTable
 }

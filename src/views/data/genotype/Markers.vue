@@ -12,20 +12,19 @@
 <script>
 import MarkerTable from '@/components/tables/MarkerTable'
 import RecentItems from '@/components/util/RecentItems'
-import genotypeApi from '@/mixins/api/genotype.js'
+import { apiPostMarkerTable, apiPostMarkerTableIds } from '@/mixins/api/genotype.js'
 
 export default {
   components: {
     MarkerTable,
     RecentItems
   },
-  mixins: [genotypeApi],
   methods: {
     getData: function (data, callback) {
-      return this.apiPostMarkerTable(data, callback)
+      return apiPostMarkerTable(data, callback)
     },
     getIds: function (data, callback) {
-      return this.apiPostMarkerTableIds(data, callback)
+      return apiPostMarkerTableIds(data, callback)
     }
   }
 }

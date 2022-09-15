@@ -30,7 +30,7 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
-import germplasmApi from '@/mixins/api/germplasm'
+import { apiGetGermplasmMcpd } from '@/mixins/api/germplasm'
 
 import { mdiPassport, mdiHelpCircle } from '@mdi/js'
 
@@ -106,7 +106,6 @@ export default {
       this.getMcpd()
     }
   },
-  mixins: [germplasmApi],
   methods: {
     toMcpdDate: function (str) {
       if (str.length === 8) {
@@ -136,7 +135,7 @@ export default {
       return countries.getName(code3, 'en')
     },
     getMcpd: function () {
-      this.apiGetGermplasmMcpd(this.germplasmId, result => {
+      apiGetGermplasmMcpd(this.germplasmId, result => {
         this.germplasm = result
       })
     }

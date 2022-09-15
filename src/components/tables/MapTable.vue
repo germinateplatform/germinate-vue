@@ -28,7 +28,6 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import utilMixin from '@/mixins/util'
 
 import { mdiOpenInNew } from '@mdi/js'
 
@@ -81,7 +80,6 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [utilMixin],
   methods: {
     isLink: function (map) {
       if (!map.mapDescription || map.mapDescription.length < 1) {

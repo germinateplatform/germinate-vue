@@ -25,8 +25,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import utilMixin from '@/mixins/util'
-import formattingMixin from '@/mixins/formatting'
+import { getNumberWithSuffix } from '@/mixins/formatting'
 
 export default {
   name: 'MapDefinitionTable',
@@ -88,7 +87,7 @@ export default {
           sortable: true,
           class: 'text-right',
           label: this.$t('tableColumnMapPosition'),
-          formatter: value => value ? this.getNumberWithSuffix(value.value, 2) : null
+          formatter: value => value ? getNumberWithSuffix(value.value, 2) : null
         }, {
           key: 'marked',
           type: null,
@@ -102,7 +101,6 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [formattingMixin, utilMixin],
   methods: {
     refresh: function () {
       this.$refs.mapDefinitionTable.refresh()

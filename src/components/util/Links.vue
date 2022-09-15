@@ -10,7 +10,7 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
-import miscApi from '@/mixins/api/misc.js'
+import { apiPostLinks } from '@/mixins/api/misc.js'
 
 import { mdiOpenInNew } from '@mdi/js'
 
@@ -34,7 +34,6 @@ export default {
       links: null
     }
   },
-  mixins: [miscApi],
   watch: {
     foreignId: function () {
       this.update()
@@ -52,7 +51,7 @@ export default {
       }
 
       // Query the API
-      this.apiPostLinks(query, result => {
+      apiPostLinks(query, result => {
         this.links = result
       })
     }

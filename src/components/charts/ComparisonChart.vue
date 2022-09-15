@@ -22,8 +22,7 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
-import baseApiMixin from '@/mixins/api/base'
-import utilMixin from '@/mixins/util'
+import { uuidv4 } from '@/mixins/util'
 
 import { mdiHelpCircleOutline } from '@mdi/js'
 
@@ -67,7 +66,7 @@ export default {
     Tour
   },
   data: function () {
-    const id = 'chart-' + this.uuidv4()
+    const id = 'chart-' + uuidv4()
 
     return {
       id: id,
@@ -101,7 +100,6 @@ export default {
       return `comparison-${this.trait.traitName.replace(' ', '-')}`
     }
   },
-  mixins: [baseApiMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()

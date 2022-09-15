@@ -33,7 +33,7 @@ import { mapGetters } from 'vuex'
 import ReferenceModal from '@/components/modals/ReferenceModal'
 import MdiIcon from '@/components/icons/MdiIcon'
 
-import authApi from '@/mixins/api/auth'
+import { userIsAtLeast } from '@/mixins/api/auth'
 
 import { mdiDelete, mdiOpenInNew, mdiDotsHorizontal } from '@mdi/js'
 
@@ -90,8 +90,8 @@ export default {
       }
     }
   },
-  mixins: [authApi],
   methods: {
+    userIsAtLeast,
     showFullReference: function () {
       this.$refs.referenceModal.show()
     },

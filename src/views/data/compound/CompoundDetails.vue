@@ -51,8 +51,7 @@ import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import ImageGallery from '@/components/images/ImageGallery'
-import miscApi from '@/mixins/api/misc.js'
-import compoundApi from '@/mixins/api/compound.js'
+import { apiPostCompoundTable, apiPostCompoundDataTable, apiPostCompoundDataTableIds, apiPostCompoundDatasetTable } from '@/mixins/api/compound.js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -72,19 +71,18 @@ export default {
     DatasetsWithUnacceptedLicense,
     ImageGallery
   },
-  mixins: [compoundApi, miscApi],
   methods: {
     getDatasetData: function (data, callback) {
-      return this.apiPostCompoundDatasetTable(this.compoundId, data, callback)
+      return apiPostCompoundDatasetTable(this.compoundId, data, callback)
     },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
     },
     getData: function (data, callback) {
-      return this.apiPostCompoundDataTable(data, callback)
+      return apiPostCompoundDataTable(data, callback)
     },
     getIds: function (data, callback) {
-      return this.apiPostCompoundDataTableIds(data, callback)
+      return apiPostCompoundDataTableIds(data, callback)
     },
     update: function () {
       this.$refs.compoundDetailsTable.refresh()
@@ -119,7 +117,7 @@ export default {
           values: [this.compoundId]
         }]
       }
-      this.apiPostCompoundTable(request, result => {
+      apiPostCompoundTable(request, result => {
         if (result && result.data && result.data.length > 0) {
           this.compound = result.data[0]
         } else {

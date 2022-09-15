@@ -144,11 +144,12 @@ import { mdiDelete, mdiDownload, mdiUpload, mdiRefresh, mdiDatabase, mdiClose, m
 
 import UploadStatusTable from '@/components/tables/UploadStatusTable'
 import axios from 'axios'
-import datasetApi from '@/mixins/api/dataset'
-import authApi from '@/mixins/api/auth'
-import miscApi from '@/mixins/api/misc'
-import typesMixin from '@/mixins/types'
-import formattingMixin from '@/mixins/formatting'
+import { apiPostDatasetAsyncExport, apiDeleteDatasetAsyncExport } from '@/mixins/api/dataset'
+import { userIsAtLeast } from '@/mixins/api/auth'
+import { apiPostDataAsyncImport, apiDeleteDataAsyncImport, apiGetDataAsyncImportStart, apiGetDataAsyncImportLog } from '@/mixins/api/misc'
+import { templateImportTypes } from '@/mixins/types'
+import { downloadBlob } from '@/mixins/util'
+import { getNumberWithSuffix } from '@/mixins/formatting'
 
 export default {
   components: {
@@ -252,11 +253,12 @@ export default {
       'storeAsyncSidebarTabIndex'
     ])
   },
-  mixins: [authApi, datasetApi, miscApi, typesMixin, formattingMixin],
   methods: {
+    userIsAtLeast,
+    getNumberWithSuffix,
     downloadImportJobLog: function (job) {
-      this.apiGetDataAsyncImportLog(job.uuid, result => {
-        this.downloadBlob({
+      apiGetDataAsyncImportLog(job.uuid, result => {
+        downloadBlob({
           blob: result,
           filename: `log-${job.uuid}`,
           extension: 'zip'
@@ -273,7 +275,7 @@ export default {
         }).then(value => {
           if (value) {
             this.asyncExportJobs.forEach(job => {
-              this.apiDeleteDatasetAsyncExport(job.uuid, () => {
+              apiDeleteDatasetAsyncExport(job.uuid, () => {
                 // Delete from the store
                 this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
                 this.updateInternal()
@@ -294,7 +296,7 @@ export default {
           if (value) {
             // Delete from the database
             this.asyncImportJobs.forEach(job => {
-              this.apiDeleteDataAsyncImport(job.uuid, () => {
+              apiDeleteDataAsyncImport(job.uuid, () => {
                 // Delete from the store
                 this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
                 this.updateInternal()
@@ -315,7 +317,7 @@ export default {
       this.$nextTick(() => this.$refs.uploadStatusModal.show())
     },
     startActualImport: function (job) {
-      this.apiGetDataAsyncImportStart(job.uuid, result => {
+      apiGetDataAsyncImportStart(job.uuid, result => {
         if (result) {
           result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
         }
@@ -332,7 +334,7 @@ export default {
       }).then(value => {
         if (value) {
           // Delete from the database
-          this.apiDeleteDatasetAsyncExport(job.uuid, () => {
+          apiDeleteDatasetAsyncExport(job.uuid, () => {
             // Delete from the store
             this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
             this.updateInternal()
@@ -349,7 +351,7 @@ export default {
       }).then(value => {
         if (value) {
           // Delete from the database
-          this.apiDeleteDataAsyncImport(job.uuid, () => {
+          apiDeleteDataAsyncImport(job.uuid, () => {
             // Delete from the store
             this.$store.commit('ON_ASYNC_JOB_UUID_REMOVE_MUTATION', job.uuid)
             this.updateInternal()
@@ -367,19 +369,19 @@ export default {
       }
     },
     getTemplateType: function (templateType) {
-      const match = Object.keys(this.templateImportTypes).filter(k => {
+      const match = Object.keys(templateImportTypes).filter(k => {
         return k === templateType
       })
 
       if (match && match.length > 0) {
-        return this.templateImportTypes[match[0]].text()
+        return templateImportTypes[match[0]].text()
       } else {
         return 'UNKNOWN TEMPLATE TYPE'
       }
     },
     updateInternal: function () {
       this.$nextTick(() => {
-        const exportJobs = this.apiPostDatasetAsyncExport(this.storeAsyncJobUuids, null, {
+        const exportJobs = apiPostDatasetAsyncExport(this.storeAsyncJobUuids, null, {
           codes: [],
           callback: (error) => {
             if (error && error.status === 403) {
@@ -388,7 +390,7 @@ export default {
             }
           }
         }).catch(() => null)
-        const importJobs = this.apiPostDataAsyncImport(this.storeAsyncJobUuids, null, {
+        const importJobs = apiPostDataAsyncImport(this.storeAsyncJobUuids, null, {
           codes: [],
           callback: () => {
             // We do nothing here. It either works or it doesn't.

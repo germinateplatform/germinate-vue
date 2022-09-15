@@ -20,11 +20,10 @@
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
-import datasetApi from '@/mixins/api/dataset.js'
-import colorMixin from '@/mixins/colors.js'
+import { apiPostTraitCompoundStats } from '@/mixins/api/dataset.js'
+import { getColor } from '@/mixins/colors.js'
 import Tour from '@/components/util/Tour'
-import baseApiMixin from '@/mixins/api/base'
-import utilMixin from '@/mixins/util'
+import { uuidv4 } from '@/mixins/util'
 
 import { mdiHelpCircleOutline } from '@mdi/js'
 
@@ -68,7 +67,7 @@ export default {
     Tour
   },
   data: function () {
-    const id = 'chart-' + this.uuidv4()
+    const id = 'chart-' + uuidv4()
 
     return {
       mdiHelpCircleOutline,
@@ -129,7 +128,6 @@ export default {
       }
     }
   },
-  mixins: [datasetApi, colorMixin, baseApiMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()
@@ -159,7 +157,7 @@ export default {
         yGroupIds: this.yGroupIds
       }
 
-      this.apiPostTraitCompoundStats(this.xTypes[this.xType].apiKey, query, result => {
+      apiPostTraitCompoundStats(this.xTypes[this.xType].apiKey, query, result => {
         this.plotData = result
         this.chart()
         this.loading = false
@@ -275,7 +273,7 @@ export default {
           x: x,
           y: y,
           name: group,
-          marker: { color: this.getColors()[index] },
+          marker: { color: getColor(index) },
           type: 'box',
           boxmean: false,
           boxpoints: false,
@@ -318,7 +316,7 @@ export default {
           x: x,
           y: y,
           name: this.plotData.datasets[dataset].datasetName,
-          marker: { color: this.getColors()[dataset] },
+          marker: { color: getColor(dataset) },
           type: 'box',
           boxmean: false,
           boxpoints: false,
@@ -360,7 +358,7 @@ export default {
           x: x,
           y: y,
           name: this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey],
-          marker: { color: this.getColors()[item] },
+          marker: { color: getColor(item) },
           type: 'box',
           boxmean: false,
           boxpoints: false,

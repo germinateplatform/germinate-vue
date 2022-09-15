@@ -65,11 +65,9 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import TraitEditModal from '@/components/modals/TraitEditModal'
 import defaultProps from '@/const/table-props.js'
-import colorMixin from '@/mixins/colors.js'
-import typesMixin from '@/mixins/types.js'
-import utilMixin from '@/mixins/util'
-import authApi from '@/mixins/api/auth'
-import formattingMixin from '@/mixins/formatting'
+import { dataTypes } from '@/mixins/types.js'
+import { userIsAtLeast } from '@/mixins/api/auth'
+import { getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiSquareEditOutline } from '@mdi/js'
 
@@ -85,6 +83,7 @@ export default {
   },
   data: function () {
     return {
+      dataTypes,
       mdiCodeBrackets,
       mdiGreaterThanOrEqual,
       mdiLessThanOrEqual,
@@ -165,11 +164,11 @@ export default {
           class: 'text-right',
           sortable: true,
           label: this.$t('tableColumnTraitDataPoints'),
-          formatter: value => this.getNumberWithSuffix(value, 2)
+          formatter: value => getNumberWithSuffix(value, 2)
         }
       ]
 
-      if (this.storeToken && this.userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
+      if (this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
         result.push({
           key: 'edit',
           type: undefined,
@@ -196,8 +195,8 @@ export default {
     MdiIcon,
     TraitEditModal
   },
-  mixins: [colorMixin, formattingMixin, typesMixin, utilMixin, authApi],
   methods: {
+    userIsAtLeast,
     refresh: function () {
       this.$refs.traitTable.refresh()
     },

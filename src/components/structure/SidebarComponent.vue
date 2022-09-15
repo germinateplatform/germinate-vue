@@ -1,7 +1,7 @@
 <template>
   <sidebar-menu :menu="menu"
                 :width="width"
-                widthCollapsed="50px"
+                widthCollapsed="65px"
                 :collapsed="collapsed"
                 @toggle-collapse="ev => $emit('toggle-collapse', ev)">
     <span slot="toggle-icon">
@@ -23,10 +23,11 @@ import { mapGetters } from 'vuex'
 import { SidebarMenu } from 'vue-sidebar-menu'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
+import { getNumberWithSuffix } from '@/mixins/formatting'
+
 import { mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiAtom, mdiChartAreaspline, mdiChartGantt, mdiChartSankey, mdiChevronLeft, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFileExport, mdiFlask, mdiFolderTable, mdiFormatIndentIncrease, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMagnify, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPulse, mdiReorderVertical, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy } from '@mdi/js'
 
-import formattingMixin from '@/mixins/formatting'
-import statsApi from '@/mixins/api/stats'
+import { apiGetOverviewStats } from '@/mixins/api/stats'
 
 const emitter = require('tiny-emitter/instance')
 const germinateLogo = 'M 11.999836,0 C 5.384778,0 -3.9999998e-7,5.38515 0,12.00026 -3.9999998e-7,18.61531 5.384778,24.00011 11.999836,24.00011 18.614894,24.00011 24,18.61531 24,12.00026 24,5.38515 18.614894,0 11.999836,0 Z m 0,2.09227 c 5.484271,0 9.907984,4.42367 9.907984,9.90799 0,5.48425 -4.423713,9.90754 -9.907984,9.90754 -5.4842703,0 -9.9076558,-4.42329 -9.9076558,-9.90754 0,-5.48432 4.4233855,-9.90799 9.9076558,-9.90799 z M 9.5003025,5.50579 c -2.4997191,0 -2.4997043,0 -3.7494633,2.16472 L 4.500991,9.83539 c -1.2498943,2.16476 -1.2498943,2.16487 0,4.32945 l 1.2498482,2.16476 c 1.261759,2.16476 1.2617442,2.16476 3.7494633,2.16476 2.4996545,0 2.4997185,0 3.7495455,-2.16476 h -8.1e-5 c 1.249812,-2.16476 1.249787,-2.16469 0,-4.32934 v -1.1e-4 H 10.750152 8.2505363 l 1.2497662,2.16469 H 12 L 10.750152,16.3296 H 8.2505363 L 7.0006881,14.16484 5.7508392,12.00015 7.0006881,9.83539 8.2505363,7.67051 h 2.4996157 2.499696 L 12,5.50579 Z m 4.9993125,0 1.249849,2.16472 1.249848,2.16488 h -2.499697 l -1.249767,2.16476 h 2.499616 l 1.249848,2.16469 -1.249848,2.16476 -1.249849,2.16476 h 2.499697 l 1.249849,-2.16476 1.249766,-2.16476 c 1.249826,-2.16476 1.249826,-2.16469 0,-4.32945 L 18.249161,7.67051 16.999312,5.50579 Z'
@@ -519,7 +520,6 @@ export default {
       }
     }
   },
-  mixins: [formattingMixin, statsApi],
   methods: {
     getBadgeCount: function (stats, key) {
       let value = null
@@ -531,11 +531,11 @@ export default {
       if (value === undefined || value === null) {
         return '0'
       } else {
-        return this.getNumberWithSuffix(value, 1)
+        return getNumberWithSuffix(value, 1)
       }
     },
     updateBadgeCounts: function () {
-      this.apiGetOverviewStats(result => {
+      apiGetOverviewStats(result => {
         this.badgeCounts = result
       })
     }

@@ -96,7 +96,8 @@
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 import MarkerLookup from '@/components/util/MarkerLookup'
-import genotypeApi from '@/mixins/api/genotype.js'
+import { apiPostMarkerTable, apiGetMapChromosomes } from '@/mixins/api/genotype.js'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiInformationOutline, mdiDelete, mdiTableRowPlusAfter } from '@mdi/js'
 
@@ -168,7 +169,6 @@ export default {
     MdiIcon,
     MarkerLookup
   },
-  mixins: [genotypeApi],
   methods: {
     setRegionChromosome: function (event, index) {
       index -= 1
@@ -271,10 +271,10 @@ export default {
             page: 1,
             ascending: 1,
             orderBy: 'markerName',
-            limit: this.MAX_JAVA_INTEGER
+            limit: MAX_JAVA_INTEGER
           }
 
-          this.apiPostMarkerTable(query, result => {
+          apiPostMarkerTable(query, result => {
             // Resolve the result
             this.markers = result.data
             resolve(this.markers)
@@ -284,7 +284,7 @@ export default {
     }
   },
   mounted: function () {
-    this.apiGetMapChromosomes(this.mapId, result => {
+    apiGetMapChromosomes(this.mapId, result => {
       this.chromosomes = result
 
       // Add an initial region for easier editing

@@ -9,8 +9,8 @@
 
 <script>
 import DatasetTable from '@/components/tables/DatasetTable'
-import datasetApi from '@/mixins/api/dataset.js'
-import typesMixin from '@/mixins/types.js'
+import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
+import { datasetTypes } from '@/mixins/types.js'
 
 export default {
   props: {
@@ -36,13 +36,13 @@ export default {
     }
 
     return {
+      datasetTypes,
       filterOn: filterOn
     }
   },
   components: {
     DatasetTable
   },
-  mixins: [datasetApi, typesMixin],
   methods: {
     emitDataChanged: function (request, data) {
       this.$emit('data-changed', request, data)
@@ -50,7 +50,7 @@ export default {
     getData: function (data, callback) {
       data.justUnacceptedLicenses = true
 
-      return this.apiPostDatasetTable(data, callback)
+      return apiPostDatasetTable(data, callback)
     }
   }
 }

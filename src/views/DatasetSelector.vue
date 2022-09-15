@@ -23,14 +23,16 @@
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
-import datasetApi from '@/mixins/api/dataset.js'
-import typesMixin from '@/mixins/types.js'
+import { apiPostDatasetTable, apiPostDatasetTableIds, apiPostLicenseTable } from '@/mixins/api/dataset.js'
+import { datasetTypes } from '@/mixins/types.js'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowRightBox } from '@mdi/js'
 
 export default {
   data: function () {
     return {
+      datasetTypes,
       mdiArrowRightBox,
       filterOn: null,
       datasetType: null,
@@ -51,7 +53,6 @@ export default {
       return this.datasetType === 'allelefreq' ? 'single' : 'multi'
     }
   },
-  mixins: [datasetApi, typesMixin],
   methods: {
     updateButtonState: function (selectedIds) {
       this.buttonDisabled = !selectedIds || selectedIds.length < 1
@@ -72,7 +73,7 @@ export default {
       const query = {
         page: 1,
         prevCount: -1,
-        limit: this.MAX_JAVA_INTEGER,
+        limit: MAX_JAVA_INTEGER,
         filter: [{
           column: 'datasetId',
           comparator: 'inSet',
@@ -85,7 +86,7 @@ export default {
           values: [this.storeLocale]
         }]
       }
-      this.apiPostLicenseTable(query, result => {
+      apiPostLicenseTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           const toAccept = result.data.filter(l => {
             let result = true
@@ -138,17 +139,17 @@ export default {
       }
     },
     getDatasetTypes: function () {
-      const result = Object.assign({}, this.datasetTypes)
+      const result = Object.assign({}, datasetTypes)
       delete result.unknown
       return result
     },
     getData: function (data, callback) {
       this.adjustData(data)
-      return this.apiPostDatasetTable(data, callback)
+      return apiPostDatasetTable(data, callback)
     },
     getIds: function (data, callback) {
       this.adjustData(data)
-      return this.apiPostDatasetTableIds(data, callback)
+      return apiPostDatasetTableIds(data, callback)
     },
     adjustData: function (data) {
       // Always filter for just the current dataset type
@@ -174,7 +175,7 @@ export default {
   created: function () {
     const datasetType = this.$route.params.datasetType
 
-    if (this.datasetTypes[datasetType]) {
+    if (datasetTypes[datasetType]) {
       this.datasetType = datasetType
     }
   }

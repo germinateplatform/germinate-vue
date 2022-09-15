@@ -12,7 +12,7 @@
 <script>
 import DatasetMetadataDownload from '@/components/util/DatasetMetadataDownload'
 import DatasetTable from '@/components/tables/DatasetTable'
-import datasetApi from '@/mixins/api/dataset.js'
+import { apiPostExperimentTable, apiPostDatasetTable } from '@/mixins/api/dataset.js'
 
 export default {
   data: function () {
@@ -25,10 +25,9 @@ export default {
     DatasetMetadataDownload,
     DatasetTable
   },
-  mixins: [datasetApi],
   methods: {
     getData: function (query, callback) {
-      return this.apiPostDatasetTable(query, callback)
+      return apiPostDatasetTable(query, callback)
     },
     getFilter: function () {
       return [{
@@ -63,7 +62,7 @@ export default {
         }]
       }
       // Run against API
-      this.apiPostExperimentTable(query, result => {
+      apiPostExperimentTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           this.experiment = result.data[0]
         }

@@ -14,7 +14,7 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
-import miscApi from '@/mixins/api/misc.js'
+import { apiGetImageTags, apiGetImageTagsForId } from '@/mixins/api/misc.js'
 
 import { mdiClose, mdiTag } from '@mdi/js'
 
@@ -40,7 +40,6 @@ export default {
       imageTags: []
     }
   },
-  mixins: [miscApi],
   methods: {
     selectTag: function (tag) {
       this.selectedTag = tag
@@ -51,13 +50,13 @@ export default {
     },
     refresh: function () {
       if (this.referenceTable && this.foreignId) {
-        this.apiGetImageTagsForId(this.referenceTable, this.foreignId, result => {
+        apiGetImageTagsForId(this.referenceTable, this.foreignId, result => {
           if (result) {
             this.imageTags = result.data
           }
         })
       } else {
-        this.apiGetImageTags(result => {
+        apiGetImageTags(result => {
           if (result) {
             this.imageTags = result.data
           }

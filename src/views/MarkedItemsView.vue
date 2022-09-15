@@ -31,11 +31,11 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import LocationTable from '@/components/tables/LocationTable'
 import MarkerTable from '@/components/tables/MarkerTable'
-import germplasmApi from '@/mixins/api/germplasm'
-import genotypeApi from '@/mixins/api/genotype'
-import locationApi from '@/mixins/api/location'
-import miscApi from '@/mixins/api/misc'
-import typesMixin from '@/mixins/types'
+import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostExternalLinkIdentifiers } from '@/mixins/api/germplasm'
+import { apiPostMarkerTable, apiPostMarkerTableIds } from '@/mixins/api/genotype'
+import { apiPostLocationTable, apiPostLocationTableIds } from '@/mixins/api/location'
+import { apiPostTableExport } from '@/mixins/api/misc'
+import { markedItemTypes } from '@/mixins/types'
 
 import { mdiOpenInNew } from '@mdi/js'
 
@@ -43,6 +43,7 @@ export default {
   name: 'marked-item-view',
   data: function () {
     return {
+      markedItemTypes,
       mdiOpenInNew,
       itemTypeLocal: null,
       options: [],
@@ -60,28 +61,28 @@ export default {
     itemTypeLocal: function (newValue) {
       // Update the URL
       if (this.isPopup === false) {
-        if (newValue === this.markedItemTypes.germplasm) {
+        if (newValue === markedItemTypes.germplasm) {
           window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'germplasm' } }).href)
-        } else if (newValue === this.markedItemTypes.markers) {
+        } else if (newValue === markedItemTypes.markers) {
           window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'markers' } }).href)
-        } else if (newValue === this.markedItemTypes.locations) {
+        } else if (newValue === markedItemTypes.locations) {
           window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'locations' } }).href)
         }
       }
     },
     storeMarkedGermplasm: function () {
-      if (this.itemTypeLocal === this.markedItemTypes.germplasm) {
+      if (this.itemTypeLocal === markedItemTypes.germplasm) {
         this.$refs.germplasmTable.refresh()
         this.updateExternalIdentifiers()
       }
     },
     storeMarkedMarkers: function () {
-      if (this.itemTypeLocal === this.markedItemTypes.markers) {
+      if (this.itemTypeLocal === markedItemTypes.markers) {
         this.$refs.markerTable.refresh()
       }
     },
     storeMarkedLocations: function () {
-      if (this.itemTypeLocal === this.markedItemTypes.locations) {
+      if (this.itemTypeLocal === markedItemTypes.locations) {
         this.$refs.locationTable.refresh()
       }
     }
@@ -108,43 +109,42 @@ export default {
     MarkerTable,
     MdiIcon
   },
-  mixins: [germplasmApi, genotypeApi, locationApi, miscApi, typesMixin],
   methods: {
     getGermplasmData: function (data, callback) {
       data = this.adjustFilter(data, 'germplasmId', 'germplasm')
-      return this.apiPostGermplasmTable(data, callback)
+      return apiPostGermplasmTable(data, callback)
     },
     getGermplasmIds: function (data, callback) {
       data = this.adjustFilter(data, 'germplasmId', 'germplasm')
-      return this.apiPostGermplasmTableIds(data, callback)
+      return apiPostGermplasmTableIds(data, callback)
     },
     downloadGermplasm: function (data, callback) {
       data = this.adjustFilter(data, 'germplasmId', 'germplasm')
-      return this.apiPostTableExport(data, 'germplasm', callback)
+      return apiPostTableExport(data, 'germplasm', callback)
     },
     getMarkerData: function (data, callback) {
       data = this.adjustFilter(data, 'markerId', 'markers')
-      return this.apiPostMarkerTable(data, callback)
+      return apiPostMarkerTable(data, callback)
     },
     getMarkerIds: function (data, callback) {
       data = this.adjustFilter(data, 'markerId', 'markers')
-      return this.apiPostMarkerTableIds(data, callback)
+      return apiPostMarkerTableIds(data, callback)
     },
     downloadMarkers: function (data, callback) {
       data = this.adjustFilter(data, 'markerId', 'markers')
-      return this.apiPostTableExport(data, 'marker', callback)
+      return apiPostTableExport(data, 'marker', callback)
     },
     getLocationData: function (data, callback) {
       data = this.adjustFilter(data, 'locationId', 'locations')
-      return this.apiPostLocationTable(data, callback)
+      return apiPostLocationTable(data, callback)
     },
     getLocationIds: function (data, callback) {
       data = this.adjustFilter(data, 'locationId', 'locations')
-      return this.apiPostLocationTableIds(data, callback)
+      return apiPostLocationTableIds(data, callback)
     },
     downloadLocations: function (data, callback) {
       data = this.adjustFilter(data, 'locationId', 'locations')
-      return this.apiPostTableExport(data, 'location', callback)
+      return apiPostTableExport(data, 'location', callback)
     },
     adjustFilter: function (data, id, type) {
       const newData = JSON.parse(JSON.stringify(data))
@@ -166,7 +166,7 @@ export default {
         const ids = this.storeMarkedGermplasm
 
         if (this.storeServerSettings.externalLinkIdentifier !== 'id') {
-          this.apiPostExternalLinkIdentifiers(ids, result => {
+          apiPostExternalLinkIdentifiers(ids, result => {
             this.externalIdentifiers = result
           })
         } else {
@@ -179,22 +179,22 @@ export default {
     const urlParam = this.$route.params.itemType
 
     if (urlParam) {
-      this.itemTypeLocal = this.markedItemTypes[urlParam]
+      this.itemTypeLocal = markedItemTypes[urlParam]
       this.isPopup = false
     } else if (this.itemType) {
-      this.itemTypeLocal = this.markedItemTypes[this.itemType]
+      this.itemTypeLocal = markedItemTypes[this.itemType]
       this.isPopup = true
     }
 
     this.options = [{
-      value: this.markedItemTypes.germplasm,
-      text: this.markedItemTypes.germplasm.text()
+      value: markedItemTypes.germplasm,
+      text: markedItemTypes.germplasm.text()
     }, {
-      value: this.markedItemTypes.markers,
-      text: this.markedItemTypes.markers.text()
+      value: markedItemTypes.markers,
+      text: markedItemTypes.markers.text()
     }, {
-      value: this.markedItemTypes.locations,
-      text: this.markedItemTypes.locations.text()
+      value: markedItemTypes.locations,
+      text: markedItemTypes.locations.text()
     }]
 
     this.updateExternalIdentifiers()

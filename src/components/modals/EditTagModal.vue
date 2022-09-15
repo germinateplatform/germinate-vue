@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import miscApi from '@/mixins/api/misc.js'
+import { apiPutImageTags } from '@/mixins/api/misc.js'
 
 export default {
   data: function () {
@@ -40,7 +40,6 @@ export default {
       this.newTags = newValue.map(t => t.tagName)
     }
   },
-  mixins: [miscApi],
   methods: {
     focus: function () {
       this.$nextTick(() => this.$refs.focusThis.focus())
@@ -49,7 +48,7 @@ export default {
       event.preventDefault()
 
       // Add new tags
-      this.apiPutImageTags(this.imageId, this.newTags, () => {
+      apiPutImageTags(this.imageId, this.newTags, () => {
         this.$emit('tags-changed')
 
         this.$nextTick(() => this.$refs.editTagModal.hide())

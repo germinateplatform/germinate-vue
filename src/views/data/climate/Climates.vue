@@ -7,16 +7,15 @@
 
 <script>
 import ClimateTable from '@/components/tables/ClimateTable'
-import climateApi from '@/mixins/api/climate.js'
+import { apiPostClimateTable } from '@/mixins/api/climate.js'
 
 export default {
   components: {
     ClimateTable
   },
-  mixins: [climateApi],
   methods: {
     getData: function (data, callback) {
-      return this.apiPostClimateTable(data, callback)
+      return apiPostClimateTable(data, callback)
     }
   }
 }

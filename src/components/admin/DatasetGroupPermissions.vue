@@ -21,7 +21,7 @@
 
 <script>
 import UserGroupTable from '@/components/tables/UserGroupTable'
-import usergroupApi from '@/mixins/api/usergroup.js'
+import { apiPostDatasetUserGroupTable, apiPostDatasetUserGroupIds, apiPostUserGroupTable, apiPostUserGroupIds, apiPatchDatasetUserGroups } from '@/mixins/api/usergroup'
 import { mdiDelete, mdiPlusBox } from '@mdi/js'
 
 export default {
@@ -67,7 +67,6 @@ export default {
       this.refresh()
     }
   },
-  mixins: [usergroupApi],
   methods: {
     refresh: function () {
       this.$nextTick(() => {
@@ -87,22 +86,22 @@ export default {
         addOperation: isAdd,
         groupIds: ids
       }
-      this.apiPatchDatasetUserGroups(request, () => {
+      apiPatchDatasetUserGroups(request, () => {
         this.$emit('permissions-changed')
         this.refresh()
       })
     },
     getUserGroups: function (request, callback) {
-      return this.apiPostDatasetUserGroupTable(request, this.dataset.datasetId, callback)
+      return apiPostDatasetUserGroupTable(request, this.dataset.datasetId, callback)
     },
     getUserGroupIds: function (request, callback) {
-      return this.apiPostDatasetUserGroupIds(request, this.dataset.datasetId, callback)
+      return apiPostDatasetUserGroupIds(request, this.dataset.datasetId, callback)
     },
     getAllGroups: function (request, callback) {
-      return this.apiPostUserGroupTable(request, callback)
+      return apiPostUserGroupTable(request, callback)
     },
     getAllGroupIds: function (request, callback) {
-      return this.apiPostUserGroupIds(request, callback)
+      return apiPostUserGroupIds(request, callback)
     }
   }
 }

@@ -26,8 +26,7 @@
 </template>
 
 <script>
-import baseApiMixin from '@/mixins/api/base'
-import utilMixin from '@/mixins/util'
+import { uuidv4 } from '@/mixins/util'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
@@ -62,13 +61,12 @@ export default {
   data: function () {
     return {
       mdiChevronRight,
-      id: 'accordion-' + this.uuidv4(),
+      id: 'accordion-' + uuidv4(),
       count: null,
       loading: true,
       contentVisible: false
     }
   },
-  mixins: [baseApiMixin, utilMixin],
   methods: {
     toggle: function () {
       this.contentVisible = !this.contentVisible

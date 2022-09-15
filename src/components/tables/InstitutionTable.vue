@@ -44,9 +44,8 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import utilMixin from '@/mixins/util'
-import typeMixin from '@/mixins/types'
-import colorMixin from '@/mixins/colors'
+import { germplasmInstitutionTypes } from '@/mixins/types'
+import { getHighContrastTextColor } from '@/mixins/colors'
 
 export default {
   name: 'InstitutionTable',
@@ -59,6 +58,7 @@ export default {
   },
   data: function () {
     return {
+      germplasmInstitutionTypes,
       options: {
         idColumn: 'institutionId',
         tableName: 'institutions'
@@ -126,8 +126,8 @@ export default {
     BaseTable,
     MdiIcon
   },
-  mixins: [utilMixin, typeMixin, colorMixin],
   methods: {
+    getHighContrastTextColor,
     refresh: function () {
       this.$refs.institutionTable.refresh()
     },

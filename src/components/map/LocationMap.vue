@@ -70,10 +70,11 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import ClimateOverlayModal from '@/components/modals/ClimateOverlayModal'
 import ColorGradient from '@/components/util/ColorGradient'
 import L from 'leaflet'
-import climateApi from '@/mixins/api/climate'
-import typesMixin from '@/mixins/types'
-import colorMixin from '@/mixins/colors'
-import formattingMixin from '@/mixins/formatting'
+import { apiPostClimates, apiPostClimateOverlays } from '@/mixins/api/climate'
+import { locationTypes } from '@/mixins/types'
+import { getColor } from '@/mixins/colors'
+import { toUrlString } from '@/mixins/formatting'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { LMap, LImageOverlay, LControl } from 'vue2-leaflet'
 // LEAFLET
 import 'leaflet/dist/leaflet.css'
@@ -100,6 +101,7 @@ L.Icon.Default.mergeOptions({
 export default {
   data: function () {
     return {
+      locationTypes,
       loading: false,
       loadingProgress: 0,
       zoom: 3,
@@ -186,7 +188,6 @@ export default {
     LMap,
     LImageOverlay
   },
-  mixins: [climateApi, typesMixin, colorMixin, formattingMixin],
   methods: {
     getLatLngs: function () {
       return this.internalLocations.map(l => {
@@ -228,9 +229,9 @@ export default {
               values: [overlay.climateId]
             }],
             page: 1,
-            limit: this.MAX_JAVA_INTEGER
+            limit: MAX_JAVA_INTEGER
           }
-          this.apiPostClimateOverlays(queryData, result => {
+          apiPostClimateOverlays(queryData, result => {
             const array = []
 
             if (result && result.data) {
@@ -240,7 +241,7 @@ export default {
                 const params = {
                   token: this.storeToken ? this.storeToken.imageToken : null
                 }
-                const paramString = this.toUrlString(params)
+                const paramString = toUrlString(params)
 
                 path = this.storeBaseUrl + `climate/overlay/${i.climateOverlayId}/src?` + paramString
 
@@ -432,7 +433,7 @@ export default {
       this.gradientColors = this.storeServerSettings.colorsGradient.concat()
     } else {
       this.gradientColors.push('#ffffff')
-      this.gradientColors.push(this.getColor(0))
+      this.gradientColors.push(getColor(0))
     }
 
     this.$nextTick(() => {
@@ -546,7 +547,7 @@ export default {
           }]
         }
 
-        this.apiPostClimates(queryData, result => {
+        apiPostClimates(queryData, result => {
           if (result && result.data) {
             this.climates = result.data
           }

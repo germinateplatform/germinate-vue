@@ -9,8 +9,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import BaseChart from '@/components/charts/BaseChart'
-import statsApi from '@/mixins/api/stats.js'
-import colorMixin from '@/mixins/colors.js'
+import { apiGetStatsFile } from '@/mixins/api/stats.js'
+import { getColor } from '@/mixins/colors.js'
 const d3Dsv = require('d3-dsv')
 
 const Plotly = require('plotly.js/lib/core')
@@ -44,7 +44,6 @@ export default {
   components: {
     BaseChart
   },
-  mixins: [statsApi, colorMixin],
   methods: {
     unpack: function (rows, key) {
       return rows.map(r => r[key])
@@ -74,7 +73,7 @@ export default {
           gradientColors = this.storeServerSettings.colorsGradient.concat()
         } else {
           gradientColors.push('#ffffff')
-          gradientColors.push(this.getColor(0))
+          gradientColors.push(getColor(0))
         }
 
         const gradient = []
@@ -163,7 +162,7 @@ export default {
     }
   },
   mounted: function () {
-    this.apiGetStatsFile('country', result => {
+    apiGetStatsFile('country', result => {
       this.sourceFile = result
       this.redraw()
     })

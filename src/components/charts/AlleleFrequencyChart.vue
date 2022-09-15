@@ -81,9 +81,8 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
-import colorMixin from '@/mixins/colors.js'
-import baseApiMixin from '@/mixins/api/base'
-import utilMixin from '@/mixins/util'
+import { createColorGradient } from '@/mixins/colors.js'
+import { uuidv4 } from '@/mixins/util'
 import { plotlyAlleleFreqChart } from '@/plugins/charts/plotly-allelefreq-chart.js'
 
 import { mdiFormatAlignJustify, mdiFormatIndentIncrease, mdiFormatAlignLeft, mdiHelpCircle, mdiRefresh, mdiHelpCircleOutline, mdiArrowRightBox } from '@mdi/js'
@@ -110,7 +109,7 @@ export default {
     }
   },
   data: function () {
-    const id = 'chart-' + this.uuidv4()
+    const id = 'chart-' + uuidv4()
 
     return {
       mdiFormatAlignJustify,
@@ -148,7 +147,7 @@ export default {
       'storeDarkMode'
     ]),
     gradient: function () {
-      return this.createColorGradient('#ff7878', '#78fd78', this.widths.length)
+      return createColorGradient('#ff7878', '#78fd78', this.widths.length)
     },
     baseSourceFile: function () {
       return {
@@ -174,7 +173,6 @@ export default {
       this.redraw()
     }
   },
-  mixins: [baseApiMixin, colorMixin, utilMixin],
   methods: {
     showTour: function () {
       this.$refs.tour.start()

@@ -10,8 +10,8 @@
 import { mapGetters } from 'vuex'
 import BaseChart from '@/components/charts/BaseChart'
 import { plotlySunburstChart } from '@/plugins/charts/plotly-sunburst-chart.js'
-import statsApi from '@/mixins/api/stats.js'
-import colorMixin from '@/mixins/colors.js'
+import { apiGetStatsFile } from '@/mixins/api/stats.js'
+import { getColors } from '@/mixins/colors.js'
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 
@@ -45,7 +45,6 @@ export default {
   components: {
     BaseChart
   },
-  mixins: [statsApi, colorMixin],
   methods: {
     redraw: function (result) {
       this.sourceFile = result
@@ -153,13 +152,13 @@ export default {
                 }
               })
             })
-            .colors(this.getColors()))
+            .colors(getColors()))
       }
       reader.readAsText(result)
     }
   },
   mounted: function () {
-    this.apiGetStatsFile('taxonomy', result => this.redraw(result))
+    apiGetStatsFile('taxonomy', result => this.redraw(result))
   }
 }
 </script>

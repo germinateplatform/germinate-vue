@@ -43,7 +43,8 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 
-import germplasmApi from '@/mixins/api/germplasm.js'
+import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostGermplasmUnification, apiPostGermplasmUnificationSgone } from '@/mixins/api/germplasm.js'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowRightBox, mdiSetMerge } from '@mdi/js'
 
@@ -66,7 +67,6 @@ export default {
       sgoneInput: null
     }
   },
-  mixins: [germplasmApi],
   watch: {
     sgoneFile: function (newValue) {
       const reader = new FileReader()
@@ -79,7 +79,7 @@ export default {
   methods: {
     mergeGermplasmSgone: function () {
       emitter.emit('show-loading', true)
-      this.apiPostGermplasmUnificationSgone({
+      apiPostGermplasmUnificationSgone({
         unifications: JSON.parse(this.sgoneInput)
       }, () => {
         this.$refs.germplasmTable.refresh()
@@ -90,7 +90,7 @@ export default {
     mergeGermplasm: function () {
       emitter.emit('show-loading', true)
       const others = this.selectedIds.filter(id => id !== this.primaryGermplasm)
-      this.apiPostGermplasmUnification({
+      apiPostGermplasmUnification({
         preferredGermplasmId: this.primaryGermplasm,
         otherGermplasmIds: others,
         explanation: this.comment
@@ -101,9 +101,9 @@ export default {
       })
     },
     getSelectedGermplasm: function () {
-      this.apiPostGermplasmTable({
+      apiPostGermplasmTable({
         page: 1,
-        limit: this.MAX_JAVA_INTEGER,
+        limit: MAX_JAVA_INTEGER,
         filter: [{
           column: 'germplasmId',
           operator: 'and',
@@ -131,10 +131,10 @@ export default {
       this.comment = null
     },
     getData: function (data, callback) {
-      return this.apiPostGermplasmTable(data, callback)
+      return apiPostGermplasmTable(data, callback)
     },
     getIds: function (data, callback) {
-      return this.apiPostGermplasmTableIds(data, callback)
+      return apiPostGermplasmTableIds(data, callback)
     }
   }
 }

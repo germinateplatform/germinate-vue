@@ -8,8 +8,8 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
-import datasetApi from '@/mixins/api/dataset.js'
-import utilMixin from '@/mixins/util'
+import { apiPostDatasetAttributeExport } from '@/mixins/api/dataset.js'
+import { downloadBlob } from '@/mixins/util'
 
 import { mdiDownload } from '@mdi/js'
 
@@ -38,7 +38,6 @@ export default {
       mdiDownload
     }
   },
-  mixins: [datasetApi, utilMixin],
   methods: {
     downloadMetadata: function () {
       emitter.emit('show-loading', true)
@@ -46,7 +45,7 @@ export default {
         datasetIds: this.datasetIds,
         experimentId: this.experimentId
       }
-      this.apiPostDatasetAttributeExport(request, result => {
+      apiPostDatasetAttributeExport(request, result => {
         let filename
         if (this.experimentId) {
           filename = 'experiment-metadata-' + this.experimentId
@@ -60,7 +59,7 @@ export default {
           extension: 'txt'
         }
 
-        this.downloadBlob(downloadRequext)
+        downloadBlob(downloadRequext)
         emitter.emit('show-loading', false)
       })
     }

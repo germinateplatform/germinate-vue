@@ -60,10 +60,9 @@ import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 import BaseTable from '@/components/tables/BaseTable'
 import ImageExifModal from '@/components/modals/ImageExifModal'
 import defaultProps from '@/const/table-props'
-import typesMixin from '@/mixins/types'
-import colorMixin from '@/mixins/colors'
-import utilMixin from '@/mixins/util'
-import imageMixin from '@/mixins/image'
+import { imageTypes } from '@/mixins/types'
+import { getHighContrastTextColor } from '@/mixins/colors'
+import { getImageUrl } from '@/mixins/image'
 
 import { mdiImageText } from '@mdi/js'
 
@@ -75,6 +74,7 @@ export default {
   },
   data: function () {
     return {
+      imageTypes,
       mdiImageText,
       options: {
         idColumn: 'imageId',
@@ -152,8 +152,8 @@ export default {
     MdiIcon,
     ImageExifModal
   },
-  mixins: [typesMixin, colorMixin, utilMixin, imageMixin],
   methods: {
+    getHighContrastTextColor,
     showImageExif: function (image) {
       this.selectedImage = image
       this.$nextTick(() => this.$refs.imageExifModal.show())
@@ -161,7 +161,7 @@ export default {
     getTextColor: function (tag) {
       const color = this.getTagColor(tag)
 
-      return this.getHighContrastTextColor(color)
+      return getHighContrastTextColor(color)
     },
     getTagColor: function (tag) {
       let index = this.tags.indexOf(tag.tagName)
@@ -173,7 +173,7 @@ export default {
       return this.storeServerSettings.colorsTemplate[index % this.storeServerSettings.colorsTemplate.length]
     },
     getSrc: function (image, size) {
-      return this.getImageUrl(image.imagePath, {
+      return getImageUrl(image.imagePath, {
         name: image.imagePath,
         type: 'database',
         size: size,

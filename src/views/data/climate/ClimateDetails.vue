@@ -37,8 +37,7 @@ import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnaccep
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import DatasetTable from '@/components/tables/DatasetTable'
-import miscApi from '@/mixins/api/misc.js'
-import climateApi from '@/mixins/api/climate.js'
+import { apiPostClimateTable, apiPostClimateDataTable, apiPostClimateDataTableIds, apiPostClimateDatasetTable } from '@/mixins/api/climate.js'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -59,16 +58,16 @@ export default {
   },
   methods: {
     getDatasetData: function (data, callback) {
-      return this.apiPostClimateDatasetTable(this.climateId, data, callback)
+      return apiPostClimateDatasetTable(this.climateId, data, callback)
     },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
     },
     getData: function (data, callback) {
-      return this.apiPostClimateDataTable(data, callback)
+      return apiPostClimateDataTable(data, callback)
     },
     getIds: function (data, callback) {
-      return this.apiPostClimateDataTableIds(data, callback)
+      return apiPostClimateDataTableIds(data, callback)
     },
     update: function () {
       this.$refs.climateDetailsTable.refresh()
@@ -77,7 +76,6 @@ export default {
       this.checkNumbers()
     }
   },
-  mixins: [miscApi, climateApi],
   mounted: function () {
     if (this.$route.params.climateId) {
       this.climateId = parseInt(this.$route.params.climateId)
@@ -103,7 +101,7 @@ export default {
           values: [this.climateId]
         }]
       }
-      this.apiPostClimateTable(request, result => {
+      apiPostClimateTable(request, result => {
         if (result && result.data && result.data.length > 0) {
           this.climate = result.data[0]
         } else {

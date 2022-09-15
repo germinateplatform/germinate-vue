@@ -15,8 +15,7 @@
 <script>
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import utilMixin from '@/mixins/util'
-import formattingMixin from '@/mixins/formatting'
+import { truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 
 export default {
   name: 'DatasetTable',
@@ -57,28 +56,28 @@ export default {
           type: String,
           sortable: false,
           label: this.$t('tableColumnDatasetName'),
-          formatter: value => this.truncateAfterWords(value, 10),
+          formatter: value => truncateAfterWords(value, 10),
           preferedSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: String,
           sortable: false,
           label: this.$t('tableColumnDatasetDescription'),
-          formatter: value => this.truncateAfterWords(value, 10)
+          formatter: value => truncateAfterWords(value, 10)
         }, {
           key: 'dataObjectCount',
           type: Number,
           sortable: false,
           class: 'text-right',
           label: this.$t('tableColumnGenotypeDatasetGermplasmCount'),
-          formatter: value => value ? this.getNumberWithSuffix(value.value, 2) : null
+          formatter: value => value ? getNumberWithSuffix(value.value, 2) : null
         }, {
           key: 'dataPointCount',
           type: Number,
           sortable: false,
           class: 'text-right',
           label: this.$t('tableColumnGenotypeDatasetMarkerCount'),
-          formatter: value => value ? this.getNumberWithSuffix(value.value, 2) : null
+          formatter: value => value ? getNumberWithSuffix(value.value, 2) : null
         }
       ]
     }
@@ -86,7 +85,6 @@ export default {
   components: {
     BaseTable
   },
-  mixins: [utilMixin, formattingMixin],
   methods: {
     getRowVariant: function (row) {
       if (!row.dataObjectCount || !row.dataObjectCount.value || !row.dataPointCount || !row.dataPointCount.value) {

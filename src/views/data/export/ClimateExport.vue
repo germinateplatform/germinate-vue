@@ -13,8 +13,8 @@
         <!-- Left padding if there are 5 tabs, because 5 doesn't work well with 12 columns -->
         <b-col class="d-none d-xl-block" sm=1 v-if="tabs.length === 5"/>
         <b-col cols=12 sm=6 :xl="tabs.length === 5 ? 2 : 3" v-for="(tab, index) in tabs" :key="'climate-tabs-' + tab.key">
-          <b-card no-body :style="`border: 1px solid ${getColor(index)}; filter: ${getFilter(index)};`">
-            <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getColor(index)} 50%); color: white;`">
+          <b-card no-body :style="`border: 1px solid ${getTemplateColor(index)}; filter: ${getFilter(index)};`">
+            <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getTemplateColor(index)} 50%); color: white;`">
               <b-row>
                 <b-col cols=12 class="text-center">
                   <MdiIcon :size="48" :path="tab.path" />
@@ -24,7 +24,7 @@
                 <MdiIcon :path="mdiHelpCircle" />
               </span>
             </b-card-body>
-            <b-card-footer :style="`color: ${getColor(index)}`">
+            <b-card-footer :style="`color: ${getTemplateColor(index)}`">
               <a href="#" @click.prevent="tab.onSelection" class="stretched-link"><MdiIcon :path="mdiArrowRightBoldCircle" /><span> {{ tab.text() }}</span></a>
             </b-card-footer>
           </b-card>
@@ -73,11 +73,11 @@ import ClimateExportChartSelection from '@/components/export/ClimateExportChartS
 import LocationMap from '@/components/map/LocationMap'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
-import climateApi from '@/mixins/api/climate.js'
-import datasetApi from '@/mixins/api/dataset.js'
-import groupApi from '@/mixins/api/group.js'
-import miscApi from '@/mixins/api/misc.js'
-import colorMixin from '@/mixins/colors.js'
+import { apiPostDatasetClimates, apiPostClimateDataTable, apiPostClimateDataTableIds } from '@/mixins/api/climate.js'
+import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
+import { apiPostDatasetGroups } from '@/mixins/api/group.js'
+import { apiPostTableExport } from '@/mixins/api/misc.js'
+import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors.js'
 
 import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiEye, mdiHelpCircle, mdiGrid, mdiMapPlus, mdiTableSearch } from '@mdi/js'
 
@@ -175,8 +175,8 @@ export default {
     ExportDownloadSelection,
     MdiIcon
   },
-  mixins: [climateApi, datasetApi, groupApi, miscApi, colorMixin],
   methods: {
+    getTemplateColor,
     updateGroups: function () {
       const request = {
         datasetIds: this.datasetIds,
@@ -184,7 +184,7 @@ export default {
         datasetType: 'climate'
       }
       // Get groups
-      this.apiPostDatasetGroups(request, result => {
+      apiPostDatasetGroups(request, result => {
         this.groups = result
       })
     },
@@ -192,15 +192,15 @@ export default {
       callback(this.climates)
     },
     downloadClimateDataTable: function (data, callback) {
-      return this.apiPostTableExport(data, 'dataset/data/climate', callback)
+      return apiPostTableExport(data, 'dataset/data/climate', callback)
     },
     getClimateData: function (data, callback) {
       data.datasetIds = this.datasetIds
-      return this.apiPostClimateDataTable(data, callback)
+      return apiPostClimateDataTable(data, callback)
     },
     getClimateDataIds: function (data, callback) {
       data.datasetIds = this.datasetIds
-      return this.apiPostClimateDataTableIds(data, callback)
+      return apiPostClimateDataTableIds(data, callback)
     },
     tabSelected: function (tab, trigger = true) {
       this.currentTab = tab
@@ -219,16 +219,8 @@ export default {
     getFilter: function (index) {
       return this.tabs[index].key === this.currentTab ? '' : 'brightness(75%)'
     },
-    getColor: function (index) {
-      if (!this.storeServerSettings || !this.storeServerSettings.colorsTemplate) {
-        return '#00acef'
-      } else {
-        const colors = this.storeServerSettings.colorsTemplate
-        return colors[index % colors.length]
-      }
-    },
     getBrighterColor: function (index) {
-      return this.rgbColorToHex(this.brighten(this.hexToRgb(this.getColor(index))))
+      return rgbColorToHex(brighten(hexToRgb(getTemplateColor(index))))
     },
     redirectBack: function () {
       this.$store.dispatch('ON_TABLE_FILTERING_CHANGED', [{
@@ -272,7 +264,7 @@ export default {
         }]
       }
 
-      this.apiPostDatasetTable(request, result => {
+      apiPostDatasetTable(request, result => {
         this.datasets = result.data.filter(d => {
           // Exclude the ones where a license exists, but hasn't been accepted
           return (!d.licenseName || this.isAccepted(d))
@@ -296,7 +288,7 @@ export default {
   },
   mounted: function () {
     emitter.emit('show-loading', true)
-    this.apiPostDatasetClimates(this.datasetIds, result => {
+    apiPostDatasetClimates(this.datasetIds, result => {
       this.climates = result
 
       const hasOverlays = result.filter(c => c.overlays > 0).length > 0

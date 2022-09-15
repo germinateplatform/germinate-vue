@@ -40,10 +40,10 @@
 import { mapGetters } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import authApi from '@/mixins/api/auth'
-import formattingMixin from '@/mixins/formatting'
-import datasetApi from '@/mixins/api/dataset'
-import utilMixin from '@/mixins/util'
+import { userIsAtLeast } from '@/mixins/api/auth'
+import { isTruncatedAfter, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
+import { apiDeleteFileresource, apiGetDataResource } from '@/mixins/api/dataset'
+import { downloadBlob } from '@/mixins/util'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
@@ -130,7 +130,7 @@ export default {
         }
       ]
 
-      if (this.storeToken && this.userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
+      if (this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
         result.push({
           key: 'deleteFileresource',
           type: undefined,
@@ -142,8 +142,11 @@ export default {
       return result
     }
   },
-  mixins: [authApi, formattingMixin, datasetApi, utilMixin],
   methods: {
+    userIsAtLeast,
+    isTruncatedAfter,
+    truncateAfterWords,
+    getNumberWithSuffix,
     showDatasets: function (fileresource) {
       const filter = [{
         column: 'fileresourceIds',
@@ -166,7 +169,7 @@ export default {
       })
         .then(value => {
           if (value) {
-            this.apiDeleteFileresource(resource.fileresourceId, result => {
+            apiDeleteFileresource(resource.fileresourceId, result => {
               if (result) {
                 this.refresh()
                 emitter.emit('update-sidebar-menu')
@@ -176,8 +179,8 @@ export default {
         })
     },
     downloadFileresource: function (resource) {
-      this.apiGetDataResource(resource.fileresourceId, result => {
-        this.downloadBlob({
+      apiGetDataResource(resource.fileresourceId, result => {
+        downloadBlob({
           blob: result,
           filename: resource.fileresourcePath
         })

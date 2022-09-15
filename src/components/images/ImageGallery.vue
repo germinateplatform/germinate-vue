@@ -44,10 +44,9 @@ import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
 import ImageNode from '@/components/images/ImageNode'
 import ImageTags from '@/components/images/ImageTags'
 import ImageUploadModal from '@/components/modals/ImageUploadModal'
-import imageMixin from '@/mixins/image'
-import miscApi from '@/mixins/api/misc.js'
-import utilMixin from '@/mixins/util'
-import authApi from '@/mixins/api/auth.js'
+import { getImageUrl } from '@/mixins/image'
+import { apiPostImages, apiPostImagesExport } from '@/mixins/api/misc.js'
+import { userIsAtLeast } from '@/mixins/api/auth'
 
 import { mdiDownload, mdiUpload } from '@mdi/js'
 
@@ -101,8 +100,8 @@ export default {
     ImageUploadModal,
     MdiIcon
   },
-  mixins: [imageMixin, miscApi, utilMixin, authApi],
   methods: {
+    userIsAtLeast,
     onTagClicked: function (tag) {
       this.selectedTag = tag
       this.refresh()
@@ -135,7 +134,7 @@ export default {
         })
       }
 
-      this.apiPostImagesExport(data, result => {
+      apiPostImagesExport(data, result => {
         result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
 
         // Show the sidebar
@@ -144,7 +143,7 @@ export default {
       })
     },
     getSrc: function (image) {
-      return this.getImageUrl(image.imagePath, {
+      return getImageUrl(image.imagePath, {
         name: image.imagePath,
         token: this.storeToken ? this.storeToken.imageToken : null,
         type: 'database',
@@ -182,7 +181,7 @@ export default {
         })
       }
 
-      this.apiPostImages({
+      apiPostImages({
         limit: this.imagesPerPage,
         page: page,
         orderBy: 'createdOn',

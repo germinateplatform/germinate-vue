@@ -20,10 +20,10 @@ import { VuePlausible } from 'vue-plausible'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import { mapGetters } from 'vuex'
 import { Detector } from '@/plugins/browser-detect.js'
-import utilMixin from '@/mixins/util'
-import miscApiMixin from '@/mixins/api/misc'
-import baseApiMixin from '@/mixins/api/base'
-import statsApiMixin from '@/mixins/api/stats'
+import { uuidv4, germinateVersion } from '@/mixins/util'
+import { apiGetSettings } from '@/mixins/api/misc'
+import { authAxios } from '@/mixins/api/base'
+import { apiGetEntityTypeStats } from '@/mixins/api/stats'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -41,7 +41,6 @@ export default {
       'storeAppState'
     ])
   },
-  mixins: [baseApiMixin, miscApiMixin, utilMixin, statsApiMixin],
   methods: {
     isLocalhost: function () {
       return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
@@ -84,6 +83,9 @@ export default {
     },
     updateI18nAppState: function () {
       this.$i18n.silentTranslationWarn = this.storeAppState !== 'development'
+    },
+    toast: function (config) {
+      this.$bvToast.toast(config.message, config)
     }
   },
   created: async function () {
@@ -91,7 +93,7 @@ export default {
       this.i18nLoaded = true
     })
 
-    await this.apiGetSettings(result => {
+    await apiGetSettings(result => {
       this.$store.dispatch('setServerSettings', result)
 
       if (result.plausibleDomain) {
@@ -107,7 +109,7 @@ export default {
         })
       }
 
-      this.apiGetEntityTypeStats(result => {
+      apiGetEntityTypeStats(result => {
         this.$store.dispatch('setEntityTypeStats', result)
       })
     }, {
@@ -126,13 +128,14 @@ export default {
     emitter.on('on-print', this.print)
     emitter.on('on-stylesheet-changed', this.attachStyleSheet)
     emitter.on('show-loading', this.toggleLoading)
+    emitter.on('toast', this.toast)
     this.attachStyleSheet()
 
     // Log the run
     if (!this.isLocalhost()) {
       let id = this.uniqueClientId
       if (!id) {
-        id = this.uuidv4()
+        id = uuidv4()
 
         this.$store.dispatch('setUniqueClientId', id)
       }
@@ -142,11 +145,11 @@ export default {
         const data = {
           application: 'Germinate',
           id: id,
-          version: this.germinateVersion,
+          version: germinateVersion,
           locale: this.storeLocale,
           os: `${config.os} ${config.osVersion}`
         }
-        this.authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
+        authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
       }
     }
   },
@@ -154,6 +157,7 @@ export default {
     emitter.off('on-print', this.print)
     emitter.off('on-stylesheet-changed', this.attachStyleSheet)
     emitter.off('show-loading', this.toggleLoading)
+    emitter.off('toast', this.toast)
   }
 }
 </script>

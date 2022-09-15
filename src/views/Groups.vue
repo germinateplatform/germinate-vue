@@ -104,11 +104,12 @@ import MarkerTable from '@/components/tables/MarkerTable'
 import GroupEditAddModal from '@/components/modals/GroupEditAddModal'
 import GroupUploadModal from '@/components/modals/GroupUploadModal'
 import PublicationsWidget from '@/components/util/PublicationsWidget'
-import groupApi from '@/mixins/api/group.js'
-import germplasmApi from '@/mixins/api/germplasm.js'
-import genotypeApi from '@/mixins/api/genotype.js'
-import locationApi from '@/mixins/api/location.js'
-import typesMixin from '@/mixins/types.js'
+import { apiPatchGroup, apiPutGroup, apiDeleteGroup, apiPatchGroupMembers, apiGetGroupTypes, apiPostGroupTable } from '@/mixins/api/group.js'
+import { apiPostGermplasmTableIds, apiPostGroupGermplasmTable, apiPostGroupGermplasmTableExport, apiPostGroupGermplasmTableIds } from '@/mixins/api/germplasm.js'
+import { apiPostMarkerTableIds, apiPostGroupMarkerTable, apiPostGroupMarkerTableIds, apiPostGroupMarkerTableExport } from '@/mixins/api/genotype.js'
+import { apiPostLocationTableIds, apiPostGroupLocationTableExport, apiPostGroupLocationTable, apiPostGroupLocationTableIds } from '@/mixins/api/location.js'
+import { groupTypes } from '@/mixins/types'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiPlusBox, mdiCollapseAll, mdiDelete, mdiExpandAll, mdiUpload } from '@mdi/js'
 
@@ -117,6 +118,7 @@ const emitter = require('tiny-emitter/instance')
 export default {
   data: function () {
     return {
+      groupTypes,
       group: null,
       groupToEdit: null,
       groupId: null,
@@ -155,13 +157,13 @@ export default {
               return
             }
 
-            const type = this.groupTypes[this.group.groupType].apiName
+            const type = groupTypes[this.group.groupType].apiName
             const data = {
               ids: selectedIds,
               addition: false
             }
             emitter.emit('show-loading', true)
-            this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
+            apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
               emitter.emit('show-loading', false)
@@ -180,16 +182,16 @@ export default {
           id: 2,
           text: this.$t('buttonAddMarkedItems'),
           variant: null,
-          disabled: () => this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
+          disabled: () => this.storeMarkedIds[groupTypes[this.group.groupType].itemType].length < 1,
           path: mdiExpandAll,
           callback: () => {
-            const type = this.groupTypes[this.group.groupType].apiName
+            const type = groupTypes[this.group.groupType].apiName
             const data = {
-              ids: this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType],
+              ids: this.storeMarkedIds[groupTypes[this.group.groupType].itemType],
               addition: true
             }
             emitter.emit('show-loading', true)
-            this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
+            apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
               emitter.emit('show-loading', false)
@@ -200,16 +202,16 @@ export default {
           id: 3,
           text: this.$t('buttonRemoveMarkedItems'),
           variant: null,
-          disabled: () => this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType].length < 1,
+          disabled: () => this.storeMarkedIds[groupTypes[this.group.groupType].itemType].length < 1,
           path: mdiCollapseAll,
           callback: () => {
-            const type = this.groupTypes[this.group.groupType].apiName
+            const type = groupTypes[this.group.groupType].apiName
             const data = {
-              ids: this.storeMarkedIds[this.groupTypes[this.group.groupType].itemType],
+              ids: this.storeMarkedIds[groupTypes[this.group.groupType].itemType],
               addition: false
             }
             emitter.emit('show-loading', true)
-            this.apiPatchGroupMembers(this.group.groupId, type, data, () => {
+            apiPatchGroupMembers(this.group.groupId, type, data, () => {
               this.$refs.groupmembersTable.refresh()
               this.$refs.groupsTable.refresh()
               emitter.emit('show-loading', false)
@@ -229,12 +231,12 @@ export default {
       return this.storeToken !== null && this.group !== null && (this.group.userId === this.storeToken.id)
     },
     groupTypeOptions: function () {
-      return Object.keys(this.groupTypes).map(e => {
+      return Object.keys(groupTypes).map(e => {
         return {
           id: e,
-          icon: this.groupTypes[e].icon,
-          path: this.groupTypes[e].path,
-          text: () => this.groupTypes[e].text()
+          icon: groupTypes[e].icon,
+          path: groupTypes[e].path,
+          text: () => groupTypes[e].text()
         }
       })
     },
@@ -275,16 +277,15 @@ export default {
     PublicationsWidget,
     MdiIcon
   },
-  mixins: [groupApi, germplasmApi, genotypeApi, locationApi, typesMixin],
   methods: {
     uploadContent: function (content) {
       if (content && content.length > 0) {
-        const type = this.groupTypes[this.group.groupType]
+        const type = groupTypes[this.group.groupType]
 
         // Filter based on the NAME of the currently selected group item (germplasm name, location name, marker name)
         const query = {
           page: 1,
-          limit: this.MAX_JAVA_INTEGER,
+          limit: MAX_JAVA_INTEGER,
           filter: [{
             column: type.nameColumn,
             comparator: 'inSet',
@@ -301,7 +302,7 @@ export default {
             addition: true
           }
           // Add the ids to the group
-          this.apiPatchGroupMembers(this.group.groupId, type.apiName, data, () => {
+          apiPatchGroupMembers(this.group.groupId, type.apiName, data, () => {
             this.$refs.groupmembersTable.refresh()
             this.$refs.groupsTable.refresh()
             emitter.emit('show-loading', false)
@@ -311,13 +312,13 @@ export default {
         // Get the ids for the correct group type
         switch (type.apiName) {
           case 'germplasm':
-            this.apiPostGermplasmTableIds(query, callback)
+            apiPostGermplasmTableIds(query, callback)
             break
           case 'marker':
-            this.apiPostMarkerTableIds(query, callback)
+            apiPostMarkerTableIds(query, callback)
             break
           case 'location':
-            this.apiPostLocationTableIds(query, callback)
+            apiPostLocationTableIds(query, callback)
             break
         }
       }
@@ -331,34 +332,34 @@ export default {
       this.$nextTick(() => this.$refs.groupsTable.refresh())
     },
     getGroupData: function (data, callback) {
-      return this.apiPostGroupTable(data, callback)
+      return apiPostGroupTable(data, callback)
     },
     getGermplasmData: function (data, callback) {
-      return this.apiPostGroupGermplasmTable(this.group.groupId, data, callback)
+      return apiPostGroupGermplasmTable(this.group.groupId, data, callback)
     },
     downloadGermplasmData: function (data, callback) {
-      return this.apiPostGroupGermplasmTableExport(this.group.groupId, data, callback)
+      return apiPostGroupGermplasmTableExport(this.group.groupId, data, callback)
     },
     getGermplasmIds: function (data, callback) {
-      return this.apiPostGroupGermplasmTableIds(this.group.groupId, data, callback)
+      return apiPostGroupGermplasmTableIds(this.group.groupId, data, callback)
     },
     getMarkerData: function (data, callback) {
-      return this.apiPostGroupMarkerTable(this.group.groupId, data, callback)
+      return apiPostGroupMarkerTable(this.group.groupId, data, callback)
     },
     downloadMarkerData: function (data, callback) {
-      return this.apiPostGroupMarkerTableExport(this.group.groupId, data, callback)
+      return apiPostGroupMarkerTableExport(this.group.groupId, data, callback)
     },
     getMarkerIds: function (data, callback) {
-      return this.apiPostGroupMarkerTableIds(this.group.groupId, data, callback)
+      return apiPostGroupMarkerTableIds(this.group.groupId, data, callback)
     },
     getLocationData: function (data, callback) {
-      return this.apiPostGroupLocationTable(this.group.groupId, data, callback)
+      return apiPostGroupLocationTable(this.group.groupId, data, callback)
     },
     downloadLocationData: function (data, callback) {
-      return this.apiPostGroupLocationTableExport(this.group.groupId, data, callback)
+      return apiPostGroupLocationTableExport(this.group.groupId, data, callback)
     },
     getLocationIds: function (data, callback) {
-      return this.apiPostGroupLocationTableIds(this.group.groupId, data, callback)
+      return apiPostGroupLocationTableIds(this.group.groupId, data, callback)
     },
     onEditGroup: function () {
       const group = {
@@ -373,11 +374,11 @@ export default {
         delete group.description
       }
       if (group.id !== null) {
-        this.apiPatchGroup(group, () => {
+        apiPatchGroup(group, () => {
           this.$refs.groupsTable.refresh()
         })
       } else {
-        this.apiPutGroup(group, result => {
+        apiPutGroup(group, result => {
           this.$refs.groupsTable.refresh()
 
           // Select the newly created group
@@ -398,7 +399,7 @@ export default {
           id: this.group.groupId,
           visibility: this.group.groupVisibility
         }
-        this.apiPatchGroup(group, () => {
+        apiPatchGroup(group, () => {
           this.$refs.groupsTable.refresh()
         })
       })
@@ -411,7 +412,7 @@ export default {
       })
         .then(value => {
           if (value) {
-            this.apiDeleteGroup(groupToDelete.groupId, () => {
+            apiDeleteGroup(groupToDelete.groupId, () => {
               // If the current group was deleted, unset selection
               if (this.group && groupToDelete.groupId === this.group.groupId) {
                 this.group = null
@@ -439,7 +440,7 @@ export default {
           }]
         }
         const prevGroupType = this.group ? this.group.groupType : null
-        this.apiPostGroupTable(queryParams, result => {
+        apiPostGroupTable(queryParams, result => {
           if (result && result.data && result.data.length > 0) {
             // Update the URL to reflect the newly selected group
             window.history.replaceState({}, null, this.$router.resolve({ name: 'group-details', params: { groupId: this.groupId } }).href)
@@ -467,11 +468,11 @@ export default {
     }
   },
   mounted: function () {
-    this.apiGetGroupTypes(result => {
+    apiGetGroupTypes(result => {
       this.groupTypeSelect = result.data.map(g => {
         return {
           value: g.id,
-          text: this.groupTypes[g.targetTable].text()
+          text: groupTypes[g.targetTable].text()
         }
       })
     })

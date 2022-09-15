@@ -91,11 +91,9 @@ import ImageGallery from '@/components/images/ImageGallery'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import YesNoCancelModal from '@/components/modals/YesNoCancelModal'
 
-import datasetApi from '@/mixins/api/dataset.js'
-import miscApi from '@/mixins/api/misc.js'
-import traitApi from '@/mixins/api/trait.js'
-import colorMixin from '@/mixins/colors.js'
-import typesMixin from '@/mixins/types.js'
+import { apiPostTraitStatsCategorical } from '@/mixins/api/dataset'
+import { apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTraitTable, apiPostTraitDatasetTable, apiGetTraitDistinctValues } from '@/mixins/api/trait'
+import { dataTypes } from '@/mixins/types'
 
 import { mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiCodeBrackets, mdiBarcode } from '@mdi/js'
 
@@ -104,6 +102,7 @@ const emitter = require('tiny-emitter/instance')
 export default {
   data: function () {
     return {
+      dataTypes,
       mdiGreaterThanOrEqual,
       mdiLessThanOrEqual,
       mdiCodeBrackets,
@@ -128,7 +127,7 @@ export default {
   methods: {
     generateBarcodes: function (includeValues) {
       if (includeValues) {
-        this.apiGetTraitDistinctValues(this.traitId, result => {
+        apiGetTraitDistinctValues(this.traitId, result => {
           this.openInNewTab(`https://cropgeeks.github.io/humbug/#/import?barcodes=${[this.trait.traitName, ...result].map(c => encodeURIComponent(c)).join(',')}`)
         })
       } else {
@@ -164,16 +163,16 @@ export default {
       this.$nextTick(() => this.$refs.traitDetailsTable.refresh())
     },
     getDatasetData: function (data, callback) {
-      return this.apiPostTraitDatasetTable(this.traitId, data, callback)
+      return apiPostTraitDatasetTable(this.traitId, data, callback)
     },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
     },
     getData: function (data, callback) {
-      return this.apiPostTrialsDataTable(data, callback)
+      return apiPostTrialsDataTable(data, callback)
     },
     getIds: function (data, callback) {
-      return this.apiPostTrialsDataTableIds(data, callback)
+      return apiPostTrialsDataTableIds(data, callback)
     },
     update: function () {
       this.$refs.traitDetailsTable.refresh()
@@ -193,7 +192,7 @@ export default {
         xIds: [this.traitId]
       }
 
-      this.apiPostTraitStatsCategorical(query, result => {
+      apiPostTraitStatsCategorical(query, result => {
         this.categoricalTraitFile = result
       }, {
         codes: [404],
@@ -204,7 +203,6 @@ export default {
       })
     }
   },
-  mixins: [colorMixin, datasetApi, miscApi, traitApi, typesMixin],
   mounted: function () {
     if (this.$route.params.traitId) {
       this.traitId = parseInt(this.$route.params.traitId)
@@ -230,7 +228,7 @@ export default {
           values: [this.traitId]
         }]
       }
-      this.apiPostTraitTable(request, result => {
+      apiPostTraitTable(request, result => {
         if (result && result.data && result.data.length > 0) {
           this.trait = result.data[0]
 
