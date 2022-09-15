@@ -305,4 +305,3 @@ export {
   authAxios,
   authForm
 }
-
