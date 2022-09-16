@@ -48,8 +48,8 @@ import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
-import { exportFormats } from '@/mixins/types.js'
-import { getHighContrastTextColor } from '@/mixins/colors.js'
+import { exportFormats } from '@/mixins/types'
+import { getHighContrastTextColor } from '@/mixins/colors'
 
 import { mdiTag, mdiDownload } from '@mdi/js'
 

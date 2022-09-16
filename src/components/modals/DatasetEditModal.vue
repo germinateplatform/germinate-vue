@@ -14,18 +14,39 @@
         <b-form-datepicker v-model="datasetEndDate" id="dataset-end-date" />
       </b-form-group>
       <b-form-group label-for="dataset-state" :label="$t('tableColumnDatasetState')">
-        <b-form-select :options="options" v-model="datasetState" id="dataset-state" />
+        <b-form-select :options="datasetStateOptions" v-model="datasetState" id="dataset-state" />
+      </b-form-group>
+      <b-form-group label-for="license" :label="$t('tableColumnDatasetLicenseName')">
+        <b-input-group>
+          <b-form-select :options="licenseOptions" v-model="licenseId" id="license" />
+          <b-input-group-append>
+            <b-button @click="$refs.licenseCreationModal.show()">
+              <MdiIcon :path="mdiPencil" v-if="licenseId" />
+              <MdiIcon :path="mdiPlusBox" v-else />
+            </b-button>
+          </b-input-group-append>
+        </b-input-group>
       </b-form-group>
     </b-form>
+
+    <LicenseCreationModal :license="selectedLicense" ref="licenseCreationModal" @license-updated="updateLicenses" @license-added="selectLicense" />
   </b-modal>
 </template>
 
 <script>
-import { apiPatchDataset } from '@/mixins/api/dataset.js'
-import { datasetStates } from '@/mixins/types.js'
+import LicenseCreationModal from '@/components/modals/LicenseCreationModal'
+import MdiIcon from '@/components/icons/MdiIcon'
+import { apiPatchDataset, apiGetLicenses } from '@/mixins/api/dataset'
+import { datasetStates } from '@/mixins/types'
 import { uuidv4 } from '@/mixins/util'
 
+import { mdiPlusBox, mdiPencil } from '@mdi/js'
+
 export default {
+  components: {
+    LicenseCreationModal,
+    MdiIcon
+  },
   props: {
     dataset: {
       type: Object,
@@ -34,22 +55,52 @@ export default {
   },
   data: function () {
     return {
+      mdiPlusBox,
+      mdiPencil,
       id: uuidv4(),
       datasetState: null,
       datasetName: null,
       datasetDescription: null,
       datasetStartDate: null,
-      datasetEndDate: null
+      datasetEndDate: null,
+      licenseId: null,
+      licenses: []
     }
   },
   computed: {
-    options: function () {
+    datasetStateOptions: function () {
       return Object.keys(datasetStates).map(s => {
         return {
           value: datasetStates[s].id,
           text: datasetStates[s].text()
         }
       })
+    },
+    selectedLicense: function () {
+      if (this.licenseId) {
+        return this.licenses.find(l => l.licenseId === this.licenseId)
+      } else {
+        return null
+      }
+    },
+    licenseOptions: function () {
+      if (this.licenses) {
+        const result = this.licenses.map(l => {
+          return {
+            value: l.licenseId,
+            text: l.licenseName
+          }
+        })
+
+        result.unshift({
+          value: null,
+          text: this.$t('formSelectOptionLicenseNone')
+        })
+
+        return result
+      } else {
+        return []
+      }
     }
   },
   methods: {
@@ -57,18 +108,37 @@ export default {
       this.datasetState = datasetStates[this.dataset.datasetState].id
       this.datasetName = this.dataset.datasetName
       this.datasetDescription = this.dataset.datasetDescription
+      this.licenseId = this.dataset.licenseId || null
       this.datasetStartDate = this.dataset.startDate ? new Date(this.dataset.startDate) : null
       this.datasetEndDate = this.dataset.endDate ? new Date(this.dataset.endDate) : null
-      this.$refs['datasetEditModal-' + this.id].show()
+
+      if (!this.licenses || this.licenses.length < 1) {
+        this.updateLicenses()
+          .then(() => this.$refs['datasetEditModal-' + this.id].show())
+      } else {
+        this.$refs['datasetEditModal-' + this.id].show()
+      }
     },
     hide: function () {
       this.$refs['datasetEditModal-' + this.id].hide()
+    },
+    updateLicenses: function () {
+      return apiGetLicenses(result => {
+        this.licenses = result || []
+      })
+    },
+    selectLicense: function (licenseId) {
+      this.updateLicenses()
+        .then(() => {
+          this.licenseId = licenseId
+        })
     },
     updateDataset: function () {
       return apiPatchDataset(this.dataset.datasetId, {
         name: this.datasetName,
         description: this.datasetDescription,
         dateStart: this.datasetStartDate,
+        licenseId: this.licenseId,
         dateEnd: this.datasetEndDate,
         datasetStateId: this.datasetState
       }, (result) => {

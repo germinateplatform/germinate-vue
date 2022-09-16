@@ -62,6 +62,12 @@ const apiPostLicenseTable = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'license/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiGetLicenses = (onSuccess, onError) => authAxios({ url: 'license', success: onSuccess, error: onError })
+
+const apiPutLicense = (data, onSuccess, onError) => authAxios({ url: 'license', method: 'PUT', data: data, success: onSuccess, error: onError })
+
+const apiPatchLicense = (licenseId, data, onSuccess, onError) => authAxios({ url: `license/${licenseId}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
+
 const apiGetAcceptLicense = (licenseId, onSuccess, onError) => authAxios({ url: `license/${licenseId}/accept`, success: onSuccess, error: onError })
 
 const apiPostFileResourceTable = (queryData, onSuccess, onError) => {
@@ -105,6 +111,9 @@ export {
   apiPostDatasetAttributeTable,
   apiPostTraitCompoundStats,
   apiPostTraitStatsCategorical,
+  apiGetLicenses,
+  apiPutLicense,
+  apiPatchLicense,
   apiPostLicenseTable,
   apiGetAcceptLicense,
   apiPostFileResourceTable,
