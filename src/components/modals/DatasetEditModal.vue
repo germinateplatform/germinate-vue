@@ -1,32 +1,46 @@
 <template>
-  <b-modal :ref="`datasetEditModal-${id}`" :title="dataset.datasetName" :ok-title="$t('buttonUpdate')" @ok="updateDataset" header-class="dataset-edit-modal-header">
+  <b-modal :ref="`datasetEditModal-${id}`" size="lg" :title="dataset.datasetName" :ok-title="$t('buttonUpdate')" @ok="updateDataset" header-class="dataset-edit-modal-header">
     <b-form @submit.prevent="updateDataset">
-      <b-form-group label-for="dataset-name" :label="$t('tableColumnDatasetName')">
-        <b-form-input v-model="datasetName" id="dataset-name" />
-      </b-form-group>
-      <b-form-group label-for="dataset-description" :label="$t('tableColumnDatasetDescription')">
-        <b-form-textarea v-model="datasetDescription" id="dataset-description" />
-      </b-form-group>
-      <b-form-group label-for="dataset-start-date" :label="$t('tableColumnDatasetStartDate')">
-        <b-form-datepicker v-model="datasetStartDate" id="dataset-start-date" />
-      </b-form-group>
-      <b-form-group label-for="dataset-end-date" :label="$t('tableColumnDatasetEndDate')">
-        <b-form-datepicker v-model="datasetEndDate" id="dataset-end-date" />
-      </b-form-group>
-      <b-form-group label-for="dataset-state" :label="$t('tableColumnDatasetState')">
-        <b-form-select :options="datasetStateOptions" v-model="datasetState" id="dataset-state" />
-      </b-form-group>
-      <b-form-group label-for="license" :label="$t('tableColumnDatasetLicenseName')">
-        <b-input-group>
-          <b-form-select :options="licenseOptions" v-model="licenseId" id="license" />
-          <b-input-group-append>
-            <b-button @click="$refs.licenseCreationModal.show()">
-              <MdiIcon :path="mdiPencil" v-if="licenseId" />
-              <MdiIcon :path="mdiPlusBox" v-else />
-            </b-button>
-          </b-input-group-append>
-        </b-input-group>
-      </b-form-group>
+      <b-row>
+        <b-col cols=12 lg=6>
+          <b-form-group label-for="dataset-name" :label="$t('tableColumnDatasetName')">
+            <b-form-input v-model="datasetName" id="dataset-name" />
+          </b-form-group>
+        </b-col>
+        <b-col cols=12 lg=6>
+          <b-form-group label-for="dataset-description" :label="$t('tableColumnDatasetDescription')">
+            <b-form-textarea v-model="datasetDescription" id="dataset-description" />
+          </b-form-group>
+        </b-col>
+        <b-col cols=12 lg=6>
+          <b-form-group label-for="dataset-start-date" :label="$t('tableColumnDatasetStartDate')">
+            <b-form-datepicker v-model="datasetStartDate" id="dataset-start-date" />
+          </b-form-group>
+        </b-col>
+        <b-col cols=12 lg=6>
+          <b-form-group label-for="dataset-end-date" :label="$t('tableColumnDatasetEndDate')">
+            <b-form-datepicker v-model="datasetEndDate" id="dataset-end-date" />
+          </b-form-group>
+        </b-col>
+        <b-col cols=12 lg=6>
+          <b-form-group label-for="dataset-state" :label="$t('tableColumnDatasetState')">
+            <b-form-select :options="datasetStateOptions" v-model="datasetState" id="dataset-state" />
+          </b-form-group>
+        </b-col>
+        <b-col cols=12 lg=6>
+          <b-form-group label-for="license" :label="$t('tableColumnDatasetLicenseName')">
+            <b-input-group>
+              <b-form-select :options="licenseOptions" v-model="licenseId" id="license" />
+              <b-input-group-append>
+                <b-button @click="$refs.licenseCreationModal.show()">
+                  <MdiIcon :path="mdiPencil" v-if="licenseId" />
+                  <MdiIcon :path="mdiPlusBox" v-else />
+                </b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+      </b-row>
     </b-form>
 
     <LicenseCreationModal :license="selectedLicense" ref="licenseCreationModal" @license-updated="updateLicenses" @license-added="selectLicense" />
@@ -86,9 +100,17 @@ export default {
     licenseOptions: function () {
       if (this.licenses) {
         const result = this.licenses.map(l => {
+          let text
+
+          if (l.licenseDescription) {
+            text = `${l.licenseDescription} (${l.licenseName})`
+          } else {
+            text = l.licenseName
+          }
+
           return {
             value: l.licenseId,
-            text: l.licenseName
+            text: text
           }
         })
 

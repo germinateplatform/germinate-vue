@@ -595,11 +595,6 @@ export default {
             comparator: 'equals',
             operator: 'and',
             values: [this.dataset.datasetId]
-          }, {
-            column: 'localeName',
-            comparator: 'equals',
-            operator: 'and',
-            values: [this.storeLocale]
           }]
         }
         apiPostLicenseTable(query, result => {

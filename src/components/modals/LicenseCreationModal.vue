@@ -1,5 +1,5 @@
 <template>
-  <b-modal ref="licenseCreationModal" scrollable :title="$t('modalTitleLicenseCreation')" size="xl" @ok.prevent="handleOk">
+  <b-modal ref="licenseCreationModal" :title="$t('modalTitleLicenseCreation')" size="xl" @ok.prevent="handleOk">
     <b-tabs>
       <b-tab v-for="locale in locales" :key="`locale-tab-${locale.locale}`">
         <template #title>

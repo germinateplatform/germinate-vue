@@ -1,7 +1,7 @@
 <template>
   <b-modal id="license-modal" ref="licenseModal" scrollable :title="$t('modalTitleLicense')" size="lg" modal-class="d-print-none">
     <div v-if="license">
-      <div v-html="license.licenseContent" class="d-print-block"></div>
+      <div v-html="licenseContent" class="d-print-block"></div>
       <a :href="htmlData" target="_blank" rel="noopener noreferrer" style="display: none;" :download="htmlFilename" ref="htmlDownloadLink" />
     </div>
     <div slot="modal-footer">
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import { apiGetAcceptLicense } from '@/mixins/api/dataset.js'
 
@@ -59,6 +60,22 @@ export default {
       mdiCheck,
       htmlData: null,
       htmlFilename: null
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'storeLocale'
+    ]),
+    licenseContent: function () {
+      if (this.license) {
+        if (this.license.licenseContent) {
+          return this.license.licenseContent[this.storeLocale] || this.license.licenseContent.en_GB
+        } else {
+          return null
+        }
+      } else {
+        return null
+      }
     }
   },
   methods: {

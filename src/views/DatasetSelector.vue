@@ -79,11 +79,6 @@ export default {
           comparator: 'inSet',
           operator: 'and',
           values: selectedIds
-        }, {
-          column: 'localeName',
-          comparator: 'equals',
-          operator: 'and',
-          values: [this.storeLocale]
         }]
       }
       apiPostLicenseTable(query, result => {
