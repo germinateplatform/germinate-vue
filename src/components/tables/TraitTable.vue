@@ -8,19 +8,19 @@
                v-on="$listeners">
       <!-- Trait id link -->
       <template v-slot:cell(traitId)="data">
-        <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitId }}</router-link>
+        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitId }}</router-link>
       </template>
       <!-- Trait name link -->
       <template v-slot:cell(traitName)="data">
-        <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitName }}</router-link>
+        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitName }}</router-link>
       </template>
       <!-- Trait short name link -->
       <template v-slot:cell(traitNameShort)="data">
-        <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitNameShort }}</router-link>
+        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitNameShort }}</router-link>
       </template>
       <!-- Trait description link -->
       <template v-slot:cell(traitDescription)="data">
-        <router-link :to="{ name: 'trait-details', params: { traitId: data.item.traitId } }">{{ data.item.traitDescription }}</router-link>
+        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitDescription }}</router-link>
       </template>
       <!-- Dataset type icon -->
       <template v-slot:cell(dataType)="data">
@@ -68,6 +68,7 @@ import defaultProps from '@/const/table-props.js'
 import { dataTypes } from '@/mixins/types.js'
 import { userIsAtLeast } from '@/mixins/api/auth'
 import { getNumberWithSuffix } from '@/mixins/formatting'
+import { Pages } from '@/mixins/pages'
 
 import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiSquareEditOutline } from '@mdi/js'
 
@@ -83,6 +84,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       dataTypes,
       mdiCodeBrackets,
       mdiGreaterThanOrEqual,

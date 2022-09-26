@@ -44,25 +44,25 @@
       <!-- /HEADS -->
 
       <template v-slot:cell(preview)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }" event="" @click.native.prevent="selectGermplasm(data.item.germplasmId)" class="table-link" v-b-tooltip:hover="$t('tableTooltipGermplasmPreviewPassport')">
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }" event="" @click.native.prevent="selectGermplasm(data.item.germplasmId)" class="table-link" v-b-tooltip:hover="$t('tableTooltipGermplasmPreviewPassport')">
           <MdiIcon :path="mdiOpenInApp" />
         </router-link>
       </template>
       <!-- Germplasm id link -->
       <template v-slot:cell(germplasmId)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
       </template>
       <!-- Germplasm name link -->
       <template v-slot:cell(germplasmName)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
       </template>
       <!-- Germplasm GID link -->
       <template v-slot:cell(germplasmGid)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
       </template>
       <!-- Germplasm number link -->
       <template v-slot:cell(germplasmNumber)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmNumber }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmNumber }}</router-link>
       </template>
       <!-- Entity type -->
       <template v-slot:cell(entityTypeName)="data">
@@ -201,6 +201,7 @@ import { apiPostEntityIds } from '@/mixins/api/germplasm'
 import { isTruncatedAfter, truncateAfterWords } from '@/mixins/formatting'
 import { getImageUrl } from '@/mixins/image'
 import { entityTypes, datasetTypes } from '@/mixins/types'
+import { Pages } from '@/mixins/pages'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
@@ -227,6 +228,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       entityTypes,
       datasetTypes,
       mdiHelpCircle,

@@ -29,11 +29,11 @@
       <!-- Reference name -->
       <template v-slot:cell(referenceName)="data">
         <!-- Germplasm -->
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.imageForeignId } }" v-if="data.item.imageRefTable === 'germinatebase'">{{ data.item.referenceName }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.imageForeignId } }" v-if="data.item.imageRefTable === 'germinatebase'">{{ data.item.referenceName }}</router-link>
         <!-- Trait -->
-        <router-link :to="{ name: 'trait-details', params: { traitId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'phenotypes'">{{ data.item.referenceName }}</router-link>
+        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'phenotypes'">{{ data.item.referenceName }}</router-link>
         <!-- Compound -->
-        <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'compounds'">{{ data.item.referenceName }}</router-link>
+        <router-link :to="{ name: Pages.compoundDetails, params: { compoundId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'compounds'">{{ data.item.referenceName }}</router-link>
         <!-- Anything else -->
         <span v-else>{{ data.item.referenceName }}</span>
       </template>
@@ -63,6 +63,7 @@ import defaultProps from '@/const/table-props'
 import { imageTypes } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
 import { getImageUrl } from '@/mixins/image'
+import { Pages } from '@/mixins/pages'
 
 import { mdiImageText } from '@mdi/js'
 
@@ -74,6 +75,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       imageTypes,
       mdiImageText,
       options: {

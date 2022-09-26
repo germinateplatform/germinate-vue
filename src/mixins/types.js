@@ -2,6 +2,7 @@ import store from '@/store'
 import { i18n } from '@/plugins/i18n.js'
 
 import { mdiSprout, mdiDna, mdiGrid, mdiLeaf, mdiMapMarker, mdiPulse, mdiWeatherSnowyRainy, mdiFlask, mdiShovel, mdiFamilyTree, mdiHelpBox, mdiBasketFill, mdiDatabase, mdiNumeric, mdiAlphabetical, mdiCalendar, mdiTagText, mdiReorderVertical, mdiTagTextOutline, mdiFolderTable, mdiChartSankey, mdiImageMultiple, mdiGroup, mdiAtom, mdiFileDownload, mdiMarker, mdiLockOpenVariantOutline, mdiLock, mdiEyeOff, mdiPassport, mdiEyedropper, mdiAllergy, mdiContentDuplicate, mdiGift, mdiWrenchClock } from '@mdi/js'
+import { Pages } from './pages'
 
 const mdiGerminate = 'M 11.999836,0 C 5.384778,0 -3.9999998e-7,5.38515 0,12.00026 -3.9999998e-7,18.61531 5.384778,24.00011 11.999836,24.00011 18.614894,24.00011 24,18.61531 24,12.00026 24,5.38515 18.614894,0 11.999836,0 Z m 0,2.09227 c 5.484271,0 9.907984,4.42367 9.907984,9.90799 0,5.48425 -4.423713,9.90754 -9.907984,9.90754 -5.4842703,0 -9.9076558,-4.42329 -9.9076558,-9.90754 0,-5.48432 4.4233855,-9.90799 9.9076558,-9.90799 z M 9.5003025,5.50579 c -2.4997191,0 -2.4997043,0 -3.7494633,2.16472 L 4.500991,9.83539 c -1.2498943,2.16476 -1.2498943,2.16487 0,4.32945 l 1.2498482,2.16476 c 1.261759,2.16476 1.2617442,2.16476 3.7494633,2.16476 2.4996545,0 2.4997185,0 3.7495455,-2.16476 h -8.1e-5 c 1.249812,-2.16476 1.249787,-2.16469 0,-4.32934 v -1.1e-4 H 10.750152 8.2505363 l 1.2497662,2.16469 H 12 L 10.750152,16.3296 H 8.2505363 L 7.0006881,14.16484 5.7508392,12.00015 7.0006881,9.83539 8.2505363,7.67051 h 2.4996157 2.499696 L 12,5.50579 Z m 4.9993125,0 1.249849,2.16472 1.249848,2.16488 h -2.499697 l -1.249767,2.16476 h 2.499616 l 1.249848,2.16469 -1.249848,2.16476 -1.249849,2.16476 h 2.499697 l 1.249849,-2.16476 1.249766,-2.16476 c 1.249826,-2.16476 1.249826,-2.16469 0,-4.32945 L 18.249161,7.67051 16.999312,5.50579 Z'
 
@@ -294,56 +295,56 @@ const statCategories = [
     textI18n: () => i18n.t('dashboardBannerGermplasm'),
     text: i18n.t('dashboardBannerGermplasm'),
     path: mdiSprout,
-    link: 'germplasm'
+    link: Pages.germplasm
   },
   {
     value: 'markers',
     textI18n: () => i18n.t('dashboardBannerMarkers'),
     text: i18n.t('dashboardBannerMarkers'),
     path: mdiDna,
-    link: 'markers'
+    link: Pages.markers
   },
   {
     value: 'maps',
     textI18n: () => i18n.t('dashboardBannerMaps'),
     text: i18n.t('dashboardBannerMaps'),
     path: mdiReorderVertical,
-    link: 'maps'
+    link: Pages.maps
   },
   {
     value: 'traits',
     textI18n: () => i18n.t('dashboardBannerTraits'),
     text: i18n.t('dashboardBannerTraits'),
     path: mdiTagTextOutline,
-    link: 'traits'
+    link: Pages.traits
   },
   {
     value: 'locations',
     textI18n: () => i18n.t('dashboardBannerLocations'),
     text: i18n.t('dashboardBannerLocations'),
     path: mdiMapMarker,
-    link: 'locations'
+    link: Pages.locations
   },
   {
     value: 'datasets',
     textI18n: () => i18n.t('dashboardBannerDatasets'),
     text: i18n.t('dashboardBannerDatasets'),
     path: mdiDatabase,
-    link: 'datasets'
+    link: Pages.datasets
   },
   {
     value: 'experiments',
     textI18n: () => i18n.t('dashboardBannerExperiments'),
     text: i18n.t('dashboardBannerExperiments'),
     path: mdiFolderTable,
-    link: 'experiments'
+    link: Pages.experiments
   },
   {
     value: 'datasetsAllelefreq',
     textI18n: () => i18n.t('dashboardBannerDatasetsAllelefreq'),
     text: i18n.t('dashboardBannerDatasetsAllelefreq'),
     path: mdiPulse,
-    link: 'export',
+    link: Pages.export,
     params: { datasetType: 'allelefreq' }
   },
   {
@@ -351,7 +352,7 @@ const statCategories = [
     textI18n: () => i18n.t('dashboardBannerDatasetsGenotype'),
     text: i18n.t('dashboardBannerDatasetsGenotype'),
     path: mdiDna,
-    link: 'export',
+    link: Pages.export,
     params: { datasetType: 'genotype' }
   },
   {
@@ -359,7 +360,7 @@ const statCategories = [
     textI18n: () => i18n.t('dashboardBannerDatasetsTrials'),
     text: i18n.t('dashboardBannerDatasetsTrials'),
     path: mdiShovel,
-    link: 'export',
+    link: Pages.export,
     params: { datasetType: 'trials' }
   },
   {
@@ -367,7 +368,7 @@ const statCategories = [
     textI18n: () => i18n.t('dashboardBannerDatasetsClimate'),
     text: i18n.t('dashboardBannerDatasetsClimate'),
     path: mdiChartSankey,
-    link: 'export',
+    link: Pages.export,
     params: { datasetType: 'climate' }
   },
   {
@@ -375,7 +376,7 @@ const statCategories = [
     textI18n: () => i18n.t('dashboardBannerDatasetsCompound'),
     text: i18n.t('dashboardBannerDatasetsCompound'),
     path: mdiFlask,
-    link: 'export',
+    link: Pages.export,
     params: { datasetType: 'compound' }
   },
   {
@@ -383,7 +384,7 @@ const statCategories = [
     textI18n: () => i18n.t('dashboardBannerDatasetsPedigree'),
     text: i18n.t('dashboardBannerDatasetsPedigree'),
     path: mdiFamilyTree,
-    link: 'export',
+    link: Pages.export,
     params: { datasetType: 'pedigree' }
   },
   {
@@ -391,35 +392,35 @@ const statCategories = [
     textI18n: () => i18n.t('dashboardBannerGroups'),
     text: i18n.t('dashboardBannerGroups'),
     path: mdiGroup,
-    link: 'groups'
+    link: Pages.groups
   },
   {
     value: 'climates',
     textI18n: () => i18n.t('dashboardBannerClimates'),
     text: i18n.t('dashboardBannerClimates'),
     path: mdiWeatherSnowyRainy,
-    link: 'climates'
+    link: Pages.climates
   },
   {
     value: 'compounds',
     textI18n: () => i18n.t('dashboardBannerCompounds'),
     text: i18n.t('dashboardBannerCompounds'),
     path: mdiAtom,
-    link: 'compounds'
+    link: Pages.compounds
   },
   {
     value: 'images',
     textI18n: () => i18n.t('dashboardBannerImages'),
     text: i18n.t('dashboardBannerImages'),
     path: mdiImageMultiple,
-    link: 'images'
+    link: Pages.images
   },
   {
     value: 'fileresources',
     textI18n: () => i18n.t('dashboardBannerFileResources'),
     text: i18n.t('dashboardBannerFileResources'),
     path: mdiFileDownload,
-    link: 'data-resources'
+    link: Pages.dataResources
   }
 ]
 
@@ -455,42 +456,42 @@ const datasetTypes = {
   allelefreq: {
     id: 4,
     path: mdiPulse,
-    pageName: 'export-allelefrequency',
+    pageName: Pages.exportAlleleFrequency,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[0 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeAllelefreq')
   },
   climate: {
     id: 5,
     path: mdiWeatherSnowyRainy,
-    pageName: 'export-climate',
+    pageName: Pages.exportClimate,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[1 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeClimate')
   },
   compound: {
     id: 6,
     path: mdiFlask,
-    pageName: 'export-compounds',
+    pageName: Pages.exportCompounds,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[2 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeCompound')
   },
   genotype: {
     id: 1,
     path: mdiDna,
-    pageName: 'export-genotypes',
+    pageName: Pages.exportGenotypes,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[3 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeGenotype')
   },
   trials: {
     id: 3,
     path: mdiShovel,
-    pageName: 'export-trials',
+    pageName: Pages.exportTraits,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[4 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeTrials')
   },
   pedigree: {
     id: 7,
     path: mdiFamilyTree,
-    // pageName: 'export-pedigrees',
+    // pageName: Pages.export-pedigrees,
     pageName: null,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[5 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypePedigree')

@@ -11,7 +11,7 @@
       <!-- Dataset location -->
       <span v-if="data.item.locationType === 'datasets'">{{ truncateAfterWords(data.item.locationName, 10) }}</span>
       <!-- Collecting site -->
-      <router-link :to="{ name: 'germplasm' }" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'" :title="data.item.locationName">{{ truncateAfterWords(data.item.locationName, 10) }}</router-link>
+      <router-link :to="{ name: Pages.germplasm }" @click.native="navigateToGermplasm(data.item)" event="" v-else-if="data.item.locationType === 'collectingsites'" :title="data.item.locationName">{{ truncateAfterWords(data.item.locationName, 10) }}</router-link>
       <!-- Anything else -->
       <span v-else :title="data.item.locationName">{{ truncateAfterWords(data.item.locationName, 10) }}</span>
     </template>
@@ -46,6 +46,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { locationTypes } from '@/mixins/types'
 import { truncateAfterWords } from '@/mixins/formatting'
+import { Pages } from '@/mixins/pages'
 
 export default {
   name: 'LocationTable',
@@ -70,6 +71,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       locationTypes,
       options: {
         idColumn: 'locationId',
@@ -178,7 +180,7 @@ export default {
       }]
       // Redirect to germplasm page filtered by location
       this.$router.push({
-        name: 'germplasm',
+        name: Pages.germplasm,
         query: {
           'germplasm-filter': JSON.stringify(filter)
         }

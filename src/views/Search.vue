@@ -139,6 +139,7 @@ import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds } from '@/mixin
 import { apiPostLocationTable, apiPostLocationTableIds } from '@/mixins/api/location.js'
 import { apiPostTableExport } from '@/mixins/api/misc.js'
 import { apiPostTrialsDataTable, apiPostTrialsDataTableIds } from '@/mixins/api/trait.js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -355,7 +356,7 @@ export default {
             }
           })
         // Change window URL to reflect new search term
-        window.history.replaceState({}, null, this.$router.resolve({ name: 'search-query', params: { searchTerm: this.searchTerm } }).href)
+        window.history.replaceState({}, null, this.$router.resolve({ name: Pages.searchQuery, params: { searchTerm: this.searchTerm } }).href)
       })
     }
   },

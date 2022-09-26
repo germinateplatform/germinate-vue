@@ -71,6 +71,7 @@ import { templateImportTypes, datasetStates } from '@/mixins/types.js'
 import { hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors.js'
 
 import { mdiArrowRightBoldCircle, mdiUpload } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -107,7 +108,7 @@ export default {
       // Reset the dataset state
       this.datasetStateId = 1
       // Update the URL
-      window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload-type', params: { templateType: newValue } }).href)
+      window.history.replaceState({}, null, this.$router.resolve({ name: Pages.importUploadType, params: { templateType: newValue } }).href)
     }
   },
   methods: {
@@ -143,7 +144,7 @@ export default {
   },
   created: function () {
     if (this.storeServerSettings.dataImportMode === 'NONE') {
-      this.$router.push({ name: '403' })
+      this.$router.push({ name: Pages.fourZeroThree })
     }
 
     const type = this.$route.params.templateType
@@ -155,7 +156,7 @@ export default {
       if (matches && matches.length > 0 && !templateImportTypes[matches[0]].disabled) {
         this.templateType = type
       } else {
-        window.history.replaceState({}, null, this.$router.resolve({ name: 'import-upload' }).href)
+        window.history.replaceState({}, null, this.$router.resolve({ name: Pages.importUpload }).href)
       }
     }
   }

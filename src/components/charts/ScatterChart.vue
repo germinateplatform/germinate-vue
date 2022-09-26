@@ -48,6 +48,7 @@ import { plotlyScatterPlot } from '@/plugins/charts/plotly-scatter-plot.js'
 import { uuidv4 } from '@/mixins/util'
 
 import { mdiCheckboxMarked, mdiCheckboxBlankOutline, mdiHelpCircleOutline } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
@@ -159,7 +160,7 @@ export default {
       this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-clear'))
     },
     redirectToList: function () {
-      this.$router.push({ name: 'marked-items-type', params: { itemType: this.itemType } })
+      this.$router.push({ name: Pages.markedItemsType, params: { itemType: this.itemType } })
     },
     toggleItems: function (add) {
       if (add === true) {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-navbar :type="storeDarkMode ? 'dark' : 'light'" :variant="storeDarkMode ? 'dark' : 'light'" id="app-header" fixed="top" class="border-primary border-bottom">
-      <b-navbar-brand :to="{ name: 'home' }">
+      <b-navbar-brand :to="{ name: Pages.home }">
         <b-img-lazy class="navbar-brand-full" src="img/germinate-square.svg" width="45" height="45" alt="Germinate logo" />
         <b-img-lazy class="navbar-brand-full navbar-brand-text ml-2" src="img/germinate-text.svg" height="22" alt="Germinate logo" />
       </b-navbar-brand>
@@ -68,7 +68,7 @@
     <b-popover target="app-header" show placement="bottom" variant="info" v-if="storeServerSettings && storeServerSettings.showGdprNotification === true && storeCookiesAccepted === null">
       <template v-slot:title>{{ $t('widgetGdprNotificationTitle') }}</template>
       <p>{{ $t('widgetGdprNotificationText') }}</p>
-      <p><router-link :to="{ name: 'cookies' }">{{ $t('widgetGdprNotificationReadMore') }}</router-link></p>
+      <p><router-link :to="{ name: Pages.cookies }">{{ $t('widgetGdprNotificationReadMore') }}</router-link></p>
       <div class="d-flex flex-row">
         <b-button variant="success" class="flex-fill mr-2" @click="acceptCookies(true)">{{ $t('widgetGdprNotificationButtonAccept') }}</b-button>
         <b-button variant="secondary" class="flex-fill" v-b-tooltip:hover :title="$t('tooltipGdprNotificationButtonReject')" @click="acceptCookies(false)">{{ $t('widgetGdprNotificationButtonDecline') }}</b-button>
@@ -106,6 +106,7 @@ import Tour from '@/components/util/Tour'
 import { germinateVersion } from '@/mixins/util'
 
 import { mdiMagnify, mdiHelpCircleOutline, mdiMenu, mdiThemeLightDark, mdiTwitter, mdiGithub, mdiWeb } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -134,6 +135,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       mdiHelpCircleOutline,
       mdiMagnify,
       mdiMenu,
@@ -227,9 +229,9 @@ export default {
       if (this.searchTerm === '💩') {
         // TODO: Easteregg goes here...
       } else if (this.searchTerm && this.searchTerm.length > 0) {
-        this.$router.push({ name: 'search-query', params: { searchTerm: this.searchTerm } })
+        this.$router.push({ name: Pages.searchQuery, params: { searchTerm: this.searchTerm } })
       } else {
-        this.$router.push({ name: 'search' })
+        this.$router.push({ name: Pages.search })
       }
       this.searchTerm = null
     },

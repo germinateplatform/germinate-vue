@@ -76,6 +76,7 @@
 import LocaleDropdown from '@/components/dropdowns/LocaleDropdown'
 
 import { apiSetupCheckGatekeeper, apiSetupCheckDatabase, apiSetupStore } from '@/mixins/api/auth'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -175,7 +176,7 @@ export default {
         dbConfig: this.dbConfig,
         gkConfig: this.gkConfig.used ? this.gkConfig : null
       }, result => {
-        this.$router.push({ name: 'home' })
+        this.$router.push({ name: Pages.home })
       }, {
         codes: [400, 401, 500, 503],
         callback: e => {
@@ -186,7 +187,7 @@ export default {
                 title: this.$t('modalTitleSetupServiceUnavailable'),
                 okTitle: this.$t('genericOk')
               }).then(() => {
-                this.$router.push({ name: 'home' })
+                this.$router.push({ name: Pages.home })
               })
               break
             default:
@@ -214,7 +215,7 @@ export default {
                 title: this.$t('modalTitleSetupServiceUnavailable'),
                 okTitle: this.$t('genericOk')
               }).then(() => {
-                this.$router.push({ name: 'home' })
+                this.$router.push({ name: Pages.home })
               })
               break
             default:
@@ -244,7 +245,7 @@ export default {
                 title: this.$t('modalTitleSetupServiceUnavailable'),
                 okTitle: this.$t('genericOk')
               }).then(() => {
-                this.$router.push({ name: 'home' })
+                this.$router.push({ name: Pages.home })
               })
               break
             default:

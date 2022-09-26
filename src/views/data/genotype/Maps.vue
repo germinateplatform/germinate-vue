@@ -37,7 +37,7 @@
       </b-list-group>
 
       <!-- Export format information -->
-      <p><span class="text-muted" v-html="$t('pageExportFormatsGenotypeText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link> </p>
+      <p><span class="text-muted" v-html="$t('pageExportFormatsGenotypeText')" />&nbsp;<router-link :to="{ name: Pages.aboutExportFormatsType, params: { format: 'genotype' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link> </p>
     </div>
   </div>
 </template>
@@ -53,12 +53,14 @@ import { exportFormats } from '@/mixins/types.js'
 import { downloadBlob } from '@/mixins/util'
 
 import { mdiInformationOutline } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
 export default {
   data: function () {
     return {
+      Pages,
       exportFormats,
       mdiInformationOutline,
       mapId: null,
@@ -129,7 +131,7 @@ export default {
         apiGetMap(mapId, result => {
           if (result && result.data && result.data.length > 0) {
             // Update the window URL to reflect map change
-            window.history.replaceState({}, null, this.$router.resolve({ name: 'map-details', params: { mapId: this.mapId } }).href)
+            window.history.replaceState({}, null, this.$router.resolve({ name: Pages.mapDetails, params: { mapId: this.mapId } }).href)
             this.map = result.data[0]
             this.$nextTick(() => {
               // Update table and chart

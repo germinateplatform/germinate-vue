@@ -9,18 +9,18 @@
                v-on="$listeners">
       <!-- Group id link -->
       <template v-slot:cell(groupId)="data">
-        <router-link v-if="isEditable === true" :to="{ name: 'group-details', params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupId }}</router-link>
-        <router-link v-else :to="{ name: 'group-details', params: { groupId: data.item.groupId } }">{{ data.item.groupId }}</router-link>
+        <router-link v-if="isEditable === true" :to="{ name: Pages.groupDetails, params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupId }}</router-link>
+        <router-link v-else :to="{ name: Pages.groupDetails, params: { groupId: data.item.groupId } }">{{ data.item.groupId }}</router-link>
       </template>
       <!-- Group name link -->
       <template v-slot:cell(groupName)="data">
-        <router-link v-if="isEditable === true" :to="{ name: 'group-details', params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupName }}</router-link>
-        <router-link v-else :to="{ name: 'group-details', params: { groupId: data.item.groupId } }">{{ data.item.groupName }}</router-link>
+        <router-link v-if="isEditable === true" :to="{ name: Pages.groupDetails, params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupName }}</router-link>
+        <router-link v-else :to="{ name: Pages.groupDetails, params: { groupId: data.item.groupId } }">{{ data.item.groupName }}</router-link>
       </template>
       <!-- Group description link -->
       <template v-slot:cell(groupDescription)="data">
-        <router-link v-if="isEditable === true" :to="{ name: 'group-details', params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupDescription }}</router-link>
-        <router-link v-else :to="{ name: 'group-details', params: { groupId: data.item.groupId } }">{{ data.item.groupDescription }}</router-link>
+        <router-link v-if="isEditable === true" :to="{ name: Pages.groupDetails, params: { groupId: data.item.groupId } }" event="" @click.native.prevent="$emit('group-selected', data.item.groupId)">{{ data.item.groupDescription }}</router-link>
+        <router-link v-else :to="{ name: Pages.groupDetails, params: { groupId: data.item.groupId } }">{{ data.item.groupDescription }}</router-link>
       </template>
       <!-- Group type icon -->
       <template v-slot:cell(groupType)="data">
@@ -47,6 +47,7 @@ import defaultProps from '@/const/table-props.js'
 import { groupTypes } from '@/mixins/types.js'
 import { getHighContrastTextColor } from '@/mixins/colors'
 import { getNumberWithSuffix } from '@/mixins/formatting'
+import { Pages } from '@/mixins/pages'
 
 import { mdiRenameBox, mdiDelete } from '@mdi/js'
 
@@ -62,6 +63,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       groupTypes,
       mdiRenameBox,
       mdiDelete,

@@ -10,7 +10,7 @@
         <h5 v-for="itemType in Object.keys(markedItemTypes)"
             :key="`item-type-${itemType}`"
             class="d-flex align-items-stretch mx-1 marked-item-badges">
-          <router-link :to="{ name: 'marked-items-type', params: { itemType: itemType } }" class="d-flex align-items-stretch" v-b-tooltip="`${markedItemTypes[itemType].text()}: ${storeMarkedIds[itemType].length.toLocaleString()}`">
+          <router-link :to="{ name: Pages.markedItemsType, params: { itemType: itemType } }" class="d-flex align-items-stretch" v-b-tooltip="`${markedItemTypes[itemType].text()}: ${storeMarkedIds[itemType].length.toLocaleString()}`">
             <b-badge :style="{ backgroundColor: markedItemTypes[itemType].color(), color: getHighContrastTextColor(markedItemTypes[itemType].color()) }">
               <MdiIcon :path="markedItemTypes[itemType].path" />
             </b-badge>
@@ -34,6 +34,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import { getHighContrastTextColor } from '@/mixins/colors'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { markedItemTypes } from '@/mixins/types'
+import { Pages } from '@/mixins/pages'
 
 import { mdiDelete } from '@mdi/js'
 
@@ -45,6 +46,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       markedItemTypes,
       mdiDelete
     }

@@ -80,6 +80,7 @@ import { apiPostTableExport } from '@/mixins/api/misc.js'
 import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors.js'
 
 import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiEye, mdiHelpCircle, mdiGrid, mdiMapPlus, mdiTableSearch } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -232,7 +233,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'trials' } }))
+      this.$nextTick(() => this.$router.push({ name: Pages.export, params: { datasetType: 'trials' } }))
     },
     isAccepted: function (dataset) {
       if (this.storeToken) {

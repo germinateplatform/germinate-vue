@@ -48,6 +48,7 @@ import { downloadBlob } from '@/mixins/util'
 import MdiIcon from '@/components/icons/MdiIcon'
 
 import { mdiPageNext, mdiDownload, mdiDelete, mdiDatabase } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -155,7 +156,7 @@ export default {
         values: [fileresource.fileresourceId]
       }]
       this.$router.push({
-        name: 'datasets',
+        name: Pages.datasets,
         query: {
           'datasets-filter': JSON.stringify(filter)
         }

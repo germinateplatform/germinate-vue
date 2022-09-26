@@ -40,7 +40,7 @@
         <dd class="col-8 location-name">
           <template v-if="showLinks">
             <span v-if="location.locationType === 'datasets'">{{ location.locationName }}</span>
-            <router-link :to="{ name: 'germplasm' }" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
+            <router-link :to="{ name: Pages.germplasm }" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
             <span v-else>{{ location.locationName }}</span>
           </template>
           <span v-else v-html="location.locationName" />
@@ -82,6 +82,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import 'leaflet-easybutton/src/easy-button.css'
+import { Pages } from '@/mixins/pages'
 
 require('leaflet.heat')
 require('leaflet.sync')
@@ -101,6 +102,7 @@ L.Icon.Default.mergeOptions({
 export default {
   data: function () {
     return {
+      Pages,
       locationTypes,
       loading: false,
       loadingProgress: 0,
@@ -300,7 +302,7 @@ export default {
         values: [location.locationName]
       }]
       this.$router.push({
-        name: 'germplasm',
+        name: Pages.germplasm,
         query: {
           'germplasm-filter': JSON.stringify(filter)
         }

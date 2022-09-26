@@ -7,11 +7,11 @@
             v-on="$listeners">
     <!-- Germplasm id link -->
     <template v-slot:cell(germplasmId)="data">
-      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
+      <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
     </template>
     <!-- Germplasm name link -->
     <template v-slot:cell(germplasmName)="data">
-      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
+      <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
     </template>
     <!-- Synonyms -->
     <template v-slot:cell(germplasmSynonyms)="data">
@@ -19,7 +19,7 @@
     </template>
     <!-- Germplasm GID link -->
     <template v-slot:cell(germplasmGid)="data">
-      <router-link :to="{ name: 'passport', params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
+      <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
     </template>
     <!-- Entity type icon -->
     <template v-slot:cell(entityType)="data">
@@ -32,7 +32,8 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import { entityTypes } from '@/mixins/types.js'
+import { entityTypes } from '@/mixins/types'
+import { Pages } from '@/mixins/pages'
 
 export default {
   name: 'CompoundDataTable',
@@ -41,6 +42,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       entityTypes,
       options: {
         idColumn: 'germplasmId',

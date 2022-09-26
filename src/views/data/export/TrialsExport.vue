@@ -97,6 +97,7 @@ import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/co
 import Vue from 'vue'
 
 import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiHelpCircle, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -285,7 +286,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'trials' } }))
+      this.$nextTick(() => this.$router.push({ name: Pages.export, params: { datasetType: 'trials' } }))
     },
     isAccepted: function (dataset) {
       if (this.storeToken) {

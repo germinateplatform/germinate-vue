@@ -4,6 +4,9 @@ import auth from '@/auth'
 import store from '@/store'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import { userIsAtLeast } from '@/mixins/api/auth'
+import { Pages } from '@/mixins/pages'
+
+console.log(Pages, Pages.home)
 
 const emitter = require('tiny-emitter/instance')
 
@@ -48,12 +51,12 @@ function requireAuth (to, from, next) {
 const routes = [
   {
     path: '/login',
-    name: 'login',
+    name: Pages.login,
     component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
   },
   {
     path: '/setup',
-    name: 'setup',
+    name: Pages.setup,
     component: () => import(/* webpackChunkName: "login" */ '@/views/Setup.vue')
   },
   {
@@ -64,13 +67,13 @@ const routes = [
     children: [
       {
         path: '/home',
-        name: 'home',
+        name: Pages.home,
         component: () => import(/* webpackChunkName: "home" */ '@/views/HomeView'),
         beforeEnter: requireAuth
       },
       {
         path: 'cookies',
-        name: 'cookies',
+        name: Pages.cookies,
         component: () => import(/* webpackChunkName: "cookies" */ '@/views/Cookies'),
         beforeEnter: requireAuth
       },
@@ -84,14 +87,14 @@ const routes = [
         children: [
           {
             path: 'user-permissions',
-            name: 'user-permissions',
+            name: Pages.userPermissions,
             meta: { minUserType: 'Administrator' },
             component: () => import(/* webpackChunkName: "user-permissions" */ '@/views/admin/UserPermissions.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'germinate-settings',
-            name: 'germinate-settings',
+            name: Pages.germinateSettings,
             meta: { minUserType: 'Administrator' },
             component: () => import(/* webpackChunkName: "germinate-settings" */ '@/views/admin/GerminateSettings.vue'),
             beforeEnter: requireAuth
@@ -108,20 +111,20 @@ const routes = [
         children: [
           {
             path: 'germplasm',
-            name: 'germplasm',
+            name: Pages.germplasm,
             component: () => import(/* webpackChunkName: "germplasm" */ '@/views/data/germplasm/Germplasm.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'germplasm-unifier',
-            name: 'germplasm-unifier',
+            name: Pages.germplasmUnifier,
             meta: { minUserType: 'Data Curator' },
             component: () => import(/* webpackChunkName: "germplasm-unifier" */ '@/views/data/germplasm/GermplasmUnifier.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'germplasm/:germplasmId',
-            name: 'passport',
+            name: Pages.passport,
             component: () => import(/* webpackChunkName: "passport" */ '@/views/data/germplasm/Passport.vue'),
             beforeEnter: requireAuth
           },
@@ -135,13 +138,13 @@ const routes = [
             children: [
               {
                 path: 'climates',
-                name: 'climates',
+                name: Pages.climates,
                 component: () => import(/* webpackChunkName: "climates" */ '@/views/data/climate/Climates.vue'),
                 beforeEnter: requireAuth
               },
               {
                 path: 'climates/:climateId',
-                name: 'climate-details',
+                name: Pages.climateDetails,
                 component: () => import(/* webpackChunkName: "climate-details" */ '@/views/data/climate/ClimateDetails.vue'),
                 beforeEnter: requireAuth
               }
@@ -157,13 +160,13 @@ const routes = [
             children: [
               {
                 path: 'compounds',
-                name: 'compounds',
+                name: Pages.compounds,
                 component: () => import(/* webpackChunkName: "compounds" */'@/views/data/compound/Compounds.vue'),
                 beforeEnter: requireAuth
               },
               {
                 path: 'compounds/:compoundId',
-                name: 'compound-details',
+                name: Pages.compoundDetails,
                 component: () => import(/* webpackChunkName: "compound-details" */'@/views/data/compound/CompoundDetails.vue'),
                 beforeEnter: requireAuth
               }
@@ -179,13 +182,13 @@ const routes = [
             children: [
               {
                 path: 'traits',
-                name: 'traits',
+                name: Pages.traits,
                 component: () => import(/* webpackChunkName: "traits" */ '@/views/data/trials/Traits.vue'),
                 beforeEnter: requireAuth
               },
               {
                 path: 'traits/:traitId',
-                name: 'trait-details',
+                name: Pages.traitDetails,
                 component: () => import(/* webpackChunkName: "trait-details" */ '@/views/data/trials/TraitDetails.vue'),
                 beforeEnter: requireAuth
               }
@@ -201,25 +204,25 @@ const routes = [
             children: [
               {
                 path: 'markers',
-                name: 'markers',
+                name: Pages.markers,
                 component: () => import(/* webpackChunkName: "markers" */ '@/views/data/genotype/Markers.vue'),
                 beforeEnter: requireAuth
               },
               {
                 path: 'marker/:markerId',
-                name: 'marker',
+                name: Pages.markerDetails,
                 component: () => import(/* webpackChunkName: "marker-details" */ '@/views/data/genotype/Marker.vue'),
                 beforeEnter: requireAuth
               },
               {
                 path: 'maps',
-                name: 'maps',
+                name: Pages.maps,
                 component: () => import(/* webpackChunkName: "maps" */ '@/views/data/genotype/Maps.vue'),
                 beforeEnter: requireAuth
               },
               {
                 path: 'maps/:mapId',
-                name: 'map-details',
+                name: Pages.mapDetails,
                 component: () => import(/* webpackChunkName: "map-details" */ '@/views/data/genotype/Maps.vue'),
                 beforeEnter: requireAuth
               }
@@ -227,43 +230,43 @@ const routes = [
           },
           {
             path: 'export/cross',
-            name: 'export-cross-comparison',
+            name: Pages.exportCrossComparison,
             component: () => import(/* webpackChunkName: "export-cross-data" */'@/views/data/export/CrossDataTypeComparison.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'export/:datasetType',
-            name: 'export',
+            name: Pages.export,
             component: () => import(/* webpackChunkName: "dataset-selector" */ '@/views/DatasetSelector.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'export/genotype/:datasetIds',
-            name: 'export-genotypes',
+            name: Pages.exportGenotypes,
             component: () => import(/* webpackChunkName: "genotype-export" */ '@/views/data/export/GenotypeExport.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'export/compounds/:datasetIds',
-            name: 'export-compounds',
+            name: Pages.exportCompounds,
             component: () => import(/* webpackChunkName: "compound-export" */'@/views/data/export/CompoundExport.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'export/climate/:datasetIds',
-            name: 'export-climate',
+            name: Pages.exportClimates,
             component: () => import(/* webpackChunkName: "climate-export" */'@/views/data/export/ClimateExport.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'export/trials/:datasetIds',
-            name: 'export-trials',
+            name: Pages.exportTraits,
             component: () => import(/* webpackChunkName: "trials-export" */'@/views/data/export/TrialsExport.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'export/allelefreq/:datasetIds',
-            name: 'export-allelefrequency',
+            name: Pages.exportAlleleFrequency,
             component: () => import(/* webpackChunkName: "allelefreq-export" */ '@/views/data/export/AlleleFrequencyExport.vue'),
             beforeEnter: requireAuth
           },
@@ -277,13 +280,13 @@ const routes = [
             children: [
               {
                 path: 'locations',
-                name: 'locations',
+                name: Pages.locations,
                 component: () => import(/* webpackChunkName: "locations" */ '@/views/data/geography/Locations.vue'),
                 beforeEnter: requireAuth
               },
               {
                 path: 'geographic-search',
-                name: 'geographic-search',
+                name: Pages.geographicSearch,
                 component: () => import(/* webpackChunkName: "geographic-search" */'@/views/data/geography/GeographicSearch.vue'),
                 beforeEnter: requireAuth
               }
@@ -291,31 +294,31 @@ const routes = [
           },
           {
             path: 'datasets',
-            name: 'datasets',
+            name: Pages.datasets,
             component: () => import(/* webpackChunkName: "datasets" */ '@/views/data/Datasets.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'experiments',
-            name: 'experiments',
+            name: Pages.experiments,
             component: () => import(/* webpackChunkName: "experiments" */ '@/views/data/Experiments.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'experiments/:experimentId',
-            name: 'experiment-details',
+            name: Pages.experimentDetails,
             component: () => import(/* webpackChunkName: "experiment-details" */ '@/views/data/ExperimentDetails.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'data-resources',
-            name: 'data-resources',
+            name: Pages.dataResources,
             component: () => import(/* webpackChunkName: "data-resources" */ '@/views/data/DataResources.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'statistics',
-            name: 'statistics',
+            name: Pages.statistics,
             component: () => import(/* webpackChunkName: "data-statistics" */ '@/views/data/DataStatistics.vue'),
             beforeEnter: requireAuth
           }
@@ -323,19 +326,19 @@ const routes = [
       },
       {
         path: 'images',
-        name: 'images',
+        name: Pages.images,
         component: () => import(/* webpackChunkName: "images" */ '@/views/Images.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'marked-items',
-        name: 'marked-items',
+        name: Pages.markedItems,
         component: () => import(/* webpackChunkName: "marked-items" */ '@/views/MarkedItemsView.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'marked-items/:itemType',
-        name: 'marked-items-type',
+        name: Pages.markedItemsType,
         component: () => import(/* webpackChunkName: "marked-items-type" */ '@/views/MarkedItemsView.vue'),
         beforeEnter: requireAuth
       },
@@ -349,14 +352,14 @@ const routes = [
         children: [
           {
             path: 'data-upload',
-            name: 'import-upload',
+            name: Pages.importUpload,
             meta: { minUserType: 'Data Curator' },
             component: () => import(/* webpackChunkName: "data-uploader" */ '@/views/data/DataUploader.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'data-upload/:templateType',
-            name: 'import-upload-type',
+            name: Pages.importUploadType,
             meta: { minUserType: 'Data Curator' },
             component: () => import(/* webpackChunkName: "data-uploader-type" */ '@/views/data/DataUploader.vue'),
             beforeEnter: requireAuth
@@ -365,43 +368,43 @@ const routes = [
       },
       {
         path: 'search',
-        name: 'search',
+        name: Pages.search,
         component: () => import(/* webpackChunkName: "search" */ '@/views/Search.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'search/:searchTerm',
-        name: 'search-query',
+        name: Pages.searchQuery,
         component: () => import(/* webpackChunkName: "search-term" */ '@/views/Search.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'publications',
-        name: 'publications',
+        name: Pages.publications,
         component: () => import(/* webpackChunkName: "publications" */ '@/views/Publications.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'publications/:publicationId',
-        name: 'publication-details',
+        name: Pages.publicationDetails,
         component: () => import(/* webpackChunkName: "publication-details" */ '@/views/Publications.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'groups',
-        name: 'groups',
+        name: Pages.groups,
         component: () => import(/* webpackChunkName: "groups" */ '@/views/Groups.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'groups/upload/:file',
-        name: 'group-upload',
+        name: Pages.groupUpload,
         component: () => import(/* webpackChunkName: "group-upload" */ '@/views/GroupUpload.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'groups/:groupId',
-        name: 'group-details',
+        name: Pages.groupDetails,
         component: () => import(/* webpackChunkName: "group-details" */ '@/views/Groups.vue'),
         beforeEnter: requireAuth
       },
@@ -415,26 +418,26 @@ const routes = [
         children: [
           {
             path: 'germinate',
-            name: 'about-germinate',
+            name: Pages.aboutGerminate,
             meta: { canBeHidden: false },
             component: () => import(/* webpackChunkName: "about-germinate" */ '@/views/about/AboutGerminate.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'project',
-            name: 'about-project',
+            name: Pages.aboutProject,
             component: () => import(/* webpackChunkName: "about-project" */ '@/views/about/AboutProject.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'export-formats',
-            name: 'about-export-formats',
+            name: Pages.aboutExportFormats,
             component: () => import(/* webpackChunkName: "about-export-formats" */ '@/views/about/ExportFormats.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'export-formats/:format',
-            name: 'about-export-formats-specific',
+            name: Pages.aboutExportFormatsType,
             component: () => import(/* webpackChunkName: "about-export-formats-detail" */ '@/views/about/ExportFormats.vue'),
             beforeEnter: requireAuth
           }
@@ -442,17 +445,17 @@ const routes = [
       },
       {
         path: '403',
-        name: '403',
+        name: Pages.fourZeroThree,
         component: () => import(/* webpackChunkName: "error-403" */ '@/views/error/Page403.vue')
       },
       {
         path: '404',
-        name: '404',
+        name: Pages.fourZeroFour,
         component: () => import(/* webpackChunkName: "error-403" */ '@/views/error/Page404.vue')
       },
       {
         path: '*',
-        name: 'fallback',
+        name: Pages.fallback,
         redirect: '/home'
       }
     ]

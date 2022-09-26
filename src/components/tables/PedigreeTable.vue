@@ -11,27 +11,27 @@
       </template>
       <!-- Parent id link -->
       <template v-slot:cell(parentId)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.parentId } }">{{ data.item.parentId }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.parentId } }">{{ data.item.parentId }}</router-link>
       </template>
       <!-- Parent GID link -->
       <template v-slot:cell(parentGid)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.parentId } }">{{ data.item.parentGid }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.parentId } }">{{ data.item.parentGid }}</router-link>
       </template>
       <!-- Parent name link -->
       <template v-slot:cell(parentName)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.parentId } }">{{ data.item.parentName }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.parentId } }">{{ data.item.parentName }}</router-link>
       </template>
       <!-- Child id link -->
       <template v-slot:cell(childId)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.childId } }">{{ data.item.childId }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.childId } }">{{ data.item.childId }}</router-link>
       </template>
       <!-- Child GID link -->
       <template v-slot:cell(childGid)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.childId } }">{{ data.item.childGid }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.childId } }">{{ data.item.childGid }}</router-link>
       </template>
       <!-- Child name link -->
       <template v-slot:cell(childName)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.childId } }">{{ data.item.childName }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.childId } }">{{ data.item.childName }}</router-link>
       </template>
     </BaseTable>
   </div>
@@ -42,6 +42,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { mdiHelpCircle } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -53,6 +54,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       mdiHelpCircle,
       options: {
         idColumn: 'parentId',

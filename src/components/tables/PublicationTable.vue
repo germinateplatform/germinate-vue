@@ -7,12 +7,12 @@
               ref="publicationTable"
               v-on="$listeners">
       <template v-slot:cell(publicationId)="data">
-        <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId })">{{ data.item.publicationId }}</router-link>
+        <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: Pages.publicationDetails, params: { publicationId: data.item.publicationId } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId })">{{ data.item.publicationId }}</router-link>
         <span v-else>{{ data.item.publicationId }}</span>
       </template>
       <template v-slot:cell(publicationName)="data">
         <template v-if="data.item.publicationFallbackCache">
-          <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: 'publication-details', params: { publicationId: data.item.publicationId } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId })" v-html="data.item.publicationFallbackCache.title" />
+          <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: Pages.publicationDetails, params: { publicationId: data.item.publicationId } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId })" v-html="data.item.publicationFallbackCache.title" />
           <span v-else v-html="data.item.publicationFallbackCache.title" />
         </template>
       </template>
@@ -54,6 +54,7 @@ import defaultProps from '@/const/table-props.js'
 
 import { publicationTypes } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
+import { Pages } from '@/mixins/pages'
 
 import { mdiOpenInNew } from '@mdi/js'
 
@@ -64,6 +65,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       mdiOpenInNew,
       publicationTypes,
       options: {

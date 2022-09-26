@@ -9,11 +9,11 @@
       <!-- Synonyms -->
       <!-- Marker id link -->
       <template v-slot:cell(markerId)="data">
-        <router-link :to="{name: 'marker', params: { markerId: data.item.markerId }}">{{ data.item.markerId }}</router-link>
+        <router-link :to="{name: Pages.markerDetails, params: { markerId: data.item.markerId }}">{{ data.item.markerId }}</router-link>
       </template>
       <!-- Marker name link -->
       <template v-slot:cell(markerName)="data">
-        <router-link :to="{name: 'marker', params: { markerId: data.item.markerId }}">{{ data.item.markerName }}</router-link>
+        <router-link :to="{name: Pages.markerDetails, params: { markerId: data.item.markerId }}">{{ data.item.markerName }}</router-link>
       </template>
       <template v-slot:cell(synonyms)="data">
         <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
@@ -26,6 +26,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { getNumberWithSuffix } from '@/mixins/formatting'
+import { Pages } from '@/mixins/pages'
 
 export default {
   name: 'MapDefinitionTable',
@@ -34,6 +35,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       options: {
         idColumn: 'markerId',
         tableName: 'mapDefinitions'

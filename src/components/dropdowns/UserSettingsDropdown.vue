@@ -7,17 +7,17 @@
     <!-- Administrators get to see additional items -->
     <template v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
       <b-dropdown-header class="text-center border-bottom mb-2"><strong>{{ $t('dropdownUserSettingsAdvancedSettings') }}</strong></b-dropdown-header>
-      <b-dropdown-item :to="{ name: 'germinate-settings' }" v-if="userIsAtLeast(storeToken.userType, 'Administrator')"><span class="text-warning"><MdiIcon :path="mdiCog"/></span> {{ $t('dropdownUserSettingsGerminateSettings') }}</b-dropdown-item>
-      <b-dropdown-item :to="{ name: 'user-permissions' }" v-if="userIsAtLeast(storeToken.userType, 'Administrator')"><span class="text-warning"><MdiIcon :path="mdiAccountKey"/></span> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
-      <b-dropdown-item v-if="storeServerSettings.dataImportMode !== 'NONE'" :to="{ name: 'import-upload' }"><span class="text-warning"><MdiIcon :path="mdiUpload"/></span> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
-      <b-dropdown-item :to="{ name: 'germplasm-unifier' }"><span class="text-warning"><MdiIcon :path="mdiSetMerge"/></span> {{ $t('dropdownUserSettingsGermplasmUnifier') }}</b-dropdown-item>
+      <b-dropdown-item :to="{ name: Pages.germinateSettings }" v-if="userIsAtLeast(storeToken.userType, 'Administrator')"><span class="text-warning"><MdiIcon :path="mdiCog"/></span> {{ $t('dropdownUserSettingsGerminateSettings') }}</b-dropdown-item>
+      <b-dropdown-item :to="{ name: Pages.userPermissions }" v-if="userIsAtLeast(storeToken.userType, 'Administrator')"><span class="text-warning"><MdiIcon :path="mdiAccountKey"/></span> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
+      <b-dropdown-item v-if="storeServerSettings.dataImportMode !== 'NONE'" :to="{ name: Pages.importUpload }"><span class="text-warning"><MdiIcon :path="mdiUpload"/></span> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
+      <b-dropdown-item :to="{ name: Pages.germplasmUnifier }"><span class="text-warning"><MdiIcon :path="mdiSetMerge"/></span> {{ $t('dropdownUserSettingsGermplasmUnifier') }}</b-dropdown-item>
     </template>
     <!-- Settings -->
     <b-dropdown-header class="text-center border-bottom mb-2"><strong>{{ $t('dropdownUserSettings') }}<span v-if="storeToken">: {{ storeToken.username }}</span></strong></b-dropdown-header>
     <!-- Logout -->
     <b-dropdown-item @click="signOut" v-if="storeToken && storeToken.token"><span class="text-danger"><MdiIcon :path="mdiLogoutVariant" /></span> {{ $t('dropdownUserSettingsLogout') }}</b-dropdown-item>
     <!-- Login -->
-    <b-dropdown-item :to="{ name: 'login' }" v-else><span class="text-success"><MdiIcon :path="mdiLoginVariant" /></span> {{ $t('dropdownUserSettingsLogin') }}</b-dropdown-item>
+    <b-dropdown-item :to="{ name: Pages.login }" v-else><span class="text-success"><MdiIcon :path="mdiLoginVariant" /></span> {{ $t('dropdownUserSettingsLogin') }}</b-dropdown-item>
   </b-nav-item-dropdown>
 </template>
 
@@ -28,6 +28,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import { userIsAtLeast, apiDeleteToken, apiPostToken } from '@/mixins/api/auth'
 
 import { mdiAccount, mdiCog, mdiAccountKey, mdiUpload, mdiSetMerge, mdiLogoutVariant, mdiLoginVariant } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -37,6 +38,7 @@ export default {
   },
   data: () => {
     return {
+      Pages,
       mdiAccount,
       mdiCog,
       mdiAccountKey,
@@ -84,9 +86,9 @@ export default {
         this.$store.dispatch('setToken', null)
 
         if (this.storeServerSettings.authMode === 'FULL') {
-          this.$router.push({ name: 'login' })
+          this.$router.push({ name: Pages.login })
         } else {
-          this.$router.push({ name: 'home' })
+          this.$router.push({ name: Pages.home })
         }
 
         this.$gtag.event('login', 'logout')

@@ -38,6 +38,7 @@ import { apiPostTableExport } from '@/mixins/api/misc'
 import { markedItemTypes } from '@/mixins/types'
 
 import { mdiOpenInNew } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 export default {
   name: 'marked-item-view',
@@ -62,11 +63,11 @@ export default {
       // Update the URL
       if (this.isPopup === false) {
         if (newValue === markedItemTypes.germplasm) {
-          window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'germplasm' } }).href)
+          window.history.replaceState({}, null, this.$router.resolve({ name: Pages.markedItemsType, params: { itemType: 'germplasm' } }).href)
         } else if (newValue === markedItemTypes.markers) {
-          window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'markers' } }).href)
+          window.history.replaceState({}, null, this.$router.resolve({ name: Pages.markedItemsType, params: { itemType: 'markers' } }).href)
         } else if (newValue === markedItemTypes.locations) {
-          window.history.replaceState({}, null, this.$router.resolve({ name: 'marked-items-type', params: { itemType: 'locations' } }).href)
+          window.history.replaceState({}, null, this.$router.resolve({ name: Pages.markedItemsType, params: { itemType: 'locations' } }).href)
         }
       }
     },

@@ -12,6 +12,7 @@ import BaseChart from '@/components/charts/BaseChart'
 import { plotlySunburstChart } from '@/plugins/charts/plotly-sunburst-chart.js'
 import { apiGetStatsFile } from '@/mixins/api/stats.js'
 import { getColors } from '@/mixins/colors.js'
+import { Pages } from '@/mixins/pages'
 const d3Select = require('d3-selection')
 const d3Dsv = require('d3-dsv')
 
@@ -146,7 +147,7 @@ export default {
 
               // Navigate to the germplasm page
               this.$router.push({
-                name: 'germplasm',
+                name: Pages.germplasm,
                 query: {
                   'germplasm-filter': JSON.stringify(query)
                 }

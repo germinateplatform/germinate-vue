@@ -8,15 +8,15 @@
                v-on="$listeners">
       <!-- Compound id link -->
       <template v-slot:cell(compoundId)="data">
-        <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.compoundId } }">{{ data.item.compoundId }}</router-link>
+        <router-link :to="{ name: Pages.compoundDetails, params: { compoundId: data.item.compoundId } }">{{ data.item.compoundId }}</router-link>
       </template>
       <!-- Compound name link -->
       <template v-slot:cell(compoundName)="data">
-        <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.compoundId } }">{{ data.item.compoundName }}</router-link>
+        <router-link :to="{ name: Pages.compoundDetails, params: { compoundId: data.item.compoundId } }">{{ data.item.compoundName }}</router-link>
       </template>
       <!-- Compound description link -->
       <template v-slot:cell(compoundDescription)="data">
-        <router-link :to="{ name: 'compound-details', params: { compoundId: data.item.compoundId } }">{{ data.item.compoundDescription }}</router-link>
+        <router-link :to="{ name: Pages.compoundDetails, params: { compoundId: data.item.compoundId } }">{{ data.item.compoundDescription }}</router-link>
       </template>
       <!-- Compound synonyms -->
       <template v-slot:cell(synonyms)="data">
@@ -30,6 +30,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { getNumberWithSuffix } from '@/mixins/formatting'
+import { Pages } from '@/mixins/pages'
 
 export default {
   name: 'CompoundTable',
@@ -38,6 +39,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       options: {
         idColumn: 'compoundId',
         tableName: 'compounds'

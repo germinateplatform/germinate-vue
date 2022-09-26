@@ -54,10 +54,10 @@
           <b-form-checkbox v-model="generateFlapjackProject" switch>
             {{ generateFlapjackProject === true ? $t('genericYes') : $t('genericNo') }}
           </b-form-checkbox>
-          <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link> </p>
+          <p><span class="text-muted" v-html="$t('pageExportFormatsFlapjackText')" />&nbsp;<router-link :to="{ name: Pages.aboutExportFormatsType, params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link> </p>
           <template v-if="datasetType === 'genotype'">
             <h2>{{$t('pageGenotypesExportEnableHapmapTitle') }}</h2>
-            <p><span v-html="$t('pageGenotypesExportEnableHapmapText')" /> &nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link></p>
+            <p><span v-html="$t('pageGenotypesExportEnableHapmapText')" /> &nbsp;<router-link :to="{ name: Pages.aboutExportFormatsType, params: { format: 'genotype' } }" v-b-modal.exportFormatModal @click.native.prevent.stop event="" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline" /></router-link></p>
             <b-form-checkbox v-model="generateHapMap" switch>
               {{ generateHapMap === true ? $t('genericYes') : $t('genericNo') }}
             </b-form-checkbox>
@@ -95,6 +95,7 @@ import { apiPostGenotypeDatasetSummary, apiPostGenotypeDatasetExport, apiPostDat
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { downloadBlob } from '@/mixins/util'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
+import { Pages } from '@/mixins/pages'
 
 import { mdiArrowRightBox, mdiInformationOutline } from '@mdi/js'
 
@@ -113,6 +114,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       mdiArrowRightBox,
       mdiInformationOutline,
       markerGroups: null,

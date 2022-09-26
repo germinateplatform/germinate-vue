@@ -46,6 +46,7 @@ import { apiPostPublicationDatasetTable } from '@/mixins/api/dataset'
 import { apiPostPublicationGermplasmTable } from '@/mixins/api/germplasm'
 import { apiPostPublicationGroupTable } from '@/mixins/api/group'
 import { apiPostPublicationsTable } from '@/mixins/api/misc'
+import { Pages } from '@/mixins/pages'
 
 const Cite = require('citation-js')
 
@@ -131,7 +132,7 @@ export default {
 
       this.publicationId = config.publicationId
 
-      window.history.replaceState({}, null, this.$router.resolve({ name: 'publication-details', params: { publicationId: config.publicationId } }).href)
+      window.history.replaceState({}, null, this.$router.resolve({ name: Pages.publicationDetails, params: { publicationId: config.publicationId } }).href)
 
       apiPostPublicationsTable(queryParams, result => {
         if (result && result.data && result.data.length > 0) {

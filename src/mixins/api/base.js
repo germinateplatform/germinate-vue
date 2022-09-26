@@ -3,6 +3,7 @@ import store from '@/store'
 import router from '@/router'
 import { i18n } from '@/plugins/i18n.js'
 import { exception } from 'vue-gtag'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -59,19 +60,15 @@ const handleError = (error) => {
       case 401:
         message = i18n.t('httpErrorFourOOne')
         store.dispatch('setToken', null)
-        if (authMode === 'FULL') {
-          router.push({ name: 'login' })
-        } else if (authMode === 'SELECTIVE') {
-          router.push({ name: 'login-selective' })
+        if (authMode === 'FULL' || authMode === 'SELECTIVE') {
+          router.push({ name: Pages.login })
         }
         return
       case 403: {
         message = i18n.t('httpErrorFourOThree')
         store.dispatch('setToken', null)
-        if (authMode === 'FULL') {
-          router.push({ name: 'login' })
-        } else if (authMode === 'SELECTIVE') {
-          router.push({ name: 'login-selective' })
+        if (authMode === 'FULL' || authMode === 'SELECTIVE') {
+          router.push({ name: Pages.login })
         }
         return
       }
@@ -150,10 +147,8 @@ const authForm = ({ url = null, formData, success = null, error = { codes: [], c
         if (err.response.status === 403) {
           store.dispatch('setToken', null)
           const authMode = store.getters.storeServerSettings.authMode
-          if (authMode === 'FULL') {
-            router.push({ name: 'login' })
-          } else if (authMode === 'SELECTIVE') {
-            router.push({ name: 'login-selective' })
+          if (authMode === 'FULL' || authMode === 'SELECTIVE') {
+            router.push({ name: Pages.login })
           }
         } else if (process.env.NODE_ENV === 'development') {
           console.error(err)
@@ -256,10 +251,8 @@ const authAxios = ({ url = null, method = 'GET', data = null, formData = null, d
         if (err.response.status === 403) {
           store.dispatch('setToken', null)
           const authMode = store.getters.storeServerSettings.authMode
-          if (authMode === 'FULL') {
-            router.push({ name: 'login' })
-          } else if (authMode === 'SELECTIVE') {
-            router.push({ name: 'login-selective' })
+          if (authMode === 'FULL' || authMode === 'SELECTIVE') {
+            router.push({ name: Pages.login })
           }
         } else if (process.env.NODE_ENV === 'development') {
           console.error(err)

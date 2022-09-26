@@ -7,7 +7,7 @@
     <b-badge v-for="(tag, name) in tags"
              :key="`export-format-tag-${name}`"
              class="dispay-inline mr-2"
-             :to="{ name: 'about-export-formats-specific', params: { format: name } }"
+             :to="{ name: Pages.aboutExportFormatsType, params: { format: name } }"
              :style="`background: ${getBackgroundColor(name)}; color: ${getTextColor(name)}`"
              event=""
              @click.prevent="selectTag(name)">
@@ -52,6 +52,7 @@ import { exportFormats } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
 
 import { mdiTag, mdiDownload } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 export default {
   components: {
@@ -59,6 +60,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       mdiTag,
       mdiDownload,
       selectedTag: 'all',
@@ -114,7 +116,7 @@ export default {
       if (newTag) {
         // Change the URL according to the user selection only if this component hasn't been called with a specific tag
         if (this.tag === null) {
-          window.history.replaceState({}, null, this.$router.resolve({ name: 'about-export-formats-specific', params: { format: newTag } }).href)
+          window.history.replaceState({}, null, this.$router.resolve({ name: Pages.aboutExportFormatsType, params: { format: newTag } }).href)
         }
         this.selectedTag = newTag
       }

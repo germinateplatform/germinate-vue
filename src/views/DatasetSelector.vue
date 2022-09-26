@@ -12,7 +12,7 @@
       <p>{{ $t('pageDatasetSelectorInvalidTypeText') }}</p>
       <ul>
         <li v-for="(datasetType, name) in getDatasetTypes()" :key="`experiment-type-${name}`">
-          <router-link :to="{ name: 'export', params: { datasetType: name } }">{{ datasetType.text() }}</router-link>
+          <router-link :to="{ name: Pages.export, params: { datasetType: name } }">{{ datasetType.text() }}</router-link>
         </li>
       </ul>
     </div>
@@ -28,10 +28,12 @@ import { datasetTypes } from '@/mixins/types.js'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowRightBox } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 export default {
   data: function () {
     return {
+      Pages,
       datasetTypes,
       mdiArrowRightBox,
       filterOn: null,
@@ -117,19 +119,19 @@ export default {
     navigateToExportPage: function (selectedIds) {
       switch (this.datasetType) {
         case 'trials':
-          this.$router.push({ name: 'export-trials', params: { datasetIds: selectedIds.join(',') } })
+          this.$router.push({ name: Pages.exportTraits, params: { datasetIds: selectedIds.join(',') } })
           break
         case 'genotype':
-          this.$router.push({ name: 'export-genotypes', params: { datasetIds: selectedIds.join(',') } })
+          this.$router.push({ name: Pages.exportGenotypes, params: { datasetIds: selectedIds.join(',') } })
           break
         case 'allelefreq':
-          this.$router.push({ name: 'export-allelefrequency', params: { datasetIds: selectedIds.join(',') } })
+          this.$router.push({ name: Pages.exportAlleleFrequency, params: { datasetIds: selectedIds.join(',') } })
           break
         case 'compound':
-          this.$router.push({ name: 'export-compounds', params: { datasetIds: selectedIds.join(',') } })
+          this.$router.push({ name: Pages.exportCompounds, params: { datasetIds: selectedIds.join(',') } })
           break
         case 'climate':
-          this.$router.push({ name: 'export-climate', params: { datasetIds: selectedIds.join(',') } })
+          this.$router.push({ name: Pages.exportClimates, params: { datasetIds: selectedIds.join(',') } })
           break
       }
     },

@@ -34,7 +34,7 @@
       <!-- Export button -->
       <b-button @click="downloadPedigree"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownloadForHelium') }}</b-button>
       <!-- Information about the export formats -->
-      <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="{ name: 'about-export-formats-specific', params: { format: 'pedigree' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline"/></router-link> </p>
+      <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="{ name: Pages.aboutExportFormatsType, params: { format: 'pedigree' } }" v-b-tooltip.hover :title="$t('tooltipExportFormatLearnMore')"> <MdiIcon :path="mdiInformationOutline"/></router-link> </p>
     </div>
   </div>
 </template>
@@ -53,6 +53,7 @@ import { uuidv4, downloadBlob } from '@/mixins/util'
 import { mdiHelpCircleOutline, mdiInformationOutline, mdiDownload, mdiFileImage } from '@mdi/js'
 
 import { DataSet, Network } from 'vis-network/standalone'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -67,6 +68,7 @@ export default {
     const id = 'chart-' + uuidv4()
 
     return {
+      Pages,
       mdiHelpCircleOutline,
       mdiInformationOutline,
       mdiDownload,
@@ -246,7 +248,7 @@ export default {
       this.network.off('afterDrawing', this.afterDrawing)
     },
     navigateToPassportPage: function (germplasmId) {
-      this.$router.push({ name: 'passport', params: { germplasmId: germplasmId } })
+      this.$router.push({ name: Pages.passport, params: { germplasmId: germplasmId } })
     },
     downloadPedigree: function () {
       emitter.emit('show-loading', true)

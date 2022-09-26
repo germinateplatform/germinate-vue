@@ -21,6 +21,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import { apiPostInstitutionTable } from '@/mixins/api/misc.js'
 
 import { mdiCity, mdiSprout } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 export default {
   components: {
@@ -70,7 +71,7 @@ export default {
         values: [institutionId]
       }]
       this.$router.push({
-        name: 'germplasm',
+        name: Pages.germplasm,
         query: {
           'germplasm-filter': JSON.stringify(filter)
         }

@@ -53,6 +53,7 @@ import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
 import TaxonomySunburst from '@/components/charts/TaxonomySunburst'
 import { apiGetStatsFile } from '@/mixins/api/stats'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -78,7 +79,7 @@ export default {
         values: [status + '%']
       }]
       this.$router.push({
-        name: 'germplasm',
+        name: Pages.germplasm,
         query: {
           'germplasm-filter': JSON.stringify(filter)
         }
@@ -93,14 +94,14 @@ export default {
         values: parts
       }]
       this.$router.push({
-        name: 'germplasm',
+        name: Pages.germplasm,
         query: {
           'germplasm-filter': JSON.stringify(filter)
         }
       })
     },
     datasetClicked: function (dataset) {
-      this.$router.push({ name: 'export', params: { datasetType: dataset } })
+      this.$router.push({ name: Pages.export, params: { datasetType: dataset } })
     }
   },
   mounted: function () {

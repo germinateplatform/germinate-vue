@@ -174,6 +174,7 @@ import { statCategories } from '@/mixins/types'
 import { apiGetSettings, apiGetAdminSettings, apiPostAdminSettings } from '@/mixins/api/misc'
 
 import { mdiReload, mdiPlusBox, mdiCommentTextMultipleOutline, mdiShieldAlertOutline, mdiCalculatorVariantOutline, mdiUpload } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -288,9 +289,9 @@ export default {
 
                   // And redirect to the home/login page
                   if (this.storeServerSettings.authMode === 'FULL') {
-                    this.$router.push({ name: 'login' })
+                    this.$router.push({ name: Pages.login })
                   } else {
-                    this.$router.push({ name: 'home' })
+                    this.$router.push({ name: Pages.home })
                   }
                 })
               }
@@ -337,5 +338,11 @@ export default {
 }
 svg.toggle-card-icon {
   height: 48px;
+}
+</style>
+
+<style>
+.badge.b-form-tag:hover {
+  cursor: move;
 }
 </style>

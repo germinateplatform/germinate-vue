@@ -55,6 +55,7 @@ import LoginBackground from '@/components/util/LoginBackground'
 import SignInForm from '@/components/util/SignInForm'
 import RegistrationModal from '@/components/modals/RegistrationModal'
 import { apiPostToken } from '@/mixins/api/auth'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -107,7 +108,7 @@ export default {
             this.$router.push(this.prevRoute)
           } else {
             // Otherwise, just go to home
-            this.$router.push({ name: 'home' })
+            this.$router.push({ name: Pages.home })
           }
         }
 

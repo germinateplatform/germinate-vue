@@ -7,11 +7,11 @@
                v-on="$listeners">
       <!-- Map id link -->
       <template v-slot:cell(mapId)="data">
-        <router-link :to="{ name: 'map-details', params: { mapId: data.item.mapId } }" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapId }}</router-link>
+        <router-link :to="{ name: Pages.mapDetails, params: { mapId: data.item.mapId } }" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapId }}</router-link>
       </template>
       <!-- Map name link -->
       <template v-slot:cell(mapName)="data">
-        <router-link :to="{ name: 'map-details', params: { mapId: data.item.mapId } }" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapName }}</router-link>
+        <router-link :to="{ name: Pages.mapDetails, params: { mapId: data.item.mapId } }" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapName }}</router-link>
       </template>
       <!-- Map description -->
       <template v-slot:cell(mapDescription)="data">
@@ -30,6 +30,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 
 import { mdiOpenInNew } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 export default {
   name: 'MapTable',
@@ -38,6 +39,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       mdiOpenInNew,
       options: {
         idColumn: 'mapId',

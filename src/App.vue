@@ -24,6 +24,7 @@ import { uuidv4, germinateVersion } from '@/mixins/util'
 import { apiGetSettings } from '@/mixins/api/misc'
 import { authAxios } from '@/mixins/api/base'
 import { apiGetEntityTypeStats } from '@/mixins/api/stats'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -114,7 +115,7 @@ export default {
       })
     }, {
       codes: [503],
-      callback: () => this.$router.push({ name: 'setup' })
+      callback: () => this.$router.push({ name: Pages.setup })
     })
   },
   watch: {

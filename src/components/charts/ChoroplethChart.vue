@@ -11,6 +11,7 @@ import { mapGetters } from 'vuex'
 import BaseChart from '@/components/charts/BaseChart'
 import { apiGetStatsFile } from '@/mixins/api/stats.js'
 import { getColor } from '@/mixins/colors.js'
+import { Pages } from '@/mixins/pages'
 const d3Dsv = require('d3-dsv')
 
 const Plotly = require('plotly.js/lib/core')
@@ -154,7 +155,7 @@ export default {
       }]
       // Then navigate
       this.$router.push({
-        name: 'germplasm',
+        name: Pages.germplasm,
         query: {
           'germplasm-filter': JSON.stringify(filter)
         }

@@ -46,6 +46,7 @@ import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart.js'
 
 import { mdiCheckboxMarked, mdiCheckboxBlankOutline, mdiHelpCircleOutline } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 const d3Select = require('d3-selection')
@@ -145,7 +146,7 @@ export default {
       this.$nextTick(() => this.$root.$emit('bv::hide::tooltip', 'marked-items-clear'))
     },
     redirectToList: function () {
-      this.$router.push({ name: 'marked-items-type', params: { itemType: 'markers' } })
+      this.$router.push({ name: Pages.markedItemsType, params: { itemType: 'markers' } })
     },
     toggleItems: function (add) {
       if (this.chartSelection && this.chartSelection.length > 0) {

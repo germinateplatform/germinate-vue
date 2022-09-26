@@ -13,27 +13,27 @@
       </template>
       <!-- Entity parent id link -->
       <template v-slot:cell(entityParentId)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentId }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentId }}</router-link>
       </template>
       <!-- Entity parent GID link -->
       <template v-slot:cell(entityParentGid)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentGid }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentGid }}</router-link>
       </template>
       <!-- Entity parent name link -->
       <template v-slot:cell(entityParentName)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentName }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentName }}</router-link>
       </template>
       <!-- Entity child id link -->
       <template v-slot:cell(entityChildId)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildId }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildId }}</router-link>
       </template>
       <!-- Entity child GID link -->
       <template v-slot:cell(entityChildGid)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildGid }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildGid }}</router-link>
       </template>
       <!-- Entity child name link -->
       <template v-slot:cell(entityChildName)="data">
-        <router-link :to="{ name: 'passport', params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildName }}</router-link>
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildName }}</router-link>
       </template>
       <!-- Entity parent type -->
       <template v-slot:cell(entityParentType)="data">
@@ -53,6 +53,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { entityTypes } from '@/mixins/types.js'
 import { getTableColumnStyle } from '@/mixins/util'
+import { Pages } from '@/mixins/pages'
 
 export default {
   name: 'EntityTable',
@@ -61,6 +62,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       entityTypes,
       options: {
         idColumn: 'entityParentId',

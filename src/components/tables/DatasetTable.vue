@@ -49,7 +49,7 @@
       <template v-slot:cell(experimentName)="data">
         <span :title="data.item.experimentName" v-if="data.item.experimentName">{{ truncateAfterWords(data.item.experimentName, 10) }}</span>
         <!-- Append a link that takes the user to the experiment details page -->
-        <router-link :to="{ name: 'experiment-details', params: { experimentId: data.item.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
+        <router-link :to="{ name: Pages.experimentDetails, params: { experimentId: data.item.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
           &nbsp;<MdiIcon :path="mdiInformationOutline" />
         </router-link>
       </template>
@@ -179,6 +179,7 @@ import { userIsAtLeast } from '@/mixins/api/auth'
 import { getDateTimeString, isTruncatedAfter, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -204,6 +205,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       datasetStates,
       datasetTypes,
       mdiHelpCircle,
@@ -550,7 +552,7 @@ export default {
         values: [dataset.datasetId]
       }]
       this.$router.push({
-        name: 'data-resources',
+        name: Pages.dataResources,
         query: {
           'fileresources-filter': JSON.stringify(filter)
         }

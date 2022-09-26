@@ -17,6 +17,7 @@ import { mapGetters } from 'vuex'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import GenotypeExportSelection from '@/components/export/GenotypeExportSelection'
 import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
+import { Pages } from '@/mixins/pages'
 
 export default {
   data: function () {
@@ -52,7 +53,7 @@ export default {
         operator: 'and',
         values: this.datasetIds
       }])
-      this.$nextTick(() => this.$router.push({ name: 'export', params: { datasetType: 'genotype' } }))
+      this.$nextTick(() => this.$router.push({ name: Pages.export, params: { datasetType: 'genotype' } }))
     }
   },
   created: function () {

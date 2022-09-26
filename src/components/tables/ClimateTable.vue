@@ -8,19 +8,19 @@
                v-on="$listeners">
       <!-- Climate id link -->
       <template v-slot:cell(climateId)="data">
-        <router-link :to="{ name: 'climate-details', params: { climateId: data.item.climateId } }">{{ data.item.climateId }}</router-link>
+        <router-link :to="{ name: Pages.climateDetails, params: { climateId: data.item.climateId } }">{{ data.item.climateId }}</router-link>
       </template>
       <!-- Climate name link -->
       <template v-slot:cell(climateName)="data">
-        <router-link :to="{ name: 'climate-details', params: { climateId: data.item.climateId } }">{{ data.item.climateName }}</router-link>
+        <router-link :to="{ name: Pages.climateDetails, params: { climateId: data.item.climateId } }">{{ data.item.climateName }}</router-link>
       </template>
       <!-- Climate short name link -->
       <template v-slot:cell(climateNameShort)="data">
-        <router-link :to="{ name: 'climate-details', params: { climateId: data.item.climateId } }">{{ data.item.climateNameShort }}</router-link>
+        <router-link :to="{ name: Pages.climateDetails, params: { climateId: data.item.climateId } }">{{ data.item.climateNameShort }}</router-link>
       </template>
       <!-- Climate description link -->
       <template v-slot:cell(climateDescription)="data">
-        <router-link :to="{ name: 'climate-details', params: { climateId: data.item.climateId } }">{{ data.item.climateDescription }}</router-link>
+        <router-link :to="{ name: Pages.climateDetails, params: { climateId: data.item.climateId } }">{{ data.item.climateDescription }}</router-link>
       </template>
     </BaseTable>
   </div>
@@ -30,6 +30,7 @@
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { getNumberWithSuffix } from '@/mixins/formatting'
+import { Pages } from '@/mixins/pages'
 
 export default {
   name: 'ClimateTable',
@@ -38,6 +39,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       options: {
         idColumn: 'climateId',
         tableName: 'climates'

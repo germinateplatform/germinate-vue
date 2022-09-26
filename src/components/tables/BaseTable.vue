@@ -216,6 +216,7 @@ import { uuidv4, getTableColumnStyle, downloadBlob } from '@/mixins/util'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowLeftBold, mdiBookOpenPageVariant, mdiArrowUpBold, mdiCheckboxMultipleOutline, mdiCheckboxMultipleMarked, mdiCheckboxMultipleBlankOutline, mdiGroup, mdiDownload } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -548,7 +549,7 @@ export default {
           })
 
           emitter.emit('show-loading', false)
-          this.$router.push({ name: 'group-details', params: { groupId: groupId } })
+          this.$router.push({ name: Pages.groupDetails, params: { groupId: groupId } })
         })
       })
     },

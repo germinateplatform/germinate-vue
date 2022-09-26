@@ -8,7 +8,7 @@
       <!-- Button to navigate to the  -->
 
       <b-button v-if="showPopup" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" @click="$refs.markedItemModal.show()"><b-badge pill variant="light">{{ getNumberWithSuffix(storeMarkedIds[itemType].length, 1) }}</b-badge></b-button>
-      <b-button :to="{ name: 'marked-items-type', params: { itemType: itemType } }" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" v-else><b-badge pill variant="light">{{ getNumberWithSuffix(storeMarkedIds[itemType].length, 1) }}</b-badge></b-button>
+      <b-button :to="{ name: Pages.markedItemsType, params: { itemType: itemType } }" id="marked-items-count" v-b-tooltip.hover :title="$t('tooltipTableMarkedItems')" v-else><b-badge pill variant="light">{{ getNumberWithSuffix(storeMarkedIds[itemType].length, 1) }}</b-badge></b-button>
     </b-button-group>
 
     <b-modal ok-only :ok-title="$t('buttonClose')" v-if="showPopup" ref="markedItemModal" size="xl">
@@ -24,6 +24,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiDelete } from '@mdi/js'
+import { Pages } from '@/mixins/pages'
 
 export default {
   props: {
@@ -34,6 +35,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       mdiDelete
     }
   },
@@ -43,7 +45,7 @@ export default {
     ]),
     showPopup: function () {
       // Are we on the marked item page?
-      if (this.$router.currentRoute.name === 'marked-items' || this.$router.currentRoute.name === 'marked-items-type') {
+      if (this.$router.currentRoute.name === Pages.markedItems || this.$router.currentRoute.name === Pages.markedItemsType) {
         return false
       }
 
