@@ -2,7 +2,7 @@
   <div>
     <b-row class="dashboard-stats" v-if="stats">
       <!-- Banner buttons -->
-      <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.value" class="mb-3">
+      <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.value" class="my-2">
         <b-card no-body :style="`border: 1px solid ${getTemplateColor(index)}`">
           <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getTemplateColor(index)} 50%); color: white;`">
             <b-row>
@@ -21,7 +21,7 @@
     </b-row>
 
     <!-- Images -->
-    <ImageCarousel class="my-4" />
+    <ImageCarousel class="my-3" />
 
     <!-- Heading and welcome text -->
     <h1>{{ $t('pageDashboardTitle') }}</h1>

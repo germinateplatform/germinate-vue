@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mb-3 my-4 d-flex justify-content-between align-items-center">
+    <div class="my-3 d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center">
         <b-img-lazy width="48" height="48" :src="`${storeBaseUrl}image/src-svg/crop.svg`" onerror="this.onerror=null;this.src='null';" alt="Crop logo" />
         <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>

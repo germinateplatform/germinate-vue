@@ -37,7 +37,7 @@
           <b-form-group
             :label="$t('formLabelNewsDate')"
             label-for="newsDate">
-            <b-form-datepicker id="newsDate" v-model="newsDate" />
+            <b-form-datepicker id="newsDate" value-as-date v-model="newsDate" />
           </b-form-group>
           <b-form-group
             :label="$t('formLabelNewsContent')"
