@@ -82,8 +82,8 @@
         <hr />
         <!-- Institution -->
         <div v-if="germplasmTableData">
-          <h2 class="mdi-heading"><span class="text-primary"><MdiIcon :path="mdiCity" /></span> <span> {{ $t('pagePassportInstitutionTitle') }} </span></h2>
-          <InstitutionTable :getData="getGermplasmInstitutionData" id="institution"/>
+          <h2 class="mdi-heading" id="institution"><span class="text-primary"><MdiIcon :path="mdiCity" /></span> <span> {{ $t('pagePassportInstitutionTitle') }} </span></h2>
+          <InstitutionTable :getData="getGermplasmInstitutionData"/>
         </div>
 
         <hr />
