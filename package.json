@@ -27,7 +27,7 @@
     "leaflet.markercluster": "~1.5.3",
     "leaflet.sync": "~0.2.4",
     "path-browserify": "~1.0.1",
-    "plotly.js": "~2.11.1",
+    "plotly.js": "^2.14.0",
     "simplex-noise": "~2.4.0",
     "tiny-emitter": "~2.1.0",
     "vis-data": "^7.1.4",
