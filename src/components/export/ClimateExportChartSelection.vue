@@ -23,7 +23,7 @@
 
         <h3 class="mt-3">{{ $t('pageClimateExportChartTitle') }}</h3>
         <p>{{ $t('pageClimateExportChartText') }}</p>
-        <!-- Show the matrix chart if there are more than 2 traits/compounds/climates -->
+        <!-- Show the matrix chart if there are more than 2 traits/climates -->
         <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="locations" v-if="selectedItems.length > 2" datasetType="climate" />
         <!-- Otherwise, show the simple scatter plot -->
         <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="locations" :x="selectedItems[0].displayName" :y="selectedItems[1].displayName" datasetType="climate" v-else />

@@ -127,9 +127,6 @@ export default {
         case 'allelefreq':
           this.$router.push({ name: Pages.exportAlleleFrequency, params: { datasetIds: selectedIds.join(',') } })
           break
-        case 'compound':
-          this.$router.push({ name: Pages.exportCompounds, params: { datasetIds: selectedIds.join(',') } })
-          break
         case 'climate':
           this.$router.push({ name: Pages.exportClimates, params: { datasetIds: selectedIds.join(',') } })
           break

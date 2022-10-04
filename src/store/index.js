@@ -51,8 +51,6 @@ const userState = {
     images: [],
     climates: [],
     climateData: [],
-    compounds: [],
-    compoundData: [],
     comments: [],
     fileresources: [],
     maps: [],
@@ -68,6 +66,7 @@ const userState = {
     pedigrees: [],
     pedigreedefinitions: [],
     traits: [],
+    traitAttributes: [],
     trialsData: [],
     collaborators: [],
     publications: []
@@ -347,12 +346,6 @@ const storeState = {
         if (serverSettings.hiddenColumns.climateData) {
           commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'climateData', columns: serverSettings.hiddenColumns.climateData })
         }
-        if (serverSettings.hiddenColumns.compounds) {
-          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'compounds', columns: serverSettings.hiddenColumns.compounds })
-        }
-        if (serverSettings.hiddenColumns.compoundData) {
-          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'compoundData', columns: serverSettings.hiddenColumns.compoundData })
-        }
         if (serverSettings.hiddenColumns.comments) {
           commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'comments', columns: serverSettings.hiddenColumns.comments })
         }
@@ -394,6 +387,9 @@ const storeState = {
         }
         if (serverSettings.hiddenColumns.pedigreedefinitions) {
           commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'pedigreedefinitions', columns: serverSettings.hiddenColumns.pedigreedefinitions })
+        }
+        if (serverSettings.hiddenColumns.traitAttributes) {
+          commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'traitAttributes', columns: serverSettings.hiddenColumns.traitAttributes })
         }
         if (serverSettings.hiddenColumns.traits) {
           commit('ON_HIDDEN_COLUMNS_SET_MUTATION', { type: 'traits', columns: serverSettings.hiddenColumns.traits })

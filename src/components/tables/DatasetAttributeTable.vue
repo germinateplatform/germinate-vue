@@ -5,6 +5,12 @@
                v-bind="$props"
                ref="datasetAttributeTable"
                v-on="$listeners">
+      <template v-slot:cell(attributeDescription)="data">
+        <span :title="data.item.attributeDescription" v-if="data.item.attributeDescription">{{ truncateAfterWords(data.item.attributeDescription, 10) }}</span>
+        <a href="#" class="table-icon-link" @click.prevent="showFullAttributeDescription(data.item.attributeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.attributeDescription, 10)" >&nbsp;
+          <MdiIcon :path="mdiPageNext" />
+        </a>
+      </template>
       <!-- Attribute type -->
       <template v-slot:cell(attributeType)="data">
         <span v-if="data.item.attributeType">
@@ -21,6 +27,8 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { dataTypes } from '@/mixins/types.js'
+import { isTruncatedAfter, truncateAfterWords } from '@/mixins/formatting'
+import { mdiPageNext } from '@mdi/js'
 
 export default {
   name: 'datasetAttributeTable',
@@ -31,6 +39,7 @@ export default {
   data: function () {
     return {
       dataTypes,
+      mdiPageNext,
       options: {
         idColumn: 'datasetId',
         tableName: 'datasetAttributes'
@@ -86,6 +95,14 @@ export default {
     MdiIcon
   },
   methods: {
+    isTruncatedAfter,
+    truncateAfterWords,
+    showFullAttributeDescription: function (description) {
+      this.$bvModal.msgBoxOk(description, {
+        title: this.$t('tableColumnAttributeDescription'),
+        okTitle: this.$t('genericOk')
+      })
+    },
     refresh: function () {
       this.$refs.datasetAttributeTable.refresh()
     }

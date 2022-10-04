@@ -192,8 +192,8 @@ export default {
             .xCategory(this.x)
             .yCategory(this.y)
             .onPointClicked(p => {
-              // For trials and compounds, we show the passport page on click
-              if (this.datasetType === 'trials' || this.datasetType === 'compounds') {
+              // For trials, we show the passport page on click
+              if (this.datasetType === 'trials') {
                 this.germplasmId = p
                 this.$nextTick(() => this.$refs.passportModal.show())
               }

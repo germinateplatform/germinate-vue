@@ -178,12 +178,12 @@ export default {
           key: 'unitName',
           type: String,
           sortable: true,
-          label: this.$t('tableColumnCompoundUnitName')
+          label: this.$t('tableColumnTraitUnitName')
         }, {
           key: 'recordingDate',
           type: Date,
           sortable: true,
-          label: this.$t('tableColumnCompoundDataRecordingDate'),
+          label: this.$t('tableColumnTraitDataRecordingDate'),
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'traitValue',

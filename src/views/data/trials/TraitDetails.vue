@@ -37,6 +37,10 @@
           </ul>
         </template>
 
+        <!-- Attributes -->
+         <h2>{{ $t('pageTraitAttributesTitle') }}</h2>
+        <TraitAttributeTable :filterOn="attributeFilter" :getData="getTraitAttributeData" />
+
         <h2>{{ $t('pageTraitDetailsDataTitle') }}</h2>
         <p>{{ $t('pageTraitDetailsDataText') }}</p>
         <!-- Table showing all data points for this trait -->
@@ -89,10 +93,11 @@ import DatasetTable from '@/components/tables/DatasetTable'
 import BoxplotChart from '@/components/charts/BoxplotChart'
 import ImageGallery from '@/components/images/ImageGallery'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
+import TraitAttributeTable from '@/components/tables/TraitAttributeTable'
 import YesNoCancelModal from '@/components/modals/YesNoCancelModal'
 
 import { apiPostTraitStatsCategorical } from '@/mixins/api/dataset'
-import { apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTraitTable, apiPostTraitDatasetTable, apiGetTraitDistinctValues } from '@/mixins/api/trait'
+import { apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTraitTable, apiPostTraitDatasetTable, apiGetTraitDistinctValues, apiPostTraitAttributeTable } from '@/mixins/api/trait'
 import { dataTypes } from '@/mixins/types'
 
 import { mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiCodeBrackets, mdiBarcode } from '@mdi/js'
@@ -122,9 +127,27 @@ export default {
     MdiIcon,
     ImageGallery,
     TrialsDataTable,
+    TraitAttributeTable,
     YesNoCancelModal
   },
+  computed: {
+    attributeFilter: function () {
+      return [{
+        column: {
+          name: 'traitId',
+          type: Number
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.traitId],
+        canBeChanged: false
+      }]
+    }
+  },
   methods: {
+    getTraitAttributeData: function (data, callback) {
+      return apiPostTraitAttributeTable(data, callback)
+    },
     generateBarcodes: function (includeValues) {
       if (includeValues) {
         apiGetTraitDistinctValues(this.traitId, result => {

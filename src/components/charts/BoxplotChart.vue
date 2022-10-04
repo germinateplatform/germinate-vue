@@ -20,7 +20,7 @@
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
-import { apiPostTraitCompoundStats } from '@/mixins/api/dataset.js'
+import { apiPostTraitStats } from '@/mixins/api/dataset'
 import { getColor } from '@/mixins/colors.js'
 import Tour from '@/components/util/Tour'
 import { uuidv4 } from '@/mixins/util'
@@ -80,12 +80,6 @@ export default {
           idKey: 'traitId',
           apiKey: 'trial',
           nameKey: 'traitName'
-        },
-        compounds: {
-          itemKey: 'compounds',
-          idKey: 'compoundId',
-          apiKey: 'compound',
-          nameKey: 'compoundName'
         },
         climates: {
           itemKey: 'climates',
@@ -157,7 +151,7 @@ export default {
         yGroupIds: this.yGroupIds
       }
 
-      apiPostTraitCompoundStats(this.xTypes[this.xType].apiKey, query, result => {
+      apiPostTraitStats(this.xTypes[this.xType].apiKey, query, result => {
         this.plotData = result
         this.chart()
         this.loading = false
@@ -170,7 +164,7 @@ export default {
 
       const y = []
 
-      // Are we plotting datasets and grouping by trait/compound/climate?
+      // Are we plotting datasets and grouping by trait/climate?
       if (this.chartMode === 'datasetByItem') {
         Object.keys(this.plotData.datasets).forEach(dataset => {
           for (let i = 0; i < 6; i++) {
@@ -181,7 +175,7 @@ export default {
       } else if (this.chartMode === 'itemByDataset' || this.chartMode === 'itemByGroup') {
         Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
           for (let j = 0; j < 6; j++) {
-            // Else, use this complicated thing to extract the trait/compound/climate name
+            // Else, use this complicated thing to extract the trait/climate name
             y.push(this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey])
           }
         })
@@ -251,7 +245,7 @@ export default {
           const itemData = this.plotData.stats.filter(s => s.groupIds === group && s.xId === itemId)[0]
 
           if (itemData) {
-            // This trait/compound/climate by group combination is available, add all the information
+            // This trait/climate by group combination is available, add all the information
             x.push(itemData.min)
             x.push(itemData.q1)
             x.push(itemData.median)
@@ -259,7 +253,7 @@ export default {
             x.push(itemData.q3)
             x.push(itemData.max)
           } else {
-            // This trait/compound/climate isn't available in this group, fill everything with NaN to not show anything
+            // This trait/climate isn't available in this group, fill everything with NaN to not show anything
             x.push(NaN)
             x.push(NaN)
             x.push(NaN)
@@ -294,7 +288,7 @@ export default {
           const itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
 
           if (itemData) {
-            // This trait/compound/climate by dataset combination is available, add all the information
+            // This trait/climate by dataset combination is available, add all the information
             x.push(itemData.min)
             x.push(itemData.q1)
             x.push(itemData.median)
@@ -302,7 +296,7 @@ export default {
             x.push(itemData.q3)
             x.push(itemData.max)
           } else {
-            // This trait/compound/climate isn't available in this dataset, fill everything with NaN to not show anything
+            // This trait/climate isn't available in this dataset, fill everything with NaN to not show anything
             x.push(NaN)
             x.push(NaN)
             x.push(NaN)
@@ -336,7 +330,7 @@ export default {
           const datasetData = this.plotData.stats.filter(s => s.xId === itemId && s.datasetId === datasetId)[0]
 
           if (datasetData && datasetData.min !== datasetData.max) {
-            // This dataset by trait/compound/climate combination is available, add all the information
+            // This dataset by trait/climate combination is available, add all the information
             x.push(datasetData.min)
             x.push(datasetData.q1)
             x.push(datasetData.median)

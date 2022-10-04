@@ -53,7 +53,7 @@ const apiPostDatasetAttributeTable = (datasetId, queryData, onSuccess, onError) 
   return authAxios({ url: url, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostTraitCompoundStats = (statsType, queryData, onSuccess, onError) => authAxios({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+const apiPostTraitStats = (statsType, queryData, onSuccess, onError) => authAxios({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 const apiPostTraitStatsCategorical = (queryData, onSuccess, onError) => authAxios({ url: 'dataset/categorical/trial', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
@@ -109,7 +109,7 @@ export {
   apiPostDatasetAsyncExport,
   apiDeleteDatasetAsyncExport,
   apiPostDatasetAttributeTable,
-  apiPostTraitCompoundStats,
+  apiPostTraitStats,
   apiPostTraitStatsCategorical,
   apiGetLicenses,
   apiPutLicense,
