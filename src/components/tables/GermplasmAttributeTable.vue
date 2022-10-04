@@ -17,6 +17,12 @@
       <template v-slot:cell(germplasmGid)="data">
         <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
       </template>
+      <template v-slot:cell(attributeDescription)="data">
+        <span :title="data.item.attributeDescription" v-if="data.item.attributeDescription">{{ truncateAfterWords(data.item.attributeDescription, 10) }}</span>
+        <a href="#" class="table-icon-link" @click.prevent="showFullAttributeDescription(data.item.attributeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.attributeDescription, 10)" >&nbsp;
+          <MdiIcon :path="mdiPageNext" />
+        </a>
+      </template>
       <!-- Attribute type -->
       <template v-slot:cell(attributeType)="data">
         <span v-if="data.item.attributeType">
@@ -34,6 +40,8 @@ import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { dataTypes } from '@/mixins/types'
 import { Pages } from '@/mixins/pages'
+import { isTruncatedAfter, truncateAfterWords } from '@/mixins/formatting'
+import { mdiPageNext } from '@mdi/js'
 
 export default {
   name: 'GermplasmAttributeTable',
@@ -45,6 +53,7 @@ export default {
     return {
       Pages,
       dataTypes,
+      mdiPageNext,
       options: {
         idColumn: 'germplasmId',
         tableName: 'germplasmAttributes'
@@ -100,6 +109,14 @@ export default {
     MdiIcon
   },
   methods: {
+    isTruncatedAfter,
+    truncateAfterWords,
+    showFullAttributeDescription: function (description) {
+      this.$bvModal.msgBoxOk(description, {
+        title: this.$t('tableColumnAttributeDescription'),
+        okTitle: this.$t('genericOk')
+      })
+    },
     refresh: function () {
       this.$refs.germplasmAttributeTable.refresh()
     }

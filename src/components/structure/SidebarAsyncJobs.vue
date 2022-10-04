@@ -222,9 +222,6 @@ export default {
         climate: {
           text: () => this.$t('datasetTypeClimate')
         },
-        compound: {
-          text: () => this.$t('datasetTypeCompound')
-        },
         genotype: {
           text: () => this.$t('datasetTypeGenotype')
         },

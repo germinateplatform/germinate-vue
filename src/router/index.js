@@ -151,28 +151,6 @@ const routes = [
             ]
           },
           {
-            path: 'compounds',
-            redirect: '/data/compounds/compounds',
-            name: '',
-            component: {
-              render (c) { return c('router-view') }
-            },
-            children: [
-              {
-                path: 'compounds',
-                name: Pages.compounds,
-                component: () => import(/* webpackChunkName: "compounds" */'@/views/data/compound/Compounds.vue'),
-                beforeEnter: requireAuth
-              },
-              {
-                path: 'compounds/:compoundId',
-                name: Pages.compoundDetails,
-                component: () => import(/* webpackChunkName: "compound-details" */'@/views/data/compound/CompoundDetails.vue'),
-                beforeEnter: requireAuth
-              }
-            ]
-          },
-          {
             path: 'trials',
             redirect: '/data/trials/traits',
             name: '',
@@ -244,12 +222,6 @@ const routes = [
             path: 'export/genotype/:datasetIds',
             name: Pages.exportGenotypes,
             component: () => import(/* webpackChunkName: "genotype-export" */ '@/views/data/export/GenotypeExport.vue'),
-            beforeEnter: requireAuth
-          },
-          {
-            path: 'export/compounds/:datasetIds',
-            name: Pages.exportCompounds,
-            component: () => import(/* webpackChunkName: "compound-export" */'@/views/data/export/CompoundExport.vue'),
             beforeEnter: requireAuth
           },
           {

@@ -34,6 +34,11 @@ const apiPostTraitDatasetTable = (traitId, queryData, onSuccess, onError) => {
   return authAxios({ url: `trait/${traitId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiPostTraitAttributeTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'trait/attribute', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 const apiPatchTrait = (id, data, onSuccess, onError) => authAxios({ url: `trait/${id}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
 
 const apiPostTraitUnification = (queryData, onSuccess, onError) => authAxios({ url: 'trait/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
@@ -52,5 +57,6 @@ export {
   apiPatchTrait,
   apiPostTraitUnification,
   apiGetTraitDistinctValues,
-  apiPostTrialLocationCount
+  apiPostTrialLocationCount,
+  apiPostTraitAttributeTable
 }

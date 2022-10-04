@@ -288,47 +288,6 @@ export default {
               ]
             },
             {
-              title: this.$t('menuCompoundsData'),
-              icon: {
-                element: SidebarIcon,
-                attributes: {
-                  path: mdiFlask
-                }
-              },
-              child: [
-                {
-                  title: this.$t('menuCompoundsCompounds'),
-                  identifiers: ['compounds'],
-                  badge: {
-                    text: this.getBadgeCount(this.badgeCounts, 'compounds'),
-                    class: 'vsm--badge vsm--badge_default'
-                  },
-                  href: { name: Pages.compounds },
-                  icon: {
-                    element: SidebarIcon,
-                    attributes: {
-                      path: mdiAtom
-                    }
-                  }
-                },
-                {
-                  title: this.$t('menuCompoundDataExport'),
-                  identifiers: ['export-compounds'],
-                  badge: {
-                    text: this.getBadgeCount(this.badgeCounts, 'datasetsCompound'),
-                    class: 'vsm--badge vsm--badge_default'
-                  },
-                  href: { name: Pages.export, params: { datasetType: 'compound' } },
-                  icon: {
-                    element: SidebarIcon,
-                    attributes: {
-                      path: mdiFlask
-                    }
-                  }
-                }
-              ]
-            },
-            {
               title: this.$t('menuCrossDataTypeComparison'),
               identifiers: ['export-cross-comparison'],
               href: { name: Pages.exportCrossComparison },

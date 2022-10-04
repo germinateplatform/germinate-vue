@@ -29,10 +29,6 @@
       <template v-slot:head(hasGenotypicData)>
         <span v-b-tooltip.bottom.hover :title="$t('tableColumnHasGenotypicData')"><MdiIcon :path="datasetTypes.genotype.path" /></span>
       </template>
-      <!-- HEAD: Compound data -->
-      <template v-slot:head(hasCompoundData)>
-        <span v-b-tooltip.bottom.hover :title="$t('tableColumnHasCompoundData')"><MdiIcon :path="datasetTypes.compound.path" /></span>
-      </template>
       <!-- HEAD: Allelefreq data -->
       <template v-slot:head(hasAllelefreqData)>
         <span v-b-tooltip.bottom.hover :title="$t('tableColumnHasAllelefreqData')"><MdiIcon :path="datasetTypes.allelefreq.path" /></span>
@@ -163,9 +159,6 @@
       </template>
       <template v-slot:cell(hasGenotypicData)="data">
         <span v-if="data.item.hasGenotypicData" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.hover :title="datasetTypes.genotype.text()"><MdiIcon :path="datasetTypes.genotype.path" /></span>
-      </template>
-      <template v-slot:cell(hasCompoundData)="data">
-        <span v-if="data.item.hasCompoundData" :style="`color: ${datasetTypes.compound.color()};`" v-b-tooltip.hover :title="datasetTypes.compound.text()"><MdiIcon :path="datasetTypes.compound.path" /></span>
       </template>
       <template v-slot:cell(hasAllelefreqData)="data">
         <span v-if="data.item.hasAllelefreqData" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.hover :title="datasetTypes.allelefreq.text()"><MdiIcon :path="datasetTypes.allelefreq.path" /></span>
@@ -410,11 +403,6 @@ export default {
           type: Boolean,
           sortable: true,
           label: this.$t('tableColumnHasPedigreeData')
-        }, {
-          key: 'hasCompoundData',
-          type: Boolean,
-          sortable: true,
-          label: this.$t('tableColumnHasCompoundData')
         }, {
           key: 'hasAllelefreqData',
           type: Boolean,

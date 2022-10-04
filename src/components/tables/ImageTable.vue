@@ -32,8 +32,6 @@
         <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.imageForeignId } }" v-if="data.item.imageRefTable === 'germinatebase'">{{ data.item.referenceName }}</router-link>
         <!-- Trait -->
         <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'phenotypes'">{{ data.item.referenceName }}</router-link>
-        <!-- Compound -->
-        <router-link :to="{ name: Pages.compoundDetails, params: { compoundId: data.item.imageForeignId } }" v-else-if="data.item.imageRefTable === 'compounds'">{{ data.item.referenceName }}</router-link>
         <!-- Anything else -->
         <span v-else>{{ data.item.referenceName }}</span>
       </template>

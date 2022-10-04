@@ -200,39 +200,6 @@ export default {
       type: String
     }
   ],
-  TABLE_COLUMNS_COMPOUND_DATA_SEARCHABLE: [
-    {
-      name: 'germplasmId',
-      type: Number
-    }, {
-      name: 'germplasmGid',
-      type: String
-    }, {
-      name: 'germplasmName',
-      type: String
-    }, {
-      name: 'germplasmSynonyms',
-      type: 'json'
-    }, {
-      name: 'entityType',
-      type: 'entityType'
-    }, {
-      name: 'datasetName',
-      type: String
-    }, {
-      name: 'compoundName',
-      type: String
-    }, {
-      name: 'unitName',
-      type: String
-    }, {
-      name: 'recordingDate',
-      type: Date
-    }, {
-      name: 'compoundValue',
-      type: String
-    }
-  ],
   TABLE_COLUMNS_LOCATION_SEARCHABLE: [
     {
       name: 'locationId',

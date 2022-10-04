@@ -32,10 +32,6 @@
         <b-badge :to="{ name: Pages.datasets }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.genotype.color())}; background-color: ${datasetTypes.genotype.color()};`" @click.native.prevent="redirectToExport(data.item, 'genotype')" v-if="data.item.genotypeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()">
           <MdiIcon :path="datasetTypes.genotype.path" /> {{ data.item.genotypeCount }}
         </b-badge>
-        <!-- Compound datasets -->
-        <b-badge :to="{ name: Pages.datasets }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.compound.color())}; background-color: ${datasetTypes.compound.color()};`" @click.native.prevent="redirectToExport(data.item, 'compound')" v-if="data.item.compoundCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.compound.text()">
-          <MdiIcon :path="datasetTypes.compound.path" /> {{ data.item.compoundCount }}
-        </b-badge>
         <!-- Allelefreq datasets -->
         <b-badge :to="{ name: Pages.datasets }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.allelefreq.color())}; background-color: ${datasetTypes.allelefreq.color()};`" @click.native.prevent="redirectToExport(data.item, 'allelefreq')" v-if="data.item.alleleFreqCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()">
           <MdiIcon :path="datasetTypes.allelefreq.path" /> {{ data.item.alleleFreqCount }}

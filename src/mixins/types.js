@@ -177,11 +177,6 @@ const imageTypes = {
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[0 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('imageTypeGerminatebase')
   },
-  compounds: {
-    path: mdiAtom,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[1 % store.getters.storeServerSettings.colorsTemplate.length] : null,
-    text: () => i18n.t('imageTypeCompounds')
-  },
   phenotypes: {
     path: mdiTagTextOutline,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[2 % store.getters.storeServerSettings.colorsTemplate.length] : null,
@@ -230,12 +225,6 @@ const templateImportTypes = {
     path: mdiWeatherSnowyRainy,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[3 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeClimate'),
-    accepts: '.xlsx'
-  },
-  compound: {
-    path: mdiFlask,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[4 % store.getters.storeServerSettings.colorsTemplate.length] : null,
-    text: () => i18n.t('templateImportTypeCompound'),
     accepts: '.xlsx'
   },
   pedigree: {
@@ -372,14 +361,6 @@ const statCategories = [
     params: { datasetType: 'climate' }
   },
   {
-    value: 'datasetsCompound',
-    textI18n: () => i18n.t('dashboardBannerDatasetsCompound'),
-    text: i18n.t('dashboardBannerDatasetsCompound'),
-    path: mdiFlask,
-    link: Pages.export,
-    params: { datasetType: 'compound' }
-  },
-  {
     value: 'datasetsPedigree',
     textI18n: () => i18n.t('dashboardBannerDatasetsPedigree'),
     text: i18n.t('dashboardBannerDatasetsPedigree'),
@@ -400,13 +381,6 @@ const statCategories = [
     text: i18n.t('dashboardBannerClimates'),
     path: mdiWeatherSnowyRainy,
     link: Pages.climates
-  },
-  {
-    value: 'compounds',
-    textI18n: () => i18n.t('dashboardBannerCompounds'),
-    text: i18n.t('dashboardBannerCompounds'),
-    path: mdiAtom,
-    link: Pages.compounds
   },
   {
     value: 'images',
@@ -466,13 +440,6 @@ const datasetTypes = {
     pageName: Pages.exportClimate,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[1 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeClimate')
-  },
-  compound: {
-    id: 6,
-    path: mdiFlask,
-    pageName: Pages.exportCompounds,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[2 % store.getters.storeServerSettings.colorsTemplate.length] : null,
-    text: () => i18n.t('datasetTypeCompound')
   },
   genotype: {
     id: 1,

@@ -23,7 +23,7 @@
 
         <h3 class="mt-3">{{ $t('pageTrialsExportChartTitle') }}</h3>
         <p class="text-info">{{ $t('pageTrialsExportChartText') }}</p>
-        <!-- Show the matrix chart if there are more than 2 traits/compounds/climates -->
+        <!-- Show the matrix chart if there are more than 2 traits/climates -->
         <MatrixChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" v-if="selectedItems.length > 2" datasetType="trials" @color-by-stats-changed="colorByStatsChanged" />
         <!-- Otherwise, show the simple scatter plot -->
         <ScatterChart ref="chart" :datasetIds="datasetIds" itemType="germplasm" :x="selectedItems[0].displayName" :y="selectedItems[1].displayName" datasetType="trials" @color-by-stats-changed="colorByStatsChanged" v-else />

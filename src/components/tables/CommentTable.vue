@@ -46,7 +46,7 @@ import { commentTypes } from '@/mixins/types'
 import { mdiPlusBox, mdiDelete } from '@mdi/js'
 
 export default {
-  name: 'CompoundTable',
+  name: 'CommentTable',
   props: {
     ...defaultProps.BASE,
     commentTypeId: {

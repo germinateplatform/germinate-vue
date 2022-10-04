@@ -37,12 +37,11 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
 import ExportGroupSelection from '@/components/export/ExportGroupSelection'
 
-import { apiPostDatasetClimates } from '@/mixins/api/climate.js'
-import { apiPostDatasetCompounds } from '@/mixins/api/compound.js'
-import { apiPostDatasetTable, apiPostDatasetTableIds } from '@/mixins/api/dataset.js'
-import { apiGetGermplasmTableColumns } from '@/mixins/api/germplasm.js'
-import { apiPostGroupTable, apiPostDatasetGroups } from '@/mixins/api/group.js'
-import { apiPostDatasetTraits } from '@/mixins/api/trait.js'
+import { apiPostDatasetClimates } from '@/mixins/api/climate'
+import { apiPostDatasetTable, apiPostDatasetTableIds } from '@/mixins/api/dataset'
+import { apiGetGermplasmTableColumns } from '@/mixins/api/germplasm'
+import { apiPostGroupTable, apiPostDatasetGroups } from '@/mixins/api/group'
+import { apiPostDatasetTraits } from '@/mixins/api/trait'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { mdiFlask, mdiShovel, mdiSprout, mdiWeatherSnowyRainy } from '@mdi/js'
 
@@ -77,16 +76,6 @@ export default {
         datasetType: 'trials',
         idKey: 'traitId',
         nameKey: 'traitName'
-      }, {
-        key: 'COMPOUND',
-        path: mdiFlask,
-        itemType: 'germplasm',
-        color: () => this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length],
-        text: () => this.$t('datasetTypeCompound'),
-        groupType: 'germinatebase',
-        datasetType: 'compound',
-        idKey: 'compoundId',
-        nameKey: 'compoundName'
       }, {
         key: 'CLIMATE',
         path: mdiWeatherSnowyRainy,
@@ -258,11 +247,6 @@ export default {
       switch (this.selectedDataTypeKey) {
         case 'TRAIT':
           apiPostDatasetTraits(this.selectedDatasetIds, result => {
-            this.items = result
-          })
-          break
-        case 'COMPOUND':
-          apiPostDatasetCompounds(this.selectedDatasetIds, result => {
             this.items = result
           })
           break

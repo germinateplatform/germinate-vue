@@ -66,13 +66,6 @@
         </template>
       </Collapse>
 
-      <!-- Chemical compound data -->
-      <Collapse :icon="mdiFlask" :title="$t('pageSearchResultSectionCompoundData')" :visible="false" class="mb-2" no-body ref="collapseCompoundData" v-if="isSearchType('compounds')">
-        <template v-slot:content="slotProps">
-          <CompoundDataTable :getData="getCompoundData" :downloadTable="downloadCompoundData" :filterOn="initialFilters['TABLE_COLUMNS_COMPOUND_DATA_SEARCHABLE']" ref="tableCompoundData" v-on:data-changed="slotProps.update"/>
-        </template>
-      </Collapse>
-
       <!-- Map definition data -->
       <Collapse :icon="mdiDna" :title="$t('pageSearchResultSectionMapDefinitionData')" :visible="false" class="mb-2" no-body ref="collapseMapDefinitionData"  v-if="isSearchType('mapdefinitions')">
         <template v-slot:content="slotProps">
@@ -118,7 +111,6 @@
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
-import CompoundDataTable from '@/components/tables/CompoundDataTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import DatasetAttributeTable from '@/components/tables/DatasetAttributeTable'
 import GermplasmTable from '@/components/tables/GermplasmTable'
@@ -132,7 +124,6 @@ import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnaccep
 import { mdiMagnify, mdiSprout, mdiShovel, mdiFlask, mdiDna, mdiDatabase, mdiPlaylistPlus, mdiSitemap, mdiMap } from '@mdi/js'
 
 import ColumnsMixin from '@/const/database-columns.js'
-import { apiPostCompoundDataTable, apiPostCompoundDataTableIds } from '@/mixins/api/compound.js'
 import { apiPostDatasetAttributeExport, apiPostDatasetTable, apiPostDatasetAttributeTable } from '@/mixins/api/dataset.js'
 import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostGermplasmAttributeTableExport, apiPostGermplasmAttributeTable, apiPostPedigreeTable } from '@/mixins/api/germplasm.js'
 import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds } from '@/mixins/api/genotype.js'
@@ -155,7 +146,7 @@ export default {
       mdiPlaylistPlus,
       mdiSitemap,
       mdiMap,
-      tableColumns: ['TABLE_COLUMNS_GERMPLASM_SEARCHABLE', 'TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE', 'TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE', 'TABLE_COLUMNS_COMPOUND_DATA_SEARCHABLE', 'TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE', 'TABLE_COLUMNS_DATASET_SEARCHABLE', 'TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE', 'TABLE_COLUMNS_PEDIGREE_SEARCHABLE', 'TABLE_COLUMNS_LOCATION_SEARCHABLE'],
+      tableColumns: ['TABLE_COLUMNS_GERMPLASM_SEARCHABLE', 'TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE', 'TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE', 'TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE', 'TABLE_COLUMNS_DATASET_SEARCHABLE', 'TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE', 'TABLE_COLUMNS_PEDIGREE_SEARCHABLE', 'TABLE_COLUMNS_LOCATION_SEARCHABLE'],
       showAdditionalDatasets: true,
       searchTerm: null,
       tempSearchTerm: null,
@@ -188,7 +179,6 @@ export default {
         { value: 'germplasm', text: this.$t('pageSearchResultSectionGermplasm') },
         { value: 'germplasmAttributes', text: this.$t('pageSearchResultSectionGermplasmAttributes') },
         { value: 'trials', text: this.$t('pageSearchResultSectionTrialsData') },
-        { value: 'compounds', text: this.$t('pageSearchResultSectionCompoundData') },
         { value: 'mapdefinitions', text: this.$t('pageSearchResultSectionMapDefinitionData') },
         { value: 'datasets', text: this.$t('pageSearchResultSectionDatasets') },
         { value: 'datasetAttributes', text: this.$t('pageSearchResultSectionDatasetAttributes') },
@@ -199,7 +189,6 @@ export default {
   },
   components: {
     Collapse,
-    CompoundDataTable,
     DatasetTable,
     DatasetAttributeTable,
     DatasetsWithUnacceptedLicense,
@@ -263,16 +252,6 @@ export default {
     },
     downloadTrialsData: function (data, callback) {
       return apiPostTableExport(data, 'dataset/data/trial', callback)
-    },
-    // COMPOUNDS
-    getCompoundData: function (data, callback) {
-      return apiPostCompoundDataTable(data, callback)
-    },
-    getCompoundDataIds: function (data, callback) {
-      return apiPostCompoundDataTableIds(data, callback)
-    },
-    downloadCompoundData: function (data, callback) {
-      return apiPostTableExport(data, 'dataset/data/compound', callback)
     },
     // GERMPLASM
     getGermplasmData: function (data, callback) {

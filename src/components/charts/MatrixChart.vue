@@ -194,8 +194,8 @@ export default {
             .colorBy(colorBy)
             .columnsToIgnore(['name', 'puid', 'taxonomy', 'latitude', 'longitude', 'elevation', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'block', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'trial_site', 'Site', 'treatments_description', 'year', 'group_ids'])
             .onPointClicked(p => {
-              // For trials and compounds we show the passport page on click
-              if (this.datasetType === 'trials' || this.datasetType === 'compounds') {
+              // For trials we show the passport page on click
+              if (this.datasetType === 'trials') {
                 this.germplasmId = p
                 this.$nextTick(() => this.$refs.passportModal.show())
               }

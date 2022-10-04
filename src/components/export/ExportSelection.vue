@@ -3,7 +3,7 @@
     <b-col cols=12 md=6 v-if="items && items.length > 0">
       <h2>{{ $t(texts.exportTitle) }}</h2>
       <p>{{ $t(texts.exportText) }}</p>
-      <!-- Selected trait/compound/climate -->
+      <!-- Selected trait/climate -->
       <SearchableSelect v-model="selectedItems" :options="itemOptions" :selectSize="selectSize" />
       <!-- <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 /> -->
       <p class="text-danger" v-if="max !== null && selectedItemCount() > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
@@ -148,7 +148,7 @@ export default {
         query.yGroupIds = groups
       }
 
-      // Set selected trait/compound/climate ids
+      // Set selected trait/climate ids
       if (this.selectedItemCount() > 0) {
         query.xIds = this.selectedItems.map(t => t[this.idKey])
       }

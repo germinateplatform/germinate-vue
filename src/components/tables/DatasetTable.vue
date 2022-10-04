@@ -450,9 +450,6 @@ export default {
         case 'trials':
           this.initDownload(dataset, 'trial')
           break
-        case 'compound':
-          this.initDownload(dataset, 'compound')
-          break
         case 'climate':
           this.initDownload(dataset, 'climate')
           break
