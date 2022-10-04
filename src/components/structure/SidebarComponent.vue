@@ -25,7 +25,7 @@ import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
 import { getNumberWithSuffix } from '@/mixins/formatting'
 
-import { mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiAtom, mdiChartAreaspline, mdiChartGantt, mdiChartSankey, mdiChevronLeft, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFileExport, mdiFlask, mdiFolderTable, mdiFormatIndentIncrease, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMagnify, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPulse, mdiReorderVertical, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy } from '@mdi/js'
+import { mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiChartAreaspline, mdiChartGantt, mdiChartSankey, mdiChevronLeft, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFileExport, mdiFolderTable, mdiFormatIndentIncrease, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMagnify, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPulse, mdiReorderVertical, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy } from '@mdi/js'
 
 import { apiGetOverviewStats } from '@/mixins/api/stats'
 import { Pages } from '@/mixins/pages'

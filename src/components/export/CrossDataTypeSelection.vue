@@ -43,7 +43,7 @@ import { apiGetGermplasmTableColumns } from '@/mixins/api/germplasm'
 import { apiPostGroupTable, apiPostDatasetGroups } from '@/mixins/api/group'
 import { apiPostDatasetTraits } from '@/mixins/api/trait'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
-import { mdiFlask, mdiShovel, mdiSprout, mdiWeatherSnowyRainy } from '@mdi/js'
+import { mdiShovel, mdiSprout, mdiWeatherSnowyRainy } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
 
