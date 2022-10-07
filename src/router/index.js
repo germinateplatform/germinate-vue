@@ -6,8 +6,6 @@ import { loadLanguageAsync } from '@/plugins/i18n'
 import { userIsAtLeast } from '@/mixins/api/auth'
 import { Pages } from '@/mixins/pages'
 
-console.log(Pages, Pages.home)
-
 const emitter = require('tiny-emitter/instance')
 
 Vue.use(VueRouter)
