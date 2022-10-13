@@ -157,6 +157,16 @@ export default {
           sortable: true,
           label: this.$t('tableColumnTraitBlock')
         }, {
+          key: 'trialRow',
+          type: Number,
+          sortable: true,
+          label: this.$t('tableColumnTraitRow')
+        }, {
+          key: 'trialColumn',
+          type: Number,
+          sortable: true,
+          label: this.$t('tableColumnTraitColumn')
+        }, {
           key: 'latitude',
           type: Number,
           sortable: true,

@@ -143,6 +143,14 @@ export default {
         value: 'block',
         disabled: this.getStatsCount('block') < 2
       }, {
+        text: `${this.$t('widgetChartColoringByRow')}${this.getStatsText('trial_row')}`,
+        value: 'trial_row',
+        disabled: this.getStatsCount('trial_row') < 2
+      }, {
+        text: `${this.$t('widgetChartColoringByColumn')}${this.getStatsText('trial_column')}`,
+        value: 'trial_column',
+        disabled: this.getStatsCount('trial_column') < 2
+      }, {
         text: `${this.$t('widgetChartColoringByTrialSite')}${this.getStatsText('trial_site')}`,
         value: 'trial_site',
         disabled: this.getStatsCount('trial_site') < 2
