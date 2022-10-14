@@ -32,7 +32,7 @@
                       :bounds="image.bounds" />
     </l-map>
     <!-- Add color gradient for heatmapping -->
-    <ColorGradient :colors="gradientColors" v-if="mapType === 'heatmap'" ref="gradient" />
+    <ColorGradient v-if="mapType === 'heatmap'" ref="gradient" />
     <!-- Popup content -->
     <div v-if="location" ref="popupContent" class="p-3">
       <dl class="row">

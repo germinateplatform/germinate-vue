@@ -11,6 +11,8 @@ const apiPostTrialsDataTableIds = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'dataset/data/trial/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiPostTrialsDataTimepoints = (queryData, onSuccess, onError) => authAxios({ url: 'dataset/data/trial/timepoint', method: 'POST', data: queryData, success: onSuccess, error: onError })
+
 const apiPostTraitTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
   return authAxios({ url: 'trait/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -58,5 +60,6 @@ export {
   apiPostTraitUnification,
   apiGetTraitDistinctValues,
   apiPostTrialLocationCount,
-  apiPostTraitAttributeTable
+  apiPostTraitAttributeTable,
+  apiPostTrialsDataTimepoints
 }

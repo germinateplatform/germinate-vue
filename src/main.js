@@ -1,4 +1,4 @@
-import { BadgePlugin, ButtonGroupPlugin, FormFilePlugin, ButtonPlugin, CardPlugin, CarouselPlugin, FormCheckboxPlugin, FormDatepickerPlugin, FormGroupPlugin, FormInputPlugin, FormPlugin, FormRadioPlugin, FormSelectPlugin, FormTagsPlugin, FormTextareaPlugin, ImagePlugin, InputGroupPlugin, LayoutPlugin, ListGroupPlugin, ModalPlugin, NavbarPlugin, PaginationPlugin, PopoverPlugin, ProgressPlugin, SidebarPlugin, SpinnerPlugin, TablePlugin, TabsPlugin, TooltipPlugin, VBScrollspyPlugin, ToastPlugin } from 'bootstrap-vue'
+import { BadgePlugin, ButtonGroupPlugin, FormFilePlugin, ButtonPlugin, CardPlugin, CarouselPlugin, FormCheckboxPlugin, FormDatepickerPlugin, FormGroupPlugin, FormInputPlugin, FormPlugin, FormRadioPlugin, FormSelectPlugin, FormTagsPlugin, FormTextareaPlugin, ImagePlugin, InputGroupPlugin, LayoutPlugin, ListGroupPlugin, ModalPlugin, NavbarPlugin, PaginationPlugin, PopoverPlugin, ProgressPlugin, SidebarPlugin, SpinnerPlugin, TablePlugin, TabsPlugin, TooltipPlugin, VBScrollspyPlugin, ToastPlugin, CalendarPlugin } from 'bootstrap-vue'
 
 import Vue from 'vue'
 import App from '@/App.vue'
@@ -15,6 +15,7 @@ Vue.use(ButtonGroupPlugin)
 Vue.use(ButtonPlugin)
 Vue.use(CardPlugin)
 Vue.use(CarouselPlugin)
+Vue.use(CalendarPlugin)
 Vue.use(FormCheckboxPlugin)
 Vue.use(FormDatepickerPlugin)
 Vue.use(FormFilePlugin)

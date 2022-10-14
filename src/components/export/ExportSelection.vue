@@ -4,14 +4,14 @@
       <h2>{{ $t(texts.exportTitle) }}</h2>
       <p>{{ $t(texts.exportText) }}</p>
       <!-- Selected trait/climate -->
-      <SearchableSelect v-model="selectedItems" :options="itemOptions" :selectSize="selectSize" />
+      <SearchableSelect v-model="selectedItems" :options="itemOptions" :multiple="multipleItems" :selectSize="selectSize" />
       <!-- <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 /> -->
       <p class="text-danger" v-if="max !== null && selectedItemCount() > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
       <p class="text-info" v-if="min !== null && selectedItemCount() < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
     </b-col>
     <b-col cols=12 md=6>
       <!-- Selected germplasm/location groups -->
-      <ExportGroupSelection :info="groupSelectionInfo" :selectSize="selectSize" :multiple="multiple" :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
+      <ExportGroupSelection :info="groupSelectionInfo" :selectSize="selectSize" :multiple="multipleGroups" :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
     </b-col>
     <b-col cols=12>
       <b-btn variant="primary" @click="buttonPressed" :disabled="getButtonDisabled()"><MdiIcon :path="mdiArrowRightBox" /> {{ $t(texts.exportButton) }}</b-btn>
@@ -69,7 +69,11 @@ export default {
       type: Array,
       default: null
     },
-    multiple: {
+    multipleItems: {
+      type: Boolean,
+      default: true
+    },
+    multipleGroups: {
       type: Boolean,
       default: true
     },
@@ -150,10 +154,19 @@ export default {
 
       // Set selected trait/climate ids
       if (this.selectedItemCount() > 0) {
-        query.xIds = this.selectedItems.map(t => t[this.idKey])
+        query.xIds = this.getSelectedItems()
       }
 
       this.$emit('button-clicked', query, this.selectedItems)
+    },
+    getSelectedItems: function () {
+      if (!this.selectedItems) {
+        return []
+      } else if (Array.isArray(this.selectedItems)) {
+        return this.selectedItems.map(t => t[this.idKey])
+      } else {
+        return [this.selectedItems[this.idKey]]
+      }
     },
     selectedItemCount: function () {
       if (!this.selectedItems) {

@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import MdiIcon from '@/components/icons/MdiIcon'
 
 import { hexToRgb } from '@/mixins/colors.js'
@@ -37,10 +39,6 @@ export default {
     MdiIcon
   },
   props: {
-    colors: {
-      type: Array,
-      default: () => ['#000000', '#570000', '#ff0000', '#ffc800', '#ffff00', '#ffffff']
-    },
     height: {
       type: Number,
       default: 25
@@ -66,6 +64,16 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'storeServerSettings'
+    ]),
+    colors: function () {
+      if (this.storeServerSettings && this.storeServerSettings.colorsGradient && this.storeServerSettings.colorsGradient.length > 0) {
+        return this.storeServerSettings.colorsGradient.concat()
+      } else {
+        return ['#000000', '#570000', '#ff0000', '#ffc800', '#ffff00', '#ffffff']
+      }
+    },
     multiGradient: function () {
       const numSections = this.colors.length - 1
 

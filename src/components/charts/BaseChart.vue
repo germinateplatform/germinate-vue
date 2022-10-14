@@ -144,7 +144,9 @@ export default {
       if (this.imageType === 'svg') {
         downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename + '-' + getDateTimeString())
       } else if (this.imageType === 'png') {
-        Plotly.downloadImage(this.$slots.chart[0].elm, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + getDateTimeString() })
+        const container = this.$slots.chart[0].elm
+        const chart = container.classList.contains('js-plotly-plot') ? container : container.querySelector('.js-plotly-plot')
+        Plotly.downloadImage(chart, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + getDateTimeString() })
       }
     },
     chartColorsChangedHandler: function () {
