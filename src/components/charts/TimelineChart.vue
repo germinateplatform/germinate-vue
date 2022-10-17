@@ -2,7 +2,13 @@
   <div>
     <BaseChart :id="id" :width="() => 1280" :height="() => 450" :filename="baseFilename" :loading="loading" >
       <div slot="chart">
-        <ColorGradient :min="traitStats.min" :max="traitStats.max" v-if="traitStats" />
+        <ShapefileGeotiffMap :shapefile="shapefileUrl"
+                             :traitData="mapTraitData"
+                             :traitStats="traitStats"
+                             :selectedGermplasm="selectedGermplasm"
+                             @germplasm-selected="onGermplasmSelected"
+                             ref="map"
+                             v-if="shapefileUrl"/>
 
         <b-row v-if="timepoints && timepoints.length > 0">
           <b-col cols=12 md=9>
@@ -30,6 +36,12 @@
           </b-col>
         </b-row>
 
+        <div v-if="selectedGermplasm && selectedGermplasm.length > 0">
+          <b-badge class="mr-2" v-for="(germplasm, index) in selectedGermplasm" :key="`germplasm-badge-${germplasm.row}-${germplasm.column}`" :style="{ backgroundColor: getColor(index).bg, color: getColor(index).text }">
+            {{ `${germplasm.germplasm}-${germplasm.rep}` }} <button type="button" class="close badge-close" @click="removeGermplasm(index)">×</button>
+          </b-badge>
+        </div>
+
         <div ref="timelinePlot" />
       </div>
 
@@ -52,13 +64,16 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
-import ColorGradient from '@/components/util/ColorGradient'
+import ShapefileGeotiffMap from '@/components/map/ShapefileGeotiffMap'
 import { uuidv4 } from '@/mixins/util'
 
 import { mdiHelpCircleOutline, mdiStop, mdiPlay } from '@mdi/js'
 import { apiPostTrialsDataTable } from '@/mixins/api/trait'
 import { apiPostTraitStats } from '@/mixins/api/dataset'
 import { getDateString } from '@/mixins/formatting'
+import { getColors, getHighContrastTextColor } from '@/mixins/colors'
+
+global.Buffer = global.Buffer || require('buffer').Buffer
 
 const emitter = require('tiny-emitter/instance')
 
@@ -67,8 +82,8 @@ const Plotly = require('plotly.js-dist-min')
 export default {
   components: {
     BaseChart,
-    ColorGradient,
     MdiIcon,
+    ShapefileGeotiffMap,
     Tour
   },
   props: {
@@ -91,6 +106,10 @@ export default {
     markedIds: {
       type: Array,
       default: () => null
+    },
+    shapefiles: {
+      type: Array,
+      default: () => []
     }
   },
   data: function () {
@@ -111,13 +130,46 @@ export default {
       traitDefinitions: null,
       traitData: null,
       currentTimepoint: 0,
-      playbackRunning: false
+      playbackRunning: false,
+      shapefileIndex: 0,
+      selectedGermplasm: []
     }
   },
   computed: {
     ...mapGetters([
-      'storeDarkMode'
+      'storeDarkMode',
+      'storeBaseUrl'
     ]),
+    colors: function () {
+      const c = getColors()
+      return c.map(c => {
+        return {
+          bg: c,
+          text: getHighContrastTextColor(c)
+        }
+      })
+    },
+    selectedGermplasmSet: function () {
+      if (this.selectedGermplasm) {
+        return this.selectedGermplasm.map(sg => `${sg.row}-${sg.column}`)
+      } else {
+        return []
+      }
+    },
+    mapTraitData: function () {
+      if (this.traitData) {
+        return this.traitData.filter(td => td.recordingDate.includes(this.timepoints[this.currentTimepoint]))
+      } else {
+        return null
+      }
+    },
+    shapefileUrl: function () {
+      if (this.shapefiles && this.shapefiles.length > 0) {
+        return `${this.storeBaseUrl}fileresource/${this.shapefiles[this.shapefileIndex].fileresourceId}.zip`
+      } else {
+        return null
+      }
+    },
     baseFilename: function () {
       if (this.trait) {
         return `timeseries-${this.trait.traitName.replace(' ', '-')}-datasets-${this.datasetIds.join('-')}`
@@ -175,26 +227,26 @@ export default {
           line: { color: '#7f8c8d' }
         })
 
-        // if (this.selectedGermplasm.length > 0) {
-        //   this.selectedGermplasm.forEach((gp, i) => {
-        //     const germplasmData = this.traitData.filter(td => td.trialRow === gp.row && td.trialColumn === gp.column)
-        //     const trace = {
-        //       x: [],
-        //       y: [],
-        //       type: 'scatter',
-        //       name: `${gp.germplasm}-${gp.rep}`,
-        //       marker: {
-        //         color: this.colors[i % this.colors.length],
-        //         line: { color: this.colors[i % this.colors.length] }
-        //       }
-        //     }
-        //     germplasmData.concat().sort((a, b) => new Date(a.recordingDate) - new Date(b.recordingDate)).forEach(gd => {
-        //       trace.x.push(gd.recordingDate)
-        //       trace.y.push(+gd.traitValue)
-        //     })
-        //     traces.push(trace)
-        //   })
-        // }
+        if (this.selectedGermplasm.length > 0) {
+          this.selectedGermplasm.forEach((gp, i) => {
+            const germplasmData = this.traitData.filter(td => td.trialRow === gp.row && td.trialColumn === gp.column)
+            const trace = {
+              x: [],
+              y: [],
+              type: 'scatter',
+              name: `${gp.germplasm}-${gp.rep}`,
+              marker: {
+                color: this.getColor(i).bg,
+                line: { color: this.getColor(i).bg }
+              }
+            }
+            germplasmData.concat().sort((a, b) => new Date(a.recordingDate) - new Date(b.recordingDate)).forEach(gd => {
+              trace.x.push(gd.recordingDate)
+              trace.y.push(+gd.traitValue)
+            })
+            traces.push(trace)
+          })
+        }
 
         return traces
       } else {
@@ -234,6 +286,21 @@ export default {
     }
   },
   methods: {
+    getColor: function (index) {
+      return this.colors[index % this.colors.length]
+    },
+    removeGermplasm: function (index) {
+      this.selectedGermplasm.splice(index, 1)
+    },
+    onGermplasmSelected: function (newGermplasm) {
+      const index = this.selectedGermplasm.findIndex(sg => sg.row === newGermplasm.row && sg.column === newGermplasm.column && sg.germplasm === newGermplasm.germplasm)
+
+      if (index === -1) {
+        this.selectedGermplasm.push(newGermplasm)
+      } else {
+        this.selectedGermplasm.splice(index, 1)
+      }
+    },
     onSelectDate: function (ymd) {
       this.currentTimepoint = this.timepoints.indexOf(ymd)
     },
@@ -343,6 +410,12 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.badge-close {
+  color: inherit;
+  font-size: 125%;
+  line-height: 1;
+  float: none;
+  margin-left: 0.25rem;
+}
 </style>

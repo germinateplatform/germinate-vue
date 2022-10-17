@@ -7,7 +7,7 @@
                      :onlyNumeric="true"
                      v-on:button-clicked="plot" />
 
-    <TimelineChart :trait="trait" :groupIds="groupIds" :markedIds="markedIds" :datasetIds="datasetIds" :timepoints="timepoints" ref="timelineChart" />
+    <TimelineChart :shapefiles="shapefiles" :trait="trait" :groupIds="groupIds" :markedIds="markedIds" :datasetIds="datasetIds" :timepoints="timepoints" ref="timelineChart" />
   </div>
 </template>
 
@@ -16,6 +16,8 @@ import { mapGetters } from 'vuex'
 import ExportSelection from '@/components/export/ExportSelection'
 import TimelineChart from '@/components/charts/TimelineChart'
 import { apiPostTrialsDataTimepoints } from '@/mixins/api/trait'
+import { apiPostDatasetfileresource } from '@/mixins/api/dataset'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 export default {
   components: {
@@ -65,7 +67,8 @@ export default {
       timepoints: [],
       trait: null,
       groupIds: null,
-      markedIds: null
+      markedIds: null,
+      shapefiles: []
     }
   },
   computed: {
@@ -78,6 +81,9 @@ export default {
       // if (this.colorBySelection === 'marked_items') {
       //   this.onColorByChanged()
       // }
+    },
+    datasetIds: function () {
+      this.updateFileresources()
     }
   },
   methods: {
@@ -95,6 +101,30 @@ export default {
 
         this.$nextTick(() => this.$refs.timelineChart.getTraitData())
       })
+    },
+    updateFileresources: function () {
+      apiPostDatasetfileresource({
+        datasetIds: this.datasetIds,
+        page: 1,
+        limit: MAX_JAVA_INTEGER,
+        filter: [{
+          column: 'fileresourcetypeName',
+          comparator: 'equals',
+          operator: 'and',
+          values: ['Trials Shapefile']
+        }]
+      }, result => {
+        if (result && result.data) {
+          this.shapefiles = result.data
+        } else {
+          this.shapefiles = []
+        }
+      })
+    }
+  },
+  mounted: function () {
+    if (this.datasetIds && this.datasetIds.length > 0) {
+      this.updateFileresources()
     }
   }
 }

@@ -75,6 +75,11 @@ const apiPostFileResourceTable = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'fileresource/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiPostDatasetfileresource = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'dataset/fileresource', data: queryData, method: 'POST', success: onSuccess, error: onError })
+}
+
 const apiGetFileResourceTypes = (onSuccess, onError) => authAxios({ url: 'fileresourcetype', success: onSuccess, error: onError })
 
 const apiPostFileresourceType = (data, onSuccess, onError) => authAxios({ url: 'fileresourcetype', method: 'POST', data: data, success: onSuccess, error: onError })
@@ -116,6 +121,7 @@ export {
   apiPatchLicense,
   apiPostLicenseTable,
   apiGetAcceptLicense,
+  apiPostDatasetfileresource,
   apiPostFileResourceTable,
   apiGetFileResourceTypes,
   apiPostFileresourceType,
