@@ -79,8 +79,8 @@ export default {
 
       let gradient = []
 
-      for (let section = 0; section < numSections; section++) {
-        gradient = gradient.concat(this.createGradient(this.colors[section], this.colors[section + 1], this.numSteps / numSections))
+      for (let section = 1; section < numSections; section++) {
+        gradient = gradient.concat(this.createGradient(this.colors[section - 1], this.colors[section], this.numSteps / numSections))
       }
 
       while (gradient.length < this.numSteps) {

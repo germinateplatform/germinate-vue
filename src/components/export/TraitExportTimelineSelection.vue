@@ -87,6 +87,9 @@ export default {
     }
   },
   methods: {
+    invalidateSize: function () {
+      this.$refs.timelineChart.invalidateSize()
+    },
     plot: function (query, selectedItems) {
       apiPostTrialsDataTimepoints({
         datasetIds: this.datasetIds,

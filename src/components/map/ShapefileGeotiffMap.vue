@@ -18,6 +18,7 @@ import { getColor, rgbColorToHex } from '@/mixins/colors'
 import { uuidv4 } from '@/mixins/util'
 
 let shapefileLayers = {}
+let bounds
 
 export default {
   components: {
@@ -97,6 +98,9 @@ export default {
       if (this.map) {
         this.$nextTick(() => {
           this.map.invalidateSize()
+          if (bounds.isValid()) {
+            this.$nextTick(() => this.map.fitBounds(bounds))
+          }
         })
       }
     },
@@ -125,7 +129,7 @@ export default {
         shapefileLayers = {}
       }
 
-      const bounds = L.latLngBounds()
+      bounds = L.latLngBounds()
 
       if (this.shapefile) {
         axios.get(this.shapefile, { responseType: 'blob' })

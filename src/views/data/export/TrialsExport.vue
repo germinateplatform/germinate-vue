@@ -79,6 +79,7 @@
                                     :groups="groups"
                                     :texts="textsChart"
                                     :getItems="getTraits"
+                                    ref="timeseries"
                                     v-show="currentTab === 'timeseries'"/>
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
@@ -211,6 +212,10 @@ export default {
     currentTab: function (newValue) {
       if (newValue === 'locations') {
         this.$nextTick(() => this.$refs.locationsMap.invalidateSize())
+      } else if (newValue === 'timeseries') {
+        if (this.$refs.timeseries) {
+          this.$nextTick(() => this.$refs.timeseries.invalidateSize())
+        }
       }
     }
   },

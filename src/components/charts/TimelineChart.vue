@@ -2,39 +2,10 @@
   <div>
     <BaseChart :id="id" :width="() => 1280" :height="() => 450" :filename="baseFilename" :loading="loading" >
       <div slot="chart">
-        <ShapefileGeotiffMap :shapefile="shapefileUrl"
-                             :traitData="mapTraitData"
-                             :traitStats="traitStats"
-                             :selectedGermplasm="selectedGermplasm"
-                             @germplasm-selected="onGermplasmSelected"
-                             ref="map"
-                             v-if="shapefileUrl"/>
-
-        <b-row v-if="timepoints && timepoints.length > 0">
-          <b-col cols=12 md=9>
-            <b-form-group :label="$t('formLabelTraitTimelineTimepoint')" label-for="timepoint" :description="$t('formDescriptionTraitTimelineTimepoint', { timepoint: timepoints[currentTimepoint] })">
-              <b-form-input id="timepoint" v-model.number="currentTimepoint" type="range" :min="0" :max="timepoints.length - 1" :disabled="playbackRunning" />
-            </b-form-group>
-
-            <b-button @click="togglePlayback(false)" v-if="playbackRunning"><MdiIcon :path="mdiStop" /> {{ $t('buttonStop') }}</b-button>
-            <b-button @click="togglePlayback(true)" v-else><MdiIcon :path="mdiPlay" /> {{ $t('buttonPlay') }}</b-button>
-          </b-col>
-          <b-col cols=12 md=3>
-            <b-calendar v-if="timepoints && timepoints.length > 0"
-                        block
-                        no-highlight-today
-                        no-key-nav
-                        hide-header
-                        :min="timepoints[0]"
-                        :max="timepoints[timepoints.length - 1]"
-                        :date-info-fn="highlightTimepoints"
-                        :date-disabled-fn="dateDisabled"
-                        selected-variant="info"
-                        :start-weekday="1"
-                        :value="timepoints[currentTimepoint]"
-                        @selected="onSelectDate"/>
-          </b-col>
-        </b-row>
+        <template v-if="plotData">
+          <h2>{{ $t('pageTraitTimelinePlotTitle') }}</h2>
+          <p>{{ $t('pageTraitTimelinePlotText') }}</p>
+        </template>
 
         <div v-if="selectedGermplasm && selectedGermplasm.length > 0">
           <b-badge class="mr-2" v-for="(germplasm, index) in selectedGermplasm" :key="`germplasm-badge-${germplasm.row}-${germplasm.column}`" :style="{ backgroundColor: getColor(index).bg, color: getColor(index).text }">
@@ -43,6 +14,54 @@
         </div>
 
         <div ref="timelinePlot" />
+
+        <div v-if="timepoints && timepoints.length > 0">
+          <h2>{{ $t('pageTraitTimelineTimesliderTitle') }}</h2>
+          <p>{{ $t('pageTraitTimelineTimesliderText') }}</p>
+
+          <b-row>
+            <b-col cols=12 md=9>
+              <b-form-group :label="$t('formLabelTraitTimelineTimepoint')" label-for="timepoint" :description="$t('formDescriptionTraitTimelineTimepoint', { timepoint: timepoints[currentTimepoint] })">
+                <b-form-input id="timepoint" v-model.number="currentTimepoint" type="range" :min="0" :max="timepoints.length - 1" :disabled="playbackRunning" />
+              </b-form-group>
+
+              <b-button @click="togglePlayback(false)" v-if="playbackRunning"><MdiIcon :path="mdiStop" /> {{ $t('buttonStop') }}</b-button>
+              <b-button @click="togglePlayback(true)" v-else><MdiIcon :path="mdiPlay" /> {{ $t('buttonPlay') }}</b-button>
+            </b-col>
+            <b-col cols=12 md=3>
+              <b-calendar v-if="timepoints && timepoints.length > 0"
+                          block
+                          no-highlight-today
+                          no-key-nav
+                          hide-header
+                          :min="timepoints[0]"
+                          :max="timepoints[timepoints.length - 1]"
+                          :date-info-fn="highlightTimepoints"
+                          :date-disabled-fn="dateDisabled"
+                          selected-variant="info"
+                          :start-weekday="1"
+                          :value="timepoints[currentTimepoint]"
+                          @selected="onSelectDate"/>
+            </b-col>
+          </b-row>
+        </div>
+
+        <template v-if="shapefiles && shapefiles.length > 0">
+          <h2>{{ $t('pageTraitTimelineMapTitle') }}</h2>
+          <p>{{ $t('pageTraitTimelineMapText') }}</p>
+
+          <b-form-group :label="$t('formLabelTraitTimelineShapefile')" label-for="shapefile">
+            <b-form-select id="shapefile" :options="shapefileOptions" v-model="shapefileIndex" />
+          </b-form-group>
+
+          <ShapefileGeotiffMap :shapefile="shapefileUrl"
+                              :traitData="mapTraitData"
+                              :traitStats="traitStats"
+                              :selectedGermplasm="selectedGermplasm"
+                              @germplasm-selected="onGermplasmSelected"
+                              ref="map"
+                              v-if="shapefileUrl"/>
+        </template>
       </div>
 
       <template slot="additionalButtons">
@@ -140,6 +159,18 @@ export default {
       'storeDarkMode',
       'storeBaseUrl'
     ]),
+    shapefileOptions: function () {
+      if (this.shapefiles) {
+        return this.shapefiles.map((s, index) => {
+          return {
+            value: index,
+            text: s.fileresourceName
+          }
+        })
+      } else {
+        return null
+      }
+    },
     colors: function () {
       const c = getColors()
       return c.map(c => {
@@ -286,6 +317,11 @@ export default {
     }
   },
   methods: {
+    invalidateSize: function () {
+      if (this.$refs.map) {
+        this.$refs.map.invalidateSize()
+      }
+    },
     getColor: function (index) {
       return this.colors[index % this.colors.length]
     },
