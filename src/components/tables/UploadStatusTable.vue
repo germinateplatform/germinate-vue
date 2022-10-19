@@ -101,6 +101,8 @@ export default {
           key: 'rowIndex'
         }, {
           key: 'message'
+        }, {
+          key: 'type'
         }
       ]
     }

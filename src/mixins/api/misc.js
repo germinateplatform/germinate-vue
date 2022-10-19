@@ -32,7 +32,7 @@ const apiGetGatekeeperInstitutions = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'gatekeeper/institution', method: 'GET', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDataUpload = (formData, templateType, isUpdate, datasetStateId, onSuccess, onError) => authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&datasetStateId=${datasetStateId}`, formData: formData, success: onSuccess, error: onError })
+const apiPostDataUpload = (formData, templateType, isUpdate, datasetId, datasetStateId, onSuccess, onError) => authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&datasetStateId=${datasetStateId}&datasetId=${datasetId}`, formData: formData, success: onSuccess, error: onError })
 
 const apiPostImages = (queryData, onSuccess, onError) => {
   queryData.page -= 1

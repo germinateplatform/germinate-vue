@@ -84,7 +84,7 @@
           <!-- List of jobs -->
           <b-list-group-item v-for="job in asyncImportJobs"
                                 :key="job.id"
-                                :class="`${(job.feedback && job.feedback.length) > 0 ? 'danger' : status[job.status].color}`">
+                                :class="(job.status === 'running' || job.status === 'waiting') ? status[job.status].color : getJobVariant(job)">
             <!-- Delete job -->
             <a href="#" class="text-muted float-right" @click.prevent="deleteImportJob(job)" :title="$t('buttonDelete')"><MdiIcon :path="mdiClose" /></a>
             <!-- Template type -->
@@ -111,11 +111,14 @@
               <!-- If there is feedback -->
               <div v-if="job.feedback">
                 <!-- Show a button to view the feedback -->
-                <span class="text-danger" v-if="job.feedback.length > 0"><MdiIcon :path="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
-                <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
-                <template v-else-if="job.imported === false">
-                  <span class="text-success" v-if="storeServerSettings.dataImportMode === 'IMPORT'"><MdiIcon :path="mdiCheckCircle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
-                  <span class="text-success" v-else><MdiIcon :path="mdiCheckCircle" />&nbsp;{{ $t('widgetAsyncJobPanelImportDisabled') }}</span>
+                <span class="text-danger" v-if="job.errorStatus === 'ERROR'"><MdiIcon :path="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
+                <template v-else>
+                  <span class="d-block text-warning" v-if="job.errorStatus === 'WARNING'"><MdiIcon :path="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></span>
+                  <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
+                  <template v-if="job.imported === false">
+                    <span class="d-block text-success" v-if="storeServerSettings.dataImportMode === 'IMPORT'"><MdiIcon :path="mdiCheckCircle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></span>
+                    <span class="d-block text-success" v-else><MdiIcon :path="mdiCheckCircle" />&nbsp;{{ $t('widgetAsyncJobPanelImportDisabled') }}</span>
+                  </template>
                 </template>
               </div>
             </div>
@@ -253,6 +256,15 @@ export default {
   methods: {
     userIsAtLeast,
     getNumberWithSuffix,
+    getJobVariant: function (job) {
+      if (job.errorStatus === 'ERROR') {
+        return 'danger'
+      } else if (job.errorStatus === 'WARNING') {
+        return 'warning'
+      } else {
+        return this.status[job.status].color
+      }
+    },
     downloadImportJobLog: function (job) {
       apiGetDataAsyncImportLog(job.uuid, result => {
         downloadBlob({
@@ -396,7 +408,31 @@ export default {
 
         axios.all([exportJobs, importJobs]).then(results => {
           this.asyncExportJobs = results[0].data
-          this.asyncImportJobs = results[1].data
+          this.asyncImportJobs = results[1].data.map(j => {
+            const types = {}
+
+            if (j.feedback) {
+              j.feedback.forEach(f => {
+                if (!types[f.type]) {
+                  types[f.type] = 1
+                } else {
+                  types[f.type]++
+                }
+              })
+
+              if (types.ERROR > 0) {
+                j.errorStatus = 'ERROR'
+              } else if (types.WARNING > 0) {
+                j.errorStatus = 'WARNING'
+              } else {
+                j.errorStatus = 'NONE'
+              }
+            } else {
+              j.errorStatus = 'NONE'
+            }
+
+            return j
+          })
 
           const count = this.asyncExportJobs.length + this.asyncImportJobs.length
           const joined = this.asyncExportJobs.concat(this.asyncImportJobs)
