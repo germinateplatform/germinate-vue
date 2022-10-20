@@ -581,12 +581,12 @@ export default {
   overflow-y: auto;
 }
 
-.leaflet-popup-content-wrapper {
+.location-map .leaflet-popup-content-wrapper {
   padding: 0;
   border-radius: 3px;
 }
 
-.leaflet-popup-content {
+.location-map .leaflet-popup-content {
   margin: 0;
   width: 300px!important;
 }

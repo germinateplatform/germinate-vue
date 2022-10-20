@@ -209,15 +209,21 @@ const templateImportTypes = {
     text: () => i18n.t('templateImportTypeMcpd'),
     accepts: '.xlsx'
   },
+  climate: {
+    path: mdiWeatherSnowyRainy,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[1 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    text: () => i18n.t('templateImportTypeClimate'),
+    accepts: '.xlsx'
+  },
   genotype: {
     path: mdiDna,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[1 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[2 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeGenotype'),
     accepts: '.xlsx, .txt, .hapmap'
   },
   trial: {
     path: mdiShovel,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[2 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[3 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeTrial'),
     accepts: '.xlsx'
   },
@@ -227,29 +233,23 @@ const templateImportTypes = {
     text: () => i18n.t('templateImportTypeShapefile'),
     accepts: '.zip'
   },
-  climate: {
-    path: mdiWeatherSnowyRainy,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[4 % store.getters.storeServerSettings.colorsTemplate.length] : null,
-    text: () => i18n.t('templateImportTypeClimate'),
-    accepts: '.xlsx'
-  },
   pedigree: {
     path: mdiFamilyTree,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[5 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[4 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypePedigree'),
     accepts: '.xlsx'
+  },
+  images: {
+    path: mdiImageMultiple,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[5 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    text: () => i18n.t('templateImportTypeImages'),
+    accepts: '.zip'
   },
   groups: {
     path: mdiGroup,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[6 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeGroups'),
     accepts: '.xlsx'
-  },
-  images: {
-    path: mdiImageMultiple,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[7 % store.getters.storeServerSettings.colorsTemplate.length] : null,
-    text: () => i18n.t('templateImportTypeImages'),
-    accepts: '.zip'
   }
 }
 
@@ -451,14 +451,14 @@ const datasetTypes = {
     id: 1,
     path: mdiDna,
     pageName: Pages.exportGenotypes,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[3 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[2 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeGenotype')
   },
   trials: {
     id: 3,
     path: mdiShovel,
     pageName: Pages.exportTraits,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[4 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[3 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeTrials')
   },
   pedigree: {
@@ -466,7 +466,7 @@ const datasetTypes = {
     path: mdiFamilyTree,
     // pageName: Pages.export-pedigrees,
     pageName: null,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[5 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[4 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypePedigree')
   },
   unknown: {

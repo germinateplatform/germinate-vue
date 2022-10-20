@@ -193,26 +193,26 @@ export default {
       } else {
         window.history.replaceState({}, null, this.$router.resolve({ name: Pages.importUpload }).href)
       }
-
-      apiPostDatasetTable({
-        page: 1,
-        limit: MAX_JAVA_INTEGER,
-        filter: [{
-          column: 'datasetType',
-          comparator: 'equals',
-          operator: 'and',
-          values: ['trials']
-        }]
-      }, result => {
-        if (result && result.data) {
-          this.trialsDatasets = result.data
-
-          if (result.data.length > 0) {
-            this.datasetId = result.data[0].datasetId
-          }
-        }
-      })
     }
+
+    apiPostDatasetTable({
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      filter: [{
+        column: 'datasetType',
+        comparator: 'equals',
+        operator: 'and',
+        values: ['trials']
+      }]
+    }, result => {
+      if (result && result.data) {
+        this.trialsDatasets = result.data
+
+        if (result.data.length > 0) {
+          this.datasetId = result.data[0].datasetId
+        }
+      }
+    })
   }
 }
 </script>

@@ -8,6 +8,7 @@
       <hr />
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
+
       <!-- Banner buttons -->
       <b-row class="trials-tabs mb-3" v-if="tabs" :cols-xl="tabs.length">
         <b-col cols=12 sm=6 xl=2 :offset-xl="(tabs.length < 6 && index === 0) ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
@@ -63,7 +64,7 @@
                                 :getItems="getTraits"
                                 v-show="currentTab === 'comparison'"/>
       <!-- Trials data table section -->
-      <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsTableData" v-show="currentTab === 'table'" />
+      <TrialsDataTable :shown="currentTab === 'table'" :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsTableData" v-show="currentTab === 'table'" />
       <!-- Export section -->
       <ExportDownloadSelection :datasetIds="datasetIds"
                                v-bind="config"
@@ -75,11 +76,12 @@
       <TrialsLocationMap :shown="currentTab === 'locations'" :datasetIds="datasetIds" ref="locationsMap" v-show="currentTab === 'locations'" />
       <!-- Trait matrix chart section -->
       <TraitExportTimelineSelection :datasetIds="datasetIds"
+                                    id="trait-timeline-section"
                                     v-bind="config"
                                     :groups="groups"
                                     :texts="textsChart"
                                     :getItems="getTraits"
-                                    ref="timeseries"
+                                    :shown="currentTab === 'timeseries'"
                                     v-show="currentTab === 'timeseries'"/>
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
@@ -212,10 +214,6 @@ export default {
     currentTab: function (newValue) {
       if (newValue === 'locations') {
         this.$nextTick(() => this.$refs.locationsMap.invalidateSize())
-      } else if (newValue === 'timeseries') {
-        if (this.$refs.timeseries) {
-          this.$nextTick(() => this.$refs.timeseries.invalidateSize())
-        }
       }
     }
   },

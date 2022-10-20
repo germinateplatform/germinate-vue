@@ -7,10 +7,10 @@
         </template>
         <!-- Update button -->
         <b-button-group class="w-100 action-buttons" >
-          <b-button @click="updateInternal" variant="info">
+          <b-button class="w-50" @click="updateInternal" variant="info">
             <MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}
           </b-button>
-          <b-button @click="clearExportJobs" :disabled="!asyncExportJobs || asyncExportJobs.length < 1">
+          <b-button class="w-50" @click="clearExportJobs" :disabled="!asyncExportJobs || asyncExportJobs.length < 1">
             <MdiIcon :path="mdiDelete" /> {{ $t('genericClear') }}
           </b-button>
         </b-button-group>
@@ -20,20 +20,20 @@
             {{ $t('widgetAsyncJobPanelTitle') }}
           </b-list-group-item>
           <!-- List of jobs -->
-          <b-list-group-item v-for="job in asyncExportJobs"
-                              :key="job.id"
+          <b-list-group-item v-for="(job, index) in asyncExportJobs"
+                              :key="`download-job-${job.id}`"
                               :class="status[job.status].color">
             <!-- Delete job -->
-            <a href="#" class="text-muted float-right" @click.prevent="deleteExportJob(job)" :title="$t('buttonDelete')"><MdiIcon :path="mdiClose" /></a>
+            <a href="#" class="text-muted float-right" @click.prevent="deleteExportJob(job)" v-b-tooltip="$t('buttonDelete')"><MdiIcon :path="mdiClose" /></a>
             <!-- Job type -->
-            <div><strong>{{ getDatasetType(job.datatype) }}</strong></div>
-            <!-- Dataset ids -->
-            <div class="text-muted" v-if="job.datasetIds">
-              <MdiIcon :path="mdiDatabase" /><small> {{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</small>
-            </div>
+            <div><MdiIcon :path="exportJobTypes[index].path" :color="exportJobTypes[index].color()" /><strong>&nbsp;{{ exportJobTypes[index].text() }}</strong></div>
             <!-- Date time -->
             <div class="text-muted" v-if="job.updatedOn">
               <MdiIcon :path="mdiCalendarClock" /><small> {{ new Date(job.updatedOn).toLocaleString() }}</small>
+            </div>
+            <!-- Dataset ids -->
+            <div class="text-muted" v-if="job.datasetIds">
+              <MdiIcon :path="mdiDatabase" /><small> {{ $t('widgetAsyncJobPanelDatasets', { datasetIds: job.datasetIds }) }}</small>
             </div>
             <!-- Status -->
             <div :class="`text-${status[job.status].color}`">
@@ -41,18 +41,18 @@
               <MdiIcon :path="status[job.status].path" v-else />
               <small> {{ status[job.status].text() }}</small>
             </div>
-            <!-- Download link -->
+
             <template v-if="job.status === 'completed'">
-              <div class="d-flex flex-row align-items-start" v-if="job.datatype === 'pedigree' && storeServerSettings && storeServerSettings.heliumUrl">
-                <i class="mdi fix-alignment icon-helium" />
-                <div class="d-inline-block ml-1">
+              <div v-if="job.datatype === 'pedigree' && storeServerSettings && storeServerSettings.heliumUrl">
+                <HeliumIcon />
+                <small class="d-inline-block ml-1">
                   <a target="_blank" :href="`${storeServerSettings.heliumUrl}pedigree?germinateUrl=${encodeURIComponent(storeBaseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateInternal">{{ $t('buttonSendToHelium') }}</a>
-                </div>
+                </small>
               </div>
               <div class="d-flex flex-row align-items-start">
-                <MdiIcon :path="mdiDownload" />
+                <MdiIcon :path="mdiDownload" className="text-primary" />
                 <div class="d-inline-block ml-1">
-                  <a :href="`${storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateInternal">{{ $t('buttonDownload') }}</a>
+                  <small><a :href="`${storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateInternal">{{ $t('buttonDownload') }}</a></small>
                   <div v-if="job.resultSize">
                     <!-- File size -->
                     <small class="text-muted">{{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}</small>
@@ -69,10 +69,10 @@
         </template>
         <!-- Update button -->
         <b-button-group class="w-100 action-buttons">
-          <b-button @click="updateInternal" variant="info">
+          <b-button class="w-50" @click="updateInternal" variant="info">
             <MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}
           </b-button>
-          <b-button @click="clearImportJobs" :disabled="!asyncImportJobs || asyncImportJobs.length < 1">
+          <b-button class="w-50" @click="clearImportJobs" :disabled="!asyncImportJobs || asyncImportJobs.length < 1">
             <MdiIcon :path="mdiDelete" /> {{ $t('genericClear') }}
           </b-button>
         </b-button-group>
@@ -82,19 +82,19 @@
             {{ $t('widgetAsyncImportJobPanelTitle') }}
           </b-list-group-item>
           <!-- List of jobs -->
-          <b-list-group-item v-for="job in asyncImportJobs"
-                                :key="job.id"
+          <b-list-group-item v-for="(job, index) in asyncImportJobs"
+                                :key="`upload-job-${job.id}`"
                                 :class="(job.status === 'running' || job.status === 'waiting') ? status[job.status].color : getJobVariant(job)">
             <!-- Delete job -->
-            <a href="#" class="text-muted float-right" @click.prevent="deleteImportJob(job)" :title="$t('buttonDelete')"><MdiIcon :path="mdiClose" /></a>
+            <a href="#" class="text-muted float-right" @click.prevent="deleteImportJob(job)" v-b-tooltip="$t('buttonDelete')"><MdiIcon :path="mdiClose" /></a>
             <!-- Template type -->
-            <div class="text-muted">
-              <MdiIcon :path="mdiDatabase" /><strong>{{ getTemplateType(job.datatype) }}</strong>
+            <div>
+              <MdiIcon :path="importJobTypes[index].path" :color="importJobTypes[index].color()" /><strong>&nbsp;{{ importJobTypes[index].text() }}</strong>
             </div>
             <!-- Date time and filename -->
             <div class="text-muted">
               <MdiIcon :path="mdiCalendarClock" /><small v-if="job.updatedOn"> {{ new Date(job.updatedOn).toLocaleString() }}</small><br/>
-              <template v-if="job.originalFilename"><MdiIcon :path="mdiFile" /><small> {{ job.originalFilename }}</small></template>
+              <template v-if="job.originalFilename"><MdiIcon :path="mdiFile" /><small>&nbsp;{{ job.originalFilename }}</small></template>
             </div>
             <!-- Status -->
             <div v-if="job.status === 'failed'">
@@ -143,7 +143,8 @@
 import { mapGetters } from 'vuex'
 
 import MdiIcon from '@/components/icons/MdiIcon'
-import { mdiDelete, mdiDownload, mdiUpload, mdiRefresh, mdiDatabase, mdiClose, mdiFileDocumentAlert, mdiCalendarClock, mdiFile, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiPauseCircle, mdiCancel, mdiProgressWrench } from '@mdi/js'
+import HeliumIcon from '@/components/icons/HeliumIcon'
+import { mdiDelete, mdiDownload, mdiUpload, mdiRefresh, mdiDatabase, mdiClose, mdiFileDocumentAlert, mdiCalendarClock, mdiFile, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiPauseCircle, mdiCancel, mdiProgressWrench, mdiHelpCircle, mdiPulse, mdiChartSankey, mdiDna, mdiFamilyTree, mdiImageMultiple, mdiShovel } from '@mdi/js'
 
 import UploadStatusTable from '@/components/tables/UploadStatusTable'
 import axios from 'axios'
@@ -156,6 +157,7 @@ import { getNumberWithSuffix } from '@/mixins/formatting'
 
 export default {
   components: {
+    HeliumIcon,
     MdiIcon,
     UploadStatusTable
   },
@@ -186,6 +188,7 @@ export default {
       mdiAlertCircle,
       mdiCheckCircle,
       mdiFileDocumentAlert,
+      templateImportTypes,
       asyncExportJobs: null,
       asyncImportJobs: null,
       timeout: null,
@@ -220,25 +223,39 @@ export default {
       },
       dataExportTypes: {
         allelefreq: {
-          text: () => this.$t('datasetTypeAllelefreq')
+          text: () => this.$t('datasetTypeAllelefreq'),
+          path: mdiPulse,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[0 % this.storeServerSettings.colorsTemplate.length] : null
         },
         climate: {
-          text: () => this.$t('datasetTypeClimate')
+          text: () => this.$t('datasetTypeClimate'),
+          path: mdiChartSankey,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[1 % this.storeServerSettings.colorsTemplate.length] : null
         },
         genotype: {
-          text: () => this.$t('datasetTypeGenotype')
+          text: () => this.$t('datasetTypeGenotype'),
+          path: mdiDna,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[2 % this.storeServerSettings.colorsTemplate.length] : null
         },
         trials: {
-          text: () => this.$t('datasetTypeTrials')
+          text: () => this.$t('datasetTypeTrials'),
+          path: mdiShovel,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[3 % this.storeServerSettings.colorsTemplate.length] : null
         },
         pedigree: {
-          text: () => this.$t('datasetTypePedigree')
+          text: () => this.$t('datasetTypePedigree'),
+          path: mdiFamilyTree,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[4 % this.storeServerSettings.colorsTemplate.length] : null
         },
         unknown: {
-          text: () => this.$t('datasetTypeUnknown')
+          text: () => this.$t('datasetTypeUnknown'),
+          path: mdiHelpCircle,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[6 % this.storeServerSettings.colorsTemplate.length] : null
         },
         images: {
-          text: () => this.$t('dataTypeImages')
+          text: () => this.$t('dataTypeImages'),
+          path: mdiImageMultiple,
+          color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[5 % this.storeServerSettings.colorsTemplate.length] : null
         }
       }
     }
@@ -251,7 +268,47 @@ export default {
       'storeAsyncJobCount',
       'storeServerSettings',
       'storeAsyncSidebarTabIndex'
-    ])
+    ]),
+    exportJobTypes: function () {
+      if (this.asyncExportJobs) {
+        return this.asyncExportJobs.map(j => {
+          const match = this.dataExportTypes[j.datatype]
+
+          if (match) {
+            return match
+          } else {
+            return {
+              text: 'Data export',
+              path: mdiDatabase,
+              color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[6 % this.storeServerSettings.colorsTemplate.length] : null
+            }
+          }
+        })
+      } else {
+        return []
+      }
+    },
+    importJobTypes: function () {
+      if (this.asyncImportJobs) {
+        return this.asyncImportJobs.map(j => {
+          const match = Object.keys(this.templateImportTypes).filter(k => {
+            return k === j.datatype
+          })
+
+          if (match && match.length > 0) {
+            return this.templateImportTypes[match[0]]
+          } else {
+            return {
+              path: mdiHelpCircle,
+              color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[8 % this.storeServerSettings.colorsTemplate.length] : null,
+              text: () => 'UNKNOWN TEMPLATE TYPE'
+            }
+          }
+        })
+      } else {
+        return []
+      }
+    }
   },
   methods: {
     userIsAtLeast,
@@ -375,17 +432,6 @@ export default {
         return match.text()
       } else {
         return 'Data export'
-      }
-    },
-    getTemplateType: function (templateType) {
-      const match = Object.keys(templateImportTypes).filter(k => {
-        return k === templateType
-      })
-
-      if (match && match.length > 0) {
-        return templateImportTypes[match[0]].text()
-      } else {
-        return 'UNKNOWN TEMPLATE TYPE'
       }
     },
     updateInternal: function () {

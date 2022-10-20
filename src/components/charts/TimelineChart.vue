@@ -317,11 +317,6 @@ export default {
     }
   },
   methods: {
-    invalidateSize: function () {
-      if (this.$refs.map) {
-        this.$refs.map.invalidateSize()
-      }
-    },
     getColor: function (index) {
       return this.colors[index % this.colors.length]
     },

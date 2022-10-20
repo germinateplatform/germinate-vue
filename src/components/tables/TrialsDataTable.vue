@@ -3,6 +3,7 @@
             :columns="columns"
             :options="options"
             itemType="germplasm"
+            v-if="tableShown"
             ref="trialsDataTable"
             v-on="$listeners">
     <!-- Germplasm id link -->
@@ -63,19 +64,34 @@ import { Pages } from '@/mixins/pages'
 export default {
   name: 'TrialsDataTable',
   props: {
-    ...defaultProps.FULL
+    ...defaultProps.FULL,
+    shown: {
+      type: Boolean,
+      default: true
+    }
   },
   data: function () {
     return {
       Pages,
       entityTypes,
+      tableShown: false,
       options: {
         idColumn: 'germplasmId',
         tableName: 'trialsData'
       }
     }
   },
+  watch: {
+    shown: function (newValue) {
+      if (newValue) {
+        this.tableShown = true
+      }
+    }
+  },
   computed: {
+    showTable: function () {
+      return this.tableShown || this.shown
+    },
     columns: function () {
       const result = [
         {
@@ -230,6 +246,11 @@ export default {
     truncateAfterWords,
     refresh: function () {
       this.$refs.trialsDataTable.refresh()
+    }
+  },
+  created: function () {
+    if (this.shown) {
+      this.tableShown = true
     }
   }
 }

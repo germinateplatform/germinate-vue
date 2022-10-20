@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :id="id" class="location-map border" />
+    <div :id="id" class="shapefile-map border" />
 
     <!-- Add color gradient for number coloring -->
     <ColorGradient :min="gradientOptions.min" :max="gradientOptions.max" :formatMinMax="gradientOptions.format" :colors="gradientOptions.colors" v-if="gradientOptions" ref="gradient" />
@@ -125,7 +125,7 @@ export default {
     },
     update: function () {
       if (shapefileLayers) {
-        Object.keys(shapefileLayers).forEach(k => this.map.removeLayer(shapefileLayers[k]))
+        Object.keys(shapefileLayers).forEach(k => shapefileLayers[k].forEach(l => l.remove()))
         shapefileLayers = {}
       }
 
@@ -274,11 +274,11 @@ export default {
 </script>
 
 <style>
-.location-map {
+.shapefile-map {
   position: relative;
   height: 600px !important;
 }
-.location-map .location-map-loading-indicator {
+.shapefile-map .shapefile-map-loading-indicator {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -288,15 +288,15 @@ export default {
   pointer-events: none;
   z-index: 1000;
 }
-.location-map .location-map-loading-indicator > .spinner-grow {
+.shapefile-map .shapefile-map-loading-indicator > .spinner-grow {
   width: 3rem;
   height: 3rem;
 }
-.location-map .legend {
+.shapefile-map .legend {
   max-height: 300px;
   overflow-y: auto;
 }
-.location-map .legend .italic {
+.shapefile-map .legend .italic {
   font-style: italic;
 }
 </style>

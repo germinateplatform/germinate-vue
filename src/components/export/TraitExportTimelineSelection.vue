@@ -7,7 +7,7 @@
                      :onlyNumeric="true"
                      v-on:button-clicked="plot" />
 
-    <TimelineChart :shapefiles="shapefiles" :trait="trait" :groupIds="groupIds" :markedIds="markedIds" :datasetIds="datasetIds" :timepoints="timepoints" ref="timelineChart" />
+    <TimelineChart :shapefiles="shapefiles" :trait="trait" :groupIds="groupIds" :markedIds="markedIds" :datasetIds="datasetIds" :timepoints="timepoints" ref="timelineChart" v-if="shapefiles" />
   </div>
 </template>
 
@@ -60,6 +60,10 @@ export default {
     groups: {
       type: Array,
       default: null
+    },
+    shown: {
+      type: Boolean,
+      default: false
     }
   },
   data: function () {
@@ -68,7 +72,7 @@ export default {
       trait: null,
       groupIds: null,
       markedIds: null,
-      shapefiles: []
+      shapefiles: null
     }
   },
   computed: {
@@ -84,12 +88,16 @@ export default {
     },
     datasetIds: function () {
       this.updateFileresources()
+    },
+    shown: function (newValue) {
+      if (newValue) {
+        if (!this.shapefiles) {
+          this.update()
+        }
+      }
     }
   },
   methods: {
-    invalidateSize: function () {
-      this.$refs.timelineChart.invalidateSize()
-    },
     plot: function (query, selectedItems) {
       apiPostTrialsDataTimepoints({
         datasetIds: this.datasetIds,
@@ -123,11 +131,16 @@ export default {
           this.shapefiles = []
         }
       })
+    },
+    update: function () {
+      if (this.datasetIds && this.datasetIds.length > 0) {
+        this.updateFileresources()
+      }
     }
   },
   mounted: function () {
-    if (this.datasetIds && this.datasetIds.length > 0) {
-      this.updateFileresources()
+    if (this.shown) {
+      this.update()
     }
   }
 }

@@ -86,6 +86,11 @@ export default {
     invalidateSize: function () {
       this.$nextTick(() => this.$refs.map.invalidateSize())
     }
+  },
+  mounted: function () {
+    if (this.shown) {
+      this.update()
+    }
   }
 }
 </script>
