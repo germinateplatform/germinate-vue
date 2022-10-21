@@ -54,13 +54,13 @@
             <b-form-select id="shapefile" :options="shapefileOptions" v-model="shapefileIndex" />
           </b-form-group>
 
-          <ShapefileGeotiffMap :shapefile="shapefileUrl"
+          <ShapefileGeotiffMap :fileresourceId="shapefileId"
                               :traitData="mapTraitData"
                               :traitStats="traitStats"
                               :selectedGermplasm="selectedGermplasm"
                               @germplasm-selected="onGermplasmSelected"
                               ref="map"
-                              v-if="shapefileUrl"/>
+                              v-if="shapefileId"/>
         </template>
       </div>
 
@@ -194,9 +194,9 @@ export default {
         return null
       }
     },
-    shapefileUrl: function () {
+    shapefileId: function () {
       if (this.shapefiles && this.shapefiles.length > 0) {
-        return `${this.storeBaseUrl}fileresource/${this.shapefiles[this.shapefileIndex].fileresourceId}.zip`
+        return this.shapefiles[this.shapefileIndex].fileresourceId
       } else {
         return null
       }

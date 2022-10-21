@@ -13,9 +13,9 @@ import ColorGradient from '@/components/util/ColorGradient'
 
 import L from 'leaflet'
 import shp from 'shpjs'
-import axios from 'axios'
 import { getColor, rgbColorToHex } from '@/mixins/colors'
 import { uuidv4 } from '@/mixins/util'
+import { apiGetDataResource } from '@/mixins/api/dataset'
 
 let shapefileLayers = {}
 let bounds
@@ -25,8 +25,8 @@ export default {
     ColorGradient
   },
   props: {
-    shapefile: {
-      type: String,
+    fileresourceId: {
+      type: Number,
       default: () => null
     },
     geotiff: {
@@ -60,7 +60,7 @@ export default {
     }
   },
   watch: {
-    shapefile: function () {
+    fileresourceId: function () {
       this.update()
     },
     geotiff: function () {
@@ -131,77 +131,76 @@ export default {
 
       bounds = L.latLngBounds()
 
-      if (this.shapefile) {
-        axios.get(this.shapefile, { responseType: 'blob' })
-          .then(result => {
-            const reader = new FileReader()
-            reader.onload = async () => {
-              const shape = await shp(reader.result)
+      if (this.fileresourceId) {
+        apiGetDataResource(this.fileresourceId, result => {
+          const reader = new FileReader()
+          reader.onload = async () => {
+            const shape = await shp(reader.result)
 
-              shape.features.forEach(f => {
-                if (f.properties.germplasm) {
-                  const layer = L.geoJSON(f, {
-                    onEachFeature: (feature, layer) => {
-                      if (feature.geometry && feature.geometry.type === 'Polygon' && feature.geometry.coordinates) {
-                        feature.geometry.coordinates.forEach(c => c.forEach(cd => bounds.extend([cd[1], cd[0]])))
-                      }
-                      if (feature.properties) {
-                        layer.bindPopup(Object.keys(feature.properties).map(function (k) {
-                          if (k === '__color__') {
-                            return null
-                          }
-                          return k + ': ' + feature.properties[k]
-                        }).join('<br />'), {
-                          maxHeight: 200
-                        })
-                      }
-
-                      layer.on({
-                        click: e => {
-                          if (e && e.target && e.target.feature && e.target.feature.properties && this.traitData) {
-                            const row = e.target.feature.properties.row
-                            const column = e.target.feature.properties.column
-                            const germplasm = e.target.feature.properties.germplasm
-                            const rep = `${e.target.feature.properties.rep}`
-
-                            this.$emit('germplasm-selected', {
-                              germplasm: germplasm,
-                              rep: rep,
-                              row: row,
-                              column: column
-                            })
-                          }
-                        }
-                      })
-                    },
-                    style: function (feature) {
-                      return {
-                        opacity: 1,
-                        fillOpacity: 1,
-                        radius: 1,
-                        fillColor: 'rgba(255, 255, 255, 0.3)',
-                        color: 'rgba(255, 255, 255, 0.6)',
-                        weight: 1
-                      }
+            shape.features.forEach(f => {
+              if (f.properties.germplasm) {
+                const layer = L.geoJSON(f, {
+                  onEachFeature: (feature, layer) => {
+                    if (feature.geometry && feature.geometry.type === 'Polygon' && feature.geometry.coordinates) {
+                      feature.geometry.coordinates.forEach(c => c.forEach(cd => bounds.extend([cd[1], cd[0]])))
                     }
-                  })
+                    if (feature.properties) {
+                      layer.bindPopup(Object.keys(feature.properties).map(function (k) {
+                        if (k === '__color__') {
+                          return null
+                        }
+                        return k + ': ' + feature.properties[k]
+                      }).join('<br />'), {
+                        maxHeight: 200
+                      })
+                    }
 
-                  layer.addTo(this.map)
+                    layer.on({
+                      click: e => {
+                        if (e && e.target && e.target.feature && e.target.feature.properties && this.traitData) {
+                          const row = e.target.feature.properties.row
+                          const column = e.target.feature.properties.column
+                          const germplasm = e.target.feature.properties.germplasm
+                          const rep = `${e.target.feature.properties.rep}`
 
-                  if (shapefileLayers[`${f.properties.row}-${f.properties.column}`]) {
-                    shapefileLayers[`${f.properties.row}-${f.properties.column}`].push(layer)
-                  } else {
-                    shapefileLayers[`${f.properties.row}-${f.properties.column}`] = [layer]
+                          this.$emit('germplasm-selected', {
+                            germplasm: germplasm,
+                            rep: rep,
+                            row: row,
+                            column: column
+                          })
+                        }
+                      }
+                    })
+                  },
+                  style: function (feature) {
+                    return {
+                      opacity: 1,
+                      fillOpacity: 1,
+                      radius: 1,
+                      fillColor: 'rgba(255, 255, 255, 0.3)',
+                      color: 'rgba(255, 255, 255, 0.6)',
+                      weight: 1
+                    }
                   }
-                }
-              })
+                })
 
-              if (bounds.isValid()) {
-                this.$nextTick(() => this.map.fitBounds(bounds))
+                layer.addTo(this.map)
+
+                if (shapefileLayers[`${f.properties.row}-${f.properties.column}`]) {
+                  shapefileLayers[`${f.properties.row}-${f.properties.column}`].push(layer)
+                } else {
+                  shapefileLayers[`${f.properties.row}-${f.properties.column}`] = [layer]
+                }
               }
+            })
+
+            if (bounds.isValid()) {
+              this.$nextTick(() => this.map.fitBounds(bounds))
             }
-            reader.readAsArrayBuffer(result.data)
-          })
+          }
+          reader.readAsArrayBuffer(result)
+        })
       }
     },
     loadMap: function () {
