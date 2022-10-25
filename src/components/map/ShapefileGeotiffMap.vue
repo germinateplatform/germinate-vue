@@ -19,6 +19,7 @@ import { apiGetDataResource } from '@/mixins/api/dataset'
 
 let shapefileLayers = {}
 let bounds
+let imageOverlay = null
 
 export default {
   components: {
@@ -29,7 +30,7 @@ export default {
       type: Number,
       default: () => null
     },
-    geotiff: {
+    mapoverlay: {
       type: Object,
       default: () => null
     },
@@ -63,8 +64,8 @@ export default {
     fileresourceId: function () {
       this.update()
     },
-    geotiff: function () {
-      this.update()
+    mapoverlay: function () {
+      this.updateMapoverlay()
     },
     traitData: {
       deep: true,
@@ -78,7 +79,9 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'storeServerSettings'
+      'storeServerSettings',
+      'storeBaseUrl',
+      'storeToken'
     ]),
     gradientOptions: function () {
       if (this.traitStats) {
@@ -121,6 +124,24 @@ export default {
             }
           }
         })
+      }
+    },
+    updateMapoverlay: function () {
+      if (this.mapoverlay) {
+        const url = `${this.storeBaseUrl}mapoverlay/${this.mapoverlay.mapoverlayId}/src?token=${this.storeToken ? this.storeToken.imageToken : ''}`
+        const bounds = [[this.mapoverlay.mapoverlayBottomLeftLat, this.mapoverlay.mapoverlayBottomLeftLng], [this.mapoverlay.mapoverlayTopRightLat, this.mapoverlay.mapoverlayTopRightLng]]
+
+        if (imageOverlay) {
+          imageOverlay.setUrl(url)
+          imageOverlay.setBounds(bounds)
+        } else {
+          imageOverlay = L.imageOverlay(url, bounds, { opacity: 0.8 }).addTo(this.map)
+        }
+      } else {
+        if (imageOverlay) {
+          imageOverlay.remove()
+          imageOverlay = null
+        }
       }
     },
     update: function () {

@@ -58,6 +58,11 @@ const apiPostNewsTable = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiPostMapOverlayTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'mapoverlay/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 const apiPostNews = (newsItem, onSuccess, onError) => authAxios({ url: 'news', method: 'POST', data: newsItem, success: onSuccess, error: onError })
 
 const apiDeleteNews = (newsId, onSuccess, onError) => authAxios({ url: `news/${newsId}`, method: 'DELETE', success: onSuccess, error: onError })
@@ -134,5 +139,6 @@ export {
   apiGetPublications,
   apiPutPublication,
   apiPutPublicationReference,
-  apiDeletePublicationReference
+  apiDeletePublicationReference,
+  apiPostMapOverlayTable
 }

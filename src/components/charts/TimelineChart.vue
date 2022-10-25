@@ -55,12 +55,13 @@
           </b-form-group>
 
           <ShapefileGeotiffMap :fileresourceId="shapefileId"
-                              :traitData="mapTraitData"
-                              :traitStats="traitStats"
-                              :selectedGermplasm="selectedGermplasm"
-                              @germplasm-selected="onGermplasmSelected"
-                              ref="map"
-                              v-if="shapefileId"/>
+                               :mapoverlay="mapoverlay"
+                               :traitData="mapTraitData"
+                               :traitStats="traitStats"
+                               :selectedGermplasm="selectedGermplasm"
+                               @germplasm-selected="onGermplasmSelected"
+                               ref="map"
+                               v-if="shapefileId || mapoverlay"/>
         </template>
       </div>
 
@@ -91,6 +92,8 @@ import { apiPostTrialsDataTable } from '@/mixins/api/trait'
 import { apiPostTraitStats } from '@/mixins/api/dataset'
 import { getDateString } from '@/mixins/formatting'
 import { getColors, getHighContrastTextColor } from '@/mixins/colors'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
+import { apiPostMapOverlayTable } from '@/mixins/api/misc'
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
@@ -151,7 +154,8 @@ export default {
       currentTimepoint: 0,
       playbackRunning: false,
       shapefileIndex: 0,
-      selectedGermplasm: []
+      selectedGermplasm: [],
+      geotiffs: null
     }
   },
   computed: {
@@ -190,6 +194,13 @@ export default {
     mapTraitData: function () {
       if (this.traitData) {
         return this.traitData.filter(td => td.recordingDate.includes(this.timepoints[this.currentTimepoint]))
+      } else {
+        return null
+      }
+    },
+    mapoverlay: function () {
+      if (this.geotiffs && this.geotiffs.length > 0) {
+        return this.geotiffs.find(m => m.recordingDate.includes(this.timepoints[this.currentTimepoint]))
       } else {
         return null
       }
@@ -436,6 +447,19 @@ export default {
       datasetIds: this.datasetIds
     }, result => {
       this.traitDefinitions = result
+    })
+
+    apiPostMapOverlayTable({
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      filter: [{
+        column: 'datasetId',
+        operator: 'inSet',
+        comparator: 'and',
+        values: this.datasetIds
+      }]
+    }, result => {
+      this.geotiffs = result.data
     })
   }
 }
