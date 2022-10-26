@@ -1153,6 +1153,7 @@
   "templateImportTypePedigree": "Pedigree",
   "templateImportTypeImages": "Images",
   "templateImportTypeShapefile": "Shapefile",
+  "templateImportTypeGeotiff": "Geotiff",
   "toastGroupCreateWithMembers": "Group created. Number of items added: {count}.",
   "toastSelectDatasetText": "Please select at least one dataset using the checkboxes.",
   "toastSelectDatasetTitle": "Datasets",

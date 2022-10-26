@@ -20,13 +20,15 @@
           <p>{{ $t('pageTraitTimelineTimesliderText') }}</p>
 
           <b-row>
-            <b-col cols=12 md=9>
+            <b-col cols=12 md=9 class="d-flex flex-column justify-content-end">
               <b-form-group :label="$t('formLabelTraitTimelineTimepoint')" label-for="timepoint" :description="$t('formDescriptionTraitTimelineTimepoint', { timepoint: timepoints[currentTimepoint] })">
                 <b-form-input id="timepoint" v-model.number="currentTimepoint" type="range" :min="0" :max="timepoints.length - 1" :disabled="playbackRunning" />
               </b-form-group>
 
-              <b-button @click="togglePlayback(false)" v-if="playbackRunning"><MdiIcon :path="mdiStop" /> {{ $t('buttonStop') }}</b-button>
-              <b-button @click="togglePlayback(true)" v-else><MdiIcon :path="mdiPlay" /> {{ $t('buttonPlay') }}</b-button>
+              <div class="align-self-start">
+                <b-button @click="togglePlayback(false)" v-if="playbackRunning"><MdiIcon :path="mdiStop" /> {{ $t('buttonStop') }}</b-button>
+                <b-button @click="togglePlayback(true)" v-else><MdiIcon :path="mdiPlay" /> {{ $t('buttonPlay') }}</b-button>
+              </div>
             </b-col>
             <b-col cols=12 md=3>
               <b-calendar v-if="timepoints && timepoints.length > 0"
