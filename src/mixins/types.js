@@ -235,7 +235,7 @@ const templateImportTypes = {
   },
   geotiff: {
     path: mdiImageMarker,
-    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[3 % store.getters.storeServerSettings.colorsTemplate.length] : null,
+    color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[7 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeGeotiff'),
     accepts: '.zip'
   },

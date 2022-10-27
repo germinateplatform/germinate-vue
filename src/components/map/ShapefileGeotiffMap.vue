@@ -131,12 +131,20 @@ export default {
         const url = `${this.storeBaseUrl}mapoverlay/${this.mapoverlay.mapoverlayId}/src?token=${this.storeToken ? this.storeToken.imageToken : ''}`
         const bounds = [[this.mapoverlay.mapoverlayBottomLeftLat, this.mapoverlay.mapoverlayBottomLeftLng], [this.mapoverlay.mapoverlayTopRightLat, this.mapoverlay.mapoverlayTopRightLng]]
 
+        const tempOverlay = L.imageOverlay(url, bounds, { opacity: 0.8 }).addTo(this.map)
+
         if (imageOverlay) {
-          imageOverlay.setUrl(url)
-          imageOverlay.setBounds(bounds)
-        } else {
-          imageOverlay = L.imageOverlay(url, bounds, { opacity: 0.8 }).addTo(this.map)
+          imageOverlay.remove()
         }
+
+        imageOverlay = tempOverlay
+
+        // if (imageOverlay) {
+        //   imageOverlay.setUrl(url)
+        //   imageOverlay.setBounds(bounds)
+        // } else {
+        //   imageOverlay = L.imageOverlay(url, bounds, { opacity: 0.8 }).addTo(this.map)
+        // }
       } else {
         if (imageOverlay) {
           imageOverlay.remove()
