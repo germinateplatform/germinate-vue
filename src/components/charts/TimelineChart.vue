@@ -2,7 +2,7 @@
   <div>
     <BaseChart :id="id" :width="() => 1280" :height="() => 450" :filename="baseFilename" :loading="loading" >
       <div slot="chart">
-        <template v-if="plotData">
+        <template v-if="hasPlotData">
           <h2>{{ $t('pageTraitTimelinePlotTitle') }}</h2>
           <p>{{ $t('pageTraitTimelinePlotText') }}</p>
         </template>
@@ -22,13 +22,8 @@
           <b-row>
             <b-col cols=12 md=9 class="d-flex flex-column justify-content-end">
               <b-form-group :label="$t('formLabelTraitTimelineTimepoint')" label-for="timepoint" :description="$t('formDescriptionTraitTimelineTimepoint', { timepoint: timepoints[currentTimepoint] })">
-                <b-form-input id="timepoint" v-model.number="currentTimepoint" type="range" :min="0" :max="timepoints.length - 1" :disabled="playbackRunning" />
+                <b-form-input id="timepoint" v-model.number="currentTimepoint" type="range" :min="0" :max="timepoints.length - 1" />
               </b-form-group>
-
-              <div class="align-self-start">
-                <b-button @click="togglePlayback(false)" v-if="playbackRunning"><MdiIcon :path="mdiStop" /> {{ $t('buttonStop') }}</b-button>
-                <b-button @click="togglePlayback(true)" v-else><MdiIcon :path="mdiPlay" /> {{ $t('buttonPlay') }}</b-button>
-              </div>
             </b-col>
             <b-col cols=12 md=3>
               <b-calendar v-if="timepoints && timepoints.length > 0"
@@ -55,15 +50,19 @@
           <b-form-group :label="$t('formLabelTraitTimelineShapefile')" label-for="shapefile">
             <b-form-select id="shapefile" :options="shapefileOptions" v-model="shapefileIndex" />
           </b-form-group>
+          <b-form-group :label="$t('formLabelTraitTimelineGermplasm')" label-for="germplasm-search">
+            <TrialGermplasmLookup id="germplasm-search" :datasetIds="datasetIds" @germplasm-selected="onGermplasmSelected" />
+          </b-form-group>
 
           <ShapefileGeotiffMap :fileresourceId="shapefileId"
-                               :mapoverlay="mapoverlay"
+                               :mapoverlays="mapoverlays"
+                               :mapoverlayIndex="currentTimepoint"
                                :traitData="mapTraitData"
                                :traitStats="traitStats"
                                :selectedGermplasm="selectedGermplasm"
                                @germplasm-selected="onGermplasmSelected"
                                ref="map"
-                               v-if="shapefileId || mapoverlay"/>
+                               v-if="shapefileId || (mapoverlays && mapoverlays.length > 0)"/>
         </template>
       </div>
 
@@ -87,9 +86,10 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseChart from '@/components/charts/BaseChart'
 import Tour from '@/components/util/Tour'
 import ShapefileGeotiffMap from '@/components/map/ShapefileGeotiffMap'
+import TrialGermplasmLookup from '@/components/util/TrialGermplasmLookup'
 import { uuidv4 } from '@/mixins/util'
 
-import { mdiHelpCircleOutline, mdiStop, mdiPlay } from '@mdi/js'
+import { mdiHelpCircleOutline } from '@mdi/js'
 import { apiPostTrialsDataTable } from '@/mixins/api/trait'
 import { apiPostTraitStats } from '@/mixins/api/dataset'
 import { getDateString } from '@/mixins/formatting'
@@ -103,11 +103,14 @@ const emitter = require('tiny-emitter/instance')
 
 const Plotly = require('plotly.js-dist-min')
 
+let plotData = null
+
 export default {
   components: {
     BaseChart,
     MdiIcon,
     ShapefileGeotiffMap,
+    TrialGermplasmLookup,
     Tour
   },
   props: {
@@ -140,8 +143,6 @@ export default {
     const id = 'chart-' + uuidv4()
 
     return {
-      mdiStop,
-      mdiPlay,
       id: id,
       mdiHelpCircleOutline,
       loading: false,
@@ -154,10 +155,10 @@ export default {
       traitDefinitions: null,
       traitData: null,
       currentTimepoint: 0,
-      playbackRunning: false,
       shapefileIndex: 0,
       selectedGermplasm: [],
-      geotiffs: null
+      geotiffs: null,
+      hasPlotData: false
     }
   },
   computed: {
@@ -200,9 +201,9 @@ export default {
         return null
       }
     },
-    mapoverlay: function () {
+    mapoverlays: function () {
       if (this.geotiffs && this.geotiffs.length > 0) {
-        return this.geotiffs.find(m => m.recordingDate.includes(this.timepoints[this.currentTimepoint]))
+        return this.timepoints.map(tp => this.geotiffs.find(m => m.recordingDate.includes(tp)))
       } else {
         return null
       }
@@ -221,7 +222,43 @@ export default {
         return null
       }
     },
-    plotData: function () {
+    traitStats: function () {
+      if (this.trait && this.trait.traitId && this.traitDefinitions) {
+        const index = this.traitDefinitions.traits.findIndex(t => t.traitId === this.trait.traitId)
+        return this.traitDefinitions.stats[index]
+      } else {
+        return null
+      }
+    }
+  },
+  watch: {
+    currentTimepoint: function (newValue) {
+      Plotly.relayout(this.$refs.timelinePlot, {
+        shapes: [{
+          layer: 'below',
+          type: 'line',
+          y0: 0,
+          y1: 1,
+          yref: 'paper',
+          x0: this.timepoints[newValue],
+          x1: this.timepoints[newValue],
+          xref: 'x',
+          line: { color: 'red' }
+        }]
+      })
+    },
+    storeDarkMode: function () {
+      this.redraw(true)
+    },
+    traitData: function () {
+      this.updatePlotData()
+    },
+    selectedGermplasm: function () {
+      this.updatePlotData()
+    }
+  },
+  methods: {
+    updatePlotData: function () {
       if (this.traitData) {
         const traces = []
 
@@ -292,44 +329,15 @@ export default {
           })
         }
 
-        return traces
+        plotData = traces
+        this.hasPlotData = true
       } else {
-        return null
+        plotData = null
+        this.hasPlotData = false
       }
-    },
-    traitStats: function () {
-      if (this.trait && this.trait.traitId && this.traitDefinitions) {
-        const index = this.traitDefinitions.traits.findIndex(t => t.traitId === this.trait.traitId)
-        return this.traitDefinitions.stats[index]
-      } else {
-        return null
-      }
-    }
-  },
-  watch: {
-    currentTimepoint: function (newValue) {
-      Plotly.relayout(this.$refs.timelinePlot, {
-        shapes: [{
-          layer: 'below',
-          type: 'line',
-          y0: 0,
-          y1: 1,
-          yref: 'paper',
-          x0: this.timepoints[newValue],
-          x1: this.timepoints[newValue],
-          xref: 'x',
-          line: { color: 'red' }
-        }]
-      })
-    },
-    plotData: function () {
+
       this.redraw()
     },
-    storeDarkMode: function () {
-      this.redraw(true)
-    }
-  },
-  methods: {
     getColor: function (index) {
       return this.colors[index % this.colors.length]
     },
@@ -355,14 +363,14 @@ export default {
       return this.timepoints.includes(ymd) ? 'table-info' : null
     },
     redraw: function (forceRedraw = false) {
-      if (!this.plotData) {
+      if (!plotData) {
         Plotly.purge(this.$refs.timelinePlot)
       } else {
         if (forceRedraw) {
           Plotly.purge(this.$refs.timelinePlot)
         }
 
-        Plotly.react(this.$refs.timelinePlot, this.plotData, {
+        Plotly.react(this.$refs.timelinePlot, plotData, {
           paper_bgcolor: 'transparent',
           plot_bgcolor: 'transparent',
           xaxis: {
@@ -397,21 +405,6 @@ export default {
           responsive: true,
           displaylogo: false
         })
-      }
-    },
-    togglePlayback: function (start) {
-      if (start) {
-        this.playbackRunning = true
-        this.interval = setInterval(() => {
-          if (this.playbackRunning) {
-            this.currentTimepoint = (this.currentTimepoint + 1) % this.timepoints.length
-          }
-        }, 1000)
-      } else {
-        this.playbackRunning = false
-        if (this.interval) {
-          clearInterval(this.interval)
-        }
       }
     },
     showTour: function () {

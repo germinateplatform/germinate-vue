@@ -6,7 +6,7 @@
                      :onlyNumeric="false"
                      v-on:button-clicked="plot" />
     <b-row>
-      <b-col cols=12 v-if="plotData">
+      <b-col cols=12 v-if="hasPlotData">
         <h3 class="mt-3">{{ $t('pageClimateExportColorByTitle') }}</h3>
         <p>{{ $t('pageClimateExportColorByText') }}</p>
         <!-- Color by -->
@@ -43,6 +43,8 @@ import { apiPostDatasetExport } from '@/mixins/api/dataset.js'
 import { mdiRefresh } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
+
+let plotData = null
 
 export default {
   props: {
@@ -91,7 +93,7 @@ export default {
     return {
       mdiRefresh,
       colorBySelection: null,
-      plotData: null,
+      hasPlotData: false,
       selectedItems: null,
       colorByGroupEnabled: false,
       locationNames: null
@@ -158,11 +160,13 @@ export default {
         this.colorBySelection = null
       }
 
-      this.plotData = null
+      plotData = null
+      this.hasPlotData = false
       emitter.emit('show-loading', true)
       apiPostDatasetExport('climate', query, result => {
         this.selectedItems = selectedItems
-        this.plotData = result
+        plotData = result
+        this.hasPlotData = true
         this.$nextTick(() => this.$refs.chart.redraw(result, {
           column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
           ids: this.colorBySelection === 'marked_items' ? this.storeMarkedLocations : null,
@@ -178,8 +182,8 @@ export default {
       })
     },
     onColorByChanged: function () {
-      if (this.plotData) {
-        this.$refs.chart.redraw(this.plotData, {
+      if (plotData) {
+        this.$refs.chart.redraw(plotData, {
           column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
           ids: this.colorBySelection === 'marked_items' ? this.storeMarkedLocations : null,
           names: this.colorBySelection === 'specified_names' ? this.locationNamesSplit : null

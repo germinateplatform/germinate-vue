@@ -50,8 +50,6 @@ export default {
 
       emitter.emit('show-loading', true)
       apiPostDatasetExport('trial', query, result => {
-        this.plotData = result
-
         const reader = new FileReader()
         reader.onload = () => {
           // Remove the first row (Flapjack header)

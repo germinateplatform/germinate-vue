@@ -9,7 +9,7 @@
 
 <script>
 import VueTypeaheadBootstrap from 'vue-typeahead-bootstrap'
-import { apiPostMarkerTable } from '@/mixins/api/genotype.js'
+import { apiPostMapdefinitionTable } from '@/mixins/api/genotype.js'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { debounce } from '@/plugins/debounce'
 
@@ -20,6 +20,10 @@ export default {
   props: {
     id: {
       type: String,
+      default: null
+    },
+    mapId: {
+      type: Number,
       default: null
     }
   },
@@ -43,7 +47,16 @@ export default {
         limit: MAX_JAVA_INTEGER
       }
 
-      apiPostMarkerTable(query, result => {
+      if (this.mapId) {
+        query.filter.push({
+          column: 'mapId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.mapId]
+        })
+      }
+
+      apiPostMapdefinitionTable(query, result => {
         // Resolve the result
         this.markers = result.data
       })

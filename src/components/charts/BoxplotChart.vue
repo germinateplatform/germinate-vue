@@ -29,6 +29,8 @@ import { mdiHelpCircleOutline } from '@mdi/js'
 
 const Plotly = require('plotly.js-dist-min')
 
+let plotData = null
+
 export default {
   props: {
     datasetIds: {
@@ -67,7 +69,6 @@ export default {
     return {
       mdiHelpCircleOutline,
       id: id,
-      plotData: null,
       loading: false,
       xTypes: {
         traits: {
@@ -102,7 +103,7 @@ export default {
     ]),
     baseSourceFile: function () {
       return {
-        blob: new Blob([JSON.stringify(this.plotData)], { type: 'application/json' }),
+        blob: new Blob([JSON.stringify(plotData)], { type: 'application/json' }),
         filename: this.baseFilename,
         extension: 'json'
       }
@@ -125,15 +126,15 @@ export default {
       if (this.chartMode === 'itemByGroup') {
         const groups = []
 
-        this.plotData.stats.forEach(s => {
+        plotData.stats.forEach(s => {
           if (groups.indexOf(s.groupIds) === -1) {
             groups.push(s.groupIds)
           }
         })
 
-        return 200 + this.plotData[this.xTypes[this.xType].itemKey].length * 30 * groups.length
+        return 200 + plotData[this.xTypes[this.xType].itemKey].length * 30 * groups.length
       } else {
-        return 200 + this.plotData[this.xTypes[this.xType].itemKey].length * 30 * this.plotData.datasets.length
+        return 200 + plotData[this.xTypes[this.xType].itemKey].length * 30 * plotData.datasets.length
       }
     },
     redraw: function () {
@@ -147,7 +148,7 @@ export default {
       }
 
       apiPostTraitStats(this.xTypes[this.xType].apiKey, query, result => {
-        this.plotData = result
+        plotData = result
         this.chart()
         this.loading = false
       })
@@ -161,17 +162,17 @@ export default {
 
       // Are we plotting datasets and grouping by trait/climate?
       if (this.chartMode === 'datasetByItem') {
-        Object.keys(this.plotData.datasets).forEach(dataset => {
+        Object.keys(plotData.datasets).forEach(dataset => {
           for (let i = 0; i < 6; i++) {
             // If so, datasets are our Ys
-            y.push(this.plotData.datasets[dataset].datasetName)
+            y.push(plotData.datasets[dataset].datasetName)
           }
         })
       } else if (this.chartMode === 'itemByDataset' || this.chartMode === 'itemByGroup') {
-        Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
+        Object.keys(plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
           for (let j = 0; j < 6; j++) {
             // Else, use this complicated thing to extract the trait/climate name
-            y.push(this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey])
+            y.push(plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey])
           }
         })
       }
@@ -226,7 +227,7 @@ export default {
 
       const groups = []
 
-      this.plotData.stats.forEach(s => {
+      plotData.stats.forEach(s => {
         if (groups.indexOf(s.groupIds) === -1) {
           groups.push(s.groupIds)
         }
@@ -235,9 +236,9 @@ export default {
       groups.forEach((group, index) => {
         const x = []
 
-        Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
-          const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
-          const itemData = this.plotData.stats.filter(s => s.groupIds === group && s.xId === itemId)[0]
+        Object.keys(plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
+          const itemId = plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
+          const itemData = plotData.stats.filter(s => s.groupIds === group && s.xId === itemId)[0]
 
           if (itemData) {
             // This trait/climate by group combination is available, add all the information
@@ -274,13 +275,13 @@ export default {
     },
     getData: function (y) {
       const traces = []
-      Object.keys(this.plotData.datasets).forEach(dataset => {
-        const datasetId = this.plotData.datasets[dataset].datasetId
+      Object.keys(plotData.datasets).forEach(dataset => {
+        const datasetId = plotData.datasets[dataset].datasetId
         const x = []
 
-        Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
-          const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
-          const itemData = this.plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
+        Object.keys(plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
+          const itemId = plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
+          const itemData = plotData.stats.filter(s => s.datasetId === datasetId && s.xId === itemId)[0]
 
           if (itemData) {
             // This trait/climate by dataset combination is available, add all the information
@@ -304,7 +305,7 @@ export default {
         traces.push({
           x: x,
           y: y,
-          name: this.plotData.datasets[dataset].datasetName,
+          name: plotData.datasets[dataset].datasetName,
           marker: { color: getColor(dataset) },
           type: 'box',
           boxmean: false,
@@ -316,13 +317,13 @@ export default {
     },
     getInvertedData: function (y) {
       const traces = []
-      Object.keys(this.plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
-        const itemId = this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
+      Object.keys(plotData[this.xTypes[this.xType].itemKey]).forEach(item => {
+        const itemId = plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].idKey]
         const x = []
 
-        Object.keys(this.plotData.datasets).forEach(d => {
-          const datasetId = this.plotData.datasets[d].datasetId
-          const datasetData = this.plotData.stats.filter(s => s.xId === itemId && s.datasetId === datasetId)[0]
+        Object.keys(plotData.datasets).forEach(d => {
+          const datasetId = plotData.datasets[d].datasetId
+          const datasetData = plotData.stats.filter(s => s.xId === itemId && s.datasetId === datasetId)[0]
 
           if (datasetData && datasetData.min !== datasetData.max) {
             // This dataset by trait/climate combination is available, add all the information
@@ -346,7 +347,7 @@ export default {
         traces.push({
           x: x,
           y: y,
-          name: this.plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey],
+          name: plotData[this.xTypes[this.xType].itemKey][item][this.xTypes[this.xType].nameKey],
           marker: { color: getColor(item) },
           type: 'box',
           boxmean: false,

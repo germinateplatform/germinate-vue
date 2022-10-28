@@ -19,7 +19,7 @@ import { apiGetDataResource } from '@/mixins/api/dataset'
 
 let shapefileLayers = {}
 let bounds
-let imageOverlay = null
+let imageOverlays = []
 
 export default {
   components: {
@@ -30,9 +30,13 @@ export default {
       type: Number,
       default: () => null
     },
-    mapoverlay: {
-      type: Object,
-      default: () => null
+    mapoverlays: {
+      type: Array,
+      default: () => []
+    },
+    mapoverlayIndex: {
+      type: Number,
+      default: 0
     },
     traitData: {
       type: Array,
@@ -64,8 +68,11 @@ export default {
     fileresourceId: function () {
       this.update()
     },
-    mapoverlay: function () {
-      this.updateMapoverlay()
+    mapoverlays: function () {
+      this.updateMapoverlays()
+    },
+    mapoverlayIndex: function () {
+      this.updateMapoverlayIndex()
     },
     traitData: {
       deep: true,
@@ -126,29 +133,39 @@ export default {
         })
       }
     },
-    updateMapoverlay: function () {
-      if (this.mapoverlay) {
-        const url = `${this.storeBaseUrl}mapoverlay/${this.mapoverlay.mapoverlayId}/src?token=${this.storeToken ? this.storeToken.imageToken : ''}`
-        const bounds = [[this.mapoverlay.mapoverlayBottomLeftLat, this.mapoverlay.mapoverlayBottomLeftLng], [this.mapoverlay.mapoverlayTopRightLat, this.mapoverlay.mapoverlayTopRightLng]]
-
-        const tempOverlay = L.imageOverlay(url, bounds, { opacity: 0.8 }).addTo(this.map)
-
-        if (imageOverlay) {
-          imageOverlay.remove()
+    updateMapoverlayIndex: function () {
+      if (imageOverlays) {
+        imageOverlays.forEach((io, i) => {
+          if (i === this.mapoverlayIndex) {
+            io.setOpacity(1)
+          } else {
+            io.setOpacity(0)
+          }
+        })
+      }
+    },
+    updateMapoverlays: function () {
+      if (this.mapoverlays && this.mapoverlays.length > 0) {
+        if (imageOverlays) {
+          imageOverlays.filter(io => io !== null).forEach(io => io.remove())
         }
 
-        imageOverlay = tempOverlay
+        imageOverlays = this.mapoverlays.map((mo, i) => {
+          if (mo) {
+            const url = `${this.storeBaseUrl}mapoverlay/${mo.mapoverlayId}/src?token=${this.storeToken ? this.storeToken.imageToken : ''}`
+            const bounds = [[mo.mapoverlayBottomLeftLat, mo.mapoverlayBottomLeftLng], [mo.mapoverlayTopRightLat, mo.mapoverlayTopRightLng]]
 
-        // if (imageOverlay) {
-        //   imageOverlay.setUrl(url)
-        //   imageOverlay.setBounds(bounds)
-        // } else {
-        //   imageOverlay = L.imageOverlay(url, bounds, { opacity: 0.8 }).addTo(this.map)
-        // }
+            const overlay = L.imageOverlay(url, bounds, { opacity: i === this.mapoverlayIndex ? 1.0 : 0.0 }).addTo(this.map)
+
+            return overlay
+          } else {
+            return null
+          }
+        })
       } else {
-        if (imageOverlay) {
-          imageOverlay.remove()
-          imageOverlay = null
+        if (imageOverlays) {
+          imageOverlays.filter(io => io !== null).forEach(io => io.remove())
+          imageOverlays = []
         }
       }
     },
