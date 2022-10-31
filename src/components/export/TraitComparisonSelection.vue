@@ -2,7 +2,7 @@
   <div>
     <ExportSelection v-bind="$props"
                      :onlyNumeric="true"
-                     :multiple="false"
+                     :multipleItems="false"
                      :groupSelectionInfo="groupSelectionInfo"
                      v-on:button-clicked="plot" />
     <b-row>

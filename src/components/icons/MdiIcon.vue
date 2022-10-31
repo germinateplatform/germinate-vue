@@ -24,6 +24,10 @@ export default {
     className: {
       type: String,
       default: ''
+    },
+    color: {
+      type: String,
+      default: null
     }
   },
   getSize (size) {
@@ -34,6 +38,9 @@ export default {
 
     if (props.rotate) {
       result.transform = `rotate(${props.rotate}deg)`
+    }
+    if (props.color) {
+      result.color = props.color
     }
 
     return result

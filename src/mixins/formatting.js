@@ -10,6 +10,14 @@ const getDateTimeString = (date) => {
   return `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())}-${padTo2Digits(date.getHours())}-${padTo2Digits(date.getMinutes())}-${padTo2Digits(date.getSeconds())}`
 }
 
+const getDateString = (date) => {
+  if (!date) {
+    date = new Date()
+  }
+
+  return `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())}`
+}
+
 /**
      * Formats the given value into a human-readable number (e.g. 1.000 -> 1K, 1.000.000 -> 1G)
      * @param {Number} value The value to format
@@ -97,6 +105,7 @@ const toFixed = (number, places) => parseFloat(Math.round(number + 'e+' + places
 export {
   padTo2Digits,
   getDateTimeString,
+  getDateString,
   getNumberWithSuffix,
   toUrlString,
   isTruncatedAfter,

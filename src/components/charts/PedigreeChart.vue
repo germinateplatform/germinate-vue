@@ -9,7 +9,7 @@
       </b-form-select>
     </b-form-group>
 
-    <div v-if="plotData">
+    <div v-if="hasPlotData">
       <BaseChart :id="id" :width="() => 1280" :height="() => 600" :filename="baseFilename" chartType="d3.js" v-on:resize="update" :supportsPngDownload="false" :supportsSvgDownload="false"  v-on:force-redraw="update">
         <div id="pedigree-chart" slot="chart" ref="pedigreeChart" class="pedigree-chart" />
 
@@ -57,6 +57,8 @@ import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
+let plotData = null
+
 export default {
   props: {
     germplasm: {
@@ -74,7 +76,7 @@ export default {
       mdiDownload,
       mdiFileImage,
       id: id,
-      plotData: null,
+      hasPlotData: false,
       dataset: null,
       datasets: [],
       popoverContent: [{
@@ -143,11 +145,11 @@ export default {
           this.$refs.pedigreeChart.firstChild.remove()
         }
 
-        if (this.plotData) {
+        if (plotData) {
           const nodes = {}
           const connections = []
 
-          this.plotData.forEach(r => {
+          plotData.forEach(r => {
             nodes[r.childId] = {
               id: r.childId,
               name: r.childName,
@@ -160,7 +162,7 @@ export default {
             }
           })
 
-          this.plotData.forEach(r => {
+          plotData.forEach(r => {
             let edgeColor = '#999999'
             if (r.relationshipType === 'F') {
               edgeColor = '#e74c3c'
@@ -293,7 +295,8 @@ export default {
 
       apiPostPedigreeTable(query, result => {
         if (result && result.data && result.data.length > 0) {
-          this.plotData = result.data
+          plotData = result.data
+          this.hasPlotData = true
 
           this.update()
         }

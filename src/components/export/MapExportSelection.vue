@@ -46,14 +46,14 @@
               <b-form-group
                 :label="$t('formLabelMapExportIntervalFirstMarker')"
                 label-for="first-marker">
-                <MarkerLookup id="first-marker" @change="markerId => { intervalMarkerIdOne = markerId }"/>
+                <MarkerLookup id="first-marker" :mapId="mapId" @change="markerId => { intervalMarkerIdOne = markerId }"/>
               </b-form-group>
             </b-col>
             <b-col cols=12 sm=6>
               <b-form-group
                 :label="$t('formLabelMapExportIntervalSecondMarker')"
                 label-for="second-marker">
-                <MarkerLookup id="second-marker" @change="markerId => { intervalMarkerIdTwo = markerId }"/>
+                <MarkerLookup id="second-marker" :mapId="mapId" @change="markerId => { intervalMarkerIdTwo = markerId }"/>
               </b-form-group>
             </b-col>
           </b-row>
@@ -73,7 +73,7 @@
               <b-form-group
                 :label="$t('formLabelMapExportRadiusMarker')"
                 label-for="radius-marker">
-                <MarkerLookup id="radius-marker" @change="markerId => { radius.markerId = markerId }"/>
+                <MarkerLookup id="radius-marker" :mapId="mapId" @change="markerId => { radius.markerId = markerId }"/>
               </b-form-group>
             </b-col>
             <b-col cols=12 sm=4>

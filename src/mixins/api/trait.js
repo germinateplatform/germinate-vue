@@ -1,4 +1,5 @@
 import { authAxios } from '@/mixins/api/base'
+import { query } from 'vue-gtag'
 
 const apiPostTrialsDataTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
@@ -10,6 +11,8 @@ const apiPostTrialsDataTableIds = (queryData, onSuccess, onError) => {
   delete queryData.ascending
   return authAxios({ url: 'dataset/data/trial/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
+
+const apiPostTrialsDataTimepoints = (queryData, onSuccess, onError) => authAxios({ url: 'dataset/data/trial/timepoint', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 const apiPostTraitTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
@@ -39,6 +42,11 @@ const apiPostTraitAttributeTable = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'trait/attribute', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiPostTrialGermplasm = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'dataset/data/trial/germplasm', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 const apiPatchTrait = (id, data, onSuccess, onError) => authAxios({ url: `trait/${id}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
 
 const apiPostTraitUnification = (queryData, onSuccess, onError) => authAxios({ url: 'trait/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
@@ -58,5 +66,7 @@ export {
   apiPostTraitUnification,
   apiGetTraitDistinctValues,
   apiPostTrialLocationCount,
-  apiPostTraitAttributeTable
+  apiPostTraitAttributeTable,
+  apiPostTrialsDataTimepoints,
+  apiPostTrialGermplasm
 }

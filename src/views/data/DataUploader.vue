@@ -24,11 +24,14 @@
 
     <template v-if="templateType">
       <!-- File input -->
-      <b-form-file
-        v-model="file"
-        :state="Boolean(file)"
-        :placeholder="$t('pageDataUploadFilePlaceholder')"
-        :accept="templateImportTypes[templateType].accepts" />
+      <b-form-group :label="$t('formLabelDataUploadFile')" label-for="upload-file">
+        <b-form-file
+          id="trials-dataset"
+          v-model="file"
+          :state="Boolean(file)"
+          :placeholder="$t('pageDataUploadFilePlaceholder')"
+          :accept="templateImportTypes[templateType].accepts" />
+      </b-form-group>
       <!-- Selected file -->
       <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 
@@ -57,8 +60,15 @@
         <p class="text-muted" v-else>{{ $t('pageDataUploadUpdateExplanationInsert') }}</p>
       </div>
 
+      <div v-if="templateType === 'shapefile'">
+        <hr />
+        <b-form-group :label="$t('formLabelDataUploadDataset')" label-for="trials-dataset">
+          <b-form-select :options="datasetOptions" v-model="datasetId" />
+        </b-form-group>
+      </div>
+
       <!-- Submit -->
-      <b-button variant="success" :disabled="!file" class="mt-3" @click="onSubmit"><MdiIcon :path="mdiUpload" /> {{ $t('pageDataUploadCheckFileButton') }}</b-button>
+      <b-button variant="success" :disabled="submitDisabled" class="mt-3" @click="onSubmit"><MdiIcon :path="mdiUpload" /> {{ $t('pageDataUploadCheckFileButton') }}</b-button>
     </template>
   </div>
 </template>
@@ -72,6 +82,8 @@ import { hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors.js'
 
 import { mdiArrowRightBoldCircle, mdiUpload } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
+import { apiPostDatasetTable } from '@/mixins/api/dataset'
+import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -85,6 +97,8 @@ export default {
       datasetStates,
       mdiArrowRightBoldCircle,
       mdiUpload,
+      datasetId: null,
+      trialsDatasets: null,
       file: null,
       uuids: null,
       isUpdate: false,
@@ -99,7 +113,28 @@ export default {
   computed: {
     ...mapGetters([
       'storeServerSettings'
-    ])
+    ]),
+    datasetOptions: function () {
+      if (this.trialsDatasets) {
+        return this.trialsDatasets.map(ds => {
+          return {
+            value: ds.datasetId,
+            text: ds.datasetName
+          }
+        })
+      } else {
+        return []
+      }
+    },
+    submitDisabled: function () {
+      let disabled = this.file === null
+
+      if (this.templateType === 'shapefile') {
+        disabled ||= this.datasetId === null
+      }
+
+      return disabled
+    }
   },
   watch: {
     templateType: function (newValue) {
@@ -128,7 +163,7 @@ export default {
       formData.append('fileToUpload', this.file)
 
       emitter.emit('show-loading', true)
-      apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, this.datasetStateId, result => {
+      apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, this.templateType === 'shapefile' ? this.datasetId : null, this.datasetStateId, result => {
         this.uuids = result
 
         if (result) {
@@ -159,6 +194,25 @@ export default {
         window.history.replaceState({}, null, this.$router.resolve({ name: Pages.importUpload }).href)
       }
     }
+
+    apiPostDatasetTable({
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      filter: [{
+        column: 'datasetType',
+        comparator: 'equals',
+        operator: 'and',
+        values: ['trials']
+      }]
+    }, result => {
+      if (result && result.data) {
+        this.trialsDatasets = result.data
+
+        if (result.data.length > 0) {
+          this.datasetId = result.data[0].datasetId
+        }
+      }
+    })
   }
 }
 </script>

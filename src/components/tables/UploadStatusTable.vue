@@ -85,7 +85,13 @@ export default {
         GENOTYPE_HAPMAP_INCORRECT_ROW_LENGTH: () => this.$t('importStatusGenotypeHapmapIncorrectRowLength'),
         IMAGE_TEMPLATE_MISSING: () => this.$t('importStatusImageTemplateMissing'),
         IMAGE_IMAGE_MISSING: () => this.$t('importStatusImageImageMissing'),
-        IMAGE_DEFINITION_MISSING: () => this.$t('importStatusImageDefinitionMissing')
+        IMAGE_DEFINITION_MISSING: () => this.$t('importStatusImageDefinitionMissing'),
+        SHAPEFILE_MISSING_SHP: () => this.$t('importStatusShapefileMissingShp'),
+        SHAPEFILE_MISSING_FIELD: () => this.$t('importStatusShapefileMissingField'),
+        SHAPEFILE_INVALID_ACCENUMB: () => this.$t('importStatusShapefileInvalidAccenumb'),
+        SHAPEFILE_ROW_COL_GERMPLASM_CONFLICT: () => this.$t('importStatusShapefileRowColGermplasmConflict'),
+        SHAPEFILE_DUPLICATE_ROW_COL: () => this.$t('importStatusShapefileDuplicateRowCol'),
+        SHAPEFILE_WARNING_MISSING_ACCENUMB: () => this.$t('importStatusShapefileWarningMissingAccenumb')
       }
     }
   },
@@ -101,6 +107,8 @@ export default {
           key: 'rowIndex'
         }, {
           key: 'message'
+        }, {
+          key: 'type'
         }
       ]
     }

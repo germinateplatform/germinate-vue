@@ -6,7 +6,7 @@
                      :onlyNumeric="false"
                      v-on:button-clicked="plot" />
     <b-row>
-      <b-col cols=12 v-if="plotData">
+      <b-col cols=12 v-if="hasPlotData">
         <h3 class="mt-3">{{ $t('pageTrialsExportColorByTitle') }}</h3>
         <p>{{ $t('pageTrialsExportColorByText') }}</p>
         <!-- Color by -->
@@ -38,11 +38,13 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import MatrixChart from '@/components/charts/MatrixChart'
 import ScatterChart from '@/components/charts/ScatterChart'
 import ExportSelection from '@/components/export/ExportSelection'
-import { apiPostDatasetExport } from '@/mixins/api/dataset.js'
+import { apiPostDatasetExport } from '@/mixins/api/dataset'
 
 import { mdiRefresh } from '@mdi/js'
 
 const emitter = require('tiny-emitter/instance')
+
+let plotData = null
 
 export default {
   props: {
@@ -87,7 +89,7 @@ export default {
     return {
       mdiRefresh,
       colorBySelection: null,
-      plotData: null,
+      hasPlotData: false,
       selectedItems: null,
       colorByGroupEnabled: false,
       germplasmNames: null,
@@ -142,6 +144,14 @@ export default {
         text: `${this.$t('widgetChartColoringByBlock')}${this.getStatsText('block')}`,
         value: 'block',
         disabled: this.getStatsCount('block') < 2
+      }, {
+        text: `${this.$t('widgetChartColoringByRow')}${this.getStatsText('trial_row')}`,
+        value: 'trial_row',
+        disabled: this.getStatsCount('trial_row') < 2
+      }, {
+        text: `${this.$t('widgetChartColoringByColumn')}${this.getStatsText('trial_column')}`,
+        value: 'trial_column',
+        disabled: this.getStatsCount('trial_column') < 2
       }, {
         text: `${this.$t('widgetChartColoringByTrialSite')}${this.getStatsText('trial_site')}`,
         value: 'trial_site',
@@ -201,11 +211,13 @@ export default {
         this.colorBySelection = null
       }
 
-      this.plotData = null
+      plotData = null
+      this.hasPlotData = false
       emitter.emit('show-loading', true)
       apiPostDatasetExport('trial', query, result => {
         this.selectedItems = selectedItems
-        this.plotData = result
+        plotData = result
+        this.hasPlotData = true
         this.$nextTick(() => this.$refs.chart.redraw(result, {
           column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
           ids: this.colorBySelection === 'marked_items' ? this.storeMarkedGermplasm : null,
@@ -221,9 +233,9 @@ export default {
       })
     },
     onColorByChanged: function () {
-      if (this.plotData) {
+      if (plotData) {
         if (this.colorBySelection !== 'specified_names' || (this.germplasmNamesSplit !== null && this.germplasmNamesSplit.length > 0)) {
-          this.$refs.chart.redraw(this.plotData, {
+          this.$refs.chart.redraw(plotData, {
             column: (this.colorBySelection === 'marked_items' || this.colorBySelection === 'specified_names') ? null : this.colorBySelection,
             ids: this.colorBySelection === 'marked_items' ? this.storeMarkedGermplasm : null,
             names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null

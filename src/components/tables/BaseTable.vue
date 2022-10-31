@@ -68,6 +68,7 @@
             hover
             outlined
             show-empty
+            :busy="isLoading"
             head-variant="dark"
             table-class="position-relative"
             :empty-text="$t('paginationNoResult')"
@@ -743,9 +744,9 @@ export default {
   border-right: 0;
   margin-top: -1px;
 }
-.base-table table.b-table[aria-busy='true'] {
+/* .base-table table.b-table[aria-busy='true'] {
   opacity: 1;
-}
+} */
 .base-table .table-bottom-left .btn-group:first-child .btn {
   border-top-left-radius: 0;
   border-top-right-radius: 0;

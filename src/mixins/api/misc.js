@@ -32,7 +32,9 @@ const apiGetGatekeeperInstitutions = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'gatekeeper/institution', method: 'GET', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDataUpload = (formData, templateType, isUpdate, datasetStateId, onSuccess, onError) => authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&datasetStateId=${datasetStateId}`, formData: formData, success: onSuccess, error: onError })
+const apiPostDataUpload = (formData, templateType, isUpdate, datasetId, datasetStateId, onSuccess, onError) => {
+  return authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&datasetStateId=${datasetStateId}&datasetId=${datasetId || ''}`, formData: formData, success: onSuccess, error: onError })
+}
 
 const apiPostImages = (queryData, onSuccess, onError) => {
   queryData.page -= 1
@@ -54,6 +56,11 @@ const apiPatchImage = (image, onSuccess, onError) => authAxios({ url: `image/${i
 const apiPostNewsTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
   return authAxios({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPostMapOverlayTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'mapoverlay/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiPostNews = (newsItem, onSuccess, onError) => authAxios({ url: 'news', method: 'POST', data: newsItem, success: onSuccess, error: onError })
@@ -132,5 +139,6 @@ export {
   apiGetPublications,
   apiPutPublication,
   apiPutPublicationReference,
-  apiDeletePublicationReference
+  apiDeletePublicationReference,
+  apiPostMapOverlayTable
 }

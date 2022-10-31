@@ -8,6 +8,7 @@
       <hr />
       <!-- Selected datasets -->
       <DatasetOverview :datasets="datasets" />
+
       <!-- Banner buttons -->
       <b-row class="trials-tabs mb-3" v-if="tabs" :cols-xl="tabs.length">
         <b-col cols=12 sm=6 xl=2 :offset-xl="(tabs.length < 6 && index === 0) ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
@@ -63,7 +64,7 @@
                                 :getItems="getTraits"
                                 v-show="currentTab === 'comparison'"/>
       <!-- Trials data table section -->
-      <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsTableData" v-show="currentTab === 'table'" />
+      <TrialsDataTable :shown="currentTab === 'table'" :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsTableData" v-show="currentTab === 'table'" />
       <!-- Export section -->
       <ExportDownloadSelection :datasetIds="datasetIds"
                                v-bind="config"
@@ -73,6 +74,15 @@
                                v-show="currentTab === 'export'" />
 
       <TrialsLocationMap :shown="currentTab === 'locations'" :datasetIds="datasetIds" ref="locationsMap" v-show="currentTab === 'locations'" />
+      <!-- Trait matrix chart section -->
+      <TraitExportTimelineSelection :datasetIds="datasetIds"
+                                    id="trait-timeline-section"
+                                    v-bind="config"
+                                    :groups="groups"
+                                    :texts="textsChart"
+                                    :getItems="getTraits"
+                                    :shown="currentTab === 'timeseries'"
+                                    v-show="currentTab === 'timeseries'"/>
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
@@ -87,16 +97,17 @@ import DatasetOverview from '@/components/export/DatasetOverview'
 import TraitExportChartSelection from '@/components/export/TraitExportChartSelection'
 import TraitComparisonSelection from '@/components/export/TraitComparisonSelection'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
+import TraitExportTimelineSelection from '@/components/export/TraitExportTimelineSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import TrialsLocationMap from '@/components/map/TrialsLocationMap'
 import { apiPostDatasetTable, apiPostTraitStatsCategorical } from '@/mixins/api/dataset'
 import { apiPostDatasetGroups } from '@/mixins/api/group'
 import { apiPostTableExport } from '@/mixins/api/misc'
-import { apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostDatasetTraits, apiPostTrialLocationCount } from '@/mixins/api/trait'
+import { apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostDatasetTraits, apiPostTrialLocationCount, apiPostTrialsDataTimepoints } from '@/mixins/api/trait'
 import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors'
 import Vue from 'vue'
 
-import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiEye, mdiHelpCircle, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
+import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiChartBellCurve, mdiEye, mdiHelpCircle, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
@@ -186,6 +197,13 @@ export default {
         path: mdiMapMarkerPath,
         onSelection: () => this.tabSelected('locations'),
         help: () => this.$t('pageDataExportTabHelpLocations')
+      },
+      timeseriesTab: {
+        key: 'timeseries',
+        text: () => this.$t('pageDataExportTabTimeseries'),
+        path: mdiChartBellCurve,
+        onSelection: () => this.tabSelected('timeseries'),
+        help: () => this.$t('pageDataExportTabHelpTimeseries')
       }
     }
   },
@@ -214,6 +232,7 @@ export default {
     ExportDownloadSelection,
     TraitComparisonSelection,
     TraitExportChartSelection,
+    TraitExportTimelineSelection,
     TrialsDataTable,
     TrialsLocationMap
   },
@@ -358,7 +377,15 @@ export default {
       datasetIds: this.datasetIds
     }, result => {
       if (result) {
-        this.tabs.push(this.locationTab)
+        this.tabs.splice(-1, 0, this.locationTab)
+      }
+    })
+
+    apiPostTrialsDataTimepoints({
+      datasetIds: this.datasetIds
+    }, result => {
+      if (result && result.length > 1) {
+        this.tabs.splice(-1, 0, this.timeseriesTab)
       }
     })
   }
