@@ -1,5 +1,4 @@
 import { authAxios } from '@/mixins/api/base'
-import { query } from 'vue-gtag'
 
 const apiPostTrialsDataTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
