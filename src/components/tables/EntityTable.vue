@@ -91,7 +91,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnEntityParentName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'entityParentType',
           type: 'entityType',

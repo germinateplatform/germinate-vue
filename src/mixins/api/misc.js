@@ -32,6 +32,8 @@ const apiGetGatekeeperInstitutions = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'gatekeeper/institution', method: 'GET', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiPostFeedbackUpload = (formData, uuid, onSuccess, onError) => authForm({ url: `feedback/${uuid}`, formData: formData, success: onSuccess, error: onError })
+
 const apiPostDataUpload = (formData, templateType, isUpdate, datasetId, datasetStateId, onSuccess, onError) => {
   return authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&datasetStateId=${datasetStateId}&datasetId=${datasetId || ''}`, formData: formData, success: onSuccess, error: onError })
 }
@@ -104,6 +106,13 @@ const apiPutPublicationReference = (publicationId, data, onSuccess, onError) => 
 
 const apiDeletePublicationReference = (publicationId, referenceType, referenceId, onSuccess, onError) => authAxios({ url: `publication/${publicationId}/reference/${referenceType}/${referenceId || ''}`, method: 'DELETE', success: onSuccess, error: onError })
 
+const apiPostUserFeedbackTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'feedback/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiGetUserFeedbackMarkAsRead = (id, onSuccess, onError) => authAxios({ url: `feedback/${id}/mark`, success: onSuccess, error: onError })
+
 export {
   apiGetSettings,
   apiGetSettingsFile,
@@ -140,5 +149,8 @@ export {
   apiPutPublication,
   apiPutPublicationReference,
   apiDeletePublicationReference,
-  apiPostMapOverlayTable
+  apiPostMapOverlayTable,
+  apiPostUserFeedbackTable,
+  apiPostFeedbackUpload,
+  apiGetUserFeedbackMarkAsRead
 }

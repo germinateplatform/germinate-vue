@@ -78,7 +78,7 @@ export default {
         type: String,
         sortable: true,
         label: this.$t('tableColumnInstitutionName'),
-        preferedSortingColumn: true
+        preferredSortingColumn: true
       }, {
         key: 'institutionAcronym',
         type: String,

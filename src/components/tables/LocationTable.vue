@@ -94,7 +94,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnLocationName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'locationRegion',
           type: String,

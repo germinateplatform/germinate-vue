@@ -8,13 +8,13 @@
       <!-- Fileresource description -->
       <template v-slot:cell(fileresourceDescription)="data">
         <span :title="data.item.fileresourceDescription" v-if="data.item.fileresourceDescription">{{ truncateAfterWords(data.item.fileresourceDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullDescription('tableColumnFileresourceDescription', data.item.fileresourceDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.fileresourceDescription, 10)" >&nbsp;
+        <a href="#" class="table-icon-link" @click.prevent="showFullDescription('tableColumnFileresourceDescription', data.item.fileresourceDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.fileresourceDescription, 10)" >&nbsp;
           <MdiIcon :path="mdiPageNext" /></a>
       </template>
       <!-- Fileresource type description -->
       <template v-slot:cell(fileresourcetypeDescription)="data">
         <span :title="data.item.fileresourcetypeDescription" v-if="data.item.fileresourcetypeDescription">{{ truncateAfterWords(data.item.fileresourcetypeDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullDescription('tableColumnFileresourcetypeDescription', data.item.fileresourcetypeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.fileresourcetypeDescription, 10)" >&nbsp;
+        <a href="#" class="table-icon-link" @click.prevent="showFullDescription('tableColumnFileresourcetypeDescription', data.item.fileresourcetypeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.fileresourcetypeDescription, 10)" >&nbsp;
           <MdiIcon :path="mdiPageNext" /></a>
       </template>
       <!-- Download -->
@@ -41,7 +41,7 @@ import { mapGetters } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { userIsAtLeast } from '@/mixins/api/auth'
-import { isTruncatedAfter, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
+import { isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 import { apiDeleteFileresource, apiGetDataResource } from '@/mixins/api/dataset'
 import { downloadBlob } from '@/mixins/util'
 
@@ -145,7 +145,7 @@ export default {
   },
   methods: {
     userIsAtLeast,
-    isTruncatedAfter,
+    isTruncatedAfterWords,
     truncateAfterWords,
     getNumberWithSuffix,
     showDatasets: function (fileresource) {

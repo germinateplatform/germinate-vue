@@ -18,7 +18,7 @@
       <!-- Experiment description link -->
       <template v-slot:cell(experimentDescription)="data">
         <span :title="data.item.experimentDescription" v-if="data.item.experimentDescription">{{ truncateAfterWords(data.item.experimentDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullExperimentDescription(data.item.experimentDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.experimentDescription, 10)" >&nbsp;
+        <a href="#" class="table-icon-link" @click.prevent="showFullExperimentDescription(data.item.experimentDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.experimentDescription, 10)" >&nbsp;
           <MdiIcon :path="mdiPageNext" />
         </a>
       </template>
@@ -56,7 +56,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { datasetTypes } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
-import { isTruncatedAfter, truncateAfterWords } from '@/mixins/formatting'
+import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
 
 import { mdiPageNext } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
@@ -91,7 +91,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnExperimentName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'experimentDescription',
           type: String,
@@ -119,7 +119,7 @@ export default {
     MdiIcon
   },
   methods: {
-    isTruncatedAfter,
+    isTruncatedAfterWords,
     truncateAfterWords,
     getHighContrastTextColor,
     showFullExperimentDescription: function (description) {

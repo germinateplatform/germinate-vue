@@ -90,6 +90,8 @@
 
     <!-- Introduction tour -->
     <Tour :steps="popoverContent" ref="introductionTour" />
+
+    <FeedbackButton v-if="storeServerSettings.supportsFeedback" />
   </div>
 </template>
 
@@ -102,6 +104,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import LocaleDropdown from '@/components/dropdowns/LocaleDropdown'
 import UserSettingsDropdown from '@/components/dropdowns/UserSettingsDropdown'
 import SidebarAsyncJobs from '@/components/structure/SidebarAsyncJobs'
+import FeedbackButton from '@/components/util/FeedbackButton'
 import Tour from '@/components/util/Tour'
 import { germinateVersion } from '@/mixins/util'
 
@@ -118,6 +121,7 @@ export default {
     SidebarAsyncJobs,
     SidebarComponent,
     UserSettingsDropdown,
+    FeedbackButton,
     Tour
   },
   computed: {

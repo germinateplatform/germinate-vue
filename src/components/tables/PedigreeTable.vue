@@ -95,7 +95,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnPedigreeParentName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'childId',
           type: Number,

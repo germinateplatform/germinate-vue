@@ -61,7 +61,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnMapName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'mapDescription',
           type: String,

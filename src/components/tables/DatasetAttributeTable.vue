@@ -7,7 +7,7 @@
                v-on="$listeners">
       <template v-slot:cell(attributeDescription)="data">
         <span :title="data.item.attributeDescription" v-if="data.item.attributeDescription">{{ truncateAfterWords(data.item.attributeDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullAttributeDescription(data.item.attributeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.attributeDescription, 10)" >&nbsp;
+        <a href="#" class="table-icon-link" @click.prevent="showFullAttributeDescription(data.item.attributeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.attributeDescription, 10)" >&nbsp;
           <MdiIcon :path="mdiPageNext" />
         </a>
       </template>
@@ -27,7 +27,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { dataTypes } from '@/mixins/types.js'
-import { isTruncatedAfter, truncateAfterWords } from '@/mixins/formatting'
+import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
 import { mdiPageNext } from '@mdi/js'
 
 export default {
@@ -60,7 +60,7 @@ export default {
           type: undefined,
           sortable: true,
           label: this.$t('tableColumnAttributeDatasetName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: undefined,
@@ -95,7 +95,7 @@ export default {
     MdiIcon
   },
   methods: {
-    isTruncatedAfter,
+    isTruncatedAfterWords,
     truncateAfterWords,
     showFullAttributeDescription: function (description) {
       this.$bvModal.msgBoxOk(description, {

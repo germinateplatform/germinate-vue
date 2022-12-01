@@ -11,6 +11,7 @@
       <b-dropdown-item :to="{ name: Pages.userPermissions }" v-if="userIsAtLeast(storeToken.userType, 'Administrator')"><span class="text-warning"><MdiIcon :path="mdiAccountKey"/></span> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
       <b-dropdown-item v-if="storeServerSettings.dataImportMode !== 'NONE'" :to="{ name: Pages.importUpload }"><span class="text-warning"><MdiIcon :path="mdiUpload"/></span> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
       <b-dropdown-item :to="{ name: Pages.germplasmUnifier }"><span class="text-warning"><MdiIcon :path="mdiSetMerge"/></span> {{ $t('dropdownUserSettingsGermplasmUnifier') }}</b-dropdown-item>
+      <b-dropdown-item :to="{ name: Pages.userFeedback }" v-if="storeServerSettings.supportsFeedback"><span class="text-warning"><MdiIcon :path="mdiCommentQuoteOutline"/></span> {{ $t('dropdownUserSettingsUserFeedback') }}</b-dropdown-item>
     </template>
     <!-- Settings -->
     <b-dropdown-header class="text-center border-bottom mb-2"><strong>{{ $t('dropdownUserSettings') }}<span v-if="storeToken">: {{ storeToken.username }}</span></strong></b-dropdown-header>
@@ -27,7 +28,7 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import { userIsAtLeast, apiDeleteToken, apiPostToken } from '@/mixins/api/auth'
 
-import { mdiAccount, mdiCog, mdiAccountKey, mdiUpload, mdiSetMerge, mdiLogoutVariant, mdiLoginVariant } from '@mdi/js'
+import { mdiAccount, mdiCog, mdiAccountKey, mdiUpload, mdiSetMerge, mdiLogoutVariant, mdiLoginVariant, mdiCommentQuoteOutline } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
@@ -46,6 +47,7 @@ export default {
       mdiSetMerge,
       mdiLogoutVariant,
       mdiLoginVariant,
+      mdiCommentQuoteOutline,
       enabled: true
     }
   },

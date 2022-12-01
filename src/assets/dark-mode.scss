@@ -410,6 +410,20 @@ body.dark-mode .btn-outline-secondary:hover {
   border-color: rgb(62, 67, 70);
 }
 
+body.dark-mode .btn-outline-secondary:not(:disabled):not(.disabled):active,
+body.dark-mode .btn-outline-secondary:not(:disabled):not(.disabled).active,
+body.dark-mode .show>.btn-outline-secondary.dropdown-toggle {
+  color: rgb(209, 205, 199);
+  background-color: rgb(58, 63, 66);
+  border-color: rgb(65, 71, 73);
+}
+
+body.dark-mode .btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
+body.dark-mode .btn-outline-secondary:not(:disabled):not(.disabled).active:focus,
+body.dark-mode .show>.btn-outline-secondary.dropdown-toggle:focus {
+  box-shadow: rgb(58 63 66 / 50%) 0px 0px 0px 0.2rem;
+}
+
 body.dark-mode .modal-content {
   background-color: rgb(24, 26, 27);
   border-color: rgba(140, 130, 115, 0.2);

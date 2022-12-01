@@ -12,15 +12,19 @@
     <p class="text-info">{{ $t('pageLocationsMapsText') }}</p>
 
     <b-row>
-      <b-col cols=12 xl=6>
+      <b-col cols=12 xl=6 order-xl="0">
         <h3>{{ $t('pageLocationsMapsClusteredTitle') }}</h3>
         <p>{{ $t('pageLocationsMapsClusteredText') }}</p>
+      </b-col>
+      <b-col cols=12 xl=6 order-xl="2">
         <!-- Clustered location map -->
         <LocationMap v-if="locations && locations.length > 0" :locations="locations" mapType="cluster" class="mb-3" v-on:map-loaded="map => { clusteredMap = map }" />
       </b-col>
-      <b-col cols=12 xl=6>
+      <b-col cols=12 xl=6  order-xl="1">
         <h3>{{ $t('pageLocationsMapsHeatmappedTitle') }}</h3>
         <p>{{ $t('pageLocationsMapsHeatmappedText') }}</p>
+      </b-col>
+      <b-col cols=12 xl=6  order-xl="3">
         <!-- Heatmapped location map -->
         <LocationMap v-if="locations && locations.length > 0" :locations="locations" mapType="heatmap" class="mb-3" v-on:map-loaded="map => { heatmappedMap = map }" />
       </b-col>

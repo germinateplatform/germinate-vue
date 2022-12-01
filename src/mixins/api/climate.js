@@ -16,11 +16,6 @@ const apiPostClimates = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'climate/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostClimateOverlays = (queryData, onSuccess, onError) => {
-  queryData.page -= 1
-  return authAxios({ url: '/climate/overlay', method: 'POST', data: queryData, success: onSuccess, error: onError })
-}
-
 const apiPostClimateDataTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
   return authAxios({ url: 'dataset/data/climate/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -41,7 +36,6 @@ export {
   apiPostDatasetClimates,
   apiPostClimateTable,
   apiPostClimates,
-  apiPostClimateOverlays,
   apiPostClimateDataTable,
   apiPostClimateDataTableIds,
   apiPostClimateDatasetTable

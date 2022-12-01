@@ -16,6 +16,13 @@ const getImageUrl = (name, params) => {
   return `${store.getters.storeBaseUrl}image/src/${encodeURI(name)}?${paramString}`
 }
 
+const getFeedbackImageUrl = (id, params) => {
+  const paramString = toUrlString(params)
+
+  return `${store.getters.storeBaseUrl}feedback/${id}/img?${paramString}`
+}
+
 export {
-  getImageUrl
+  getImageUrl,
+  getFeedbackImageUrl
 }

@@ -90,7 +90,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnGroupName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'groupDescription',
           type: String,

@@ -43,15 +43,16 @@
           </b-row>
         </div>
 
+        <b-form-group :label="$t('formLabelTraitTimelineGermplasm')" label-for="germplasm-search">
+          <TrialGermplasmLookup id="germplasm-search" :datasetIds="datasetIds" @germplasm-selected="onGermplasmSelected" />
+        </b-form-group>
+
         <template v-if="shapefiles && shapefiles.length > 0">
           <h2>{{ $t('pageTraitTimelineMapTitle') }}</h2>
           <p>{{ $t('pageTraitTimelineMapText') }}</p>
 
           <b-form-group :label="$t('formLabelTraitTimelineShapefile')" label-for="shapefile">
             <b-form-select id="shapefile" :options="shapefileOptions" v-model="shapefileIndex" />
-          </b-form-group>
-          <b-form-group :label="$t('formLabelTraitTimelineGermplasm')" label-for="germplasm-search">
-            <TrialGermplasmLookup id="germplasm-search" :datasetIds="datasetIds" @germplasm-selected="onGermplasmSelected" />
           </b-form-group>
 
           <ShapefileGeotiffMap :fileresourceId="shapefileId"
@@ -310,7 +311,7 @@ export default {
 
         if (this.selectedGermplasm.length > 0) {
           this.selectedGermplasm.forEach((gp, i) => {
-            const germplasmData = this.traitData.filter(td => td.trialRow === gp.row && td.trialColumn === gp.column)
+            const germplasmData = this.traitData.filter(td => td.trialRow === gp.row && td.trialColumn === gp.column && td.germplasmName === gp.germplasm)
             const trace = {
               x: [],
               y: [],

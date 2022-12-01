@@ -4,11 +4,15 @@
       <b-spinner variant="primary" type="grow" />
     </div>
     <div v-else>
-      <b-row v-if="publications && publications.length > 0">
-        <b-col cols=12 sm=6 md=4 xl=3 class="mb-3" v-for="p in publications" :key="`publication-${p.publicationDoi}`">
-          <PublicationCard :publication="p" @deleteReference="deleteReference" />
-        </b-col>
-      </b-row>
+      <div v-if="publicationsOnPage && publicationsOnPage.length > 0">
+        <b-row>
+          <b-col cols=12 sm=6 md=4 xl=3 class="mb-3" v-for="p in publicationsOnPage" :key="`publication-${p.publicationDoi}`">
+            <PublicationCard :publication="p" @deleteReference="deleteReference" />
+          </b-col>
+        </b-row>
+        <b-pagination v-model="page" :total-rows="publications.length" :per-page="itemsPerPage" v-if="publications.length > itemsPerPage" />
+      </div>
+
       <h5 v-else>{{ $t('headingNoData') }}</h5>
 
       <b-button v-b-modal.add-publication-modal v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiPlusBox" /> {{ $t('buttonAddPublication') }}</b-button>
@@ -55,7 +59,13 @@ export default {
   computed: {
     ...mapGetters([
       'storeToken'
-    ])
+    ]),
+    publicationsOnPage: function () {
+      const startIndex = Math.min(this.publications.length, (this.page - 1) * this.itemsPerPage)
+      const endIndex = Math.min(this.publications.length, startIndex + this.itemsPerPage)
+
+      return this.publications.slice(startIndex, endIndex)
+    }
   },
   props: {
     referenceType: {
@@ -73,6 +83,8 @@ export default {
       mdiPlusBox,
       loading: true,
       publications: [],
+      page: 1,
+      itemsPerPage: 8,
       newPublication: {
         doi: null,
         html: null,

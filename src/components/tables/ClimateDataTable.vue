@@ -101,7 +101,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnClimateName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'unitName',
           type: String,

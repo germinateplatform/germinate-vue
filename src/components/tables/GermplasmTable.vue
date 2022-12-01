@@ -107,7 +107,7 @@
       <template v-slot:cell(institutions)="data">
         <template v-if="data.item.institutions && data.item.institutions.length > 0">
           <span :title="data.value" v-if="data.value">{{ truncateAfterWords(data.value, 6) }}</span>
-          <a href="#" class="table-icon-link" @click.prevent="showInstitutionModal(data.item)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.value, 6)" >&nbsp;
+          <a href="#" class="table-icon-link" @click.prevent="showInstitutionModal(data.item)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.value, 6)" >&nbsp;
             <MdiIcon :path="mdiPageNext" />
           </a>
         </template>
@@ -191,7 +191,7 @@ import InstitutionModal from '@/components/modals/InstitutionModal'
 import Passport from '@/views/data/germplasm/Passport'
 import defaultProps from '@/const/table-props'
 import { apiPostEntityIds } from '@/mixins/api/germplasm'
-import { isTruncatedAfter, truncateAfterWords } from '@/mixins/formatting'
+import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
 import { getImageUrl } from '@/mixins/image'
 import { entityTypes, datasetTypes } from '@/mixins/types'
 import { Pages } from '@/mixins/pages'
@@ -286,7 +286,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnGermplasmName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'germplasmGid',
           type: String,
@@ -459,7 +459,7 @@ export default {
     Passport
   },
   methods: {
-    isTruncatedAfter,
+    isTruncatedAfterWords,
     truncateAfterWords,
     showInstitutionModal: function (germplasm) {
       if (germplasm) {

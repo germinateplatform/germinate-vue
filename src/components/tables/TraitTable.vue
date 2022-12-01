@@ -114,7 +114,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnTraitName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'traitNameShort',
           type: String,

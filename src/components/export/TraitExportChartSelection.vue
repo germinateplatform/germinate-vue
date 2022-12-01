@@ -167,7 +167,7 @@ export default {
       if (this.colorByGroupEnabled) {
         result.push({
           text: this.$t('widgetChartColoringByGroup'),
-          value: 'group_ids'
+          value: 'groups'
         })
       }
 
@@ -207,7 +207,7 @@ export default {
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
 
       // If coloring by group is no longer available, but it's still selected, remove selection
-      if (!this.colorByGroupEnabled && this.colorBySelection === 'group_ids') {
+      if (!this.colorByGroupEnabled && this.colorBySelection === 'groups') {
         this.colorBySelection = null
       }
 

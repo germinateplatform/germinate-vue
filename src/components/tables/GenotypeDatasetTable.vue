@@ -57,7 +57,7 @@ export default {
           sortable: false,
           label: this.$t('tableColumnDatasetName'),
           formatter: value => truncateAfterWords(value, 10),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: String,

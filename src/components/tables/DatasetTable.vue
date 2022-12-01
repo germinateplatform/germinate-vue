@@ -41,7 +41,7 @@
       <!-- Dataset description -->
       <template v-slot:cell(datasetDescription)="data">
         <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ truncateAfterWords(data.item.datasetDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullDatasetDescription(data.item.datasetDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfter(data.item.datasetDescription, 10)" >&nbsp;
+        <a href="#" class="table-icon-link" @click.prevent="showFullDatasetDescription(data.item.datasetDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.datasetDescription, 10)" >&nbsp;
           <MdiIcon :path="mdiPageNext" />
         </a>
       </template>
@@ -176,7 +176,7 @@ import { datasetStates, datasetTypes } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
 import { isPageAvailable, downloadBlob } from '@/mixins/util'
 import { userIsAtLeast } from '@/mixins/api/auth'
-import { getDateTimeString, isTruncatedAfter, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
+import { getDateTimeString, isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
@@ -251,7 +251,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnDatasetName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'datasetDescription',
           type: String,
@@ -403,7 +403,7 @@ export default {
   },
   methods: {
     userIsAtLeast,
-    isTruncatedAfter,
+    isTruncatedAfterWords,
     truncateAfterWords,
     getHighContrastTextColor,
     isPageAvailable,

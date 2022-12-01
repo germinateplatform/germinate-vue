@@ -127,7 +127,7 @@ export default {
         type: 'json',
         sortable: true,
         label: this.$t('tableColumnCommentContent'),
-        preferedSortingColumn: true
+        preferredSortingColumn: true
       }, {
         key: 'updatedOn',
         type: Date,

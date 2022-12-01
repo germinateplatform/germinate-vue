@@ -71,7 +71,7 @@ const toUrlString = (params) => {
     .join('&')
 }
 
-const isTruncatedAfter = (str, words) => {
+const isTruncatedAfterWords = (str, words) => {
   if (!str) {
     return false
   }
@@ -95,6 +95,18 @@ const truncateAfterWords = (str, words) => {
   }
 }
 
+const truncateAfterChars = (str, length) => {
+  if (!str) {
+    return str
+  }
+
+  if (str.length > length) {
+    return str.substring(0, length) + '...'
+  } else {
+    return str
+  }
+}
+
 /**
  * Formats the given decimal number with the given number of decimal places
  * @param {Number} number The number to format
@@ -108,7 +120,8 @@ export {
   getDateString,
   getNumberWithSuffix,
   toUrlString,
-  isTruncatedAfter,
+  truncateAfterChars,
+  isTruncatedAfterWords,
   truncateAfterWords,
   toFixed
 }

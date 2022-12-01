@@ -110,7 +110,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnGermplasmName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'germplasmSynonyms',
           type: 'json',

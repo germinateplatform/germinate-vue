@@ -243,9 +243,9 @@ export default {
         show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
         return show
       }).sort((a, b) => {
-        if (a.preferedSortingColumn === true && !b.preferedSortingColumn) {
+        if (a.preferredSortingColumn === true && !b.preferredSortingColumn) {
           return -1
-        } else if (!a.preferedSortingColumn && b.preferedSortingColumn === true) {
+        } else if (!a.preferredSortingColumn && b.preferredSortingColumn === true) {
           return 1
         } else {
           return 0

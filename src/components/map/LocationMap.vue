@@ -16,20 +16,31 @@
         </b-progress>
       </div>
 
-      <l-control position="bottomleft" class="leaflet-control-layers">
+      <l-control position="topright" class="leaflet-control-layers" v-if="climates && climates.length > 0">
+        <b-button @click="$refs.climateOverlayModal.show()" variant="link" class="text-dark">
+          <MdiIcon :path="mdiWeatherSnowyRainy" />
+        </b-button>
+      </l-control>
+
+      <l-control position="bottomleft" class="leaflet-control-layers leaflet-legend" v-if="overlayLegends && overlayLegends.length > 0">
+        <b-button @click.prevent variant="link" class="leaflet-legend-button text-dark">
+          <MdiIcon :path="mdiMapLegend" />
+        </b-button>
         <!-- Legend -->
-        <div class="p-2 legend" v-if="imageOverlays && imageOverlays.length > 0 && getOverlays(true).length > 0">
-          <b-img-lazy fluid :src="legend.url" v-for="legend in getOverlays(true)" :key="`map-overlay-${legend.id}`" alt="Image overlay legend" />
+        <div class="leaflet-legend-items">
+          <b-img-lazy fluid :src="legend.url" v-for="legend in overlayLegends" :key="`map-overlay-${legend.id}`" alt="Image overlay legend" />
         </div>
       </l-control>
 
       <!-- Add overlays if available -->
       <!-- Overlays -->
-      <l-image-overlay v-for="image in getOverlays(false)"
-                      :key="`map-overlay-${image.id}`"
-                      :url="image.url"
-                      :opacity="imageOverlayOpacity"
-                      :bounds="image.bounds" />
+      <template v-if="overlayImages && overlayImages.length > 0">
+        <l-image-overlay v-for="image in overlayImages"
+                        :key="`map-overlay-${image.id}`"
+                        :url="image.url"
+                        :opacity="imageOverlayOpacity"
+                        :bounds="image.bounds" />
+      </template>
     </l-map>
     <!-- Add color gradient for heatmapping -->
     <ColorGradient v-if="mapType === 'heatmap'" ref="gradient" />
@@ -70,24 +81,24 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import ClimateOverlayModal from '@/components/modals/ClimateOverlayModal'
 import ColorGradient from '@/components/util/ColorGradient'
 import L from 'leaflet'
-import { apiPostClimates, apiPostClimateOverlays } from '@/mixins/api/climate'
+import { apiPostClimates } from '@/mixins/api/climate'
+import { apiPostMapOverlayTable } from '@/mixins/api/misc'
 import { locationTypes } from '@/mixins/types'
 import { getColor } from '@/mixins/colors'
 import { toUrlString } from '@/mixins/formatting'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
+import { mdiWeatherSnowyRainy, mdiMapLegend } from '@mdi/js'
 import { LMap, LImageOverlay, LControl } from 'vue2-leaflet'
 // LEAFLET
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet-draw/dist/leaflet.draw.css'
-import 'leaflet-easybutton/src/easy-button.css'
 import { Pages } from '@/mixins/pages'
 
 require('leaflet.heat')
 require('leaflet.sync')
 require('leaflet.markercluster')
-require('leaflet-easybutton')
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
@@ -104,6 +115,8 @@ export default {
     return {
       Pages,
       locationTypes,
+      mdiWeatherSnowyRainy,
+      mdiMapLegend,
       loading: false,
       loadingProgress: 0,
       zoom: 3,
@@ -161,15 +174,6 @@ export default {
       }
       this.updateMap()
     },
-    climates: function () {
-      const map = this.$refs.map.mapObject
-
-      if (this.climates && this.climates.length > 0) {
-        L.easyButton('<svg data-v-75edd456="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" class="mdi-icon "><path data-v-75edd456="" d="M18.5,18.67C18.5,19.96 17.5,21 16.25,21C15,21 14,19.96 14,18.67C14,17.12 16.25,14.5 16.25,14.5C16.25,14.5 18.5,17.12 18.5,18.67M4,17.36C3.86,16.82 4.18,16.25 4.73,16.11L7,15.5L5.33,13.86C4.93,13.46 4.93,12.81 5.33,12.4C5.73,12 6.4,12 6.79,12.4L8.45,14.05L9.04,11.8C9.18,11.24 9.75,10.92 10.29,11.07C10.85,11.21 11.17,11.78 11,12.33L10.42,14.58L12.67,14C13.22,13.83 13.79,14.15 13.93,14.71C14.08,15.25 13.76,15.82 13.2,15.96L10.95,16.55L12.6,18.21C13,18.6 13,19.27 12.6,19.67C12.2,20.07 11.54,20.07 11.15,19.67L9.5,18L8.89,20.27C8.75,20.83 8.18,21.14 7.64,21C7.08,20.86 6.77,20.29 6.91,19.74L7.5,17.5L5.26,18.09C4.71,18.23 4.14,17.92 4,17.36M1,11A5,5 0 0,1 6,6C7,3.65 9.3,2 12,2C15.43,2 18.24,4.66 18.5,8.03L19,8A4,4 0 0,1 23,12A4,4 0 0,1 19,16A1,1 0 0,1 18,15A1,1 0 0,1 19,14A2,2 0 0,0 21,12A2,2 0 0,0 19,10H17V9A5,5 0 0,0 12,4C9.5,4 7.45,5.82 7.06,8.19C6.73,8.07 6.37,8 6,8A3,3 0 0,0 3,11C3,11.85 3.35,12.61 3.91,13.16C4.27,13.55 4.26,14.16 3.88,14.54C3.5,14.93 2.85,14.93 2.47,14.54C1.56,13.63 1,12.38 1,11Z"></path></svg>', () => {
-          this.$refs.climateOverlayModal.show()
-        }, 'Toggle overlays', 'settings-button', { position: 'topright' }).addTo(map)
-      }
-    },
     selectionMode: function () {
       this.updateMap(false)
     }
@@ -180,7 +184,21 @@ export default {
       'storeMapLayer',
       'storeToken',
       'storeServerSettings'
-    ])
+    ]),
+    overlayLegends: function () {
+      if (this.imageOverlays) {
+        return this.imageOverlays.filter(i => i.isLegend === true)
+      } else {
+        return []
+      }
+    },
+    overlayImages: function () {
+      if (this.imageOverlays) {
+        return this.imageOverlays.filter(i => i.isLegend === false)
+      } else {
+        return []
+      }
+    }
   },
   components: {
     MdiIcon,
@@ -225,7 +243,12 @@ export default {
         if (this.imageOverlayClimateId !== overlay.climateId) {
           const queryData = {
             filter: [{
-              column: 'climateId',
+              column: 'referenceTable',
+              comparator: 'equals',
+              operator: 'and',
+              values: ['climates']
+            }, {
+              column: 'foreignId',
               comparator: 'equals',
               operator: 'and',
               values: [overlay.climateId]
@@ -233,7 +256,7 @@ export default {
             page: 1,
             limit: MAX_JAVA_INTEGER
           }
-          apiPostClimateOverlays(queryData, result => {
+          apiPostMapOverlayTable(queryData, result => {
             const array = []
 
             if (result && result.data) {
@@ -245,13 +268,13 @@ export default {
                 }
                 const paramString = toUrlString(params)
 
-                path = this.storeBaseUrl + `climate/overlay/${i.climateOverlayId}/src?` + paramString
+                path = this.storeBaseUrl + `mapoverlay/${i.mapoverlayId}/src?` + paramString
 
                 array.push({
-                  id: i.climateOverlayId,
+                  id: i.mapoverlayId,
                   url: path,
-                  isLegend: i.isLegend,
-                  bounds: [[i.bottomLeftLatitude, i.bottomLeftLongitude], [i.topRightLatitude, i.topRightLongitude]]
+                  isLegend: i.mapoverlaysIsLegend,
+                  bounds: [[i.mapoverlayBottomLeftLat, i.mapoverlayBottomLeftLng], [i.mapoverlayTopRightLat, i.mapoverlayTopRightLng]]
                 })
               })
             }
@@ -268,9 +291,6 @@ export default {
         this.imageOverlayOpacity = 1
         this.imageOverlays = []
       }
-    },
-    getOverlays: function (isLegend) {
-      return this.imageOverlays.filter(i => i.isLegend === isLegend)
     },
     invalidateSize: function () {
       this.$nextTick(() => this.$refs.map.mapObject.invalidateSize())
@@ -566,19 +586,27 @@ export default {
   height: 600px !important;
 }
 
-/* .location-map .location-map-legend {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, .7);
-  border: 1px solid #6f7277;
-  padding: 5px;
-  pointer-events: none;
-  z-index: 1000;
-} */
-.location-map .legend {
+.location-map .leaflet-legend:hover .leaflet-legend-items {
+  height: auto;
+  padding: 0.5rem;
+}
+.location-map .leaflet-legend:hover .leaflet-legend-items img {
+  height: auto;
+}
+.location-map .leaflet-legend:hover .leaflet-legend-button {
+  display: none;
+}
+
+.location-map .leaflet-legend .leaflet-legend-button {
+  display: block;
+}
+.location-map .leaflet-legend-items {
+  height: 0;
   max-height: 300px;
   overflow-y: auto;
+}
+.location-map .leaflet-legend-items img {
+  height: 0;
 }
 
 .location-map .leaflet-popup-content-wrapper {

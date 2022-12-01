@@ -96,6 +96,13 @@ const routes = [
             meta: { minUserType: 'Administrator' },
             component: () => import(/* webpackChunkName: "germinate-settings" */ '@/views/admin/GerminateSettings.vue'),
             beforeEnter: requireAuth
+          },
+          {
+            path: 'user-feedback',
+            name: Pages.userFeedback,
+            meta: { minUserType: 'Administrator' },
+            component: () => import(/* webpackChunkName: "germinate-settings" */ '@/views/admin/UserFeedback.vue'),
+            beforeEnter: requireAuth
           }
         ]
       },

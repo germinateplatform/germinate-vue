@@ -113,7 +113,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnUserGroupName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'userGroupDescription',
           type: String,

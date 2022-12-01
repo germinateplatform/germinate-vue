@@ -104,7 +104,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnImageReferenceName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'imageRefTable',
           type: String,

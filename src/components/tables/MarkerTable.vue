@@ -60,7 +60,7 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnMarkerName'),
-          preferedSortingColumn: true
+          preferredSortingColumn: true
         }, {
           key: 'markerType',
           type: String,
