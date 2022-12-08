@@ -8,7 +8,7 @@
         </template>
 
         <div v-if="selectedGermplasm && selectedGermplasm.length > 0">
-          <b-badge class="mr-2" v-for="(germplasm, index) in selectedGermplasm" :key="`germplasm-badge-${germplasm.row}-${germplasm.column}`" :style="{ backgroundColor: getColor(index).bg, color: getColor(index).text }">
+          <b-badge class="mr-2" v-for="(germplasm, index) in selectedGermplasm" :key="`germplasm-badge-${germplasm.germplasm}-${germplasm.row}-${germplasm.column}`" :style="{ backgroundColor: getColor(index).bg, color: getColor(index).text }">
             {{ `${germplasm.germplasm}-${germplasm.rep}` }} <button type="button" class="close badge-close" @click="removeGermplasm(index)">×</button>
           </b-badge>
         </div>
@@ -312,21 +312,25 @@ export default {
         if (this.selectedGermplasm.length > 0) {
           this.selectedGermplasm.forEach((gp, i) => {
             const germplasmData = this.traitData.filter(td => td.trialRow === gp.row && td.trialColumn === gp.column && td.germplasmName === gp.germplasm)
-            const trace = {
-              x: [],
-              y: [],
-              type: 'scatter',
-              name: `${gp.germplasm}-${gp.rep}`,
-              marker: {
-                color: this.getColor(i).bg,
-                line: { color: this.getColor(i).bg }
+            const treatments = [...new Set(germplasmData.map(td => td.treatment))]
+
+            treatments.forEach(t => {
+              const trace = {
+                x: [],
+                y: [],
+                type: 'scatter',
+                name: `${t ? (t + '-') : ''}${gp.germplasm}-${gp.rep}`,
+                marker: {
+                  color: this.getColor(i).bg,
+                  line: { color: this.getColor(i).bg }
+                }
               }
-            }
-            germplasmData.concat().sort((a, b) => new Date(a.recordingDate) - new Date(b.recordingDate)).forEach(gd => {
-              trace.x.push(gd.recordingDate)
-              trace.y.push(+gd.traitValue)
+              germplasmData.concat().filter(d => d.treatment === t).sort((a, b) => new Date(a.recordingDate) - new Date(b.recordingDate)).forEach(gd => {
+                trace.x.push(gd.recordingDate)
+                trace.y.push(+gd.traitValue)
+              })
+              traces.push(trace)
             })
-            traces.push(trace)
           })
         }
 

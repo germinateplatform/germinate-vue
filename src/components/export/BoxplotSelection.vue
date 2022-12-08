@@ -7,12 +7,16 @@
                      :max="null"
                      :onlyNumeric="false"
                      v-on:button-clicked="plot" />
-    <BoxplotChart :datasetIds="datasetIds" :yIds="yIds" :xIds="xIds" :yGroupIds="yGroupIds" :chartMode="(this.yGroupIds !== null && this.yGroupIds.length > 0) ? 'itemByGroup' : 'itemByDataset'" :xType="xType" v-if="showPlot" ref="boxplot"/>
+    <div v-if="showPlot">
+      <TraitBoxplotChart :datasetIds="datasetIds" :traitIds="xIds" :groupIds="yGroupIds" :markedIds="yIds" v-if="xType === 'traits'" ref="boxplot" />
+      <ClimateBoxplotChart :datasetIds="datasetIds" :climateIds="xIds" :groupIds="yGroupIds" :markedIds="yIds" v-else ref="boxplot" />
+    </div>
   </div>
 </template>
 
 <script>
-import BoxplotChart from '@/components/charts/BoxplotChart'
+import ClimateBoxplotChart from '@/components/charts/ClimateBoxplotChart'
+import TraitBoxplotChart from '@/components/charts/TraitBoxplotChart'
 import ExportSelection from '@/components/export/ExportSelection'
 
 export default {
@@ -63,8 +67,9 @@ export default {
     }
   },
   components: {
-    BoxplotChart,
-    ExportSelection
+    ClimateBoxplotChart,
+    ExportSelection,
+    TraitBoxplotChart
   },
   methods: {
     plot: function (query, selectedItems) {

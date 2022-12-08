@@ -203,11 +203,7 @@ export function plotlyScatterMatrix (Plotly) {
           }
         } else {
           if (onPointsSelected) {
-            const mapped = eventData.points.map(function (p) {
-              return parseInt(p.id.split('-')[0])
-            }).filter((value, index, self) => {
-              return self.indexOf(value) === index
-            })
+            const mapped = eventData.points.map(p => parseInt(p.id.split('-')[0])).filter((value, index, self) => self.indexOf(value) === index)
 
             onPointsSelected(mapped)
           }

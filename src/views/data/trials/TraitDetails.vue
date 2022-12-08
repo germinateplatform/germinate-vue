@@ -38,7 +38,7 @@
         </template>
 
         <!-- Attributes -->
-         <h2>{{ $t('pageTraitAttributesTitle') }}</h2>
+        <h2>{{ $t('pageTraitAttributesTitle') }}</h2>
         <TraitAttributeTable :filterOn="attributeFilter" :getData="getTraitAttributeData" />
 
         <h2>{{ $t('pageTraitDetailsDataTitle') }}</h2>
@@ -57,8 +57,9 @@
                   v-on:bar-clicked="traitValueClicked"
                   ref="traitCategoryChart"
                   v-if="trait.dataType !== 'numeric'"/>
+
         <!-- Boxplot for this trait -->
-        <BoxplotChart chartMode="datasetByItem" :xIds="[traitId]" xType="traits" ref="traitDetailsChart" v-else />
+        <TraitBoxplotChart :traitIds="[traitId]" ref="traitDetailsChart" v-else />
 
         <!-- Table showing all datasets this trait is scored in -->
         <DatasetTable :getData="getDatasetData" ref="datasetTable" />
@@ -90,7 +91,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BarChart from '@/components/charts/BarChart'
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import DatasetTable from '@/components/tables/DatasetTable'
-import BoxplotChart from '@/components/charts/BoxplotChart'
+import TraitBoxplotChart from '@/components/charts/TraitBoxplotChart'
 import ImageGallery from '@/components/images/ImageGallery'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import TraitAttributeTable from '@/components/tables/TraitAttributeTable'
@@ -123,7 +124,7 @@ export default {
     BarChart,
     DatasetsWithUnacceptedLicense,
     DatasetTable,
-    BoxplotChart,
+    TraitBoxplotChart,
     MdiIcon,
     ImageGallery,
     TrialsDataTable,
