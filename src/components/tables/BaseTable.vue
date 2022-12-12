@@ -95,7 +95,7 @@
 
       <!-- Marked item column -->
       <template v-slot:head(marked)>
-        <b-dropdown size="sm" dropleft variant="outline-primary" boundary="window">
+        <b-dropdown size="sm" dropleft variant="outline-light" boundary="window">
           <template slot="button-content">
             <MdiIcon :path="mdiCheckboxMultipleOutline" />
           </template>
