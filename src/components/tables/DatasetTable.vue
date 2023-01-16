@@ -105,18 +105,21 @@
         <a href="#" class="text-decoration-none" v-if="data.item.publications !== 0 || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator'))" @click.prevent="showPublications(data.item)">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetPublications')"><MdiIcon :path="mdiTextBoxCheckOutline"/></span>
         </a>
+        <MdiIcon :path="mdiTextBoxCheckOutline" className="text-muted" v-else/>
       </template>
       <!-- Show collaborators -->
       <template v-slot:cell(collaborators)="data">
         <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showCollaborators(data.item)">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')"><MdiIcon :path="mdiAccountMultiple"/></span>
         </a>
+        <MdiIcon :path="mdiAccountMultiple" className="text-muted" v-else/>
       </template>
       <!-- Show attributes -->
       <template v-slot:cell(attributes)="data">
         <a href="#" class="text-decoration-none" v-if="(data.item.attributes !== 0 || data.item.dublinCore) && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="showAttributes(data.item)">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')"><MdiIcon :path="mdiFilePlus"/></span>
         </a>
+        <MdiIcon :path="mdiFilePlus" className="text-muted" v-else/>
       </template>
       <!-- Show file resources -->
       <template v-slot:cell(fileresourceIds)="data">
@@ -127,11 +130,18 @@
         <a href="#" class="text-decoration-none" v-if="!data.item.isExternal && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="downloadDataset(data.item)">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')"><MdiIcon :path="mdiDownload"/></span>
         </a>
+        <MdiIcon :path="mdiDownload" className="text-muted" v-else/>
       </template>
       <!-- Edit dataset -->
       <template v-slot:cell(edit)="data">
         <a href="#" class="text-decoration-none" @click.prevent="onDatasetEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetEdit')"><MdiIcon :path="mdiSquareEditOutline"/></span>
+        </a>
+      </template>
+      <!-- Delete dataset -->
+      <template v-slot:cell(delete)="data">
+        <a href="#" class="text-decoration-none" @click.prevent="onDatasetDeleteClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetDelete')"><MdiIcon className="text-danger" :path="mdiDelete"/></span>
         </a>
       </template>
 
@@ -169,7 +179,7 @@ import PublicationsModal from '@/components/modals/PublicationsModal'
 import LocationMap from '@/components/map/LocationMap'
 import AttributeModal from '@/components/modals/AttributeModal'
 import defaultProps from '@/const/table-props'
-import { apiPostDatasetExport, apiGetDatasetSourceFile, apiPostLicenseTable } from '@/mixins/api/dataset'
+import { apiPostDatasetExport, apiGetDatasetSourceFile, apiPostLicenseTable, apiDeleteDataset } from '@/mixins/api/dataset'
 import { apiPostGenotypeDatasetExport } from '@/mixins/api/genotype'
 import { apiPostPedigreeDatasetExport } from '@/mixins/api/germplasm'
 import { datasetStates, datasetTypes } from '@/mixins/types'
@@ -178,7 +188,7 @@ import { isPageAvailable, downloadBlob } from '@/mixins/util'
 import { userIsAtLeast } from '@/mixins/api/auth'
 import { getDateTimeString, isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 
-import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
+import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiDelete, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
@@ -208,6 +218,7 @@ export default {
       Pages,
       datasetStates,
       datasetTypes,
+      mdiDelete,
       mdiHelpCircle,
       mdiOpenInNew,
       mdiPageNext,
@@ -373,6 +384,15 @@ export default {
           key: 'edit',
           type: undefined,
           sortable: false,
+          class: 'px-1',
+          label: ''
+        })
+
+        result.push({
+          key: 'delete',
+          type: undefined,
+          sortable: false,
+          class: 'px-1',
           label: ''
         })
       }
@@ -562,6 +582,7 @@ export default {
       this.$refs.datasetTable.setSelectedItems(toSelect)
     },
     refresh: function () {
+      this.dataset = null
       this.$refs.datasetTable.refresh()
     },
     onLicenseAccepted: function () {
@@ -572,6 +593,24 @@ export default {
       this.dataset = dataset
 
       this.$nextTick(() => this.$refs.datasetEditModal.show())
+    },
+    onDatasetDeleteClicked: function (dataset) {
+      this.$bvModal.msgBoxConfirm(this.$t('modalTextDatasetDelete'), {
+        title: this.$t('modalTitleSure'),
+        okVariant: 'danger',
+        okTitle: this.$t('genericYes'),
+        cancelTitle: this.$t('genericNo')
+      })
+        .then(value => {
+          if (value) {
+            // Delete the image
+            apiDeleteDataset(dataset.datasetId, result => {
+              if (result) {
+                this.refresh()
+              }
+            })
+          }
+        })
     },
     onLicenseClicked: function (dataset) {
       this.dataset = dataset

@@ -27,6 +27,10 @@ const apiPostDatasetTable = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiDeleteDataset = (datasetId, onSuccess, onError) => authAxios({ url: `dataset/${datasetId}`, method: 'DELETE', success: onSuccess, error: onError })
+
+const apiDeleteExperiment = (experimentId, onSuccess, onError) => authAxios({ url: `experiment/${experimentId}`, method: 'DELETE', success: onSuccess, error: onError })
+
 const apiPostDatasetTableIds = (queryData, onSuccess, onError) => {
   delete queryData.orderBy
   delete queryData.ascending
@@ -63,6 +67,10 @@ const apiPostLicenseTable = (queryData, onSuccess, onError) => {
 }
 
 const apiGetLicenses = (onSuccess, onError) => authAxios({ url: 'license', success: onSuccess, error: onError })
+
+const apiPutExperiment = (data, onSuccess, onError) => authAxios({ url: 'experiment', method: 'PUT', data: data, success: onSuccess, error: onError })
+
+const apiPatchExperiment = (experimentId, data, onSuccess, onError) => authAxios({ url: `experiment/${experimentId}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
 
 const apiPutLicense = (data, onSuccess, onError) => authAxios({ url: 'license', method: 'PUT', data: data, success: onSuccess, error: onError })
 
@@ -116,6 +124,10 @@ export {
   apiPostDatasetAttributeTable,
   apiPostTraitStats,
   apiPostTraitStatsCategorical,
+  apiPutExperiment,
+  apiPatchExperiment,
+  apiDeleteDataset,
+  apiDeleteExperiment,
   apiGetLicenses,
   apiPutLicense,
   apiPatchLicense,

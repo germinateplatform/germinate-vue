@@ -46,22 +46,48 @@
           <MdiIcon :path="datasetTypes.pedigree.path" /> {{ data.item.pedigreeCount }}
         </b-badge>
       </template>
+
+      <!-- Edit dataset -->
+      <template v-slot:cell(edit)="data">
+        <a href="#" class="text-decoration-none" @click.prevent="onExperimentEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+          <span v-b-tooltip.hover :title="$t('tableTooltipExperimentEdit')"><MdiIcon :path="mdiSquareEditOutline"/></span>
+        </a>
+      </template>
+
+      <!-- Delete experiment -->
+      <template v-slot:cell(delete)="data">
+        <a href="#" class="text-decoration-none" @click.prevent="onExperimentDeleteClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+          <span v-b-tooltip.hover :title="$t('tableTooltipExperimentDelete')"><MdiIcon className="text-danger" :path="mdiDelete"/></span>
+        </a>
+      </template>
     </BaseTable>
+
+    <ExperimentCreationModal :experiment="selectedExperiment" ref="experimentCreationModal" @experiment-updated="refresh()" @experiment-added="refresh()" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import ExperimentCreationModal from '@/components/modals/ExperimentCreationModal'
 import { datasetTypes } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
 import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
+import { userIsAtLeast } from '@/mixins/api/auth'
 
-import { mdiPageNext } from '@mdi/js'
+import { mdiPageNext, mdiSquareEditOutline, mdiDelete } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
+import { apiDeleteExperiment } from '@/mixins/api/dataset'
 
 export default {
+  components: {
+    ExperimentCreationModal,
+    BaseTable,
+    MdiIcon
+  },
   name: 'ExperimentTable',
   props: {
     ...defaultProps.FULL
@@ -71,13 +97,19 @@ export default {
       Pages,
       datasetTypes,
       mdiPageNext,
+      mdiSquareEditOutline,
+      mdiDelete,
       options: {
         idColumn: 'experimentId',
         tableName: 'experiments'
-      }
+      },
+      selectedExperiment: null
     }
   },
   computed: {
+    ...mapGetters([
+      'storeToken'
+    ]),
     columns: function () {
       const result = [
         {
@@ -111,17 +143,55 @@ export default {
         }
       ]
 
+      if (this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
+        result.push({
+          key: 'edit',
+          type: undefined,
+          sortable: false,
+          class: 'px-1',
+          label: ''
+        })
+
+        result.push({
+          key: 'delete',
+          type: undefined,
+          sortable: false,
+          class: 'px-1',
+          label: ''
+        })
+      }
+
       return result
     }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
   },
   methods: {
     isTruncatedAfterWords,
     truncateAfterWords,
     getHighContrastTextColor,
+    userIsAtLeast,
+    onExperimentEditClicked: function (experiment) {
+      this.selectedExperiment = experiment
+
+      this.$nextTick(() => this.$refs.experimentCreationModal.show())
+    },
+    onExperimentDeleteClicked: function (experiment) {
+      this.$bvModal.msgBoxConfirm(this.$t('modalTextExperimentDelete'), {
+        title: this.$t('modalTitleSure'),
+        okVariant: 'danger',
+        okTitle: this.$t('genericYes'),
+        cancelTitle: this.$t('genericNo')
+      })
+        .then(value => {
+          if (value) {
+            // Delete the image
+            apiDeleteExperiment(experiment.experimentId, result => {
+              if (result) {
+                this.refresh()
+              }
+            })
+          }
+        })
+    },
     showFullExperimentDescription: function (description) {
       this.$bvModal.msgBoxOk(description, {
         title: this.$t('tableColumnExperimentDescription'),
@@ -164,6 +234,7 @@ export default {
       })
     },
     refresh: function () {
+      this.selectedExperiment = null
       this.$refs.experimentTable.refresh()
     }
   }

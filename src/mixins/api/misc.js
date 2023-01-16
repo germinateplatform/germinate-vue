@@ -80,6 +80,11 @@ const apiDeleteComment = (commentId, onSuccess, onError) => authAxios({ url: `co
 
 const apiPostLinks = (queryData, onSuccess, onError) => authAxios({ url: 'link/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
+const apiPostDataImportStats = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'import/stats', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 const apiPostDataAsyncImport = (uuids, onSuccess, onError) => {
   const queryData = {
     uuids: uuids
@@ -152,5 +157,6 @@ export {
   apiPostMapOverlayTable,
   apiPostUserFeedbackTable,
   apiPostFeedbackUpload,
-  apiGetUserFeedbackMarkAsRead
+  apiGetUserFeedbackMarkAsRead,
+  apiPostDataImportStats
 }

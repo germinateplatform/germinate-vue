@@ -4,13 +4,14 @@
   <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/germinate-square.svg?sanitize=true" width="200" alt="Logo">
 </p>
 
-![GitHub](https://img.shields.io/github/license/germinateplatform/germinate-vue)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/germinateplatform/germinate-vue)
-![GitHub last commit](https://img.shields.io/github/last-commit/germinateplatform/germinate-vue)
-![Docker Pulls](https://img.shields.io/docker/pulls/cropgeeks/germinate)
-[![Docker CI Push](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-push.yml/badge.svg)](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-push.yml)
-[![Docker CI Tag](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-tag.yml/badge.svg)](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-tag.yml)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+![GitHub](https://img.shields.io/github/license/germinateplatform/germinate-vue?style=for-the-badge&logo=apache)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/germinateplatform/germinate-vue?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/germinateplatform/germinate-vue?style=for-the-badge&logo=git)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=for-the-badge)](CODE_OF_CONDUCT.md)
+
+![Docker Pulls](https://img.shields.io/docker/pulls/cropgeeks/germinate?style=for-the-badge&logo=docker)
+[![Docker CI Push](https://img.shields.io/github/actions/workflow/status/germinateplatform/germinate-vue/docker-ci-push.yml?label=Docker%20CI%20Push&logo=github&style=for-the-badge)](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-push.yml)
+[![Docker CI Tag](https://img.shields.io/github/actions/workflow/status/germinateplatform/germinate-vue/docker-ci-push.yml?label=Docker%20CI%20Tag&logo=github&style=for-the-badge)](https://github.com/germinateplatform/germinate-vue/actions/workflows/docker-ci-tag.yml)
 
 
 ![](https://germinateplatform.github.io/get-germinate/images/screenshot-1.png "Home page")

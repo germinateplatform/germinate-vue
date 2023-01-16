@@ -1,5 +1,5 @@
 <template>
-  <b-img-lazy fluid class="sidebar-logo w-100 p-3" :src="storeBaseUrl + 'image/src-svg/logo.svg'" alt="Project logo" />
+  <b-img-lazy fluid-grow class="sidebar-logo p-3" :src="storeBaseUrl + 'image/src-svg/logo.svg'" alt="Project logo" />
 </template>
 
 <script>
@@ -14,7 +14,10 @@ export default {
 </script>
 
 <style>
+.sidebar-logo {
+  transition: opacity 0.5s linear;
+}
 .vsm_collapsed .sidebar-logo {
-  display: none;
+  opacity: 0;
 }
 </style>
