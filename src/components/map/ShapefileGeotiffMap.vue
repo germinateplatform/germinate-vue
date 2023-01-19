@@ -1,5 +1,22 @@
 <template>
   <div>
+    <div  v-if="hasTreatments || hasReps">
+      <b-form-group :label="$t('formLabelGeotiffMapHighlight')" label-for="highlight-group">
+        <b-button-group id="highlight-group">
+          <b-button @click="highlightReps" v-if="hasReps"><MdiIcon :path="mdiNumeric" /> {{ $t('buttonHighlightReps', { count: reps.length }) }}</b-button>
+          <b-button @click="highlightTreatments" v-if="hasTreatments"><MdiIcon :path="mdiTagMultiple" /> {{ $t('buttonHighlightTreatments', { count: treatments.length }) }}</b-button>
+          <b-button @click="removeHighlight"><MdiIcon :path="mdiCancel" /> {{ $t('buttonHighlightRemove') }}</b-button>
+        </b-button-group>
+      </b-form-group>
+
+      <div v-if="repColors && repColors.length > 0" class="mb-3">
+        <b-badge v-for="rep in repColors" :key="`rep-badge-${rep.rep}`" class="mr-2" :style="{ backgroundColor: rep.color }">{{ rep.rep }}</b-badge>
+      </div>
+      <div v-if="treatmentColors && treatmentColors.length > 0" class="mb-3">
+        <b-badge v-for="treatment in treatmentColors" :key="`treatment-badge-${treatment.treatment}`" class="mr-2" :style="{ backgroundColor: treatment.color }">{{ treatment.treatment }}</b-badge>
+      </div>
+    </div>
+
     <div :id="id" class="shapefile-map border" />
 
     <!-- Add color gradient for number coloring -->
@@ -10,6 +27,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import ColorGradient from '@/components/util/ColorGradient'
+import MdiIcon from '@/components/icons/MdiIcon'
 
 import L from 'leaflet'
 import shp from 'shpjs'
@@ -17,13 +35,16 @@ import { getColor, rgbColorToHex } from '@/mixins/colors'
 import { uuidv4 } from '@/mixins/util'
 import { apiGetDataResource } from '@/mixins/api/dataset'
 
+import { mdiNumeric, mdiTagMultiple, mdiCancel } from '@mdi/js'
+
 let shapefileLayers = {}
 let bounds
 let imageOverlays = []
 
 export default {
   components: {
-    ColorGradient
+    ColorGradient,
+    MdiIcon
   },
   props: {
     fileresourceId: {
@@ -55,13 +76,18 @@ export default {
     const id = `timelinemap-${uuidv4()}`
 
     return {
+      mdiNumeric,
+      mdiTagMultiple,
+      mdiCancel,
       id: id,
       zoom: 3,
       maxZoom: 25,
       center: [22.5937, 2.1094],
       mapOptions: {
         maxNativeZoom: 19
-      }
+      },
+      repColors: [],
+      treatmentColors: []
     }
   },
   watch: {
@@ -90,6 +116,42 @@ export default {
       'storeBaseUrl',
       'storeToken'
     ]),
+    hasReps: function () {
+      return this.reps && this.reps.length > 1
+    },
+    reps: function () {
+      if (this.traitData) {
+        const t = new Set()
+
+        this.traitData.forEach(td => {
+          if (td.rep) {
+            t.add(`${td.rep}`)
+          }
+        })
+
+        return [...t].sort((a, b) => a.localeCompare(b))
+      } else {
+        return []
+      }
+    },
+    hasTreatments: function () {
+      return this.treatments && this.treatments.length > 1
+    },
+    treatments: function () {
+      if (this.traitData) {
+        const t = new Set()
+
+        this.traitData.forEach(td => {
+          if (td.treatment) {
+            t.add(`${td.treatment}`)
+          }
+        })
+
+        return [...t].sort((a, b) => a.localeCompare(b))
+      } else {
+        return []
+      }
+    },
     gradientOptions: function () {
       if (this.traitStats) {
         return {
@@ -104,6 +166,68 @@ export default {
     }
   },
   methods: {
+    removeHighlight: function () {
+      this.treatmentColors = []
+      this.repColors = []
+
+      this.updateColors()
+    },
+    highlightReps: function () {
+      this.treatmentColors = []
+      this.repColors = []
+
+      if (this.traitData && this.reps && this.reps.length > 1) {
+        const colorMap = new Map()
+
+        this.traitData.forEach(td => {
+          const id = `${td.trialRow}-${td.trialColumn}`
+          const layers = shapefileLayers[id]
+
+          if (layers && layers.length > 0) {
+            const rep = td.rep
+
+            // Get the corresponding color and save it back
+            const color = colorMap.get(rep) || getColor(colorMap.size)
+            colorMap.set(rep, color)
+
+            layers.forEach(layer => layer.setStyle({ color: color, weight: 1 }))
+          }
+        })
+
+        const colorArray = []
+        colorMap.forEach((value, key) => colorArray.push({ color: value, rep: key }))
+        colorArray.sort((a, b) => a.rep.localeCompare(b.rep))
+        this.repColors = colorArray
+      }
+    },
+    highlightTreatments: function () {
+      this.treatmentColors = []
+      this.repColors = []
+
+      if (this.traitData && this.reps && this.reps.length > 1) {
+        const colorMap = new Map()
+
+        this.traitData.forEach(td => {
+          const id = `${td.trialRow}-${td.trialColumn}`
+          const layers = shapefileLayers[id]
+
+          if (layers && layers.length > 0) {
+            const treatment = td.treatment
+
+            // Get the corresponding color and save it back
+            const color = colorMap.get(treatment) || getColor(colorMap.size)
+            colorMap.set(treatment, color)
+
+            layers.forEach(layer => layer.setStyle({ color: color, weight: 1 }))
+          }
+        })
+
+        const colorArray = []
+        colorMap.forEach((value, key) => colorArray.push({ color: value, treatment: key }))
+        colorArray.sort((a, b) => a.treatment.localeCompare(b.treatment))
+        this.treatmentColors = colorArray
+      }
+    },
     invalidateSize: function () {
       if (this.map) {
         this.$nextTick(() => {
