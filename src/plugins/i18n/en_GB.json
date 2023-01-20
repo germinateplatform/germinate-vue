@@ -170,6 +170,7 @@
   "formLabelEmail": "Email",
   "formLabelFullName": "Full name",
   "formLabelGeotiffMapHighlight": "Map highlight",
+  "formLabelGeotiffMapOpacity": "Data color opacity",
   "formLabelGermplasmUnifierSgoneInput": "SGONE output",
   "formLabelGroupDescription": "Group description",
   "formLabelGroupName": "Group name",

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div  v-if="hasTreatments || hasReps">
+    <div v-if="hasTreatments || hasReps">
       <b-form-group :label="$t('formLabelGeotiffMapHighlight')" label-for="highlight-group">
         <b-button-group id="highlight-group">
           <b-button @click="highlightReps" v-if="hasReps"><MdiIcon :path="mdiNumeric" /> {{ $t('buttonHighlightReps', { count: reps.length }) }}</b-button>
@@ -16,6 +16,10 @@
         <b-badge v-for="treatment in treatmentColors" :key="`treatment-badge-${treatment.treatment}`" class="mr-2" :style="{ backgroundColor: treatment.color }">{{ treatment.treatment }}</b-badge>
       </div>
     </div>
+
+    <b-form-group :label="$t('formLabelGeotiffMapOpacity')" label-for="opacity">
+      <b-form-input type="range" v-model="opacity" :min="0" :max="1" :step="0.1" lazy />
+    </b-form-group>
 
     <div :id="id" class="shapefile-map border" />
 
@@ -86,6 +90,7 @@ export default {
       mapOptions: {
         maxNativeZoom: 19
       },
+      opacity: 0.8,
       repColors: [],
       treatmentColors: []
     }
@@ -107,6 +112,9 @@ export default {
       }
     },
     selectedGermplasm: function () {
+      this.updateColors()
+    },
+    opacity: function () {
       this.updateColors()
     }
   },
@@ -167,9 +175,6 @@ export default {
   },
   methods: {
     removeHighlight: function () {
-      this.treatmentColors = []
-      this.repColors = []
-
       this.updateColors()
     },
     highlightReps: function () {
@@ -239,6 +244,9 @@ export default {
       }
     },
     updateColors: function () {
+      this.treatmentColors = []
+      this.repColors = []
+
       if (this.traitData && this.traitStats) {
         this.traitData.forEach(td => {
           const id = `${td.trialRow}-${td.trialColumn}`
@@ -249,9 +257,9 @@ export default {
 
             const index = this.selectedGermplasm.findIndex(sg => sg.row === td.trialRow && sg.column === td.trialColumn && sg.germplasm === td.germplasmName)
             if (index !== -1) {
-              layers.forEach(layer => layer.setStyle({ fillColor: rgbColorToHex(fillColor), color: getColor(index), weight: 3 }))
+              layers.forEach(layer => layer.setStyle({ fillColor: rgbColorToHex(fillColor), color: getColor(index), weight: 3, fillOpacity: this.opacity }))
             } else {
-              layers.forEach(layer => layer.setStyle({ fillColor: rgbColorToHex(fillColor), weight: 0 }))
+              layers.forEach(layer => layer.setStyle({ fillColor: rgbColorToHex(fillColor), weight: 0, fillOpacity: this.opacity }))
             }
           }
         })
