@@ -51,6 +51,10 @@ const comparators = {
   jsonSearch: {
     text: () => i18n.t('comparatorsJsonSearch'),
     values: 1
+  },
+  arrayContains: {
+    text: () => i18n.t('comparatorsArrayContains'),
+    values: 1
   }
 }
 

@@ -63,22 +63,10 @@ export default {
         this.filterOn = []
       }
     },
-    onFilteringChanged: function (column, type, value, operator) {
-      const copy = this.filterOn.concat().filter(f => f.column.name !== column)
-      if (value !== undefined && value !== null) {
-        copy.push({
-          column: {
-            name: column,
-            type: type
-          },
-          comparator: operator || 'equals',
-          operator: 'and',
-          values: [value]
-        })
-      }
+    onFilteringChanged: function (filters) {
+      let copy = this.filterOn.concat().filter(f => !filters.some(ff => ff.column.name === f.column.name))
+      copy = copy.concat(filters)
       this.filterOn = copy
-
-      // Update the table according to new filtering
       this.$refs.germplasmTable.refresh()
     },
     downloadTable: function (data, callback) {

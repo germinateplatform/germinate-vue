@@ -172,6 +172,7 @@
   "formLabelGeotiffMapHighlight": "Map highlight",
   "formLabelGeotiffMapOpacity": "Data color opacity",
   "formLabelGermplasmUnifierSgoneInput": "SGONE output",
+  "formLabelGermplasmTableFilterIdentifier": "Germplasm identifier",
   "formLabelGroupDescription": "Group description",
   "formLabelGroupName": "Group name",
   "formLabelGroupType": "Group type",

@@ -4,52 +4,69 @@
       <template v-slot:content>
         <b-row>
           <b-col cols=12 sm=6 md=6 lg=4 xl=3>
-            <h6>{{ $t('tableColumnEntityType') }}</h6>
-            <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
-            <b-button-group class="flex-wrap">
-              <b-button class="mb-2" @click="onEntityTypeSelected(null)" variant="outline-primary">
-                <MdiIcon :path="mdiCheckAll" /><span> {{$t('buttonAll')}}</span> <b-badge>{{ allGermplasmCount }}</b-badge>
-              </b-button>
-              <b-button class="mb-2" v-for="entityType in entityTypeOptions"
-                      :key="entityType.id"
-                      :disabled="entityType.disabled"
-                      :variant="entityType.disabled ? 'outline-secondary' : 'outline-primary'"
-                      @click="onEntityTypeSelected(entityType)">
-                <MdiIcon :path="entityType.path" /><span> {{ entityType.text() }} <b-badge>{{ getNumberWithSuffix(entityType.count, 2) }}</b-badge></span>
-              </b-button>
-            </b-button-group>
+            <b-form-group :label="$t('formLabelGermplasmTableFilterIdentifier')" label-for="identifier">
+              <b-input-group>
+                <b-form-input id="identifier" @keyup.enter="searchByIdentifier" v-model="identifierSearch" />
+                <b-input-group-append>
+                  <b-button @click="searchByIdentifier"><MdiIcon :path="mdiMagnify" /></b-button>
+                </b-input-group-append>
+              </b-input-group>
+            </b-form-group>
+          </b-col>
+          <b-col cols=12 sm=6 md=6 lg=4 xl=3>
+            <b-form-group :label="$t('tableColumnEntityType')" label-for="entity-types">
+              <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
+              <b-button-group class="flex-wrap" id="entity-types">
+                <b-button class="mb-2" @click="onEntityTypeSelected(null)" variant="outline-primary">
+                  <MdiIcon :path="mdiCheckAll" /><span> {{$t('buttonAll')}}</span> <b-badge>{{ allGermplasmCount }}</b-badge>
+                </b-button>
+                <b-button class="mb-2" v-for="entityType in entityTypeOptions"
+                        :key="entityType.id"
+                        :disabled="entityType.disabled"
+                        :variant="entityType.disabled ? 'outline-secondary' : 'outline-primary'"
+                        @click="onEntityTypeSelected(entityType)">
+                  <MdiIcon :path="entityType.path" /><span> {{ entityType.text() }} <b-badge>{{ getNumberWithSuffix(entityType.count, 2) }}</b-badge></span>
+                </b-button>
+              </b-button-group>
+            </b-form-group>
           </b-col>
           <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="locationOptions && locationOptions.length > 2">
-            <h6>{{ $t('widgetGermplasmTableFilterHasData') }}</h6>
-            <b-button-group class="mr-2">
-              <b-button class="mb-2 text-dark" variant="outline-secondary" @click="onHasImagesClicked" v-b-tooltip="$t('widgetGermplasmTableFilterHasImages')"><MdiIcon :path="mdiCamera" /></b-button>
-            </b-button-group>
-            <b-button-group class="flex-wrap">
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasTraitDataClicked" v-b-tooltip="datasetTypes.trials.text()" :style="`color: ${datasetTypes.trials.color()};`"><MdiIcon :path="datasetTypes.trials.path" /></b-button>
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasGenotypicDataClicked" v-b-tooltip="datasetTypes.genotype.text()" :style="`color: ${datasetTypes.genotype.color()};`"><MdiIcon :path="datasetTypes.genotype.path" /></b-button>
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasPedigreeDataClicked" v-b-tooltip="datasetTypes.pedigree.text()" :style="`color: ${datasetTypes.pedigree.color()};`"><MdiIcon :path="datasetTypes.pedigree.path" /></b-button>
-              <b-button class="mb-2" variant="outline-secondary" @click="onHasAllelefreqDataClicked" v-b-tooltip="datasetTypes.allelefreq.text()" :style="`color: ${datasetTypes.allelefreq.color()};`"><MdiIcon :path="datasetTypes.allelefreq.path" /></b-button>
-            </b-button-group>
+            <b-form-group :label="$t('widgetGermplasmTableFilterHasData')" label-for="has-data">
+              <b-button-group class="mr-2">
+                <b-button class="mb-2 text-dark" variant="outline-secondary" @click="onHasImagesClicked" v-b-tooltip="$t('widgetGermplasmTableFilterHasImages')"><MdiIcon :path="mdiCamera" /></b-button>
+              </b-button-group>
+              <b-button-group class="flex-wrap" id="has-data">
+                <b-button class="mb-2" variant="outline-secondary" @click="onHasTraitDataClicked" v-b-tooltip="datasetTypes.trials.text()" :style="`color: ${datasetTypes.trials.color()};`"><MdiIcon :path="datasetTypes.trials.path" /></b-button>
+                <b-button class="mb-2" variant="outline-secondary" @click="onHasGenotypicDataClicked" v-b-tooltip="datasetTypes.genotype.text()" :style="`color: ${datasetTypes.genotype.color()};`"><MdiIcon :path="datasetTypes.genotype.path" /></b-button>
+                <b-button class="mb-2" variant="outline-secondary" @click="onHasPedigreeDataClicked" v-b-tooltip="datasetTypes.pedigree.text()" :style="`color: ${datasetTypes.pedigree.color()};`"><MdiIcon :path="datasetTypes.pedigree.path" /></b-button>
+                <b-button class="mb-2" variant="outline-secondary" @click="onHasAllelefreqDataClicked" v-b-tooltip="datasetTypes.allelefreq.text()" :style="`color: ${datasetTypes.allelefreq.color()};`"><MdiIcon :path="datasetTypes.allelefreq.path" /></b-button>
+              </b-button-group>
+            </b-form-group>
           </b-col>
           <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="genusOptions && genusOptions.length > 2">
-            <h6>{{ $t('tableColumnGenus') }}</h6>
-            <b-form-select :options="genusOptions" v-model="selectedGenus" />
+            <b-form-group :label="$t('tableColumnGenus')" label-for="genus">
+              <b-form-select id="genus" :options="genusOptions" v-model="selectedGenus" />
+            </b-form-group>
           </b-col>
           <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="speciesOptions && speciesOptions.length > 2">
-            <h6>{{ $t('tableColumnSpecies') }}</h6>
-            <b-form-select :options="speciesOptions" v-model="selectedSpecies" />
+            <b-form-group :label="$t('tableColumnSpecies')" label-for="species">
+              <b-form-select id="species" :options="speciesOptions" v-model="selectedSpecies" />
+            </b-form-group>
           </b-col>
           <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="subtaxaOptions && subtaxaOptions.length > 2">
-            <h6>{{ $t('tableColumnSubtaxa') }}</h6>
-            <b-form-select :options="subtaxaOptions" v-model="selectedSubtaxa" />
+            <b-form-group :label="$t('tableColumnSubtaxa')" label-for="subtaxa">
+              <b-form-select id="subtaxa" :options="subtaxaOptions" v-model="selectedSubtaxa" />
+            </b-form-group>
           </b-col>
           <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="locationOptions && locationOptions.length > 2">
-            <h6>{{ $t('tableColumnCountryName') }}</h6>
-            <b-form-select :options="locationOptions" v-model="selectedLocation" />
+            <b-form-group :label="$t('tableColumnCountryName')" label-for="country">
+              <b-form-select id="country" :options="locationOptions" v-model="selectedLocation" />
+            </b-form-group>
           </b-col>
           <b-col cols=12 sm=6 md=6 lg=4 xl=3 v-if="biologicalStatusOptions && biologicalStatusOptions.length > 2">
-            <h6>{{ $t('tableColumnBiologicalStatus') }}</h6>
-            <b-form-select :options="biologicalStatusOptions" v-model="selectedBiologicalStatus" />
+            <b-form-group :label="$t('tableColumnBiologicalStatus')" label-for="biological-status">
+              <b-form-select id="biological-status" :options="biologicalStatusOptions" v-model="selectedBiologicalStatus" />
+            </b-form-group>
           </b-col>
         </b-row>
       </template>
@@ -67,7 +84,7 @@ import { apiGetTaxonomyData, apiGetLocationData, apiGetBiologicalStatusData } fr
 import { entityTypes, datasetTypes } from '@/mixins/types.js'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 
-import { mdiFilter, mdiCamera, mdiCheckAll } from '@mdi/js'
+import { mdiFilter, mdiCamera, mdiCheckAll, mdiMagnify } from '@mdi/js'
 
 export default {
   components: {
@@ -80,7 +97,9 @@ export default {
       mdiFilter,
       mdiCamera,
       mdiCheckAll,
+      mdiMagnify,
       collapseVisible: false,
+      identifierSearch: null,
       selectedGenus: null,
       selectedSpecies: null,
       selectedSubtaxa: null,
@@ -216,54 +235,187 @@ export default {
     },
     selectedGenus: function (newValue) {
       if (newValue) {
-        this.$emit('filtering-changed', 'genus', String, newValue)
+        this.$emit('filtering-changed', [{
+          column: {
+            name: 'genus',
+            type: String
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue]
+        }])
         this.$nextTick(() => { this.selectedGenus = null })
       }
     },
     selectedSpecies: function (newValue) {
       if (newValue) {
-        this.$emit('filtering-changed', 'species', String, newValue)
+        this.$emit('filtering-changed', [{
+          column: {
+            name: 'species',
+            type: String
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue]
+        }])
         this.$nextTick(() => { this.selectedSpecies = null })
       }
     },
     selectedSubtaxa: function (newValue) {
       if (newValue) {
-        this.$emit('filtering-changed', 'subtaxa', String, newValue)
+        this.$emit('filtering-changed', [{
+          column: {
+            name: 'subtaxa',
+            type: String
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue]
+        }])
         this.$nextTick(() => { this.selectedSubtaxa = null })
       }
     },
     selectedLocation: function (newValue) {
       if (newValue) {
-        this.$emit('filtering-changed', 'countryName', String, newValue)
+        this.$emit('filtering-changed', [{
+          column: {
+            name: 'countryName',
+            type: String
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue]
+        }])
         this.$nextTick(() => { this.selectedLocation = null })
       }
     },
     selectedBiologicalStatus: function (newValue) {
       if (newValue) {
-        this.$emit('filtering-changed', 'biologicalStatusName', String, newValue)
+        this.$emit('filtering-changed', [{
+          column: {
+            name: 'biologicalStatusName',
+            type: String
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue]
+        }])
         this.$nextTick(() => { this.selectedBiologicalStatus = null })
       }
     }
   },
   methods: {
     getNumberWithSuffix,
+    searchByIdentifier: function () {
+      this.$emit('filtering-changed', [{
+        column: {
+          name: 'germplasmName',
+          type: String
+        },
+        comparator: 'contains',
+        operator: 'or',
+        values: [this.identifierSearch]
+      }, {
+        column: {
+          name: 'germplasmNumber',
+          type: String
+        },
+        comparator: 'contains',
+        operator: 'or',
+        values: [this.identifierSearch]
+      }, {
+        column: {
+          name: 'germplasmGid',
+          type: String
+        },
+        comparator: 'contains',
+        operator: 'or',
+        values: [this.identifierSearch]
+      }, {
+        column: {
+          name: 'germplasmPuid',
+          type: String
+        },
+        comparator: 'contains',
+        operator: 'or',
+        values: [this.identifierSearch]
+      }, {
+        column: {
+          name: 'synonyms',
+          type: 'json'
+        },
+        comparator: 'jsonSearch',
+        operator: 'or',
+        values: [this.identifierSearch]
+      }])
+
+      this.identifierSearch = null
+    },
     onHasImagesClicked: function () {
-      this.$emit('filtering-changed', 'imageCount', Number, 0, 'greaterThan')
+      this.$emit('filtering-changed', [{
+        column: {
+          name: 'imageCount',
+          type: Number
+        },
+        comparator: 'greaterThan',
+        operator: 'and',
+        values: [0]
+      }])
     },
     onHasTraitDataClicked: function () {
-      this.$emit('filtering-changed', 'hasTrialsData', Boolean, 1)
+      this.$emit('filtering-changed', [{
+        column: {
+          name: 'hasTrialsData',
+          type: Boolean
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [1]
+      }])
     },
     onHasPedigreeDataClicked: function () {
-      this.$emit('filtering-changed', 'hasPedigreeData', Boolean, 1)
+      this.$emit('filtering-changed', [{
+        column: {
+          name: 'hasPedigreeData',
+          type: Boolean
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [1]
+      }])
     },
     onHasGenotypicDataClicked: function () {
-      this.$emit('filtering-changed', 'hasGenotypicData', Boolean, 1)
+      this.$emit('filtering-changed', [{
+        column: {
+          name: 'hasGenotypicData',
+          type: Boolean
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [1]
+      }])
     },
     onHasAllelefreqDataClicked: function () {
-      this.$emit('filtering-changed', 'hasAllelefreqData', Boolean, 1)
+      this.$emit('filtering-changed', [{
+        column: {
+          name: 'hasAllelefreqData',
+          type: Boolean
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [1]
+      }])
     },
     onEntityTypeSelected: function (type) {
-      this.$emit('filtering-changed', 'entityTypeName', 'entityType', type ? type.id : null)
+      this.$emit('filtering-changed', [{
+        column: {
+          name: 'entityTypeName',
+          type: 'entityType'
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [type ? type.id : null]
+      }])
     }
   }
 }
