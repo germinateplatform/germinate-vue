@@ -1,0 +1,93 @@
+[
+  {
+    "version": "4.5.0",
+    "date": "2023-02-03",
+    "items": [
+      {
+        "type": "new",
+        "title": "Trials time series data",
+        "text": "We have added a new section to the trials page focusing on trials data in a temporal context where the development of each germplasm and trait is visualized through the trial.",
+        "categories": [
+          "user",
+          "admin"
+        ]
+      }, {
+        "type": "new",
+        "title": "Unmanned aerial vehicle (UAV) imagery support",
+        "text": "Germinate now supports storing the imagery captured by UAVs throughout a trial alongside the measured data. The images will be visualized on a map and can be flicked through based on the time of recording.",
+        "categories": [
+          "user",
+          "admin"
+        ]
+      }, {
+        "type": "new",
+        "title": "Shapefile support",
+        "text": "In tandem with the UAV imagery support, we have added support for uploading the trial layout in form of Shapefiles. These will be shown on top of any UAV imagery and colour-coded based on the measured trials data values.",
+        "categories": [
+          "user",
+          "admin"
+        ]
+      }, {
+        "type": "new",
+        "title": "User feedback",
+        "text": "We have added a way for your users to provide feedback to you on Germinate and the data within it. If enabled, the users can select a snapshot of their screen and provide additional information as well as a feedback type like 'bug', 'data error' or 'question'. This feedback can be reviewed and acted upon by the database owners.",
+        "categories": [
+          "user",
+          "admin"
+        ]
+      }, {
+        "type": "update",
+        "title": "Boxplot charts",
+        "text": "Previously, Germinate pre-calculated any boxplot data on the server before displaying the result in the browser. This has now changed so that Germinate will display the individual data points alongside the boxplots which allows selection and item marking in those visualizations.",
+        "categories": [
+          "user"
+        ]
+      }, {
+        "type": "new",
+        "title": "Boxplot grouping",
+        "text": "In addition to the changed boxplot charts, they can now be grouped by 'dataset', 'treatment' and 'group' to further enrich the visualization.",
+        "categories": [
+          "user"
+        ]
+      }, {
+        "type": "new",
+        "title": "Data update widget",
+        "text": "Whenever data is uploaded, a new item will now be created on the front page highlighting that new data is available. This will make it much more obvious to users that new data is available or data has changed.",
+        "categories": [
+          "user"
+        ]
+      }, {
+        "type": "new",
+        "title": "Dataset changes/edits",
+        "text": "After data has been uploaded to Germinate it is assigned to a dataset. While the meta-data of dataset could be edited previously, it wasn't possible to delete datasets completely or re-assign them to different experiments. We have now added this functionality.",
+        "categories": [
+          "admin"
+        ]
+      }, {
+        "type": "new",
+        "title": "Germinate setup wizard",
+        "text": "A new Germinate setup wizard has been added to simplify the initial setup of Germinate.",
+        "categories": [
+          "admin"
+        ]
+      },
+      {
+        "type": "update",
+        "title": "Compounds merge with traits",
+        "text": "Because of their large overlap in the way they are stored, chemical compounds have been merged in with traits and chemical compound data is now available as trait data.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      }, {
+        "type": "bugfix",
+        "title": "BrAPI endpoint bug",
+        "text": "Fixed a bug where the BrAPI endpoint for observation variables might fail depending on the trait restrictions.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      }
+    ]
+  }
+]

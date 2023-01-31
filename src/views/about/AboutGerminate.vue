@@ -15,12 +15,18 @@
       <div id="hutton-banner-partnership" class="col"></div>
     </div>
     <!-- Logo -->
-    <div class="text-center py-3">
-      <b-img-lazy src="./img/germinate-square.svg" fluid class="about-header-logo" alt="Germinate logo" />
-    </div>
-    <!-- Title -->
-    <div class="text-center">
-      <h1>{{ $t('pageAboutGerminateTitle') }}<small> - {{ $t('pageAboutGerminateSubtitle') }}</small></h1>
+    <div class="about-header bg-light p-5 mt-4 mb-2 border">
+      <b-row>
+        <b-col cols=12 md=4 class="text-center text-md-right" order="1" order-md="2">
+          <b-img fluid src="img/germinate-square.svg" alt="Germinate logo" />
+        </b-col>
+        <b-col cols=12 md=8 order="2" order-md="1">
+          <h1 class="display-4 text-center text-md-left">{{ $t('pageAboutGerminateTitle') }}</h1>
+          <p class="lead text-center text-md-left">{{ $t('pageAboutGerminateSubtitle') }}</p>
+          <p class="text-center text-md-left"><MdiIcon :path="mdiTag" /> {{ $t('pageFooterVersion', { version: germinateVersion }) }}</p>
+          <p class="text-center text-md-left mb-0 text-secondary"><MdiIcon :path="mdiInformationOutline" /> <a href="#" class="text-secondary" @click="$refs.changelogModal.show()">{{ $t('pageAboutGerminateChangelog') }}</a></p>
+        </b-col>
+      </b-row>
     </div>
     <!-- Banner buttons -->
     <b-row class="about-banners" v-if="banners">
@@ -92,17 +98,24 @@
         <b-img-lazy src="./img/hutton.svg" fluid class="my-5" alt="Hutton logo" />
       </b-col>
     </b-row>
+
+    <ChangelogModal ref="changelogModal" />
   </div>
 </template>
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 import LocationMap from '@/components/map/LocationMap'
-import { mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiTwitter, mdiWeb } from '@mdi/js'
+import ChangelogModal from '@/components/modals/ChangelogModal'
+import { mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiTwitter, mdiWeb, mdiTag, mdiInformationOutline } from '@mdi/js'
+import { germinateVersion } from '@/mixins/util'
 
 export default {
   data: function () {
     return {
+      germinateVersion,
+      mdiTag,
+      mdiInformationOutline,
       banners: [
         {
           key: 'homepage',
@@ -282,6 +295,7 @@ export default {
     }
   },
   components: {
+    ChangelogModal,
     LocationMap,
     MdiIcon
   },
@@ -353,6 +367,10 @@ export default {
   height: 150px;
   width: auto;
   object-fit: contain;
+}
+
+.about-header img {
+  max-height: 150px;
 }
 .about-footer {
   margin-left: -30px;
