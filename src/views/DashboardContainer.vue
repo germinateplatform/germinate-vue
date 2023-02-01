@@ -52,7 +52,7 @@
           </div>
 
           <div class="col-md-4 d-flex align-items-center justify-content-center">
-            <span class="text-muted">{{ $t('pageFooterVersion', { version: germinateVersion }) }}</span>
+            <a @click.prevent="showChangelog" href="#" class="text-muted">{{ $t('pageFooterVersion', { version: germinateVersion }) }}</a>
           </div>
 
           <ul class="nav col-md-4 justify-content-center justify-content-md-end list-unstyled d-flex">
@@ -92,12 +92,15 @@
     <Tour :steps="popoverContent" ref="introductionTour" />
 
     <FeedbackButton v-if="storeServerSettings.supportsFeedback" />
+
+    <ChangelogModal :prevVersion="changelogVersionNumber" ref="changelogModal" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
+import ChangelogModal from '@/components/modals/ChangelogModal'
 import PageHeader from '@/components/structure/PageHeader'
 import SidebarComponent from '@/components/structure/SidebarComponent'
 import MdiIcon from '@/components/icons/MdiIcon'
@@ -115,6 +118,7 @@ const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
+    ChangelogModal,
     LocaleDropdown,
     MdiIcon,
     PageHeader,
@@ -131,7 +135,8 @@ export default {
       'storeDarkMode',
       'storeHelpKey',
       'storeLocale',
-      'storeServerSettings'
+      'storeServerSettings',
+      'storeChangelogVersionNumber'
     ]),
     helpDisabled: function () {
       return this.storeHelpKey === undefined || this.storeHelpKey === null
@@ -148,6 +153,7 @@ export default {
       mdiGithub,
       mdiThemeLightDark,
       germinateVersion,
+      changelogVersionNumber: null,
       collapsed: false,
       isOnMobile: false,
       sidebarWidth: '300px',
@@ -192,6 +198,11 @@ export default {
     }
   },
   methods: {
+    showChangelog: function () {
+      this.changelogVersionNumber = null
+
+      this.$nextTick(() => this.$refs.changelogModal.show())
+    },
     showHelp: function () {
       this.$refs.helpModal.show()
     },
@@ -260,6 +271,12 @@ export default {
 
     if (this.storeDarkMode) {
       this.loadAndSetDarkMode()
+    }
+
+    this.changelogVersionNumber = this.storeChangelogVersionNumber
+    if (this.storeChangelogVersionNumber !== germinateVersion) {
+      this.$refs.changelogModal.show()
+      this.$store.dispatch('setChangelogVersionNumber', germinateVersion)
     }
   }
 }

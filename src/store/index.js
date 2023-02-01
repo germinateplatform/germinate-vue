@@ -75,7 +75,8 @@ const userState = {
   asyncJobCount: 0,
   cookiesAccepted: null,
   customChartColors: null,
-  darkMode: false
+  darkMode: false,
+  changelogVersionNumber: null
 }
 
 const storeState = {
@@ -110,7 +111,8 @@ const storeState = {
     storeOriginalTarget: (state, getters) => state.userStates[getters.storeUserId].originalTarget,
     storeAsyncSidebarTabIndex: (state, getters) => state.userStates[getters.storeUserId].asyncSidebarTabIndex,
     storeMapLayer: (state, getters) => state.userStates[getters.storeUserId].mapLayer,
-    storeAppState: (state, getters) => state.appState
+    storeAppState: (state, getters) => state.appState,
+    storeChangelogVersionNumber: (state, getters) => state.userStates[getters.storeUserId].changelogVersionNumber
   },
   mutations: {
     ON_APP_STATE_CHANGED_MUTATION: function (state, newAppState) {
@@ -230,6 +232,13 @@ const storeState = {
     },
     ON_ASYNC_SIDEBAR_TAB_INDEX_CHANGED_MUTATION: function (state, newAsyncSidebarTabIndex) {
       state.userStates[state.token ? state.token.id : null].asyncSidebarTabIndex = newAsyncSidebarTabIndex
+    },
+    ON_CHANGELOG_VERSION_NUMBER_CHANGED_MUTATION: function (state, newChangelogVersionNumber) {
+      if (state.userStates[state.token ? state.token.id : null].changelogVersionNumber === undefined) {
+        Vue.set(state.userStates[state.token ? state.token.id : null], 'changelogVersionNumber', newChangelogVersionNumber)
+      } else {
+        state.userStates[state.token ? state.token.id : null].changelogVersionNumber = newChangelogVersionNumber
+      }
     },
     ON_ASYNC_JOB_UUID_MUTATION: function (state, newAsyncJobUuids) {
       if (!state.token) {
@@ -437,6 +446,9 @@ const storeState = {
     },
     setAsyncSidebarTabIndex: function ({ commit }, asyncSidebarTabIndex) {
       commit('ON_ASYNC_SIDEBAR_TAB_INDEX_CHANGED_MUTATION', asyncSidebarTabIndex)
+    },
+    setChangelogVersionNumber: function ({ commit }, changelogVersionNumber) {
+      commit('ON_CHANGELOG_VERSION_NUMBER_CHANGED_MUTATION', changelogVersionNumber)
     }
   },
   plugins: [

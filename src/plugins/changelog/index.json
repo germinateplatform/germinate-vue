@@ -5,6 +5,14 @@
     "items": [
       {
         "type": "new",
+        "title": "Changelog",
+        "text": "From this version on, Germinate will include a changelog for each version highlighting the major new features and changes of each release. This changelog is available on the 'About Germinate' page as well as by clicking on the version number in the Germinate footer.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "new",
         "title": "Trials time series data",
         "text": "We have added a new section to the trials page focusing on trials data in a temporal context where the development of each germplasm and trait is visualized through the trial.",
         "categories": [

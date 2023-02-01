@@ -391,7 +391,7 @@
   "menuTrialsTraits": "Traits",
   "menuTopDarkModeToggle": "Toggle dark mode",
   "modalMessageJumpToPage": "Page number (1 - {maxPage})",
-  "modalTitleChangelog": "Changelog",
+  "modalTitleChangelog": "What's new?",
   "modalTextChangelog": "Below is a list of recent versions of Germinate including the major changes and new features they introduced.",
   "modalTextDatasetAttributes": "Dataset attributes are any additional information that has been defined for this dataset.",
   "modalTextDatasetDublinCore": "The Dublin Core is a set of vocabulary terms that can be used to describe digital resources.",
