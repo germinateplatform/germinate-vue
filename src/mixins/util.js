@@ -14,6 +14,24 @@ const uuidv4 = () => {
   })
 }
 
+const mcpdDateToJsDate = (input) => {
+  if (!input) {
+    return null
+  }
+
+  if (input.length === 4) {
+    return new Date(input)
+  } else if (input.length === 6) {
+    return new Date(`${input.substring(0, 4)}-${input.substring(4, 6).replace('--', '01').replace('00', '01')}`)
+  } else if (input.length === 8) {
+    return new Date(`${input.substring(0, 4)}-${input.substring(4, 6).replace('--', '01').replace('00', '01')}-${input.substring(6, 8).replace('--', '01').replace('00', '01')}`)
+  } else if (input.length === 10) {
+    return new Date(`${input.substring(0, 4)}-${input.substring(5, 7).replace('--', '01').replace('00', '01')}-${input.substring(8, 10).replace('--', '01').replace('00', '01')}`)
+  } else {
+    return null
+  }
+}
+
 /**
  * Gets the table column style. Will either return an empty style or `d-none` depending on whether the column has been hidden or noe.
  * @param {String} tableName The name of the table
@@ -163,5 +181,6 @@ export {
   objectsAreSame,
   downloadBlob,
   downloadSvgsFromContainer,
-  dataURLtoFile
+  dataURLtoFile,
+  mcpdDateToJsDate
 }

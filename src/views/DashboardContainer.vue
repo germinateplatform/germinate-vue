@@ -274,7 +274,7 @@ export default {
     }
 
     this.changelogVersionNumber = this.storeChangelogVersionNumber
-    if (this.storeChangelogVersionNumber !== germinateVersion) {
+    if (this.storeChangelogVersionNumber !== null && this.storeChangelogVersionNumber !== germinateVersion) {
       this.$refs.changelogModal.show()
       this.$store.dispatch('setChangelogVersionNumber', germinateVersion)
     }

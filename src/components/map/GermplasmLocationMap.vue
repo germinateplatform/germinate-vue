@@ -72,6 +72,7 @@ import { apiPostLocationTable } from '@/mixins/api/location'
 import { getColor, rgbToHex } from '@/mixins/colors'
 import { locationTypes } from '@/mixins/types'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
+import { mcpdDateToJsDate } from '@/mixins/util'
 
 import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiCircle } from '@mdi/js'
 
@@ -136,7 +137,24 @@ export default {
         value: null
       }, {
         text: this.$t('tableColumnColldate'),
-        value: { fields: ['collDate'], type: 'date', extractValue: (germplasm) => germplasm.collDate ? (new Date(germplasm.collDate).getTime()) : null, format: (value) => (value !== null) ? new Date(value).toLocaleDateString() : '' }
+        value: {
+          fields: ['collDate'],
+          type: 'date',
+          extractValue: (germplasm) => {
+            if (germplasm.collDate) {
+              const date = mcpdDateToJsDate(germplasm.collDate)
+
+              if (date) {
+                return date.getTime()
+              } else {
+                return null
+              }
+            } else {
+              return null
+            }
+          },
+          format: (value) => (value !== null) ? new Date(value).toLocaleDateString() : ''
+        }
       }, {
         text: this.$t('tableColumnElevation'),
         value: { fields: ['elevation'], type: 'number', extractValue: (germplasm) => germplasm.elevation, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }

@@ -62,7 +62,7 @@ export default {
       type: String
     }, {
       name: 'collDate',
-      type: Date
+      type: String
     }
   ],
   TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE: [

@@ -101,7 +101,7 @@
       </template>
       <!-- Formatted colldate -->
       <template v-slot:cell(collDate)="data">
-        <span v-if="data.item.collDate">{{ new Date(data.item.collDate).toLocaleDateString() }}</span>
+        <span v-if="data.item.collDate">{{ mcpdDateToJsDate(data.item.collDate).toLocaleDateString() }}</span>
       </template>
       <!-- Institutions -->
       <template v-slot:cell(institutions)="data">
@@ -195,6 +195,7 @@ import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
 import { getImageUrl } from '@/mixins/image'
 import { entityTypes, datasetTypes } from '@/mixins/types'
 import { Pages } from '@/mixins/pages'
+import { mcpdDateToJsDate } from '@/mixins/util'
 
 import MdiIcon from '@/components/icons/MdiIcon'
 
@@ -385,7 +386,7 @@ export default {
           label: this.$t('tableColumnCountryName')
         }, {
           key: 'collDate',
-          type: Date,
+          type: String,
           sortable: true,
           label: this.$t('tableColumnColldate')
         }, {
@@ -461,6 +462,7 @@ export default {
   methods: {
     isTruncatedAfterWords,
     truncateAfterWords,
+    mcpdDateToJsDate,
     showInstitutionModal: function (germplasm) {
       if (germplasm) {
         this.germplasmId = germplasm.germplasmId

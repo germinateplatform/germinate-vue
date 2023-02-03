@@ -23,7 +23,7 @@
       <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdSubtaxon') }}</dt><dd class="col-12 col-md-9">{{ germplasm.subtaxa }}</dd>
       <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdSubtaxonAuth') }}</dt><dd class="col-12 col-md-9">{{ germplasm.subtauthor }}</dd>
       <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdCountry') }}</dt><dd class="col-12 col-md-9"><template v-if="germplasm.origcty"><i :class="'fi fi-' + getFlag(germplasm.origcty.toUpperCase())" v-if="germplasm.origcty"/> {{ getCountry(germplasm.origcty.toUpperCase()) }}</template></dd>
-      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdColldate') }}</dt><dd class="col-12 col-md-9"><template v-if="germplasm.colldate">{{ toMcpdDate(germplasm.colldate) }}</template></dd>
+      <dt class="col-12 col-md-3 text-md-right text-break mb-2">{{ $t('widgetMcpdColldate') }}</dt><dd class="col-12 col-md-9"><template v-if="germplasm.colldate">{{ germplasm.colldate }}</template></dd>
     </dl>
   </div>
 </template>
