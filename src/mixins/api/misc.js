@@ -118,6 +118,8 @@ const apiPostUserFeedbackTable = (queryData, onSuccess, onError) => {
 
 const apiGetUserFeedbackMarkAsRead = (id, onSuccess, onError) => authAxios({ url: `feedback/${id}/mark`, success: onSuccess, error: onError })
 
+const apiDeleteUserFeedback = (id, onSuccess, onError) => authAxios({ url: `feedback/${id}`, method: 'DELETE', success: onSuccess, error: onError })
+
 export {
   apiGetSettings,
   apiGetSettingsFile,
@@ -158,5 +160,6 @@ export {
   apiPostUserFeedbackTable,
   apiPostFeedbackUpload,
   apiGetUserFeedbackMarkAsRead,
-  apiPostDataImportStats
+  apiPostDataImportStats,
+  apiDeleteUserFeedback
 }

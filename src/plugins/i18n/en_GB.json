@@ -158,6 +158,8 @@
   "exportFormatDataTypePca": "PCA",
   "exportFormatDataTypePedigree": "Pedigree",
   "exportFormatDataTypePhenotype": "Phenotype",
+  "formErrorUserFeedbackIncorrectForm": "All fields have to be completed to submit the feedback form. Please check the form for any missing entries.",
+  "formErrorUserFeedbackIncorrectCaptcha": "The text you entered does not match the image. Please try again or generate a new image using the icon next to the heading.",
   "formatDate": "DD/MM/YYYY",
   "formatDateTime": "DD/MM/YYYY hh:mm a",
   "formDescriptionGroupDescription": "An optional description of the group.",

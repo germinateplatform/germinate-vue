@@ -45,6 +45,10 @@
         <b-button class="text-nowrap" @click="markAsRead(data.item)" v-if="data.item.isNew"><MdiIcon :path="mdiNewBox"/> {{ $t('buttonMarkAsRead') }}</b-button>
         <b-button disabled v-else><MdiIcon :path="mdiEyeCheckOutline"/> {{ $t('buttonHasBeenRead') }}</b-button>
       </template>
+
+      <template v-slot:cell(actions)="data">
+        <b-button @click="onFeedbackDeleteClicked(data.item)"><MdiIcon className="text-danger" :path="mdiDelete"/> {{ $t('buttonDelete') }}</b-button>
+      </template>
     </BaseTable>
   </div>
 </template>
@@ -59,8 +63,8 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import { getHighContrastTextColor } from '@/mixins/colors'
 import { getFeedbackImageUrl } from '@/mixins/image'
 import { isTruncatedAfterWords, truncateAfterWords, truncateAfterChars } from '@/mixins/formatting'
-import { mdiPageNext, mdiNewBox, mdiEyeCheckOutline, mdiOpenInNew } from '@mdi/js'
-import { apiGetUserFeedbackMarkAsRead } from '@/mixins/api/misc'
+import { mdiPageNext, mdiNewBox, mdiEyeCheckOutline, mdiOpenInNew, mdiDelete } from '@mdi/js'
+import { apiDeleteUserFeedback, apiGetUserFeedbackMarkAsRead } from '@/mixins/api/misc'
 
 import { userFeedbackTypes, userFeedbackSeverityTypes } from '@/mixins/types'
 
@@ -75,6 +79,7 @@ export default {
       mdiNewBox,
       mdiEyeCheckOutline,
       mdiOpenInNew,
+      mdiDelete,
       userFeedbackSeverityTypes,
       options: {
         idColumn: 'id',
@@ -148,6 +153,11 @@ export default {
         type: Boolean,
         sortable: true,
         label: this.$t('tableColumnUserFeedbackMarkRead')
+      }, {
+        key: 'actions',
+        type: undefined,
+        sortable: false,
+        label: ''
       }]
     }
   },
@@ -161,6 +171,18 @@ export default {
     isTruncatedAfterWords,
     truncateAfterWords,
     truncateAfterChars,
+    onFeedbackDeleteClicked: function (feedback) {
+      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
+        okTitle: this.$t('buttonDelete'),
+        okVariant: 'danger',
+        cancelTitle: this.$t('buttonCancel')
+      })
+        .then(value => {
+          if (value === true) {
+            apiDeleteUserFeedback(feedback.id, () => this.refresh())
+          }
+        })
+    },
     showFullContent: function (description) {
       this.$bvModal.msgBoxOk(description, {
         title: this.$t('tableColumnUserFeedbackContent'),
