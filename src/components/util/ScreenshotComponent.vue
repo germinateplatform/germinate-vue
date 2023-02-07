@@ -1,5 +1,5 @@
 <template>
-  <b-modal ref="screenshotModal" size="xl" @shown="onShown" @hide="onHide" @ok.prevent="onCropImage" :cancel-title="$t('buttonCancel')" :ok-title="$t('buttonOk')" no-close-on-backdrop no-close-on-esc>
+  <b-modal :title="$t('modalTitleScreenshot')" ref="screenshotModal" size="xl" @shown="onShown" @hide="onHide" @ok.prevent="onCropImage" :cancel-title="$t('buttonCancel')" :ok-title="$t('buttonOk')" no-close-on-backdrop no-close-on-esc>
     <div class="img-container">
       <b-img fluid-grow :src="imageData" ref="image" />
     </div>
