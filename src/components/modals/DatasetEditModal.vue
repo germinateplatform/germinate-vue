@@ -1,10 +1,10 @@
 <template>
-  <b-modal :ref="`datasetEditModal-${id}`" size="lg" :title="dataset.datasetName" :ok-title="$t('buttonUpdate')" @ok="updateDataset" header-class="dataset-edit-modal-header">
-    <b-form @submit.prevent="updateDataset">
+  <b-modal :ref="`datasetEditModal-${id}`" size="lg" :title="dataset ? dataset.datasetName : $t('modalTitleAddDataset')" :ok-title="$t(dataset ? 'buttonUpdate' : 'buttonUpload')" @ok.prevent="updateDataset" header-class="dataset-edit-modal-header">
+    <b-form @submit.prevent="updateDataset" novalidate>
       <b-row>
         <b-col cols=12 lg=6>
           <b-form-group label-for="dataset-name" :label="$t('tableColumnDatasetName')">
-            <b-form-input v-model="datasetName" id="dataset-name" />
+            <b-form-input v-model="datasetName" id="dataset-name" :state="formState.name" />
           </b-form-group>
         </b-col>
         <b-col cols=12 lg=6>
@@ -14,17 +14,22 @@
         </b-col>
         <b-col cols=12 lg=6>
           <b-form-group label-for="dataset-start-date" :label="$t('tableColumnDatasetStartDate')">
-            <b-form-datepicker v-model="datasetStartDate" id="dataset-start-date" />
+            <b-form-datepicker :value-as-date="true" v-model="datasetStartDate" id="dataset-start-date" />
           </b-form-group>
         </b-col>
         <b-col cols=12 lg=6>
           <b-form-group label-for="dataset-end-date" :label="$t('tableColumnDatasetEndDate')">
-            <b-form-datepicker v-model="datasetEndDate" id="dataset-end-date" />
+            <b-form-datepicker :value-as-date="true" v-model="datasetEndDate" id="dataset-end-date" />
+          </b-form-group>
+        </b-col>
+        <b-col cols=12 lg=6>
+          <b-form-group label-for="dataset-type" :label="$t('tableColumnDatasetDatasetType')">
+            <b-form-select :options="datasetTypeOptions" v-model="datasetType" id="dataset-type" :disabled="isEdit" :state="formState.datasetType" />
           </b-form-group>
         </b-col>
         <b-col cols=12 lg=6>
           <b-form-group label-for="dataset-state" :label="$t('tableColumnDatasetState')">
-            <b-form-select :options="datasetStateOptions" v-model="datasetState" id="dataset-state" />
+            <b-form-select :options="datasetStateOptions" v-model="datasetState" id="dataset-state" :state="formState.datasetState" />
           </b-form-group>
         </b-col>
         <b-col cols=12 lg=6>
@@ -43,7 +48,7 @@
         <b-col cols=12 lg=6>
           <b-form-group label-for="experiment" :label="$t('tableColumnExperimentName')">
             <b-input-group>
-              <b-form-select :options="experimentOptions" v-model="experimentId" id="experiment" />
+              <b-form-select :options="experimentOptions" v-model="experimentId" id="experiment" :state="formState.experimentId" />
               <b-input-group-append>
                 <b-button-group>
                   <b-button @click="updateExperiment" v-if="experimentId" >
@@ -57,8 +62,15 @@
             </b-input-group>
           </b-form-group>
         </b-col>
+        <b-col cols=12 lg=6>
+          <b-form-group label-for="external" :label="$t('tableColumnDatasetExternal')">
+            <b-form-checkbox switch v-model="isExternal" id="external" :disabled="isEdit" />
+          </b-form-group>
+        </b-col>
       </b-row>
     </b-form>
+
+    <p class="text-danger" v-if="formFeedback">{{ $t(formFeedback) }}</p>
 
     <LicenseCreationModal :license="selectedLicense" ref="licenseCreationModal" @license-updated="updateLicenses" @license-added="selectLicense" />
     <ExperimentCreationModal :experiment="experimentIsEdit ? selectedExperiment : null" ref="experimentCreationModal" @experiment-updated="updateExperiments" @experiment-added="selectExperiment" />
@@ -69,8 +81,8 @@
 import LicenseCreationModal from '@/components/modals/LicenseCreationModal'
 import ExperimentCreationModal from '@/components/modals/ExperimentCreationModal'
 import MdiIcon from '@/components/icons/MdiIcon'
-import { apiPatchDataset, apiGetLicenses, apiPostExperimentTable } from '@/mixins/api/dataset'
-import { datasetStates } from '@/mixins/types'
+import { apiPatchDataset, apiPostDataset, apiGetLicenses, apiPostExperimentTable } from '@/mixins/api/dataset'
+import { datasetStates, datasetTypes } from '@/mixins/types'
 import { uuidv4 } from '@/mixins/util'
 
 import { mdiPlusBox, mdiPencil } from '@mdi/js'
@@ -94,23 +106,43 @@ export default {
       mdiPencil,
       id: uuidv4(),
       datasetState: null,
+      datasetType: null,
       datasetName: null,
       datasetDescription: null,
       datasetStartDate: null,
       datasetEndDate: null,
+      isExternal: null,
       licenseId: null,
       licenses: [],
       experimentId: null,
       experiments: [],
-      experimentIsEdit: true
+      experimentIsEdit: true,
+      formState: {
+        name: null,
+        experimentId: null,
+        datasetState: null,
+        datasetType: null
+      },
+      formFeedback: null
     }
   },
   computed: {
+    isEdit: function () {
+      return this.dataset !== undefined && this.dataset !== null
+    },
     datasetStateOptions: function () {
       return Object.keys(datasetStates).map(s => {
         return {
           value: datasetStates[s].id,
           text: datasetStates[s].text()
+        }
+      })
+    },
+    datasetTypeOptions: function () {
+      return Object.keys(datasetTypes).map(s => {
+        return {
+          value: datasetTypes[s].id,
+          text: datasetTypes[s].text()
         }
       })
     },
@@ -176,17 +208,47 @@ export default {
       }
     }
   },
+  watch: {
+    dataset: function () {
+      this.reset()
+    }
+  },
   methods: {
-    show: function () {
-      this.datasetState = datasetStates[this.dataset.datasetState].id
-      this.datasetName = this.dataset.datasetName
-      this.datasetDescription = this.dataset.datasetDescription
-      this.licenseId = this.dataset.licenseId || null
-      this.experimentId = this.dataset.experimentId
-      this.datasetStartDate = this.dataset.startDate ? new Date(this.dataset.startDate) : null
-      this.datasetEndDate = this.dataset.endDate ? new Date(this.dataset.endDate) : null
+    reset: function () {
+      this.formState = {
+        name: null,
+        experimentId: null,
+        datasetState: null,
+        datasetType: null
+      }
+      this.formFeedback = null
+
+      if (this.dataset) {
+        this.datasetState = datasetStates[this.dataset.datasetState].id
+        this.datasetType = datasetTypes[this.dataset.datasetType].id
+        this.datasetName = this.dataset.datasetName
+        this.datasetDescription = this.dataset.datasetDescription
+        this.isExternal = this.dataset.isExternal
+        this.licenseId = this.dataset.licenseId || null
+        this.experimentId = this.dataset.experimentId
+        this.datasetStartDate = this.dataset.startDate ? new Date(this.dataset.startDate) : null
+        this.datasetEndDate = this.dataset.endDate ? new Date(this.dataset.endDate) : null
+      } else {
+        this.datasetState = datasetStates.public.id
+        this.datasetType = 3
+        this.datasetName = null
+        this.datasetDescription = null
+        this.isExternal = false
+        this.licenseId = null
+        this.experimentId = null
+        this.datasetStartDate = new Date()
+        this.datasetEndDate = new Date()
+      }
 
       this.updateExperiments()
+    },
+    show: function () {
+      this.reset()
 
       if (!this.licenses || this.licenses.length < 1) {
         this.updateLicenses()
@@ -234,20 +296,53 @@ export default {
         })
     },
     updateDataset: function () {
-      return apiPatchDataset(this.dataset.datasetId, {
-        name: this.datasetName,
-        description: this.datasetDescription,
-        dateStart: this.datasetStartDate,
-        licenseId: this.licenseId,
-        experimentId: this.experimentId,
-        dateEnd: this.datasetEndDate,
-        datasetStateId: this.datasetState
-      }, (result) => {
-        if (result) {
-          this.$emit('changed')
-          this.hide()
-        }
-      })
+      this.formState = {
+        name: this.datasetName !== undefined && this.datasetName !== null && this.datasetName.length > 0,
+        experimentId: this.experimentId !== undefined && this.experimentId !== null,
+        datasetState: this.datasetState !== undefined && this.datasetType !== null,
+        datasetType: this.datasetType !== undefined && this.datasetType !== null
+      }
+
+      if (Object.keys(this.formState).some(k => this.formState[k] === false)) {
+        this.formFeedback = 'formFeedbackInvalidForm'
+        return
+      } else {
+        this.formFeedback = null
+      }
+
+      if (this.dataset) {
+        return apiPatchDataset(this.dataset.datasetId, {
+          name: this.datasetName,
+          description: this.datasetDescription,
+          dateStart: this.datasetStartDate,
+          licenseId: this.licenseId,
+          experimentId: this.experimentId,
+          dateEnd: this.datasetEndDate,
+          datasetStateId: this.datasetState
+        }, (result) => {
+          if (result) {
+            this.$emit('changed')
+            this.hide()
+          }
+        })
+      } else {
+        return apiPostDataset({
+          name: this.datasetName,
+          description: this.datasetDescription,
+          dateStart: this.datasetStartDate,
+          licenseId: this.licenseId,
+          experimentId: this.experimentId,
+          dateEnd: this.datasetEndDate,
+          datasetStateId: this.datasetState,
+          datasettypeId: this.datasetType,
+          isExternal: this.isExternal
+        }, (result) => {
+          if (result) {
+            this.$emit('changed')
+            this.hide()
+          }
+        })
+      }
     }
   }
 }

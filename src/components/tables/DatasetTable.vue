@@ -3,6 +3,7 @@
     <BaseTable v-bind="$props"
               :columns="columns"
               :options="options"
+              :tableActions="localTableActions"
               primary-key="datasetId"
               class="dataset-table"
               ref="datasetTable"
@@ -102,7 +103,7 @@
       </template>
       <!-- Show publications -->
       <template v-slot:cell(publications)="data">
-        <a href="#" class="text-decoration-none" v-if="data.item.publications !== 0 || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator'))" @click.prevent="showPublications(data.item)">
+        <a href="#" class="text-decoration-none" v-if="data.item.publications !== 0 || userIsDataCurator" @click.prevent="showPublications(data.item)">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetPublications')"><MdiIcon :path="mdiTextBoxCheckOutline"/></span>
         </a>
         <MdiIcon :path="mdiTextBoxCheckOutline" className="text-muted" v-else/>
@@ -134,13 +135,13 @@
       </template>
       <!-- Edit dataset -->
       <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onDatasetEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+        <a href="#" class="text-decoration-none" @click.prevent="onDatasetEditClicked(data.item)" v-if="userIsDataCurator">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetEdit')"><MdiIcon :path="mdiSquareEditOutline"/></span>
         </a>
       </template>
       <!-- Delete dataset -->
       <template v-slot:cell(delete)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onDatasetDeleteClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+        <a href="#" class="text-decoration-none" @click.prevent="onDatasetDeleteClicked(data.item)" v-if="userIsDataCurator">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetDelete')"><MdiIcon className="text-danger" :path="mdiDelete"/></span>
         </a>
       </template>
@@ -154,7 +155,7 @@
     <!-- License modal -->
     <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" />
     <!-- Collaborators modal -->
-    <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')))" ref="publicationsModal" />
+    <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || userIsDataCurator)" ref="publicationsModal" />
     <!-- Collaborators modal -->
     <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
     <!-- Attribute modal -->
@@ -162,7 +163,7 @@
     <!-- Genotype export modal for direct downloads from the table -->
     <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
     <!-- Dataset state modal -->
-    <DatasetEditModal :dataset="dataset" v-if="dataset && storeToken && userIsAtLeast(storeToken.userType, 'Administrator')" @changed="refresh" ref="datasetEditModal" />
+    <DatasetEditModal :dataset="dataset" v-if="userIsDataCurator" @changed="refresh" ref="datasetEditModal" />
   </div>
 </template>
 
@@ -188,7 +189,7 @@ import { isPageAvailable, downloadBlob } from '@/mixins/util'
 import { userIsAtLeast } from '@/mixins/api/auth'
 import { getDateTimeString, isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 
-import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiDelete, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
+import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiPlusBox, mdiDelete, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
@@ -249,6 +250,22 @@ export default {
       'storeLocale',
       'storeToken'
     ]),
+    userIsDataCurator: function () {
+      return this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')
+    },
+    localTableActions: function () {
+      return [{
+        id: 1,
+        text: this.$t('buttonAddDataset'),
+        variant: null,
+        disabled: () => false,
+        path: mdiPlusBox,
+        callback: () => {
+          this.dataset = null
+          this.$refs.datasetEditModal.show()
+        }
+      }]
+    },
     columns: function () {
       const result = [
         {
@@ -379,7 +396,7 @@ export default {
         }
       ]
 
-      if (this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
+      if (this.userIsDataCurator) {
         result.push({
           key: 'edit',
           type: undefined,

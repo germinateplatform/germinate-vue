@@ -109,6 +109,8 @@ const apiPostCrossDataTypeComparison = (data, onSuccess, onError) => authAxios({
 
 const apiPatchDataset = (id, data, onSuccess, onError) => authAxios({ url: `dataset/${id}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
 
+const apiPostDataset = (data, onSuccess, onError) => authAxios({ url: 'dataset', method: 'POST', data: data, success: onSuccess, error: onError })
+
 export {
   apiPostPublicationDatasetTable,
   apiPostCollaboratorsTable,
@@ -143,5 +145,6 @@ export {
   apiGetDataResource,
   apiPostFileresourceDatasetTable,
   apiPostCrossDataTypeComparison,
-  apiPatchDataset
+  apiPatchDataset,
+  apiPostDataset
 }
