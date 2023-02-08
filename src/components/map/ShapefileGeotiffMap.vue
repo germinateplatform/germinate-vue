@@ -1,25 +1,33 @@
 <template>
   <div>
-    <div v-if="hasTreatments || hasReps">
-      <b-form-group :label="$t('formLabelGeotiffMapHighlight')" label-for="highlight-group">
-        <b-button-group id="highlight-group">
-          <b-button @click="highlightReps" v-if="hasReps"><MdiIcon :path="mdiNumeric" /> {{ $t('buttonHighlightReps', { count: reps.length }) }}</b-button>
-          <b-button @click="highlightTreatments" v-if="hasTreatments"><MdiIcon :path="mdiTagMultiple" /> {{ $t('buttonHighlightTreatments', { count: treatments.length }) }}</b-button>
-          <b-button @click="removeHighlight"><MdiIcon :path="mdiCancel" /> {{ $t('buttonHighlightRemove') }}</b-button>
-        </b-button-group>
-      </b-form-group>
+    <b-row>
+      <b-col cols=12 md=6 lg=4>
+        <b-form-group :label="$t('formLabelTraitTimelineShapefile')" label-for="shapefile">
+          <b-form-select id="shapefile" :options="shapefileOptions" v-model="shapefileIndex" />
+        </b-form-group>
+      </b-col>
+      <b-col cols=12 md=6 lg=4 v-if="hasTreatments || hasReps">
+        <b-form-group :label="$t('formLabelGeotiffMapHighlight')" label-for="highlight-group">
+          <b-button-group id="highlight-group">
+            <b-button @click="highlightReps" v-if="hasReps"><MdiIcon :path="mdiNumeric" /> {{ $t('buttonHighlightReps', { count: reps.length }) }}</b-button>
+            <b-button @click="highlightTreatments" v-if="hasTreatments"><MdiIcon :path="mdiTagMultiple" /> {{ $t('buttonHighlightTreatments', { count: treatments.length }) }}</b-button>
+            <b-button @click="removeHighlight"><MdiIcon :path="mdiCancel" /> {{ $t('buttonHighlightRemove') }}</b-button>
+          </b-button-group>
+        </b-form-group>
 
-      <div v-if="repColors && repColors.length > 0" class="mb-3">
-        <b-badge v-for="rep in repColors" :key="`rep-badge-${rep.rep}`" class="mr-2" :style="{ backgroundColor: rep.color }">{{ rep.rep }}</b-badge>
-      </div>
-      <div v-if="treatmentColors && treatmentColors.length > 0" class="mb-3">
-        <b-badge v-for="treatment in treatmentColors" :key="`treatment-badge-${treatment.treatment}`" class="mr-2" :style="{ backgroundColor: treatment.color }">{{ treatment.treatment }}</b-badge>
-      </div>
-    </div>
-
-    <b-form-group :label="$t('formLabelGeotiffMapOpacity')" label-for="opacity">
-      <b-form-input type="range" v-model="opacity" :min="0" :max="1" :step="0.1" lazy />
-    </b-form-group>
+        <div v-if="repColors && repColors.length > 0" class="mb-3">
+          <b-badge v-for="rep in repColors" :key="`rep-badge-${rep.rep}`" class="mr-2" :style="{ backgroundColor: rep.color }">{{ rep.rep }}</b-badge>
+        </div>
+        <div v-if="treatmentColors && treatmentColors.length > 0" class="mb-3">
+          <b-badge v-for="treatment in treatmentColors" :key="`treatment-badge-${treatment.treatment}`" class="mr-2" :style="{ backgroundColor: treatment.color }">{{ treatment.treatment }}</b-badge>
+        </div>
+      </b-col>
+      <b-col cols=12 md=6 lg=4>
+        <b-form-group :label="$t('formLabelGeotiffMapOpacity')" label-for="opacity">
+          <b-form-input type="range" v-model="opacity" :min="0" :max="1" :step="0.1" lazy />
+        </b-form-group>
+      </b-col>
+    </b-row>
 
     <div :id="id" class="shapefile-map border" />
 
@@ -51,10 +59,6 @@ export default {
     MdiIcon
   },
   props: {
-    fileresourceId: {
-      type: Number,
-      default: () => null
-    },
     mapoverlays: {
       type: Array,
       default: () => []
@@ -74,6 +78,10 @@ export default {
     selectedGermplasm: {
       type: Array,
       default: () => []
+    },
+    shapefiles: {
+      type: Array,
+      default: () => []
     }
   },
   data: function () {
@@ -90,13 +98,14 @@ export default {
       mapOptions: {
         maxNativeZoom: 19
       },
+      shapefileIndex: 0,
       opacity: 0.8,
       repColors: [],
       treatmentColors: []
     }
   },
   watch: {
-    fileresourceId: function () {
+    shapefileId: function () {
       this.update()
     },
     mapoverlays: function () {
@@ -124,6 +133,25 @@ export default {
       'storeBaseUrl',
       'storeToken'
     ]),
+    shapefileOptions: function () {
+      if (this.shapefiles) {
+        return this.shapefiles.map((s, index) => {
+          return {
+            value: index,
+            text: s.fileresourceName
+          }
+        })
+      } else {
+        return null
+      }
+    },
+    shapefileId: function () {
+      if (this.shapefiles && this.shapefiles.length > 0) {
+        return this.shapefiles[this.shapefileIndex].fileresourceId
+      } else {
+        return null
+      }
+    },
     hasReps: function () {
       return this.reps && this.reps.length > 1
     },
@@ -309,8 +337,8 @@ export default {
 
       bounds = L.latLngBounds()
 
-      if (this.fileresourceId) {
-        apiGetDataResource(this.fileresourceId, result => {
+      if (this.shapefileId) {
+        apiGetDataResource(this.shapefileId, result => {
           const reader = new FileReader()
           reader.onload = async () => {
             const shape = await shp(reader.result)

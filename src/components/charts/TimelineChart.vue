@@ -20,50 +20,47 @@
           <p>{{ $t('pageTraitTimelineTimesliderText') }}</p>
 
           <b-row>
-            <b-col cols=12 md=9 class="d-flex flex-column justify-content-end">
+            <b-col cols=12 md=6 lg=4 class="d-flex flex-column justify-content-end">
               <b-form-group :label="$t('formLabelTraitTimelineTimepoint')" label-for="timepoint" :description="$t('formDescriptionTraitTimelineTimepoint', { timepoint: timepoints[currentTimepoint] })">
                 <b-form-input id="timepoint" v-model.number="currentTimepoint" type="range" :min="0" :max="timepoints.length - 1" />
               </b-form-group>
             </b-col>
-            <b-col cols=12 md=3>
-              <b-calendar v-if="timepoints && timepoints.length > 0"
-                          block
-                          no-highlight-today
-                          no-key-nav
-                          hide-header
-                          :min="timepoints[0]"
-                          :max="timepoints[timepoints.length - 1]"
-                          :date-info-fn="highlightTimepoints"
-                          :date-disabled-fn="dateDisabled"
-                          selected-variant="info"
-                          :start-weekday="1"
-                          :value="timepoints[currentTimepoint]"
-                          @selected="onSelectDate"/>
+            <b-col cols=12 md=6 lg=4>
+              <b-form-group :label="$t('formLabelTraitTimelineCalendar')" label-for="calendar">
+                <b-form-datepicker v-if="timepoints && timepoints.length > 0"
+                                  id="calendar"
+                                  no-highlight-today
+                                  hide-header
+                                  :min="timepoints[0]"
+                                  :max="timepoints[timepoints.length - 1]"
+                                  :date-info-fn="highlightTimepoints"
+                                  :date-disabled-fn="dateDisabled"
+                                  selected-variant="info"
+                                  :start-weekday="1"
+                                  :value="timepoints[currentTimepoint]"
+                                  @input="onSelectDate" />
+              </b-form-group>
+            </b-col>
+            <b-col cols=12 md=6 lg=4>
+              <b-form-group :label="$t('formLabelTraitTimelineGermplasm')" label-for="germplasm-search">
+                <TrialGermplasmLookup id="germplasm-search" :datasetIds="datasetIds" @germplasm-selected="onGermplasmSelected" />
+              </b-form-group>
             </b-col>
           </b-row>
         </div>
-
-        <b-form-group :label="$t('formLabelTraitTimelineGermplasm')" label-for="germplasm-search">
-          <TrialGermplasmLookup id="germplasm-search" :datasetIds="datasetIds" @germplasm-selected="onGermplasmSelected" />
-        </b-form-group>
 
         <template v-if="shapefiles && shapefiles.length > 0">
           <h2>{{ $t('pageTraitTimelineMapTitle') }}</h2>
           <p>{{ $t('pageTraitTimelineMapText') }}</p>
 
-          <b-form-group :label="$t('formLabelTraitTimelineShapefile')" label-for="shapefile">
-            <b-form-select id="shapefile" :options="shapefileOptions" v-model="shapefileIndex" />
-          </b-form-group>
-
-          <ShapefileGeotiffMap :fileresourceId="shapefileId"
+          <ShapefileGeotiffMap :shapefiles="shapefiles"
                                :mapoverlays="mapoverlays"
                                :mapoverlayIndex="currentTimepoint"
                                :traitData="mapTraitData"
                                :traitStats="traitStats"
                                :selectedGermplasm="selectedGermplasm"
                                @germplasm-selected="onGermplasmSelected"
-                               ref="map"
-                               v-if="shapefileId || (mapoverlays && mapoverlays.length > 0)"/>
+                               ref="map"/>
         </template>
       </div>
 
@@ -156,7 +153,6 @@ export default {
       traitDefinitions: null,
       traitData: null,
       currentTimepoint: 0,
-      shapefileIndex: 0,
       selectedGermplasm: [],
       geotiffs: null,
       hasPlotData: false
@@ -167,18 +163,6 @@ export default {
       'storeDarkMode',
       'storeBaseUrl'
     ]),
-    shapefileOptions: function () {
-      if (this.shapefiles) {
-        return this.shapefiles.map((s, index) => {
-          return {
-            value: index,
-            text: s.fileresourceName
-          }
-        })
-      } else {
-        return null
-      }
-    },
     colors: function () {
       const c = getColors()
       return c.map(c => {
@@ -205,13 +189,6 @@ export default {
     mapoverlays: function () {
       if (this.geotiffs && this.geotiffs.length > 0) {
         return this.timepoints.map(tp => this.geotiffs.find(m => m.recordingDate.includes(tp)))
-      } else {
-        return null
-      }
-    },
-    shapefileId: function () {
-      if (this.shapefiles && this.shapefiles.length > 0) {
-        return this.shapefiles[this.shapefileIndex].fileresourceId
       } else {
         return null
       }

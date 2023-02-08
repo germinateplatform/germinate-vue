@@ -1,6 +1,6 @@
 <template>
   <b-modal ref="tokenModal" :title="$t('modalTitleGetToken')" ok-only :ok-title="$t('buttonClose')" @shown="$refs.token.focus()">
-    <b-form-group :label="$t('formLabelToken')" label-for="token" :description="$t('formDescriptionToken')">
+    <b-form-group :label="$t('formLabelToken')" label-for="token" :description="$t('formDescriptionToken')" v-if="storeToken">
       <b-input-group>
         <b-input :value="storeToken.token" id="token" autofocus @focus="$event.target.select()" ref="token" />
         <b-input-group-append>

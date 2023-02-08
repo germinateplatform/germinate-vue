@@ -228,6 +228,7 @@
   "formLabelLicenseName": "License name",
   "formLabelLicenseDescription": "License description",
   "formLabelLicenseContent": "License content",
+  "formLabelTraitTimelineCalendar": "Calendar",
   "formLabelTraitTimelineTimepoint": "Time points",
   "formLabelTraitTimelineShapefile": "Trial shape file",
   "formLabelTraitTimelineGermplasm": "Germplasm search",

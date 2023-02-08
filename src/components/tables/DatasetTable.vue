@@ -3,7 +3,7 @@
     <BaseTable v-bind="$props"
               :columns="columns"
               :options="options"
-              :tableActions="localTableActions"
+              :tableActions="userIsDataCurator ? localTableActions : null"
               primary-key="datasetId"
               class="dataset-table"
               ref="datasetTable"
