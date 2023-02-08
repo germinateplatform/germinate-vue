@@ -67,7 +67,7 @@
       }, {
         "type": "new",
         "title": "Dataset changes/edits",
-        "text": "After data has been uploaded to Germinate it is assigned to a dataset. While the meta-data of dataset could be edited previously, it wasn't possible to delete datasets completely or re-assign them to different experiments. We have now added this functionality.",
+        "text": "After data has been uploaded to Germinate it is assigned to a dataset. While the meta-data of dataset could be edited previously, it wasn't possible to delete datasets completely or re-assign them to different experiments. We have now added this functionality. Additionally, new (empty) datasets can now be created through the Germinate interface which makes importing data from GridScore easier.",
         "categories": [
           "admin"
         ]
