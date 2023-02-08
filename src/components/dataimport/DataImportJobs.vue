@@ -2,7 +2,7 @@
   <div>
     <div v-if="jobs && jobs.length > 0">
       <b-list-group>
-        <b-list-group-item :button="job.stats.datasetId !== undefined && job.stats.datasetId !== null" class="d-flex flex-row align-items-center" v-for="job in jobs" :key="`data-import-job-${job.id}`" @click="navigateToDataset(job)">
+        <b-list-group-item :button="job.stats.fileResourceId !== undefined && job.stats.fileResourceId !== null" class="d-flex flex-row align-items-center" v-for="job in jobs" :key="`data-import-job-${job.id}`" @click="navigateToFileResource(job)">
           <div class="pr-3">
             <MdiIcon :size="36" :path="mdiDatabaseRefreshOutline" v-if="job.isUpdate" />
             <MdiIcon :size="36" :path="mdiDatabaseImportOutline" v-else />
@@ -89,22 +89,22 @@ export default {
     }
   },
   methods: {
-    navigateToDataset: function (job) {
-      if (!job.stats || !job.stats.datasetId) {
+    navigateToFileResource: function (job) {
+      if (!job.stats || !job.stats.fileResourceId) {
         return
       }
       // Set up the filter
       const filter = [{
-        column: 'datasetId',
+        column: 'fileresourceId',
         comparator: 'equals',
         operator: 'and',
-        values: [job.stats.datasetId]
+        values: [job.stats.fileResourceId]
       }]
       // Then redirect to the export page
       this.$router.push({
-        name: Pages.datasets,
+        name: Pages.dataResources,
         query: {
-          'datasets-filter': JSON.stringify(filter)
+          'fileresources-filter': JSON.stringify(filter)
         }
       })
     },
