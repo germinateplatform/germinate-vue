@@ -125,6 +125,9 @@ We are very grateful for the funding Germinate has received over the years. Belo
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/divseek.png" width="222px" alt="DivSeek">
       </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/eu.svg?sanitize=true" width="222px" alt="EU">
+      </td>
     </tr>
   </tbody>
 </table>
