@@ -63,6 +63,7 @@ export default {
         TRIALS_DATA_DATE_HEADER_MISMATCH: () => this.$t('importStatusTrialsSheetHeaderMismatch'),
         TRIALS_DATA_DATE_IDENTIFIER_MISMATCH: () => this.$t('importStatusTrialsIdentifierMismatch'),
         TRIALS_DATA_VIOLATES_RESTRICTION: () => this.$t('importStatusTrialsRestrictionViolation'),
+        TRIALS_DATA_REP_MISSING: () => this.$t('importStatusTrialsDataRepMissing'),
         GENERIC_DUPLICATE_COLUMN: () => this.$t('importStatusGenericDuplicateColumn'),
         GENERIC_IO_ERROR: () => this.$t('importStatusGenericIOError'),
         GENERIC_MISSING_EXCEL_SHEET: () => this.$t('importStatusGenericMissingExcelSheet'),

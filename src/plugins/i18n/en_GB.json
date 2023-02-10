@@ -336,6 +336,7 @@
   "importStatusTrialsSheetHeaderMismatch": "A mismatch between column headers in the 'DATA' and 'RECORDING_DATES' spreadsheet has been found. Please use the same column order.",
   "importStatusTrialsIdentifierMismatch": "A mismatch between the number of columns and/or rows in the 'DATA' and 'RECORDING_DATES' spreadsheet has been found. Please make sure to use the same identifiers for traits and germplasm.",
   "importStatusTrialsRestrictionViolation": "A trait restriction has not been met. Please make sure that all your data meets the defined trait restrictions like minimum and maximum.",
+  "importStatusTrialsDataRepMissing": "The rep is missing for one of the data rows. Please ensure to provide a value. If you are not using reps, please just specify '1'.",
   "importStatusOk": "Import successful.",
   "importStatusGenotypeHeaderLenghtMismatch": "There is a mismatch in the header length. When providing map information, make sure each marker has a chromosome and position assigned to it.",
   "importStatusGenotypeMissingRow": "A required header row is missing. This can either be the chromosome or position row or no markers have been defined.",
