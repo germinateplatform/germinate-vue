@@ -16,7 +16,7 @@
 
     <!-- Format cards -->
     <b-row class="mt-3">
-      <b-col cols=12 sm=6 xl=4 v-for="format in getExportFormats()" :key="`export-format-${format.name}`" class="export-format mb-4 col-xxl-3 col-xxxl-2">
+      <b-col cols=12 sm=6 xl=4 v-for="format in filteredExportFormats" :key="`export-format-${format.name}`" class="export-format mb-4 col-xxl-3 col-xxxl-2">
         <b-card
           :img-src="`./img/${format.logo}`"
           :img-alt="format.name"
@@ -36,7 +36,10 @@
             </div>
           </b-card-body>
           <!-- Download button -->
-          <b-button :href="format.link" target="_blank" rel="noopener noreferrer" variant="primary" class="mt-auto card-button"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownload') }}</b-button>
+          <b-button :href="format.link" target="_blank" rel="noopener noreferrer" variant="primary" class="mt-auto card-button">
+            <span v-if="format.linkType === 'download'"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownload') }}</span>
+            <span v-else-if="format.linkType === 'link'"><MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonShow') }}</span>
+          </b-button>
         </b-card>
       </b-col>
     </b-row>
@@ -51,7 +54,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import { exportFormats } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
 
-import { mdiTag, mdiDownload } from '@mdi/js'
+import { mdiTag, mdiDownload, mdiOpenInNew } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 export default {
@@ -63,6 +66,7 @@ export default {
       Pages,
       mdiTag,
       mdiDownload,
+      mdiOpenInNew,
       selectedTag: 'all',
       tags: {
         all: {
@@ -92,7 +96,16 @@ export default {
   computed: {
     ...mapGetters([
       'storeServerSettings'
-    ])
+    ]),
+    filteredExportFormats: function () {
+      if (this.selectedTag && this.selectedTag !== 'all') {
+        return Object.keys(exportFormats)
+          .filter(f => exportFormats[f].tags.indexOf(this.selectedTag) !== -1)
+          .map(f => exportFormats[f])
+      } else {
+        return exportFormats
+      }
+    }
   },
   methods: {
     getBackgroundColor: function (tag) {
@@ -102,15 +115,6 @@ export default {
     getTextColor: function (tag) {
       const color = this.getBackgroundColor(tag)
       return getHighContrastTextColor(color)
-    },
-    getExportFormats: function () {
-      if (this.selectedTag && this.selectedTag !== 'all') {
-        return Object.keys(exportFormats)
-          .filter(f => exportFormats[f].tags.indexOf(this.selectedTag) !== -1)
-          .map(f => exportFormats[f])
-      } else {
-        return exportFormats
-      }
     },
     selectTag: function (newTag) {
       if (newTag) {

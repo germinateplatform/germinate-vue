@@ -47,7 +47,7 @@
         <b-row>
           <b-col cols=12 md=6 xl=3 v-for="project in projects" :key="'project-' + project.newsId" class="mb-3">
             <b-card no-body class="news-card h-100">
-              <b-img-lazy :src="getImageSrc(project)" class="project-image card-img" style="height: 200px" v-if="project.newsImage" :alt="project.newsTitle" />
+              <b-img-lazy :src="getImageSrc(project)" :class="`project-image card-img ${project.newsImageFit === 'contain' ? 'contain p-2' : 'cover'}`" style="height: 200px" v-if="project.newsImage" :alt="project.newsTitle" />
 
               <b-card-body>
                 <b-card-title>{{ project.newsTitle }}</b-card-title>
@@ -285,5 +285,12 @@ export default {
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
   box-shadow: inset 0px 0px 150px black;
+}
+
+.project-image.cover {
+  object-fit: cover;
+}
+.project-image.contain {
+  object-fit: contain;
 }
 </style>

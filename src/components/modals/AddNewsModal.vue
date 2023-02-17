@@ -32,6 +32,12 @@
             label-for="newsImage">
             <b-form-file v-model="imageFile" id="newsImage" accept=".jpeg, .png, .jpg" :state="Boolean(imageFile)" :placeholder="$t('pageDataUploadFilePlaceholder')" />
           </b-form-group>
+          <b-form-group
+            v-if="newsTypeId === 4"
+            :label="$t('formLabelNewsImageFit')"
+            label-for="newsImageFit">
+            <b-form-select v-model="imageFit" :options="imageFits" id="newsImageFit" :placeholder="$t('pageDataUploadFitPlaceholder')" />
+          </b-form-group>
         </b-col>
         <b-col cols="12" md="6">
           <b-form-group
@@ -42,7 +48,7 @@
           <b-form-group
             :label="$t('formLabelNewsContent')"
             label-for="newsContent">
-            <b-form-textarea :rows="newsTypeId === 4 ? 9 : 5" id="newsContent" v-model="newsContent"/>
+            <b-form-textarea :rows="newsTypeId === 4 ? 12 : 5" id="newsContent" v-model="newsContent"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -62,6 +68,7 @@ export default {
       newsUrl: null,
       newsDate: null,
       imageFile: null,
+      imageFit: 'cover',
       newsTypeSelect: [{
         value: 1,
         text: this.$t('widgetNewsTypeGeneralNews')
@@ -80,6 +87,15 @@ export default {
   computed: {
     canContinue: function () {
       return this.newsTitle && this.newsContent && this.newsTypeId
+    },
+    imageFits: function () {
+      return [{
+        value: 'cover',
+        text: this.$t('widgetNewsImageFitCover')
+      }, {
+        value: 'contain',
+        text: this.$t('widgetNewsImageFitContain')
+      }]
     }
   },
   methods: {
@@ -97,6 +113,7 @@ export default {
         content: this.newsContent,
         hyperlink: this.newsUrl,
         image: imageBase64,
+        imageFit: this.imageFit,
         createdOn: this.newsDate,
         updatedOn: this.newsDate
       }

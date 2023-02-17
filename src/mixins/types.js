@@ -12,42 +12,48 @@ const exportFormats = {
     logo: 'tools/flapjack.png',
     text: () => i18n.t('pageExportFormatsFlapjackText'),
     tags: ['genotype', 'phenotype'],
-    link: 'https://ics.hutton.ac.uk/flapjack'
+    link: 'https://ics.hutton.ac.uk/flapjack',
+    linkType: 'download'
   },
   helium: {
     name: 'Helium',
-    logo: 'tools/helium.png',
+    logo: 'tools/helium.svg',
     text: () => i18n.t('pageExportFormatsHeliumText'),
     tags: ['pedigree', 'phenotype'],
-    link: 'https://ics.hutton.ac.uk/helium'
+    link: 'https://helium.hutton.ac.uk/',
+    linkType: 'link'
   },
   curlywhirly: {
     name: 'CurlyWhirly',
     logo: 'tools/curlywhirly.png',
     text: () => i18n.t('pageExportFormatsCurlyWhirlyText'),
     tags: ['pca'],
-    link: 'https://ics.hutton.ac.uk/curlywhirly'
+    link: 'https://ics.hutton.ac.uk/curlywhirly',
+    linkType: 'download'
   },
   strudel: {
     name: 'Strudel',
     logo: 'tools/strudel.png',
     text: () => i18n.t('pageExportFormatsStrudelText'),
     tags: ['genotype'],
-    link: 'https://ics.hutton.ac.uk/strudel'
+    link: 'https://ics.hutton.ac.uk/strudel',
+    linkType: 'download'
   },
   excel: {
     name: 'Excel',
     logo: 'tools/excel.svg',
     text: () => i18n.t('pageExportFormatsExcelText'),
     tags: ['genotype', 'phenotype'],
-    link: 'https://products.office.com/excel'
+    link: 'https://products.office.com/excel',
+    linkType: 'download'
   },
   tassel: {
     name: 'Tassel',
     logo: 'tools/tassel.png',
     text: () => i18n.t('pageExportFormatsTasselText'),
     tags: ['genotype'],
-    link: 'https://www.maizegenetics.net/tassel'
+    link: 'https://www.maizegenetics.net/tassel',
+    linkType: 'download'
   }
 }
 

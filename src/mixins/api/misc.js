@@ -7,8 +7,6 @@ const apiGetAdminSettings = (onSuccess, onError) => authAxios({ url: 'settings/a
 
 const apiPostAdminSettings = (queryData, onSuccess, onError) => authAxios({ url: 'settings/admin', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
-const apiGetSettingsFile = (queryData, onSuccess, onError) => authAxios({ url: 'settings/file', data: queryData, success: onSuccess, error: onError })
-
 const apiPostGatekeeperExisting = (queryData, onSuccess, onError) => authAxios({ url: 'gatekeeper/user/existing', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 const apiPostGatekeeperNew = (queryData, onSuccess, onError) => authAxios({ url: 'gatekeeper/user/new', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -52,6 +50,14 @@ const apiGetImageTagsForId = (referenceTable, foreignId, onSuccess, onError) => 
 const apiPutImageTags = (imageId, data, onSuccess, onError) => authAxios({ url: `image/${imageId}/tag`, method: 'PUT', data: data, success: onSuccess, error: onError })
 
 const apiDeleteImage = (imageId, onSuccess, onError) => authAxios({ url: `image/${imageId}`, method: 'DELETE', success: onSuccess, error: onError })
+
+const apiDeleteTemplateImageByName = (name, onSuccess, onError) => authAxios({ url: `image/${name}`, method: 'DELETE', success: onSuccess, error: onError })
+
+const apiPostTemplateImage = (formData, onSuccess, onError) => authForm({ url: 'image/template', method: 'POST', formData: formData, success: onSuccess, error: onError })
+
+const apiGetTemplateCarouselConfig = (onSuccess, onError) => authAxios({ url: 'settings/carousel', success: onSuccess, error: onError })
+
+const apiPostTemplateCarouselConfig = (data, onSuccess, onError) => authAxios({ url: 'settings/carousel', method: 'POST', data: data, success: onSuccess, error: onError })
 
 const apiPatchImage = (image, onSuccess, onError) => authAxios({ url: `image/${image.imageId}`, method: 'PATCH', data: image, success: onSuccess, error: onError })
 
@@ -122,7 +128,6 @@ const apiDeleteUserFeedback = (id, onSuccess, onError) => authAxios({ url: `feed
 
 export {
   apiGetSettings,
-  apiGetSettingsFile,
   apiGetAdminSettings,
   apiPostAdminSettings,
   apiPostGatekeeperExisting,
@@ -139,6 +144,10 @@ export {
   apiGetImageTagsForId,
   apiPutImageTags,
   apiDeleteImage,
+  apiDeleteTemplateImageByName,
+  apiPostTemplateImage,
+  apiPostTemplateCarouselConfig,
+  apiGetTemplateCarouselConfig,
   apiPatchImage,
   apiPostNewsTable,
   apiPostNews,
