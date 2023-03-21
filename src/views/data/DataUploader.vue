@@ -35,6 +35,12 @@
       <!-- Selected file -->
       <div class="mt-3" v-if="file">{{ $t('pageDataUploadSelectedFile', { file: file.name }) }}</div>
 
+      <div v-if="templateType === 'genotype'">
+        <b-form-group :label="$t('formLabelDataUploadDataOrientation')" label-for="data-orientation">
+          <b-form-radio-group buttons button-variant="outline-primary" id="data-orientation" :options="dataOrientationOptions" v-model="dataOrientation" />
+        </b-form-group>
+      </div>
+
       <div v-if="templateType === 'genotype' || templateType === 'trial' || templateType === 'climate' || templateType === 'pedigree'">
         <hr />
         <h3>{{ $t('pageDataUploadDatasetStateTitle') }}</h3>
@@ -102,6 +108,7 @@ export default {
       file: null,
       uuids: null,
       isUpdate: false,
+      dataOrientation: 'GENOTYPE_GERMPLASM_BY_MARKER',
       templateType: null,
       datasetStateId: 1,
       updateOptions: [
@@ -125,6 +132,15 @@ export default {
       } else {
         return []
       }
+    },
+    dataOrientationOptions: function () {
+      return [{
+        value: 'GENOTYPE_GERMPLASM_BY_MARKER',
+        text: this.$t('formSelectOptionDataOrientationGermplasmAsRows')
+      }, {
+        value: 'GENOTYPE_MARKER_BY_GERMPLSAM',
+        text: this.$t('formSelectOptionDataOrientationMarkersAsRows')
+      }]
     },
     submitDisabled: function () {
       let disabled = this.file === null
@@ -163,7 +179,7 @@ export default {
       formData.append('fileToUpload', this.file)
 
       emitter.emit('show-loading', true)
-      apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, this.templateType === 'shapefile' ? this.datasetId : null, this.datasetStateId, result => {
+      apiPostDataUpload(formData, this.templateType, this.templateType === 'mcpd' ? this.isUpdate : false, this.dataOrientation, this.templateType === 'shapefile' ? this.datasetId : null, this.datasetStateId, result => {
         this.uuids = result
 
         if (result) {

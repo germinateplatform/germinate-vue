@@ -32,8 +32,8 @@ const apiGetGatekeeperInstitutions = (queryData, onSuccess, onError) => {
 
 const apiPostFeedbackUpload = (formData, uuid, onSuccess, onError) => authForm({ url: `feedback/${uuid}`, formData: formData, success: onSuccess, error: onError })
 
-const apiPostDataUpload = (formData, templateType, isUpdate, datasetId, datasetStateId, onSuccess, onError) => {
-  return authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&datasetStateId=${datasetStateId}&datasetId=${datasetId || ''}`, formData: formData, success: onSuccess, error: onError })
+const apiPostDataUpload = (formData, templateType, isUpdate, dataOrientation, datasetId, datasetStateId, onSuccess, onError) => {
+  return authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&dataOrientation=${dataOrientation}&datasetStateId=${datasetStateId}&datasetId=${datasetId || ''}`, formData: formData, success: onSuccess, error: onError })
 }
 
 const apiPostImages = (queryData, onSuccess, onError) => {
