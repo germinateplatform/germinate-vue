@@ -138,7 +138,7 @@ export default {
         value: 'GENOTYPE_GERMPLASM_BY_MARKER',
         text: this.$t('formSelectOptionDataOrientationGermplasmAsRows')
       }, {
-        value: 'GENOTYPE_MARKER_BY_GERMPLSAM',
+        value: 'GENOTYPE_MARKER_BY_GERMPLASM',
         text: this.$t('formSelectOptionDataOrientationMarkersAsRows')
       }]
     },

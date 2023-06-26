@@ -116,7 +116,7 @@ export default {
     getSrc: function (size) {
       return getImageUrl(this.image.imagePath, {
         name: this.image.imagePath,
-        storeToken: this.storeToken ? this.storeToken.imageToken : null,
+        token: this.storeToken ? this.storeToken.imageToken : null,
         type: 'database',
         size: size
       })
