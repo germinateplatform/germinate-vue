@@ -39,14 +39,16 @@
     <div id="dashboard-app">
       <SidebarComponent :collapsed="collapsed" :width="sidebarWidth" @toggle-collapse="onToggleCollapse" />
 
-      <div id="content" :style="{ paddingLeft: sidebarWidth }" :class="{ 'mx-3': true, 'pt-2': true, 'collapsed': collapsed, 'onmobile': isOnMobile }" >
-        <b-container fluid class="min-vh-100">
+      <div id="content" :style="{ paddingLeft: sidebarWidth }" :class="{ 'collapsed': collapsed, 'onmobile': isOnMobile }" >
+        <b-container fluid class="min-vh-100 position-relative">
+          <StoryNavbar id="story-navbar" v-if="storeActiveStory" />
+
           <PageHeader />
 
           <router-view :key="$route.path" class="pb-3" />
         </b-container>
 
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-4 border-top">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-4 border-top bg-dark">
           <div class="col-md-4 d-flex align-items-center justify-content-center justify-content-md-start">
             <span class="text-muted">&copy; {{ new Date().getFullYear() }} Germinate: The James Hutton Institute</span>
           </div>
@@ -103,6 +105,7 @@ import { mapGetters } from 'vuex'
 import ChangelogModal from '@/components/modals/ChangelogModal'
 import PageHeader from '@/components/structure/PageHeader'
 import SidebarComponent from '@/components/structure/SidebarComponent'
+import StoryNavbar from '@/components/structure/StoryNavbar'
 import MdiIcon from '@/components/icons/MdiIcon'
 import LocaleDropdown from '@/components/dropdowns/LocaleDropdown'
 import UserSettingsDropdown from '@/components/dropdowns/UserSettingsDropdown'
@@ -123,6 +126,7 @@ export default {
     MdiIcon,
     PageHeader,
     SidebarAsyncJobs,
+    StoryNavbar,
     SidebarComponent,
     UserSettingsDropdown,
     FeedbackButton,
@@ -136,7 +140,8 @@ export default {
       'storeHelpKey',
       'storeLocale',
       'storeServerSettings',
-      'storeChangelogVersionNumber'
+      'storeChangelogVersionNumber',
+      'storeActiveStory'
     ]),
     helpDisabled: function () {
       return this.storeHelpKey === undefined || this.storeHelpKey === null
@@ -290,12 +295,16 @@ $navbar-height: 72px;
   height: calc(100vh - $navbar-height);
 }
 
+#story-navbar.navbar {
+  top: $navbar-height;
+}
+
 #content {
   transition: 0.3s ease;
 }
 #content.collapsed,
 #content.onmobile {
-  padding-left: 50px !important;
+  padding-left: 65px !important;
 }
 
 .v-sidebar-menu {

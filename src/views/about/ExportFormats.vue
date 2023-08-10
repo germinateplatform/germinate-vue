@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageExportFormatsTitle') }}</h1>
+    <hr />
     <p>{{ $t('pageExportFormatsText') }}</p>
 
     <!-- Badges for the types -->

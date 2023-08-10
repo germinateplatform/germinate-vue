@@ -1,6 +1,7 @@
 <template>
   <div>
     <ExportSelection v-bind="$props"
+                     queryId="climateMatrix"
                      :min="2"
                      :max="10"
                      :onlyNumeric="false"

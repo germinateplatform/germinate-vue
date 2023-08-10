@@ -19,12 +19,12 @@ const getDateString = (date) => {
 }
 
 /**
-     * Formats the given value into a human-readable number (e.g. 1.000 -> 1K, 1.000.000 -> 1G)
-     * @param {Number} value The value to format
-     * @param {Number} decimals The decimal places
-     * @param {Number} k The thousand value (e.g. 1000 or 1024)
-     * @param {String} separator The separator between the number and the letter
-     */
+ * Formats the given value into a human-readable number (e.g. 1.000 -> 1K, 1.000.000 -> 1G)
+ * @param {Number} value The value to format
+ * @param {Number} decimals The decimal places
+ * @param {Number} k The thousand value (e.g. 1000 or 1024)
+ * @param {String} separator The separator between the number and the letter
+ */
 const getNumberWithSuffix = (value, decimals = 2, k = 1000, separator = '') => {
   if (value === undefined || value === null || value === 0) {
     return '0'

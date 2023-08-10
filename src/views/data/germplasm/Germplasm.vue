@@ -12,7 +12,7 @@
     <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" :downloadTable="downloadTable" @filter-changed="resetFilter" ref="germplasmTable" />
 
     <!-- Germplasm location map -->
-    <Collapse :icon="mdiMapMarkerMultiple" :title="$t('widgetGermplasmMapTitle')" :visible="false" :showLoading="false" class="my-3" @toggle="collapseVisible = !collapseVisible" @shown="invalidateMapSize" v-if="locationDataAvailable">
+    <Collapse :icon="mdiMapMarkerMultiple" :title="$t('widgetGermplasmMapTitle')" :visible="collapseVisible" :showLoading="false" class="my-3" @toggle="collapseVisible = !collapseVisible" @shown="invalidateMapSize" v-if="locationDataAvailable">
       <template v-slot:content>
         <p>{{ $t('widgetGermplasmMapText') }}</p>
         <GermplasmLocationMap ref="germplasmMap" />
@@ -53,6 +53,18 @@ export default {
     GermplasmDownload,
     GermplasmLocationMap,
     RecentItems
+  },
+  watch: {
+    collapseVisible: function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      if (newValue) {
+        query.mapExpanded = true
+      } else {
+        query.mapExpanded = false
+      }
+
+      this.$router.replace({ query })
+    }
   },
   methods: {
     invalidateMapSize: function () {
@@ -104,6 +116,10 @@ export default {
       }]
     }, result => {
       this.locationDataAvailable = result && result.data && result.data.length > 0
+
+      if (this.$route.query && this.$route.query.mapExpanded === 'true') {
+        this.collapseVisible = true
+      }
     })
   }
 }

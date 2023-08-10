@@ -132,7 +132,7 @@ export default {
 
       this.publicationId = config.publicationId
 
-      window.history.replaceState({}, null, this.$router.resolve({ name: Pages.publicationDetails, params: { publicationId: config.publicationId } }).href)
+      this.$router.push({ name: Pages.publicationDetails, params: { publicationId: config.publicationId }, query: this.$router.currentRoute.query })
 
       apiPostPublicationsTable(queryParams, result => {
         if (result && result.data && result.data.length > 0) {

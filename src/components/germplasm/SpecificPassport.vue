@@ -562,8 +562,8 @@ export default {
   cursor: pointer;
 }
 .passport-navbar {
-  margin-left: -30px;
-  margin-right: -30px;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 .no-bullet-list {
   padding-inline-start: 0;

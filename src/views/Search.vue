@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageSearchTitle') }}</h1>
+    <hr />
     <b-form @submit.prevent="search">
       <b-row>
         <!-- Search data types -->
@@ -225,6 +226,18 @@ export default {
       return result
     }
   },
+  watch: {
+    searchType: function (newValue) {
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery.searchType = newValue
+      this.$router.replace({ query: urlQuery })
+    },
+    comparator: function (newValue) {
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery.comparator = newValue
+      this.$router.replace({ query: urlQuery })
+    }
+  },
   methods: {
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
@@ -315,33 +328,47 @@ export default {
     search: function () {
       this.searchTerm = this.tempSearchTerm
 
-      this.$nextTick(() => {
-        // Trigger result section to show up
-        this.showResults = true
-        // Refresh all tables
-        Object.keys(this.$refs)
-          .filter(r => r.startsWith('table'))
-          .forEach(t => {
-            if (this.$refs[t]) {
-              this.$refs[t].refresh()
-            }
-          })
-        // Set loading status for all collapse elements
-        Object.keys(this.$refs)
-          .filter(r => r.startsWith('collapse'))
-          .forEach(t => {
-            if (this.$refs[t]) {
-              this.$refs[t].setLoading(true)
-            }
-          })
-        // Change window URL to reflect new search term
-        window.history.replaceState({}, null, this.$router.resolve({ name: Pages.searchQuery, params: { searchTerm: this.searchTerm } }).href)
-      })
+      this.$router.push({ name: Pages.searchQuery, params: { searchTerm: this.tempSearchTerm }, query: this.$route.query })
+    },
+    runSearch: function () {
+      // Trigger result section to show up
+      this.showResults = true
+      // Refresh all tables
+      Object.keys(this.$refs)
+        .filter(r => r.startsWith('table'))
+        .forEach(t => {
+          if (this.$refs[t]) {
+            this.$refs[t].refresh()
+          }
+        })
+      // Set loading status for all collapse elements
+      Object.keys(this.$refs)
+        .filter(r => r.startsWith('collapse'))
+        .forEach(t => {
+          if (this.$refs[t]) {
+            this.$refs[t].setLoading(true)
+          }
+        })
     }
   },
   mounted: function () {
-    this.searchTerm = this.$route.params.searchTerm
+    this.searchTerm = (this.$route.params && this.$route.params.searchTerm) ? this.$route.params.searchTerm : null
     this.tempSearchTerm = this.searchTerm
+
+    if (this.$route.query && this.$route.query.comparator) {
+      this.comparator = this.comparators[this.$route.query.comparator] ? this.$route.query.comparator : 'equals'
+    }
+    if (this.$route.query && this.$route.query.searchType) {
+      const match = this.searchTypes.find(t => t.value === this.$route.query.searchType)
+
+      if (match) {
+        this.searchType = this.$route.query.searchType
+      }
+    }
+
+    if (this.searchTerm && this.searchTerm !== '') {
+      this.runSearch()
+    }
 
     emitter.on('license-accepted', this.search)
   },

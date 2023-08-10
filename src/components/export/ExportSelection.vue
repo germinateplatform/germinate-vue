@@ -4,14 +4,14 @@
       <h2>{{ $t(texts.exportTitle) }}</h2>
       <p>{{ $t(texts.exportText) }}</p>
       <!-- Selected trait/climate -->
-      <SearchableSelect v-model="selectedItems" :options="itemOptions" :multiple="multipleItems" :selectSize="selectSize" />
+      <SearchableSelect v-model="selectedItems" :queryId="`${queryId}-x`" :idKey="idKey" :options="itemOptions" :multiple="multipleItems" :selectSize="selectSize" />
       <!-- <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 /> -->
       <p class="text-danger" v-if="max !== null && selectedItemCount() > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
       <p class="text-info" v-if="min !== null && selectedItemCount() < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
     </b-col>
     <b-col cols=12 md=6>
       <!-- Selected germplasm/location groups -->
-      <ExportGroupSelection :info="groupSelectionInfo" :selectSize="selectSize" :multiple="multipleGroups" :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
+      <ExportGroupSelection :info="groupSelectionInfo" :queryId="queryId" :selectSize="selectSize" :multiple="multipleGroups" :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
     </b-col>
     <b-col cols=12>
       <b-btn variant="primary" @click="buttonPressed" :disabled="getButtonDisabled()"><MdiIcon :path="mdiArrowRightBox" /> {{ $t(texts.exportButton) }}</b-btn>
@@ -29,6 +29,10 @@ import { mdiArrowRightBox } from '@mdi/js'
 
 export default {
   props: {
+    queryId: {
+      type: String,
+      default: null
+    },
     texts: {
       type: Object,
       default: () => null
@@ -157,7 +161,16 @@ export default {
         query.xIds = this.getSelectedItems()
       }
 
-      this.$emit('button-clicked', query, this.selectedItems)
+      this.$emit('button-clicked', query, this.ensureArray(this.selectedItems))
+    },
+    ensureArray: function (potentialArray) {
+      if (!potentialArray) {
+        return []
+      } else if (Array.isArray(potentialArray)) {
+        return potentialArray
+      } else {
+        return [potentialArray]
+      }
     },
     getSelectedItems: function () {
       if (!this.selectedItems) {

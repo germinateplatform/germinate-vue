@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageDatasetsTitle') }}</h1>
+    <hr />
     <h2>{{ $t('pageDatasetsInternalTitle') }}</h2>
     <p>{{ $t('pageDatasetsInternalText') }}</p>
     <!-- Internal datasets -->

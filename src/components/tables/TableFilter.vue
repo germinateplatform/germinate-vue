@@ -220,13 +220,15 @@ export default {
       this.updateOperators()
     },
     targetFilter: function (newValue) {
-      const query = Object.assign({}, this.$route.query)
-      if (newValue && newValue.length > 0) {
-        query[`${this.tableName}-filter`] = JSON.stringify(newValue)
-      } else {
-        delete query[`${this.tableName}-filter`]
-      }
-      this.$router.replace({ query }).catch(() => true)
+      this.$nextTick(() => {
+        const query = Object.assign({}, this.$route.query)
+        if (newValue && newValue.length > 0) {
+          query[`${this.tableName}-filter`] = JSON.stringify(newValue)
+        } else {
+          delete query[`${this.tableName}-filter`]
+        }
+        this.$router.replace({ query }).catch(() => true)
+      })
     }
   },
   computed: {

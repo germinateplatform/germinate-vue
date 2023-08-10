@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageExperimentsTitle') }}</h1>
+    <hr />
     <p>{{ $t('pageExperimentsText') }}</p>
     <ExperimentTable :getData="getData" />
   </div>

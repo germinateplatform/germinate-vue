@@ -38,6 +38,7 @@ const Pages = Object.freeze({
   searchQuery: 'search-query',
   publications: 'publications',
   publicationDetails: 'publication-details',
+  stories: 'stories',
   groups: 'groups',
   groupDetails: 'group-details',
   groupUpload: 'group-upload',

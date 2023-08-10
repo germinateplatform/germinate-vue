@@ -19,6 +19,15 @@ VueRouter.prototype.replace = function replace (location, onResolve, onReject) {
     }
   })
 }
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => {
+    if (err && err.name !== 'NavigationDuplicated') {
+      throw err
+    }
+  })
+}
 
 function requireAuth (to, from, next) {
   const authMode = store.getters.storeServerSettings ? store.getters.storeServerSettings.authMode : 'NONE'
@@ -365,6 +374,12 @@ const routes = [
         path: 'publications/:publicationId',
         name: Pages.publicationDetails,
         component: () => import(/* webpackChunkName: "publication-details" */ '@/views/Publications.vue'),
+        beforeEnter: requireAuth
+      },
+      {
+        path: 'stories',
+        name: Pages.stories,
+        component: () => import(/* webpackChunkName: "stories" */ '@/views/Stories.vue'),
         beforeEnter: requireAuth
       },
       {

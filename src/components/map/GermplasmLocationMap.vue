@@ -117,15 +117,24 @@ export default {
     }
   },
   watch: {
-    colorBy: function () {
+    colorBy: function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      query.germplasmMapColorBy = newValue ? newValue.id : null
+
+      this.$router.replace({ query })
+
       this.update()
+    },
+    storeDarkMode: function () {
+      this.updateThemeLayer()
     }
   },
   computed: {
     ...mapGetters([
       'storeServerSettings',
       'storeMapLayer',
-      'storeMarkedGermplasm'
+      'storeMarkedGermplasm',
+      'storeDarkMode'
     ]),
     markedStyle: function () {
       const isMarked = this.selectedGermplasm && this.storeMarkedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
@@ -138,6 +147,7 @@ export default {
       }, {
         text: this.$t('tableColumnColldate'),
         value: {
+          id: 0,
           fields: ['collDate'],
           type: 'date',
           extractValue: (germplasm) => {
@@ -157,19 +167,19 @@ export default {
         }
       }, {
         text: this.$t('tableColumnElevation'),
-        value: { fields: ['elevation'], type: 'number', extractValue: (germplasm) => germplasm.elevation, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
+        value: { id: 1, fields: ['elevation'], type: 'number', extractValue: (germplasm) => germplasm.elevation, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
       }, {
         text: this.$t('widgetGermplasmMapOptionTaxonomy'),
-        value: { fields: ['genus', 'species', 'subtaxa'], type: 'text', format: (value) => value, legendClass: 'italic' }
+        value: { id: 2, fields: ['genus', 'species', 'subtaxa'], type: 'text', format: (value) => value, legendClass: 'italic' }
       }, {
         text: this.$t('tableColumnPdci'),
-        value: { fields: ['pdci'], type: 'number', extractValue: (germplasm) => germplasm.pdci, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
+        value: { id: 3, fields: ['pdci'], type: 'number', extractValue: (germplasm) => germplasm.pdci, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
       }, {
         text: this.$t('tableColumnBiologicalStatus'),
-        value: { fields: ['biologicalStatusName'], type: 'text', format: (value) => value }
+        value: { id: 4, fields: ['biologicalStatusName'], type: 'text', format: (value) => value }
       }, {
         text: this.$t('tableColumnCountryName'),
-        value: { fields: ['countryName'], type: 'text', format: (value) => value }
+        value: { id: 5, fields: ['countryName'], type: 'text', format: (value) => value }
       }]
     }
   },
@@ -408,6 +418,11 @@ export default {
 
         this.update()
       })
+    },
+    updateThemeLayer: function () {
+      if (this.themeLayer) {
+        this.themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
+      }
     }
   },
   mounted: function () {
@@ -418,12 +433,27 @@ export default {
       this.gradientColors.push(getColor(0))
     }
 
+    if (this.$route.query && this.$route.query.germplasmMapColorBy) {
+      const int = parseInt(this.$route.query.germplasmMapColorBy)
+
+      const match = this.colorOptions.find(c => c.value ? c.value.id === int : false)
+      if (match) {
+        this.colorBy = match.value
+      }
+    }
+
     this.$nextTick(() => {
       // Add the OSM default layer
       const openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         id: 'OpenStreetMap',
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         subdomains: ['a', 'b', 'c']
+      })
+      this.themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
+        id: this.storeDarkMode ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
+        attribution: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
+        maxZoom: 21,
+        maxNativeZoom: 15
       })
       // Add an additional satellite layer
       const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -434,6 +464,9 @@ export default {
       const map = this.$refs.map.mapObject
 
       switch (this.storeMapLayer) {
+        case 'theme':
+          map.addLayer(this.themeLayer)
+          break
         case 'satellite':
           map.addLayer(satellite)
           break
@@ -444,7 +477,7 @@ export default {
       }
 
       const baseMaps = {
-        // 'Stadia Dark': stadia,
+        'Theme-based': this.themeLayer,
         OpenStreetMap: openstreetmap,
         'Esri WorldImagery': satellite
       }
@@ -454,6 +487,9 @@ export default {
       // Listen for layer changes and store the user selection in the store
       map.on('baselayerchange', e => {
         switch (e.name) {
+          case 'Theme-based':
+            this.$store.dispatch('setMapLayer', 'theme')
+            break
           case 'OpenStreetMap':
             this.$store.dispatch('setMapLayer', 'osm')
             break

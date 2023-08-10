@@ -443,7 +443,7 @@ export default {
         apiPostGroupTable(queryParams, result => {
           if (result && result.data && result.data.length > 0) {
             // Update the URL to reflect the newly selected group
-            window.history.replaceState({}, null, this.$router.resolve({ name: 'group-details', params: { groupId: this.groupId } }).href)
+            this.$router.push({ name: 'group-details', params: { groupId: this.groupId }, query: this.$router.currentRoute.query })
             this.group = result.data[0]
 
             // This refresh is necessary, since we're not switching group type. The table showing the resulting group

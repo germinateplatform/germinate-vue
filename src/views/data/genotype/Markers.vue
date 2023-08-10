@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageMarkersTitle') }}</h1>
+    <hr />
     <p>{{ $t('pageMapsText') }}</p>
 
     <RecentItems itemType="markers" />

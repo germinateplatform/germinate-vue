@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageDataResourcesTitle') }} <b-button size="sm" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="onShowAddModal"><MdiIcon :path="mdiPlus" /></b-button></h1>
+    <hr />
     <p>{{ $t('pageDataResourcesText') }}</p>
 
     <FileresourceTable :getData="getFileResourcesTable" ref="dataresourceTable" />

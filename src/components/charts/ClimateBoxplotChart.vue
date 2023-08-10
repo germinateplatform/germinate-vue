@@ -3,7 +3,7 @@
     <BaseChart :id="id" :width="() => 1280" :height="() => getHeight()" :sourceFile="baseSourceFile" :filename="baseFilename" :loading="loading" v-on:force-redraw="redraw">
       <div slot="chart">
         <b-form @submit.prevent>
-          <b-form-group :label="$t('formLabelClimateChartGrouping')" label-for="grouping">
+          <b-form-group :label="$t('formLabelTraitChartGrouping')" label-for="grouping">
             <b-form-select :options="groupingOptions" v-model="groupBy" key="grouping" />
           </b-form-group>
         </b-form>
@@ -216,12 +216,20 @@ export default {
       }
     },
     chart: function () {
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery.climateBoxplotGroupBy = this.groupBy
+      this.$router.replace({ query: urlQuery })
+
       this.selectedIds = []
       this.selectedGermplasmId = null
 
       const div = this.$refs.chart
 
       Plotly.purge(div)
+
+      if (!plotData) {
+        return
+      }
 
       let traces
 
@@ -306,7 +314,8 @@ export default {
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
-          orientation: 'h'
+          orientation: 'h',
+          font: { color: this.storeDarkMode ? 'white' : 'black' }
         }
       }
 
@@ -341,6 +350,10 @@ export default {
     }
   },
   mounted: function () {
+    if (this.$route.query && this.$route.query.climateBoxplotGroupBy) {
+      this.groupBy = this.$route.query.climateBoxplotGroupBy
+    }
+
     this.redraw()
   }
 }

@@ -481,6 +481,30 @@ body.dark-mode .form-control .btn {
   border-color: transparent;
 }
 
+body.dark-mode .popover {
+  background-color: rgb(24, 26, 27);
+  border-color: rgba(140, 130, 115, 0.2);
+}
+
+body.dark-mode .bs-popover-bottom>.arrow::after,
+body.dark-mode .bs-popover-auto[x-placement^="bottom"]>.arrow::after {
+  border-bottom-color: rgb(48, 52, 54);
+}
+
+body.dark-mode .popover-header {
+  background-color: rgb(29, 31, 32);
+  border-bottom-color: rgb(54, 58, 60);
+}
+
+body.dark-mode .bs-popover-bottom .popover-header::before,
+body.dark-mode .bs-popover-auto[x-placement^="bottom"] .popover-header::before {
+  border-bottom-color: rgb(50, 54, 57);
+}
+
+body.dark-mode .popover-body {
+  color: rgb(196, 191, 183);
+}
+
 body.dark-mode .b-popover-secondary.popover {
   background-color: rgb(40, 43, 44);
   border-color: rgb(59, 64, 66);

@@ -1,6 +1,7 @@
 <template>
   <div>
     <ExportSelection v-bind="$props"
+                     :queryId="queryId"
                      :onlyNumeric="true"
                      :multipleItems="false"
                      :groupSelectionInfo="groupSelectionInfo"
@@ -77,6 +78,7 @@ export default {
   },
   data: function () {
     return {
+      queryId: 'traitComp',
       splitBy: null,
       germplasm: [],
       colorMapping: {},
@@ -140,6 +142,10 @@ export default {
       return result
     },
     redraw: function (force) {
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery[`${this.queryId}ColorBy`] = this.splitBy
+      this.$router.replace({ query: urlQuery })
+
       if (this.rawData) {
         const tempTraitChartData = {}
         const germplasmMapping = {}
@@ -275,6 +281,11 @@ export default {
       }
 
       this.colorMapping = tempColorMapping
+    }
+  },
+  mounted: function () {
+    if (this.$route.query && this.$route.query[`${this.queryId}ColorBy`]) {
+      this.splitBy = this.$route.query[`${this.queryId}ColorBy`]
     }
   }
 }

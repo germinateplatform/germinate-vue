@@ -1,6 +1,7 @@
 <template>
   <div>
     <ExportSelection v-bind="$props"
+                     :queryId="`${xType}Download`"
                      :min="1"
                      :max="null"
                      :onlyNumeric="false"
@@ -31,6 +32,10 @@ export default {
     getItems: {
       type: Function,
       default: () => []
+    },
+    xType: {
+      type: String,
+      default: 'traits'
     },
     itemType: {
       type: String,

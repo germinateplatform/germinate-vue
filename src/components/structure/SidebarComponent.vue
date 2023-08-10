@@ -25,7 +25,7 @@ import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
 import { getNumberWithSuffix } from '@/mixins/formatting'
 
-import { mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiChartAreaspline, mdiChartGantt, mdiChartSankey, mdiChevronLeft, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFileExport, mdiFolderTable, mdiFormatIndentIncrease, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMagnify, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPulse, mdiReorderVertical, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy } from '@mdi/js'
+import { mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiChartAreaspline, mdiBookOpenPageVariant, mdiChartGantt, mdiChartSankey, mdiChevronLeft, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFileExport, mdiFolderTable, mdiFormatIndentIncrease, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMagnify, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPulse, mdiReorderVertical, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy } from '@mdi/js'
 
 import { apiGetOverviewStats } from '@/mixins/api/stats'
 import { Pages } from '@/mixins/pages'
@@ -272,7 +272,7 @@ export default {
                 },
                 {
                   title: this.$t('menuClimateDataExport'),
-                  identifiers: ['export-climate'],
+                  identifiers: ['export-climates'],
                   badge: {
                     text: this.getBadgeCount(this.badgeCounts, 'datasetsClimate'),
                     class: 'vsm--badge vsm--badge_default'
@@ -340,6 +340,21 @@ export default {
                 element: SidebarIcon,
                 attributes: {
                   path: mdiFileDownload
+                }
+              }
+            },
+            {
+              title: this.$t('menuDataStories'),
+              identifiers: ['stories'],
+              badge: {
+                text: this.getBadgeCount(this.badgeCounts, 'dataStories'),
+                class: 'vsm--badge vsm--badge_default'
+              },
+              href: { name: Pages.stories },
+              icon: {
+                element: SidebarIcon,
+                attributes: {
+                  path: mdiBookOpenPageVariant
                 }
               }
             },

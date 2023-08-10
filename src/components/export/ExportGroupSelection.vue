@@ -7,7 +7,7 @@
         <!-- Loading indicator -->
         <b-progress :value="100" height="5px" variant="primary" striped animated v-if="groups === null" />
         <!-- Group select -->
-        <SearchableSelect v-model="selectedGroups" :multiple="multiple" :options="groupOptions" :selectSize="selectSize" className="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')"/>
+        <SearchableSelect :queryId="`${queryId}-y`" idKey="groupId" v-model="selectedGroups" :multiple="multiple" :options="groupOptions" :selectSize="selectSize" className="group-select" :disabled="specialGroupSelection !== 'selection'" @change="$emit('change')" @input="handleInput"/>
       </div>
       <!-- Tooltip shown when group selection is disabled -->
       <b-tooltip :target="`group-selection-${uuid}`" triggers="hover" v-if="tooltip !== null && isAll">
@@ -37,6 +37,10 @@ export default {
     SearchableSelect
   },
   props: {
+    queryId: {
+      type: String,
+      default: null
+    },
     title: {
       type: String,
       default: null
@@ -105,6 +109,17 @@ export default {
     }
   },
   methods: {
+    handleInput: function (input) {
+      if (this.multiple === true) {
+        if (input.length > 0) {
+          this.specialGroupSelection = 'selection'
+        }
+      } else {
+        if (input) {
+          this.specialGroupSelection = 'selection'
+        }
+      }
+    },
     setSpecialGroupSelection: function (value) {
       this.specialGroupSelection = value
       this.$emit('change')

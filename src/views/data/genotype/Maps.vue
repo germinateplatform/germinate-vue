@@ -125,22 +125,7 @@ export default {
       return apiPostMapdefinitionTableIds(data, callback)
     },
     onMapSelected: function (mapId) {
-      this.mapId = mapId
-
-      if (this.mapId) {
-        apiGetMap(mapId, result => {
-          if (result && result.data && result.data.length > 0) {
-            // Update the window URL to reflect map change
-            window.history.replaceState({}, null, this.$router.resolve({ name: Pages.mapDetails, params: { mapId: this.mapId } }).href)
-            this.map = result.data[0]
-            this.$nextTick(() => {
-              // Update table and chart
-              this.$refs.mapChart.redraw()
-              this.$refs.mapDefinitionTable.refresh()
-            })
-          }
-        })
-      }
+      this.$router.push({ name: Pages.mapDetails, params: { mapId: mapId } })
     },
     onPointsSelected: function (chromosome, start, end) {
       this.useAdvancedExportOptions = true
@@ -153,10 +138,30 @@ export default {
           end: Math.ceil(end)
         })
       })
+    },
+    onMapUpdated: function () {
+      if (this.mapId) {
+        apiGetMap(this.mapId, result => {
+          if (result && result.data && result.data.length > 0) {
+            // Update the window URL to reflect map change
+            this.$router.push({ name: Pages.mapDetails, params: { mapId: this.mapId }, query: this.$router.currentRoute.query })
+            this.map = result.data[0]
+            this.$nextTick(() => {
+              // Update table and chart
+              this.$refs.mapChart.redraw()
+              this.$refs.mapDefinitionTable.refresh()
+            })
+          }
+        })
+      }
     }
   },
   mounted: function () {
-    this.onMapSelected(parseInt(this.$route.params.mapId))
+    if (this.$route.params && this.$route.params.mapId) {
+      this.mapId = parseInt(this.$route.params.mapId)
+
+      this.onMapUpdated()
+    }
   }
 }
 </script>

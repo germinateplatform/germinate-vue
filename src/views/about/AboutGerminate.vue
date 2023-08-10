@@ -1,19 +1,21 @@
 <template>
   <div>
     <!-- Hutton banner -->
-    <div class="row hutton-header mb-3">
-      <div id="hutton-banner-hunger" class="col"></div>
-      <div id="hutton-banner-education" class="col"></div>
-      <div id="hutton-banner-water" class="col"></div>
-      <div id="hutton-banner-energy" class="col"></div>
-      <div id="hutton-banner-work" class="col"></div>
-      <div class="w-100 d-md-none d-lg-none d-xl-none"></div>
-      <div id="hutton-banner-industry" class="col"></div>
-      <div id="hutton-banner-consumption" class="col"></div>
-      <div id="hutton-banner-climate" class="col"></div>
-      <div id="hutton-banner-land" class="col"></div>
-      <div id="hutton-banner-partnership" class="col"></div>
-    </div>
+    <b-container fluid>
+      <div class="row hutton-header mb-3">
+        <div id="hutton-banner-hunger" class="col"></div>
+        <div id="hutton-banner-education" class="col"></div>
+        <div id="hutton-banner-water" class="col"></div>
+        <div id="hutton-banner-energy" class="col"></div>
+        <div id="hutton-banner-work" class="col"></div>
+        <div class="w-100 d-md-none d-lg-none d-xl-none"></div>
+        <div id="hutton-banner-industry" class="col"></div>
+        <div id="hutton-banner-consumption" class="col"></div>
+        <div id="hutton-banner-climate" class="col"></div>
+        <div id="hutton-banner-land" class="col"></div>
+        <div id="hutton-banner-partnership" class="col"></div>
+      </div>
+    </b-container>
     <!-- Logo -->
     <div class="about-header bg-light p-5 mt-4 mb-2 border">
       <b-row>
@@ -86,18 +88,20 @@
     </b-row>
 
     <!-- Footer -->
-    <b-row class="about-footer bg-dark px-3">
-      <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img-lazy src="./img/germinate-square.svg" fluid class="my-5" alt="Germinate logo" />
-        <b-img-lazy src="./img/germinate-text.svg" fluid class="my-5 germinate-text" alt="Germinate logo text" />
-      </b-col>
-      <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img-lazy src="./img/ics-sdg.svg" fluid class="my-5" alt="ICS logo" />
-      </b-col>
-      <b-col cols=12 sm=6 xl=4 class="about-logo">
-        <b-img-lazy src="./img/hutton.svg" fluid class="my-5" alt="Hutton logo" />
-      </b-col>
-    </b-row>
+    <b-container fluid>
+      <b-row class="about-footer bg-dark px-3">
+        <b-col cols=12 sm=6 xl=4 class="about-logo">
+          <b-img-lazy src="./img/germinate-square.svg" fluid class="my-5" alt="Germinate logo" />
+          <b-img-lazy src="./img/germinate-text.svg" fluid class="my-5 germinate-text" alt="Germinate logo text" />
+        </b-col>
+        <b-col cols=12 sm=6 xl=4 class="about-logo">
+          <b-img-lazy src="./img/ics-sdg.svg" fluid class="my-5" alt="ICS logo" />
+        </b-col>
+        <b-col cols=12 sm=6 xl=4 class="about-logo">
+          <b-img-lazy src="./img/hutton.svg" fluid class="my-5" alt="Hutton logo" />
+        </b-col>
+      </b-row>
+    </b-container>
 
     <ChangelogModal ref="changelogModal" />
   </div>
@@ -391,7 +395,6 @@ export default {
 .hutton-header {
   margin-left: -30px;
   margin-right: -30px;
-  margin-top: -17px;
 }
 .team-members img {
   max-height: 300px;

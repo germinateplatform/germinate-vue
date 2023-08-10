@@ -224,12 +224,20 @@ export default {
       }
     },
     chart: function () {
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery.traitBoxplotGroupBy = this.groupBy
+      this.$router.replace({ query: urlQuery })
+
       this.selectedIds = []
       this.selectedGermplasmId = null
 
       const div = this.$refs.chart
 
       Plotly.purge(div)
+
+      if (!plotData) {
+        return
+      }
 
       let traces
 
@@ -338,7 +346,8 @@ export default {
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
-          orientation: 'h'
+          orientation: 'h',
+          font: { color: this.storeDarkMode ? 'white' : 'black' }
         }
       }
 
@@ -373,6 +382,10 @@ export default {
     }
   },
   mounted: function () {
+    if (this.$route.query && this.$route.query.traitBoxplotGroupBy) {
+      this.groupBy = this.$route.query.traitBoxplotGroupBy
+    }
+
     this.redraw()
   }
 }

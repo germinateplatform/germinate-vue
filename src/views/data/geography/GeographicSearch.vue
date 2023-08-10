@@ -14,7 +14,7 @@
             <div>{{ $t('pageGeographicSearchPointSearchText') }}</div>
           </b-card-body>
           <!-- Point search map -->
-          <LocationMap :locations="[]" selectionMode="point" @map-loaded="updatePolygonMap" ref="pointMap" border="border-top border-bottom" />
+          <LocationMap selectionMode="point" @map-loaded="updatePolygonMap" ref="pointMap" border="border-top border-bottom" />
           <b-card-body v-if="point">
             <Collapse :icon="mdiMapMarker" :title="$t('pageGeographicSearchPointLocationResultTitle')" :visible="false" no-body class="my-2">
               <template v-slot:content="slotProps">
@@ -99,10 +99,10 @@ export default {
   },
   watch: {
     tabIndex: function (newValue) {
-      const query = Object.assign({}, this.$route.query)
-      query.tabIndex = newValue
+      // const query = Object.assign({}, this.$route.query)
+      // query.tabIndex = newValue
 
-      this.$router.replace({ query })
+      // this.$router.replace({ query })
     },
     polygons: function (newValue) {
       if (newValue && newValue.length > 0) {
@@ -222,7 +222,7 @@ export default {
   mounted: function () {
     if (this.$route.query) {
       if (this.$route.query.tabIndex) {
-        this.tabIndex = +this.$route.query.tabIndex
+        this.$nextTick(() => { this.tabIndex = +this.$route.query.tabIndex })
       }
 
       if (this.$route.query.polygons) {

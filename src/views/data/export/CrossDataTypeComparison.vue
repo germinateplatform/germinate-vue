@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageDatasetCrossTypeComparisonTitle') }}</h1>
+    <hr />
     <p>{{ $t('pageDatasetCrossTypeComparisonText') }}</p>
     <b-row>
       <b-col cols=12 sm=6>

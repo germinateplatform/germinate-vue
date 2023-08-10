@@ -131,7 +131,8 @@ export default {
     ...mapGetters([
       'storeServerSettings',
       'storeBaseUrl',
-      'storeToken'
+      'storeToken',
+      'storeDarkMode'
     ]),
     shapefileOptions: function () {
       if (this.shapefiles) {
@@ -204,6 +205,11 @@ export default {
   methods: {
     removeHighlight: function () {
       this.updateColors()
+    },
+    updateThemeLayer: function () {
+      if (this.themeLayer) {
+        this.themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
+      }
     },
     highlightReps: function () {
       this.treatmentColors = []
@@ -431,6 +437,12 @@ export default {
         maxNativeZoom: 19,
         maxZoom: 25
       })
+      this.themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
+        id: this.storeDarkMode ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
+        attribution: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
+        maxZoom: 21,
+        maxNativeZoom: 15
+      })
       // Add an additional satellite layer
       const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         id: 'Esri WorldImagery',
@@ -440,6 +452,9 @@ export default {
       })
 
       switch (this.storeMapLayer) {
+        case 'theme':
+          this.map.addLayer(this.themeLayer)
+          break
         case 'satellite':
           this.map.addLayer(satellite)
           break
@@ -450,7 +465,7 @@ export default {
       }
 
       const baseMaps = {
-        // 'Stadia Dark': stadia,
+        'Theme-based': this.themeLayer,
         OpenStreetMap: openstreetmap,
         'Esri WorldImagery': satellite
       }
@@ -460,6 +475,9 @@ export default {
       // Listen for layer changes and store the user selection in the store
       this.map.on('baselayerchange', e => {
         switch (e.name) {
+          case 'Theme-based':
+            this.$store.dispatch('setMapLayer', 'theme')
+            break
           case 'OpenStreetMap':
             this.$store.dispatch('setMapLayer', 'osm')
             break

@@ -154,7 +154,7 @@
 
     <!-- License modal -->
     <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" />
-    <!-- Collaborators modal -->
+    <!-- Publications modal -->
     <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || userIsDataCurator)" ref="publicationsModal" />
     <!-- Collaborators modal -->
     <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
@@ -604,6 +604,7 @@ export default {
     },
     onLicenseAccepted: function () {
       // this.$refs.licenseModal.hide()
+      this.$emit('license-accepted')
       this.refresh()
     },
     onDatasetEditClicked: function (dataset) {

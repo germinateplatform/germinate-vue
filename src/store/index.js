@@ -35,7 +35,7 @@ const userState = {
   }],
   sidebarState: 'sidebar-lg-show',
   asyncSidebarTabIndex: 0,
-  mapLayer: 'osm',
+  mapLayer: 'theme',
   markedIds: {
     germplasm: [],
     markers: [],
@@ -76,7 +76,8 @@ const userState = {
   cookiesAccepted: null,
   customChartColors: null,
   darkMode: false,
-  changelogVersionNumber: null
+  changelogVersionNumber: null,
+  activeStory: null
 }
 
 const storeState = {
@@ -112,7 +113,8 @@ const storeState = {
     storeAsyncSidebarTabIndex: (state, getters) => state.userStates[getters.storeUserId].asyncSidebarTabIndex,
     storeMapLayer: (state, getters) => state.userStates[getters.storeUserId].mapLayer,
     storeAppState: (state, getters) => state.appState,
-    storeChangelogVersionNumber: (state, getters) => state.userStates[getters.storeUserId].changelogVersionNumber
+    storeChangelogVersionNumber: (state, getters) => state.userStates[getters.storeUserId].changelogVersionNumber,
+    storeActiveStory: (state) => state.activeStory
   },
   mutations: {
     ON_APP_STATE_CHANGED_MUTATION: function (state, newAppState) {
@@ -122,16 +124,34 @@ const storeState = {
       if (newToken && !state.userStates[newToken.id]) {
         // Add the new user to the state, remember to use Vue.set to make it reactive
         Vue.set(state.userStates, newToken.id, JSON.parse(JSON.stringify(userState)))
+        state.activeStory = null
       }
 
       if (newToken === null) {
         document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+        state.activeStory = null
       }
 
       state.token = newToken
     },
     ON_UNIQUE_CLIENT_ID_CHANGED_MUTATION: function (state, newUniqueClientId) {
       state.uniqueClientId = newUniqueClientId
+    },
+    ON_ACTIVE_STORY_CHANGED_MUTATION: function (state, payload) {
+      if (payload) {
+        const s = JSON.parse(JSON.stringify(payload.story))
+        s.storySteps.sort((a, b) => a.storyIndex - b.storyIndex)
+        state.activeStory = {
+          story: s,
+          index: 0,
+          isEdit: payload.isEdit
+        }
+      } else {
+        state.activeStory = null
+      }
+    },
+    ON_ACTIVE_STORY_INDEX_CHANGED_MUTATION: function (state, newActiveStoryIndex) {
+      state.activeStory.index = newActiveStoryIndex
     },
     ON_BASE_URL_CHANGED_MUTATION: function (state, newBaseUrl) {
       state.baseUrl = newBaseUrl
@@ -300,6 +320,12 @@ const storeState = {
     },
     setUniqueClientId: function ({ commit }, uniqueClientId) {
       commit('ON_UNIQUE_CLIENT_ID_CHANGED_MUTATION', uniqueClientId)
+    },
+    setActiveStory: function ({ commit }, payload) {
+      commit('ON_ACTIVE_STORY_CHANGED_MUTATION', payload)
+    },
+    setActiveStoryIndex: function ({ commit }, storyIndex) {
+      commit('ON_ACTIVE_STORY_INDEX_CHANGED_MUTATION', storyIndex)
     },
     setBaseUrl: function ({ commit }, baseUrl) {
       commit('ON_BASE_URL_CHANGED_MUTATION', baseUrl)
@@ -485,6 +511,8 @@ const storeState = {
         } catch (err) {
           console.error(err)
         }
+
+        result.activeStory = null
 
         // Check if GDPR settings are active
         if (result.userStates && result.serverSettings && result.serverSettings.showGdprNotification) {

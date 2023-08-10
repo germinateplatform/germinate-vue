@@ -93,10 +93,10 @@ export default {
       })
     },
     onPrint: function () {
-      emitter.emit('on-print', this.license.licenseContent)
+      emitter.emit('on-print', this.licenseContent)
     },
     onDownload: function () {
-      this.htmlData = 'data:application/octet-stream;base64,' + btoa(unescape(encodeURIComponent(this.license.licenseContent)))
+      this.htmlData = 'data:application/octet-stream;base64,' + btoa(unescape(encodeURIComponent(this.licenseContent)))
       let filename = this.license.licenseName.replace(' ', '-') + '.html'
       if (this.dataset) {
         filename = this.dataset.datasetId + '-' + filename

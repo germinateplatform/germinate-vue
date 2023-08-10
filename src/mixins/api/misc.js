@@ -104,6 +104,8 @@ const apiGetDataAsyncImportStart = (uuid, onSuccess, onError) => authAxios({ url
 
 const apiGetDataAsyncImportLog = (uuid, onSuccess, onError) => authAxios({ url: `import/template/${uuid}/log`, dataType: 'blob', success: onSuccess, error: onError })
 
+const apiGetPublicationById = (publicationId, onSuccess, onError) => authAxios({ url: `publication/${publicationId}`, success: onSuccess, error: onError })
+
 const apiPostPublicationsTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
   return authAxios({ url: 'publication/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -125,6 +127,19 @@ const apiPostUserFeedbackTable = (queryData, onSuccess, onError) => {
 const apiGetUserFeedbackMarkAsRead = (id, onSuccess, onError) => authAxios({ url: `feedback/${id}/mark`, success: onSuccess, error: onError })
 
 const apiDeleteUserFeedback = (id, onSuccess, onError) => authAxios({ url: `feedback/${id}`, method: 'DELETE', success: onSuccess, error: onError })
+
+const apiPostStoryTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'story/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiDeleteStoryById = (storyId, onSuccess, onError) => authAxios({ url: `story/${storyId}`, method: 'DELETE', success: onSuccess, error: onError })
+
+const apiPatchStory = (storyId, data, onSuccess, onError) => authAxios({ url: `story/${storyId}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
+
+const apiPostStoryUpload = (formData, onSuccess, onError) => authForm({ url: 'story', formData: formData, success: onSuccess, error: onError })
+
+const apiPostStoryStepUpload = (storyId, formData, onSuccess, onError) => authForm({ url: `story/${storyId}/step`, formData: formData, success: onSuccess, error: onError })
 
 export {
   apiGetSettings,
@@ -160,6 +175,7 @@ export {
   apiDeleteDataAsyncImport,
   apiGetDataAsyncImportStart,
   apiGetDataAsyncImportLog,
+  apiGetPublicationById,
   apiPostPublicationsTable,
   apiGetPublications,
   apiPutPublication,
@@ -170,5 +186,10 @@ export {
   apiPostFeedbackUpload,
   apiGetUserFeedbackMarkAsRead,
   apiPostDataImportStats,
-  apiDeleteUserFeedback
+  apiDeleteUserFeedback,
+  apiPostStoryTable,
+  apiDeleteStoryById,
+  apiPostStoryUpload,
+  apiPostStoryStepUpload,
+  apiPatchStory
 }

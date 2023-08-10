@@ -1,6 +1,7 @@
 <template>
   <div>
     <ExportSelection v-bind="$props"
+                     queryId="traitTimeline"
                      :multipleItems="false"
                      :min="1"
                      :max="10"

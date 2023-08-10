@@ -14,14 +14,14 @@
       </div>
     </b-card-body>
 
-    <b-button-group>
+    <b-card-footer class="d-flex justify-content-between">
       <b-button variant="primary" :href="displayData.URL" rel="noopener noreferrer" v-if="displayData.URL">
         <MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonReadMore') }}
       </b-button>
       <b-button v-if="canDelete && storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="$emit('deleteReference', publication)" variant="danger">
         <MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}
       </b-button>
-    </b-button-group>
+    </b-card-footer>
 
     <ReferenceModal :publication="publication" ref="referenceModal" />
   </b-card>

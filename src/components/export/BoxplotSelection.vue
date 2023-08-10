@@ -3,6 +3,7 @@
     <h2>{{ $t(texts.boxplotTitle) }}</h2>
     <p>{{ $t(texts.boxplotText) }}</p>
     <ExportSelection v-bind="$props"
+                     :queryId="`${xType}Boxplot`"
                      :min="1"
                      :max="null"
                      :onlyNumeric="false"

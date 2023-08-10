@@ -21,6 +21,14 @@ export default {
     event: 'input'
   },
   props: {
+    idKey: {
+      type: String,
+      default: null
+    },
+    queryId: {
+      type: String,
+      default: null
+    },
     multiple: {
       type: Boolean,
       default: true
@@ -50,10 +58,39 @@ export default {
   },
   data: function () {
     return {
-      searchTerm: null
+      searchTerm: null,
+      preselect: null
     }
   },
   watch: {
+    options: function () {
+      this.updatePreselect()
+    },
+    value: function (newValue) {
+      if (!this.queryId) {
+        return
+      }
+
+      const updatedQuery = {}
+
+      if (newValue) {
+        if (Array.isArray(newValue)) {
+          if (newValue.length > 0) {
+            updatedQuery[this.queryId] = newValue.map(v => v ? v[this.idKey] : 'mi').join(',')
+          } else {
+            updatedQuery[this.queryId] = null
+          }
+        } else {
+          updatedQuery[this.queryId] = [newValue ? newValue[this.idKey] : 'mi']
+        }
+      } else {
+        updatedQuery[this.queryId] = null
+      }
+
+      const query = Object.assign({}, this.$router.currentRoute.query, updatedQuery)
+
+      this.$router.replace({ query })
+    },
     searchTerm: function (newValue) {
       // Only update when narrowing the search
       if (newValue !== null && newValue.length > 0 && this.value.length > 0) {
@@ -107,6 +144,38 @@ export default {
         })
       } else {
         return this.options
+      }
+    }
+  },
+  methods: {
+    updatePreselect: function () {
+      if (this.preselect && this.options && this.options.length > 0) {
+        console.log(this.preselect)
+
+        const hasValidOption = this.options.some(o => o.value)
+        if (hasValidOption) {
+          const matches = this.options.filter(n => this.preselect.includes(n.value ? n.value[this.idKey] : 'mi')).map(o => o.value)
+
+          if (this.multiple) {
+            this.$emit('input', matches)
+          } else {
+            this.$emit('input', matches[0])
+          }
+          this.preselect = null
+        }
+      }
+    }
+  },
+  mounted: function () {
+    if (this.$router.currentRoute.query) {
+      const q = this.$router.currentRoute.query[this.queryId]
+
+      if (q) {
+        this.preselect = q.split(',').map(c => c === 'mi' ? c : +c)
+
+        this.updatePreselect()
+      } else {
+        this.preselect = null
       }
     }
   }

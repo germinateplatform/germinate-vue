@@ -1,6 +1,7 @@
 <template>
   <div>
     <ExportSelection v-bind="$props"
+                     :queryId="queryId"
                      :min="2"
                      :max="10"
                      :onlyNumeric="false"
@@ -87,6 +88,7 @@ export default {
   },
   data: function () {
     return {
+      queryId: 'traitMatrix',
       mdiRefresh,
       colorBySelection: null,
       hasPlotData: false,
@@ -211,6 +213,10 @@ export default {
         this.colorBySelection = null
       }
 
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery[`${this.queryId}ColorBy`] = this.colorBySelection
+      this.$router.replace({ query: urlQuery })
+
       plotData = null
       this.hasPlotData = false
       emitter.emit('show-loading', true)
@@ -233,6 +239,10 @@ export default {
       })
     },
     onColorByChanged: function () {
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery[`${this.queryId}ColorBy`] = this.colorBySelection
+      this.$router.replace({ query: urlQuery })
+
       if (plotData) {
         if (this.colorBySelection !== 'specified_names' || (this.germplasmNamesSplit !== null && this.germplasmNamesSplit.length > 0)) {
           this.$refs.chart.redraw(plotData, {
@@ -249,6 +259,11 @@ export default {
       } else {
         this.colorByStats = null
       }
+    }
+  },
+  mounted: function () {
+    if (this.$route.query && this.$route.query[`${this.queryId}ColorBy`]) {
+      this.colorBySelection = this.$route.query[`${this.queryId}ColorBy`]
     }
   }
 }

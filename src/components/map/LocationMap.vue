@@ -176,6 +176,9 @@ export default {
     },
     selectionMode: function () {
       this.updateMap(false)
+    },
+    storeDarkMode: function () {
+      this.updateThemeLayer()
     }
   },
   computed: {
@@ -183,7 +186,8 @@ export default {
       'storeBaseUrl',
       'storeMapLayer',
       'storeToken',
-      'storeServerSettings'
+      'storeServerSettings',
+      'storeDarkMode'
     ]),
     overlayLegends: function () {
       if (this.imageOverlays) {
@@ -442,34 +446,24 @@ export default {
       if (invalidate) {
         this.$nextTick(() => map.invalidateSize())
       }
-    }
-  },
-  mounted: function () {
-    this.internalLocations = this.locations
-
-    if (this.selectionMode === 'polygon') {
-      require('leaflet-draw')
-    }
-
-    if (this.storeServerSettings && this.storeServerSettings.colorsGradient && this.storeServerSettings.colorsGradient.length > 0) {
-      this.gradientColors = this.storeServerSettings.colorsGradient.concat()
-    } else {
-      this.gradientColors.push('#ffffff')
-      this.gradientColors.push(getColor(0))
-    }
-
-    this.$nextTick(() => {
-      // Add stadia dark as the default
-      // const stadia = L.tileLayer('//tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-      //   id: 'Stadia Dark',
-      //   attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-      //   subdomains: ['a', 'b', 'c']
-      // })
+    },
+    updateThemeLayer: function () {
+      if (this.themeLayer) {
+        this.themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
+      }
+    },
+    initMap: function () {
       // Add the OSM default layer
       const openstreetmap = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         id: 'OpenStreetMap',
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         subdomains: ['a', 'b', 'c']
+      })
+      this.themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
+        id: this.storeDarkMode ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
+        attribution: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
+        maxZoom: 21,
+        maxNativeZoom: 15
       })
       // Add an additional satellite layer
       const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -480,9 +474,9 @@ export default {
       const map = this.$refs.map.mapObject
 
       switch (this.storeMapLayer) {
-        // case 'osm':
-        //   map.addLayer(openstreetmap)
-        //   break
+        case 'theme':
+          map.addLayer(this.themeLayer)
+          break
         case 'satellite':
           map.addLayer(satellite)
           break
@@ -493,7 +487,7 @@ export default {
       }
 
       const baseMaps = {
-        // 'Stadia Dark': stadia,
+        'Theme-based': this.themeLayer,
         OpenStreetMap: openstreetmap,
         'Esri WorldImagery': satellite
       }
@@ -503,9 +497,9 @@ export default {
       // Listen for layer changes and store the user selection in the store
       map.on('baselayerchange', e => {
         switch (e.name) {
-          // case 'Stadia Dark':
-          //   this.$store.dispatch('setMapLayer', 'stadia')
-          //   break
+          case 'Theme-based':
+            this.$store.dispatch('setMapLayer', 'theme')
+            break
           case 'OpenStreetMap':
             this.$store.dispatch('setMapLayer', 'osm')
             break
@@ -575,7 +569,23 @@ export default {
           }
         })
       }
-    })
+    }
+  },
+  mounted: function () {
+    this.internalLocations = this.locations
+
+    if (this.selectionMode === 'polygon') {
+      require('leaflet-draw')
+    }
+
+    if (this.storeServerSettings && this.storeServerSettings.colorsGradient && this.storeServerSettings.colorsGradient.length > 0) {
+      this.gradientColors = this.storeServerSettings.colorsGradient.concat()
+    } else {
+      this.gradientColors.push('#ffffff')
+      this.gradientColors.push(getColor(0))
+    }
+
+    this.$nextTick(() => this.initMap())
   }
 }
 </script>

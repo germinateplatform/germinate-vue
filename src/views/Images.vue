@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{ $t('pageImagesTitle') }}</h1>
+    <hr />
     <p>{{ $t('pageImagesText') }}</p>
 
     <ImageTags v-on:tag-selected="(tag) => tagClicked(tag, false)" ref="tags" />
