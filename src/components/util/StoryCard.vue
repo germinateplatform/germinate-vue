@@ -158,11 +158,18 @@ export default {
         })
     },
     editStorySteps: function () {
-      this.$store.dispatch('setActiveStory', {
-        story: this.story,
-        isEdit: true
+      this.$bvModal.msgBoxOk(this.$t('modalTextStoryEditSteps'), {
+        title: this.$t('modalTitleStoryEditSteps'),
+        okVariant: 'primary',
+        okTitle: this.$t('genericOk')
       })
-      this.$emit('hide')
+        .then(() => {
+          this.$store.dispatch('setActiveStory', {
+            story: this.story,
+            isEdit: true
+          })
+          this.$emit('hide')
+        })
     },
     editStory: function () {
       this.$emit('edit-clicked')

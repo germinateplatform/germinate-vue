@@ -143,7 +143,7 @@ const storeState = {
         s.storySteps.sort((a, b) => a.storyIndex - b.storyIndex)
         state.activeStory = {
           story: s,
-          index: 0,
+          index: payload.index || 0,
           isEdit: payload.isEdit
         }
       } else {

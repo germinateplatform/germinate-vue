@@ -483,6 +483,8 @@
   "modalTextUserFeedback": "Please provide your feedback below. The information you provide (screenshot, content and contact email address) will be stored on our system until it has been reviewed and for 30 days after. You may be contacted for further information.",
   "modalTitleEditStory": "Edit story",
   "modalTitleAddStory": "Add story",
+  "modalTitleStoryEditSteps": "Edit story steps",
+  "modalTextStoryEditSteps": "To add a step to the story, navigate to the corresponding page on Germinate, make selections, plot charts, filter tables - anything you want the viewer of the story to see. Then use the button in the navigation bar at the top to add the current view as a new step.",
   "modalMessageSetupServiceUnavailable": "The setup process is unavailable, since Germinate has already been successfully configured.",
   "modalButtonSelectGermplasmLocationSelectFromTable": "Select existing",
   "modalButtonSelectGermplasmLocationSelectOnMap": "Select on map",

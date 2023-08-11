@@ -35,6 +35,11 @@
       <PublicationsWidget referenceType="database" @publication-count-changed="count => showPublications = count > 0"/>
     </div>
 
+    <template v-if="showStories">
+      <h1>{{ $t('pageStoriesTitle') }}</h1>
+      <DataStoryWidget :filterOn="storyFilterOn" @no-stories-found="showStories = false" />
+    </template>
+
     <!-- Introduction tour -->
     <b-button variant="primary" @click="startIntroduction">
       <MdiIcon :path="mdiPresentationPlay" /> {{ $t('widgetIntroTourButtonText') }}
@@ -49,6 +54,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
+import DataStoryWidget from '@/components/util/DataStoryWidget'
 import ImageCarousel from '@/components/images/ImageCarousel'
 import MdiIcon from '@/components/icons/MdiIcon'
 import NewsSection from '@/components/news/NewsSection'
@@ -66,6 +72,7 @@ const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
+    DataStoryWidget,
     ImageCarousel,
     MdiIcon,
     NewsSection,
@@ -75,7 +82,14 @@ export default {
     return {
       mdiPresentationPlay,
       stats: null,
-      showPublications: true
+      showPublications: true,
+      showStories: true,
+      storyFilterOn: [{
+        column: 'storyFeatured',
+        comparator: 'equals',
+        operator: 'and',
+        values: [1]
+      }]
     }
   },
   computed: {

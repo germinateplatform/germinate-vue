@@ -141,6 +141,8 @@ const apiPostStoryUpload = (formData, onSuccess, onError) => authForm({ url: 'st
 
 const apiPostStoryStepUpload = (storyId, formData, onSuccess, onError) => authForm({ url: `story/${storyId}/step`, formData: formData, success: onSuccess, error: onError })
 
+const apiDeleteStoryStep = (storyId, storyStepId, onSuccess, onError) => authAxios({ url: `story/${storyId}/step/${storyStepId}`, method: 'DELETE', success: onSuccess, error: onError })
+
 export {
   apiGetSettings,
   apiGetAdminSettings,
@@ -191,5 +193,6 @@ export {
   apiDeleteStoryById,
   apiPostStoryUpload,
   apiPostStoryStepUpload,
-  apiPatchStory
+  apiPatchStory,
+  apiDeleteStoryStep
 }

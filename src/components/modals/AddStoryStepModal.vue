@@ -66,10 +66,11 @@ export default {
         }
       }
 
+      const newIndex = this.storeActiveStory.index + this.stepIndexOffset
       const formData = new FormData()
       formData.append('stepName', this.stepName)
       formData.append('stepDescription', this.stepDescription)
-      formData.append('storyIndex', this.storeActiveStory.index + this.stepIndexOffset)
+      formData.append('storyIndex', newIndex)
       formData.append('pageConfig', JSON.stringify(routeData))
 
       if (this.imageFile) {
@@ -77,7 +78,7 @@ export default {
       }
 
       apiPostStoryStepUpload(this.storeActiveStory.story.storyId, formData, () => {
-        this.$emit('story-step-added')
+        this.$emit('story-step-added', newIndex)
         this.hide()
       })
     },

@@ -9,13 +9,10 @@
       </b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav>
-      <b-nav-item v-if="storeActiveStory.isEdit && storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"
-                  active
-                  @click="showAddModal(0)"
-                  href="#">
-        <MdiIcon :path="mdiPlusBox" /> {{ $t('buttonAddStepHere') }}
-      </b-nav-item>
-      <b-nav-item-dropdown :text="stepName" id="story-step-dropdown" class="active" v-if="currentStep">
+      <b-nav-item-dropdown id="story-step-dropdown" class="active" v-if="currentStep">
+        <template v-slot:button-content>
+          <MdiIcon :path="mdiFormatListNumbered" /> {{ stepName }}
+        </template>
         <b-dropdown-item href="#" @click="selectIndex(step.storyIndex)" :active="currentStep.storyIndex === step.storyIndex" v-for="step in storeActiveStory.story.storySteps" :key="`story-${storeActiveStory.story.storyId}-step-${step.storyIndex}`">
           <div class="d-flex flex-column">
             <span>{{ step.name }}</span>
@@ -24,12 +21,21 @@
         </b-dropdown-item>
         <b-dropdown-item @click="closeStory" variant="danger"><MdiIcon :path="mdiClose" /> {{ $t('buttonCloseStory') }}</b-dropdown-item>
       </b-nav-item-dropdown>
-      <b-nav-item v-if="storeActiveStory.isEdit && storeToken && userIsAtLeast(storeToken.userType, 'Data Curator') && currentStep"
-                  active
-                  @click="showAddModal(1)"
-                  href="#">
-        <MdiIcon :path="mdiPlusBox" /> {{ $t('buttonAddStepAfter') }}
-      </b-nav-item>
+
+      <b-nav-item-dropdown class="active" v-if="storeActiveStory.isEdit && storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @show="showPopover = false">
+        <template v-slot:button-content>
+          <MdiIcon :path="mdiPencil" /> {{ $t('buttonEdit') }}
+        </template>
+        <b-dropdown-item href="#" @click="showAddModal(0)">
+          <MdiIcon :path="mdiArrowDown" /> {{ $t('buttonAddStepHere') }}
+        </b-dropdown-item>
+        <b-dropdown-item @click="showAddModal(1)" href="#" :disabled="!currentStep">
+          <MdiIcon :path="mdiArrowDownRight" /> {{ $t('buttonAddStepAfter') }}
+        </b-dropdown-item>
+        <b-dropdown-item @click="deleteStep" href="#" variant="danger">
+          <MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}
+        </b-dropdown-item>
+      </b-nav-item-dropdown>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
       <b-nav-item v-if="storeActiveStory.index < storeActiveStory.story.storySteps.length - 1"
@@ -66,9 +72,10 @@
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import AddStoryStepModal from '@/components/modals/AddStoryStepModal'
-import { mdiChevronLeft, mdiChevronRight, mdiClose, mdiPlusBox } from '@mdi/js'
+import { mdiChevronLeft, mdiChevronRight, mdiClose, mdiArrowDown, mdiArrowDownRight, mdiFormatListNumbered, mdiDelete, mdiPencil } from '@mdi/js'
 import { getImageUrlById } from '@/mixins/image'
 import { userIsAtLeast } from '@/mixins/api/auth'
+import { apiDeleteStoryStep, apiPostStoryTable } from '@/mixins/api/misc'
 
 export default {
   components: {
@@ -78,7 +85,11 @@ export default {
   data: function () {
     return {
       mdiClose,
-      mdiPlusBox,
+      mdiArrowDown,
+      mdiArrowDownRight,
+      mdiDelete,
+      mdiPencil,
+      mdiFormatListNumbered,
       mdiChevronLeft,
       mdiChevronRight,
       showPopover: true,
@@ -118,6 +129,41 @@ export default {
   },
   methods: {
     userIsAtLeast,
+    updateStory: function (targetIndex) {
+      apiPostStoryTable({
+        page: 1,
+        limit: 1,
+        filter: [{
+          column: 'storyId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.storeActiveStory.story.storyId]
+        }]
+      }, result => {
+        if (result && result.data && result.data.length > 0) {
+          this.$store.dispatch('setActiveStory', {
+            story: result.data[0],
+            index: targetIndex,
+            isEdit: true
+          })
+        }
+      })
+    },
+    deleteStep: function () {
+      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
+        okVariant: 'danger',
+        okTitle: this.$t('genericYes'),
+        cancelTitle: this.$t('genericNo')
+      })
+        .then(value => {
+          if (value) {
+            apiDeleteStoryStep(this.storeActiveStory.story.storyId, this.currentStep.id, () => {
+              const targetIndex = Math.max(0, Math.min(this.currentStep.storyIndex, this.storeActiveStory.story.storySteps.length))
+              this.updateStory(targetIndex)
+            })
+          }
+        })
+    },
     showAddModal: function (offset) {
       this.showPopover = false
       this.stepIndexOffset = offset
@@ -136,6 +182,8 @@ export default {
     },
     closeStory: function () {
       this.$store.dispatch('setActiveStory', null)
+
+      this.$router.push({ name: 'stories' })
     }
   }
 }

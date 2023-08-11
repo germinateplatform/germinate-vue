@@ -24,6 +24,18 @@
         label-for="storyDate">
         <b-form-datepicker id="storyDate" value-as-date v-model="storyCreatedOn" />
       </b-form-group>
+      <template v-if="storyToEdit">
+        <b-form-group
+          :label="$t('formLabelStoryVisibility')"
+          label-for="storyVisibility">
+          <b-form-checkbox switch id="storyVisibility" v-model="storyVisibility">{{ $t(storyVisibility ? 'genericYes' : 'genericNo') }}</b-form-checkbox>
+        </b-form-group>
+        <b-form-group
+          :label="$t('formLabelStoryFeatured')"
+          label-for="storyFeatured">
+          <b-form-checkbox switch id="storyFeatured" v-model="storyFeatured">{{ $t(storyFeatured ? 'genericYes' : 'genericNo') }}</b-form-checkbox>
+        </b-form-group>
+      </template>
       <b-form-group
         :label="$t('formLabelStoryPublication')"
         label-for="publication">
@@ -57,6 +69,7 @@ export default {
       storyCreatedOn: new Date(),
       publicationId: null,
       storyVisibility: false,
+      storyFeatured: false,
       imageFile: null,
       publications: []
     }
@@ -74,7 +87,8 @@ export default {
           storyDescription: this.storyDescription,
           storyCreatedOn: this.storyCreatedOn,
           publicationId: this.publicationId,
-          storyVisibility: this.storyVisibility
+          storyVisibility: this.storyVisibility,
+          storyFeatured: this.storyFeatured
         }, () => {
           this.$emit('story-added')
           this.hide()
@@ -88,6 +102,7 @@ export default {
           formData.append('publicationId', this.publicationId)
         }
         formData.append('storyVisibility', this.storyVisibility)
+        formData.append('storyFeatured', this.storyFeatured)
 
         if (this.imageFile) {
           formData.append('image', this.imageFile)
@@ -106,12 +121,14 @@ export default {
         this.storyCreatedOn = new Date(this.storyToEdit.storyCreatedOn)
         this.publicationId = this.storyToEdit.publicationId
         this.storyVisibility = this.storyToEdit.storyVisibility
+        this.storyFeatured = this.storyToEdit.storyFeatured
       } else {
         this.storyName = null
         this.storyDescription = null
         this.storyCreatedOn = new Date()
         this.publicationId = null
         this.storyVisibility = false
+        this.storyFeatured = false
       }
 
       this.imageFile = null

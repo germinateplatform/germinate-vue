@@ -45,6 +45,12 @@ export default {
     AddStoryModal,
     StoryCard
   },
+  props: {
+    filterOn: {
+      type: Array,
+      default: () => null
+    }
+  },
   computed: {
     ...mapGetters([
       'storeToken'
@@ -103,12 +109,21 @@ export default {
     update: function () {
       this.loading = true
 
-      apiPostStoryTable({
+      const query = {
         page: 1,
         limit: MAX_JAVA_INTEGER
-      }, result => {
-        if (result && result.data) {
+      }
+
+      if (this.filterOn) {
+        query.filter = this.filterOn
+      }
+
+      apiPostStoryTable(query, result => {
+        if (result && result.data && result.data.length > 0) {
           this.stories = result.data
+        } else {
+          this.stories = []
+          this.$emit('no-stories-found')
         }
 
         this.loading = false
