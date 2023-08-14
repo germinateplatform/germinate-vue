@@ -32,7 +32,7 @@
     <div v-if="selectedLocation" ref="popupContent" class="p-3">
       <dl class="row">
         <template v-if="selectedGermplasm">
-          <dt class="col-4 text-right">{{ $t('tableColumnGermplasmName') }}</dt><dd class="col-8">{{ selectedGermplasm.germplasmName }}</dd>
+          <dt class="col-4 text-right">{{ $t('tableColumnGermplasmName') }}</dt><dd class="col-8">{{ selectedGermplasm.germplasm.germplasmName }}</dd>
         </template>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8 location-name">
@@ -46,13 +46,13 @@
         <template v-if="selectedLocation.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ selectedLocation.locationElevation.toFixed(2) }}</dd></template>
 
         <template v-if="selectedGermplasm && colorBy">
-          <dt class="col-4 text-right">{{ $t('widgetGermplasmMapSelectedOption') }}</dt><dd class="col-8">{{ colorBy.format(colorBy.fields.map(part => selectedGermplasm[part]).join(' ')) }}</dd>
+          <dt class="col-4 text-right">{{ $t('widgetGermplasmMapSelectedOption') }}</dt><dd class="col-8">{{ colorBy.format(colorBy.fields.map(part => selectedGermplasm.germplasm[part]).join(' ')) }}</dd>
         </template>
       </dl>
 
       <div class="mt-2" v-if="selectedGermplasm">
         <!-- Marked item checkbox -->
-        <MdiIcon :path="markedStyle" @click="onToggleMarked()" /> {{ $t('tooltipGermplasmMarkedItem') }}
+        <b-checkbox v-model="selectedGermplasm.marked"> {{ $t('tooltipGermplasmMarkedItem') }}</b-checkbox>
       </div>
     </div>
   </div>
@@ -74,7 +74,7 @@ import { locationTypes } from '@/mixins/types'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { mcpdDateToJsDate } from '@/mixins/util'
 
-import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiCircle } from '@mdi/js'
+import { mdiCircle } from '@mdi/js'
 
 const countries = require('i18n-iso-countries')
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
@@ -127,6 +127,15 @@ export default {
     },
     storeDarkMode: function () {
       this.updateThemeLayer()
+    },
+    'selectedGermplasm.marked': function (newValue) {
+      if (newValue !== undefined && newValue !== null) {
+        if (newValue) {
+          this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: [this.selectedGermplasm.germplasm.germplasmId] })
+        } else {
+          this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: [this.selectedGermplasm.germplasm.germplasmId] })
+        }
+      }
     }
   },
   computed: {
@@ -136,10 +145,6 @@ export default {
       'storeMarkedGermplasm',
       'storeDarkMode'
     ]),
-    markedStyle: function () {
-      const isMarked = this.selectedGermplasm && this.storeMarkedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
-      return isMarked ? mdiCheckboxMarked : mdiCheckboxBlankOutline
-    },
     colorOptions: function () {
       return [{
         text: this.$t('widgetGermplasmMapSelectOption'),
@@ -193,16 +198,6 @@ export default {
             this.$nextTick(() => this.$refs.map.mapObject.fitBounds(this.bounds))
           }
         })
-      }
-    },
-    onToggleMarked: function () {
-      if (this.selectedGermplasm) {
-        const isMarked = this.storeMarkedGermplasm.indexOf(this.selectedGermplasm.germplasmId) !== -1
-        if (isMarked) {
-          this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: [this.selectedGermplasm.germplasmId] })
-        } else {
-          this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: [this.selectedGermplasm.germplasmId] })
-        }
       }
     },
     getFlag: function (location) {
@@ -334,7 +329,10 @@ export default {
           marker.on('click', e => {
             const popup = e.target.getPopup()
             this.selectedLocation = l
-            this.selectedGermplasm = g
+            this.selectedGermplasm = {
+              germplasm: g,
+              marked: this.storeMarkedGermplasm.indexOf(g.germplasmId) !== -1
+            }
             // Set the popup content on click
             this.$nextTick(() => popup.setContent(this.$refs.popupContent))
           })
