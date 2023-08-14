@@ -37,7 +37,7 @@
 
     <template v-if="showStories">
       <h1>{{ $t('pageStoriesTitle') }}</h1>
-      <DataStoryWidget :filterOn="storyFilterOn" @no-stories-found="showStories = false" />
+      <DataStoryWidget :filterOn="storyFilterOn" @story-count-changed="updateStories" />
     </template>
 
     <!-- Introduction tour -->
@@ -117,6 +117,9 @@ export default {
     },
     isDisabled: function (routerPage) {
       return this.storeServerSettings && this.storeServerSettings.hiddenPages.indexOf(routerPage) !== -1
+    },
+    updateStories: function (count) {
+      this.showStories = count > 0
     }
   },
   mounted: function () {

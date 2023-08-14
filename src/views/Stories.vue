@@ -4,7 +4,7 @@
     <hr />
     <p>{{ $t('pageStoriesText') }}</p>
 
-    <DataStoryWidget @no-stories-found="visible = false" />
+    <DataStoryWidget @story-count-changed="updateVisibility" />
   </div>
 </template>
 
@@ -19,6 +19,11 @@ export default {
   },
   components: {
     DataStoryWidget
+  },
+  methods: {
+    updateVisibility: function (count) {
+      this.visible = count > 0
+    }
   }
 }
 </script>

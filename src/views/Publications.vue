@@ -14,6 +14,11 @@
           </b-col>
         </b-row>
 
+        <template v-if="showStories">
+          <h1>{{ $t('pageStoriesTitle') }}</h1>
+          <DataStoryWidget :filterOn="storyFilterOn" @story-count-changed="updateStoryVisibility" />
+        </template>
+
         <!-- One of these three tables will be shown, depending on the type of the selected publication -->
         <template v-if="publication.groupIds && publication.groupIds.length > 0">
           <h4>{{ $t('pageGroupsTitle') }}</h4>
@@ -41,6 +46,7 @@ import GermplasmTable from '@/components/tables/GermplasmTable'
 import GroupTable from '@/components/tables/GroupTable'
 import PublicationTable from '@/components/tables/PublicationTable'
 import PublicationCard from '@/components/util/PublicationCard'
+import DataStoryWidget from '@/components/util/DataStoryWidget'
 
 import { apiPostPublicationDatasetTable } from '@/mixins/api/dataset'
 import { apiPostPublicationGermplasmTable } from '@/mixins/api/germplasm'
@@ -56,14 +62,17 @@ export default {
     GermplasmTable,
     GroupTable,
     PublicationTable,
-    PublicationCard
+    PublicationCard,
+    DataStoryWidget
   },
   data: function () {
     return {
       publicationId: null,
       publicationType: null,
       publication: null,
-      publicationData: null
+      publicationData: null,
+      showStories: true,
+      storyFilterOn: null
     }
   },
   watch: {
@@ -95,6 +104,9 @@ export default {
     }
   },
   methods: {
+    updateStoryVisibility: function (count) {
+      this.showStories = count > 0
+    },
     getGermplasmData: function (data, callback) {
       return apiPostPublicationGermplasmTable(this.publication.publicationId, data, callback)
     },
@@ -118,6 +130,14 @@ export default {
       })
     },
     onPublicationSelected: function (config) {
+      this.showStories = true
+      this.storyFilterOn = [{
+        column: 'publicationId',
+        comparator: 'equals',
+        operator: 'and',
+        values: [config.publicationId]
+      }]
+
       const queryParams = {
         page: 1,
         limit: 1,
@@ -147,13 +167,15 @@ export default {
 
           // Scroll down to the publication details section
           this.$nextTick(() => {
-            const rect = this.$refs.publicationDetails.getBoundingClientRect()
+            if (this.$refs.publicationDetails) {
+              const rect = this.$refs.publicationDetails.getBoundingClientRect()
 
-            window.scrollTo({
-              left: 0,
-              top: rect.top,
-              behavior: 'smooth'
-            })
+              window.scrollTo({
+                left: 0,
+                top: rect.top,
+                behavior: 'smooth'
+              })
+            }
           })
         }
       })

@@ -51,6 +51,14 @@ export default {
       default: () => null
     }
   },
+  watch: {
+    filterOn: {
+      deep: true,
+      handler: function () {
+        this.update()
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       'storeToken'
@@ -121,9 +129,10 @@ export default {
       apiPostStoryTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           this.stories = result.data
+          this.$emit('story-count-changed', result.data.length)
         } else {
           this.stories = []
-          this.$emit('no-stories-found')
+          this.$emit('story-count-changed', 0)
         }
 
         this.loading = false
