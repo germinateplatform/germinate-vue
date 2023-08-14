@@ -51,7 +51,7 @@ export default {
       'storeActiveStory'
     ]),
     canContinue: function () {
-      return this.stepName && this.stepDescription
+      return this.stepName && this.stepName !== '' && this.stepName.length < 255 && this.stepDescription && this.stepDescription !== ''
     }
   },
   methods: {

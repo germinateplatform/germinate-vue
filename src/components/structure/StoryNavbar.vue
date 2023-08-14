@@ -1,5 +1,5 @@
 <template>
-  <b-navbar class="story-navbar" type="dark" :variant="storeActiveStory.isEdit ? 'warning' : 'primary'" sticky>
+  <b-navbar class="story-navbar" id="story-navbar" type="dark" :variant="storeActiveStory.isEdit ? 'warning' : 'primary'" sticky>
     <b-navbar-nav class="mr-auto">
       <b-nav-item :disabled="storeActiveStory.index < 1"
                   :active="storeActiveStory.index > 0"
@@ -9,7 +9,7 @@
       </b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav>
-      <b-nav-item-dropdown id="story-step-dropdown" class="active" v-if="currentStep">
+      <b-nav-item-dropdown id="story-step-dropdown" class="active" v-if="currentStep" @show="showPopover = false">
         <template v-slot:button-content>
           <MdiIcon :path="mdiFormatListNumbered" /> {{ stepName }}
         </template>
@@ -55,9 +55,9 @@
     <b-popover
       v-if="currentStep"
       :show.sync="showPopover"
-      target="story-step-dropdown"
-      trigger="click blur"
+      target="story-navbar"
       placement="bottom"
+      triggers="manual"
       :title="currentStep.name"
       ref="popover">
       <b-img fluid-grow class="story-popover-image" :src="getSrc(currentStep, 'small')" v-if="currentStep.imageId" />
@@ -124,7 +124,9 @@ export default {
       }
     },
     currentStep: function () {
-      this.showPopover = true
+      this.$nextTick(() => {
+        this.showPopover = true
+      })
     }
   },
   methods: {

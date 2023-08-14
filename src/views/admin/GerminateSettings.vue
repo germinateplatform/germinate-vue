@@ -156,6 +156,9 @@
             <b-form-group :label="$t('formLabelAdminSettingsFilesDeletedAfterTemp')" label-for="delete-temp-files">
               <b-form-input type="number" v-model.number="settings.filesDeleteAfterHoursTemp" id="delete-temp-files" />
             </b-form-group>
+            <b-form-group :label="$t('formLabelAdminSettingsHiddenPagesAutodiscover')" label-for="hidden-pages-autodiscover">
+              <b-form-checkbox id="hidden-pages-autodiscover" v-model="settings.hiddenPagesAutodiscover" switch />
+            </b-form-group>
           </b-card>
         </b-col>
       </b-row>
