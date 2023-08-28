@@ -17,9 +17,6 @@
             <b-form-group :label="$t('tableColumnEntityType')" label-for="entity-types">
               <!-- These buttons are for switching between different entity types. They make switching very convenient. -->
               <b-button-group class="flex-wrap" id="entity-types">
-                <b-button class="mb-2" @click="onEntityTypeSelected(null)" variant="outline-primary">
-                  <MdiIcon :path="mdiCheckAll" /><span> {{$t('buttonAll')}}</span> <b-badge>{{ allGermplasmCount }}</b-badge>
-                </b-button>
                 <b-button class="mb-2" v-for="entityType in entityTypeOptions"
                         :key="entityType.id"
                         :disabled="entityType.disabled"
@@ -81,10 +78,10 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 
 import { apiGetTaxonomyData, apiGetLocationData, apiGetBiologicalStatusData } from '@/mixins/api/germplasm.js'
-import { entityTypes, datasetTypes } from '@/mixins/types.js'
+import { entityTypes, datasetTypes } from '@/mixins/types'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 
-import { mdiFilter, mdiCamera, mdiCheckAll, mdiMagnify } from '@mdi/js'
+import { mdiFilter, mdiCamera, mdiMagnify } from '@mdi/js'
 
 export default {
   components: {
@@ -96,7 +93,6 @@ export default {
       datasetTypes,
       mdiFilter,
       mdiCamera,
-      mdiCheckAll,
       mdiMagnify,
       collapseVisible: false,
       identifierSearch: null,
