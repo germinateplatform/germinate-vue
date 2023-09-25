@@ -538,7 +538,7 @@ export default {
   scrollbar-width: none;  /* Firefox */
 }
 .v-sidebar-menu .vsm--dropdown>.vsm--list {
-    padding-left: 15px;
+  padding: 0 0 0 15px;
 }
 
 .v-sidebar-menu .vsm--link.vsm--link_active {
