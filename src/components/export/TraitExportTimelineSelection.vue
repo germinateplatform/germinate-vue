@@ -108,7 +108,7 @@ export default {
       }, result => {
         this.groupIds = query.yGroupIds
         this.markedIds = query.yIds
-        this.trait = selectedItems
+        this.trait = selectedItems[0]
         this.timepoints = result
 
         this.$nextTick(() => this.$refs.timelineChart.getTraitData())
