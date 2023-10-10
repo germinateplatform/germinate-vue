@@ -35,7 +35,7 @@
       <PublicationsWidget referenceType="database" @publication-count-changed="count => showPublications = count > 0"/>
     </div>
 
-    <template v-if="showStories">
+    <template v-if="showStories || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator'))">
       <h1>{{ $t('pageStoriesTitle') }}</h1>
       <DataStoryWidget :filterOn="storyFilterOn" @story-count-changed="updateStories" />
     </template>

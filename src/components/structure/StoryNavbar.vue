@@ -16,8 +16,12 @@
         <b-dropdown-item href="#" @click="selectIndex(step.storyIndex)" :active="currentStep.storyIndex === step.storyIndex" v-for="step in storeActiveStory.story.storySteps" :key="`story-${storeActiveStory.story.storyId}-step-${step.storyIndex}`">
           <div class="d-flex flex-column">
             <span>{{ step.name }}</span>
-            <small class="story-item-description" v-if="step.description" v-b-popover.ds500.hover="step.description"> {{ step.description }} </small>
+            <small class="story-item-description" v-if="step.description" v-html="step.description" :id="`story-${storeActiveStory.story.storyId}-step-${step.storyIndex}`" />
           </div>
+
+          <b-popover v-if="step.description" :target="`story-${storeActiveStory.story.storyId}-step-${step.storyIndex}`" triggers="hover" :delay="{ show: 500, hide: 50 }">
+            <div v-html="step.description" />
+          </b-popover>
         </b-dropdown-item>
         <b-dropdown-item @click="closeStory" variant="danger"><MdiIcon :path="mdiClose" /> {{ $t('buttonCloseStory') }}</b-dropdown-item>
       </b-nav-item-dropdown>
@@ -61,7 +65,7 @@
       :title="currentStep.name"
       ref="popover">
       <b-img fluid-grow class="story-popover-image" :src="getSrc(currentStep, 'small')" v-if="currentStep.imageId" />
-      <span v-if="currentStep.description">{{ currentStep.description }}</span>
+      <span v-if="currentStep.description" v-html="currentStep.description" />
     </b-popover>
 
     <AddStoryStepModal ref="storyStepModal" :stepIndexOffset="stepIndexOffset" @story-step-added="updateStory" />

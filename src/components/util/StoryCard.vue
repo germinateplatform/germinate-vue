@@ -1,6 +1,6 @@
 <template>
   <b-card no-body class="story-card h-100" v-if="story">
-    <b-img-lazy :src="getSrc(story, 'small')" class="story-image card-img cover" style="height: 200px" v-if="story.storyImageId" :alt="story.storyName" />
+    <b-img :src="isPlaceholder ? story.storyImageName : getSrc(story, 'small')" :class="`story-image ${isPlaceholder ? 'placeholder-img p-3' : 'card-img'}`" v-if="isPlaceholder || story.storyImageId" :alt="story.storyName" />
 
     <b-card-body>
       <b-card-title>{{ story.storyName }}</b-card-title>
@@ -20,13 +20,13 @@
               </b-col>
               <b-col cols=12 md=8 :order-md="1">
                 <b-card-body>
-                  <b-card-text>{{ step.description }}</b-card-text>
+                  <b-card-text><span v-html="step.description" /></b-card-text>
                 </b-card-body>
               </b-col>
             </b-row>
           </b-card>
           <b-card v-else>
-            <b-card-text>{{ step.description }}</b-card-text>
+            <b-card-text><span v-html="step.description" /></b-card-text>
           </b-card>
         </b-collapse>
       </div>
@@ -203,7 +203,15 @@ export default {
 <style>
 .story-card .card-img {
   width: 100%;
+  height: 200px;
   object-fit: cover;
+  transition: transform .2s ease-in-out;
+}
+
+.story-card .placeholder-img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
   transition: transform .2s ease-in-out;
 }
 </style>

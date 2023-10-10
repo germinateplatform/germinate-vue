@@ -74,6 +74,7 @@ export default {
         storyId: -1,
         storyName: this.$t('widgetCreateStoryStoryName'),
         storyDescription: this.$t('widgetCreateStoryStoryDescription'),
+        storyImageName: require('@/assets/img/story-banner.svg'),
         storySteps: [{
           id: -1,
           storyIndex: 0,
