@@ -169,7 +169,11 @@ export default {
       const q = this.$router.currentRoute.query[this.queryId]
 
       if (q) {
-        this.preselect = q.split(',').map(c => c === 'mi' ? c : +c)
+        if (isNaN(q)) {
+          this.preselect = q.split(',').map(c => c === 'mi' ? c : +c)
+        } else {
+          this.preselect = [+q]
+        }
 
         this.updatePreselect()
       } else {

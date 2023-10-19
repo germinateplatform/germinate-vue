@@ -1,6 +1,6 @@
 <template>
   <b-card no-body class="story-card h-100" v-if="story">
-    <b-img :src="isPlaceholder ? story.storyImageName : getSrc(story, 'small')" :class="`story-image ${isPlaceholder ? 'placeholder-img p-3' : 'card-img'}`" v-if="isPlaceholder || story.storyImageId" :alt="story.storyName" />
+    <b-img :src="isPlaceholder ? story.storyImageName : getSrc('small')" :class="`story-image ${isPlaceholder ? 'placeholder-img p-3' : 'card-img'}`" v-if="isPlaceholder || story.storyImageId" :alt="story.storyName" />
 
     <b-card-body>
       <b-card-title>{{ story.storyName }}</b-card-title>
