@@ -141,10 +141,10 @@ export default {
       })
       return result
     },
-    redraw: function (force) {
+    redraw: async function (force) {
       const urlQuery = Object.assign({}, this.$route.query)
       urlQuery[`${this.queryId}ColorBy`] = this.splitBy
-      this.$router.replace({ query: urlQuery })
+      await this.$router.replace({ query: urlQuery })
 
       if (this.rawData) {
         const tempTraitChartData = {}

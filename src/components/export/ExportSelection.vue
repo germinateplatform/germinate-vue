@@ -5,9 +5,8 @@
       <p>{{ $t(texts.exportText) }}</p>
       <!-- Selected trait/climate -->
       <SearchableSelect v-model="selectedItems" :queryId="`${queryId}-x`" :idKey="idKey" :options="itemOptions" :multiple="multipleItems" :selectSize="selectSize" />
-      <!-- <b-form-select multiple v-model="selectedItems" :options="itemOptions" :select-size=7 /> -->
-      <p class="text-danger" v-if="max !== null && selectedItemCount() > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
-      <p class="text-info" v-if="min !== null && selectedItemCount() < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
+      <p class="text-danger" v-if="max !== null && selectedItemCount > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
+      <p class="text-info" v-if="min !== null && selectedItemCount < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
     </b-col>
     <b-col cols=12 md=6>
       <!-- Selected germplasm/location groups -->
@@ -104,6 +103,15 @@ export default {
       } else {
         return Math.min(7, this.itemOptions.length)
       }
+    },
+    selectedItemCount: function () {
+      if (!this.selectedItems) {
+        return 0
+      } else if (Array.isArray(this.selectedItems)) {
+        return this.selectedItems.length
+      } else {
+        return this.selectedItems !== null ? 1 : 0
+      }
     }
   },
   watch: {
@@ -121,18 +129,26 @@ export default {
       if (this.$refs.groupSelection) {
         const settings = this.$refs.groupSelection.getSettings()
 
-        let disabled = this.min !== null && this.selectedItemCount() < this.min
+        let disabled = this.min !== null && this.selectedItemCount < this.min
 
         if (settings.specialGroupSelection === 'selection') {
           disabled = disabled || settings.selectedGroups.length < 1
         }
-        disabled = disabled || (this.max !== null && this.selectedItemCount() > this.max)
+        disabled = disabled || (this.max !== null && this.selectedItemCount > this.max)
         return disabled
       } else {
         return true
       }
     },
-    buttonPressed: function () {
+    buttonPressed: async function (updateUrl = true) {
+      if (updateUrl) {
+        const params = {}
+        params[`${this.queryId}-plot`] = true
+        const routeQuery = Object.assign({}, this.$router.currentRoute.query, params)
+
+        await this.$router.replace({ query: routeQuery })
+      }
+
       const query = {
         xGroupIds: null,
         xIds: null,
@@ -157,7 +173,7 @@ export default {
       }
 
       // Set selected trait/climate ids
-      if (this.selectedItemCount() > 0) {
+      if (this.selectedItemCount > 0) {
         query.xIds = this.getSelectedItems()
       }
 
@@ -181,35 +197,30 @@ export default {
         return [this.selectedItems[this.idKey]]
       }
     },
-    selectedItemCount: function () {
-      if (!this.selectedItems) {
-        return 0
-      } else if (Array.isArray(this.selectedItems)) {
-        return this.selectedItems.length
-      } else {
-        return this.selectedItems !== null ? 1 : 0
-      }
-    },
     updateItems: function () {
-      this.getItems(result => {
-        this.items = result
-        this.itemOptions = []
-        this.items.forEach(t => {
-          // If we're only supposed to show numerics, exclude chars
-          if (!this.onlyNumeric || (t.dataType === 'numeric')) {
-            let itemName = t[this.nameKey]
+      return new Promise((resolve, reject) => {
+        this.getItems(result => {
+          this.items = result
+          this.itemOptions = []
+          this.items.forEach(t => {
+            // If we're only supposed to show numerics, exclude chars
+            if (!this.onlyNumeric || (t.dataType === 'numeric')) {
+              let itemName = t[this.nameKey]
 
-            if (t.unitAbbreviation) {
-              itemName += ` [${t.unitAbbreviation}]`
+              if (t.unitAbbreviation) {
+                itemName += ` [${t.unitAbbreviation}]`
+              }
+
+              this.itemOptions.push({
+                value: t,
+                text: itemName
+              })
+
+              t.displayName = itemName
             }
+          })
 
-            this.itemOptions.push({
-              value: t,
-              text: itemName
-            })
-
-            t.displayName = itemName
-          }
+          resolve()
         })
       })
     }
@@ -217,6 +228,13 @@ export default {
   mounted: function () {
     if (this.datasetIds) {
       this.updateItems()
+        .then(() => {
+          const q = this.$router.currentRoute.query[`${this.queryId}-plot`]
+
+          if (q !== undefined) {
+            this.$nextTick(() => this.buttonPressed(false))
+          }
+        })
     }
   }
 }

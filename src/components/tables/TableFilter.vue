@@ -220,15 +220,7 @@ export default {
       this.updateOperators()
     },
     targetFilter: function (newValue) {
-      this.$nextTick(() => {
-        const query = Object.assign({}, this.$route.query)
-        if (newValue && newValue.length > 0) {
-          query[`${this.tableName}-filter`] = JSON.stringify(newValue)
-        } else {
-          delete query[`${this.tableName}-filter`]
-        }
-        this.$router.replace({ query }).catch(() => true)
-      })
+      this.updateUrl(newValue)
     }
   },
   computed: {
@@ -264,6 +256,15 @@ export default {
     }
   },
   methods: {
+    updateUrl: async function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      if (newValue && newValue.length > 0) {
+        query[`${this.tableName}-filter`] = JSON.stringify(newValue)
+      } else {
+        delete query[`${this.tableName}-filter`]
+      }
+      await this.$router.replace({ query }).catch(() => true)
+    },
     updateOperators: function () {
       this.localOperators = Object.keys(operators).map(o => {
         return {

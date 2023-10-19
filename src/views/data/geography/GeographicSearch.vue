@@ -106,23 +106,29 @@ export default {
     },
     polygons: function (newValue) {
       if (newValue && newValue.length > 0) {
-        const query = Object.assign({}, this.$route.query)
-
-        query.polygons = newValue.map(polygon => polygon.map(l => `${l.lat.toFixed(6)},${l.lng.toFixed(6)}`).join(';')).join('|')
-
-        this.$router.replace({ query })
+        this.updatePolygonUrl(newValue)
       }
     },
     point: function (newValue) {
       if (newValue) {
-        const query = Object.assign({}, this.$route.query)
-        query.latLng = `${newValue.lat.toFixed(6)},${newValue.lng.toFixed(6)}`
-
-        this.$router.replace({ query })
+        this.updatePointUrl(newValue)
       }
     }
   },
   methods: {
+    updatePointUrl: async function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      query.latLng = `${newValue.lat.toFixed(6)},${newValue.lng.toFixed(6)}`
+
+      await this.$router.replace({ query })
+    },
+    updatePolygonUrl: async function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+
+      query.polygons = newValue.map(polygon => polygon.map(l => `${l.lat.toFixed(6)},${l.lng.toFixed(6)}`).join(';')).join('|')
+
+      await this.$router.replace({ query })
+    },
     getGermplasmData: function (data, callback) {
       if (this.tabIndex === 0) {
         data.latitude = this.point.lat

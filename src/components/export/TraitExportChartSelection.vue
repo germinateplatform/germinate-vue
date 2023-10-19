@@ -204,7 +204,7 @@ export default {
         return ''
       }
     },
-    plot: function (query, selectedItems) {
+    plot: async function (query, selectedItems) {
       this.colorByStats = null
       this.colorByGroupEnabled = query.yGroupIds && query.yGroupIds.length > 0
 
@@ -215,7 +215,7 @@ export default {
 
       const urlQuery = Object.assign({}, this.$route.query)
       urlQuery[`${this.queryId}ColorBy`] = this.colorBySelection
-      this.$router.replace({ query: urlQuery })
+      await this.$router.replace({ query: urlQuery })
 
       plotData = null
       this.hasPlotData = false
@@ -238,10 +238,10 @@ export default {
         }
       })
     },
-    onColorByChanged: function () {
+    onColorByChanged: async function () {
       const urlQuery = Object.assign({}, this.$route.query)
       urlQuery[`${this.queryId}ColorBy`] = this.colorBySelection
-      this.$router.replace({ query: urlQuery })
+      await this.$router.replace({ query: urlQuery })
 
       if (plotData) {
         if (this.colorBySelection !== 'specified_names' || (this.germplasmNamesSplit !== null && this.germplasmNamesSplit.length > 0)) {

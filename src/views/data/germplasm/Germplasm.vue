@@ -56,6 +56,11 @@ export default {
   },
   watch: {
     collapseVisible: function (newValue) {
+      this.updateCollapseVisibleUrl(newValue)
+    }
+  },
+  methods: {
+    updateCollapseVisibleUrl: async function (newValue) {
       const query = Object.assign({}, this.$route.query)
       if (newValue) {
         query.mapExpanded = true
@@ -63,10 +68,8 @@ export default {
         query.mapExpanded = false
       }
 
-      this.$router.replace({ query })
-    }
-  },
-  methods: {
+      await this.$router.replace({ query })
+    },
     invalidateMapSize: function () {
       this.$nextTick(() => this.$refs.germplasmMap.invalidateSize())
     },

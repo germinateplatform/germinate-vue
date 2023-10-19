@@ -2,7 +2,7 @@
   <div>
     <h1>{{ $t('pageMarkersTitle') }}</h1>
     <hr />
-    <p>{{ $t('pageMapsText') }}</p>
+    <p>{{ $t('pageMarkersText') }}</p>
 
     <RecentItems itemType="markers" />
 

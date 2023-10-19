@@ -66,7 +66,7 @@ export default {
     options: function () {
       this.updatePreselect()
     },
-    value: function (newValue) {
+    value: async function (newValue) {
       if (!this.queryId) {
         return
       }
@@ -89,7 +89,7 @@ export default {
 
       const query = Object.assign({}, this.$router.currentRoute.query, updatedQuery)
 
-      this.$router.replace({ query })
+      await this.$router.replace({ query })
     },
     searchTerm: function (newValue) {
       // Only update when narrowing the search
@@ -150,8 +150,6 @@ export default {
   methods: {
     updatePreselect: function () {
       if (this.preselect && this.options && this.options.length > 0) {
-        console.log(this.preselect)
-
         const hasValidOption = this.options.some(o => o.value)
         if (hasValidOption) {
           const matches = this.options.filter(n => this.preselect.includes(n.value ? n.value[this.idKey] : 'mi')).map(o => o.value)

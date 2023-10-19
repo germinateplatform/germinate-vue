@@ -118,12 +118,7 @@ export default {
   },
   watch: {
     colorBy: function (newValue) {
-      const query = Object.assign({}, this.$route.query)
-      query.germplasmMapColorBy = newValue ? newValue.id : null
-
-      this.$router.replace({ query })
-
-      this.update()
+      this.updateQuery(newValue)
     },
     storeDarkMode: function () {
       this.updateThemeLayer()
@@ -189,6 +184,14 @@ export default {
     }
   },
   methods: {
+    updateQuery: async function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      query.germplasmMapColorBy = newValue ? newValue.id : null
+
+      await this.$router.replace({ query })
+
+      this.update()
+    },
     invalidateSize: function () {
       if (this.$refs.map && this.$refs.map.mapObject) {
         this.$nextTick(() => {

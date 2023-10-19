@@ -203,7 +203,7 @@ export default {
       data.datasetIds = this.datasetIds
       return apiPostClimateDataTableIds(data, callback)
     },
-    tabSelected: function (tab, trigger = true) {
+    tabSelected: async function (tab, trigger = true) {
       this.currentTab = tab
 
       if (this.currentTab === 'overlays') {
@@ -214,7 +214,7 @@ export default {
         const query = Object.assign({}, this.$route.query)
         query.tab = tab
 
-        this.$router.replace({ query })
+        await this.$router.replace({ query })
       }
     },
     getFilter: function (index) {

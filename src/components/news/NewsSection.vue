@@ -66,6 +66,14 @@
             </b-card>
           </b-col>
         </b-row>
+
+        <b-pagination
+          class="projects-pagination"
+          v-model="projectsCurrentPage"
+          :total-rows="projectsTotalCount"
+          :per-page="projectCount"
+          v-show="projectsTotalCount > projectCount"
+          @change="updateProjects" />
       </b-col>
     </b-row>
     <div v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
@@ -127,6 +135,8 @@ export default {
       mdiOpenInNew,
       mdiCalendarClock,
       projects: null,
+      projectsTotalCount: 0,
+      projectsCurrentPage: 1,
       news: null,
       newsTotalCount: 0,
       newsCurrentPage: 1,
@@ -247,9 +257,9 @@ export default {
         this.newsTotalCount = result.count
       })
     },
-    update: function () {
+    updateProjects: function (page) {
       const projectQuery = {
-        page: 1,
+        page: page,
         limit: this.projectCount ? this.projectCount : MAX_JAVA_INTEGER,
         filter: [{
           column: 'newstypeName',
@@ -260,8 +270,11 @@ export default {
       }
       apiPostNewsTable(projectQuery, result => {
         this.projects = result.data
+        this.projectsTotalCount = result.count
       })
-
+    },
+    update: function () {
+      this.updateProjects(1)
       this.updateNews(1)
     }
   },

@@ -308,10 +308,7 @@ export default {
     'pagination.currentPage': function (newValue) {
       this.$refs.table.refresh()
 
-      const query = Object.assign({}, this.$route.query)
-      query[`${this.options.tableName}-page`] = newValue
-
-      this.$router.replace({ query })
+      this.updateQuery(newValue)
     },
     'pagination.totalCount': function () {
       this.updateTableTour()
@@ -368,7 +365,13 @@ export default {
     Tour
   },
   methods: {
-    updateSort: function (ctx) {
+    updateQuery: async function (newValue) {
+      const query = Object.assign({}, this.$route.query)
+      query[`${this.options.tableName}-page`] = newValue
+
+      await this.$router.replace({ query })
+    },
+    updateSort: async function (ctx) {
       const query = Object.assign({}, this.$route.query)
       if (ctx.sortBy) {
         query[`${this.options.tableName}-sort`] = ctx.sortBy
@@ -382,7 +385,7 @@ export default {
         delete query[`${this.options.tableName}-sort-desc`]
       }
 
-      this.$router.replace({ query })
+      await this.$router.replace({ query })
     },
     jumpToPage: function () {
       if (this.jumpToPageValue > 0 && this.jumpToPageValue <= this.maxPage) {

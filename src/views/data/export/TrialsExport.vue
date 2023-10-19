@@ -279,14 +279,14 @@ export default {
       data.datasetIds = this.datasetIds
       return apiPostTrialsDataTableIds(data, callback)
     },
-    tabSelected: function (tab, trigger = true) {
+    tabSelected: async function (tab, trigger = true) {
       this.currentTab = tab
 
       if (trigger) {
         const query = Object.assign({}, this.$route.query)
         query.tab = tab
 
-        this.$router.replace({ query })
+        await this.$router.replace({ query })
       }
     },
     getFilter: function (index) {

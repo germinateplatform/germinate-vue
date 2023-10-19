@@ -223,10 +223,10 @@ export default {
         this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: this.selectedIds })
       }
     },
-    chart: function () {
+    chart: async function () {
       const urlQuery = Object.assign({}, this.$route.query)
       urlQuery.traitBoxplotGroupBy = this.groupBy
-      this.$router.replace({ query: urlQuery })
+      await this.$router.replace({ query: urlQuery })
 
       this.selectedIds = []
       this.selectedGermplasmId = null

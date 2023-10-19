@@ -228,17 +228,23 @@ export default {
   },
   watch: {
     searchType: function (newValue) {
-      const urlQuery = Object.assign({}, this.$route.query)
-      urlQuery.searchType = newValue
-      this.$router.replace({ query: urlQuery })
+      this.updateSearchTypeUrl(newValue)
     },
     comparator: function (newValue) {
-      const urlQuery = Object.assign({}, this.$route.query)
-      urlQuery.comparator = newValue
-      this.$router.replace({ query: urlQuery })
+      this.updateComparatorUrl(newValue)
     }
   },
   methods: {
+    updateSearchTypeUrl: async function (newValue) {
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery.searchType = newValue
+      await this.$router.replace({ query: urlQuery })
+    },
+    updateComparatorUrl: async function (newValue) {
+      const urlQuery = Object.assign({}, this.$route.query)
+      urlQuery.comparator = newValue
+      await this.$router.replace({ query: urlQuery })
+    },
     checkNumbers: function (requestData, data) {
       this.showAdditionalDatasets = data && data.count > 0
     },
