@@ -8,7 +8,7 @@
                      :onlyNumeric="true"
                      v-on:button-clicked="plot" />
 
-    <TimelineChart :shapefiles="shapefiles" :trait="trait" :groupIds="groupIds" :markedIds="markedIds" :datasetIds="datasetIds" :timepoints="timepoints" ref="timelineChart" v-if="shapefiles" />
+    <TimelineChart :shapefiles="shapefiles" :trait="trait" :groupIds="groupIds" queryId="traitTimepoint" :markedIds="markedIds" :datasetIds="datasetIds" :timepoints="timepoints" ref="timelineChart" v-if="shapefiles" />
   </div>
 </template>
 

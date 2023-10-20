@@ -135,6 +135,10 @@ export default {
     shapefiles: {
       type: Array,
       default: () => []
+    },
+    queryId: {
+      type: String,
+      default: null
     }
   },
   data: function () {
@@ -153,6 +157,7 @@ export default {
       traitDefinitions: null,
       traitData: null,
       currentTimepoint: 0,
+      preselectCurrentTimepoint: null,
       selectedGermplasm: [],
       geotiffs: null,
       hasPlotData: false
@@ -224,6 +229,8 @@ export default {
           line: { color: 'red' }
         }]
       })
+
+      this.updateTimepointQuery(newValue)
     },
     storeDarkMode: function () {
       this.redraw(true)
@@ -236,6 +243,13 @@ export default {
     }
   },
   methods: {
+    updateTimepointQuery: async function (newValue) {
+      const params = {}
+      params[`${this.queryId}-tp`] = newValue
+      const routeQuery = Object.assign({}, this.$router.currentRoute.query, params)
+
+      await this.$router.replace({ query: routeQuery })
+    },
     updatePlotData: function () {
       if (this.traitData) {
         const traces = []
@@ -397,10 +411,6 @@ export default {
 
       this.currentTimepoint = 0
 
-      if (this.interval) {
-        clearInterval(this.interval)
-      }
-
       if (this.trait) {
         apiPostTrialsDataTable({
           datasetIds: this.datasetIds,
@@ -413,6 +423,10 @@ export default {
             values: [this.trait.traitId]
           }]
         }, result => {
+          if (this.preselectCurrentTimepoint !== undefined && this.preselectCurrentTimepoint !== null && this.preselectCurrentTimepoint >= 0 && this.preselectCurrentTimepoint < this.timepoints.length) {
+            this.currentTimepoint = this.preselectCurrentTimepoint
+          }
+          this.preselectCurrentTimepoint = null
           this.traitData = result.data
           emitter.emit('show-loading', false)
         })
@@ -420,6 +434,12 @@ export default {
     }
   },
   mounted: function () {
+    const q = this.$router.currentRoute.query[`${this.queryId}-tp`]
+
+    if (q) {
+      this.preselectCurrentTimepoint = +q
+    }
+
     apiPostTraitStats('trial', {
       datasetIds: this.datasetIds
     }, result => {

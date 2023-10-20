@@ -89,7 +89,7 @@ export default {
           sortable: true,
           class: 'text-right',
           label: this.$t('tableColumnMapPosition'),
-          formatter: value => value ? getNumberWithSuffix(value, 2) : null
+          formatter: value => (value !== undefined && value !== null) ? getNumberWithSuffix(value, 2) : null
         }, {
           key: 'marked',
           type: null,

@@ -105,8 +105,9 @@ export default {
     }
   },
   watch: {
-    shapefileId: function () {
+    shapefileIndex: function (newValue) {
       this.update()
+      this.updateShapefileIndexQuery(newValue)
     },
     mapoverlays: function () {
       this.updateMapoverlays()
@@ -142,13 +143,6 @@ export default {
             text: s.fileresourceName
           }
         })
-      } else {
-        return null
-      }
-    },
-    shapefileId: function () {
-      if (this.shapefiles && this.shapefiles.length > 0) {
-        return this.shapefiles[this.shapefileIndex].fileresourceId
       } else {
         return null
       }
@@ -203,6 +197,13 @@ export default {
     }
   },
   methods: {
+    updateShapefileIndexQuery: async function (newValue) {
+      const routeQuery = Object.assign({}, this.$router.currentRoute.query, {
+        shapefileIndex: newValue
+      })
+
+      await this.$router.replace({ query: routeQuery })
+    },
     removeHighlight: function () {
       this.updateColors()
     },
@@ -343,8 +344,14 @@ export default {
 
       bounds = L.latLngBounds()
 
-      if (this.shapefileId) {
-        apiGetDataResource(this.shapefileId, result => {
+      let shapefileId = null
+
+      if (this.shapefiles && this.shapefiles.length > 0) {
+        shapefileId = this.shapefiles[this.shapefileIndex].fileresourceId
+      }
+
+      if (shapefileId) {
+        apiGetDataResource(shapefileId, result => {
           const reader = new FileReader()
           reader.onload = async () => {
             const shape = await shp(reader.result)
@@ -410,6 +417,10 @@ export default {
             if (bounds.isValid()) {
               this.$nextTick(() => this.map.fitBounds(bounds))
             }
+
+            if (this.traitData) {
+              this.$nextTick(() => this.updateColors())
+            }
           }
           reader.readAsArrayBuffer(result)
         })
@@ -425,7 +436,17 @@ export default {
     this.$nextTick(() => {
       this.map = L.map(this.id)
 
-      this.map.on('load', () => this.update())
+      this.map.on('load', () => {
+        if (this.$router.currentRoute.query) {
+          const q = this.$router.currentRoute.query.shapefileIndex
+
+          if (q) {
+            this.shapefileIndex = +q
+          }
+        }
+
+        this.update()
+      })
 
       this.map.setView([56.486059, -3.136428], 16)
 
