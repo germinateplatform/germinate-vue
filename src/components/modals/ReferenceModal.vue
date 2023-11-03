@@ -12,7 +12,9 @@
 </template>
 
 <script>
-const Cite = require('citation-js')
+const { Cite } = require('@citation-js/core')
+require('@citation-js/plugin-doi')
+require('@citation-js/plugin-csl')
 
 export default {
   props: {

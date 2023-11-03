@@ -48,7 +48,7 @@
           <router-view :key="$route.path" class="pb-3" />
         </b-container>
 
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-4 border-top bg-dark">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-dark">
           <div class="col-md-4 d-flex align-items-center justify-content-center justify-content-md-start">
             <span class="text-muted">&copy; {{ new Date().getFullYear() }} Germinate: The James Hutton Institute</span>
           </div>

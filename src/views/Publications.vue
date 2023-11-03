@@ -54,7 +54,9 @@ import { apiPostPublicationGroupTable } from '@/mixins/api/group'
 import { apiPostPublicationsTable } from '@/mixins/api/misc'
 import { Pages } from '@/mixins/pages'
 
-const Cite = require('citation-js')
+const { Cite } = require('@citation-js/core')
+require('@citation-js/plugin-doi')
+require('@citation-js/plugin-csl')
 
 export default {
   components: {

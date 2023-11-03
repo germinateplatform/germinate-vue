@@ -49,7 +49,9 @@ import { userIsAtLeast } from '@/mixins/api/auth'
 
 import { mdiChevronDoubleDown, mdiPlusBox } from '@mdi/js'
 
-const Cite = require('citation-js')
+const { Cite } = require('@citation-js/core')
+require('@citation-js/plugin-doi')
+require('@citation-js/plugin-csl')
 
 export default {
   components: {
