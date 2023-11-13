@@ -296,6 +296,34 @@ const datasetStates = {
   }
 }
 
+const dashboardSections = [
+  {
+    value: 'datastories',
+    textI18n: () => i18n.t('dashboardSectionDataStories'),
+    text: i18n.t('dashboardSectionDataStories')
+  },
+  {
+    value: 'dataupdates',
+    textI18n: () => i18n.t('dashboardSectionDataUpdates'),
+    text: i18n.t('dashboardSectionDataUpdates')
+  },
+  {
+    value: 'news',
+    textI18n: () => i18n.t('dashboardSectionNews'),
+    text: i18n.t('dashboardSectionNews')
+  },
+  {
+    value: 'projects',
+    textI18n: () => i18n.t('dashboardSectionProjects'),
+    text: i18n.t('dashboardSectionProjects')
+  },
+  {
+    value: 'publications',
+    textI18n: () => i18n.t('dashboardSectionPublications'),
+    text: i18n.t('dashboardSectionPublications')
+  }
+]
+
 const statCategories = [
   {
     value: 'germplasm',
@@ -556,6 +584,7 @@ export {
   commentTypes,
   datasetStates,
   statCategories,
+  dashboardSections,
   germplasmInstitutionTypes,
   datasetTypes,
   userFeedbackTypes,

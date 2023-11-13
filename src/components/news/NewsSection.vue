@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-row>
-      <b-col cols=12 sm=6 v-if="news && news.length > 0">
+      <b-col cols=12 sm=6 v-if="showNews && news && news.length > 0">
         <!-- News -->
         <h2>{{ $t('pageNewsLatestNewsTitle') }}</h2>
         <b-list-group class="news-items">
@@ -36,12 +36,12 @@
           </b-button-group>
         </b-modal>
       </b-col>
-      <b-col cols=12 md=6>
+      <b-col cols=12 md=6 v-if="showDataUpdates">
         <!-- Data uploads -->
         <h2>{{ $t('pageNewsLatestDataUploadsTitle') }}</h2>
         <DataImportJobs />
       </b-col>
-      <b-col cols=12 v-if="projects && projects.length > 0">
+      <b-col cols=12 v-if="showProjects && projects && projects.length > 0">
         <!-- Projects -->
         <h2>{{ $t('pageNewsRelatedProjectsTitle') }}</h2>
         <b-row>
@@ -120,13 +120,35 @@ export default {
   computed: {
     ...mapGetters([
       'storeToken',
-      'storeLocale'
+      'storeLocale',
+      'storeServerSettings'
     ]),
     formatter: function () {
       return new Intl.RelativeTimeFormat((this.storeLocale || 'en_GB').split('_')[0], {
 
         numeric: 'always'
       })
+    },
+    showNews: function () {
+      if (this.storeServerSettings && this.storeServerSettings.dashboardSections) {
+        return this.storeServerSettings.dashboardSections.includes('news')
+      } else {
+        return true
+      }
+    },
+    showProjects: function () {
+      if (this.storeServerSettings && this.storeServerSettings.dashboardSections) {
+        return this.storeServerSettings.dashboardSections.includes('projects')
+      } else {
+        return true
+      }
+    },
+    showDataUpdates: function () {
+      if (this.storeServerSettings && this.storeServerSettings.dashboardSections) {
+        return this.storeServerSettings.dashboardSections.includes('dataupdates')
+      } else {
+        return true
+      }
     }
   },
   data: function () {

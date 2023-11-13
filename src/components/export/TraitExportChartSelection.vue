@@ -159,6 +159,10 @@ export default {
         value: 'trial_site',
         disabled: this.getStatsCount('trial_site') < 2
       }, {
+        text: `${this.$t('widgetChartColoringByLocation')}${this.getStatsText('location')}`,
+        value: 'location',
+        disabled: this.getStatsCount('location') < 2
+      }, {
         text: this.$t('widgetChartColoringByMarkedItems'),
         value: 'marked_items'
       }, {

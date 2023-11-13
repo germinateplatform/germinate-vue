@@ -28,14 +28,14 @@
     <p v-html="$t('pageDashboardText')" />
 
     <!-- Publications -->
-    <div v-if="showPublications || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator'))" class="mb-4">
+    <div v-if="showPublicationSection && (showPublications || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')))" class="mb-4">
       <h2>{{ $t('pageDashboardPublicationsTitle') }}</h2>
       <p>{{ $t('pageDashboardPublicationsText') }}</p>
 
       <PublicationsWidget referenceType="database" @publication-count-changed="count => showPublications = count > 0"/>
     </div>
 
-    <template v-if="showStories || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator'))">
+    <template v-if="showDataStorySection && (showStories || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')))">
       <h1>{{ $t('pageStoriesTitle') }}</h1>
       <DataStoryWidget :filterOn="storyFilterOn" @story-count-changed="updateStories" />
     </template>
@@ -102,6 +102,20 @@ export default {
         return statCategories.filter(d => this.storeServerSettings.dashboardCategories.indexOf(d.value) !== -1)
       } else {
         return statCategories
+      }
+    },
+    showPublicationSection: function () {
+      if (this.storeServerSettings && this.storeServerSettings.dashboardSections) {
+        return this.storeServerSettings.dashboardSections.includes('publications')
+      } else {
+        return true
+      }
+    },
+    showDataStorySection: function () {
+      if (this.storeServerSettings && this.storeServerSettings.dashboardSections) {
+        return this.storeServerSettings.dashboardSections.includes('datastories')
+      } else {
+        return true
       }
     }
   },

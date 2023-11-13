@@ -117,10 +117,15 @@
         </b-col>
         <b-col cols=12 md=6 class="mb-3">
           <b-card :title="$t('pageGerminateSettingsCardTemplate')">
-            <b-form-group :label="$t('formLabelAdminSettingsTemplateDashboardCategories')" label-for="dashboard-categories">
+            <b-form-group :label="$t('formLabelAdminSettingsTemplateDashboardCategories')" label-for="dashboard-categories" class="mb-1">
               <b-form-checkbox-group stacked :options="statCategories" v-model="settings.dashboardCategories" id="dashboard-categories" />
             </b-form-group>
             <a href="#" @click.prevent="selectAllCategories(true)">{{ $t('buttonSelectAll') }}</a> | <a href="#" @click.prevent="selectAllCategories(false)">{{ $t('buttonDeselectAll') }}</a>
+
+            <b-form-group :label="$t('formLabelAdminSettingsTemplateDashboardSections')" label-for="dashboard-sections" class="mb-1 mt-3">
+              <b-form-checkbox-group stacked :options="dashboardSections" v-model="settings.dashboardSections" id="dashboard-sections" />
+            </b-form-group>
+            <a href="#" @click.prevent="selectAllSections(true)">{{ $t('buttonSelectAll') }}</a> | <a href="#" @click.prevent="selectAllSections(false)">{{ $t('buttonDeselectAll') }}</a>
           </b-card>
         </b-col>
         <b-col cols=12 md=6 class="mb-3">
@@ -173,7 +178,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import draggable from 'vuedraggable'
 
 import { getHighContrastTextColor } from '@/mixins/colors'
-import { statCategories } from '@/mixins/types'
+import { statCategories, dashboardSections } from '@/mixins/types'
 import { apiGetSettings, apiGetAdminSettings, apiPostAdminSettings } from '@/mixins/api/misc'
 
 import { mdiReload, mdiPlusBox, mdiCommentTextMultipleOutline, mdiShieldAlertOutline, mdiCalculatorVariantOutline, mdiUpload } from '@mdi/js'
@@ -203,6 +208,7 @@ export default {
   data: function () {
     return {
       statCategories,
+      dashboardSections,
       mdiReload,
       mdiPlusBox,
       mdiCommentTextMultipleOutline,
@@ -270,6 +276,9 @@ export default {
     },
     selectAllCategories: function (selectAll) {
       this.settings.dashboardCategories = selectAll ? this.statCategories.map(s => s.value) : []
+    },
+    selectAllSections: function (selectAll) {
+      this.settings.dashboardSections = selectAll ? this.dashboardSections.map(s => s.value) : []
     },
     saveSettings: function () {
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
