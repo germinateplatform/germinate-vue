@@ -1,5 +1,61 @@
 [
   {
+    "version": "4.7.0",
+    "date": "2023-11-14",
+    "items": [
+      {
+        "type": "new",
+        "title": "Data stories",
+        "text": "Data stories are a convenient way to showcase some of the data in your Germinate database and make it easy to follow pre-defined steps highlighting specifics of your data.",
+        "categories": [
+          "user",
+          "admin"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Interface selection persistency",
+        "text": "To make it easier to share the view you're currently seeing including selections, we have added more selection parameters to the URL. This also helps with the data stories.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Hidden page auto-discovery",
+        "text": "Germinate can now automatically discover which interface pages should be hidden based on the data you currently have in your database. As an example, if you don't have genotypic data, the maps, markers and genotypic export pages will automatically be hidden until you upload genotypic data.",
+        "categories": [
+          "user",
+          "admin"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Theme-based map tiles",
+        "text": "As the new default, we have added theme-based map tiles to Germinate to make any data overlays pop even more.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Trials data coloring",
+        "text": "Trials data scatter plots can now be colored by location, so for multi-site trials, you can highlight each location individually.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "bugfix",
+        "title": "Map positions",
+        "text": "There was a bug affecting the display of genotypic marker positions in the map details table. This has been fixed.",
+        "categories": [
+          "user"
+        ]
+      }
+    ]
+  },
+  {
     "version": "4.6.0",
     "date": "2023-06-29",
     "items": [
