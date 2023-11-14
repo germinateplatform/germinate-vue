@@ -2,7 +2,7 @@
   <div>
     <div v-if="jobs && jobs.length > 0">
       <b-list-group>
-        <b-list-group-item :button="job.stats.fileResourceId !== undefined && job.stats.fileResourceId !== null" class="d-flex flex-row align-items-center" v-for="job in jobs" :key="`data-import-job-${job.id}`" @click="navigateToFileResource(job)">
+        <b-list-group-item :button="dataResourcesPageAvailable && job.stats.fileResourceId !== undefined && job.stats.fileResourceId !== null" class="d-flex flex-row align-items-center" v-for="job in jobs" :key="`data-import-job-${job.id}`" @click="navigateToFileResource(job)">
           <div class="pr-3">
             <MdiIcon :size="36" :path="mdiDatabaseRefreshOutline" v-if="job.isUpdate" />
             <MdiIcon :size="36" :path="mdiDatabaseImportOutline" v-else />
@@ -42,6 +42,7 @@ import { templateImportTypes, statCategories } from '@/mixins/types'
 
 import { mdiCalendarClock, mdiDatabaseRefreshOutline, mdiDatabaseImportOutline } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
+import { isPageAvailable } from '@/mixins/util'
 
 const DIVISIONS = [
   { amount: 60, name: 'seconds' },
@@ -81,6 +82,9 @@ export default {
     },
     paginationVisible: function () {
       return this.totalJobs > this.perPage
+    },
+    dataResourcesPageAvailable: function () {
+      return isPageAvailable(Pages.dataResources)
     }
   },
   watch: {
@@ -90,7 +94,7 @@ export default {
   },
   methods: {
     navigateToFileResource: function (job) {
-      if (!job.stats || !job.stats.fileResourceId) {
+      if (!this.dataResourcesPageAvailable || !job.stats || !job.stats.fileResourceId) {
         return
       }
       // Set up the filter
