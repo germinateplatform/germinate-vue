@@ -488,7 +488,9 @@ export default {
     markParents: function (item) {
       if (item) {
         const parentId = item.entityParentId
-        this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: [parentId] })
+        if (parentId) {
+          this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: [parentId] })
+        }
       } else {
         emitter.emit('show-loading', true)
         const requestData = this.$refs.germplasmTable.getCurrentRequestData()
