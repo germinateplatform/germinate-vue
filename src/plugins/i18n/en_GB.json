@@ -1184,6 +1184,7 @@
   "tableColumnTraitConstraints": "Constraints",
   "tableColumnTraitDataType": "Data type",
   "tableColumnTraitDataPoints": "Data points",
+  "tableColumnTraitDataRecordingDate": "Recording date",
   "tableColumnTraitDescription": "Trait description",
   "tableColumnTraitId": "Trait id",
   "tableColumnTraitName": "Trait name",

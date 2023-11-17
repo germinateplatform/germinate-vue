@@ -214,4 +214,8 @@ export default {
   object-fit: contain;
   transition: transform .2s ease-in-out;
 }
+
+.story-card .collapse .card-text p:last-child {
+  margin-bottom: 0 !important;
+}
 </style>
