@@ -84,7 +84,7 @@ export default {
     },
     totalCount: function () {
       if (this.changelog) {
-        return this.changelog.length
+        return this.totalChangelog.length
       } else {
         return 0
       }
@@ -92,7 +92,7 @@ export default {
     changelog: function () {
       return changelogData.sort(sorting)
     },
-    visibleChangelog: function () {
+    totalChangelog: function () {
       let cl = []
       if (!this.prevVersion) {
         cl = this.changelog
@@ -106,7 +106,14 @@ export default {
         }
       }
 
-      return cl.slice((this.page - 1) * this.perPage, this.page * this.perPage)
+      return cl
+    },
+    visibleChangelog: function () {
+      if (this.totalChangelog) {
+        return this.totalChangelog.slice((this.page - 1) * this.perPage, this.page * this.perPage)
+      } else {
+        return []
+      }
     }
   },
   methods: {
