@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import axios from 'axios'
+import store from '@/store'
 
 import deDE from '@/plugins/i18n/de_DE.json'
 import enGB from '@/plugins/i18n/en_GB.json'
+
+const axios = require('axios').default
 
 const protectedProperties = ['pageAboutGerminateTitle', 'pageAboutGerminateSubtitle', 'pageAboutGerminateText', 'pageAboutGerminateCardHomepageText', 'pageAboutGerminateCardGithubText', 'pageAboutGerminateCardPublicationText', 'pageAboutGerminateCardDocumentationText', 'pageAboutGerminateTeamTitle', 'pageAboutGerminateTeamSubtitle', 'pageAboutGerminateTeamOthersTitle', 'pageAboutGerminateTeamOthersSubtitle', 'pageAboutGerminateTeamOthersText', 'pageAboutGerminateLocationTitle', 'pageAboutGerminateLocationSubtitle', 'pageAboutGerminateFundersTitle', 'pageAboutGerminateFundersSubtitle', 'pageAboutGerminateFundersText', 'pageAboutGerminateTeamSebastian', 'pageAboutGerminateTeamJobSebastian', 'pageAboutGerminateTeamIain', 'pageAboutGerminateTeamJobIain', 'pageAboutGerminateTeamPaul', 'pageAboutGerminateTeamJobPaul']
 
@@ -45,7 +47,11 @@ export function loadLanguageAsync (lang) {
   }
 
   // If the language hasn't been loaded yet
-  return axios.get(/* webpackChunkName: "lang-[request]" */ `clientlocale/${lang}`).then(m => {
+  return axios({
+    baseURL: store.getters.storeBaseUrl,
+    method: 'get',
+    url: /* webpackChunkName: "lang-[request]" */ `clientlocale/${lang}`
+  }).then(m => {
     // If we get a response from the server, use it
     if (m.data) {
       // Delete the content of the about Germinate page, we don't want people to change it.

@@ -1,9 +1,10 @@
-import axios from 'axios'
 import store from '@/store'
 import router from '@/router'
 import { i18n } from '@/plugins/i18n.js'
 import { exception } from 'vue-gtag'
 import { Pages } from '@/mixins/pages'
+
+const axios = require('axios').default
 
 const emitter = require('tiny-emitter/instance')
 
@@ -115,7 +116,11 @@ const handleError = (error) => {
  * @param {Object} param0 `{ url: String, formData: Object, success: Callback, error: { codes: [], callback: Callback } }`
  */
 const authForm = ({ url = null, formData, success = null, error = { codes: [], callback: handleError } }) => {
-  const promise = axios.post(url, formData, {
+  const promise = axios({
+    baseURL: store.getters.storeBaseUrl,
+    url: url,
+    method: 'post',
+    data: formData,
     crossDomain: true,
     withCredentials: true,
     headers: {
@@ -202,6 +207,7 @@ const authAxios = ({ url = null, method = 'GET', data = null, formData = null, d
   }
 
   const promise = axios({
+    baseURL: store.getters.storeBaseUrl,
     url: url,
     method: method,
     data: requestData,

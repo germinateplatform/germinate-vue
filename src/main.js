@@ -48,13 +48,11 @@ Vue.use(VueGtag, {
   enabled: false
 }, router)
 
-const axiosDefaults = require('axios/lib/defaults')
 // Set base URL
 let baseUrl = './api/'
 if (process.env.VUE_APP_BASE_URL) {
   baseUrl = process.env.VUE_APP_BASE_URL
 }
-axiosDefaults.baseURL = baseUrl
 
 store.commit('ON_APP_STATE_CHANGED_MUTATION', process.env.NODE_ENV)
 store.commit('ON_BASE_URL_CHANGED_MUTATION', baseUrl)

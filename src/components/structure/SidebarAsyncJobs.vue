@@ -147,13 +147,14 @@ import HeliumIcon from '@/components/icons/HeliumIcon'
 import { mdiDelete, mdiDownload, mdiUpload, mdiRefresh, mdiDatabase, mdiClose, mdiFileDocumentAlert, mdiCalendarClock, mdiFile, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiPauseCircle, mdiCancel, mdiProgressWrench, mdiHelpCircle, mdiPulse, mdiChartSankey, mdiDna, mdiFamilyTree, mdiImageMultiple, mdiShovel } from '@mdi/js'
 
 import UploadStatusTable from '@/components/tables/UploadStatusTable'
-import axios from 'axios'
 import { apiPostDatasetAsyncExport, apiDeleteDatasetAsyncExport } from '@/mixins/api/dataset'
 import { userIsAtLeast } from '@/mixins/api/auth'
 import { apiPostDataAsyncImport, apiDeleteDataAsyncImport, apiGetDataAsyncImportStart, apiGetDataAsyncImportLog } from '@/mixins/api/misc'
 import { templateImportTypes } from '@/mixins/types'
 import { downloadBlob } from '@/mixins/util'
 import { getNumberWithSuffix } from '@/mixins/formatting'
+
+const axios = require('axios').default
 
 export default {
   components: {
