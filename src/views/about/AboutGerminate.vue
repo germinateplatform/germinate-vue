@@ -196,14 +196,14 @@ export default {
           logo: 'funders/hutton.svg'
         },
         {
-          name: 'Templeton World Charity Foundation',
-          href: 'https://www.templetonworldcharity.org/',
-          logo: 'funders/templeton.svg'
-        },
-        {
           name: 'Crop Trust',
           href: 'https://www.croptrust.org/',
           logo: 'funders/crop-trust.svg'
+        },
+        {
+          name: 'Biodiversity for Opportunities, Livelihoods and Development',
+          href: 'https://bold.croptrust.org/',
+          logo: 'funders/bold.svg'
         },
         {
           name: 'The Crop Wild Relatives Project',
@@ -219,6 +219,11 @@ export default {
           name: 'Norwegian Ministry of Foreign Affairs',
           href: 'https://www.regjeringen.no/en/dep/ud/id833/',
           logo: 'funders/norwegian-ministry-of-foreign-affairs.svg'
+        },
+        {
+          name: 'Templeton World Charity Foundation',
+          href: 'https://www.templetonworldcharity.org/',
+          logo: 'funders/templeton.svg'
         },
         {
           name: 'CIMMYT',

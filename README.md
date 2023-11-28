@@ -61,67 +61,75 @@ We are very grateful for the funding Germinate has received over the years. Belo
   <tbody>
     <tr>
       <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/templeton.svg?sanitize=true" width="222px" alt="Templeton World Charity Foundation">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/hutton-black.svg?sanitize=true" width="222px" alt="The James Hutton Institute logo">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crop-trust.svg?sanitize=true" width="222px" alt="Crop Trust">
       </td>
       <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/cwr.svg?sanitize=true" width="222px" alt="Crop Wild Relatives">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/bold.svg?sanitize=true" width="222px" alt="Biodiversity for Opportunities, Livelihoods and Development">
       </td>
       <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/norad.svg?sanitize=true" width="222px" alt="The Norwegian Agency for Development Coorperation">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/cwr.svg?sanitize=true" width="222px" alt="Crop Wild Relatives">
       </td>
     </tr>
     <tr>
       <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/norad.svg?sanitize=true" width="222px" alt="The Norwegian Agency for Development Coorperation">
+      </td>
+      <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/norwegian-ministry-of-foreign-affairs.svg?sanitize=true" width="222px" alt="Norwegian Ministry of Foreign Affairs">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/templeton.svg?sanitize=true" width="222px" alt="Templeton World Charity Foundation">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/cimmyt.svg?sanitize=true" width="222px" alt="CIMMYT">
       </td>
+    </tr>
+    <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/uod.svg?sanitize=true" width="222px" alt="University of Dundee">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/bbsrc.svg?sanitize=true" width="222px" alt="BBSRC">
       </td>
-    </tr>
-    <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/resas.svg?sanitize=true" width="222px" alt="RESAS">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/scottish-government.svg?sanitize=true" width="222px" alt="Scottish Government">
       </td>
+    </tr>
+    <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/sefari.svg?sanitize=true" width="222px" alt="SEFARI">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/huttonltd.svg?sanitize=true" width="222px" alt="James Hutton Limited">
       </td>
-    </tr>
-    <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/innovate-uk.svg?sanitize=true" width="222px" alt="Innovate UK">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/ibh.svg?sanitize=true" width="222px" alt="International Barley Hub">
-      </td>
+      </td>    
+    </tr>
+    <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crp-maize.svg?sanitize=true" width="222px" alt="CRP Maize">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crp-wheat.svg?sanitize=true" width="222px" alt="CRP Wheat">
-      </td>      
-    </tr>
-    <tr>
+      </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/iwyp.svg?sanitize=true" width="222px" alt="IWYP">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/sader.svg?sanitize=true" width="222px" alt="SADER">
       </td>
+    </tr>
+    <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/divseek.png" width="222px" alt="DivSeek">
       </td>
