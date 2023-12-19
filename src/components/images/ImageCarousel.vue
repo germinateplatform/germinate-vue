@@ -94,8 +94,12 @@ export default {
 .carousel-caption {
   background-color: rgba(0,0,0,.5);
 }
+.carousel-item {
+  text-align: center;
+}
 .image-carousel img {
   min-height: 300px;
   object-fit: cover;
+  max-width: 1920px;
 }
 </style>
