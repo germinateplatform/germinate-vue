@@ -124,7 +124,7 @@
       </template>
       <!-- Show file resources -->
       <template v-slot:cell(fileresourceIds)="data">
-        <b-button class="text-nowrap" @click="showFileresources(data.item)" v-if="data.item.fileresourceIds && data.item.fileresourceIds.length > 0"><MdiIcon :path="mdiAttachment"/> {{ $t('buttonShow') }}</b-button>
+        <b-button class="text-nowrap" @click="showFileresources(data.item)" v-if="data.item.fileresourceIds && data.item.fileresourceIds.length > 0 && isPageAvailable(Pages.dataResources)"><MdiIcon :path="mdiAttachment"/> {{ $t('buttonShow') }}</b-button>
       </template>
       <!-- Download the dataset -->
       <template v-slot:cell(download)="data">
