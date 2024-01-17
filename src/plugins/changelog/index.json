@@ -1,5 +1,19 @@
 [
   {
+    "version": "4.7,1",
+    "date": "2024-01-17",
+    "items": [
+      {
+        "type": "update",
+        "title": "Tomcat security",
+        "text": "This update mainly adds some Tomcat security features.",
+        "categories": [
+          "admin"
+        ]
+      }
+    ]
+  },
+  {
     "version": "4.7.0",
     "date": "2023-11-14",
     "items": [
