@@ -62,7 +62,7 @@
       <template v-slot:cell(locations)="data">
         <template v-if="data.item.locations !== undefined && data.item.locations !== null && data.item.locations.length > 0">
           <template v-if="data.item.locations[0].locationLatitude && data.item.locations[0].locationLongitude">
-            <a href="#" class="text-decoration-none text-nowrap" @click.prevent="data.toggleDetails()" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
+            <a href="#" class="text-decoration-none text-nowrap" @click.prevent="showDetails('location', data)" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
               <MdiIcon :path="mdiMapMarker" />
               <span>{{ data.item.locations.length }}</span>
             </a>
@@ -110,14 +110,14 @@
       </template>
       <!-- Show collaborators -->
       <template v-slot:cell(collaborators)="data">
-        <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showCollaborators(data.item)">
+        <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showDetails('collaborators', data)">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')"><MdiIcon :path="mdiAccountMultiple"/></span>
         </a>
         <MdiIcon :path="mdiAccountMultiple" className="text-muted" v-else/>
       </template>
       <!-- Show attributes -->
       <template v-slot:cell(attributes)="data">
-        <a href="#" class="text-decoration-none" v-if="(data.item.attributes !== 0 || data.item.dublinCore) && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="showAttributes(data.item)">
+        <a href="#" class="text-decoration-none" v-if="(data.item.attributes !== 0 || data.item.dublinCore) && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="showDetails('attributes', data)">
           <span v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')"><MdiIcon :path="mdiFilePlus"/></span>
         </a>
         <MdiIcon :path="mdiFilePlus" className="text-muted" v-else/>
@@ -148,7 +148,17 @@
 
       <!-- Row details is where the dataset locations are shown on a map -->
       <template v-slot:row-details="data">
-        <LocationMap :locations="data.item.locations" v-if="data.item.locations && data.item.locations.length > 0" :showLinks="false"/>
+        <template v-if="detailType === 'location'">
+          <LocationMap :locations="data.item.locations" v-if="data.item.locations && data.item.locations.length > 0" :showLinks="false"/>
+        </template>
+        <div v-else-if="detailType === 'collaborators'" class="border-top border-primary bg-white p-3">
+          <!-- Collaborators modal -->
+          <CollaboratorDetails :dataset="data.item" v-if="data.item && data.item.collaborators !== 0" />
+        </div>
+        <div v-else-if="detailType === 'attributes'" class="border-top border-primary bg-white p-3">
+          <!-- Attribute modal -->
+          <AttributeDetails :dataset="data.item" v-if="data.item && (data.item.dublinCore !== undefined || data.item.attributes !== 0)" />
+        </div>
       </template>
     </BaseTable>
 
@@ -156,10 +166,6 @@
     <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" />
     <!-- Publications modal -->
     <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || userIsDataCurator)" ref="publicationsModal" />
-    <!-- Collaborators modal -->
-    <CollaboratorModal :dataset="dataset" v-if="dataset && dataset.collaborators !== 0" ref="collaboratorModal" />
-    <!-- Attribute modal -->
-    <AttributeModal :dataset="dataset" v-if="dataset && (dataset.dublinCore !== undefined || dataset.attributes !== 0)" ref="attributeModal" />
     <!-- Genotype export modal for direct downloads from the table -->
     <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
     <!-- Dataset state modal -->
@@ -173,12 +179,12 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
-import CollaboratorModal from '@/components/modals/CollaboratorModal'
+import CollaboratorDetails from '@/components/tables/details/CollaboratorDetails'
 import GenotypeExportModal from '@/components/modals/GenotypeExportModal'
 import DatasetEditModal from '@/components/modals/DatasetEditModal'
 import PublicationsModal from '@/components/modals/PublicationsModal'
 import LocationMap from '@/components/map/LocationMap'
-import AttributeModal from '@/components/modals/AttributeModal'
+import AttributeDetails from '@/components/tables/details/AttributeDetails'
 import defaultProps from '@/const/table-props'
 import { apiPostDatasetExport, apiGetDatasetSourceFile, apiPostLicenseTable, apiDeleteDataset } from '@/mixins/api/dataset'
 import { apiPostGenotypeDatasetExport } from '@/mixins/api/genotype'
@@ -242,7 +248,8 @@ export default {
       },
       dataset: null,
       license: null,
-      previousDetailsRow: null
+      previousDetailsRow: null,
+      detailType: 'location'
     }
   },
   computed: {
@@ -429,9 +436,9 @@ export default {
   },
   components: {
     MdiIcon,
-    AttributeModal,
+    AttributeDetails,
     BaseTable,
-    CollaboratorModal,
+    CollaboratorDetails,
     DatasetEditModal,
     GenotypeExportModal,
     LocationMap,
@@ -444,6 +451,13 @@ export default {
     truncateAfterWords,
     getHighContrastTextColor,
     isPageAvailable,
+    showDetails: function (type, data) {
+      if (!data.detailsShowing || type === this.detailType) {
+        this.$nextTick(() => data.toggleDetails())
+      }
+
+      this.detailType = type
+    },
     showFullDatasetDescription: function (description) {
       this.$bvModal.msgBoxOk(description, {
         title: this.$t('tableColumnDatasetDescription'),
@@ -566,17 +580,9 @@ export default {
         emitter.emit('show-loading', false)
       })
     },
-    showCollaborators: function (dataset) {
-      this.dataset = dataset
-      this.$nextTick(() => this.$refs.collaboratorModal.show())
-    },
     showPublications: function (dataset) {
       this.dataset = dataset
       this.$nextTick(() => this.$refs.publicationsModal.show())
-    },
-    showAttributes: function (dataset) {
-      this.dataset = dataset
-      this.$nextTick(() => this.$refs.attributeModal.show())
     },
     showFileresources: function (dataset) {
       const filter = [{
@@ -675,7 +681,7 @@ export default {
 .table-icon-link:hover {
   text-decoration: none;
 }
-.dataset-table .b-table-details td {
+.dataset-table .b-table-details > td {
   padding: 0;
 }
 </style>
