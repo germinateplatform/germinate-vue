@@ -50,7 +50,7 @@ import { mdiDotsVertical, mdiFileImage, mdiFileCode, mdiFileDocument, mdiPalette
 
 const emitter = require('tiny-emitter/instance')
 
-const Plotly = require('plotly.js-dist-min')
+const Plotly = require('plotly.js/lib/core')
 
 export default {
   data: function () {

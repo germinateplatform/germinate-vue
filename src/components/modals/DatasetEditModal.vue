@@ -321,7 +321,7 @@ export default {
           datasetStateId: this.datasetState
         }, (result) => {
           if (result) {
-            this.$emit('changed')
+            this.$emit('changed', this.dataset.datasetId)
             this.hide()
           }
         })
@@ -338,7 +338,7 @@ export default {
           isExternal: this.isExternal
         }, (result) => {
           if (result) {
-            this.$emit('changed')
+            this.$emit('changed', result)
             this.hide()
           }
         })

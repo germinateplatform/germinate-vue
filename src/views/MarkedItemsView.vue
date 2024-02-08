@@ -121,7 +121,7 @@ export default {
     },
     downloadGermplasm: function (data, callback) {
       data = this.adjustFilter(data, 'germplasmId', 'germplasm')
-      return apiPostTableExport(data, 'germplasm', callback)
+      return apiPostTableExport({ filter: data.filter }, 'germplasm', callback)
     },
     getMarkerData: function (data, callback) {
       data = this.adjustFilter(data, 'markerId', 'markers')
@@ -133,7 +133,7 @@ export default {
     },
     downloadMarkers: function (data, callback) {
       data = this.adjustFilter(data, 'markerId', 'markers')
-      return apiPostTableExport(data, 'marker', callback)
+      return apiPostTableExport({ filter: data.filter }, 'marker', callback)
     },
     getLocationData: function (data, callback) {
       data = this.adjustFilter(data, 'locationId', 'locations')
@@ -145,7 +145,7 @@ export default {
     },
     downloadLocations: function (data, callback) {
       data = this.adjustFilter(data, 'locationId', 'locations')
-      return apiPostTableExport(data, 'location', callback)
+      return apiPostTableExport({ filter: data.filter }, 'location', callback)
     },
     adjustFilter: function (data, id, type) {
       const newData = JSON.parse(JSON.stringify(data))

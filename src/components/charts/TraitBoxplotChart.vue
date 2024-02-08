@@ -59,7 +59,11 @@ import { mdiHelpCircleOutline, mdiCheckboxMarked, mdiCheckboxBlankOutline } from
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { apiPostTrialsDataTable } from '@/mixins/api/trait'
 
-const Plotly = require('plotly.js-dist-min')
+const Plotly = require('plotly.js/lib/core')
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/box')
+])
 
 let plotData = null
 let datasets = []

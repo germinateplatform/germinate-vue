@@ -39,23 +39,6 @@ export function plotlyScatterPlot (Plotly) {
 
       const data = []
 
-      data.push({
-        x: unpackConditional(rows, xCategory, null, cats[0]),
-        y: unpackConditional(rows, yCategory, null, cats[1]),
-        name: 'density',
-        ncontours: 20,
-        colorscale: darkMode ? [[0, 'transparent'], [0.0001, 'black'], [1, 'white']] : [[0, 'transparent'], [0.0001, 'white'], [1, 'black']],
-        reversescale: false,
-        opacity: 1,
-        line: {
-          color: darkMode ? 'white' : 'black'
-        },
-        showscale: false,
-        type: 'histogram2dcontour',
-        hoverinfo: 'skip',
-        fillcolor: 'transparent'
-      })
-
       for (let i = 0; i < cats.length; i++) {
         let x
         let y
@@ -125,27 +108,6 @@ export function plotlyScatterPlot (Plotly) {
         })
       }
 
-      const updatemenus = [
-        {
-          buttons: [
-            {
-              args: ['opacity', 0.5, [0]],
-              args2: ['opacity', 0, [0]],
-              label: 'Toggle contour',
-              method: 'restyle'
-            }
-          ],
-          direction: 'left',
-          pad: { r: 10, t: 10 },
-          showactive: true,
-          type: 'buttons',
-          x: 0.1,
-          xanchor: 'left',
-          y: 1.1,
-          yanchor: 'top'
-        }
-      ]
-
       const layout = {
         autosize: true,
         bargap: 0,
@@ -155,7 +117,6 @@ export function plotlyScatterPlot (Plotly) {
         dragmode: 'select',
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
-        updatemenus: updatemenus,
         margin: { t: 65, autoexpand: true },
         xaxis: {
           domain: [0, 0.95],

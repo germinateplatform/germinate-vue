@@ -7,7 +7,7 @@ export function plotlyScatterMatrix (Plotly) {
     names: null
   }
   let colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
-  const colorByOptions = ['dataset_name', 'entity_parent_name', 'taxonomy', 'Date', 'treatments_description', 'rep', 'block', 'trial_row', 'trial_column', 'trial_site', 'location', 'group_ids']
+  const colorByOptions = ['dataset_name', 'entity_parent_name', 'taxonomy', 'Date', 'year', 'treatments_description', 'rep', 'block', 'trial_row', 'trial_column', 'trial_site', 'location', 'group_ids']
   let height = null
   let width = null
   let darkMode = false
@@ -31,7 +31,7 @@ export function plotlyScatterMatrix (Plotly) {
 
         categories.forEach(c => cats.push(c))
 
-        cats.sort()
+        cats.sort((a, b) => a - b)
       } else {
         cats = ['Unmarked', 'Marked']
       }
@@ -66,6 +66,8 @@ export function plotlyScatterMatrix (Plotly) {
             name: cats[i],
             text: names,
             ids: ids,
+            customdata: names,
+            hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Germplasm: %{customdata}',
             marker: {
               color: colors[i % colors.length],
               symbol: symbolList[i % symbolList.length],
@@ -93,6 +95,8 @@ export function plotlyScatterMatrix (Plotly) {
             name: cats[i],
             text: names,
             ids: ids,
+            customdata: names,
+            hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Germplasm: %{customdata}',
             marker: {
               color: colors[i % colors.length],
               symbol: symbolList[i % symbolList.length],
@@ -120,6 +124,8 @@ export function plotlyScatterMatrix (Plotly) {
             name: cats[i],
             text: names,
             ids: ids,
+            customdata: names,
+            hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Germplasm: %{customdata}',
             marker: {
               color: colors[i % colors.length],
               symbol: symbolList[i % symbolList.length],

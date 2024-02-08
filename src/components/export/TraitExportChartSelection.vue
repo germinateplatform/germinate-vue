@@ -121,12 +121,11 @@ export default {
         text: `${this.$t('widgetChartColoringByEntityParent')}${this.getStatsText('entity_parent_name')}`,
         value: 'entity_parent_name',
         disabled: this.getStatsCount('entity_parent_name') < 2
-      },
-      // }, {
-      //   text: this.$t('widgetChartColoringByYear'),
-      //   value: 'year'
-      // }, {
-      {
+      }, {
+        text: `${this.$t('widgetChartColoringByYear')}${this.getStatsText('year')}`,
+        value: 'year',
+        disabled: this.getStatsCount('year') < 2
+      }, {
         text: `${this.$t('widgetChartColoringByRecordingDate')}${this.getStatsText('Date')}`,
         value: 'Date',
         disabled: this.getStatsCount('Date') < 2

@@ -270,7 +270,7 @@ export default {
       return apiPostTrialsDataTableIds(data, callback)
     },
     downloadTrialsData: function (data, callback) {
-      return apiPostTableExport(data, 'dataset/data/trial', callback)
+      return apiPostTableExport({ filter: data.filter }, 'dataset/data/trial', callback)
     },
     // GERMPLASM
     getGermplasmData: function (data, callback) {
@@ -280,7 +280,7 @@ export default {
       return apiPostGermplasmTableIds(data, callback)
     },
     downloadGermplasm: function (data, callback) {
-      return apiPostTableExport(data, 'germplasm', callback)
+      return apiPostTableExport({ filter: data.filter }, 'germplasm', callback)
     },
     // MAPDEFINITIONS
     getMapDefinitionData: function (data, callback) {
@@ -290,7 +290,7 @@ export default {
       return apiPostMapdefinitionTableIds(data, callback)
     },
     downloadMapDefinitionData: function (data, callback) {
-      return apiPostTableExport(data, 'map/mapdefinition', callback)
+      return apiPostTableExport({ filter: data.filter }, 'map/mapdefinition', callback)
     },
     // LOCATIONS
     getLocationData: function (data, callback) {
@@ -300,7 +300,7 @@ export default {
       return apiPostLocationTableIds(data, callback)
     },
     downloadLocations: function (data, callback) {
-      return apiPostTableExport(data, 'location', callback)
+      return apiPostTableExport({ filter: data.filter }, 'location', callback)
     },
     // GERMPLASM ATTRIBUTES
     getGermplasmAttributeData: function (data, callback) {
@@ -314,7 +314,7 @@ export default {
       return apiPostPedigreeTable(data, callback)
     },
     downloadPedigrees: function (data, callback) {
-      return apiPostTableExport(data, 'pedigree', callback)
+      return apiPostTableExport({ filter: data.filter }, 'pedigree', callback)
     },
     // DATASET ATTRIBUTES
     getDatasetAttributeData: function (data, callback) {
@@ -328,7 +328,7 @@ export default {
       return apiPostDatasetTable(data, callback)
     },
     downloadDatasets: function (data, callback) {
-      return apiPostTableExport(data, 'dataset', callback)
+      return apiPostTableExport({ filter: data.filter }, 'dataset', callback)
     },
     // SEARCH
     search: function () {

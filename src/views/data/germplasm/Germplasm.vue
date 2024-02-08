@@ -4,12 +4,7 @@
     <hr />
     <p v-html="$t('pageGermplasmText')" />
 
-    <GermplasmTableFilter @filtering-changed="onFilteringChanged" class="my-3" />
-
-    <RecentItems itemType="germinatebase" />
-
-    <!-- Table showing all germplasm -->
-    <GermplasmTable :filterOn="filterOn" :getData="getData" :getIds="getIds" :downloadTable="downloadTable" @filter-changed="resetFilter" ref="germplasmTable" />
+    <GermplasmTableComponent />
 
     <!-- Germplasm location map -->
     <Collapse :icon="mdiMapMarkerMultiple" :title="$t('widgetGermplasmMapTitle')" :visible="collapseVisible" :showLoading="false" class="my-3" @toggle="collapseVisible = !collapseVisible" @shown="invalidateMapSize" v-if="locationDataAvailable">
@@ -26,15 +21,10 @@
 
 <script>
 import Collapse from '@/components/util/Collapse'
-import GermplasmTable from '@/components/tables/GermplasmTable'
-import GermplasmTableFilter from '@/components/tables/GermplasmTableFilter'
 import GermplasmDownload from '@/components/germplasm/GermplasmDownload'
 import GermplasmLocationMap from '@/components/map/GermplasmLocationMap'
-import RecentItems from '@/components/util/RecentItems'
-import { apiPostGermplasmTable, apiPostGermplasmTableIds } from '@/mixins/api/germplasm.js'
+import GermplasmTableComponent from '@/components/germplasm/GermplasmTableComponent'
 import { apiPostLocationTable } from '@/mixins/api/location.js'
-import { apiPostTableExport } from '@/mixins/api/misc.js'
-
 import { mdiMapMarkerMultiple } from '@mdi/js'
 
 export default {
@@ -42,17 +32,14 @@ export default {
     return {
       mdiMapMarkerMultiple,
       collapseVisible: false,
-      filterOn: [],
       locationDataAvailable: false
     }
   },
   components: {
     Collapse,
-    GermplasmTable,
-    GermplasmTableFilter,
     GermplasmDownload,
     GermplasmLocationMap,
-    RecentItems
+    GermplasmTableComponent
   },
   watch: {
     collapseVisible: function (newValue) {
@@ -72,26 +59,6 @@ export default {
     },
     invalidateMapSize: function () {
       this.$nextTick(() => this.$refs.germplasmMap.invalidateSize())
-    },
-    resetFilter: function (update) {
-      if (update.filter.length === 0) {
-        this.filterOn = []
-      }
-    },
-    onFilteringChanged: function (filters) {
-      let copy = this.filterOn.concat().filter(f => !filters.some(ff => ff.column.name === f.column.name))
-      copy = copy.concat(filters)
-      this.filterOn = copy
-      this.$refs.germplasmTable.refresh()
-    },
-    downloadTable: function (data, callback) {
-      return apiPostTableExport(data, 'germplasm', callback)
-    },
-    getData: function (data, callback) {
-      return apiPostGermplasmTable(data, callback)
-    },
-    getIds: function (data, callback) {
-      return apiPostGermplasmTableIds(data, callback)
     }
   },
   mounted: function () {

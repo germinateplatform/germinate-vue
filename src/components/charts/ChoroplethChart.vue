@@ -14,7 +14,11 @@ import { getColor } from '@/mixins/colors.js'
 import { Pages } from '@/mixins/pages'
 const d3Dsv = require('d3-dsv')
 
-const Plotly = require('plotly.js-dist-min')
+const Plotly = require('plotly.js/lib/core')
+// Only register the chart types we're actually using to reduce the final bundle size
+Plotly.register([
+  require('plotly.js/lib/choropleth')
+])
 
 export default {
   data: function () {

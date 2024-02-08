@@ -75,7 +75,7 @@ export default {
       return apiPostLocationTable(data, callback)
     },
     downloadData: function (data, callback) {
-      return apiPostTableExport(data, 'location', callback)
+      return apiPostTableExport({ filter: data.filter }, 'location', callback)
     },
     getIds: function (data, callback) {
       return apiPostLocationTableIds(data, callback)

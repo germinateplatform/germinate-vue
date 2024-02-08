@@ -193,7 +193,7 @@ export default {
       callback(this.climates)
     },
     downloadClimateDataTable: function (data, callback) {
-      return apiPostTableExport(data, 'dataset/data/climate', callback)
+      return apiPostTableExport({ filter: data.filter }, 'dataset/data/climate', callback)
     },
     getClimateData: function (data, callback) {
       data.datasetIds = this.datasetIds

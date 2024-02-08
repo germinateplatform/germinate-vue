@@ -168,7 +168,7 @@
     <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || userIsDataCurator)" ref="publicationsModal" />
     <!-- Genotype export modal for direct downloads from the table -->
     <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
-    <!-- Dataset state modal -->
+    <!-- Dataset edit modal -->
     <DatasetEditModal :dataset="dataset" v-if="userIsDataCurator" @changed="refresh" ref="datasetEditModal" />
   </div>
 </template>

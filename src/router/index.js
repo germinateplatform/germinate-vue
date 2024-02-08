@@ -187,6 +187,14 @@ const routes = [
             ]
           },
           {
+            path: 'trials/create',
+            redrrect: '/data/trials/create',
+            name: Pages.trialCreation,
+            meta: { minUserType: 'Data Curator' },
+            component: () => import(/* webpackChunkName: "trial-creation" */ '@/views/data/trials/TrialCreation.vue'),
+            beforeEnter: requireAuth
+          },
+          {
             path: 'genotypes',
             redirect: '/data/genotypes/maps',
             name: '',

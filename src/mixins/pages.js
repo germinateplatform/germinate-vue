@@ -12,6 +12,7 @@ const Pages = Object.freeze({
   climateDetails: 'climate-details',
   traits: 'traits',
   traitDetails: 'trait-details',
+  trialCreation: 'trial-creation',
   markers: 'markers',
   markerDetails: 'marker-details',
   maps: 'maps',

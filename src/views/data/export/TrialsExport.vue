@@ -269,7 +269,7 @@ export default {
       callback(this.traits)
     },
     downloadTrialsTableData: function (data, callback) {
-      return apiPostTableExport(data, 'dataset/data/trial', callback)
+      return apiPostTableExport({ filter: data.filter }, 'dataset/data/trial', callback)
     },
     getTrialsData: function (data, callback) {
       data.datasetIds = this.datasetIds
