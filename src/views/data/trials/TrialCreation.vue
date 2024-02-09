@@ -4,7 +4,7 @@
     <hr />
     <p v-html="$t('pageTrialCreationText')" />
 
-    <b-row>
+    <b-row class="mb-3">
       <b-col cols=12 md=6 lg=4>
         <b-card no-body class="trial-creation-card h-100">
           <b-card-body>
@@ -38,7 +38,16 @@
     </b-row>
 
     <div v-show="tabIndex === 0">
+      <h3>{{ $t('pageTrialCreationGermplasmTitle') }}</h3>
+      <p v-html="$t('pageTrialCreationGermplasmText')" />
+
       <GermplasmTableComponent :download="onDownload" />
+    </div>
+    <div v-show="tabIndex === 1">
+      <h3>{{ $t('pageTrialCreationFieldHubTitle') }}</h3>
+      <p v-html="$t('pageTrialCreationFieldHubText')" />
+
+      <b-button @click="$refs.datasetEditModal.show()">{{ $t('buttonCreateDataset') }}</b-button>
 
       <DatasetEditModal @changed="onDatasetCreated" ref="datasetEditModal" />
     </div>
@@ -80,9 +89,9 @@ export default {
     // Ask for confirmation
     this.$bvModal.msgBoxConfirm(this.$t('modalTextLeaveTrialCreation'), {
       title: this.$t('modalTitleLeaveTrialCreation'),
-      okTitle: this.$t('buttonYes'),
+      okTitle: this.$t('genericYes'),
       okVariant: 'danger',
-      cancelTitle: this.$t('buttonNo')
+      cancelTitle: this.$t('genericNo')
     }).then(value => {
       if (value) {
         next()
