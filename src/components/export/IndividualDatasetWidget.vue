@@ -1,12 +1,11 @@
 <template>
   <b-card no-body v-if="dataset">
-    <b-card-header>
-      <!-- Truncated name with tooltip -->
-      <h6 class="mb-0"  v-b-tooltip.hover.bottom="dataset.datasetName">{{ truncateAfterWords(dataset.datasetId + ' - ' + dataset.datasetName, 10) }}</h6>
-    </b-card-header>
-    <b-card-body v-if="dataset.datasetDescription">
+    <b-card-body>
+      <b-card-title v-b-tooltip.hover.bottom="dataset.datasetName" class="d-block text-truncate">
+        {{ truncateAfterWords(dataset.datasetId + ' - ' + dataset.datasetName, 10) }}
+      </b-card-title>
       <!-- Truncated description with tooltip -->
-      <b-card-text class="dataset-card">
+      <b-card-text class="dataset-card" v-if="dataset.datasetDescription">
         <template v-if="datasetDescriptionLength > lengthLimit && collapsed">
           {{ truncateAfterWords(dataset.datasetDescription, lengthLimit) }}
         </template>
@@ -73,5 +72,4 @@ export default {
 </script>
 
 <style>
-
 </style>

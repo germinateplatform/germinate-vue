@@ -3,7 +3,7 @@
     <div v-if="datasetType">
       <h1>{{ datasetTypes[datasetType].text() }}</h1>
       <!-- Table showing all datasets of the type -->
-      <DatasetTable :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" :selectionMode="selectionMode" class="mb-3" ref="datasetTable" v-on:selection-changed="updateButtonState"/>
+      <DatasetTable :datasetType="datasetType" :getData="getData" :getIds="getIds" :filterOn="filterOn" :selectable="true" :selectionMode="selectionMode" class="mb-3" ref="datasetTable" v-on:selection-changed="updateButtonState"/>
       <!-- Continue button -->
       <b-button variant="primary" @click="checkLicenses" :disabled="buttonDisabled" ><MdiIcon :path="mdiArrowRightBox" /> {{ $t('buttonNext') }}</b-button>
     </div>
@@ -24,7 +24,7 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import DatasetTable from '@/components/tables/DatasetTable'
 import { apiPostDatasetTable, apiPostDatasetTableIds, apiPostLicenseTable } from '@/mixins/api/dataset.js'
-import { datasetTypes } from '@/mixins/types.js'
+import { datasetTypes } from '@/mixins/types'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowRightBox } from '@mdi/js'

@@ -4,7 +4,7 @@
       <b-row>
         <b-col cols=12 lg=6>
           <b-form-group label-for="dataset-name" :label="$t('tableColumnDatasetName')">
-            <b-form-input v-model="datasetName" id="dataset-name" :state="formState.name" />
+            <b-form-input v-model="datasetName" id="dataset-name" :state="formState.name" autofocus />
           </b-form-group>
         </b-col>
         <b-col cols=12 lg=6>
@@ -24,7 +24,7 @@
         </b-col>
         <b-col cols=12 lg=6>
           <b-form-group label-for="dataset-type" :label="$t('tableColumnDatasetDatasetType')">
-            <b-form-select :options="datasetTypeOptions" v-model="datasetType" id="dataset-type" :disabled="isEdit" :state="formState.datasetType" />
+            <b-form-select :options="datasetTypeOptions" v-model="selectedDatasetType" id="dataset-type" :disabled="isEdit" :state="formState.selectedDatasetType" />
           </b-form-group>
         </b-col>
         <b-col cols=12 lg=6>
@@ -98,6 +98,10 @@ export default {
     dataset: {
       type: Object,
       default: null
+    },
+    datasetType: {
+      type: String,
+      default: null
     }
   },
   data: function () {
@@ -106,7 +110,7 @@ export default {
       mdiPencil,
       id: uuidv4(),
       datasetState: null,
-      datasetType: null,
+      selectedDatasetType: null,
       datasetName: null,
       datasetDescription: null,
       datasetStartDate: null,
@@ -121,7 +125,7 @@ export default {
         name: null,
         experimentId: null,
         datasetState: null,
-        datasetType: null
+        selectedDatasetType: null
       },
       formFeedback: null
     }
@@ -142,7 +146,8 @@ export default {
       return Object.keys(datasetTypes).map(s => {
         return {
           value: datasetTypes[s].id,
-          text: datasetTypes[s].text()
+          text: datasetTypes[s].text(),
+          disabled: this.datasetType ? s !== this.datasetType : false
         }
       })
     },
@@ -219,13 +224,13 @@ export default {
         name: null,
         experimentId: null,
         datasetState: null,
-        datasetType: null
+        selectedDatasetType: null
       }
       this.formFeedback = null
 
       if (this.dataset) {
         this.datasetState = datasetStates[this.dataset.datasetState].id
-        this.datasetType = datasetTypes[this.dataset.datasetType].id
+        this.selectedDatasetType = datasetTypes[this.dataset.datasetType].id
         this.datasetName = this.dataset.datasetName
         this.datasetDescription = this.dataset.datasetDescription
         this.isExternal = this.dataset.isExternal
@@ -235,7 +240,7 @@ export default {
         this.datasetEndDate = this.dataset.endDate ? new Date(this.dataset.endDate) : null
       } else {
         this.datasetState = datasetStates.public.id
-        this.datasetType = 3
+        this.selectedDatasetType = 3
         this.datasetName = null
         this.datasetDescription = null
         this.isExternal = false
@@ -300,7 +305,7 @@ export default {
         name: this.datasetName !== undefined && this.datasetName !== null && this.datasetName.length > 0,
         experimentId: this.experimentId !== undefined && this.experimentId !== null,
         datasetState: this.datasetState !== undefined && this.datasetType !== null,
-        datasetType: this.datasetType !== undefined && this.datasetType !== null
+        selectedDatasetType: this.selectedDatasetType !== undefined && this.selectedDatasetType !== null
       }
 
       if (Object.keys(this.formState).some(k => this.formState[k] === false)) {
@@ -321,7 +326,7 @@ export default {
           datasetStateId: this.datasetState
         }, (result) => {
           if (result) {
-            this.$emit('changed', this.dataset.datasetId)
+            this.$emit('changed', result)
             this.hide()
           }
         })
@@ -334,7 +339,7 @@ export default {
           experimentId: this.experimentId,
           dateEnd: this.datasetEndDate,
           datasetStateId: this.datasetState,
-          datasettypeId: this.datasetType,
+          datasettypeId: this.selectedDatasetType,
           isExternal: this.isExternal
         }, (result) => {
           if (result) {

@@ -562,6 +562,9 @@ export default {
           })
         })
       }
+    },
+    onDownloadTableClicked: function () {
+      this.$refs.germplasmTable.onDownloadTableClicked()
     }
   }
 }

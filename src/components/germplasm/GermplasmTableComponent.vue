@@ -60,6 +60,9 @@ export default {
     },
     getIds: function (data, callback) {
       return apiPostGermplasmTableIds(data, callback)
+    },
+    onDownloadTableClicked: function () {
+      this.$refs.germplasmTable.onDownloadTableClicked()
     }
   }
 }

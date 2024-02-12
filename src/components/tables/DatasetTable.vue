@@ -19,8 +19,9 @@
 
       <!-- Dataset id -->
       <template v-slot:cell(datasetId)="data">
+        <span v-if="disableLinks">{{ data.item.datasetId }}</span>
         <!-- If clickHandler is provided, just let it handle clicks -->
-        <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetId }}</a>
+        <a href="#" @click.prevent="clickHandler(data.item)" v-else-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetId }}</a>
         <!-- Else, if we can link to the target page, let's do so -->
         <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item)) && datasetTypes[data.item.datasetType].pageName">{{ data.item.datasetId }}</router-link>
         <!-- If neither is true, just show the id -->
@@ -28,8 +29,9 @@
       </template>
       <!-- Dataset name -->
       <template v-slot:cell(datasetName)="data">
+        <span v-if="disableLinks" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</span>
         <!-- If clickHandler is provided, just let it handle clicks -->
-        <a href="#" @click.prevent="clickHandler(data.item)" v-if="clickHandler && (typeof clickHandler === 'function')" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</a>
+        <a href="#" @click.prevent="clickHandler(data.item)" v-else-if="clickHandler && (typeof clickHandler === 'function')" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</a>
         <!-- Else, if there's a hyperlink for an external dataset, show that -->
         <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" rel="noopener noreferrer" :href="data.item.hyperlink" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }} </a>
         <MdiIcon :path="mdiOpenInNew" />
@@ -169,7 +171,7 @@
     <!-- Genotype export modal for direct downloads from the table -->
     <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
     <!-- Dataset edit modal -->
-    <DatasetEditModal :dataset="dataset" v-if="userIsDataCurator" @changed="refresh" ref="datasetEditModal" />
+    <DatasetEditModal :datasetType="datasetType" :dataset="dataset" v-if="userIsDataCurator" @changed="refresh" ref="datasetEditModal" />
   </div>
 </template>
 
@@ -218,6 +220,14 @@ export default {
     selectionMode: {
       type: String,
       default: 'multi'
+    },
+    disableLinks: {
+      type: Boolean,
+      default: false
+    },
+    datasetType: {
+      type: String,
+      default: null
     }
   },
   data: function () {
