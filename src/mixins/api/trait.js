@@ -54,6 +54,8 @@ const apiGetTraitDistinctValues = (traitId, onSuccess, onError) => authAxios({ u
 
 const apiPostTrialLocationCount = (queryData, onSuccess, onError) => authAxios({ url: 'dataset/data/trial/location/count', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
+const apiPostTrialCreation = (data, onSuccess, onError) => authAxios({ url: 'dataset/data/trial', method: 'POST', data: data, success: onSuccess, error: onError })
+
 export {
   apiPostTrialsDataTable,
   apiPostTrialsDataTableIds,
@@ -67,5 +69,6 @@ export {
   apiPostTrialLocationCount,
   apiPostTraitAttributeTable,
   apiPostTrialsDataTimepoints,
-  apiPostTrialGermplasm
+  apiPostTrialGermplasm,
+  apiPostTrialCreation
 }

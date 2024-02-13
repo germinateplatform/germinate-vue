@@ -1,5 +1,11 @@
 <template>
-  <b-modal :ref="`datasetEditModal-${id}`" size="lg" :title="dataset ? dataset.datasetName : $t('modalTitleAddDataset')" :ok-title="$t(dataset ? 'buttonUpdate' : 'buttonUpload')" @ok.prevent="updateDataset" header-class="dataset-edit-modal-header">
+  <b-modal :ref="`datasetEditModal-${id}`"
+           size="lg"
+           :title="dataset ? dataset.datasetName : $t('modalTitleAddDataset')"
+           :ok-title="$t(dataset ? 'buttonUpdate' : 'buttonUpload')"
+           @ok.prevent="updateDataset"
+           :ok-disabled="loading"
+           header-class="dataset-edit-modal-header">
     <b-form @submit.prevent="updateDataset" novalidate>
       <b-row>
         <b-col cols=12 lg=6>
@@ -14,12 +20,22 @@
         </b-col>
         <b-col cols=12 lg=6>
           <b-form-group label-for="dataset-start-date" :label="$t('tableColumnDatasetStartDate')">
-            <b-form-datepicker :value-as-date="true" v-model="datasetStartDate" id="dataset-start-date" />
+            <b-input-group>
+              <b-form-datepicker :value-as-date="true" v-model="datasetStartDate" id="dataset-start-date" />
+              <b-input-group-append>
+                <b-button @click="datasetStartDate = null"><MdiIcon :path="mdiCancel" /></b-button>
+              </b-input-group-append>
+            </b-input-group>
           </b-form-group>
         </b-col>
         <b-col cols=12 lg=6>
           <b-form-group label-for="dataset-end-date" :label="$t('tableColumnDatasetEndDate')">
-            <b-form-datepicker :value-as-date="true" v-model="datasetEndDate" id="dataset-end-date" />
+            <b-input-group>
+              <b-form-datepicker :value-as-date="true" v-model="datasetEndDate" id="dataset-end-date" />
+              <b-input-group-append>
+                <b-button @click="datasetEndDate = null"><MdiIcon :path="mdiCancel" /></b-button>
+              </b-input-group-append>
+            </b-input-group>
           </b-form-group>
         </b-col>
         <b-col cols=12 lg=6>
@@ -85,7 +101,7 @@ import { apiPatchDataset, apiPostDataset, apiGetLicenses, apiPostExperimentTable
 import { datasetStates, datasetTypes } from '@/mixins/types'
 import { uuidv4 } from '@/mixins/util'
 
-import { mdiPlusBox, mdiPencil } from '@mdi/js'
+import { mdiPlusBox, mdiPencil, mdiCancel } from '@mdi/js'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 export default {
@@ -108,6 +124,7 @@ export default {
     return {
       mdiPlusBox,
       mdiPencil,
+      mdiCancel,
       id: uuidv4(),
       datasetState: null,
       selectedDatasetType: null,
@@ -127,7 +144,8 @@ export default {
         datasetState: null,
         selectedDatasetType: null
       },
-      formFeedback: null
+      formFeedback: null,
+      loading: false
     }
   },
   computed: {
@@ -227,6 +245,7 @@ export default {
         selectedDatasetType: null
       }
       this.formFeedback = null
+      this.loading = false
 
       if (this.dataset) {
         this.datasetState = datasetStates[this.dataset.datasetState].id
@@ -246,8 +265,8 @@ export default {
         this.isExternal = false
         this.licenseId = null
         this.experimentId = null
-        this.datasetStartDate = new Date()
-        this.datasetEndDate = new Date()
+        this.datasetStartDate = null
+        this.datasetEndDate = null
       }
 
       this.updateExperiments()
@@ -315,6 +334,8 @@ export default {
         this.formFeedback = null
       }
 
+      this.loading = true
+
       if (this.dataset) {
         return apiPatchDataset(this.dataset.datasetId, {
           name: this.datasetName,
@@ -325,6 +346,8 @@ export default {
           dateEnd: this.datasetEndDate,
           datasetStateId: this.datasetState
         }, (result) => {
+          this.loading = false
+
           if (result) {
             this.$emit('changed', result)
             this.hide()
@@ -342,6 +365,8 @@ export default {
           datasettypeId: this.selectedDatasetType,
           isExternal: this.isExternal
         }, (result) => {
+          this.loading = false
+
           if (result) {
             this.$emit('changed', result)
             this.hide()

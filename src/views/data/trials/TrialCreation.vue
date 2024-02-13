@@ -37,6 +37,8 @@
       </b-col>
     </b-row>
 
+    <hr v-if="tabIndex !== null" />
+
     <div v-show="tabIndex === 0">
       <h3>{{ $t('pageTrialCreationGermplasmTitle') }}</h3>
       <p v-html="$t('pageTrialCreationGermplasmText')" />
@@ -58,7 +60,7 @@
             <IndividualDatasetWidget :dataset="dataset" class="mb-3" />
 
             <b-button variant="primary" @click="$refs.datasetEditModal.show()"><MdiIcon :path="mdiPencil" /> {{ $t(dataset ? 'buttonChange' : 'buttonCreateDataset') }}</b-button>
-            <DatasetEditModal datasetType="trials" @changed="onDatasetCreated" ref="datasetEditModal" />
+            <DatasetEditModal datasetType="trials" :dataset="dataset" @changed="onDatasetCreated" ref="datasetEditModal" />
           </b-card>
         </b-col>
         <b-col cols=12 md=8 class="mb-3" v-if="dataset">
@@ -76,6 +78,8 @@
               <b-card-text>{{ $t('pageTrialCreationSetupCreateText') }}</b-card-text>
 
               <b-button variant="primary" @click="createTrial"><MdiIcon :path="mdiCheckerboardPlus" /> {{ $t('buttonCreateTrial') }}</b-button>
+
+              <p class="text-danger" v-if="formFeedback">{{ formFeedback }}</p>
             </b-card-body>
             <b-card-body class="bg-dark text-center text-light">
               <b-row>
@@ -102,8 +106,18 @@
       </b-row>
     </div>
     <div v-show="tabIndex === 2">
-      <h3>{{ $t('pageTrialCreationGridScoreTitle') }}</h3>
-      <p v-html="$t('pageTrialCreationGridScoreText')" />
+      <b-card class="gridscore-card">
+        <b-row>
+          <b-col cols=12 md=4 class="text-center text-md-right" order="1" order-md="2">
+            <b-img fluid src="img/tools/gridscore.svg" alt="GridScore logo" />
+          </b-col>
+          <b-col cols=12 md=8 order="2" order-md="1" class="d-flex flex-column">
+            <b-card-title>{{ $t('pageTrialCreationGridScoreTitle') }}</b-card-title>
+            <b-card-sub-title class="mb-3">{{ $t('pageTrialCreationGridScoreText') }}</b-card-sub-title>
+            <b-card-text class="mt-auto" v-if="dataset && layout && success"><span v-html="$t('pageTrialCreationGridScoreLink', { gridscore: gridscoreTrialUrl })"/></b-card-text>
+          </b-col>
+        </b-row>
+      </b-card>
     </div>
   </div>
 </template>
@@ -119,6 +133,7 @@ import { apiPostTableExport } from '@/mixins/api/misc'
 
 import { mdiDownload, mdiPencil, mdiCheckerboardPlus } from '@mdi/js'
 import { apiPostDatasetTable } from '@/mixins/api/dataset'
+import { apiPostTrialCreation } from '@/mixins/api/trait'
 
 export default {
   components: {
@@ -135,13 +150,17 @@ export default {
       mdiPencil,
       mdiCheckerboardPlus,
       dataset: null,
-      layout: null
+      layout: null,
+      formFeedback: null,
+      success: false
     }
   },
   computed: {
     ...mapGetters([
       'storeMarkedGermplasm',
-      'storeServerSettings'
+      'storeServerSettings',
+      'storeToken',
+      'storeBaseUrl'
     ]),
     counts: function () {
       if (this.layout) {
@@ -186,13 +205,52 @@ export default {
     gridscoreUrl: function () {
       return this.storeServerSettings.gridscoreUrl || 'https://gridscore.hutton.ac.uk'
     },
+    gridscoreTrialUrl: function () {
+      if (this.dataset && this.layout && this.success) {
+        const gf = {
+          datasetId: this.dataset.datasetId,
+          brapiConfig: {
+            token: this.storeToken.token,
+            url: `${this.storeBaseUrl}brapi/v2/`
+          }
+        }
+
+        return `${this.gridscoreUrl}/#/trial-setup?germinateConfig=${encodeURIComponent(JSON.stringify(gf))}`
+      } else {
+        return this.gridscoreUrl
+      }
+    },
     buttonDisabled: function () {
       return !this.storeMarkedGermplasm || this.storeMarkedGermplasm.length < 1
     }
   },
   methods: {
     createTrial: function () {
-      // TODO
+      this.formFeedback = null
+      this.success = false
+      apiPostTrialCreation({
+        datasetId: this.dataset.datasetId,
+        plots: this.layout
+      }, () => {
+        this.success = true
+        this.tabIndex = 2
+        window.scrollTo({
+          left: 0,
+          top: 0,
+          behavior: 'smooth'
+        })
+      }, {
+        codes: [400, 403],
+        callback: (e) => {
+          if (e.status === 400) {
+            this.formFeedback = this.$t('formErrorTrialCreationInvalidPayload', { error: e.data })
+          } else if (e.status === 403) {
+            this.formFeedback = this.$t('formErrorTrialCreationForbiddenDataset')
+          } else {
+            this.formFeedback = e.data
+          }
+        }
+      })
     },
     onLayoutUpdated: function (newLayout) {
       this.layout = newLayout
@@ -206,6 +264,8 @@ export default {
     onDownload: function (data, callback) {
       return apiPostTableExport({
         columnNameMapping: { germplasmName: 'TREATMENT' },
+        // We force .csv here, because FielDHub will not accept .txt files even if they have valid .csv content.
+        forcedFileExtension: 'csv',
         filter: [{
           column: 'germplasmId',
           comparator: 'inSet',
@@ -258,5 +318,15 @@ export default {
   width: 100%;
   height: 200px;
   object-fit: contain;
+}
+
+.gridscore-card img {
+  max-height: 125px;
+}
+
+@media (min-width: 768px) {
+  .gridscore-card img {
+    max-height: 150px;
+  }
 }
 </style>
