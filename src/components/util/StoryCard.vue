@@ -43,7 +43,7 @@
           <MdiIcon :path="mdiTextBoxCheckOutline"/> {{  $t('tableTooltipDatasetPublications') }}
         </b-button>
 
-        <template v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+        <template v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
           <b-dropdown>
             <template #button-content>
               <MdiIcon :path="mdiCog" />
@@ -80,7 +80,7 @@ import DatasetTable from '@/components/tables/DatasetTable'
 import { mdiPlay, mdiCalendar, mdiDelete, mdiTextBoxCheckOutline, mdiPlusBox, mdiPencil, mdiCog, mdiFormatListNumbered } from '@mdi/js'
 import { getImageUrl, getImageUrlById } from '@/mixins/image'
 import { apiPostDatasetTable } from '@/mixins/api/dataset'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { apiDeleteStoryById } from '@/mixins/api/misc'
 import { Pages } from '@/mixins/pages'
 
@@ -108,7 +108,8 @@ export default {
       mdiDelete,
       mdiTextBoxCheckOutline,
       mdiFormatListNumbered,
-      mdiPlusBox
+      mdiPlusBox,
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {

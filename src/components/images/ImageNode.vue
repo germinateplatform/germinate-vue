@@ -8,11 +8,11 @@
         <div style="height: 6px;" v-else />
       </div>
     </a>
-    <b-button class="position-absolute image-delete-button" variant="danger" v-b-tooltip="$t('buttonDelete')" @click="deleteImage" v-if="storeToken && storeToken.userType && userIsAtLeast(storeToken.userType, 'Data Curator')">
+    <b-button class="position-absolute image-delete-button" variant="danger" v-b-tooltip="$t('buttonDelete')" @click="deleteImage" v-if="storeToken && storeToken.userType && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
       <MdiIcon :path="mdiDelete" />
     </b-button>
     <b-card-body class="card-image-details">
-      <b-input-group v-if="storeToken && storeToken.userType && userIsAtLeast(storeToken.userType, 'Data Curator')" class="mb-2">
+      <b-input-group v-if="storeToken && storeToken.userType && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" class="mb-2">
         <b-textarea rows="3" max-rows="10" class="image-description" v-model="image.imageDescription"/>
         <b-input-group-append>
           <b-button variant="success" @click="updateImageDescription"><MdiIcon :path="mdiContentSave" /></b-button>
@@ -30,7 +30,7 @@
             {{ tag.tagName }}
           </b-badge>
         </template>
-        <div v-if="storeToken && storeToken.userType && userIsAtLeast(storeToken.userType, 'Data Curator')">
+        <div v-if="storeToken && storeToken.userType && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
           <b-badge class="bg-info"
                     v-b-tooltip.hover
                     href="#"
@@ -64,7 +64,7 @@ import ImageExifModal from '@/components/modals/ImageExifModal'
 import { imageTypes } from '@/mixins/types'
 import { apiDeleteImage, apiPatchImage } from '@/mixins/api/misc'
 import { getImageUrl } from '@/mixins/image'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
 import { mdiDelete, mdiContentSave, mdiCalendarClock, mdiPencil, mdiImageText } from '@mdi/js'
 
@@ -89,7 +89,8 @@ export default {
       mdiImageText,
       src: null,
       largeSrc: null,
-      imageLoaded: false
+      imageLoaded: false,
+      USER_TYPE_DATA_CURATOR
     }
   },
   components: {

@@ -18,7 +18,7 @@
       <b-button variant="primary" :href="displayData.URL" rel="noopener noreferrer" v-if="displayData.URL">
         <MdiIcon :path="mdiOpenInNew" /> {{ $t('buttonReadMore') }}
       </b-button>
-      <b-button v-if="canDelete && storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="$emit('deleteReference', publication)" variant="danger">
+      <b-button v-if="canDelete && storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" @click="$emit('deleteReference', publication)" variant="danger">
         <MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}
       </b-button>
     </b-card-footer>
@@ -33,7 +33,7 @@ import { mapGetters } from 'vuex'
 import ReferenceModal from '@/components/modals/ReferenceModal'
 import MdiIcon from '@/components/icons/MdiIcon'
 
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
 import { mdiDelete, mdiOpenInNew, mdiDotsHorizontal } from '@mdi/js'
 
@@ -60,7 +60,8 @@ export default {
     return {
       mdiDelete,
       mdiOpenInNew,
-      mdiDotsHorizontal
+      mdiDotsHorizontal,
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {

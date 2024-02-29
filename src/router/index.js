@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import auth from '@/auth'
 import store from '@/store'
 import { loadLanguageAsync } from '@/plugins/i18n'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_ADMINISTRATOR, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
@@ -95,21 +95,21 @@ const routes = [
           {
             path: 'user-permissions',
             name: Pages.userPermissions,
-            meta: { minUserType: 'Administrator' },
+            meta: { minUserType: USER_TYPE_ADMINISTRATOR },
             component: () => import(/* webpackChunkName: "user-permissions" */ '@/views/admin/UserPermissions.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'germinate-settings',
             name: Pages.germinateSettings,
-            meta: { minUserType: 'Administrator' },
+            meta: { minUserType: USER_TYPE_ADMINISTRATOR },
             component: () => import(/* webpackChunkName: "germinate-settings" */ '@/views/admin/GerminateSettings.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'user-feedback',
             name: Pages.userFeedback,
-            meta: { minUserType: 'Administrator' },
+            meta: { minUserType: USER_TYPE_ADMINISTRATOR },
             component: () => import(/* webpackChunkName: "germinate-settings" */ '@/views/admin/UserFeedback.vue'),
             beforeEnter: requireAuth
           }
@@ -132,7 +132,7 @@ const routes = [
           {
             path: 'germplasm-unifier',
             name: Pages.germplasmUnifier,
-            meta: { minUserType: 'Data Curator' },
+            meta: { minUserType: USER_TYPE_DATA_CURATOR },
             component: () => import(/* webpackChunkName: "germplasm-unifier" */ '@/views/data/germplasm/GermplasmUnifier.vue'),
             beforeEnter: requireAuth
           },
@@ -190,7 +190,7 @@ const routes = [
             path: 'trials/create',
             redrrect: '/data/trials/create',
             name: Pages.trialCreation,
-            meta: { minUserType: 'Data Curator' },
+            meta: { minUserType: USER_TYPE_DATA_CURATOR },
             component: () => import(/* webpackChunkName: "trial-creation" */ '@/views/data/trials/TrialCreation.vue'),
             beforeEnter: requireAuth
           },
@@ -347,14 +347,14 @@ const routes = [
           {
             path: 'data-upload',
             name: Pages.importUpload,
-            meta: { minUserType: 'Data Curator' },
+            meta: { minUserType: USER_TYPE_DATA_CURATOR },
             component: () => import(/* webpackChunkName: "data-uploader" */ '@/views/data/DataUploader.vue'),
             beforeEnter: requireAuth
           },
           {
             path: 'data-upload/:templateType',
             name: Pages.importUploadType,
-            meta: { minUserType: 'Data Curator' },
+            meta: { minUserType: USER_TYPE_DATA_CURATOR },
             component: () => import(/* webpackChunkName: "data-uploader-type" */ '@/views/data/DataUploader.vue'),
             beforeEnter: requireAuth
           }

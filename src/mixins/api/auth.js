@@ -1,5 +1,9 @@
 import { authAxios } from '@/mixins/api/base'
 
+const USER_TYPE_ADMINISTRATOR = 'Administrator'
+const USER_TYPE_DATA_CURATOR = 'Data Curator'
+const USER_TYPE_REGULAR_USER = 'Regular User'
+
 /**
  * Checks whether the given user type is at least the given minimum user type
  * @param {String} userType The user type to check
@@ -7,12 +11,12 @@ import { authAxios } from '@/mixins/api/base'
  */
 const userIsAtLeast = (userType, atLeast) => {
   switch (atLeast) {
-    case 'Administrator':
-      return userType === 'Administrator'
-    case 'Data Curator':
-      return userType === 'Administrator' || userType === 'Data Curator'
-    case 'Regular User':
-      return userType === 'Administrator' || userType === 'Data Curator' || userType === 'Regular User'
+    case USER_TYPE_ADMINISTRATOR:
+      return userType === USER_TYPE_ADMINISTRATOR
+    case USER_TYPE_DATA_CURATOR:
+      return userType === USER_TYPE_ADMINISTRATOR || userType === USER_TYPE_DATA_CURATOR
+    case USER_TYPE_REGULAR_USER:
+      return userType === USER_TYPE_ADMINISTRATOR || userType === USER_TYPE_DATA_CURATOR || userType === USER_TYPE_REGULAR_USER
   }
 
   return false
@@ -50,5 +54,8 @@ export {
   apiPostToken,
   apiSetupCheckGatekeeper,
   apiSetupCheckDatabase,
-  apiSetupStore
+  apiSetupStore,
+  USER_TYPE_ADMINISTRATOR,
+  USER_TYPE_DATA_CURATOR,
+  USER_TYPE_REGULAR_USER
 }

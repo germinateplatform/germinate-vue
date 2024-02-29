@@ -28,14 +28,14 @@
     <p v-html="$t('pageDashboardText')" />
 
     <!-- Publications -->
-    <div v-if="showPublicationSection && (showPublications || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')))" class="mb-4">
+    <div v-if="showPublicationSection && (showPublications || (storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)))" class="mb-4">
       <h2>{{ $t('pageDashboardPublicationsTitle') }}</h2>
       <p>{{ $t('pageDashboardPublicationsText') }}</p>
 
       <PublicationsWidget referenceType="database" @publication-count-changed="count => showPublications = count > 0"/>
     </div>
 
-    <template v-if="showDataStorySection && (showStories || (storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')))">
+    <template v-if="showDataStorySection && (showStories || (storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)))">
       <h1>{{ $t('pageStoriesTitle') }}</h1>
       <DataStoryWidget :filterOn="storyFilterOn" @story-count-changed="updateStories" />
     </template>
@@ -64,7 +64,7 @@ import { apiGetOverviewStats } from '@/mixins/api/stats'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { statCategories } from '@/mixins/types'
 import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
 import { mdiPresentationPlay } from '@mdi/js'
 
@@ -89,7 +89,8 @@ export default {
         comparator: 'equals',
         operator: 'and',
         values: [1]
-      }]
+      }],
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {

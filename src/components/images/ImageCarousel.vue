@@ -21,7 +21,7 @@
       </b-carousel-slide>
     </b-carousel>
 
-    <div v-if="storeToken && userIsAtLeast(storeToken.userType, 'Administrator')">
+    <div v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_ADMINISTRATOR)">
       <b-button @click="$refs.carouselEditModal.show()">{{ $t('buttonEditCarousel') }}</b-button>
 
       <CarouselEditModal ref="carouselEditModal" @change="update" />
@@ -34,7 +34,7 @@ import CarouselEditModal from '@/components/modals/CarouselEditModal'
 
 import { mapGetters } from 'vuex'
 
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_ADMINISTRATOR } from '@/mixins/api/auth'
 import { getImageUrl } from '@/mixins/image'
 import { apiGetTemplateCarouselConfig } from '@/mixins/api/misc'
 
@@ -51,7 +51,8 @@ export default {
   data: function () {
     return {
       slide: 0,
-      images: null
+      images: null,
+      USER_TYPE_ADMINISTRATOR
     }
   },
   methods: {

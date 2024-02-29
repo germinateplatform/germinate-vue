@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1>{{ $t('pageDataResourcesTitle') }} <b-button size="sm" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="onShowAddModal"><MdiIcon :path="mdiPlus" /></b-button></h1>
+    <h1>{{ $t('pageDataResourcesTitle') }} <b-button size="sm" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" @click="onShowAddModal"><MdiIcon :path="mdiPlus" /></b-button></h1>
     <hr />
     <p>{{ $t('pageDataResourcesText') }}</p>
 
     <FileresourceTable :getData="getFileResourcesTable" ref="dataresourceTable" />
 
     <!-- Modal to allow adding new file resources -->
-    <FileResourceModal ref="fileResourceModal" v-on:resource-added="update" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" />
+    <FileResourceModal ref="fileResourceModal" v-on:resource-added="update" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" />
   </div>
 </template>
 
@@ -18,7 +18,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import FileResourceModal from '@/components/modals/FileResourceModal'
 import FileresourceTable from '@/components/tables/FileresourceTable'
 
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { apiPostFileResourceTable, apiPostFileresourceDatasetTable } from '@/mixins/api/dataset'
 
 import { mdiPlus } from '@mdi/js'
@@ -33,7 +33,8 @@ export default {
   },
   data: function () {
     return {
-      mdiPlus
+      mdiPlus,
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {

@@ -49,14 +49,14 @@
 
       <!-- Edit dataset -->
       <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onExperimentEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+        <a href="#" class="text-decoration-none" @click.prevent="onExperimentEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
           <span v-b-tooltip.hover :title="$t('tableTooltipExperimentEdit')"><MdiIcon :path="mdiSquareEditOutline"/></span>
         </a>
       </template>
 
       <!-- Delete experiment -->
       <template v-slot:cell(delete)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onExperimentDeleteClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+        <a href="#" class="text-decoration-none" @click.prevent="onExperimentDeleteClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
           <span v-b-tooltip.hover :title="$t('tableTooltipExperimentDelete')"><MdiIcon className="text-danger" :path="mdiDelete"/></span>
         </a>
       </template>
@@ -76,7 +76,7 @@ import ExperimentCreationModal from '@/components/modals/ExperimentCreationModal
 import { datasetTypes } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
 import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
 import { mdiPageNext, mdiSquareEditOutline, mdiDelete } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
@@ -103,7 +103,8 @@ export default {
         idColumn: 'experimentId',
         tableName: 'experiments'
       },
-      selectedExperiment: null
+      selectedExperiment: null,
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {
@@ -143,7 +144,7 @@ export default {
         }
       ]
 
-      if (this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
+      if (this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)) {
         result.push({
           key: 'edit',
           type: undefined,

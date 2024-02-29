@@ -48,14 +48,14 @@
       </template>
       <!-- Edit trait -->
       <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onTraitEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" v-b-tooltip.hover :title="$t('tableTooltipTraitEdit')">
+        <a href="#" class="text-decoration-none" @click.prevent="onTraitEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" v-b-tooltip.hover :title="$t('tableTooltipTraitEdit')">
           <MdiIcon :path="mdiSquareEditOutline" />
         </a>
       </template>
     </BaseTable>
 
     <!-- Trait state modal -->
-    <TraitEditModal :trait="trait" v-if="trait && storeToken && userIsAtLeast(storeToken.userType, 'Administrator')" @changed="refresh" ref="traitEditModal" />
+    <TraitEditModal :trait="trait" v-if="trait && storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_ADMINISTRATOR)" @changed="refresh" ref="traitEditModal" />
   </div>
 </template>
 
@@ -66,7 +66,7 @@ import BaseTable from '@/components/tables/BaseTable'
 import TraitEditModal from '@/components/modals/TraitEditModal'
 import defaultProps from '@/const/table-props.js'
 import { dataTypes } from '@/mixins/types.js'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_ADMINISTRATOR, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { Pages } from '@/mixins/pages'
 
@@ -94,7 +94,9 @@ export default {
         idColumn: 'traitId',
         tableName: 'traits'
       },
-      trait: null
+      trait: null,
+      USER_TYPE_ADMINISTRATOR,
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {
@@ -170,7 +172,7 @@ export default {
         }
       ]
 
-      if (this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
+      if (this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)) {
         result.push({
           key: 'edit',
           type: undefined,

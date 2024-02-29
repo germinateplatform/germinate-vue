@@ -4,7 +4,7 @@
       <b-spinner variant="primary" type="grow" />
     </div>
     <div v-else>
-      <template v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+      <template v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
         <b-row>
           <b-col cols=12 sm=6 lg=4 class="col-xxl-3">
             <StoryCard :story="newStory" :isPlaceholder="true" @create-clicked="createNewStory" />
@@ -38,7 +38,7 @@ import StoryCard from '@/components/util/StoryCard'
 import { apiPostStoryTable } from '@/mixins/api/misc'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
 export default {
   components: {
@@ -100,7 +100,8 @@ export default {
       stories: [],
       page: 1,
       itemsPerPage: 12,
-      selectedStory: null
+      selectedStory: null,
+      USER_TYPE_DATA_CURATOR
     }
   },
   methods: {

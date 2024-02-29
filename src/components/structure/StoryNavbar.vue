@@ -26,7 +26,7 @@
         <b-dropdown-item @click="closeStory" variant="danger"><MdiIcon :path="mdiClose" /> {{ $t('buttonCloseStory') }}</b-dropdown-item>
       </b-nav-item-dropdown>
 
-      <b-nav-item-dropdown class="active" v-if="storeActiveStory.isEdit && storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @show="showPopover = false">
+      <b-nav-item-dropdown class="active" v-if="storeActiveStory.isEdit && storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" @show="showPopover = false">
         <template v-slot:button-content>
           <MdiIcon :path="mdiPencil" /> {{ $t('buttonEdit') }}
         </template>
@@ -78,7 +78,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import AddStoryStepModal from '@/components/modals/AddStoryStepModal'
 import { mdiChevronLeft, mdiChevronRight, mdiClose, mdiArrowDown, mdiArrowDownRight, mdiFormatListNumbered, mdiDelete, mdiPencil } from '@mdi/js'
 import { getImageUrlById } from '@/mixins/image'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { apiDeleteStoryStep, apiPostStoryTable } from '@/mixins/api/misc'
 
 export default {
@@ -97,7 +97,8 @@ export default {
       mdiChevronLeft,
       mdiChevronRight,
       showPopover: true,
-      stepIndexOffset: 0
+      stepIndexOffset: 0,
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {

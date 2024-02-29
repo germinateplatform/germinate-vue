@@ -446,6 +446,7 @@
   "menuTrialsData": "Trials data",
   "menuTrialsDataExport": "Trials export",
   "menuTrialsTraits": "Traits",
+  "menuTrialsCreate": "Trial creation",
   "menuTopDarkModeToggle": "Toggle dark mode",
   "modalMessageJumpToPage": "Page number (1 - {maxPage})",
   "modalTitleChangelog": "What's new?",

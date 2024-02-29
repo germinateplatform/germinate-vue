@@ -103,7 +103,7 @@
                 <!-- Show a button to view the feedback -->
                 <span class="text-danger" v-if="job.feedback.length > 0"><MdiIcon :path="mdiAlertCircle" />&nbsp;<small><a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></small></span>
               </div>
-              <div v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+              <div v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
                 <span class="text-info"><MdiIcon :path="mdiFileDocumentAlert" />&nbsp;<small><a href="#" @click.prevent="downloadImportJobLog(job)">{{ $t('widgetAsyncJobPanelDownloadLog') }}</a></small></span>
               </div>
             </div>
@@ -148,7 +148,7 @@ import { mdiDelete, mdiDownload, mdiUpload, mdiRefresh, mdiDatabase, mdiClose, m
 
 import UploadStatusTable from '@/components/tables/UploadStatusTable'
 import { apiPostDatasetAsyncExport, apiDeleteDatasetAsyncExport } from '@/mixins/api/dataset'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { apiPostDataAsyncImport, apiDeleteDataAsyncImport, apiGetDataAsyncImportStart, apiGetDataAsyncImportLog } from '@/mixins/api/misc'
 import { templateImportTypes } from '@/mixins/types'
 import { downloadBlob } from '@/mixins/util'
@@ -258,7 +258,8 @@ export default {
           path: mdiImageMultiple,
           color: () => this.storeServerSettings ? this.storeServerSettings.colorsTemplate[5 % this.storeServerSettings.colorsTemplate.length] : null
         }
-      }
+      },
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {

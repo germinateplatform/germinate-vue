@@ -32,7 +32,7 @@
           <div v-html="selectedNews.newsContent" />
           <b-button-group class="mt-3">
             <b-button v-if="selectedNews.newsHyperlink && selectedNews.newsHyperlink.lastIndexOf('#', 0) !== 0" :href="selectedNews.newsHyperlink" target="_blank" rel="noopener noreferrer">{{ $t('pageNewsReadMore') }} <MdiIcon :path="mdiOpenInNew" /></b-button>
-            <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="deleteNewsItem(selectedNews.newsId)" variant="danger"><MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}</b-button>
+            <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" @click="deleteNewsItem(selectedNews.newsId)" variant="danger"><MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}</b-button>
           </b-button-group>
         </b-modal>
       </b-col>
@@ -59,7 +59,7 @@
                 <b-button variant="primary" :href="project.newsHyperlink" rel="noopener noreferrer" v-if="project.newsHyperlink">
                   <MdiIcon :path="mdiOpenInNew" /> {{ $t('pageNewsReadMore') }}
                 </b-button>
-                <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="deleteNewsItem(project.newsId)" variant="danger">
+                <b-button v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" @click="deleteNewsItem(project.newsId)" variant="danger">
                   <MdiIcon :path="mdiDelete" /> {{ $t('buttonDelete') }}
                 </b-button>
               </b-button-group>
@@ -76,7 +76,7 @@
           @change="updateProjects" />
       </b-col>
     </b-row>
-    <div v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')">
+    <div v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
       <b-button @click="$refs.addNewsModal.show()">{{ $t('buttonAddNews') }}</b-button>
       <AddNewsModal ref="addNewsModal" v-on:news-added="update()" />
     </div>
@@ -89,7 +89,7 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import DataImportJobs from '@/components/dataimport/DataImportJobs'
 import AddNewsModal from '@/components/modals/AddNewsModal'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { apiPostNewsTable, apiDeleteNews } from '@/mixins/api/misc'
 import { getImageUrl } from '@/mixins/image'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
@@ -184,7 +184,8 @@ export default {
           text: () => this.$t('widgetNewsTypeGeneralNews'),
           path: mdiNewspaper
         }
-      }
+      },
+      USER_TYPE_DATA_CURATOR
     }
   },
   watch: {

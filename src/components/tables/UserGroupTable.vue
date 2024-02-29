@@ -24,7 +24,7 @@
 
       <!-- Additional action buttons -->
       <template v-slot:cell(actions)="data">
-        <b-button-group v-if="hideDefaultActions !== true && storeToken && storeToken.userType === 'Administrator'">
+        <b-button-group v-if="hideDefaultActions !== true && storeToken && storeToken.userType === USER_TYPE_ADMINISTRATOR">
           <!-- Edit group -->
           <b-button variant="outline-info" size="sm" v-b-tooltip.hover :title="$t('buttonEdit')" @click="$emit('edit-group-clicked', data.item)"><MdiIcon :path="mdiRenameBox" /></b-button>
           <!-- Delete group -->
@@ -41,6 +41,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
 import { getNumberWithSuffix } from '@/mixins/formatting'
+import { USER_TYPE_ADMINISTRATOR } from '@/mixins/api/auth'
 
 import { mdiRenameBox, mdiDelete } from '@mdi/js'
 
@@ -93,7 +94,8 @@ export default {
       options: {
         idColumn: 'userGroupId',
         tableName: 'groups'
-      }
+      },
+      USER_TYPE_ADMINISTRATOR
     }
   },
   computed: {

@@ -30,7 +30,7 @@
       </template>
       <!-- Delete resource -->
       <template v-slot:cell(deleteFileresource)="data">
-        <b-button variant="danger" class="ml-3" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" @click="onDeleteResource(data.item)"><MdiIcon :path="mdiDelete" /></b-button>
+        <b-button variant="danger" class="ml-3" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" @click="onDeleteResource(data.item)"><MdiIcon :path="mdiDelete" /></b-button>
       </template>
     </BaseTable>
   </div>
@@ -40,7 +40,7 @@
 import { mapGetters } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 import { apiDeleteFileresource, apiGetDataResource } from '@/mixins/api/dataset'
 import { downloadBlob } from '@/mixins/util'
@@ -70,7 +70,8 @@ export default {
       options: {
         idColumn: 'fileresourceId',
         tableName: 'fileresources'
-      }
+      },
+      USER_TYPE_DATA_CURATOR
     }
   },
   computed: {
@@ -131,7 +132,7 @@ export default {
         }
       ]
 
-      if (this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')) {
+      if (this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)) {
         result.push({
           key: 'deleteFileresource',
           type: undefined,

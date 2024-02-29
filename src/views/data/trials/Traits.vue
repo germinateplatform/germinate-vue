@@ -3,7 +3,7 @@
     <h1>{{ $t('pageTraitsTitle') }}</h1>
     <TraitTable :getData="getData" :getIds="selectionMode === 'multi' ? getIds : null" :selectionMode="selectionMode" v-on:selection-changed="updateButtonState" ref="traitTable" />
 
-    <template v-if="storeToken && userIsAtLeast(storeToken.userType, 'Administrator')">
+    <template v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_ADMINISTRATOR)">
       <Collapse :visible="false" :title="$t('pageTraitsUnifierTitle')" :showLoading="false" @toggle="unifierExpanded = !unifierExpanded" ref="traitCollapse">
         <template v-slot:content>
           <p>{{ $t('pageTraitsUnifierText') }}</p>
@@ -32,7 +32,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 import TraitTable from '@/components/tables/TraitTable'
 import { apiPostTraitTable, apiPostTraitTableIds, apiPostTraitUnification } from '@/mixins/api/trait'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_ADMINISTRATOR } from '@/mixins/api/auth'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
 import { mdiArrowRightBox, mdiSetMerge } from '@mdi/js'
@@ -52,7 +52,8 @@ export default {
       unifierExpanded: false,
       selectedTraits: null,
       primaryTrait: null,
-      selectedIds: []
+      selectedIds: [],
+      USER_TYPE_ADMINISTRATOR
     }
   },
   computed: {

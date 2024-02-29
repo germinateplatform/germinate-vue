@@ -216,7 +216,7 @@ import PedigreeChart from '@/components/charts/PedigreeChart'
 import PedigreeTable from '@/components/tables/PedigreeTable'
 import PedigreeDefinitionTable from '@/components/tables/PedigreeDefinitionTable'
 import PublicationsWidget from '@/components/util/PublicationsWidget'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { apiPostGermplasmTable, apiPostGermplasmGroupTable, apiPostGermplasmDatasetTable, apiPostGermplasmAttributeTable, apiPostPedigreeTable, apiPostEntityTable, apiPatchGermplasmLocation, apiPostPedigreedefinitionTable } from '@/mixins/api/germplasm'
 import { apiPostGermplasmInstitutionTable, apiPostCommentsTable } from '@/mixins/api/misc'
 import { entityTypes } from '@/mixins/types'
@@ -301,7 +301,7 @@ export default {
     ]),
     isAtLeastDataCurator: function () {
       if (this.storeToken) {
-        return userIsAtLeast(this.storeToken.userType, 'Data Curator')
+        return userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)
       } else {
         return false
       }

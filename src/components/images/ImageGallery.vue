@@ -28,10 +28,10 @@
 
     <b-button-group>
       <b-button @click="download" v-if="images && images.length > 0"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownloadImages') }}</b-button>
-      <b-button @click="$refs.imageUploadModal.show()" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiUpload" /> {{ $t('buttonUpload') }}</b-button>
+      <b-button @click="$refs.imageUploadModal.show()" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)"><MdiIcon :path="mdiUpload" /> {{ $t('buttonUpload') }}</b-button>
     </b-button-group>
 
-    <ImageUploadModal :foreignId="foreignId" :referenceTable="referenceTable" v-on:images-updated="refresh()" ref="imageUploadModal" v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')" />
+    <ImageUploadModal :foreignId="foreignId" :referenceTable="referenceTable" v-on:images-updated="refresh()" ref="imageUploadModal" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" />
   </div>
 </template>
 
@@ -46,7 +46,7 @@ import ImageTags from '@/components/images/ImageTags'
 import ImageUploadModal from '@/components/modals/ImageUploadModal'
 import { getImageUrl } from '@/mixins/image'
 import { apiPostImages, apiPostImagesExport } from '@/mixins/api/misc.js'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
 import { mdiDownload, mdiUpload } from '@mdi/js'
 
@@ -63,7 +63,8 @@ export default {
       images: [],
       imageCount: -1,
       imageTags: [],
-      selectedTag: null
+      selectedTag: null,
+      USER_TYPE_DATA_CURATOR
     }
   },
   props: {

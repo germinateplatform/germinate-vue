@@ -15,7 +15,7 @@
 
       <h5 v-else>{{ $t('headingNoData') }}</h5>
 
-      <b-button v-b-modal.add-publication-modal v-if="storeToken && userIsAtLeast(storeToken.userType, 'Data Curator')"><MdiIcon :path="mdiPlusBox" /> {{ $t('buttonAddPublication') }}</b-button>
+      <b-button v-b-modal.add-publication-modal v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)"><MdiIcon :path="mdiPlusBox" /> {{ $t('buttonAddPublication') }}</b-button>
 
       <b-modal id="add-publication-modal"
               ref="addPublicationModal"
@@ -45,7 +45,7 @@ import PublicationCard from '@/components/util/PublicationCard'
 import MdiIcon from '@/components/icons/MdiIcon'
 
 import { apiGetPublications, apiPutPublication, apiPutPublicationReference, apiDeletePublicationReference } from '@/mixins/api/misc'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
 import { mdiChevronDoubleDown, mdiPlusBox } from '@mdi/js'
 
@@ -93,7 +93,8 @@ export default {
         errorMessage: null,
         loading: false,
         date: null
-      }
+      },
+      USER_TYPE_DATA_CURATOR
     }
   },
   watch: {

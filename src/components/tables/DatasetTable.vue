@@ -194,7 +194,7 @@ import { apiPostPedigreeDatasetExport } from '@/mixins/api/germplasm'
 import { datasetStates, datasetTypes } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
 import { isPageAvailable, downloadBlob } from '@/mixins/util'
-import { userIsAtLeast } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { getDateTimeString, isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 
 import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiPlusBox, mdiDelete, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
@@ -268,7 +268,7 @@ export default {
       'storeToken'
     ]),
     userIsDataCurator: function () {
-      return this.storeToken && userIsAtLeast(this.storeToken.userType, 'Data Curator')
+      return this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)
     },
     localTableActions: function () {
       return [{
