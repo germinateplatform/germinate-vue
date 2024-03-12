@@ -1,5 +1,27 @@
 [
   {
+    "version": "4.7.2",
+    "date": "2024-03-12",
+    "items": [
+      {
+        "type": "bugfix",
+        "title": "Database connection timeout",
+        "text": "Some long-running data import jobs timed out the database connection. Added reconnect parameter.",
+        "categories": [
+          "admin"
+        ]
+      },
+      {
+        "type": "bugfix",
+        "title": "BrAPI call set endpoint",
+        "text": "Fixed issue where BrAPI call set calls would exceed maximum allowed database connection size.",
+        "categories": [
+          "admin"
+        ]
+      }
+    ]
+  },
+  {
     "version": "4.7.1",
     "date": "2024-01-17",
     "items": [
