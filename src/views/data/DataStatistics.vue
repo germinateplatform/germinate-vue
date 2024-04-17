@@ -8,6 +8,7 @@
         <p>{{ $t('pageStatisticsTaxonomyText') }}</p>
         <!-- Taxonomy sunburst chart -->
         <TaxonomySunburst />
+        <TaxonomySankey />
       </b-col>
       <b-col cols=12 sm=6>
         <h2>{{ $t('pageStatisticsBiologicalStatusTitle') }}</h2>
@@ -52,6 +53,7 @@
 import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
 import TaxonomySunburst from '@/components/charts/TaxonomySunburst'
+import TaxonomySankey from '@/components/charts/TaxonomySankey'
 import { apiGetStatsFile } from '@/mixins/api/stats'
 import { Pages } from '@/mixins/pages'
 
@@ -68,6 +70,7 @@ export default {
   components: {
     BarChart,
     ChoroplethChart,
+    TaxonomySankey,
     TaxonomySunburst
   },
   methods: {
