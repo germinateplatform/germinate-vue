@@ -75,15 +75,17 @@ export default {
   methods: {
     plot: function (query, selectedItems) {
       this.xIds = selectedItems.filter(t => t.dataType === undefined || t.dataType === 'numeric').map(t => t[this.idKey])
-      this.yIds = query.yIds
-      this.yGroupIds = query.yGroupIds
+      if (this.xIds.length > 0) {
+        this.yIds = query.yIds
+        this.yGroupIds = query.yGroupIds
 
-      if (this.showPlot) {
-        this.$nextTick(() => {
-          this.$refs.boxplot.redraw()
-        })
+        if (this.showPlot) {
+          this.$nextTick(() => {
+            this.$refs.boxplot.redraw()
+          })
+        }
+        this.showPlot = true
       }
-      this.showPlot = true
 
       this.$emit('plot-clicked', query, selectedItems)
     }

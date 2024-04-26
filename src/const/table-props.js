@@ -12,6 +12,10 @@ export default {
           count: 0
         }
       }
+    },
+    storeUrlParameters: {
+      type: Boolean,
+      default: true
     }
   },
   DOWNLOAD: {
@@ -67,6 +71,10 @@ export default {
     tableActions: {
       type: Array,
       default: () => null
+    },
+    storeUrlParameters: {
+      type: Boolean,
+      default: true
     }
   }
 }

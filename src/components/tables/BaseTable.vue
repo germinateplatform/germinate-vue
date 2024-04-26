@@ -22,6 +22,7 @@
                    :texts="options.headings"
                    :tableName="options.tableName"
                    :filterOn="filterOn"
+                   :storeUrlParameters="storeUrlParameters"
                    divClass="order-1 order-sm-0"
                    ref="tableFilter"
                    v-if="filterEnabled"
@@ -228,6 +229,10 @@ export default {
       type: Boolean,
       default: null
     },
+    storeUrlParameters: {
+      type: Boolean,
+      default: true
+    },
     filterOn: {
       type: Array,
       default: null
@@ -366,26 +371,30 @@ export default {
   },
   methods: {
     updateQuery: async function (newValue) {
-      const query = Object.assign({}, this.$route.query)
-      query[`${this.options.tableName}-page`] = newValue
+      if (this.storeUrlParameters) {
+        const query = Object.assign({}, this.$route.query)
+        query[`${this.options.tableName}-page`] = newValue
 
-      await this.$router.replace({ query })
+        await this.$router.replace({ query })
+      }
     },
     updateSort: async function (ctx) {
-      const query = Object.assign({}, this.$route.query)
-      if (ctx.sortBy) {
-        query[`${this.options.tableName}-sort`] = ctx.sortBy
-      } else {
-        delete query[`${this.options.tableName}-sort`]
-      }
+      if (this.storeUrlParameters) {
+        const query = Object.assign({}, this.$route.query)
+        if (ctx.sortBy) {
+          query[`${this.options.tableName}-sort`] = ctx.sortBy
+        } else {
+          delete query[`${this.options.tableName}-sort`]
+        }
 
-      if (ctx.sortDesc) {
-        query[`${this.options.tableName}-sort-desc`] = ctx.sortDesc
-      } else {
-        delete query[`${this.options.tableName}-sort-desc`]
-      }
+        if (ctx.sortDesc) {
+          query[`${this.options.tableName}-sort-desc`] = ctx.sortDesc
+        } else {
+          delete query[`${this.options.tableName}-sort-desc`]
+        }
 
-      await this.$router.replace({ query })
+        await this.$router.replace({ query })
+      }
     },
     jumpToPage: function () {
       if (this.jumpToPageValue > 0 && this.jumpToPageValue <= this.maxPage) {

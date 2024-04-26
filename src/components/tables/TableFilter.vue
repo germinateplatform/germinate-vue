@@ -183,6 +183,10 @@ export default {
     divClass: {
       type: String,
       default: ''
+    },
+    storeUrlParameters: {
+      type: Boolean,
+      default: true
     }
   },
   data: function () {
@@ -257,13 +261,15 @@ export default {
   },
   methods: {
     updateUrl: async function (newValue) {
-      const query = Object.assign({}, this.$route.query)
-      if (newValue && newValue.length > 0) {
-        query[`${this.tableName}-filter`] = JSON.stringify(newValue)
-      } else {
-        delete query[`${this.tableName}-filter`]
+      if (this.storeUrlParameters) {
+        const query = Object.assign({}, this.$route.query)
+        if (newValue && newValue.length > 0) {
+          query[`${this.tableName}-filter`] = JSON.stringify(newValue)
+        } else {
+          delete query[`${this.tableName}-filter`]
+        }
+        await this.$router.replace({ query }).catch(() => true)
       }
-      await this.$router.replace({ query }).catch(() => true)
     },
     updateOperators: function () {
       this.localOperators = Object.keys(operators).map(o => {

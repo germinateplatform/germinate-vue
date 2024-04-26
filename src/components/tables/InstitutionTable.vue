@@ -14,14 +14,12 @@
       </template>
       <template v-slot:cell(institutionCode)="data">
         <div v-if="data.item.institutionCode">
-          <a v-if="showLinks" href="#" @click.prevent="redirectToGermplasmPage(data.item)">{{ data.item.institutionCode }}</a>
-          <span v-else>{{ data.item.institutionCode }}</span>
+          <a :href="`https://www.fao.org/wiews/data/organizations/en/?instcode=${data.item.institutionCode}`">{{ data.item.institutionCode }}</a>
         </div>
       </template>
       <template v-slot:cell(institutionAddress)="data">
         <div v-if="data.item.institutionAddress">
-          <a v-if="showLinks" href="#" @click.prevent="redirectToGermplasmPage(data.item)">{{ data.item.institutionAddress }}</a>
-          <span v-else>{{ data.item.institutionAddress }}</span>
+          <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.item.institutionAddress)}`">{{ data.item.institutionAddress }}</a>
         </div>
       </template>
       <template v-slot:cell(institutionType)="data">

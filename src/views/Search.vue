@@ -49,56 +49,56 @@
       <!-- Germplasm -->
       <Collapse :icon="mdiSprout" :title="$t('pageSearchResultSectionGermplasm')" :visible="false" class="mb-2" no-body ref="collapseGermplasm" v-if="isSearchType('germplasm')">
         <template v-slot:content="slotProps">
-          <GermplasmTable :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" :filterOn="initialFilters['TABLE_COLUMNS_GERMPLASM_SEARCHABLE']" ref="tableGermplasm" v-on:data-changed="slotProps.update"/>
+          <GermplasmTable :storeUrlParameters="false" :getData="getGermplasmData" :getIds="getGermplasmIds" :downloadTable="downloadGermplasm" :filterOn="initialFilters['TABLE_COLUMNS_GERMPLASM_SEARCHABLE']" ref="tableGermplasm" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Germplasm attributes -->
       <Collapse :icon="mdiPlaylistPlus" :title="$t('pageSearchResultSectionGermplasmAttributes')" :visible="false" class="mb-2" no-body ref="collapseGermplasmAttributes"  v-if="isSearchType('germplasmAttributes')">
         <template v-slot:content="slotProps">
-          <GermplasmAttributeTable :getData="getGermplasmAttributeData" :downloadTable="downloadGermplasmAttributes" :filterOn="initialFilters['TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE']" ref="tableGermplasmAttributes" v-on:data-changed="slotProps.update"/>
+          <GermplasmAttributeTable :storeUrlParameters="false" :getData="getGermplasmAttributeData" :downloadTable="downloadGermplasmAttributes" :filterOn="initialFilters['TABLE_COLUMNS_GERMPLASM_ATTRIBUTE_SEARCHABLE']" ref="tableGermplasmAttributes" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Trials data -->
       <Collapse :icon="mdiShovel" :title="$t('pageSearchResultSectionTrialsData')" :visible="false" class="mb-2" no-body ref="collapseTrials"  v-if="isSearchType('trials')">
         <template v-slot:content="slotProps">
-          <TrialsDataTable :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsData" :filterOn="initialFilters['TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE']" ref="tableTrials" v-on:data-changed="slotProps.update"/>
+          <TrialsDataTable :storeUrlParameters="false" :getData="getTrialsData" :getIds="getTrialsDataIds" :downloadTable="downloadTrialsData" :filterOn="initialFilters['TABLE_COLUMNS_TRIALS_DATA_SEARCHABLE']" ref="tableTrials" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Map definition data -->
       <Collapse :icon="mdiDna" :title="$t('pageSearchResultSectionMapDefinitionData')" :visible="false" class="mb-2" no-body ref="collapseMapDefinitionData"  v-if="isSearchType('mapdefinitions')">
         <template v-slot:content="slotProps">
-          <MapDefinitionTable :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" :downloadTable="downloadMapDefinitionData" :filterOn="initialFilters['TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE']" ref="tableMapDefinitionData" v-on:data-changed="slotProps.update"/>
+          <MapDefinitionTable :storeUrlParameters="false" :getData="getMapDefinitionData" :getIds="getMapDefinitionIds" :downloadTable="downloadMapDefinitionData" :filterOn="initialFilters['TABLE_COLUMNS_MAP_DEFINITION_SEARCHABLE']" ref="tableMapDefinitionData" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Datasets -->
       <Collapse :icon="mdiDatabase" :title="$t('pageSearchResultSectionDatasets')" :visible="false" class="mb-2" no-body ref="collapseDatasets"  v-if="isSearchType('datasets')">
         <template v-slot:content="slotProps">
-          <DatasetTable :getData="getDatasetData" :downloadTable="downloadDatasets" :filterOn="initialFilters['TABLE_COLUMNS_DATASET_SEARCHABLE']" ref="tableDatasets" v-on:data-changed="slotProps.update"/>
+          <DatasetTable :storeUrlParameters="false" :getData="getDatasetData" :downloadTable="downloadDatasets" :filterOn="initialFilters['TABLE_COLUMNS_DATASET_SEARCHABLE']" ref="tableDatasets" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Dataset attributes -->
       <Collapse :icon="mdiPlaylistPlus" :title="$t('pageSearchResultSectionDatasetAttributes')" :visible="false" class="mb-2" no-body ref="collapseDatasetAttributes"  v-if="isSearchType('datasetAttributes')">
         <template v-slot:content="slotProps">
-          <DatasetAttributeTable :getData="getDatasetAttributeData" :downloadTable="downloadDatasetAttributes" :filterOn="initialFilters['TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE']" ref="tableDatasetAttributes" v-on:data-changed="slotProps.update"/>
+          <DatasetAttributeTable :storeUrlParameters="false" :getData="getDatasetAttributeData" :downloadTable="downloadDatasetAttributes" :filterOn="initialFilters['TABLE_COLUMNS_DATASET_ATTRIBUTE_SEARCHABLE']" ref="tableDatasetAttributes" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Pedigree data -->
       <Collapse :icon="mdiSitemap" :title="$t('pageSearchResultSectionPedigreeData')" :visible="false" class="mb-2" no-body ref="collapsePedigree" v-if="isSearchType('pedigrees')">
         <template v-slot:content="slotProps">
-          <PedigreeTable :getData="getPedigreeData" :downloadTable="downloadPedigrees" :filterOn="initialFilters['TABLE_COLUMNS_PEDIGREE_SEARCHABLE']" ref="tablePedigree" v-on:data-changed="slotProps.update"/>
+          <PedigreeTable :storeUrlParameters="false" :getData="getPedigreeData" :downloadTable="downloadPedigrees" :filterOn="initialFilters['TABLE_COLUMNS_PEDIGREE_SEARCHABLE']" ref="tablePedigree" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
       <!-- Location data -->
       <Collapse :icon="mdiMap" :title="$t('pageSearchResultSectionLocationData')" :visible="false" class="mb-2" no-body ref="collapseLocationData" v-if="isSearchType('locations')">
         <template v-slot:content="slotProps">
-          <LocationTable :getData="getLocationData" :getIds="getLocationIds" :downloadTable="downloadLocations" :filterOn="initialFilters['TABLE_COLUMNS_LOCATION_SEARCHABLE']" ref="tableLocations" v-on:data-changed="slotProps.update"/>
+          <LocationTable :storeUrlParameters="false" :getData="getLocationData" :getIds="getLocationIds" :downloadTable="downloadLocations" :filterOn="initialFilters['TABLE_COLUMNS_LOCATION_SEARCHABLE']" ref="tableLocations" v-on:data-changed="slotProps.update"/>
         </template>
       </Collapse>
 
