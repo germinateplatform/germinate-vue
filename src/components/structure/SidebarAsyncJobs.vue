@@ -46,7 +46,7 @@
               <div v-if="job.datatype === 'pedigree' && storeServerSettings && storeServerSettings.heliumUrl">
                 <HeliumIcon />
                 <small class="d-inline-block ml-1">
-                  <a target="_blank" :href="`${storeServerSettings.heliumUrl}pedigree?germinateUrl=${encodeURIComponent(storeBaseUrl + 'dataset/export/async/' + job.uuid + '/download')}`" @click="updateInternal">{{ $t('buttonSendToHelium') }}</a>
+                  <a target="_blank" :href="`${heliumUrl}?germinateUrl=${encodeURIComponent(getHeliumExportUrl(job.uuid))}`" @click="updateInternal">{{ $t('buttonSendToHelium') }}</a>
                 </small>
               </div>
               <div class="d-flex flex-row align-items-start">
@@ -271,6 +271,29 @@ export default {
       'storeServerSettings',
       'storeAsyncSidebarTabIndex'
     ]),
+    heliumUrl: function () {
+      if (this.storeServerSettings && this.storeServerSettings.heliumUrl) {
+        let url = this.storeServerSettings.heliumUrl
+
+        if (url.endsWith('/')) {
+          if (url.endsWith('/#/')) {
+            url += 'pedigree'
+          } else {
+            url += '#/pedigree'
+          }
+        } else {
+          if (url.endsWidth('/#')) {
+            url += '/pedigree'
+          } else {
+            url += '/#/pedigree'
+          }
+        }
+
+        return url
+      } else {
+        return ''
+      }
+    },
     exportJobTypes: function () {
       if (this.asyncExportJobs) {
         return this.asyncExportJobs.map(j => {
@@ -315,6 +338,21 @@ export default {
   methods: {
     userIsAtLeast,
     getNumberWithSuffix,
+    getHeliumExportUrl: function (jobUuid) {
+      const end = `dataset/export/async/${jobUuid}/download`
+
+      if (this.storeBaseUrl.startsWith('http')) {
+        let base = this.storeBaseUrl
+
+        if (!base.endsWith('/')) {
+          base += '/'
+        }
+
+        return `${base}${end}`
+      } else {
+        return `${window.location.protocol}//${window.location.host}${window.location.pathname}/api/${end}`
+      }
+    },
     getJobVariant: function (job) {
       if (job.errorStatus === 'ERROR') {
         return 'danger'

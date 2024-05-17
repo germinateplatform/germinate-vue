@@ -74,7 +74,7 @@
     "vue-template-compiler": "~2.6.14",
     "webpack-bundle-analyzer": "^4.6.1"
   },
-  "copyright": "Copyright 2023 The James Hutton Institute",
+  "copyright": "Copyright 2024 The James Hutton Institute",
   "homepage": "https://ics.hutton.ac.uk/get-germinate",
   "license": "Apache-2.0",
   "repository": {
