@@ -1,7 +1,7 @@
 import store from '@/store'
 import { event } from 'vue-gtag'
 
-const germinateVersion = '4.7.2'
+const germinateVersion = '4.7.3'
 
 /**
      * Generates a v4 UUID
