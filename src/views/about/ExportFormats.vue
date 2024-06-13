@@ -7,7 +7,7 @@
     <!-- Badges for the types -->
     <b-badge v-for="(tag, name) in tags"
              :key="`export-format-tag-${name}`"
-             class="dispay-inline mr-2"
+             class="display-inline mr-2"
              :to="{ name: Pages.aboutExportFormatsType, params: { format: name } }"
              :style="`background: ${getBackgroundColor(name)}; color: ${getTextColor(name)}`"
              event=""

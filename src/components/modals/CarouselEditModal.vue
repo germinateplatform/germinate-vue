@@ -45,7 +45,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import draggable from 'vuedraggable'
 
 import { mapGetters } from 'vuex'
-import { apiGetLocales, apiGetTemplateCarouselConfig, apiDeleteTemplateImageByName, apiPostTemplateImage, apiPostTemplateCarouselConfig } from '@/mixins/api/misc'
+import { apiGetLocales, apiGetTemplateCarouselConfig, apiDeleteTemplateImageByName, apiPostCarouselImage, apiPostTemplateCarouselConfig } from '@/mixins/api/misc'
 
 import { getImageUrl } from '@/mixins/image'
 
@@ -96,7 +96,7 @@ export default {
         this.imageLocales.forEach(l => formData.append('locales', l.locale))
         formData.append('imageFile', this.imageFile)
 
-        apiPostTemplateImage(formData, () => {
+        apiPostCarouselImage(formData, () => {
           this.update()
         })
       }

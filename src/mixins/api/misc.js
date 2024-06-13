@@ -53,11 +53,17 @@ const apiDeleteImage = (imageId, onSuccess, onError) => authAxios({ url: `image/
 
 const apiDeleteTemplateImageByName = (name, onSuccess, onError) => authAxios({ url: `image/${name}`, method: 'DELETE', success: onSuccess, error: onError })
 
-const apiPostTemplateImage = (formData, onSuccess, onError) => authForm({ url: 'image/template', method: 'POST', formData: formData, success: onSuccess, error: onError })
+const apiPostCarouselImage = (formData, onSuccess, onError) => authForm({ url: 'image/carousel', method: 'POST', formData: formData, success: onSuccess, error: onError })
+
+const apiPostAboutPartner = (formData, onSuccess, onError) => authForm({ url: 'settings/about', method: 'POST', formData: formData, success: onSuccess, error: onError })
 
 const apiGetTemplateCarouselConfig = (onSuccess, onError) => authAxios({ url: 'settings/carousel', success: onSuccess, error: onError })
 
+const apiGetTemplateAboutConfig = (onSuccess, onError) => authAxios({ url: 'settings/about', success: onSuccess, error: onError })
+
 const apiPostTemplateCarouselConfig = (data, onSuccess, onError) => authAxios({ url: 'settings/carousel', method: 'POST', data: data, success: onSuccess, error: onError })
+
+const apiPatchTemplateAboutConfig = (data, onSuccess, onError) => authAxios({ url: 'settings/about', method: 'PATCH', data: data, success: onSuccess, error: onError })
 
 const apiPatchImage = (image, onSuccess, onError) => authAxios({ url: `image/${image.imageId}`, method: 'PATCH', data: image, success: onSuccess, error: onError })
 
@@ -162,9 +168,12 @@ export {
   apiPutImageTags,
   apiDeleteImage,
   apiDeleteTemplateImageByName,
-  apiPostTemplateImage,
+  apiPostCarouselImage,
   apiPostTemplateCarouselConfig,
   apiGetTemplateCarouselConfig,
+  apiPatchTemplateAboutConfig,
+  apiPostAboutPartner,
+  apiGetTemplateAboutConfig,
   apiPatchImage,
   apiPostNewsTable,
   apiPostNews,
