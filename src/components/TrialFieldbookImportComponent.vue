@@ -206,8 +206,8 @@ export default {
         }
 
         parts.push({
-          row: row - 1,
-          column: column - 1,
+          row: row,
+          column: column,
           germplasm,
           rep
         })
