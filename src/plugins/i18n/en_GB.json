@@ -1142,6 +1142,7 @@
   "tableColumnGermplasmImageCount": "Images",
   "tableColumnGermplasmLocation": "Location",
   "tableColumnGermplasmName": "Germplasm name",
+  "tableColumnGermplasmDisplayName": "Display name",
   "tableColumnGermplasmNumber": "Number",
   "tableColumnGermplasmPuid": "PUID",
   "tableColumnGroupCount": "Group members",

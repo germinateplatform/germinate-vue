@@ -52,6 +52,10 @@
       <template v-slot:cell(germplasmName)="data">
         <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
       </template>
+      <!-- Germplasm display name link -->
+      <template v-slot:cell(germplasmDisplayName)="data">
+        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmDisplayName }}</router-link>
+      </template>
       <!-- Germplasm GID link -->
       <template v-slot:cell(germplasmGid)="data">
         <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
@@ -288,6 +292,11 @@ export default {
           sortable: true,
           label: this.$t('tableColumnGermplasmName'),
           preferredSortingColumn: true
+        }, {
+          key: 'germplasmDisplayName',
+          type: String,
+          sortable: true,
+          label: this.$t('tableColumnGermplasmDisplayName')
         }, {
           key: 'germplasmGid',
           type: String,

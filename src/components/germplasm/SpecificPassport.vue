@@ -310,6 +310,7 @@ export default {
       if (this.germplasmTableData) {
         const parts = []
         parts.push(this.germplasmTableData.germplasmName)
+        parts.push(this.germplasmTableData.germplasmDisplayName)
         parts.push(this.germplasmTableData.germplasmNumber)
 
         return parts.filter(p => p !== null).join(' / ')

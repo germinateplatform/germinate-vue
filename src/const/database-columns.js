@@ -7,6 +7,9 @@ export default {
       name: 'germplasmName',
       type: String
     }, {
+      name: 'germplasmDisplayName',
+      type: String
+    }, {
       name: 'germplasmGid',
       type: String
     }, {
