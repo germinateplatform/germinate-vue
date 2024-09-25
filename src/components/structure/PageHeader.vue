@@ -6,6 +6,34 @@
         <h5 class="my-0 ml-3">{{ $t('germinateTitle') }}</h5>
       </div>
       <div class="d-flex flex-row flex-wrap justify-content-end">
+        <!-- Selected projects -->
+        <h5 v-if="selectedProjects && selectedProjects.length > 0"
+            class="d-flex align-items-stretch mx-1 marked-item-badges">
+          <div tabindex="100" id="popover-target-projects" class="d-flex align-items-stretch" v-b-tooltip="$t('tooltipPageHeaderShowSelectedProjects')">
+            <b-badge variant="primary">
+              <MdiIcon :path="mdiClipboardList" />
+            </b-badge>
+            <b-badge>{{ getNumberWithSuffix(selectedProjects.length, 1) }}</b-badge>
+          </div>
+          <b-popover target="popover-target-projects" triggers="focus" placement="top">
+            <template #title>{{ `${$t('widgetHeaderSelectedProjects')}: ${(selectedProjects || []).length.toLocaleString()}` }}</template>
+
+            <b-list-group>
+              <b-list-group-item v-for="project in selectedProjects" :key="`selected-project-${project.projectId}`" class="d-flex justify-content-between align-items-center">
+                <span>{{ project.projectName }}</span>
+                <b-badge variant="danger" href="#" @click.prevent="removeSelectedProject(project)">
+                  <MdiIcon :path="mdiDelete" />
+                </b-badge>
+              </b-list-group-item>
+            </b-list-group>
+          </b-popover>
+          <b-badge :href="selectedProjects.length < 1 ? null : '#'"
+                   :disabled="selectedProjects.length < 1"
+                   @click.prevent="selectedProjects.length < 1 ? null : clearSelectedProjects()"
+                   v-b-tooltip="$t('chartTooltipSelectedProjectsClear')">
+            <span :class="{ 'text-danger': selectedProjects.length >= 1 }"><MdiIcon :path="mdiDelete" /></span>
+          </b-badge>
+        </h5>
         <!-- Badges for marked items -->
         <h5 v-for="itemType in Object.keys(markedItemTypes)"
             :key="`item-type-${itemType}`"
@@ -36,9 +64,10 @@ import { getNumberWithSuffix } from '@/mixins/formatting'
 import { markedItemTypes } from '@/mixins/types'
 import { Pages } from '@/mixins/pages'
 
-import { mdiDelete } from '@mdi/js'
+import { mdiClipboardList, mdiDelete } from '@mdi/js'
 
 import { mapGetters } from 'vuex'
+import { apiPostProjectTable } from '@/mixins/api/project'
 
 export default {
   components: {
@@ -48,7 +77,9 @@ export default {
     return {
       Pages,
       markedItemTypes,
-      mdiDelete
+      mdiDelete,
+      mdiClipboardList,
+      selectedProjects: []
     }
   },
   computed: {
@@ -56,12 +87,63 @@ export default {
       'storeBaseUrl',
       'storeServerSettings',
       'storeMarkedIds',
-      'storeActiveStory'
+      'storeActiveStory',
+      'storeSelectedProjects'
     ])
+  },
+  watch: {
+    storeSelectedProjects: function (newValue) {
+      if (newValue && newValue.length > 0) {
+        this.fetchSelectedProjects()
+      } else {
+        this.selectedProjects = []
+      }
+    }
   },
   methods: {
     getNumberWithSuffix,
     getHighContrastTextColor,
+    fetchSelectedProjects: function () {
+      const data = {
+        page: 1,
+        limit: this.storeSelectedProjects.length,
+        prevCount: -1,
+        orderBy: null,
+        ascending: null,
+        minimal: true,
+        filter: [
+          {
+            column: 'projectId',
+            operator: 'and',
+            comparator: 'inSet',
+            values: this.storeSelectedProjects
+          }
+        ]
+      }
+      apiPostProjectTable(data, result => {
+        if (result && result.data) {
+          this.selectedProjects = result.data || []
+        }
+      })
+    },
+    removeSelectedProject: function (project) {
+      const copy = this.storeSelectedProjects.concat().filter(p => p !== project.projectId)
+
+      this.$store.dispatch('setSelectedProjects', copy)
+    },
+    clearSelectedProjects: function () {
+      // Ask for confirmation
+      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
+        okVariant: 'danger',
+        okTitle: this.$t('genericYes'),
+        cancelTitle: this.$t('genericNo')
+      })
+        .then(value => {
+          if (value) {
+            this.$store.dispatch('setSelectedProjects', [])
+          }
+        })
+    },
     clearMarkedItems: function (itemType) {
       // Ask for confirmation
       this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
@@ -75,11 +157,17 @@ export default {
           }
         })
     }
+  },
+  mounted: function () {
+    this.fetchSelectedProjects()
   }
 }
 </script>
 
 <style scoped>
+#popover-target-projects:hover {
+  cursor: pointer;
+}
 .marked-item-badges {
   white-space: nowrap;
 }

@@ -265,7 +265,8 @@ export default {
   computed: {
     ...mapGetters([
       'storeLocale',
-      'storeToken'
+      'storeToken',
+      'storeSelectedProjects'
     ]),
     dataResourcesVisible: function () {
       return isPageAvailable(Pages.dataResources)
@@ -289,6 +290,12 @@ export default {
     columns: function () {
       const result = [
         {
+          key: 'projectId',
+          type: Number,
+          sortable: false,
+          class: 'd-none text-right',
+          label: this.$t('tableColumnProjectId')
+        }, {
           key: 'datasetId',
           type: Number,
           sortable: true,
@@ -439,7 +446,7 @@ export default {
           key: 'selected',
           type: undefined,
           sortable: false,
-          class: 'bg-primary',
+          class: 'table-primary',
           label: ''
         })
       }
@@ -457,6 +464,11 @@ export default {
     LocationMap,
     LicenseModal,
     PublicationsModal
+  },
+  watch: {
+    storeSelectedProjects: function () {
+      this.$refs.datasetTable.refresh()
+    }
   },
   methods: {
     userIsAtLeast,

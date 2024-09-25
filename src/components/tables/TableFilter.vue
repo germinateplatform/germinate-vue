@@ -238,7 +238,7 @@ export default {
       return this.columns.filter(c => {
         let show = c.label ? (c.label !== '') : false
         show = show && c.type !== undefined
-        show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
+        show = show && !this.tempFilter.some(f => f.column.name === c.key && f.canBeChanged === false)
         return show
       }).sort((a, b) => {
         if (a.preferredSortingColumn === true && !b.preferredSortingColumn) {
@@ -254,7 +254,7 @@ export default {
     getColumnsToToggle: function () {
       return this.columns.filter(c => {
         let show = c.label ? (c.label !== '') : false
-        show = show && !this.tempFilter.filter(f => f.column.name === c.name && f.canBeChanged === false).length > 0
+        show = show && !this.tempFilter.some(f => f.column.name === c.key && f.canBeChanged === false)
         return show
       })
     }

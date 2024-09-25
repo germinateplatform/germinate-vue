@@ -75,11 +75,18 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'storeToken'
+      'storeToken',
+      'storeSelectedProjects'
     ]),
     columns: function () {
       const columns = [
         {
+          key: 'projectIds',
+          type: 'json',
+          sortable: false,
+          class: 'd-none text-right',
+          label: this.$t('tableColumnProjectId')
+        }, {
           key: 'groupId',
           type: Number,
           sortable: true,
@@ -144,6 +151,11 @@ export default {
       }
 
       return columns
+    }
+  },
+  watch: {
+    storeSelectedProjects: function () {
+      this.$refs.table.refresh()
     }
   },
   components: {

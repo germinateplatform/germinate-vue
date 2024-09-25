@@ -75,7 +75,7 @@
             :empty-text="$t('paginationNoResult')"
             :sort-by="options.orderBy"
             :sort-desc="options.orderByDesc"
-            :tbody-tr-class="options ? options.rowClassCallback : null"
+            :tbody-tr-class="options ? options.rowClassCallback : defaultRowClassCallback"
             @refreshed="notifyLoaded"
             @sort-changed="updateSort"
             ref="table">
@@ -91,7 +91,10 @@
         </div>
       </template>
       <template v-slot:cell(selected)="data">
-        <b-form-checkbox :value="data.item[options.idColumn]" v-model="selectedItems" v-if="reformattedColumns.map(c => c.key).indexOf('selected') !== -1"/>
+        <b-form-checkbox :value="data.item[options.idColumn]" v-model="selectedItems" @change="updateRowVariant(data.item)" v-if="reformattedColumns.map(c => c.key).indexOf('selected') !== -1"/>
+      </template>
+      <template #table-colgroup v-if="hasSelectionColumn">
+        <col key="selected" :style="{ width: '40px' }" />
       </template>
 
       <!-- Marked item column -->
@@ -343,6 +346,13 @@ export default {
     maxPage: function () {
       return Math.ceil(this.pagination.totalCount / this.storeTablePerPage)
     },
+    hasSelectionColumn: function () {
+      if (!this.columns) {
+        return false
+      } else {
+        return this.columns.some(c => c.key === 'selected')
+      }
+    },
     reformattedColumns: function () {
       if (this.columns) {
         return this.columns.map(c => {
@@ -351,6 +361,10 @@ export default {
           let clazz = result.class || ''
           if (this.options && this.options.tableName) {
             clazz = `${clazz} ${getTableColumnStyle(this.options.tableName, c.key)}`
+          }
+
+          if (result.isHidden) {
+            clazz = 'd-none'
           }
 
           result.class = clazz
@@ -370,6 +384,28 @@ export default {
     Tour
   },
   methods: {
+    updateRowVariant: function (item) {
+      let variant = null
+
+      if (this.options.rowVariant !== null && typeof this.options.rowVariant === 'function') {
+        variant = this.options.rowVariant(item)
+      }
+
+      if (variant === null) {
+        variant = this.getDefaultRowVariant(item)
+      }
+
+      item._rowVariant = variant
+    },
+    getDefaultRowVariant: function (item) {
+      if (!item) {
+        return null
+      } else if (this.hasSelectionColumn && this.selectedItems && this.selectedItems.includes(item[this.options.idColumn])) {
+        return 'primary'
+      } else {
+        return null
+      }
+    },
     updateQuery: async function (newValue) {
       if (this.storeUrlParameters) {
         const query = Object.assign({}, this.$route.query)
@@ -493,11 +529,7 @@ export default {
             this.pagination.totalCount = result.data.count
             localResult = result.data.data
 
-            if (this.options.rowVariant !== null && typeof this.options.rowVariant === 'function') {
-              localResult.forEach(r => {
-                r._rowVariant = this.options.rowVariant(r)
-              })
-            }
+            localResult.forEach(r => this.updateRowVariant(r))
           } else {
             this.pagination.totalCount = 0
           }
@@ -604,9 +636,11 @@ export default {
         this.getIds(this.currentRequestData, result => {
           this.selectedItems = result.data
           emitter.emit('show-loading', false)
+          this.$refs.table.refresh()
         })
       } else {
         this.selectedItems = []
+        this.$refs.table.refresh()
       }
     },
     requestDownload: function () {

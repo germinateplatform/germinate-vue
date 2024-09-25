@@ -85,6 +85,18 @@ const routes = [
         beforeEnter: requireAuth
       },
       {
+        path: 'projects',
+        name: Pages.projects,
+        component: () => import(/* webpackChunkName: "projects" */ '@/views/Projects'),
+        beforeEnter: requireAuth
+      },
+      {
+        path: 'projects/:projectId',
+        name: Pages.projectDetails,
+        component: () => import(/* webpackChunkName: "project-details" */ '@/views/Projects'),
+        beforeEnter: requireAuth
+      },
+      {
         path: 'admin',
         redirect: '/admin/settings',
         name: '',

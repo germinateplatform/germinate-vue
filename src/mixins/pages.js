@@ -48,6 +48,8 @@ const Pages = Object.freeze({
   aboutExportFormats: 'about-export-formats',
   aboutExportFormatsType: 'about-export-formats-type',
   userFeedback: 'user-feedback',
+  projects: 'projects',
+  projectDetails: 'project-details',
   fourZeroThree: '403',
   fourZeroFour: '404',
   fallback: 'fallback'

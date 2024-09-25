@@ -109,11 +109,18 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'storeToken'
+      'storeToken',
+      'storeSelectedProjects'
     ]),
     columns: function () {
       const result = [
         {
+          key: 'projectId',
+          type: Number,
+          sortable: false,
+          class: 'd-none text-right',
+          label: this.$t('tableColumnProjectId')
+        }, {
           key: 'experimentId',
           type: Number,
           sortable: true,
@@ -163,6 +170,11 @@ export default {
       }
 
       return result
+    }
+  },
+  watch: {
+    storeSelectedProjects: function () {
+      this.$refs.experimentTable.refresh()
     }
   },
   methods: {

@@ -36,7 +36,6 @@ export default {
       Pages,
       datasetTypes,
       mdiArrowRightBox,
-      filterOn: null,
       datasetType: null,
       buttonDisabled: true
     }
@@ -48,11 +47,28 @@ export default {
   computed: {
     ...mapGetters([
       'storeLocale',
-      'storeToken'
+      'storeToken',
+      'storeSelectedProjects'
     ]),
     selectionMode: function () {
       // Only single selection for allele frequency data
       return this.datasetType === 'allelefreq' ? 'single' : 'multi'
+    },
+    filterOn: function () {
+      if (this.storeSelectedProjects && this.storeSelectedProjects.length > 0) {
+        return [{
+          column: {
+            name: 'projectId',
+            type: Number
+          },
+          comparator: 'inSet',
+          operator: 'and',
+          values: this.storeSelectedProjects,
+          canBeChanged: false
+        }]
+      } else {
+        return null
+      }
     }
   },
   methods: {

@@ -14,7 +14,7 @@ if (!name) {
   name = 'germinate-' + window.location.pathname
 }
 
-const essentialKeys = ['token', 'locale', 'baseUrl', 'serverSettings', 'asyncJobUuids', 'asyncJobCount', 'markedIds', 'cookiesAccepted']
+const essentialKeys = ['token', 'locale', 'baseUrl', 'serverSettings', 'asyncJobUuids', 'asyncJobCount', 'markedIds', 'cookiesAccepted', 'selectedProjects']
 const userState = {
   appState: 'production',
   uniqueClientId: null,
@@ -69,7 +69,8 @@ const userState = {
     traitAttributes: [],
     trialsData: [],
     collaborators: [],
-    publications: []
+    publications: [],
+    projects: []
   },
   asyncJobUuids: [],
   asyncJobCount: 0,
@@ -77,7 +78,8 @@ const userState = {
   customChartColors: null,
   darkMode: false,
   changelogVersionNumber: null,
-  activeStory: null
+  activeStory: null,
+  selectedProjects: []
 }
 
 const storeState = {
@@ -114,7 +116,8 @@ const storeState = {
     storeMapLayer: (state, getters) => state.userStates[getters.storeUserId].mapLayer,
     storeAppState: (state, getters) => state.appState,
     storeChangelogVersionNumber: (state, getters) => state.userStates[getters.storeUserId].changelogVersionNumber,
-    storeActiveStory: (state) => state.activeStory
+    storeActiveStory: (state) => state.activeStory,
+    storeSelectedProjects: (state, getters) => state.userStates[getters.storeUserId].selectedProjects
   },
   mutations: {
     ON_APP_STATE_CHANGED_MUTATION: function (state, newAppState) {
@@ -306,6 +309,13 @@ const storeState = {
     },
     ON_MAP_LAYER_CHANGED_MUTATION: function (state, newMapLayer) {
       state.userStates[state.token ? state.token.id : null].mapLayer = newMapLayer
+    },
+    ON_SELECTED_PROJECTS_CHANGED_MUTATION: function (state, newSelectedProjects) {
+      if (state.userStates[state.token ? state.token.id : null].selectedProjects === undefined) {
+        Vue.set(state.userStates[state.token ? state.token.id : null], 'selectedProjects', newSelectedProjects)
+      } else {
+        state.userStates[state.token ? state.token.id : null].selectedProjects = newSelectedProjects
+      }
     }
   },
   actions: {
@@ -475,6 +485,9 @@ const storeState = {
     },
     setChangelogVersionNumber: function ({ commit }, changelogVersionNumber) {
       commit('ON_CHANGELOG_VERSION_NUMBER_CHANGED_MUTATION', changelogVersionNumber)
+    },
+    setSelectedProjects: function ({ commit }, selectedProjects) {
+      commit('ON_SELECTED_PROJECTS_CHANGED_MUTATION', selectedProjects)
     }
   },
   plugins: [

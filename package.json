@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@adapttive/vue-markdown": "^4.0.2",
     "@citation-js/core": "^0.7.1",
     "@citation-js/plugin-csl": "^0.7.2",
     "@citation-js/plugin-doi": "^0.7.2",

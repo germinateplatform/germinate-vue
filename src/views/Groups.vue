@@ -123,7 +123,6 @@ export default {
       groupToEdit: null,
       groupId: null,
       groupTypeSelect: [],
-      filterOn: [],
       selectedGroupType: null,
       tableActions: [
         {
@@ -225,7 +224,8 @@ export default {
     ...mapGetters([
       'storeToken',
       'storeServerSettings',
-      'storeMarkedIds'
+      'storeMarkedIds',
+      'storeSelectedProjects'
     ]),
     userCanEdit: function () {
       return this.storeToken !== null && this.group !== null && (this.group.userId === this.storeToken.id)
@@ -242,6 +242,33 @@ export default {
     },
     selectedGroupTypeId: function () {
       return this.selectedGroupType ? this.selectedGroupType.id : null
+    },
+    filterOn: function () {
+      const filter = []
+      if (this.storeSelectedProjects && this.storeSelectedProjects.length > 0) {
+        filter.push({
+          column: {
+            name: 'projectIds',
+            type: Number
+          },
+          comparator: 'arrayContains',
+          operator: 'and',
+          values: this.storeSelectedProjects,
+          canBeChanged: false
+        })
+      }
+      if (this.selectedGroupType) {
+        filter.push({
+          column: {
+            name: 'groupType',
+            type: 'groupType'
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.selectedGroupType.id]
+        })
+      }
+      return filter
     }
   },
   watch: {
@@ -249,22 +276,6 @@ export default {
       // On login/logout, deselect the current group
       this.group = null
       this.groupId = null
-    },
-    selectedGroupType: function (newValue) {
-      // Change filter based on selected group type
-      if (!newValue) {
-        this.filterOn = []
-      } else {
-        this.filterOn = [{
-          column: {
-            name: 'groupType',
-            type: 'groupType'
-          },
-          comparator: 'equals',
-          operator: 'and',
-          values: [newValue.id]
-        }]
-      }
     }
   },
   components: {

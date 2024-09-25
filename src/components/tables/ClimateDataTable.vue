@@ -133,7 +133,7 @@ export default {
           key: 'selected',
           type: undefined,
           sortable: false,
-          class: 'bg-primary',
+          class: 'table-primary',
           label: ''
         })
       }
