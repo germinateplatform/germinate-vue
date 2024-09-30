@@ -93,7 +93,7 @@ const routes = [
       {
         path: 'projects/:projectId',
         name: Pages.projectDetails,
-        component: () => import(/* webpackChunkName: "project-details" */ '@/views/Projects'),
+        component: () => import(/* webpackChunkName: "project-details" */ '@/views/ProjectDetails'),
         beforeEnter: requireAuth
       },
       {

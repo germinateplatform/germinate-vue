@@ -14,7 +14,7 @@
             </div>
             <p class="mb-1">
               <template v-for="cat in jobStatsCategories">
-                <b-badge class="mr-2" :key="`data-import-job-${job.id}-cat-${cat}`" v-if="job.stats[cat]"><MdiIcon :path="getStatsPath(cat)" /> {{ getStatsText(cat) }}: {{ job.stats[cat].toLocaleString() }}</b-badge>
+                <b-badge class="mr-2" :key="`data-import-job-${job.id}-cat-${cat}`" v-if="job.stats[cat]"><MdiIcon :path="getStatsPath(cat)" /> {{ $t(getStatsText(cat)) }}: {{ job.stats[cat].toLocaleString() }}</b-badge>
               </template>
             </p>
             <b-badge class="mr-2" variant="info" v-if="job.isUpdate">{{ $t('pageDataUploadUpdateOptionUpdate') }}</b-badge>
@@ -116,7 +116,7 @@ export default {
       return statCategories.find(s => s.value === stat).path
     },
     getStatsText: function (stat) {
-      return statCategories.find(s => s.value === stat).textI18n()
+      return statCategories.find(s => s.value === stat).textI18n
     },
     formatDataType: function (datatype) {
       return templateImportTypes[datatype].text()

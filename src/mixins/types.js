@@ -327,56 +327,56 @@ const dashboardSections = [
 const statCategories = [
   {
     value: 'germplasm',
-    textI18n: () => i18n.t('dashboardBannerGermplasm'),
+    textI18n: 'dashboardBannerGermplasm',
     text: i18n.t('dashboardBannerGermplasm'),
     path: mdiSprout,
     link: Pages.germplasm
   },
   {
     value: 'markers',
-    textI18n: () => i18n.t('dashboardBannerMarkers'),
+    textI18n: 'dashboardBannerMarkers',
     text: i18n.t('dashboardBannerMarkers'),
     path: mdiDna,
     link: Pages.markers
   },
   {
     value: 'maps',
-    textI18n: () => i18n.t('dashboardBannerMaps'),
+    textI18n: 'dashboardBannerMaps',
     text: i18n.t('dashboardBannerMaps'),
     path: mdiReorderVertical,
     link: Pages.maps
   },
   {
     value: 'traits',
-    textI18n: () => i18n.t('dashboardBannerTraits'),
+    textI18n: 'dashboardBannerTraits',
     text: i18n.t('dashboardBannerTraits'),
     path: mdiTagTextOutline,
     link: Pages.traits
   },
   {
     value: 'locations',
-    textI18n: () => i18n.t('dashboardBannerLocations'),
+    textI18n: 'dashboardBannerLocations',
     text: i18n.t('dashboardBannerLocations'),
     path: mdiMapMarker,
     link: Pages.locations
   },
   {
     value: 'datasets',
-    textI18n: () => i18n.t('dashboardBannerDatasets'),
+    textI18n: 'dashboardBannerDatasets',
     text: i18n.t('dashboardBannerDatasets'),
     path: mdiDatabase,
     link: Pages.datasets
   },
   {
     value: 'experiments',
-    textI18n: () => i18n.t('dashboardBannerExperiments'),
+    textI18n: 'dashboardBannerExperiments',
     text: i18n.t('dashboardBannerExperiments'),
     path: mdiFolderTable,
     link: Pages.experiments
   },
   {
     value: 'datasetsAllelefreq',
-    textI18n: () => i18n.t('dashboardBannerDatasetsAllelefreq'),
+    textI18n: 'dashboardBannerDatasetsAllelefreq',
     text: i18n.t('dashboardBannerDatasetsAllelefreq'),
     path: mdiPulse,
     link: Pages.export,
@@ -384,7 +384,7 @@ const statCategories = [
   },
   {
     value: 'datasetsGenotype',
-    textI18n: () => i18n.t('dashboardBannerDatasetsGenotype'),
+    textI18n: 'dashboardBannerDatasetsGenotype',
     text: i18n.t('dashboardBannerDatasetsGenotype'),
     path: mdiDna,
     link: Pages.export,
@@ -392,7 +392,7 @@ const statCategories = [
   },
   {
     value: 'datasetsTrials',
-    textI18n: () => i18n.t('dashboardBannerDatasetsTrials'),
+    textI18n: 'dashboardBannerDatasetsTrials',
     text: i18n.t('dashboardBannerDatasetsTrials'),
     path: mdiShovel,
     link: Pages.export,
@@ -400,7 +400,7 @@ const statCategories = [
   },
   {
     value: 'datasetsClimate',
-    textI18n: () => i18n.t('dashboardBannerDatasetsClimate'),
+    textI18n: 'dashboardBannerDatasetsClimate',
     text: i18n.t('dashboardBannerDatasetsClimate'),
     path: mdiChartSankey,
     link: Pages.export,
@@ -408,7 +408,7 @@ const statCategories = [
   },
   {
     value: 'datasetsPedigree',
-    textI18n: () => i18n.t('dashboardBannerDatasetsPedigree'),
+    textI18n: 'dashboardBannerDatasetsPedigree',
     text: i18n.t('dashboardBannerDatasetsPedigree'),
     path: mdiFamilyTree,
     link: Pages.export,
@@ -416,28 +416,28 @@ const statCategories = [
   },
   {
     value: 'groups',
-    textI18n: () => i18n.t('dashboardBannerGroups'),
+    textI18n: 'dashboardBannerGroups',
     text: i18n.t('dashboardBannerGroups'),
     path: mdiGroup,
     link: Pages.groups
   },
   {
     value: 'climates',
-    textI18n: () => i18n.t('dashboardBannerClimates'),
+    textI18n: 'dashboardBannerClimates',
     text: i18n.t('dashboardBannerClimates'),
     path: mdiWeatherSnowyRainy,
     link: Pages.climates
   },
   {
     value: 'images',
-    textI18n: () => i18n.t('dashboardBannerImages'),
+    textI18n: 'dashboardBannerImages',
     text: i18n.t('dashboardBannerImages'),
     path: mdiImageMultiple,
     link: Pages.images
   },
   {
     value: 'fileresources',
-    textI18n: () => i18n.t('dashboardBannerFileResources'),
+    textI18n: 'dashboardBannerFileResources',
     text: i18n.t('dashboardBannerFileResources'),
     path: mdiFileDownload,
     link: Pages.dataResources

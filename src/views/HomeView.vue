@@ -3,20 +3,7 @@
     <b-row class="dashboard-stats" v-if="stats">
       <!-- Banner buttons -->
       <b-col cols=12 sm=6 xl=3 v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.value" class="my-2">
-        <b-card no-body :style="`border: 1px solid ${getTemplateColor(index)}`">
-          <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getTemplateColor(index)} 50%); color: white;`">
-            <b-row>
-              <b-col cols=6 class="align-self-center">
-                <h2 class="mb-0">{{ getNumberWithSuffix(stats[category.value], 1) }}</h2>
-                <span>{{ category.textI18n() }}</span>
-              </b-col>
-              <b-col cols=6 class="d-flex align-items-center justify-content-end dashboard-icon">
-                <MdiIcon :size="48" :path="category.path" />
-              </b-col>
-            </b-row>
-            <router-link class="stretched-link" :disabled="isDisabled(category.link)" :event="isDisabled(category.link) ? '' : 'click'" :to="{ name: category.link, params: category.params }" :title="`${category.textI18n()}: ${stats[category.value].toLocaleString()}`" v-if="stats[category.value]" />
-          </b-card-body>
-        </b-card>
+        <BannerCard :templateColorIndex="index" :title="category.textI18n" :numericValue="stats[category.value]" :link="category.link" :linkParams="category.params" :iconPath="category.path" />
       </b-col>
     </b-row>
 
@@ -54,6 +41,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
+import BannerCard from '@/components/util/BannerCard'
 import DataStoryWidget from '@/components/util/DataStoryWidget'
 import ImageCarousel from '@/components/images/ImageCarousel'
 import MdiIcon from '@/components/icons/MdiIcon'
@@ -63,7 +51,6 @@ import PublicationsWidget from '@/components/util/PublicationsWidget'
 import { apiGetOverviewStats } from '@/mixins/api/stats'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { statCategories } from '@/mixins/types'
-import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors'
 import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
 import { mdiPresentationPlay } from '@mdi/js'
@@ -72,6 +59,7 @@ const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
+    BannerCard,
     DataStoryWidget,
     ImageCarousel,
     MdiIcon,
@@ -122,13 +110,9 @@ export default {
   },
   methods: {
     userIsAtLeast,
-    getTemplateColor,
     getNumberWithSuffix,
     startIntroduction: function () {
       emitter.emit('show-introduction')
-    },
-    getBrighterColor: function (index) {
-      return rgbColorToHex(brighten(hexToRgb(getTemplateColor(index))))
     },
     isDisabled: function (routerPage) {
       return this.storeServerSettings && this.storeServerSettings.hiddenPages.indexOf(routerPage) !== -1

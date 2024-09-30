@@ -78,6 +78,12 @@ export default {
     columns: function () {
       const result = [
         {
+          key: 'projectIds',
+          type: 'json',
+          sortable: false,
+          class: 'd-none text-right',
+          label: this.$t('tableColumnProjectId')
+        }, {
           key: 'publicationId',
           type: Number,
           sortable: true,

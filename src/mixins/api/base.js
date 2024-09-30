@@ -113,13 +113,13 @@ const handleError = (error) => {
 
 /**
  * Sends a FORM to the given URL using authentication
- * @param {Object} param0 `{ url: String, formData: Object, success: Callback, error: { codes: [], callback: Callback } }`
+ * @param {Object} param0 `{ url: String, formData: Object, method: String, success: Callback, error: { codes: [], callback: Callback } }`
  */
-const authForm = ({ url = null, formData, success = null, error = { codes: [], callback: handleError } }) => {
+const authForm = ({ url = null, formData, method = 'post', success = null, error = { codes: [], callback: handleError } }) => {
   const promise = axios({
     baseURL: store.getters.storeBaseUrl,
     url: url,
-    method: 'post',
+    method: method || 'post',
     data: formData,
     crossDomain: true,
     withCredentials: true,

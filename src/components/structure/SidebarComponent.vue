@@ -60,7 +60,8 @@ export default {
   computed: {
     ...mapGetters([
       'storeServerSettings',
-      'storeToken'
+      'storeToken',
+      'storeSelectedProjects'
     ]),
     menu: function () {
       const tempNav = [
@@ -78,7 +79,7 @@ export default {
           href: { name: Pages.projects },
           title: this.$t('menuProjects'),
           badge: {
-            text: this.getBadgeCount(this.badgeCounts, 'projects'),
+            text: (this.storeSelectedProjects && this.storeSelectedProjects.length > 0) ? `${this.storeSelectedProjects.length}/${this.getBadgeCount(this.badgeCounts, 'projects')}` : this.getBadgeCount(this.badgeCounts, 'projects'),
             class: 'vsm--badge vsm--badge_default'
           },
           icon: {

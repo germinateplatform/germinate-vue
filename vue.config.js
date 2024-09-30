@@ -18,6 +18,8 @@ module.exports = defineConfig({
         path: require.resolve('path-browserify'),
         querystring: require.resolve('querystring-es3')
       }
-    }
+    },
+    devtool: 'source-map',
+    target: 'web'
   }
 })

@@ -5,48 +5,67 @@
     <h2>{{ $t('pageDatasetsInternalTitle') }}</h2>
     <p>{{ $t('pageDatasetsInternalText') }}</p>
     <!-- Internal datasets -->
-    <DatasetTable :getData="getData" :filterOn="getFilter(0)"/>
+    <DatasetTable :getData="getData" :filterOn="filterOn[1]"/>
     <h2>{{ $t('pageDatasetsExternalTitle') }}</h2>
     <p>{{ $t('pageDatasetsExternalText') }}</p>
     <!-- External datasets -->
-    <DatasetTable :getData="getData" :filterOn="getFilter(1)"/>
+    <DatasetTable :getData="getData" :filterOn="filterOn[0]"/>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import DatasetTable from '@/components/tables/DatasetTable'
 import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
 
 export default {
   data: function () {
     return {
-      filterOn: null
     }
   },
   components: {
     DatasetTable
   },
+  computed: {
+    ...mapGetters([
+      'storeSelectedProjects'
+    ]),
+    filterOn: function () {
+      const isExternal = [1, 0]
+
+      return isExternal.map(ie => {
+        const filter = []
+        if (this.storeSelectedProjects && this.storeSelectedProjects.length > 0) {
+          filter.push({
+            column: {
+              name: 'projectId',
+              type: Number
+            },
+            comparator: 'inSet',
+            operator: 'and',
+            values: this.storeSelectedProjects,
+            canBeChanged: false
+          })
+        }
+
+        filter.push({
+          column: {
+            name: 'isExternal',
+            type: Boolean
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [ie],
+          canBeChanged: false
+        })
+
+        return filter
+      })
+    }
+  },
   methods: {
     getData: function (data, callback) {
       return apiPostDatasetTable(data, callback)
-    },
-    getFilter: function (isExternal) {
-      let filter = [{
-        column: {
-          name: 'isExternal',
-          type: Boolean
-        },
-        comparator: 'equals',
-        operator: 'and',
-        values: [isExternal],
-        canBeChanged: false
-      }]
-
-      if (this.filterOn && this.filterOn.length > 0) {
-        filter = filter.concat(this.filterOn)
-      }
-
-      return filter
     }
   }
 }

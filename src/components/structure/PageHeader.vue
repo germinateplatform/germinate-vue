@@ -20,7 +20,7 @@
 
             <b-list-group>
               <b-list-group-item v-for="project in selectedProjects" :key="`selected-project-${project.projectId}`" class="d-flex justify-content-between align-items-center">
-                <span>{{ project.projectName }}</span>
+                <span class="text-truncate mr-2">{{ project.projectName }}</span>
                 <b-badge variant="danger" href="#" @click.prevent="removeSelectedProject(project)">
                   <MdiIcon :path="mdiDelete" />
                 </b-badge>

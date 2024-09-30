@@ -2,6 +2,7 @@
   <div>
     <h1>{{ $t('pagePublicationsTitle') }}</h1>
     <PublicationTable :getData="getData"
+                      :filterOn="filterOn"
                       @publication-selected="onPublicationSelected" />
 
     <div v-if="publicationId" ref="publicationDetails" >
@@ -41,6 +42,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import DatasetTable from '@/components/tables/DatasetTable'
 import GermplasmTable from '@/components/tables/GermplasmTable'
 import GroupTable from '@/components/tables/GroupTable'
@@ -75,6 +77,27 @@ export default {
       publicationData: null,
       showStories: true,
       storyFilterOn: null
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'storeSelectedProjects'
+    ]),
+    filterOn: function () {
+      const filter = []
+      if (this.storeSelectedProjects && this.storeSelectedProjects.length > 0) {
+        filter.push({
+          column: {
+            name: 'projectIds',
+            type: Number
+          },
+          comparator: 'arrayContains',
+          operator: 'and',
+          values: this.storeSelectedProjects,
+          canBeChanged: false
+        })
+      }
+      return filter
     }
   },
   watch: {
