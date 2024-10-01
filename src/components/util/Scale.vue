@@ -1,10 +1,11 @@
 <template>
-  <div :id="`scale-${id}`">
-    <h6 v-if="heading" class="scale-heading" :title="heading">
-      <router-link v-if="link" :to="link">{{ heading }}</router-link>
-      <template v-else>{{ heading }}</template>
+  <div>
+    <h6 v-if="heading" class="scale-heading d-flex align-items-center" :title="heading">
+      <b-form-checkbox v-if="selectable" :checked="isSelected" @change="$emit('selection-changed', !isSelected)" />
+      <router-link class="heading-text" v-if="link" :to="link">{{ heading }}</router-link>
+      <span class="heading-text" v-else>{{ heading }}</span>
     </h6>
-    <div class="d-flex my-2">
+    <div class="d-flex my-2" :id="`scale-${id}`">
       <div class="d-flex align-items-center scale-container w-100">
         <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: 'var(--primary)' }" />
       </div>
@@ -46,6 +47,14 @@ export default {
     heading: {
       type: String,
       default: null
+    },
+    selectable: {
+      type: Boolean,
+      default: false
+    },
+    isSelected: {
+      type: Boolean,
+      default: false
     },
     min: {
       type: Number,
@@ -92,6 +101,12 @@ export default {
 
 <style scoped>
 .scale-heading {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scale-heading .heading-text {
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

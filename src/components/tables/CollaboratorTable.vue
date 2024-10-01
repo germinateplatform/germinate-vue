@@ -46,6 +46,12 @@ export default {
     columns: function () {
       return [
         {
+          key: 'projectIds',
+          type: 'json',
+          sortable: false,
+          class: 'd-none text-right',
+          label: this.$t('tableColumnProjectId')
+        }, {
           key: 'collaboratorId',
           type: Number,
           sortable: true,

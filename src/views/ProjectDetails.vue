@@ -10,7 +10,7 @@
           <b-card-img-lazy top :src="getSrc()" alt="Image" class="rounded-0" v-if="project.projectImageId" />
           <b-card-body class="d-flex flex-column bg-dark">
             <!-- Name -->
-            <b-card-title class="text-light">{{ project.projectName }}</b-card-title>
+            <b-card-title :class="{ 'text-light': true, 'mb-0': !project.projectDescription }">{{ project.projectName }}</b-card-title>
             <!-- Description -->
             <b-card-text class="text-light" v-if="project.projectDescription">{{ project.projectDescription }}</b-card-text>
           </b-card-body>
@@ -38,12 +38,17 @@
       </b-col>
       <b-col class="mb-3" cols="12">
         <b-card class="h-100" :title="$t('pageProjectsGroupsTitle')" :sub-title="$t('pageProjectsGroupsSubtitle')">
-          <GroupTable :getData="getGroupData" :filterOn="groupFilter" />
+          <GroupTable :getData="getGroupData" :filterOn="genericFilter" />
         </b-card>
       </b-col>
       <b-col class="mb-3" cols="12">
         <b-card class="h-100" :title="$t('pageProjectsPublicationsTitle')" :sub-title="$t('pageProjectsPublicationsSubtitle')">
-          <PublicationTable :getData="getPublicationData" :filterOn="publicationFilter" />
+          <PublicationTable :getData="getPublicationData" :filterOn="genericFilter" />
+        </b-card>
+      </b-col>
+      <b-col class="mb-3" cols="12">
+        <b-card class="h-100" :title="$t('pageProjectsCollaboratorsTitle')" :sub-title="$t('pageProjectsCollaboratorsSubtitle')">
+          <CollaboratorTable :getData="getCollaboratorData" :filterOn="genericFilter" />
         </b-card>
       </b-col>
     </b-row>
@@ -57,13 +62,14 @@ import VueMarkdown from '@adapttive/vue-markdown'
 import DatasetTable from '@/components/tables/DatasetTable'
 import GroupTable from '@/components/tables/GroupTable'
 import PublicationTable from '@/components/tables/PublicationTable'
+import CollaboratorTable from '@/components/tables/CollaboratorTable.vue'
 import BannerCard from '@/components/util/BannerCard'
 import { apiGetProjectStats, apiPostProjectTable } from '@/mixins/api/project'
-import { apiPostDatasetTable } from '@/mixins/api/dataset'
+import { apiPostCollaboratorsTable, apiPostDatasetTable } from '@/mixins/api/dataset'
 import { apiPostGroupTable } from '@/mixins/api/group'
 import { getImageUrlById } from '@/mixins/image'
 import { apiPostPublicationsTable } from '@/mixins/api/misc'
-import { mdiCalendarArrowRight, mdiCalendarArrowLeft, mdiDatabase, mdiGroup, mdiNewspaperVariant } from '@mdi/js'
+import { mdiCalendarArrowRight, mdiCalendarArrowLeft, mdiDatabase, mdiGroup, mdiNewspaperVariant, mdiAccountMultiple } from '@mdi/js'
 
 export default {
   data: function () {
@@ -93,23 +99,7 @@ export default {
         return []
       }
     },
-    groupFilter: function () {
-      if (this.projectId) {
-        return [{
-          column: {
-            name: 'projectIds',
-            type: Number
-          },
-          comparator: 'arrayContains',
-          operator: 'and',
-          values: [this.projectId],
-          canBeChanged: false
-        }]
-      } else {
-        return []
-      }
-    },
-    publicationFilter: function () {
+    genericFilter: function () {
       if (this.projectId) {
         return [{
           column: {
@@ -139,6 +129,7 @@ export default {
         result.push({ index: i++, title: 'pageProjectsDatasetsTitle', icon: mdiDatabase, numericValue: this.projectStats.datasetCount })
         result.push({ index: i++, title: 'pageProjectsPublicationsTitle', icon: mdiNewspaperVariant, numericValue: this.projectStats.publicationCount })
         result.push({ index: i++, title: 'pageProjectsGroupsTitle', icon: mdiGroup, numericValue: this.projectStats.groupCount })
+        result.push({ index: i++, title: 'pageProjectsCollaboratorsTitle', icon: mdiAccountMultiple, numericValue: this.projectStats.collaboratorCount })
 
         return result
       } else {
@@ -148,6 +139,7 @@ export default {
   },
   components: {
     BannerCard,
+    CollaboratorTable,
     DatasetTable,
     PublicationTable,
     GroupTable,
@@ -169,6 +161,9 @@ export default {
     },
     getGroupData: function (data, callback) {
       return apiPostGroupTable(data, callback)
+    },
+    getCollaboratorData: function (data, callback) {
+      return apiPostCollaboratorsTable(data, callback)
     },
     getPublicationData: function (data) {
       return apiPostPublicationsTable(data, (result) => {

@@ -113,7 +113,7 @@
       <!-- Show collaborators -->
       <template v-slot:cell(collaborators)="data">
         <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showDetails('collaborators', data)">
-          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')"><MdiIcon :path="mdiAccountMultiple"/></span>
+          <span class="text-nowrap" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')"><MdiIcon :path="mdiAccountMultiple"/> <span> {{ data.item.collaborators }}</span></span>
         </a>
         <MdiIcon :path="mdiAccountMultiple" className="text-muted" v-else/>
       </template>

@@ -6,7 +6,12 @@ const apiPostPublicationDatasetTable = (publicationId, queryData, onSuccess, onE
   return authAxios({ url: `publication/${publicationId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostCollaboratorsTable = (datasetId, queryData, onSuccess, onError) => {
+const apiPostCollaboratorsTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'collaborator/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+const apiPostDatasetCollaboratorsTable = (datasetId, queryData, onSuccess, onError) => {
   queryData.page -= 1
   return authAxios({ url: `dataset/${datasetId}/collaborator`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
@@ -113,7 +118,7 @@ const apiPostDataset = (data, onSuccess, onError) => authAxios({ url: 'dataset',
 
 export {
   apiPostPublicationDatasetTable,
-  apiPostCollaboratorsTable,
+  apiPostDatasetCollaboratorsTable,
   apiPostDatasetExport,
   apiPostDatasetAttributeExport,
   apiGetDatasetSourceFile,
@@ -146,5 +151,6 @@ export {
   apiPostFileresourceDatasetTable,
   apiPostCrossDataTypeComparison,
   apiPatchDataset,
-  apiPostDataset
+  apiPostDataset,
+  apiPostCollaboratorsTable
 }

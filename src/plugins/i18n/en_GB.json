@@ -1008,6 +1008,8 @@
   "pageProjectsGroupsSubtitle": "This table contains all groups of germplasm, markers or locations that have a relation to the selected project.",
   "pageProjectsPublicationsTitle": "Publications",
   "pageProjectsPublicationsSubtitle": "A list of all publications related to the current project are listed below.",
+  "pageProjectsCollaboratorsTitle": "Collaborators",
+  "pageProjectsCollaboratorsSubtitle": "Below is a list of all collaborators linked to this project.",
   "modalTitleLeaveTrialCreation": "Leaving trial creation",
   "modalTextLeaveTrialCreation": "You are about to leave the trial creation page. Any changes made on this page will be lost. Are you sure you want to leave?",
   "paginationColumns": "Columns",

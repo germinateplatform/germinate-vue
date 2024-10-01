@@ -13,6 +13,10 @@ const getColors = () => {
   }
 }
 
+const getPrimaryColor = () => {
+  return getComputedStyle(document.documentElement).getPropertyValue('--primary')
+}
+
 const getTemplateColors = () => {
   if (store.getters.storeServerSettings && store.getters.storeServerSettings.colorsTemplate && store.getters.storeServerSettings.colorsTemplate.length > 0) {
     return store.getters.storeServerSettings.colorsTemplate
@@ -166,5 +170,6 @@ export {
   rgbToHex,
   rgbColorToHex,
   getHighContrastTextColor,
-  brighten
+  brighten,
+  getPrimaryColor
 }

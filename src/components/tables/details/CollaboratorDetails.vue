@@ -4,7 +4,7 @@
 
 <script>
 import CollaboratorTable from '@/components/tables/CollaboratorTable'
-import { apiPostCollaboratorsTable } from '@/mixins/api/dataset.js'
+import { apiPostDatasetCollaboratorsTable } from '@/mixins/api/dataset.js'
 
 export default {
   props: {
@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     getData: function (data, callback) {
-      return apiPostCollaboratorsTable(this.dataset.datasetId, data, callback)
+      return apiPostDatasetCollaboratorsTable(this.dataset.datasetId, data, callback)
     }
   }
 }
