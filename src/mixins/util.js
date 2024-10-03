@@ -14,6 +14,19 @@ const uuidv4 = () => {
   })
 }
 
+const isNumber = (value, isInt) => {
+  try {
+    const int = Number(value)
+    if (isNaN(value) || isNaN(int) || (isInt && !Number.isInteger(int))) {
+      return false
+    }
+
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
 const mcpdDateToJsDate = (input) => {
   if (!input) {
     return null
@@ -182,5 +195,6 @@ export {
   downloadBlob,
   downloadSvgsFromContainer,
   dataURLtoFile,
-  mcpdDateToJsDate
+  mcpdDateToJsDate,
+  isNumber
 }

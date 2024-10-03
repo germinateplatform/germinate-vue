@@ -11,7 +11,7 @@
 
       <!-- Banner buttons -->
       <b-row class="trials-tabs mb-3" v-if="tabs" :cols-xl="tabs.length">
-        <b-col cols=12 sm=6 xl=2 :offset-xl="(tabs.length < 6 && index === 0) ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
+        <b-col class="mb-3" cols=12 sm=6 xl=2 :offset-xl="(tabs.length < 6 && index === 0) ? 1 : 0" v-for="(tab, index) in tabs" :key="'trials-tabs-' + tab.key">
           <b-card no-body :style="`border: 1px solid ${getTemplateColor(index)}; filter: ${getFilter(index)};`">
             <b-card-body :style="`background: linear-gradient(330deg, ${getBrighterColor(index)} 0%, ${getTemplateColor(index)} 50%); color: white;`">
               <b-row>
@@ -83,6 +83,13 @@
                                     :getItems="getTraits"
                                     :shown="currentTab === 'timeseries'"
                                     v-show="currentTab === 'timeseries'"/>
+
+      <!-- Trait radar chart section -->
+      <TraitRadarChartSelection :datasetIds="datasetIds"
+                                id="trait-radar-section"
+                                :traits="traits"
+                                :shown="currentTab === 'radar'"
+                                v-show="currentTab === 'radar'"/>
     </template>
     <h2 v-else>{{ $t('headingNoData') }}</h2>
   </div>
@@ -98,6 +105,7 @@ import TraitExportChartSelection from '@/components/export/TraitExportChartSelec
 import TraitComparisonSelection from '@/components/export/TraitComparisonSelection'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import TraitExportTimelineSelection from '@/components/export/TraitExportTimelineSelection'
+import TraitRadarChartSelection from '@/components/export/TraitRadarChartSelection'
 import TrialsDataTable from '@/components/tables/TrialsDataTable'
 import TrialsLocationMap from '@/components/map/TrialsLocationMap'
 import { apiPostDatasetTable, apiPostTraitStatsCategorical } from '@/mixins/api/dataset'
@@ -107,7 +115,7 @@ import { apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostDatasetTraits
 import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors'
 import Vue from 'vue'
 
-import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiChartBellCurve, mdiEye, mdiHelpCircle, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
+import { mdiArrowRightBoldCircle, mdiDistributeHorizontalCenter, mdiChartBellCurve, mdiEye, mdiHelpCircle, mdiFileDownloadOutline, mdiGrid, mdiMapMarkerPath, mdiTableSearch, mdiSpiderWeb } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
@@ -173,6 +181,12 @@ export default {
         onSelection: () => this.tabSelected('matrix'),
         help: () => this.$t('pageDataExportTabHelpDataMatrix')
       }, {
+        key: 'radar',
+        text: () => this.$t('pageDataExportTabDataRadar'),
+        path: mdiSpiderWeb,
+        onSelection: () => this.tabSelected('radar'),
+        help: () => this.$t('pageDataExportTabHelpDataRadar')
+      }, {
         key: 'comparison',
         text: () => this.$t('pageDataExportTabComparison'),
         path: mdiDistributeHorizontalCenter,
@@ -234,6 +248,7 @@ export default {
     TraitExportChartSelection,
     TraitExportTimelineSelection,
     TrialsDataTable,
+    TraitRadarChartSelection,
     TrialsLocationMap
   },
   methods: {

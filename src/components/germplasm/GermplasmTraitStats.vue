@@ -17,7 +17,7 @@
         </b-col>
       </b-row>
 
-      <RadarChart :plotData="radarChartData" v-if="radarChartData" />
+      <RadarChart :baseFilename="`radar-chart-${germplasmId}`" :plotData="radarChartData" v-if="radarChartData" />
       <div ref="chart" />
     </div>
     <p v-else>{{ $t('toastNoDataFound') }}</p>
@@ -72,29 +72,33 @@ export default {
         }
 
         const result = {
-          germplasmId: this.germplasmId,
-          germplasmName: traitData[0].germplasmName,
+          databaseId: this.germplasmId,
+          displayName: traitData[0].germplasmName,
           dims: [],
           values: [],
+          customdata: [],
           color: getPrimaryColor()
         }
 
         traitData.forEach(s => {
           const v = (s.avg - s.min) / (s.max - s.min) * 100
 
+          result.customdata.push(s.avg)
           result.dims.push(s.traitNameShort || s.traitName)
           result.values.push(v)
         })
 
+        if (result.customdata.length > 0) {
+          result.customdata.push(result.customdata[0])
+        }
         if (result.dims.length > 0) {
           result.dims.push(result.dims[0])
         }
-
         if (result.values.length > 0) {
           result.values.push(result.values[0])
         }
 
-        return result
+        return [result]
       } else {
         return null
       }
@@ -116,7 +120,6 @@ export default {
       })
     },
     onTraitSelected: function (trait, toSelect) {
-      console.log(trait, toSelect)
       trait.isSelected = toSelect
     },
     update: function () {

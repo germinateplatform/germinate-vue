@@ -56,6 +56,8 @@ const apiPostTrialLocationCount = (queryData, onSuccess, onError) => authAxios({
 
 const apiPostTrialCreation = (data, onSuccess, onError) => authAxios({ url: 'dataset/data/trial', method: 'POST', data: data, success: onSuccess, error: onError })
 
+const apiPostTraitDatasetStats = (queryData, onSuccess, onError) => authAxios({ url: 'trait/stats', method: 'POST', data: queryData, success: onSuccess, error: onError })
+
 export {
   apiPostTrialsDataTable,
   apiPostTrialsDataTableIds,
@@ -70,5 +72,6 @@ export {
   apiPostTraitAttributeTable,
   apiPostTrialsDataTimepoints,
   apiPostTrialGermplasm,
-  apiPostTrialCreation
+  apiPostTrialCreation,
+  apiPostTraitDatasetStats
 }

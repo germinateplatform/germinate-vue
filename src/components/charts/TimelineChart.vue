@@ -383,7 +383,7 @@ export default {
             gridcolor: this.storeDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
             title: { text: this.$t('chartAxisTitleValue'), font: { color: this.storeDarkMode ? 'white' : 'black' } },
             tickfont: { color: this.storeDarkMode ? 'white' : 'black' },
-            range: [this.traitStats.min - (this.traitStats.max - this.traitStats.min) * 0.05, this.traitStats.max + (this.traitStats.max - this.traitStats.min) * 0.05]
+            range: this.traitStats ? [this.traitStats.min - (this.traitStats.max - this.traitStats.min) * 0.05, this.traitStats.max + (this.traitStats.max - this.traitStats.min) * 0.05] : null
           },
           hovermode: 'x',
           shapes: [{

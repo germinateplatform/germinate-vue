@@ -66,19 +66,25 @@ export default {
   methods: {
     getDisplayName: function (item) {
       return this.$t('dropdownLabelGermplasmSearch', {
+        germplasmId: item.germplasmId,
+        trialsetupId: item.trialsetupId,
         germplasm: item.germplasmName,
         rep: item.rep || 'N/A',
         row: item.trialRow || 'N/A',
-        column: item.trialColumn || 'N/A'
+        column: item.trialColumn || 'N/A',
+        block: item.block || 'N/A'
       })
     },
     notifyParent: function (germplasm) {
       if (germplasm) {
         this.$emit('germplasm-selected', {
+          germplasmId: germplasm.germplasmId,
+          trialsetupId: germplasm.trialsetupId,
           germplasm: germplasm.germplasmName,
           rep: germplasm.rep,
           row: germplasm.trialRow,
-          column: germplasm.trialColumn
+          column: germplasm.trialColumn,
+          block: germplasm.block || 'N/A'
         })
         this.userInput = null
       }
