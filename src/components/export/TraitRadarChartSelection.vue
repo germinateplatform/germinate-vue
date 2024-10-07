@@ -32,7 +32,7 @@
     <template v-if="radarChartDataArray && radarChartDataArray.length > 0">
       <b-col class="mb-3" :cols="radarCols.cols" :md="radarCols.md" :lg="radarCols.lg" v-for="(data, index) in radarChartDataArray" :key="`radar-chart-data-${index}`">
         <h3 v-if="individualCharts">{{ data[0].displayName }}</h3>
-        <RadarChart :baseFilename="`radar-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" />
+        <RadarChart :baseFilename="`radar-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" @rotated="e => updateRotation(index, e)" :ref="`radar-chart-${index}`" />
       </b-col>
     </template>
   </b-row>
@@ -255,6 +255,15 @@ export default {
     RadarChart
   },
   methods: {
+    updateRotation: function (indexToSkip, rotation) {
+      for (let i = 0; i < this.radarChartDataArray.length; i++) {
+        if (i === indexToSkip) {
+          continue
+        }
+
+        this.$refs[`radar-chart-${i}`][0].setRotation(rotation)
+      }
+    },
     findIndex: function (value, categories) {
       let result = -1
 

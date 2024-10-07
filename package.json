@@ -13,7 +13,7 @@
     "@citation-js/core": "^0.7.1",
     "@citation-js/plugin-csl": "^0.7.2",
     "@citation-js/plugin-doi": "^0.7.2",
-    "@mdi/js": "^7.0.96",
+    "@mdi/js": "^7.4.47",
     "axios": "^1.6.2",
     "bootstrap": "~4.6.1",
     "bootstrap-vue": "~2.22.0",

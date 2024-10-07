@@ -234,7 +234,18 @@ body.dark-mode .list-group-item-accent-secondary {
 body.dark-mode .bg-light {
   background-color: rgb(31, 34, 35) !important;
 }
-
+body.dark-mode .bg-warning {
+  background-color: rgb(191, 121, 10) !important;
+}
+body.dark-mode .bg-success {
+  background-color: rgb(31, 139, 77) !important;
+}
+body.dark-mode .bg-info {
+  background-color: rgb(29, 111, 165) !important;
+}
+body.dark-mode .bg-danger {
+  background-color: rgb(162, 33, 20) !important;
+}
 
 body.dark-mode .sidebar {
   color: rgb(232, 230, 227);
@@ -391,6 +402,19 @@ body.dark-mode .table-striped tbody tr:nth-of-type(2n+1) {
 
 body.dark-mode .border {
   border-color: rgb(62, 67, 70) !important;
+}
+
+body.dark-mode .border-danger {
+  border-color: rgb(149, 31, 18) !important;
+}
+body.dark-mode .border-info {
+  border-color: rgb(26, 99, 148) !important;
+}
+body.dark-mode .border-warning {
+  border-color: rgb(168, 106, 9) !important;
+}
+body.dark-mode .border-success {
+  border-color: rgb(35, 156, 86) !important;
 }
 
 body.dark-mode .page-link {

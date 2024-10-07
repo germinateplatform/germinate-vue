@@ -119,10 +119,12 @@ export default {
         const layout = {
           paper_bgcolor: 'transparent',
           plot_bgcolor: 'transparent',
+          dragmode: 'pan',
           polar: {
             bgcolor: 'transparent',
             angularaxis: {
-              color: this.storeDarkMode ? '#ccc' : '#333'
+              color: this.storeDarkMode ? '#ccc' : '#333',
+              rotation: 0
             },
             radialaxis: {
               color: this.storeDarkMode ? '#ccc' : '#333',
@@ -143,7 +145,22 @@ export default {
 
         Plotly.newPlot(div, data, layout, config)
 
+        let rotation = layout.polar.angularaxis.rotation
+        div.on('plotly_afterplot', e => {
+          const newRotation = div.layout.polar.angularaxis.rotation
+
+          if (rotation !== newRotation) {
+            this.$emit('rotated', newRotation)
+            rotation = newRotation
+          }
+        })
+
         this.isUpdating = false
+      })
+    },
+    setRotation: function (rotation) {
+      Plotly.relayout(this.$refs.chart, {
+        'polar.angularaxis.rotation': rotation
       })
     }
   },

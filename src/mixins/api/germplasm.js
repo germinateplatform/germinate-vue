@@ -103,6 +103,8 @@ const apiPostExternalLinkIdentifiers = (queryData, onSuccess, onError) => authAx
 
 const apiGetGermplasmStatsTraits = (germplasmId, onSuccess, onError) => authAxios({ url: `germplasm/${germplasmId}/stats/trait`, success: onSuccess, error: onError })
 
+const apiGetGermplasmDataWarnings = (germplasmId, onSuccess, onError) => authAxios({ url: `datawarning/germplasm/${germplasmId}`, success: onSuccess, error: onError })
+
 const apiGetTaxonomyData = (onSuccess, onError) => authAxios({ url: 'germplasm/taxonomy', success: onSuccess, error: onError })
 
 const apiGetLocationData = (onSuccess, onError) => authAxios({ url: 'germplasm/location', success: onSuccess, error: onError })
@@ -156,5 +158,6 @@ export {
   apiPostGermplasmUnificationSgone,
   apiPatchGermplasmLocation,
   apiPostPedigreedefinitionTable,
-  apiPostPedigreeDatasetExport
+  apiPostPedigreeDatasetExport,
+  apiGetGermplasmDataWarnings
 }

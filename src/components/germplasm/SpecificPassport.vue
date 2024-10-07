@@ -20,8 +20,7 @@
           <b-nav-item class="ml-auto">
             <!-- Marked item checkbox -->
             <span class="text-white" @click="onToggleMarked()" v-b-tooltip.hover.bottom :title="$t('tooltipGermplasmMarkedItem')">
-              <MdiIcon :path="mdiCheckboxMarked" v-if="isMarked" />
-              <MdiIcon :path="mdiCheckboxBlankOutline" v-else />
+              <MdiIcon :path="isMarked ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
             </span>
           </b-nav-item>
         </b-navbar-nav>
@@ -35,14 +34,19 @@
             <span>{{ title }}</span>
             <small v-if="germplasmTableData && germplasmTableData.entityTypeName"> {{ entityTypes[germplasmTableData.entityTypeName].text() }} </small>
           </span>
-          <span class="text-primary"  @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipGermplasmMarkedItem')">
-            <MdiIcon :path="mdiCheckboxMarked" v-if="isMarked" />
-            <MdiIcon :path="mdiCheckboxBlankOutline" v-else />
+          <span id="germplasm-marking" class="text-primary"  @click="onToggleMarked()" v-b-tooltip.hover :title="$t('tooltipGermplasmMarkedItem')">
+            <MdiIcon :path="isMarked ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
           </span>
         </h2>
         <p v-html="$t('pagePassportText')" />
 
         <hr />
+
+        <section v-if="dataWarnings && dataWarnings.length > 0" class="mb-3">
+          <div :class="`data-warning-banner bg-warning ${index > 0 ? 'border-top border-light' : ''} ${storeDarkMode ? 'text-light' : 'text-dark'} text-center p-2`" v-for="(warning, index) in dataWarnings" :key="`data-warning-${index}`">
+            <MdiIcon :path="dataWarningTypes[warning.category]" /> {{ warning.description }} <b-badge variant="dark" v-if="warning.createdOn">{{ new Date(warning.createdOn).toLocaleDateString() }}</b-badge>
+          </div>
+        </section>
 
         <b-row>
           <b-col cols=12 lg=6>
@@ -217,11 +221,11 @@ import PedigreeTable from '@/components/tables/PedigreeTable'
 import PedigreeDefinitionTable from '@/components/tables/PedigreeDefinitionTable'
 import PublicationsWidget from '@/components/util/PublicationsWidget'
 import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
-import { apiPostGermplasmTable, apiPostGermplasmGroupTable, apiPostGermplasmDatasetTable, apiPostGermplasmAttributeTable, apiPostPedigreeTable, apiPostEntityTable, apiPatchGermplasmLocation, apiPostPedigreedefinitionTable } from '@/mixins/api/germplasm'
+import { apiGetGermplasmDataWarnings, apiPostGermplasmTable, apiPostGermplasmGroupTable, apiPostGermplasmDatasetTable, apiPostGermplasmAttributeTable, apiPostPedigreeTable, apiPostEntityTable, apiPatchGermplasmLocation, apiPostPedigreedefinitionTable } from '@/mixins/api/germplasm'
 import { apiPostGermplasmInstitutionTable, apiPostCommentsTable } from '@/mixins/api/misc'
 import { entityTypes } from '@/mixins/types'
 
-import { mdiPlaylistPlus, mdiCommentAccountOutline, mdiCheckboxBlankOutline, mdiCity, mdiCheckboxMarked, mdiBarcode, mdiChartDonut, mdiHelpCircle, mdiTagTextOutline, mdiTextBoxCheckOutline, mdiLinkVariant, mdiSpeedometer, mdiDatabase, mdiFamilyTree, mdiMapMarker, mdiTable, mdiImageMultiple, mdiGroup, mdiFileTree, mdiCircleMedium, mdiSubdirectoryArrowRight } from '@mdi/js'
+import { mdiPlaylistPlus, mdiCommentAccountOutline, mdiCheckboxBlankOutline, mdiCity, mdiCheckboxMarked, mdiBarcode, mdiChartDonut, mdiHelpCircle, mdiTagTextOutline, mdiTextBoxCheckOutline, mdiLinkVariant, mdiSpeedometer, mdiDatabase, mdiFamilyTree, mdiMapMarker, mdiTable, mdiImageMultiple, mdiGroup, mdiFileTree, mdiCircleMedium, mdiSubdirectoryArrowRight, mdiFileCertificate, mdiHistory, mdiHelpRhombus, mdiFileDocumentAlert, mdiAlert, mdiInvoiceTextArrowRight } from '@mdi/js'
 
 export default {
   data: function () {
@@ -260,7 +264,16 @@ export default {
         throttle: 100
       },
       performanceDataCount: 0,
-      mapSelectionMode: 'none'
+      mapSelectionMode: 'none',
+      dataWarnings: null,
+      dataWarningTypes: {
+        generic: mdiAlert,
+        quality: mdiFileCertificate,
+        source: mdiInvoiceTextArrowRight,
+        deprecated: mdiHistory,
+        missing: mdiHelpRhombus,
+        inaccuracy: mdiFileDocumentAlert
+      }
     }
   },
   props: {
@@ -297,7 +310,8 @@ export default {
     ...mapGetters([
       'storeServerSettings',
       'storeToken',
-      'storeMarkedGermplasm'
+      'storeMarkedGermplasm',
+      'storeDarkMode'
     ]),
     isAtLeastDataCurator: function () {
       if (this.storeToken) {
@@ -531,6 +545,10 @@ export default {
       values: [this.currentGermplasmId],
       canBeChanged: false
     }]
+
+    apiGetGermplasmDataWarnings(this.currentGermplasmId, result => {
+      this.dataWarnings = result || []
+    })
   },
   mounted: function () {
     // Add to recently viewed Germplasm ids
@@ -582,5 +600,11 @@ export default {
 }
 .scrollspy-sticky > .navbar-nav {
   flex-wrap: wrap;
+}
+#germplasm-marking:hover {
+  cursor: pointer;
+}
+.data-warning-banner {
+  margin: 0 -1rem 0 -1rem;
 }
 </style>
