@@ -48,8 +48,11 @@ export default {
     ])
   },
   watch: {
-    plotData: function () {
-      this.update()
+    plotData: {
+      deep: true,
+      handler: function () {
+        this.update()
+      }
     },
     stats: function () {
       this.update()
@@ -109,7 +112,7 @@ export default {
             },
             fillcolor: this.plotData.length > 1 ? hexToRGBA(pd.color, 0.3) : null,
             name: pd.displayName,
-            hovertemplate: '%{theta}: %{customdata}'
+            hovertemplate: '%{theta}<br>%{customdata}'
           })
         })
 

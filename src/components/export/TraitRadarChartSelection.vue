@@ -4,7 +4,7 @@
       <h2>{{ $t('pageTrialsExportSelectTraitTitle') }}</h2>
       <p>{{ $t('pageTrialsExportSelectTraitChartText') }}</p>
       <!-- Selected trait/climate -->
-      <SearchableSelect v-model="selectedTraits" queryId="`traitRadar-dim`" idKey="traitId" :options="traitOptions" :multiple="true" :selectSize="7" />
+      <SearchableSelect v-model="tempSelectedTraits" queryId="`traitRadar-dim`" idKey="traitId" :options="traitOptions" :multiple="true" :selectSize="7" />
       <p class="text-danger" v-if="max !== null && selectedItemCount > max">{{ $tc('pageExportSelectItemMaximum', max) }}</p>
       <p class="text-info" v-if="min !== null && selectedItemCount < min">{{ $tc('pageExportSelectItemMinimum', min) }}</p>
     </b-col>
@@ -15,9 +15,9 @@
         <TrialGermplasmLookup id="germplasm-search" :datasetIds="datasetIds" @germplasm-selected="onGermplasmSelected" />
       </b-form-group>
 
-      <div v-if="selectedGermplasm && selectedGermplasm.length > 0">
-        <b-badge class="mr-2" v-for="(germplasm, index) in selectedGermplasm" :key="`germplasm-badge-${germplasm.trialsetupId}`" :style="{ backgroundColor: getColor(index).bg, color: getColor(index).text }">
-          {{ `${germplasm.germplasm}-${germplasm.rep}` }} <button type="button" class="close badge-close" @click="removeGermplasm(index)">×</button>
+      <div v-if="tempSelectedGermplasm && tempSelectedGermplasm.length > 0">
+        <b-badge class="mr-2 mb-1" v-for="(germplasm, index) in tempSelectedGermplasm" :key="`germplasm-badge-${germplasm.trialsetupId}`" :style="{ backgroundColor: getColor(index).bg, color: getColor(index).text }">
+          {{ `${germplasm.germplasm}-${germplasm.rep}-${germplasm.block || 'N/A'}` }} <button type="button" class="close badge-close" @click="removeGermplasm(index)">×</button>
         </b-badge>
       </div>
     </b-col>
@@ -26,6 +26,7 @@
 
       <b-form-checkbox switch v-if="plotPressed" v-model="individualCharts"> {{ $t('formCheckboxShowIndividualCharts') }}</b-form-checkbox>
       <b-form-checkbox switch v-if="plotPressed" v-model="showAverage"> {{ $t('formCheckboxShowAverage') }}</b-form-checkbox>
+      <b-form-checkbox switch v-if="plotPressed" v-model="useTraitFullName"> {{ $t('formCheckboxShowTraitFullName') }}</b-form-checkbox>
     </b-col>
 
     <template v-if="radarChartDataArray && radarChartDataArray.length > 0">
@@ -62,12 +63,15 @@ export default {
     return {
       mdiArrowRightBox,
       selectedTraits: [],
+      tempSelectedTraits: [],
       selectedGermplasm: [],
+      tempSelectedGermplasm: [],
       itemOptions: [],
       traitData: [],
       traitStats: [],
       individualCharts: false,
       showAverage: true,
+      useTraitFullName: false,
       plotPressed: false,
       min: 1,
       max: 10,
@@ -75,12 +79,14 @@ export default {
         single: {
           cols: 12,
           md: 12,
-          lg: 12
+          lg: 12,
+          xl: 12
         },
         multi: {
           cols: 12,
           md: 6,
-          lg: 4
+          lg: 6,
+          xl: 4
         }
       }
     }
@@ -109,7 +115,7 @@ export default {
             const match = this.traitStats.find(ts => ts.traitId === t.traitId)
             const v = (match.avg - match.min) / (match.max - match.min) * 100
             avg.values.push(v)
-            avg.dims.push(match.traitNameShort || match.traitName)
+            avg.dims.push(this.useTraitFullName ? match.traitName : (match.traitNameShort || match.traitName))
           })
 
           if (avg.values.length > 0) {
@@ -146,18 +152,21 @@ export default {
 
           ts.forEach(trait => {
             const tdp = td.find(tdps => tdps.traitId === trait.traitId)
+            if (!tdp) {
+              return
+            }
             const s = this.traitStats.find(ts => ts.traitId === tdp.traitId)
             let v
 
             if (trait.dataType === 'categorical') {
               v = this.findIndex(tdp.traitValue, trait.traitRestrictions.categories)
+              tData.customdata.push(trait.displayName + '<br>' + trait.traitRestrictions.categories.map(c => c[v]).join('<br>'))
             } else {
               v = +tdp.traitValue
             }
             v = (v - s.min) / (s.max - s.min) * 100
 
-            tData.customdata.push(tdp.traitValue)
-            tData.dims.push(s.traitNameShort || s.traitName)
+            tData.dims.push(this.useTraitFullName ? s.traitName : (s.traitNameShort || s.traitName))
             tData.values.push(v)
           })
 
@@ -256,9 +265,11 @@ export default {
       return result
     },
     getButtonDisabled: function () {
-      return this.selectedTraits.length < 1 || this.selectedGermplasm.length < 1
+      return this.tempSelectedTraits.length < 1 || this.tempSelectedGermplasm.length < 1
     },
     buttonPressed: async function (updateUrl = true) {
+      this.selectedTraits = JSON.parse(JSON.stringify(this.tempSelectedTraits.concat()))
+      this.selectedGermplasm = JSON.parse(JSON.stringify(this.tempSelectedGermplasm))
       this.plotPressed = true
       if (updateUrl) {
         const params = {}
@@ -326,15 +337,15 @@ export default {
       return this.colors[index % this.colors.length]
     },
     removeGermplasm: function (index) {
-      this.selectedGermplasm.splice(index, 1)
+      this.tempSelectedGermplasm.splice(index, 1)
     },
     onGermplasmSelected: function (newGermplasm) {
-      const index = this.selectedGermplasm.findIndex(sg => sg.trialsetupId === newGermplasm.trialsetupId)
+      const index = this.tempSelectedGermplasm.findIndex(sg => sg.trialsetupId === newGermplasm.trialsetupId)
 
       if (index === -1) {
-        this.selectedGermplasm.push(newGermplasm)
+        this.tempSelectedGermplasm.push(newGermplasm)
       } else {
-        this.selectedGermplasm.splice(index, 1)
+        this.tempSelectedGermplasm.splice(index, 1)
       }
     }
   },
