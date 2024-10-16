@@ -37,6 +37,11 @@
     <!-- Choropleth for locations -->
     <ChoroplethChart />
 
+    <h2>{{ $t('pageStatisticsInstitutionDatasetTitle') }}</h2>
+    <p>{{ $t('pageStatisticsInstitutionDatasetText') }}</p>
+    <!-- Institutions with datasets -->
+    <InstitutionDatasetTable :getData="getInstitutionDatasets" />
+
     <h2>{{ $t('pageStatisticsDatasetTitle') }}</h2>
     <p>{{ $t('pageStatisticsDatasetText') }}</p>
     <!-- Data points per dataset type and year -->
@@ -54,8 +59,10 @@ import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
 import TaxonomySunburst from '@/components/charts/TaxonomySunburst'
 import TaxonomySankey from '@/components/charts/TaxonomySankey'
+import InstitutionDatasetTable from '@/components/tables/InstitutionDatasetTable'
 import { apiGetStatsFile } from '@/mixins/api/stats'
 import { Pages } from '@/mixins/pages'
+import { apiPostInstitutionDatasetTable } from '@/mixins/api/misc'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -71,9 +78,13 @@ export default {
     BarChart,
     ChoroplethChart,
     TaxonomySankey,
-    TaxonomySunburst
+    TaxonomySunburst,
+    InstitutionDatasetTable
   },
   methods: {
+    getInstitutionDatasets: function (data, callback) {
+      return apiPostInstitutionDatasetTable(data, callback)
+    },
     biologicalStatusClicked: function (status) {
       const filter = [{
         column: 'biologicalStatusName',

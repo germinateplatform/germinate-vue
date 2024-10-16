@@ -62,6 +62,7 @@ const userState = {
     entities: [],
     groups: [],
     institutions: [],
+    institutiondatasets: [],
     locations: [],
     pedigrees: [],
     pedigreedefinitions: [],

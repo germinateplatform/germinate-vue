@@ -41,9 +41,9 @@ const apiPostTraitAttributeTable = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'trait/attribute', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostTrialGermplasm = (queryData, onSuccess, onError) => {
+const apiPostTrialGermplasm = (queryData, isGermplasm, onSuccess, onError) => {
   queryData.page -= 1
-  return authAxios({ url: 'dataset/data/trial/germplasm', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios({ url: `dataset/data/trial/germplasm?isGermplasm=${isGermplasm}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiPatchTrait = (id, data, onSuccess, onError) => authAxios({ url: `trait/${id}`, method: 'PATCH', data: data, success: onSuccess, error: onError })

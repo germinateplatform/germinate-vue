@@ -25,6 +25,10 @@ export default {
     datasetIds: {
       type: Array,
       default: () => []
+    },
+    isGermplasm: {
+      type: Boolean,
+      default: false
     }
   },
   data: function () {
@@ -57,7 +61,7 @@ export default {
         })
       }
 
-      apiPostTrialGermplasm(query, result => {
+      apiPostTrialGermplasm(query, this.isGermplasm, result => {
         // Resolve the result
         this.germplasm = result.data
       })

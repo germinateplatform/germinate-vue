@@ -12,11 +12,15 @@
       <h2>{{ $t('pageTrialsExportSelectGermplasmTitle') }}</h2>
       <p>{{ $t('pageTrialsExportSelectGermplasmText') }}</p>
       <b-form-group :label="$t('formLabelTraitTimelineGermplasm')" label-for="germplasm-search">
-        <TrialGermplasmLookup id="germplasm-search" :datasetIds="datasetIds" @germplasm-selected="onGermplasmSelected" />
+        <TrialGermplasmLookup id="germplasm-search" :isGermplasm="averageAcrossGermplasm" :datasetIds="datasetIds" @germplasm-selected="onGermplasmSelected" />
+      </b-form-group>
+
+      <b-form-group :label="$t('formLabelTraitRadarChartAverage')" :description="$t('formDescriptionTraitRadarChartAverage')" label-for="average-data">
+        <b-form-checkbox id="average-data" switch v-model="averageAcrossGermplasm"> {{ $t(averageAcrossGermplasm ? 'genericYes' : 'genericNo') }}</b-form-checkbox>
       </b-form-group>
 
       <div v-if="tempSelectedGermplasm && tempSelectedGermplasm.length > 0">
-        <b-badge class="mr-2 mb-1" v-for="(germplasm, index) in tempSelectedGermplasm" :key="`germplasm-badge-${germplasm.trialsetupId}`" :style="{ backgroundColor: getColor(index).bg, color: getColor(index).text }">
+        <b-badge class="mr-2 mb-1" v-for="(germplasm, index) in tempSelectedGermplasm" :key="`germplasm-badge-${germplasm.germplasmId}-${germplasm.trialsetupId}`" :style="{ backgroundColor: getColor(index).bg, color: getColor(index).text }">
           {{ `${germplasm.germplasm}-${germplasm.rep}-${germplasm.block || 'N/A'}` }} <button type="button" class="close badge-close" @click="removeGermplasm(index)">×</button>
         </b-badge>
       </div>
@@ -62,6 +66,7 @@ export default {
   data: function () {
     return {
       mdiArrowRightBox,
+      averageAcrossGermplasm: false,
       selectedTraits: [],
       tempSelectedTraits: [],
       selectedGermplasm: [],
@@ -91,6 +96,14 @@ export default {
       }
     }
   },
+  watch: {
+    averageAcrossGermplasm: function () {
+      this.tempSelectedTraits = []
+      this.selectedTraits = []
+      this.tempSelectedGermplasm = []
+      this.selectedGermplasm = []
+    }
+  },
   computed: {
     radarCols: function () {
       if (this.radarChartDataArray.length > 1) {
@@ -111,7 +124,7 @@ export default {
 
         const ts = this.ensureArray(this.selectedTraits)
         if (ts && ts.length > 0) {
-          ts.filter(t => t.dataType === 'categorical').forEach(t => {
+          ts.forEach(t => {
             const match = this.traitStats.find(ts => ts.traitId === t.traitId)
             const v = (match.avg - match.min) / (match.max - match.min) * 100
             avg.values.push(v)
@@ -141,14 +154,14 @@ export default {
         this.selectedGermplasm.forEach((g, i) => {
           const tData = {
             databaseId: g.germplasmId,
-            displayName: `${g.germplasm}-${g.rep}-${g.block || 'N/A'}`,
+            displayName: `${g.germplasm}-${g.rep || 'N/A'}-${g.block || 'N/A'}`,
             dims: [],
             values: [],
             customdata: [],
             color: this.getColor(i).bg
           }
 
-          const td = this.traitData.filter(tdp => tdp.trialsetupId === g.trialsetupId)
+          const td = this.traitData.filter(tdp => this.averageAcrossGermplasm ? (tdp.germplasmId === g.germplasmId) : (tdp.trialsetupId === g.trialsetupId))
 
           ts.forEach(trait => {
             const tdp = td.find(tdps => tdps.traitId === trait.traitId)
@@ -163,6 +176,7 @@ export default {
               tData.customdata.push(trait.displayName + '<br>' + trait.traitRestrictions.categories.map(c => c[v]).join('<br>'))
             } else {
               v = +tdp.traitValue
+              tData.customdata.push(trait.displayName + '<br>' + (+tdp.traitValue))
             }
             v = (v - s.min) / (s.max - s.min) * 100
 
@@ -228,7 +242,7 @@ export default {
       const result = []
       if (this.traits) {
         this.traits.forEach(t => {
-          if (t.dataType === 'numeric' || (t.dataType === 'categorical' && t.traitRestrictions && t.traitRestrictions.categories && t.traitRestrictions.categories.length > 0 && t.traitRestrictions.categories[0].length > 0)) {
+          if (this.averageAcrossGermplasm ? t.dataType === 'numeric' : (t.dataType === 'numeric' || (t.dataType === 'categorical' && t.traitRestrictions && t.traitRestrictions.categories && t.traitRestrictions.categories.length > 0 && t.traitRestrictions.categories[0].length > 0))) {
             let itemName = t.traitName
 
             if (t.unitAbbreviation) {
@@ -258,9 +272,11 @@ export default {
     updateRotation: function (indexToSkip, rotation) {
       for (let i = 0; i < this.radarChartDataArray.length; i++) {
         if (i === indexToSkip) {
+          // Skip the one we received the event from
           continue
         }
 
+        // For each other one, update the rotation to keep them in sync
         this.$refs[`radar-chart-${i}`][0].setRotation(rotation)
       }
     },
@@ -277,6 +293,8 @@ export default {
       return this.tempSelectedTraits.length < 1 || this.tempSelectedGermplasm.length < 1
     },
     buttonPressed: async function (updateUrl = true) {
+      this.traitData = []
+      this.traitStats = []
       this.selectedTraits = JSON.parse(JSON.stringify(this.tempSelectedTraits.concat()))
       this.selectedGermplasm = JSON.parse(JSON.stringify(this.tempSelectedGermplasm))
       this.plotPressed = true
@@ -312,22 +330,84 @@ export default {
         }
       })
 
-      apiPostTrialsDataTable({
-        datasetIds: this.datasetIds,
-        filter: [{
+      const filter = [{
+        column: 'traitId',
+        comparator: 'inSet',
+        operator: 'and',
+        values: ts.map(t => t.traitId)
+      }]
+
+      if (this.averageAcrossGermplasm) {
+        filter.push({
+          column: 'germplasmId',
+          comparator: 'inSet',
+          operator: 'and',
+          values: [...new Set(this.selectedGermplasm.map(t => t.germplasmId))]
+        })
+      } else {
+        filter.push({
           column: 'trialsetupId',
           comparator: 'inSet',
           operator: 'and',
           values: this.selectedGermplasm.map(t => t.trialsetupId)
-        }, {
-          column: 'traitId',
-          comparator: 'inSet',
-          operator: 'and',
-          values: ts.map(t => t.traitId)
-        }]
+        })
+      }
+
+      apiPostTrialsDataTable({
+        datasetIds: this.datasetIds,
+        filter: filter
       }, result => {
         if (result && result.data && result.data.length > 0) {
-          this.traitData = result.data
+          if (this.averageAcrossGermplasm) {
+            // Average per germplasm
+            const averages = {}
+            const germplasm = {}
+            const traits = {}
+
+            result.data.forEach(dp => {
+              germplasm[dp.germplasmId] = {
+                germplasmId: dp.germplasmId,
+                germplasmGid: dp.germplasmGid,
+                germplasmName: dp.germplasmName,
+                germplasmSynonyms: dp.germplasmSynonyms
+              }
+              traits[dp.traitId] = {
+                traitId: dp.traitId,
+                traitName: dp.traitName,
+                traitNameShort: dp.traitNameShort,
+                traitRestrictions: dp.traitRestrictions
+              }
+              const id = `${dp.germplasmId}|${dp.traitId}`
+
+              if (!averages[id]) {
+                averages[id] = {
+                  count: 1,
+                  sum: +dp.traitValue
+                }
+              } else {
+                averages[id].count++
+                averages[id].sum += (+dp.traitValue)
+              }
+            })
+
+            this.traitData = Object.keys(averages).map(k => {
+              const [germplasmId, traitId] = k.split('|').map(Number)
+
+              return {
+                germplasmId: germplasm[germplasmId].germplasmId,
+                germplasmGid: germplasm[germplasmId].germplasmGid,
+                germplasmName: germplasm[germplasmId].germplasmName,
+                germplasmSynonyms: germplasm[germplasmId].germplasmSynonyms,
+                traitId: traits[traitId].traitId,
+                traitName: traits[traitId].traitName,
+                traitNameShort: traits[traitId].traitNameShort,
+                traitRestrictions: traits[traitId].traitRestrictions,
+                traitValue: averages[k].sum / averages[k].count
+              }
+            })
+          } else {
+            this.traitData = result.data
+          }
         } else {
           this.traitData = []
         }
@@ -349,7 +429,7 @@ export default {
       this.tempSelectedGermplasm.splice(index, 1)
     },
     onGermplasmSelected: function (newGermplasm) {
-      const index = this.tempSelectedGermplasm.findIndex(sg => sg.trialsetupId === newGermplasm.trialsetupId)
+      const index = this.tempSelectedGermplasm.findIndex(sg => this.averageAcrossGermplasm ? (sg.germplasmId === newGermplasm.germplasmId) : (sg.trialsetupId === newGermplasm.trialsetupId))
 
       if (index === -1) {
         this.tempSelectedGermplasm.push(newGermplasm)

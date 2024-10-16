@@ -20,6 +20,11 @@ const apiPostInstitutionTable = (queryData, onSuccess, onError) => {
   return authAxios({ url: 'institution/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+const apiPostInstitutionDatasetTable = (queryData, onSuccess, onError) => {
+  queryData.page -= 1
+  return authAxios({ url: 'institution/dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 const apiPostGermplasmInstitutionTable = (germplasmId, queryData, onSuccess, onError) => {
   queryData.page -= 1
   return authAxios({ url: `germplasm/${germplasmId}/institution/table`, method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -158,6 +163,7 @@ export {
   apiGetLocales,
   apiPostTableExport,
   apiPostInstitutionTable,
+  apiPostInstitutionDatasetTable,
   apiPostGermplasmInstitutionTable,
   apiGetGatekeeperInstitutions,
   apiPostDataUpload,

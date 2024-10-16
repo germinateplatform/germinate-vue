@@ -260,6 +260,8 @@
   "formLabelTraitTimelineShapefile": "Trial shape file",
   "formLabelTraitTimelineGermplasm": "Germplasm search",
   "formLabelTraitChartGrouping": "Group box plots by",
+  "formLabelTraitRadarChartAverage": "Average across germplasm",
+  "formDescriptionTraitRadarChartAverage": "When selected, numeric traits will be averaged across all measurements of a germplasm in the selected datasets. When not selected, data will be plotted for individual measurements.",
   "formLabelToken": "Token",
   "formLabelDataUploadFile": "Template file",
   "formLabelDataUploadDataset": "Associated trials dataset",

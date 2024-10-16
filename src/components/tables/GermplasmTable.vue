@@ -159,16 +159,16 @@
       </template>
       <!-- Dataset types -->
       <template v-slot:cell(hasTrialsData)="data">
-        <span v-if="data.item.hasTrialsData" :style="`color: ${datasetTypes.trials.color()};`" v-b-tooltip.hover :title="datasetTypes.trials.text()"><MdiIcon :path="datasetTypes.trials.path" /></span>
+        <span v-if="data.item.hasTrialsData" :style="{ color: datasetTypes.trials.color() }" v-b-tooltip.hover :title="datasetTypes.trials.text()"><MdiIcon :path="datasetTypes.trials.path" /></span>
       </template>
       <template v-slot:cell(hasGenotypicData)="data">
-        <span v-if="data.item.hasGenotypicData" :style="`color: ${datasetTypes.genotype.color()};`" v-b-tooltip.hover :title="datasetTypes.genotype.text()"><MdiIcon :path="datasetTypes.genotype.path" /></span>
+        <span v-if="data.item.hasGenotypicData" :style="{ color: datasetTypes.genotype.color() }" v-b-tooltip.hover :title="datasetTypes.genotype.text()"><MdiIcon :path="datasetTypes.genotype.path" /></span>
       </template>
       <template v-slot:cell(hasAllelefreqData)="data">
-        <span v-if="data.item.hasAllelefreqData" :style="`color: ${datasetTypes.allelefreq.color()};`" v-b-tooltip.hover :title="datasetTypes.allelefreq.text()"><MdiIcon :path="datasetTypes.allelefreq.path" /></span>
+        <span v-if="data.item.hasAllelefreqData" :style="{ color: datasetTypes.allelefreq.color() }" v-b-tooltip.hover :title="datasetTypes.allelefreq.text()"><MdiIcon :path="datasetTypes.allelefreq.path" /></span>
       </template>
       <template v-slot:cell(hasPedigreeData)="data">
-        <span v-if="data.item.hasPedigreeData" :style="`color: ${datasetTypes.pedigree.color()};`" v-b-tooltip.hover :title="datasetTypes.pedigree.text()"><MdiIcon :path="datasetTypes.pedigree.path" /></span>
+        <span v-if="data.item.hasPedigreeData" :style="{ color: datasetTypes.pedigree.color() }" v-b-tooltip.hover :title="datasetTypes.pedigree.text()"><MdiIcon :path="datasetTypes.pedigree.path" /></span>
       </template>
 
       <!-- Row details is where the dataset locations are shown on a map -->
