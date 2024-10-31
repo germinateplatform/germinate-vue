@@ -17,7 +17,10 @@
         </b-col>
       </b-row>
 
-      <RadarChart :baseFilename="`radar-chart-${germplasmId}`" :plotData="radarChartData" v-if="radarChartData" />
+      <template v-if="radarChartData">
+        <b-form-checkbox switch v-model="useTraitFullName"> {{ $t('formCheckboxShowTraitFullName') }}</b-form-checkbox>
+        <RadarChart :baseFilename="`radar-chart-${germplasmId}`" :plotData="radarChartData" v-if="radarChartData" />
+      </template>
       <div ref="chart" />
     </div>
     <p v-else>{{ $t('toastNoDataFound') }}</p>
@@ -46,7 +49,8 @@ export default {
       mdiPlaylistCheck,
       mdiPlaylistRemove,
       stats: null,
-      searchTerm: null
+      searchTerm: null,
+      useTraitFullName: false
     }
   },
   watch: {
@@ -84,7 +88,7 @@ export default {
           const v = (s.avg - s.min) / (s.max - s.min) * 100
 
           result.customdata.push(s.avg)
-          result.dims.push(s.traitNameShort || s.traitName)
+          result.dims.push(this.useTraitFullName ? s.traitName : (s.traitNameShort || s.traitName))
           result.values.push(v)
         })
 

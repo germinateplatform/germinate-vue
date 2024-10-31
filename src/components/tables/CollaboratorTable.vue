@@ -106,7 +106,7 @@ export default {
   },
   methods: {
     isOrcid: function (input) {
-      return input && input.length > 0 && /^(\d{4}-){3}\d{3}(\d|X)$/.test(input)
+      return /^(\d{4}-){3}\d{3}(\d|X)$/.test(input)
     },
     refresh: function () {
       this.$refs.collaboratorTable.refresh()

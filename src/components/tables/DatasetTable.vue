@@ -117,6 +117,17 @@
         </a>
         <MdiIcon :path="mdiAccountMultiple" className="text-muted" v-else/>
       </template>
+      <!-- Display the number of institutions associated with this dataset -->
+      <template v-slot:cell(institutions)="data">
+        <template v-if="data.item.institutions !== undefined && data.item.institutions !== null && data.item.institutions.length > 0">
+          <div>
+            <a href="#" class="text-decoration-none text-nowrap" @click.prevent="showDetails('institutions', data)" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
+              <MdiIcon :path="mdiCity" />
+              <span>{{ data.item.institutions.length }}</span>
+            </a>
+          </div>
+        </template>
+      </template>
       <!-- Show attributes -->
       <template v-slot:cell(attributes)="data">
         <a href="#" class="text-decoration-none" v-if="(data.item.attributes !== 0 || data.item.dublinCore) && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="showDetails('attributes', data)">
@@ -161,6 +172,10 @@
           <!-- Attribute modal -->
           <AttributeDetails :dataset="data.item" v-if="data.item && (data.item.dublinCore !== undefined || data.item.attributes !== 0)" />
         </div>
+        <div v-else-if="detailType === 'institutions'" class="border-top border-primary bg-white p-3">
+          <!-- Institution table -->
+          <InstitutionDetails :dataset="data.item" v-if="data.item && data.item.institutions && data.item.institutions.length > 0" />
+        </div>
       </template>
     </BaseTable>
 
@@ -182,6 +197,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import LicenseModal from '@/components/modals/LicenseModal'
 import CollaboratorDetails from '@/components/tables/details/CollaboratorDetails'
+import InstitutionDetails from '@/components/tables/details/InstitutionDetails'
 import GenotypeExportModal from '@/components/modals/GenotypeExportModal'
 import DatasetEditModal from '@/components/modals/DatasetEditModal'
 import PublicationsModal from '@/components/modals/PublicationsModal'
@@ -197,7 +213,7 @@ import { isPageAvailable, downloadBlob } from '@/mixins/util'
 import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 import { getDateTimeString, isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
 
-import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiPlusBox, mdiDelete, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
+import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiCity, mdiPlusBox, mdiDelete, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
@@ -237,6 +253,7 @@ export default {
       datasetTypes,
       mdiDelete,
       mdiHelpCircle,
+      mdiCity,
       mdiOpenInNew,
       mdiPageNext,
       mdiInformationOutline,
@@ -403,6 +420,11 @@ export default {
           class: 'px-1',
           label: ''
         }, {
+          key: 'institutions',
+          type: 'json',
+          sortable: false,
+          label: ''
+        }, {
           key: 'collaborators',
           type: undefined,
           sortable: false,
@@ -459,6 +481,7 @@ export default {
     AttributeDetails,
     BaseTable,
     CollaboratorDetails,
+    InstitutionDetails,
     DatasetEditModal,
     GenotypeExportModal,
     LocationMap,

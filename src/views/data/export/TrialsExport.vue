@@ -39,11 +39,12 @@
                           :getItems="getTraits"
                           v-on:plot-clicked="updateCategoricalTraitCharts" />
 
-        <div v-for="(trait, i) in categoricalTraitsSelected" :key="`trait-bar-chart-${i}`">
+        <div class="mb-3" v-for="(trait, i) in categoricalTraitsSelected" :key="`trait-bar-chart-${i}`">
           <h3>{{ trait.traitName }}</h3>
           <BarChart xColumn="phenotype_value"
             :xTitle="trait.traitName"
             :yTitle="$t('genericCount')"
+            :xLabels="trait.traitRestrictions.categories"
             :height="400"
             :downloadName="trait.traitName"
             :sourceFile="categoricalTraitFiles[trait.traitId]"

@@ -119,6 +119,7 @@ export default {
         const layout = {
           paper_bgcolor: 'transparent',
           plot_bgcolor: 'transparent',
+          height: Math.min(700, div.offsetWidth),
           dragmode: 'pan',
           polar: {
             bgcolor: 'transparent',

@@ -14,12 +14,12 @@
       </template>
       <template v-slot:cell(institutionCode)="data">
         <div v-if="data.item.institutionCode">
-          <a :href="`https://www.fao.org/wiews/data/organizations/en/?instcode=${data.item.institutionCode}`">{{ data.item.institutionCode }}</a>
+          <a target="_blank" rel="noopener noreferrer" :href="`https://www.fao.org/wiews/data/organizations/en/?instcode=${data.item.institutionCode}`">{{ data.item.institutionCode }}</a>
         </div>
       </template>
       <template v-slot:cell(institutionAddress)="data">
         <div v-if="data.item.institutionAddress">
-          <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.item.institutionAddress)}`">{{ data.item.institutionAddress }}</a>
+          <a target="_blank" rel="noopener noreferrer" :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.item.institutionAddress)}`">{{ data.item.institutionAddress }}</a>
         </div>
       </template>
       <template v-slot:cell(institutionType)="data">

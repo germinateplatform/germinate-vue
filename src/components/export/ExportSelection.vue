@@ -13,7 +13,7 @@
       <ExportGroupSelection :info="groupSelectionInfo" :queryId="queryId" :selectSize="selectSize" :multiple="multipleGroups" :title="texts.groupTitle" :text="texts.groupText" :tooltip="texts.groupTooltip" :itemType="itemType" :groups="groups" ref="groupSelection"/>
     </b-col>
     <b-col cols=12>
-      <b-btn variant="primary" @click="buttonPressed" :disabled="getButtonDisabled()"><MdiIcon :path="mdiArrowRightBox" /> {{ $t(texts.exportButton) }}</b-btn>
+      <b-btn class="my-3" variant="primary" @click="buttonPressed" :disabled="getButtonDisabled()"><MdiIcon :path="mdiArrowRightBox" /> {{ $t(texts.exportButton) }}</b-btn>
     </b-col>
   </b-row>
 </template>

@@ -65,7 +65,7 @@ export default {
 
       const reader = new FileReader()
       reader.onload = () => {
-        const rows = d3Dsv.tsvParse(reader.result)
+        const rows = d3Dsv.tsvParse(reader.result).filter(r => r.code !== 'UNK')
 
         let gradientColors
 

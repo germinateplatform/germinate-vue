@@ -94,7 +94,7 @@
             <!-- Date time and filename -->
             <div class="text-muted">
               <MdiIcon :path="mdiCalendarClock" /><small v-if="job.updatedOn"> {{ new Date(job.updatedOn).toLocaleString() }}</small><br/>
-              <template v-if="job.originalFilename"><MdiIcon :path="mdiFile" /><small>&nbsp;{{ job.originalFilename }}</small></template>
+              <template v-if="job.originalFilename"><MdiIcon :path="mdiFile" /><small class="text-filename">&nbsp;{{ job.originalFilename }}</small></template>
             </div>
             <!-- Status -->
             <div v-if="job.status === 'failed'">
@@ -567,5 +567,9 @@ export default {
 
 .action-buttons .btn {
   border-radius: 0;
+}
+
+.text-filename {
+  overflow-wrap: anywhere;
 }
 </style>

@@ -3,6 +3,7 @@ export function plotlyBarChart (Plotly) {
   let height = 600
   let xCategory = ''
   let yCategory = ''
+  let xLabels = null
   let darkMode = false
   let onPointClicked = null
   let mode = 'traces'
@@ -16,9 +17,10 @@ export function plotlyBarChart (Plotly) {
 
       const data = []
 
+      const xValues = unpack(rows, x)
       for (let i = 0; i < dims.length; i++) {
         data.push({
-          x: unpack(rows, x),
+          x: xValues,
           y: unpack(rows, dims[i]),
           name: dims[i],
           type: 'bar',
@@ -35,6 +37,24 @@ export function plotlyBarChart (Plotly) {
         displaylogo: false
       }
 
+      let xTickLabels = null
+      let xTickValues = null
+
+      if (xLabels) {
+        xTickValues = xValues
+        xTickLabels = []
+
+        xLabels.forEach(scale => {
+          scale.forEach((l, i) => {
+            if (i > xTickLabels.length - 1) {
+              xTickLabels.push(l)
+            } else {
+              xTickLabels[i] += '<br>' + l
+            }
+          })
+        })
+      }
+
       const layout = {
         height: height,
         hovermode: 'closest',
@@ -44,6 +64,9 @@ export function plotlyBarChart (Plotly) {
         xaxis: {
           title: { text: xCategory, font: { color: darkMode ? 'white' : 'black' } },
           tickfont: { color: darkMode ? 'white' : 'black' },
+          tickmode: xTickLabels ? 'array' : 'auto',
+          ticktext: xTickLabels,
+          tickvals: xTickValues,
           automargin: true,
           fixedrange: true
         },
@@ -104,6 +127,14 @@ export function plotlyBarChart (Plotly) {
       return xCategory
     }
     xCategory = _
+    return chart
+  }
+
+  chart.xLabels = (_) => {
+    if (!arguments.length) {
+      return xLabels
+    }
+    xLabels = _
     return chart
   }
 

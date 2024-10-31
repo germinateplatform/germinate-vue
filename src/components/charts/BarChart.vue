@@ -52,6 +52,10 @@ export default {
       type: String,
       default: ''
     },
+    xLabels: {
+      type: Array,
+      default: () => null
+    },
     downloadName: {
       type: String,
       default: 'bar-chart'
@@ -129,6 +133,7 @@ export default {
                 .x(this.xColumn)
                 .xCategory(this.xTitle)
                 .yCategory(this.yTitle)
+                .xLabels(this.xLabels)
                 .mode(this.mode)
                 .onPointClicked(data => {
                   this.$emit('bar-clicked', data)

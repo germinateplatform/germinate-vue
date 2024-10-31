@@ -83,6 +83,11 @@
             <b-form-checkbox switch v-model="isExternal" id="external" :disabled="isEdit" />
           </b-form-group>
         </b-col>
+        <b-col cols=12 lg=6 v-if="isExternal">
+          <b-form-group label-for="hyperlink" :label="$t('tableColumnDatasetHyperlink')">
+            <b-form-input v-model="hyperlink" id="hyperlink" type="url" />
+          </b-form-group>
+        </b-col>
       </b-row>
     </b-form>
 
@@ -132,6 +137,7 @@ export default {
       datasetDescription: null,
       datasetStartDate: null,
       datasetEndDate: null,
+      hyperlink: null,
       isExternal: null,
       licenseId: null,
       licenses: [],
@@ -253,6 +259,7 @@ export default {
         this.datasetName = this.dataset.datasetName
         this.datasetDescription = this.dataset.datasetDescription
         this.isExternal = this.dataset.isExternal
+        this.hyperlink = this.dataset.hyperlink
         this.licenseId = this.dataset.licenseId || null
         this.experimentId = this.dataset.experimentId
         this.datasetStartDate = this.dataset.startDate ? new Date(this.dataset.startDate) : null
@@ -263,6 +270,7 @@ export default {
         this.datasetName = null
         this.datasetDescription = null
         this.isExternal = false
+        this.hyperlink = null
         this.licenseId = null
         this.experimentId = null
         this.datasetStartDate = null
@@ -363,7 +371,8 @@ export default {
           dateEnd: this.datasetEndDate,
           datasetStateId: this.datasetState,
           datasettypeId: this.selectedDatasetType,
-          isExternal: this.isExternal
+          isExternal: this.isExternal,
+          hyperlink: this.isExternal ? this.hyperlink : null
         }, (result) => {
           this.loading = false
 
