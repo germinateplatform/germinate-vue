@@ -3,6 +3,9 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const { defineConfig } = require('@vue/cli-service')
 
 module.exports = defineConfig({
+  devServer: {
+    port: 4000
+  },
   transpileDependencies: false,
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   configureWebpack: {
