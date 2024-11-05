@@ -11,14 +11,14 @@
     <h2>{{ $t('pageLocationsMapsTitle') }}</h2>
     <p class="text-info">{{ $t('pageLocationsMapsText') }}</p>
 
-    <b-row>
+    <b-row v-if="locationsWithLatLng && locationsWithLatLng.length > 0">
       <b-col cols=12 xl=6 order-xl="0">
         <h3>{{ $t('pageLocationsMapsClusteredTitle') }}</h3>
         <p>{{ $t('pageLocationsMapsClusteredText') }}</p>
       </b-col>
       <b-col cols=12 xl=6 order-xl="2">
         <!-- Clustered location map -->
-        <LocationMap v-if="locations && locations.length > 0" :locations="locations" mapType="cluster" class="mb-3" v-on:map-loaded="map => { clusteredMap = map }" />
+        <LocationMap :locations="locationsWithLatLng" mapType="cluster" class="mb-3" v-on:map-loaded="map => { clusteredMap = map }" />
       </b-col>
       <b-col cols=12 xl=6  order-xl="1">
         <h3>{{ $t('pageLocationsMapsHeatmappedTitle') }}</h3>
@@ -26,7 +26,7 @@
       </b-col>
       <b-col cols=12 xl=6  order-xl="3">
         <!-- Heatmapped location map -->
-        <LocationMap v-if="locations && locations.length > 0" :locations="locations" mapType="heatmap" class="mb-3" v-on:map-loaded="map => { heatmappedMap = map }" />
+        <LocationMap :locations="locationsWithLatLng" mapType="heatmap" class="mb-3" v-on:map-loaded="map => { heatmappedMap = map }" />
       </b-col>
     </b-row>
   </div>
@@ -46,6 +46,15 @@ export default {
       clusteredMap: null,
       heatmappedMap: null,
       synced: false
+    }
+  },
+  computed: {
+    locationsWithLatLng: function () {
+      if (this.locations) {
+        return this.locations.filter(l => l.locationLatitude !== undefined && l.locationLatitude !== null && l.locationLongitude !== undefined && l.locationLongitude !== null)
+      } else {
+        return []
+      }
     }
   },
   watch: {

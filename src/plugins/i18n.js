@@ -18,6 +18,7 @@ const messages = {
 export const i18n = new VueI18n({
   locale: null,
   fallbackLocale: 'en_GB',
+  warnHtmlInMessage: 'off',
   messages: messages
 })
 

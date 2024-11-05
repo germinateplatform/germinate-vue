@@ -303,6 +303,10 @@ export default {
   methods: {
     getNumberWithSuffix,
     searchByIdentifier: function () {
+      if (!this.identifierSearch || this.identifierSearch === '') {
+        return
+      }
+
       this.$emit('filtering-changed', [{
         column: {
           name: 'germplasmName',
