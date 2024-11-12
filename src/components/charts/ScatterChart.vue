@@ -1,6 +1,9 @@
 <template>
   <div>
     <BaseChart :id="id" :width="() => 1280" :height="() => 1280" :sourceFile="baseSourceFile" :filename="baseFilename" :supportsSvgDownload="false" ref="container" v-on:force-redraw="() => redraw(sourceFile, colorBy)">>
+      <div slot="prepend">
+        <b-form-checkbox switch v-model="swapAxes"> {{ $t('formLabelChartScatterSwapAxes') }}</b-form-checkbox>
+      </div>
       <div slot="chart" id="scatter-chart" ref="scatterChart" class="text-center" />
       <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
 
@@ -91,6 +94,7 @@ export default {
       mdiCheckboxBlankOutline,
       mdiHelpCircleOutline,
       id: id,
+      swapAxes: false,
       sourceFile: null,
       germplasmId: null,
       colorBy: null,
@@ -126,6 +130,11 @@ export default {
         target: () => `#${id} #additional-options`,
         position: 'bottom'
       }]
+    }
+  },
+  watch: {
+    swapAxes: function () {
+      this.redraw(this.sourceFile, this.colorBy)
     }
   },
   computed: {
@@ -186,6 +195,7 @@ export default {
           .datum(data)
           .call(plotlyScatterPlot(Plotly)
             .darkMode(this.storeDarkMode)
+            .swapAxes(this.swapAxes)
             .colorBy(colorBy)
             .xCategory(this.x)
             .yCategory(this.y)

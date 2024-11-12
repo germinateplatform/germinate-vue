@@ -48,7 +48,7 @@ export default {
     redraw: function (result) {
       this.sourceFile = result
 
-      Plotly.purge(this.$refs.taxonomyChart)
+      // Plotly.purge(this.$refs.taxonomyChart)
 
       const reader = new FileReader()
       reader.onload = () => {
@@ -143,7 +143,7 @@ export default {
 
         const chart = this.$refs.taxonomyChart
 
-        Plotly.newPlot(chart, plotData, layout, config)
+        Plotly.react(chart, plotData, layout, config)
 
         chart.on('plotly_click', data => {
           if (data && data.points && data.points.length > 0) {

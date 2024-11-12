@@ -99,8 +99,8 @@ export function plotlyMapChart (Plotly) {
         displaylogo: false
       }
 
-      Plotly.purge(this)
-      Plotly.newPlot(this, data, layout, config)
+      // Plotly.purge(this)
+      Plotly.react(this, data, layout, config)
 
       this.on('plotly_selected', eventData => {
         if (!eventData || (eventData.points.length < 1)) {

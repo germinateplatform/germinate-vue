@@ -61,7 +61,7 @@ export default {
       return hex
     },
     redraw: function () {
-      Plotly.purge(this.$refs.choroplethChart)
+      // Plotly.purge(this.$refs.choroplethChart)
 
       const reader = new FileReader()
       reader.onload = () => {
@@ -134,7 +134,7 @@ export default {
 
         const chart = this.$refs.choroplethChart
 
-        Plotly.newPlot(chart, data, layout, config)
+        Plotly.react(chart, data, layout, config)
 
         chart.on('plotly_click', data => {
           if (data && data.points && data.points.length > 0) {

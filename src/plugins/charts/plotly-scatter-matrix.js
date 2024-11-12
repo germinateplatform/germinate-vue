@@ -41,7 +41,7 @@ export function plotlyScatterMatrix (Plotly) {
 
       const data = []
 
-      let requiresSortingToFixMissingDimension = false
+      const dimHasData = dims.map(d => false)
 
       if (colorBy.column !== null || (colorBy.column === null && colorBy.ids === null && colorBy.names === null)) {
         for (let i = 0; i < cats.length; i++) {
@@ -53,17 +53,16 @@ export function plotlyScatterMatrix (Plotly) {
             type: 'splom',
             showupperhalf: false,
             diagonal: { visible: true },
-            dimensions: dims.map(k => {
+            dimensions: dims.map((k, kIndex) => {
               const values = unpackConditional(rows, k, colorBy.column, cats[i])
-              if (values.length > 0 && values.filter(v => v !== null).length < 1) {
-                requiresSortingToFixMissingDimension = true
-              }
+              dimHasData[kIndex] ||= values.some(v => v !== null)
+
               return {
                 label: k,
                 values: values
               }
             }),
-            name: cats[i],
+            name: '' + cats[i],
             text: names,
             ids: ids,
             customdata: names,
@@ -86,7 +85,8 @@ export function plotlyScatterMatrix (Plotly) {
             type: 'splom',
             showupperhalf: false,
             diagonal: { visible: true },
-            dimensions: dims.map(k => {
+            dimensions: dims.map((k, kIndex) => {
+              dimHasData[kIndex] = true
               return {
                 label: k,
                 values: unpackConditionalMarked(rows, k, colorBy.ids, cats[i] === 'Marked')
@@ -115,7 +115,8 @@ export function plotlyScatterMatrix (Plotly) {
             type: 'splom',
             showupperhalf: false,
             diagonal: { visible: true },
-            dimensions: dims.map(k => {
+            dimensions: dims.map((k, kIndex) => {
+              dimHasData[kIndex] = true
               return {
                 label: k,
                 values: unpackConditionalByName(rows, k, colorBy.names, cats[i] === 'Marked')
@@ -136,7 +137,7 @@ export function plotlyScatterMatrix (Plotly) {
         }
       }
 
-      if (requiresSortingToFixMissingDimension) {
+      if (dimHasData.some(k => !k)) {
         data.sort((a, b) => {
           const countA = a.dimensions.map(d => d.values.filter(v => v !== null).length).reduce((x, y) => x + y, 0)
           const countB = b.dimensions.map(d => d.values.filter(v => v !== null).length).reduce((x, y) => x + y, 0)
@@ -197,8 +198,8 @@ export function plotlyScatterMatrix (Plotly) {
         displaylogo: false
       }
 
-      Plotly.purge(this)
-      Plotly.newPlot(this, data, layout, config)
+      // Plotly.purge(this)
+      Plotly.react(this, data, layout, config)
 
       this.on('plotly_selected', eventData => {
         if (!eventData || (eventData.points.length < 1)) {

@@ -13,6 +13,7 @@ export function plotlyScatterPlot (Plotly) {
   let darkMode = false
   let xCategory = 'x'
   let yCategory = 'y'
+  let swapAxes = false
   let onPointClicked = null
   let onPointsSelected = null
   let onColorByStatsLoaded = null
@@ -39,6 +40,8 @@ export function plotlyScatterPlot (Plotly) {
 
       const data = []
 
+      const [xAxis, yAxis] = swapAxes ? [yCategory, xCategory] : [xCategory, yCategory]
+
       for (let i = 0; i < cats.length; i++) {
         let x
         let y
@@ -46,18 +49,18 @@ export function plotlyScatterPlot (Plotly) {
         let names
 
         if (colorBy.column !== null || (colorBy.column === null && colorBy.ids === null && colorBy.names === null)) {
-          x = unpackConditional(rows, xCategory, colorBy.column, cats[i])
-          y = unpackConditional(rows, yCategory, colorBy.column, cats[i])
+          x = unpackConditional(rows, xAxis, colorBy.column, cats[i])
+          y = unpackConditional(rows, yAxis, colorBy.column, cats[i])
           ids = unpackConditional(rows, 'dbId', colorBy.column, cats[i])
           names = unpackConditional(rows, 'name', colorBy.column, cats[i])
         } else if (colorBy.ids !== null) {
-          x = unpackConditionalMarked(rows, xCategory, colorBy.ids, cats[i] === 'Marked')
-          y = unpackConditionalMarked(rows, yCategory, colorBy.ids, cats[i] === 'Marked')
+          x = unpackConditionalMarked(rows, xAxis, colorBy.ids, cats[i] === 'Marked')
+          y = unpackConditionalMarked(rows, yAxis, colorBy.ids, cats[i] === 'Marked')
           ids = unpackConditionalMarked(rows, 'dbId', colorBy.ids, cats[i] === 'Marked')
           names = unpackConditionalMarked(rows, 'name', colorBy.ids, cats[i] === 'Marked')
         } else if (colorBy.names != null) {
-          x = unpackConditionalByName(rows, xCategory, colorBy.names, cats[i] === 'Marked')
-          y = unpackConditionalByName(rows, yCategory, colorBy.names, cats[i] === 'Marked')
+          x = unpackConditionalByName(rows, xAxis, colorBy.names, cats[i] === 'Marked')
+          y = unpackConditionalByName(rows, yAxis, colorBy.names, cats[i] === 'Marked')
           ids = unpackConditionalByName(rows, 'dbId', colorBy.names, cats[i] === 'Marked')
           names = unpackConditionalByName(rows, 'name', colorBy.names, cats[i] === 'Marked')
         }
@@ -122,7 +125,7 @@ export function plotlyScatterPlot (Plotly) {
           domain: [0, 0.95],
           showgrid: false,
           showline: true,
-          title: { text: xCategory, font: { color: darkMode ? 'white' : 'black' } },
+          title: { text: xAxis, font: { color: darkMode ? 'white' : 'black' } },
           tickfont: { color: darkMode ? 'white' : 'black' }
         },
         xaxis2: {
@@ -135,7 +138,7 @@ export function plotlyScatterPlot (Plotly) {
           domain: [0, 0.95],
           showgrid: false,
           showline: true,
-          title: { text: yCategory, font: { color: darkMode ? 'white' : 'black' } },
+          title: { text: yAxis, font: { color: darkMode ? 'white' : 'black' } },
           tickfont: { color: darkMode ? 'white' : 'black' }
         },
         yaxis2: {
@@ -159,8 +162,8 @@ export function plotlyScatterPlot (Plotly) {
         displaylogo: false
       }
 
-      Plotly.purge(this)
-      Plotly.newPlot(this, data, layout, config)
+      // Plotly.purge(this)
+      Plotly.react(this, data, layout, config)
 
       this.on('plotly_selected', eventData => {
         if (!eventData || (eventData.points.length < 1)) {
@@ -298,6 +301,14 @@ export function plotlyScatterPlot (Plotly) {
       return yCategory
     }
     yCategory = _
+    return chart
+  }
+
+  chart.swapAxes = (_) => {
+    if (!arguments.length) {
+      return swapAxes
+    }
+    swapAxes = _
     return chart
   }
 

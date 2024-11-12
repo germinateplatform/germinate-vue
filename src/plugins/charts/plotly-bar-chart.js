@@ -85,8 +85,8 @@ export function plotlyBarChart (Plotly) {
         }
       }
 
-      Plotly.purge(this)
-      Plotly.newPlot(this, data, layout, config)
+      // Plotly.purge(this)
+      Plotly.react(this, data, layout, config)
 
       if (onPointClicked) {
         const dragLayer = this.getElementsByClassName('nsewdrag')[0]

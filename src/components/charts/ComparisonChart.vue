@@ -210,7 +210,7 @@ export default {
       this.loading = true
       const div = this.$refs.chart
 
-      Plotly.purge(div)
+      // Plotly.purge(div)
 
       const traces = this.getTraces()
 
@@ -267,7 +267,7 @@ export default {
       }
 
       this.loading = false
-      Plotly.newPlot(div, traces, layout, config)
+      Plotly.react(div, traces, layout, config)
     }
   },
   mounted: function () {

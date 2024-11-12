@@ -229,7 +229,7 @@ export default {
 
       const div = this.$refs.chart
 
-      Plotly.purge(div)
+      // Plotly.purge(div)
 
       if (!plotData) {
         return
@@ -330,7 +330,7 @@ export default {
         displaylogo: false
       }
 
-      Plotly.newPlot(div, traces, layout, config)
+      Plotly.react(div, traces, layout, config)
 
       div.on('plotly_selected', eventData => {
         if (!eventData || (eventData.points.length < 1)) {

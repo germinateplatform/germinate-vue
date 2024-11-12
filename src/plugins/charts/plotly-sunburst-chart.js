@@ -43,8 +43,8 @@ export function plotlySunburstChart (Plotly) {
         extendsunburstcolorway: true
       }
 
-      Plotly.purge(this)
-      Plotly.newPlot(this, data, layout, config)
+      // Plotly.purge(this)
+      Plotly.react(this, data, layout, config)
 
       if (onLeafClicked) {
         this.on('plotly_sunburstclick', data => {

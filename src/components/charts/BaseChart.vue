@@ -25,8 +25,11 @@
     <div class="text-center" v-if="loading">
       <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
     </div>
+
+    <slot name="prepend" />
     <!-- This is where the chart goes -->
-    <slot name="chart" ref="chart"/>
+    <slot name="chart" ref="chart" />
+    <slot name="append" />
 
     <!-- Modal to ask for filenames -->
     <b-modal ref="chartModal" :title="$t('modalTitleChartFilename')" :ok-title="$t('buttonOk')" :cancel-title="$t('buttonCancel')" @ok="download">

@@ -75,7 +75,7 @@ export default {
 
         const div = this.$refs.chart
         try {
-          Plotly.purge(div)
+          // Plotly.purge(div)
         } catch (e) {
           // Nothing
         }
@@ -144,7 +144,7 @@ export default {
           displaylogo: false
         }
 
-        Plotly.newPlot(div, data, layout, config)
+        Plotly.react(div, data, layout, config)
 
         let rotation = layout.polar.angularaxis.rotation
         div.on('plotly_afterplot', e => {

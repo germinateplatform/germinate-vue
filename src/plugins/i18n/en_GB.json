@@ -252,6 +252,7 @@
   "formLabelCarouselImageLocale": "Add image to locale",
   "formLabelChartColorsCurrent": "Current colors",
   "formLabelChartColorsNew": "Add new color",
+  "formLabelChartScatterSwapAxes": "Swap x and y axis?",
   "formLabelLicenseName": "License name",
   "formLabelLicenseDescription": "License description",
   "formLabelLicenseContent": "License content",
