@@ -331,7 +331,7 @@ export default {
       this.formState = {
         name: this.datasetName !== undefined && this.datasetName !== null && this.datasetName.length > 0,
         experimentId: this.experimentId !== undefined && this.experimentId !== null,
-        datasetState: this.datasetState !== undefined && this.datasetType !== null,
+        datasetState: this.datasetState !== undefined && this.datasetState !== null,
         selectedDatasetType: this.selectedDatasetType !== undefined && this.selectedDatasetType !== null
       }
 

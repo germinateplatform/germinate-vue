@@ -112,7 +112,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import LocationMap from '@/components/map/LocationMap'
 import ChangelogModal from '@/components/modals/ChangelogModal'
 import { mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiTwitter, mdiWeb, mdiTag, mdiInformationOutline } from '@mdi/js'
-import { germinateVersion } from '@/mixins/util'
+import { germinateVersion, bskyIcon } from '@/mixins/util'
 
 export default {
   data: function () {
@@ -153,6 +153,10 @@ export default {
           img: 'team/sebastian-raubach.jpg',
           about: () => this.$t('pageAboutGerminateTeamSebastian'),
           links: [{
+            path: bskyIcon,
+            title: 'Bluesky',
+            href: 'https://bsky.app/profile/bazraubach.bsky.social'
+          }, {
             path: mdiTwitter,
             title: 'Twitter',
             href: 'https://twitter.com/BazRaubach'
@@ -179,6 +183,10 @@ export default {
           img: 'team/paul-shaw.jpg',
           about: () => this.$t('pageAboutGerminateTeamPaul'),
           links: [{
+            path: bskyIcon,
+            title: 'Bluesky',
+            href: 'https://bsky.app/profile/cardinalb.bsky.social'
+          }, {
             path: mdiTwitter,
             title: 'Twitter',
             href: 'https://twitter.com/cardinalb'
