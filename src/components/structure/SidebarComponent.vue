@@ -78,6 +78,7 @@ export default {
         {
           href: { name: Pages.projects },
           title: this.$t('menuProjects'),
+          identifiers: ['projects'],
           badge: {
             text: (this.storeSelectedProjects && this.storeSelectedProjects.length > 0) ? `${this.storeSelectedProjects.length}/${this.getBadgeCount(this.badgeCounts, 'projects')}` : this.getBadgeCount(this.badgeCounts, 'projects'),
             class: 'vsm--badge vsm--badge_default'

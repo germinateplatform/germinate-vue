@@ -306,7 +306,7 @@ export default {
 
         if (this.selectedGermplasm.length > 0) {
           this.selectedGermplasm.forEach((gp, i) => {
-            const germplasmData = this.traitData.filter(td => td.trialRow === gp.row && td.trialColumn === gp.column && td.germplasmName === gp.germplasm)
+            const germplasmData = this.traitData.filter(td => td.trialsetupId === gp.trialsetupId)
             const treatments = [...new Set(germplasmData.map(td => td.treatment))]
 
             treatments.forEach(t => {
@@ -345,7 +345,7 @@ export default {
       this.selectedGermplasm.splice(index, 1)
     },
     onGermplasmSelected: function (newGermplasm) {
-      const index = this.selectedGermplasm.findIndex(sg => sg.row === newGermplasm.row && sg.column === newGermplasm.column && sg.germplasm === newGermplasm.germplasm)
+      const index = this.selectedGermplasm.findIndex(sg => sg.trialsetupId === newGermplasm.trialsetupId)
 
       if (index === -1) {
         this.selectedGermplasm.push(newGermplasm)
@@ -382,8 +382,8 @@ export default {
           yaxis: {
             gridcolor: this.storeDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
             title: { text: this.$t('chartAxisTitleValue'), font: { color: this.storeDarkMode ? 'white' : 'black' } },
-            tickfont: { color: this.storeDarkMode ? 'white' : 'black' },
-            range: this.traitStats ? [this.traitStats.min - (this.traitStats.max - this.traitStats.min) * 0.05, this.traitStats.max + (this.traitStats.max - this.traitStats.min) * 0.05] : null
+            tickfont: { color: this.storeDarkMode ? 'white' : 'black' }
+            // range: this.traitStats ? [this.traitStats.min - (this.traitStats.max - this.traitStats.min) * 0.05, this.traitStats.max + (this.traitStats.max - this.traitStats.min) * 0.05] : null
           },
           hovermode: 'x',
           shapes: [{

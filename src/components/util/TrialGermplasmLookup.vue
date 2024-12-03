@@ -75,6 +75,7 @@ export default {
         germplasm: item.germplasmName,
         rep: item.rep || 'N/A',
         row: item.trialRow || 'N/A',
+        treatment: item.treatment || 'N/A',
         column: item.trialColumn || 'N/A',
         block: item.block || 'N/A'
       })
@@ -87,6 +88,7 @@ export default {
           germplasm: germplasm.germplasmName,
           rep: germplasm.rep,
           row: germplasm.trialRow,
+          treatment: germplasm.treatment || 'N/A',
           column: germplasm.trialColumn,
           block: germplasm.block || 'N/A'
         })

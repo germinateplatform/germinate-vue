@@ -150,7 +150,7 @@
   "dropdownUserSettingsGermplasmUnifier": "Germplasm unifier",
   "dropdownUserSettingsGerminateSettings": "Germinate settings",
   "dropdownUserSettingsGetToken": "Get access token",
-  "dropdownLabelGermplasmSearch": "{germplasm}, Rep: {rep}, Block: {block}, Row: {row}, Column: {column}",
+  "dropdownLabelGermplasmSearch": "{germplasm}, Rep: {rep}, Block: {block}, Treatment: {treatment}, Row: {row}, Column: {column}",
   "dublinCoreContributor": "Contributor",
   "dublinCoreCoverage": "Coverage",
   "dublinCoreCreator": "Creator",
