@@ -126,6 +126,7 @@ export default {
             tickfont: { color: this.storeDarkMode ? 'white' : 'black' }
           },
           yaxis: {
+            showticklabels: false,
             title: { text: null, font: { color: this.storeDarkMode ? 'white' : 'black' } },
             tickfont: { color: this.storeDarkMode ? 'white' : 'black' }
           },
