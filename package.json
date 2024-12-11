@@ -48,6 +48,7 @@
     "vue-sidebar-menu": "~4.8.1",
     "vue-typeahead-bootstrap": "~2.12.0",
     "vue-upload-component": "~2.8.22",
+    "vue2-editor": "^2.10.3",
     "vue2-leaflet": "~2.7.1",
     "vuedraggable": "^2.24.3",
     "vuex": "~3.6.2",

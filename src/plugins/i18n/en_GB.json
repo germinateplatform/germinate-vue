@@ -550,6 +550,7 @@
   "modalButtonSelectGermplasmLocationSelectFromTable": "Select existing",
   "modalButtonSelectGermplasmLocationSelectOnMap": "Select on map",
   "modalTextFielDBookColumnMapping": "Use this section to map the columns in the input file with their corresponding purpose, i.e. select the column containing the germplasm identifier information in the 'Germplasm' dropdown.",
+  "modalTextHtmlEditorLeaveSure": "Are you sure you want to leave this page? Any unsaved changes to the editor will be lost.",
   "operatorsAnd": "And",
   "operatorsOr": "Or",
   "page404Text": "It might be best to start over or go back.",

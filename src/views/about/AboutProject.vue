@@ -2,7 +2,8 @@
   <div>
     <h1>{{ $t('pageAboutProjectTitle') }}</h1>
     <hr />
-    <p v-html="$t('pageAboutProjectText')"/>
+
+    <HtmlTemplateEditor i18nKey="pageAboutProjectText" />
 
     <template v-if="(groupedItems && groupedItems.length > 0) || isAdmin">
       <h3>{{ $t('pageAboutProjectPartnersTitle') }}</h3>
@@ -13,7 +14,8 @@
         <draggable v-model="group.items" group="partners" tag="b-row" handle=".drag-handle" class="mt-3">
           <b-col cols=12 lg=6 class="mb-3 col-xxl-4" v-for="(item, itemIndex) in group.items" :key="`about-item-${itemIndex}`">
             <b-card no-body class="h-100">
-              <b-row no-gutters class="h-100">
+              <b-row no-gutters class="h-100 position-relative">
+                <b-form-checkbox class="editing-switch" switch v-model="item.isEditing" v-if="isAdmin" />
                 <b-col md=4 class="d-flex align-items-center justify-content-center bg-light">
                   <b-card-img class="about-card-image p-4" :src="`${storeBaseUrl}image/src/?name=${item.image}&type=template`" alt="Image"></b-card-img>
                 </b-col>
@@ -21,7 +23,8 @@
                   <b-card-body class="d-flex flex-column justify-content-between align-items-start h-100">
                     <div class="w-100">
                       <div class="d-flex flex-row justify-content-between align-items-center mb-3">
-                        <b-card-title class="mb-0">{{ item.name }}</b-card-title>
+                        <b-form-input v-model="item.name" v-if="isAdmin && item.isEditing" />
+                        <b-card-title class="mb-0" v-else>{{ item.name }}</b-card-title>
                         <MdiIcon className="drag-handle" :path="mdiDrag" v-if="isAdmin" />
                       </div>
                       <b-card-text class="text-muted" v-if="item.description">{{ item.description }}</b-card-text>
@@ -54,6 +57,7 @@ import { apiGetTemplateAboutConfig, apiPatchTemplateAboutConfig } from '@/mixins
 import { userIsAtLeast, USER_TYPE_ADMINISTRATOR } from '@/mixins/api/auth'
 import { mdiDrag, mdiPlusBox, mdiContentSave, mdiDelete, mdiOpenInNew } from '@mdi/js'
 
+import HtmlTemplateEditor from '@/components/util/HtmlTemplateEditor'
 import AddAboutPartnerModal from '@/components/modals/AddAboutPartnerModal'
 import MdiIcon from '@/components/icons/MdiIcon'
 import draggable from 'vuedraggable'
@@ -62,6 +66,7 @@ const NO_GROUP = '--NO_GROUP--'
 
 export default {
   components: {
+    HtmlTemplateEditor,
     AddAboutPartnerModal,
     MdiIcon,
     draggable
@@ -130,6 +135,7 @@ export default {
           if (result) {
             result.forEach(i => {
               const groupName = i.group || NO_GROUP
+              i.isEditing = false
 
               const match = groups.find(g => g.name === groupName)
 
@@ -172,5 +178,10 @@ export default {
 .about-card-image {
   max-width: 300px;
   max-height: 300px;
+}
+.editing-switch {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
 }
 </style>

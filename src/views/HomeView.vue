@@ -12,7 +12,8 @@
 
     <!-- Heading and welcome text -->
     <h1>{{ $t('pageDashboardTitle') }}</h1>
-    <p v-html="$t('pageDashboardText')" />
+
+    <HtmlTemplateEditor i18nKey="pageDashboardText" />
 
     <!-- Publications -->
     <div v-if="showPublicationSection && (showPublications || (storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)))" class="mb-4">
@@ -47,11 +48,12 @@ import ImageCarousel from '@/components/images/ImageCarousel'
 import MdiIcon from '@/components/icons/MdiIcon'
 import NewsSection from '@/components/news/NewsSection'
 import PublicationsWidget from '@/components/util/PublicationsWidget'
+import HtmlTemplateEditor from '@/components/util/HtmlTemplateEditor'
 
 import { apiGetOverviewStats } from '@/mixins/api/stats'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { statCategories } from '@/mixins/types'
-import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR, USER_TYPE_ADMINISTRATOR } from '@/mixins/api/auth'
 
 import { mdiPresentationPlay } from '@mdi/js'
 
@@ -64,7 +66,8 @@ export default {
     ImageCarousel,
     MdiIcon,
     NewsSection,
-    PublicationsWidget
+    PublicationsWidget,
+    HtmlTemplateEditor
   },
   data: function () {
     return {
@@ -78,7 +81,8 @@ export default {
         operator: 'and',
         values: [1]
       }],
-      USER_TYPE_DATA_CURATOR
+      USER_TYPE_DATA_CURATOR,
+      USER_TYPE_ADMINISTRATOR
     }
   },
   computed: {

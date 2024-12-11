@@ -70,6 +70,8 @@ const apiPostTemplateCarouselConfig = (data, onSuccess, onError) => authAxios({ 
 
 const apiPatchTemplateAboutConfig = (data, onSuccess, onError) => authAxios({ url: 'settings/about', method: 'PATCH', data: data, success: onSuccess, error: onError })
 
+const apiPatchTemplateI18n = (data, locale, onSuccess, onError) => authAxios({ url: `settings/template/i18n/${locale}`, method: 'PATCH', data: data, success: onSuccess, error: onError })
+
 const apiPatchImage = (image, onSuccess, onError) => authAxios({ url: `image/${image.imageId}`, method: 'PATCH', data: image, success: onSuccess, error: onError })
 
 const apiPostNewsTable = (queryData, onSuccess, onError) => {
@@ -152,6 +154,8 @@ const apiPostStoryUpload = (formData, onSuccess, onError) => authForm({ url: 'st
 
 const apiPostStoryStepUpload = (storyId, formData, onSuccess, onError) => authForm({ url: `story/${storyId}/step`, formData: formData, success: onSuccess, error: onError })
 
+const apiPostTemplateImage = (formData, onSuccess, onError) => authForm({ url: 'image/upload/template', formData: formData, success: onSuccess, error: onError })
+
 const apiDeleteStoryStep = (storyId, storyStepId, onSuccess, onError) => authAxios({ url: `story/${storyId}/step/${storyStepId}`, method: 'DELETE', success: onSuccess, error: onError })
 
 export {
@@ -209,5 +213,7 @@ export {
   apiPostStoryUpload,
   apiPostStoryStepUpload,
   apiPatchStory,
-  apiDeleteStoryStep
+  apiDeleteStoryStep,
+  apiPatchTemplateI18n,
+  apiPostTemplateImage
 }
