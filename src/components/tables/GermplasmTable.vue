@@ -222,6 +222,10 @@ export default {
     tableMode: {
       type: String,
       default: 'base'
+    },
+    showAllItems: {
+      type: Boolean,
+      default: null
     }
   },
   data: function () {

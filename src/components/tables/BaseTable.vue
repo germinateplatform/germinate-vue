@@ -39,8 +39,8 @@
           <div v-else />
           <!-- Row count -->
           <template v-if="currentRequestData !== null && pagination.totalCount >= 0">
-            <div v-if="showAllItems !== true" class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: (currentRequestData.page * currentRequestData.limit + 1).toLocaleString(), to: (Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)).toLocaleString(), count: pagination.totalCount.toLocaleString() }) }}</div>
-            <div v-else class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: 1, to: (Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)).toLocaleString(), count: pagination.totalCount.toLocaleString() }) }}</div>
+            <div v-if="showAllItems" class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: 1, to: pagination.totalCount.toLocaleString(), count: pagination.totalCount.toLocaleString() }) }}</div>
+            <div v-else class="d-flex mx-2 mb-1" id="table-row-count">{{ $tc('paginationCountCustom', pagination.totalCount, { from: (currentRequestData.page * currentRequestData.limit + 1).toLocaleString(), to: (Math.min((currentRequestData.page + 1) * currentRequestData.limit, pagination.totalCount)).toLocaleString(), count: pagination.totalCount.toLocaleString() }) }}</div>
           </template>
         </div>
         <!-- Progress bar below it all that indicates the loading state -->
@@ -162,7 +162,7 @@
       </div>
 
       <!-- Page indicator and pagination -->
-      <div class="d-flex">
+      <div class="d-flex" v-if="!showAllItems">
         <b-button-group class="table-pagination" v-show="pagination.totalCount > storeTablePerPage">
           <b-button class="text-primary page-link" @click="showJumpToPage" id="table-jump-to-page"><MdiIcon :path="mdiBookOpenPageVariant" /> {{ $t('paginationPageCustom', { from: pagination.currentPage, to: maxPage }) }}</b-button>
           <b-pagination v-model="pagination.currentPage"

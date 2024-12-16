@@ -7,6 +7,7 @@ const Pages = Object.freeze({
   germinateSettings: 'germinate-settings',
   germplasm: 'germplasm',
   germplasmUnifier: 'germplasm-unifier',
+  germplasmMatch: 'germplasm-match',
   passport: 'passport',
   climates: 'climates',
   climateDetails: 'climate-details',

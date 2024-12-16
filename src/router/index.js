@@ -142,6 +142,13 @@ const routes = [
             beforeEnter: requireAuth
           },
           {
+            path: 'germplasm-match',
+            name: Pages.germplasmMatch,
+            meta: { minUserType: USER_TYPE_DATA_CURATOR },
+            component: () => import(/* webpackChunkName: "germplasm-match" */ '@/views/data/germplasm/GermplasmMatch.vue'),
+            beforeEnter: requireAuth
+          },
+          {
             path: 'germplasm-unifier',
             name: Pages.germplasmUnifier,
             meta: { minUserType: USER_TYPE_DATA_CURATOR },
