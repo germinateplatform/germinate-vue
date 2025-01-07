@@ -32,21 +32,8 @@
     </div>
     <!-- Banner buttons -->
     <b-row class="about-banners" v-if="banners">
-      <b-col cols=12 sm=6 xl=3 v-for="banner in banners" :key="'about-banners-' + banner.key" class="my-3">
-        <a target="_blank" rel="noopener noreferrer" :href="banner.link">
-          <b-card no-body :class="`${banner.key} h-100`">
-            <b-card-body>
-              <b-row>
-                <b-col cols=8 class="align-self-center">
-                  <h5 class="mb-0">{{ banner.text() }}</h5>
-                </b-col>
-                <b-col cols=4 class="text-right text-muted">
-                  <MdiIcon :size="48" :path="banner.path" />
-                </b-col>
-              </b-row>
-            </b-card-body>
-          </b-card>
-        </a>
+      <b-col cols=12 sm=6 xl=3 v-for="(banner, index) in banners" :key="'about-banners-' + banner.key" class="my-3">
+        <BannerCard :templateColorIndex="index" headingComponent="h5" :text-value="banner.text()" :link="banner.link" :iconPath="banner.path" />
       </b-col>
     </b-row>
     <!-- Text -->
@@ -111,6 +98,7 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import LocationMap from '@/components/map/LocationMap'
 import ChangelogModal from '@/components/modals/ChangelogModal'
+import BannerCard from '@/components/util/BannerCard'
 import { mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiTwitter, mdiWeb, mdiTag, mdiInformationOutline } from '@mdi/js'
 import { germinateVersion, bskyIcon } from '@/mixins/util'
 
@@ -312,6 +300,7 @@ export default {
     }
   },
   components: {
+    BannerCard,
     ChangelogModal,
     LocationMap,
     MdiIcon
@@ -332,6 +321,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.dashboard-icon {
+  color: #999;
+  mix-blend-mode: color-burn;
+}
+</style>
 
 <style>
 .about-header-logo {

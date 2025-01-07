@@ -12,15 +12,28 @@
 
     <b-button @click="refresh" variant="primary" class="mb-3"><MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}</b-button>
 
-    <div v-if="filterOn && filterOn.length > 0">
+    <div v-if="resultVisible">
       <p v-if="searchTerms && searchTerms.length > 0 && germplasm && germplasm.length > 0">
         {{ $t('pageGermplasmMatchSearchCount', { search: searchTerms.length, result: germplasm.length } ) }}
       </p>
 
-      <b-form-group :label="$t('formLabelGermplasmMatchNotFound')" :description="$t('formDescriptionGermplasmMatchNotFound')" label-for="notfound">
-        <b-form-textarea :value="notFound" id="notfound" :rows="10" />
-      </b-form-group>
+      <b-row>
+        <b-col cols="12" md="6">
+          <b-form-group :label="$t('formLabelGermplasmMatchNotFound')" :description="$t('formDescriptionGermplasmMatchNotFound')" label-for="notfound">
+            <div class="d-flex align-items-stretch">
+              <b-form-textarea ref="numbers" class="row-numbers" :style="{ minWidth: `${rowNumberDigits}em` }" :value="notFoundNumbers" :cols="rowNumberDigits" readonly />
+              <b-form-textarea ref="notFound" class="flex-grow-1" :value="notFoundText" id="notfound" :rows="10" />
+            </div>
+          </b-form-group>
+        </b-col>
+        <b-col cols="12" md="6">
+          <b-form-group :label="$t('formLabelGermplasmMatchDistinctNotFound')" :description="$t('formDescriptionGermplasmMatchDistinctNotFound')" label-for="distinctNotFound">
+            <b-form-textarea :value="distinctNotFound" id="distinctNotFound" :rows="10" />
+          </b-form-group>
+        </b-col>
+      </b-row>
 
+      <h2>{{ $t('pageGermplasmMatchMatchesTitle') }}</h2>
       <!-- Table showing all germplasm matches -->
       <GermplasmTable showAllItems :getData="getData" :getIds="getIds" :downloadTable="downloadFunction" ref="germplasmTable" />
     </div>
@@ -57,14 +70,59 @@ export default {
     },
     notFound: function () {
       if (this.germplasm && this.germplasm.length > 0 && this.searchTerms && this.searchTerms.length > 0) {
-        const set = new Set(this.searchTerms)
+        const set = new Set(this.germplasm.map(g => g.germplasmName))
 
-        this.germplasm.forEach(g => set.delete(g.germplasmName))
+        const input = this.search.split(/\r?\n/).map(s => s.trim())
 
-        return [...set].join('\n')
+        return input.map((s, i) => {
+          return {
+            value: s,
+            line: i + 1
+          }
+        }).filter(s => !set.has(s.value))
       } else {
         return null
       }
+    },
+    notFoundNumbers: function () {
+      if (this.notFound) {
+        return this.notFound.map(n => n.line).join('\n')
+      } else {
+        return ''
+      }
+    },
+    distinctNotFound: function () {
+      if (this.notFound) {
+        const set = new Set(this.notFound.filter(s => s.value).map(s => s.value.trim()))
+
+        return [...set].join('\n')
+      } else {
+        return ''
+      }
+    },
+    rowNumberDigits: function () {
+      return `${(this.notFound || [{ value: 'a', line: 1 }])[0].line}`.length + 1
+    },
+    notFoundText: function () {
+      if (this.notFound) {
+        return this.notFound.map(n => n.value).join('\n')
+      } else {
+        return ''
+      }
+    },
+    resultVisible: function () {
+      return this.filterOn && this.filterOn.length > 0
+    }
+  },
+  watch: {
+    resultVisible: function (newValue) {
+      this.$nextTick(() => {
+        if (newValue) {
+          this.$refs.notFound.$el.addEventListener('scroll', this.scrollHandle)
+        } else {
+          this.$refs.notFound.$el.removeEventListener('scroll', this.scrollHandle)
+        }
+      })
     }
   },
   methods: {
@@ -130,11 +188,22 @@ export default {
     },
     onDownloadTableClicked: function () {
       this.$refs.germplasmTable.onDownloadTableClicked()
+    },
+    scrollHandle: function () {
+      console.log('scroll')
+      this.$refs.numbers.$el.scrollTop = this.$refs.notFound.$el.scrollTop
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+.row-numbers {
+  width: auto;
+  font-family: monospace;
+  resize: none;
+  text-align: end;
+  color: gray;
+  overflow: hidden;
+}
 </style>

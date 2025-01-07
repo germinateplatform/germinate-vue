@@ -133,9 +133,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.dashboard-icon {
-  color: #999;
-  mix-blend-mode: color-burn;
-}
+<style>
 </style>

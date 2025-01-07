@@ -1,16 +1,16 @@
 <template>
-  <b-card no-body :style="`border: 1px solid ${templateColor}`">
-    <b-card-body :style="`background: linear-gradient(330deg, ${brighterColor} 0%, ${templateColor} 50%); color: white;`">
-      <b-row>
-        <b-col :cols="6" :lg="8" class="align-self-center">
-          <h2 class="mb-0">{{ formattedDisplayInfo }}</h2>
+  <b-card no-body class="h-100" :style="`border: 1px solid ${templateColor}`">
+    <b-card-body class="h-100" :style="`background: linear-gradient(330deg, ${brighterColor} 0%, ${templateColor} 50%); color: white;`">
+      <b-row class="h-100">
+        <b-col :cols="6" :lg="8" class="align-self-top">
+          <component :is="headingComponent" class="mb-0">{{ formattedDisplayInfo }}</component>
           <span>{{ $t(title) }}</span>
         </b-col>
         <b-col :cols="6" :lg="4" class="d-flex align-items-center justify-content-end dashboard-icon">
           <MdiIcon :size="48" :path="iconPath" />
         </b-col>
       </b-row>
-      <router-link class="stretched-link" :disabled="isDisabled" :event="isDisabled ? '' : 'click'" :to="{ name: link, params: linkParams }" :title="`${$t(title)}: ${numericValue.toLocaleString()}`" v-if="numericValue" />
+      <router-link class="stretched-link" :disabled="isDisabled" :event="isDisabled ? '' : 'click'" :to="{ name: link, params: linkParams }" :title="`${title ? ($t(title) + ': ') : ''}${numericValue ? numericValue.toLocaleString() : textValue}`" v-if="numericValue || textValue" />
     </b-card-body>
   </b-card>
 </template>
@@ -32,7 +32,11 @@ export default {
     },
     numericValue: {
       type: Number,
-      default: 0
+      default: null
+    },
+    headingComponent: {
+      type: String,
+      default: 'h2'
     },
     textValue: {
       type: String,
@@ -75,6 +79,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.dashboard-icon {
+  color: #999;
+  mix-blend-mode: color-burn;
+}
 </style>
