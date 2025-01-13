@@ -13,7 +13,7 @@
     <b-button @click="refresh" variant="primary" class="mb-3"><MdiIcon :path="mdiRefresh" /> {{ $t('buttonUpdate') }}</b-button>
 
     <div v-if="resultVisible">
-      <p v-if="searchTerms && searchTerms.length > 0 && germplasm && germplasm.length > 0">
+      <p v-if="searchTerms && searchTerms.length > 0 && germplasm">
         {{ $t('pageGermplasmMatchSearchCount', { search: searchTerms.length, result: germplasm.length } ) }}
       </p>
 
@@ -61,7 +61,7 @@ export default {
       filterOn: [],
       search: null,
       searchTerms: [],
-      germplasm: []
+      germplasm: null
     }
   },
   computed: {
@@ -69,7 +69,7 @@ export default {
       return this.downloadTable
     },
     notFound: function () {
-      if (this.germplasm && this.germplasm.length > 0 && this.searchTerms && this.searchTerms.length > 0) {
+      if (this.germplasm && this.searchTerms && this.searchTerms.length > 0) {
         const set = new Set(this.germplasm.map(g => g.germplasmName))
 
         const input = this.search.split(/\r?\n/).map(s => s.trim())
@@ -101,7 +101,8 @@ export default {
       }
     },
     rowNumberDigits: function () {
-      return `${(this.notFound || [{ value: 'a', line: 1 }])[0].line}`.length + 1
+      const t = this.notFound || [{ value: 'a', line: 1 }]
+      return `${t[t.length - 1].line}`.length + 1
     },
     notFoundText: function () {
       if (this.notFound) {
@@ -163,7 +164,7 @@ export default {
       return apiPostTableExport({ filter: copy.filter }, 'germplasm', callback)
     },
     getData: function (data, callback) {
-      this.germplasm = []
+      this.germplasm = null
 
       const copy = this.adjustFilter(data)
 
@@ -173,7 +174,7 @@ export default {
         apiPostGermplasmTable(copy, callback)
           .then(r => {
             if (r.data && r.data.data) {
-              this.germplasm = JSON.parse(JSON.stringify(r.data.data))
+              this.germplasm = JSON.parse(JSON.stringify(r.data.data)) || []
             } else {
               this.germplasm = []
             }

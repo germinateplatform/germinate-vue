@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1>{{ $t('pageTraitsTitle') }}</h1>
-    <TraitTable :getData="getData" :getIds="selectionMode === 'multi' ? getIds : null" :selectionMode="selectionMode" v-on:selection-changed="updateButtonState" ref="traitTable" />
+
+    <TraitCategories v-on:category-selected="categoryClicked" ref="categories" />
+
+    <TraitTable :getData="getData" :getIds="selectionMode === 'multi' ? getIds : null" :filterOn="filterOn" :selectionMode="selectionMode" v-on:selection-changed="updateButtonState" v-on:filter-changed="onFilterChanged" ref="traitTable" />
 
     <template v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_ADMINISTRATOR)">
       <Collapse :visible="false" :title="$t('pageTraitsUnifierTitle')" :showLoading="false" @toggle="unifierExpanded = !unifierExpanded" ref="traitCollapse">
@@ -31,6 +34,7 @@ import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
 import Collapse from '@/components/util/Collapse'
 import TraitTable from '@/components/tables/TraitTable'
+import TraitCategories from '@/components/util/TraitCategories'
 import { apiPostTraitTable, apiPostTraitTableIds, apiPostTraitUnification } from '@/mixins/api/trait'
 import { userIsAtLeast, USER_TYPE_ADMINISTRATOR } from '@/mixins/api/auth'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
@@ -43,7 +47,8 @@ export default {
   components: {
     Collapse,
     MdiIcon,
-    TraitTable
+    TraitTable,
+    TraitCategories
   },
   data: function () {
     return {
@@ -53,7 +58,9 @@ export default {
       selectedTraits: null,
       primaryTrait: null,
       selectedIds: [],
-      USER_TYPE_ADMINISTRATOR
+      USER_TYPE_ADMINISTRATOR,
+      filterOn: null,
+      category: null
     }
   },
   computed: {
@@ -64,8 +71,35 @@ export default {
       return this.unifierExpanded ? 'multi' : null
     }
   },
+  watch: {
+    category: function (newValue) {
+      // Filter based on selected tag
+      if (!newValue) {
+        this.filterOn = []
+      } else {
+        this.filterOn = [{
+          column: {
+            name: 'categoryName',
+            type: String
+          },
+          comparator: 'equals',
+          operator: 'and',
+          values: [newValue.name]
+        }]
+      }
+    }
+  },
   methods: {
     userIsAtLeast,
+    onFilterChanged: function (filter) {
+      if (filter === null || filter.filter == null || filter.filter.length === 0) {
+        this.$refs.categories.selectCategory(null)
+      }
+    },
+    categoryClicked: function (category) {
+      this.category = category
+      this.$nextTick(() => this.$refs.traitTable.refresh())
+    },
     getData: function (data, callback) {
       return apiPostTraitTable(data, callback)
     },

@@ -143,6 +143,11 @@ export default {
           sortable: true,
           label: this.$t('tableColumnTraitSynonyms')
         }, {
+          key: 'categoryName',
+          type: String,
+          sortable: true,
+          label: this.$t('tableColumnTraitCategoryName')
+        }, {
           key: 'unitName',
           type: String,
           sortable: true,
