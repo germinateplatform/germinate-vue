@@ -26,6 +26,11 @@
           <b-button @click="showImageExif(data.item)"><MdiIcon :path="mdiImageText" /> {{ $t('buttonShow') }}</b-button>
         </template>
       </template>
+      <!-- Show whether it's a trait reference image. -->
+      <template v-slot:cell(imageIsReference)="data">
+        <span class="text-nowrap text-primary" v-b-tooltip.hover :title="$t('tableTooltipImagesIsReference')" v-if="data.item.imageIsReference === true"><MdiIcon :path="mdiBookInformationVariant"/> <span> {{ data.item.collaborators }}</span></span>
+        <MdiIcon :path="mdiBookInformationVariant" className="text-muted" v-else/>
+      </template>
       <!-- Reference name -->
       <template v-slot:cell(referenceName)="data">
         <!-- Germplasm -->
@@ -63,7 +68,7 @@ import { getHighContrastTextColor } from '@/mixins/colors'
 import { getImageUrl } from '@/mixins/image'
 import { Pages } from '@/mixins/pages'
 
-import { mdiImageText } from '@mdi/js'
+import { mdiBookInformationVariant, mdiImageText } from '@mdi/js'
 
 export default {
   name: 'ImageTable',
@@ -76,6 +81,7 @@ export default {
       Pages,
       imageTypes,
       mdiImageText,
+      mdiBookInformationVariant,
       options: {
         idColumn: 'imageId',
         tableName: 'images'
@@ -115,6 +121,11 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnImageDescription')
+        }, {
+          key: 'imageIsReference',
+          type: Boolean,
+          sortable: true,
+          label: this.$t('tableColumnImageIsReference')
         }, {
           key: 'imagePath',
           type: String,

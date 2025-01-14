@@ -199,14 +199,14 @@ export default {
       mdiPlus,
       id: uuidv4(),
       validComparatorsForType: {
-        Boolean: ['equals', 'isNull'],
-        dataType: ['equals', 'isNull'],
-        locationType: ['equals', 'isNull'],
-        entityType: ['equals', 'isNull'],
-        json: ['jsonSearch', 'isNull'],
+        Boolean: ['equals', 'isNull', 'isNotNull'],
+        dataType: ['equals', 'isNull', 'isNotNull'],
+        locationType: ['equals', 'isNull', 'isNotNull'],
+        entityType: ['equals', 'isNull', 'isNotNull'],
+        json: ['jsonSearch', 'isNull', 'isNotNull'],
         jsonObject: ['jsonSearch'],
-        Number: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'inSet', 'isNull'],
-        Date: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'isNull']
+        Number: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'inSet', 'isNull', 'isNotNull'],
+        Date: ['equals', 'between', 'lessThan', 'greaterThan', 'lessOrEquals', 'greaterOrEquals', 'isNull', 'isNotNull']
       },
       filter: null,
       tempFilter: [],

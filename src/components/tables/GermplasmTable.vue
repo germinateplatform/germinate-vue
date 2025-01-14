@@ -370,6 +370,12 @@ export default {
           sortable: true,
           label: this.$t('tableColumnSubtaxa')
         }, {
+          key: 'locationId',
+          type: Number,
+          sortable: true,
+          label: this.$t('tableColumnGermplasmLocationId'),
+          class: 'd-none'
+        }, {
           key: 'location',
           type: String,
           sortable: true,

@@ -24,6 +24,10 @@ const comparators = {
     text: () => i18n.t('comparatorsIsNull'),
     value: 0
   },
+  isNotNull: {
+    text: () => i18n.t('comparatorsIsNotNull'),
+    value: 0
+  },
   between: {
     text: () => i18n.t('comparatorsBetween'),
     values: 2

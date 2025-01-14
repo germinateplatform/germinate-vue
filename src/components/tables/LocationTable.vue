@@ -173,10 +173,10 @@ export default {
     navigateToGermplasm: function (location) {
       // Set up the filter
       const filter = [{
-        column: 'location',
+        column: 'locationId',
         comparator: 'equals',
         operator: 'and',
-        values: [location.locationName]
+        values: [location.locationId]
       }]
       // Redirect to germplasm page filtered by location
       this.$router.push({

@@ -79,7 +79,7 @@ export default {
         const genusSpecies = {}
 
         data.forEach(t => {
-          if (t.subtaxa && t.species) {
+          if (t.subtaxa && t.species && t.count > 1) {
             source.push(labelArray.indexOf(t.species))
             target.push(labelArray.indexOf(t.subtaxa))
             value.push(+t.count)

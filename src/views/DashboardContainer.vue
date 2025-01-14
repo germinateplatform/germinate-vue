@@ -59,7 +59,7 @@
 
           <ul class="nav col-md-4 justify-content-center justify-content-md-end list-unstyled d-flex">
             <li class="ml-3"><a class="text-muted" href="https://ics.hutton.ac.uk/get-germinate"><MdiIcon :size="24" :path="mdiWeb" /></a></li>
-            <li class="ml-3"><a class="text-muted" href="https://bsky.app/profile/germinatehub.bsky.social"><MdiIcon :size="24" :path="bskyIcon" /></a></li>
+            <li class="ml-3"><a class="text-muted" href="https://bsky.app/profile/germinate.hutton.ac.uk"><MdiIcon :size="24" :path="bskyIcon" /></a></li>
             <li class="ml-3"><a class="text-muted" href="https://twitter.com/GerminateHub"><MdiIcon :size="24" :path="mdiTwitter" /></a></li>
             <li class="ml-3"><a class="text-muted" href="https://github.com/germinateplatform"><MdiIcon :size="24" :path="mdiGithub" /></a></li>
           </ul>
