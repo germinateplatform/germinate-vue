@@ -13,9 +13,9 @@
         v-for="(image, index) in images[storeLocale]"
         :key="`dashboard-carousel-${index}`"
         :caption-html="image.text"
+        content-visible-up="lg"
         :img-src="image.src" >
         <template v-slot:img>
-          <!-- Add rounded corners to image -->
           <b-img class="w-100" :src="image.src" :alt="image.text" />
         </template>
       </b-carousel-slide>
@@ -102,5 +102,6 @@ export default {
   min-height: 300px;
   object-fit: cover;
   max-width: 1920px;
+  max-height: 60vh;
 }
 </style>
