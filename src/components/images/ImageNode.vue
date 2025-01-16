@@ -12,13 +12,19 @@
       <MdiIcon :path="mdiDelete" />
     </b-button>
     <b-card-body class="card-image-details">
-      <b-input-group v-if="storeToken && storeToken.userType && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" class="mb-2">
-        <b-textarea rows="3" max-rows="10" class="image-description" v-model="image.imageDescription"/>
-        <b-input-group-append>
-          <b-button variant="success" @click="updateImageDescription"><MdiIcon :path="mdiContentSave" /></b-button>
-        </b-input-group-append>
-      </b-input-group>
+      <div v-if="storeToken && storeToken.userType && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" class="mb-2">
+        <b-form @submit.prevent>
+          <b-input-group>
+            <b-textarea rows="3" max-rows="10" class="image-description" v-model="image.imageDescription"/>
+            <b-input-group-append>
+              <b-button variant="success" @click="updateImageDescription"><MdiIcon :path="mdiContentSave" /></b-button>
+            </b-input-group-append>
+          </b-input-group>
+          <b-form-checkbox v-model="image.imageIsReference" @change="updateImageIsReference">{{ $t('tableColumnImageIsReference') }}</b-form-checkbox>
+        </b-form>
+      </div>
       <div class="mb-2" v-else>{{ image.imageDescription }}</div>
+      <b-badge variant="info" v-if="image.imageIsReference">{{ $t('tableColumnImageIsReference') }}</b-badge>
       <div class="text-muted mb-2" v-if="image.createdOn"><MdiIcon :path="mdiCalendarClock" /> {{ new Date(image.createdOn).toLocaleString() }}</div>
       <div class="mb-2"  v-if="hasExif">
         <b-button @click="$refs.imageExifModal.show()"><MdiIcon :path="mdiImageText" /> {{ $t('buttonShowExif') }}</b-button>
@@ -112,6 +118,9 @@ export default {
       this.$refs.editTagModal.show()
     },
     updateImageDescription: function () {
+      apiPatchImage(this.image)
+    },
+    updateImageIsReference: function () {
       apiPatchImage(this.image)
     },
     getSrc: function (size) {

@@ -37,7 +37,14 @@
       <b-col class="mb-3" :cols="radarCols.cols" :md="radarCols.md" :lg="radarCols.lg" v-for="(data, index) in radarChartDataArray" :key="`radar-chart-data-${index}`">
         <h3 v-if="individualCharts">{{ data[0].displayName }}</h3>
         <RadarChart :baseFilename="`radar-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" @rotated="e => updateRotation(index, e)" :ref="`radar-chart-${index}`" />
-        <BalloonChart :baseFilename="`balloon-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" :ref="`radar-chart-${index}`" />
+        <b-row>
+          <b-col cols="12" lg="6">
+            <BalloonChart :baseFilename="`balloon-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" :ref="`baloon-chart-${index}`" />
+          </b-col>
+          <b-col cols="12" lg="6">
+            <HeatmapChart :baseFilename="`balloon-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" :custom-range="[0, 100]" :ref="`heatmap-chart-${index}`" />
+          </b-col>
+        </b-row>
       </b-col>
     </template>
   </b-row>
@@ -47,6 +54,7 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import RadarChart from '@/components/charts/RadarChart'
 import BalloonChart from '@/components/charts/BalloonChart'
+import HeatmapChart from '@/components/charts/HeatmapChart'
 import SearchableSelect from '@/components/util/SearchableSelect'
 import TrialGermplasmLookup from '@/components/util/TrialGermplasmLookup'
 import { apiPostTraitDatasetStats, apiPostTrialsDataTable } from '@/mixins/api/trait'
@@ -269,7 +277,8 @@ export default {
     SearchableSelect,
     TrialGermplasmLookup,
     RadarChart,
-    BalloonChart
+    BalloonChart,
+    HeatmapChart
   },
   methods: {
     updateRotation: function (indexToSkip, rotation) {
