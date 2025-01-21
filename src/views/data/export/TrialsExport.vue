@@ -44,7 +44,7 @@
           <BarChart xColumn="phenotype_value"
             :xTitle="trait.traitName"
             :yTitle="$t('genericCount')"
-            :xLabels="trait.traitRestrictions.categories"
+            :xLabels="trait.traitRestrictions ? trait.traitRestrictions.categories : null"
             :height="400"
             :downloadName="trait.traitName"
             :sourceFile="categoricalTraitFiles[trait.traitId]"
