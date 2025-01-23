@@ -6,6 +6,12 @@
                v-bind="$props"
                ref="traitTable"
                v-on="$listeners">
+      <!-- HEADS -->
+      <!-- HEAD: Germplasm PUID -->
+      <template v-slot:head(traitSetSize)="data">
+        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipTraitSet')"><MdiIcon :path="mdiHelpCircle" /></span>
+      </template>
+      <!-- /HEADS -->
       <!-- Trait id link -->
       <template v-slot:cell(traitId)="data">
         <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitId }}</router-link>
@@ -70,7 +76,7 @@ import { userIsAtLeast, USER_TYPE_ADMINISTRATOR, USER_TYPE_DATA_CURATOR } from '
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { Pages } from '@/mixins/pages'
 
-import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiSquareEditOutline } from '@mdi/js'
+import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiSquareEditOutline, mdiHelpCircle } from '@mdi/js'
 
 export default {
   name: 'TraitTable',
@@ -90,6 +96,7 @@ export default {
       mdiGreaterThanOrEqual,
       mdiLessThanOrEqual,
       mdiSquareEditOutline,
+      mdiHelpCircle,
       options: {
         idColumn: 'traitId',
         tableName: 'traits'
@@ -147,6 +154,16 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnTraitCategoryName')
+        }, {
+          key: 'traitSetSize',
+          type: Number,
+          sortable: true,
+          label: this.$t('tableColumnTraitSetSize')
+        }, {
+          key: 'traitIsTimeseries',
+          type: Boolean,
+          sortable: true,
+          label: this.$t('tableColumnTraitIsTimeseries')
         }, {
           key: 'unitName',
           type: String,
