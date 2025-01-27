@@ -295,6 +295,11 @@ export default {
           name: 'European Union',
           href: 'https://europa.eu/',
           logo: 'funders/eu.svg'
+        },
+        {
+          name: 'Department for Environment, Food and Rural Affairs',
+          href: 'https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs',
+          logo: 'funders/defra.svg'
         }
       ]
     }

@@ -136,6 +136,9 @@ We are very grateful for the funding Germinate has received over the years. Belo
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/eu.svg?sanitize=true" width="222px" alt="EU">
       </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/defra.svg?sanitize=true" width="222px" alt="Department for Environment, Food and Rural Affairs">
+      </td>
     </tr>
   </tbody>
 </table>
