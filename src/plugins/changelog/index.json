@@ -1,5 +1,71 @@
 [
   {
+    "version": "4.8.0",
+    "date": "2025-01-29",
+    "items": [
+      {
+        "type": "new",
+        "title": "Project support",
+        "text": "Germinate now supports projects. These introduce another level of data grouping above experiments. When projects are selected via the web interface, Germinate will only show data related to the selected projects.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Radar, bubble and heatmap charts",
+        "text": "For categorical trait data, we've added radar, bubble and heatmap charts to visualize the data for a selection of germplasm entries against a subset of the traits.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Institution datasets information",
+        "text": "The data statistics page now contains a table that breaks lists the number of datasets per data type for each institution to show their contribution to the overall database.",
+        "categories": [
+          "user",
+          "admin"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "WYSIWYG editor",
+        "text": "Added a 'what you see is what you get' (WYSIWYG) editor to the home and about page so that administrators can edit the page content through the web interface.",
+        "categories": [
+          "admin"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Trait enhancements",
+        "text": "Added trait reference image functionality as well as information about trait set size (how many measurements per subject) and timeseries flag to traits.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "update",
+        "title": "Dependency update",
+        "text": "Updated to Java 21 LTS, Node 22 LTS and Gradle 8.8.",
+        "categories": [
+          "admin"
+        ]
+      },
+      {
+        "type": "bugfix",
+        "title": "Various bugfixes",
+        "text": "Fixed various issues across the board but including data import, dataset editing and trait data export.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      }
+    ]
+  },
+  {
     "version": "4.7.4",
     "date": "2024-06-24",
     "items": [

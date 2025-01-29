@@ -64,10 +64,15 @@
               label-for="name">
               <b-form-input id="name" name="name" autocomplete="name" @blur="validateForm" :state="formState.userFullName" v-model="user.userFullName" type="text" trim required />
             </b-form-group>
+
+            <h3>{{ $t('formLabelInstitution') }}</h3>
+            <b-form-group :label="$t('formLabelInstitutionSearch')" :description="$t('formDescriptionInstitutionSearch')" label-for="search-term">
+              <b-form-input v-model="searchTerm" id="search-term" type="search" />
+            </b-form-group>
             <b-form-group
               :label="$t('formLabelInstitution')"
               label-for="institution">
-              <b-form-select id="institution" v-model="selectedInstitution" @blur="validateForm" :state="formState.userInstitution" :options="institutions" trim required />
+              <b-form-select id="institution" v-model="selectedInstitution" @blur="validateForm" :state="formState.userInstitution" :options="filteredInstitutions" trim required />
               <a href="#" @click.prevent.stop slot="description" v-b-modal.institutionModal>{{ $t('widgetRegisterInstitutionText') }}</a>
             </b-form-group>
           </template>
@@ -120,6 +125,7 @@ export default {
   data: function () {
     return {
       mdiHelpCircle,
+      searchTerm: null,
       currentStep: 0,
       errorMessage: null,
       registrationSteps: [{
@@ -159,6 +165,30 @@ export default {
     ...mapGetters([
       'storeLocale'
     ]),
+    filteredInstitutions: function () {
+      if (this.institutions) {
+        return this.institutions.filter(i => {
+          if (this.searchTerm && (this.searchTerm !== '')) {
+            const trimmed = this.searchTerm.trim()
+            const lower = trimmed.toLowerCase()
+            // Check if the name matches
+            if (i.value.name.toLowerCase().includes(lower)) {
+              return true
+            }
+
+            if (i.value.acronym && i.value.acronym.toLowerCase().includes(lower)) {
+              return true
+            }
+
+            return false
+          } else {
+            return true
+          }
+        })
+      } else {
+        return []
+      }
+    },
     canGoNext: function () {
       switch (this.currentStep) {
         case 0:
@@ -178,6 +208,17 @@ export default {
       }
 
       return false
+    }
+  },
+  watch: {
+    filteredInstitutions: function (newValue) {
+      if (!this.selectedInstitution) {
+        if (newValue && newValue.length === 1) {
+          this.$nextTick(() => {
+            this.selectedInstitution = newValue[0].value
+          })
+        }
+      }
     }
   },
   components: {
@@ -324,6 +365,8 @@ export default {
     // Get all existing institutions
     apiGetGatekeeperInstitutions(query, result => {
       if (result && result.data) {
+        result.data.sort((a, b) => a.name.localeCompare(b.name))
+
         const tempInst = []
 
         result.data.forEach(i => tempInst.push({
@@ -333,9 +376,9 @@ export default {
 
         this.institutions = tempInst
 
-        if (this.institutions.length > 0) {
-          this.selectedInstitution = this.institutions[0].value
-        }
+        // if (this.institutions.length > 0) {
+        //   this.selectedInstitution = this.institutions[0].value
+        // }
       }
     }, {
       codes: [503],
