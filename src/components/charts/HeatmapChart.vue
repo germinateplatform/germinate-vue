@@ -99,7 +99,7 @@ export default {
 
         if (this.stats && this.stats.length > 0) {
           this.stats.forEach(st => {
-            z.push(st.values)
+            z.unshift(st.values)
             y.unshift(st.displayName)
             customdata.unshift(st.values.map(_ => ''))
           })
