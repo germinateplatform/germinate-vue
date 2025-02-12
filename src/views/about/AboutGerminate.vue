@@ -252,9 +252,9 @@ export default {
           logo: 'funders/sefari.svg'
         },
         {
-          name: 'James Hutton Limited',
-          href: 'https://huttonltd.com/',
-          logo: 'funders/huttonltd.svg'
+          name: 'James Hutton Institute Scientific Services',
+          href: 'https://www.hutton.ac.uk/scientific-services/',
+          logo: 'funders/jhiss.svg'
         },
         {
           name: 'UKRI Innovate UK',
