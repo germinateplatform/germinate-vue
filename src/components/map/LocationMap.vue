@@ -50,18 +50,20 @@
         <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
         <dd class="col-8 location-name">
           <template v-if="showLinks">
-            <span v-if="location.locationType === 'datasets'">{{ location.locationName }}</span>
+            <span v-if="location.locationType === 'datasets' || !location.locationId">{{ location.locationName }}</span>
             <router-link :to="{ name: Pages.germplasm }" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
             <span v-else>{{ location.locationName }}</span>
           </template>
           <span v-else v-html="location.locationName" />
         </dd>
         <template v-if="location.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8">
-          <MdiIcon :path="locationTypes[location.locationType].path" :style="`color: ${locationTypes[location.locationType].color()};`" /> {{ this.locationTypes[location.locationType].text() }}</dd></template>
+          <span :style="`color: ${locationTypes[location.locationType].color()};`"><MdiIcon :path="locationTypes[location.locationType].path" /></span> {{ this.locationTypes[location.locationType].text() }}</dd></template>
         <template v-if="location.countryCode2 || location.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'fi fi-' + getFlag(location)" /> {{ getCountry(location) }}</dd></template>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLatitude') }}</dt><dd class="col-8">{{ location.locationLatitude.toFixed(2) }}</dd>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLongitude') }}</dt><dd class="col-8">{{ location.locationLongitude.toFixed(2) }}</dd>
         <template v-if="location.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ location.locationElevation.toFixed(2) }}</dd></template>
+
+        <template v-if="location.additionalInfo"><dt class="col-4 text-right">{{ $t('tableColumnLocationAdditionalInformation') }}</dt><dd class="col-8">{{ location.additionalInfo }}</dd></template>
 
         <div v-if="isEditMode && location.locationId === -1" class="px-3">
           <b-button-group>
@@ -440,6 +442,19 @@ export default {
 
             // this.$refs.gradient.refresh()
           }
+        } else {
+          this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
+            .forEach(l => {
+              const marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
+              marker.on('click', e => {
+                const popup = e.target.getPopup()
+                this.location = l
+                // Set the popup content on click
+                this.$nextTick(() => popup.setContent(this.$refs.popupContent))
+              })
+              marker.addTo(map)
+              this.markers.push(marker)
+            })
         }
       }
 

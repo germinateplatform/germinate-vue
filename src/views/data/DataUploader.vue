@@ -73,6 +73,13 @@
         </b-form-group>
       </div>
 
+      <div v-if="xlsxLocations && xlsxLocations.length > 0">
+        <hr />
+        <h4>{{ $t('pageDataUploadLocationTitle') }}</h4>
+        <p class="text-warning">{{ $t('pageDataUploadLocationText') }}</p>
+        <LocationMap :locations="xlsxLocations" :mapType="null" />
+      </div>
+
       <!-- Submit -->
       <b-button variant="success" :disabled="submitDisabled" class="mt-3" @click="onSubmit"><MdiIcon :path="mdiUpload" /> {{ $t('pageDataUploadCheckFileButton') }}</b-button>
     </template>
@@ -82,6 +89,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
+import LocationMap from '@/components/map/LocationMap'
 import { apiPostDataUpload } from '@/mixins/api/misc.js'
 import { templateImportTypes, datasetStates } from '@/mixins/types.js'
 import { hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors.js'
@@ -91,11 +99,14 @@ import { Pages } from '@/mixins/pages'
 import { apiPostDatasetTable } from '@/mixins/api/dataset'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 
+import { read, utils } from 'xlsx'
+
 const emitter = require('tiny-emitter/instance')
 
 export default {
   components: {
-    MdiIcon
+    MdiIcon,
+    LocationMap
   },
   data: function () {
     return {
@@ -111,6 +122,7 @@ export default {
       dataOrientation: 'GENOTYPE_GERMPLASM_BY_MARKER',
       templateType: null,
       datasetStateId: 1,
+      xlsxLocations: null,
       updateOptions: [
         { text: this.$t('pageDataUploadUpdateOptionInsert'), value: false },
         { text: this.$t('pageDataUploadUpdateOptionUpdate'), value: true }
@@ -160,9 +172,124 @@ export default {
       this.datasetStateId = 1
       // Update the URL
       window.history.replaceState({}, null, this.$router.resolve({ name: Pages.importUploadType, params: { templateType: newValue } }).href)
+    },
+    file: async function (newValue) {
+      if (newValue) {
+        // Depending on the template type, read the location information from the spreadsheet and convert it into Germinate locations
+        // to be able to plot them on a map as a preview.
+        if (this.templateType === 'mcpd') {
+          const fileBuffer = await newValue.arrayBuffer()
+          const data = read(fileBuffer, { type: 'array', cellDates: false })
+
+          // Parse Excel file to JSON
+          const parsed = utils.sheet_to_json(data.Sheets.DATA)
+
+          this.xlsxLocations = parsed.map((g, i) => {
+            const lat = g.DECLATITUDE || this.dmsToDecimal(g.LATITUDE)
+            const lng = g.DECLONGITUDE || this.dmsToDecimal(g.LONGITUDE)
+
+            if (lat && lng) {
+              return {
+                locationLatitude: lat,
+                locationLongitude: lng,
+                locationType: 'collectingsites',
+                additionalInfo: this.$t('widgetLocationMapInputRow', { row: i + 1 }),
+                locationName: g.ACCENUMB
+              }
+            } else {
+              return null
+            }
+          }).filter(g => g)
+        } else if (this.templateType === 'trial') {
+          const fileBuffer = await newValue.arrayBuffer()
+          const data = read(fileBuffer, { type: 'array', cellDates: false })
+
+          // Parse Excel file to JSON
+          let parsed = utils.sheet_to_json(data.Sheets.DATA)
+
+          const plots = parsed.map((g, i) => {
+            const lat = g.Latitude
+            const lng = g.Longitude
+
+            if (lat && lng) {
+              return {
+                locationLatitude: lat,
+                locationLongitude: lng,
+                locationType: 'trialsite',
+                additionalInfo: this.$t('widgetLocationMapInputRow', { row: i + 1 }),
+                locationName: g['Line/Phenotype']
+              }
+            } else {
+              return null
+            }
+          }).filter(g => g)
+
+          parsed = utils.sheet_to_json(data.Sheets.LOCATION)
+
+          const locations = parsed.map((g, i) => {
+            const lat = g.Latitude
+            const lng = g.Longitude
+
+            if (lat && lng) {
+              return {
+                locationLatitude: lat,
+                locationLongitude: lng,
+                locationType: 'datasets',
+                additionalInfo: this.$t('widgetLocationMapInputRow', { row: i + 1 }),
+                locationName: g.Name
+              }
+            } else {
+              return null
+            }
+          }).filter(g => g)
+
+          this.xlsxLocations = plots.concat(locations)
+        } else if (this.templateType === 'climate') {
+          const fileBuffer = await newValue.arrayBuffer()
+          const data = read(fileBuffer, { type: 'array', cellDates: false })
+
+          const parsed = utils.sheet_to_json(data.Sheets.LOCATION)
+
+          this.xlsxLocations = parsed.map((g, i) => {
+            const lat = g.Latitude
+            const lng = g.Longitude
+
+            if (lat && lng) {
+              return {
+                locationLatitude: lat,
+                locationLongitude: lng,
+                locationType: 'datasets',
+                additionalInfo: this.$t('widgetLocationMapInputRow', { row: i + 1 }),
+                locationName: g.Name
+              }
+            } else {
+              return null
+            }
+          }).filter(g => g)
+        }
+      } else {
+        this.xlsxLocations = null
+      }
     }
   },
   methods: {
+    dmsToDecimal: function (value) {
+      if (value && (value.length === 7 || value.length === 8)) {
+        const l = value.length === 7
+
+        const degree = l ? +value.substring(0, 2) : +value.substring(0, 3)
+        const minute = l ? +value.substring(2, 4) : +value.substring(3, 5)
+        const second = l ? +value.substring(4, 6) : +value.substring(5, 7)
+
+        let decimal = degree + minute / 60.0 + second / 3600.0
+
+        if (value.endsWith('S') || value.endsWith('W')) {
+          decimal = -decimal
+        }
+
+        return decimal
+      }
+    },
     getBrighterColor: function (color) {
       return rgbColorToHex(brighten(hexToRgb(color)))
     },
