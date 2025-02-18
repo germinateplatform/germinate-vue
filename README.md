@@ -92,30 +92,33 @@ We are very grateful for the funding Germinate has received over the years. Belo
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/uod.svg?sanitize=true" width="222px" alt="University of Dundee">
       </td>
       <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/ukri.svg?sanitize=true" width="222px" alt="UK Research and Innovation">
+      </td>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/innovate-uk.svg?sanitize=true" width="222px" alt="Innovate UK">
+      </td>
+      <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/bbsrc.svg?sanitize=true" width="222px" alt="BBSRC">
-      </td>
-      <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/resas.svg?sanitize=true" width="222px" alt="RESAS">
-      </td>
-      <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/scottish-government.svg?sanitize=true" width="222px" alt="Scottish Government">
       </td>
     </tr>
     <tr>
       <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/scottish-government.svg?sanitize=true" width="222px" alt="Scottish Government">
+      </td>
+      <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/sefari.svg?sanitize=true" width="222px" alt="SEFARI">
       </td>
       <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/huttonltd.svg?sanitize=true" width="222px" alt="James Hutton Limited">
-      </td>
-      <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/innovate-uk.svg?sanitize=true" width="222px" alt="Innovate UK">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/jhiss.svg?sanitize=true" width="222px" alt="James Hutton Limited">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/ibh.svg?sanitize=true" width="222px" alt="International Barley Hub">
       </td>    
     </tr>
     <tr>
+      <td align="center" valign="middle">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/resas.svg?sanitize=true" width="222px" alt="RESAS">
+      </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/crp-maize.svg?sanitize=true" width="222px" alt="CRP Maize">
       </td>
@@ -125,11 +128,11 @@ We are very grateful for the funding Germinate has received over the years. Belo
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/iwyp.svg?sanitize=true" width="222px" alt="IWYP">
       </td>
+    </tr>
+    <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/sader.svg?sanitize=true" width="222px" alt="SADER">
       </td>
-    </tr>
-    <tr>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/divseek.png" width="222px" alt="DivSeek">
       </td>

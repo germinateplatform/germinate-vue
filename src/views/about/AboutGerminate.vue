@@ -232,9 +232,19 @@ export default {
           logo: 'funders/uod.svg'
         },
         {
+          name: 'UK Research and Innovation',
+          href: 'https://www.ukri.org/',
+          logo: 'funders/ukri.svg'
+        },
+        {
           name: 'Biotechnology and Biological Sciences Research Council',
           href: 'https://bbsrc.ukri.org/',
           logo: 'funders/bbsrc.svg'
+        },
+        {
+          name: 'UKRI Innovate UK',
+          href: 'https://www.gov.uk/government/organisations/innovate-uk',
+          logo: 'funders/innovate-uk.svg'
         },
         {
           name: 'Rural & Environment Science & Analytical Services',
@@ -255,11 +265,6 @@ export default {
           name: 'James Hutton Institute Scientific Services',
           href: 'https://www.hutton.ac.uk/scientific-services/',
           logo: 'funders/jhiss.svg'
-        },
-        {
-          name: 'UKRI Innovate UK',
-          href: 'https://www.gov.uk/government/organisations/innovate-uk',
-          logo: 'funders/innovate-uk.svg'
         },
         {
           name: 'International Barley Hub',

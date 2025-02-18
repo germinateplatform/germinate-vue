@@ -33,11 +33,7 @@ export default {
   },
   computed: {
     downloadFunction: function () {
-      if (this.download) {
-        return this.download
-      } else {
-        return this.downloadTable
-      }
+      return this.download || this.downloadTable
     }
   },
   methods: {
