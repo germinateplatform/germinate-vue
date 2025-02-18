@@ -1158,6 +1158,7 @@
   "tableColumnDatasetStartDate": "Start date",
   "tableColumnDatasetState": "State",
   "tableColumnDatasetHyperlink": "External link",
+  "tableColumnDatasetCreatedOn": "Uploaded on",
   "tableColumnElevation": "Elevation [m]",
   "tableColumnEntityChildHeader": "Derived material",
   "tableColumnEntityChildGid": "Derived material GID",

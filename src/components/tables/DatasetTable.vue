@@ -383,6 +383,12 @@ export default {
           label: this.$t('tableColumnDatasetEndDate'),
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
+          key: 'createdOn',
+          type: Date,
+          sortable: true,
+          label: this.$t('tableColumnDatasetCreatedOn'),
+          formatter: value => value ? new Date(value).toLocaleDateString() : null
+        }, {
           key: 'dataObjectCount',
           type: Number,
           sortable: true,
