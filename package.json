@@ -54,7 +54,7 @@
     "vuex": "~3.6.2",
     "vuex-persistedstate": "~4.1.0",
     "zxcvbn": "~4.4.2",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    "xlsx": "./lib/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@babel/core": "~7.12.16",
