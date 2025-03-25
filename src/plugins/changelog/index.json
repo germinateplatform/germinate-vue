@@ -1,5 +1,29 @@
 [
   {
+    "version": "4.8.4",
+    "date": "2025-03-25",
+    "items": [
+      {
+        "type": "update",
+        "title": "Climate data visualization",
+        "text": "Added more support for data visualizations for different data types of climate/environmental data.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "bugfix",
+        "title": "Climate data import",
+        "text": "Fixed an issue with the climate data import for non-numeric values.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      }
+    ]
+  },
+  {
     "version": "4.8.3",
     "date": "2025-03-05",
     "items": [

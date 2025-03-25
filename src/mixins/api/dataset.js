@@ -66,6 +66,8 @@ const apiPostTraitStats = (statsType, queryData, onSuccess, onError) => authAxio
 
 const apiPostTraitStatsCategorical = (queryData, onSuccess, onError) => authAxios({ url: 'dataset/categorical/trial', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
+const apiPostClimateStatsCategorical = (queryData, onSuccess, onError) => authAxios({ url: 'dataset/categorical/climate', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+
 const apiPostLicenseTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
   return authAxios({ url: 'license/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -131,6 +133,7 @@ export {
   apiPostDatasetAttributeTable,
   apiPostTraitStats,
   apiPostTraitStatsCategorical,
+  apiPostClimateStatsCategorical,
   apiPutExperiment,
   apiPatchExperiment,
   apiDeleteDataset,

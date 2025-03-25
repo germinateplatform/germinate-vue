@@ -17,8 +17,18 @@
 
         <h2>{{ $t('pageClimateDetailsStatsTitle') }}</h2>
         <p>{{ $t('pageClimateDetailsStatsText') }}</p>
+        <BarChart xColumn="climate_value"
+                  :xTitle="climate.climateName"
+                  :yTitle="$t('genericCount')"
+                  :height="700"
+                  :downloadName="climate.climateName"
+                  :sourceFile="categoricalClimateFile"
+                  v-on:bar-clicked="climateValueClicked"
+                  ref="climateCategoryChart"
+                  v-if="climate.dataType !== 'numeric'"/>
+
         <!-- Box plot for this climate -->
-        <ClimateBoxplotChart :climateIds="[climateId]" ref="climateDetailsChart" />
+        <ClimateBoxplotChart :climateIds="[climateId]" ref="climateDetailsChart" v-else />
         <!-- Table showing datasets containing this climate -->
         <DatasetTable :getData="getDatasetData" ref="datasetTable" />
 
@@ -33,11 +43,13 @@
 </template>
 
 <script>
+import BarChart from '@/components/charts/BarChart'
 import DatasetsWithUnacceptedLicense from '@/components/util/DatasetsWithUnacceptedLicense'
 import ClimateBoxplotChart from '@/components/charts/ClimateBoxplotChart'
 import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import DatasetTable from '@/components/tables/DatasetTable'
 import { apiPostClimateTable, apiPostClimateDataTable, apiPostClimateDataTableIds, apiPostClimateDatasetTable } from '@/mixins/api/climate.js'
+import { apiPostClimateStatsCategorical } from '@/mixins/api/dataset'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -47,14 +59,16 @@ export default {
       climateId: null,
       climate: undefined,
       tableFilter: null,
-      showAdditionalDatasets: true
+      showAdditionalDatasets: true,
+      categoricalClimateFile: null
     }
   },
   components: {
     DatasetTable,
     DatasetsWithUnacceptedLicense,
     ClimateBoxplotChart,
-    ClimateDataTable
+    ClimateDataTable,
+    BarChart
   },
   methods: {
     getDatasetData: function (data, callback) {
@@ -71,9 +85,53 @@ export default {
     },
     update: function () {
       this.$refs.climateDetailsTable.refresh()
-      this.$refs.climateDetailsChart.redraw()
+      this.$refs.datasetTable.refresh()
+
+      if (this.$refs.traitDetailsChart) {
+        this.$refs.climateDetailsChart.redraw()
+      } else if (this.$refs.traitCategoryChart) {
+        this.updateCategoryChart()
+      }
 
       this.checkNumbers()
+    },
+    climateValueClicked: function (value) {
+      this.tableFilter = [{
+        column: {
+          name: 'climateId',
+          type: Number
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [this.climateId],
+        canBeChanged: false
+      }, {
+        column: {
+          name: 'climateValue',
+          type: String
+        },
+        comparator: 'equals',
+        operator: 'and',
+        values: [value]
+      }]
+
+      this.$nextTick(() => this.$refs.climateDetailsTable.refresh())
+    },
+    updateCategoryChart: function () {
+      const query = {
+        datasetIds: null,
+        xIds: [this.climateId]
+      }
+
+      apiPostClimateStatsCategorical(query, result => {
+        this.categoricalClimateFile = result
+      }, {
+        codes: [404],
+        callback: () => {
+          // Do nothing here, it just means there is no data.
+          this.categoricalClimateFile = null
+        }
+      })
     }
   },
   mounted: function () {
@@ -104,6 +162,10 @@ export default {
       apiPostClimateTable(request, result => {
         if (result && result.data && result.data.length > 0) {
           this.climate = result.data[0]
+
+          if (this.climate.dataType !== 'numeric') {
+            this.updateCategoryChart()
+          }
         } else {
           this.climate = null
         }

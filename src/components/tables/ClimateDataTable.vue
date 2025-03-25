@@ -13,6 +13,14 @@
     <template v-slot:cell(locationType)="data">
       <span><span :style="`color: ${locationTypes[data.item.locationType].color()};`"><MdiIcon :path="locationTypes[data.item.locationType].path"/></span> {{ locationTypes[data.item.locationType].text() }}</span>
     </template>
+
+    <template v-slot:cell(climateValue)="data">
+      <span v-if="data.item.climateValue !== undefined && data.item.climateValue !== null">
+        <template v-if="data.item.climateDataType === 'numeric'">{{ (+data.item.climateValue).toFixed(2) }}</template>
+        <template v-else-if="data.item.climateDataType === 'date'">{{ new Date(data.item.climateValue).toLocaleDateString() }}</template>
+        <template v-else>{{ data.item.climateValue }}</template>
+      </span>
+    </template>
   </BaseTable>
 </template>
 
@@ -115,10 +123,9 @@ export default {
           formatter: value => value ? new Date(value).toLocaleDateString() : null
         }, {
           key: 'climateValue',
-          type: Number,
+          type: String,
           sortable: true,
-          label: this.$t('tableColumnClimateDataClimateValue'),
-          formatter: value => value !== null ? value.toFixed(2) : null
+          label: this.$t('tableColumnClimateDataClimateValue')
         }, {
           key: 'marked',
           type: null,
