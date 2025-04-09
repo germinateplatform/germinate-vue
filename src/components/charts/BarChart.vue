@@ -56,6 +56,10 @@ export default {
       type: Array,
       default: () => null
     },
+    groupBy: {
+      type: String,
+      default: null
+    },
     downloadName: {
       type: String,
       default: 'bar-chart'
@@ -131,9 +135,11 @@ export default {
                 .height(this.height)
                 .colors(getColors())
                 .x(this.xColumn)
+                .columnsToIgnore(['genus'])
                 .xCategory(this.xTitle)
                 .yCategory(this.yTitle)
                 .xLabels(this.xLabels)
+                .groupBy(this.groupBy)
                 .mode(this.mode)
                 .onPointClicked(data => {
                   this.$emit('bar-clicked', data)

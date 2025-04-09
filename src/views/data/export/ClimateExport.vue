@@ -33,14 +33,29 @@
         <b-col class="d-none d-xl-block" sm=1 v-if="tabs.length === 5"/>
       </b-row>
       <!-- Boxplot section -->
-      <BoxplotSelection :datasetIds="datasetIds"
+      <div v-show="currentTab === 'overview'">
+        <BoxplotSelection :datasetIds="datasetIds"
                         v-bind="config"
                         :groups="groups"
                         xType="climates"
                         datasetType="climate"
                         :texts="textsChart"
                         :getItems="getClimates"
-                        v-show="currentTab === 'overview'" />
+                        v-on:plot-clicked="updateCategoricalClimateCharts" />
+
+        <div class="mb-3" v-for="(climate, i) in categoricalClimatesSelected" :key="`climate-bar-chart-${i}`">
+          <h3>{{ climate.climateName }}</h3>
+          <BarChart xColumn="climate_value"
+            :xTitle="climate.climateName"
+            :yTitle="$t('genericCount')"
+            :xLabels="null"
+            :height="400"
+            :downloadName="climate.climateName"
+            :sourceFile="categoricalClimateFiles[climate.climateId]"
+            v-if="categoricalClimateFiles[climate.climateId]"/>
+        </div>
+      </div>
+
       <!-- Climate matrix chart section -->
       <ClimateExportChartSelection :datasetIds="datasetIds"
                                    v-bind="config"
@@ -67,6 +82,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import MdiIcon from '@/components/icons/MdiIcon'
+import BarChart from '@/components/charts/BarChart'
 import BoxplotSelection from '@/components/export/BoxplotSelection'
 import ClimateDataTable from '@/components/tables/ClimateDataTable'
 import ClimateExportChartSelection from '@/components/export/ClimateExportChartSelection'
@@ -74,13 +90,14 @@ import LocationMap from '@/components/map/LocationMap'
 import DatasetOverview from '@/components/export/DatasetOverview'
 import ExportDownloadSelection from '@/components/export/ExportDownloadSelection'
 import { apiPostDatasetClimates, apiPostClimateDataTable, apiPostClimateDataTableIds } from '@/mixins/api/climate.js'
-import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
+import { apiPostClimateStatsCategorical, apiPostDatasetTable } from '@/mixins/api/dataset.js'
 import { apiPostDatasetGroups } from '@/mixins/api/group.js'
 import { apiPostTableExport } from '@/mixins/api/misc.js'
 import { getTemplateColor, hexToRgb, rgbColorToHex, brighten } from '@/mixins/colors.js'
 
 import { mdiArrowRightBoldCircle, mdiFileDownloadOutline, mdiEye, mdiHelpCircle, mdiGrid, mdiMapPlus, mdiTableSearch } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
+import Vue from 'vue'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -90,6 +107,8 @@ export default {
       mdiArrowRightBoldCircle,
       mdiHelpCircle,
       datasetIds: [],
+      categoricalClimatesSelected: [],
+      categoricalClimateFiles: {},
       datasets: null,
       climates: null,
       groups: null,
@@ -174,10 +193,27 @@ export default {
     LocationMap,
     DatasetOverview,
     ExportDownloadSelection,
-    MdiIcon
+    MdiIcon,
+    BarChart
   },
   methods: {
     getTemplateColor,
+    updateCategoricalClimateCharts: function (query, selectedClimates) {
+      this.categoricalClimatesSelected = selectedClimates.filter(t => t.dataType !== 'numeric')
+      this.categoricalClimateFiles = {}
+      this.categoricalClimatesSelected.forEach(c => {
+        const data = {
+          datasetIds: this.datasetIds,
+          xIds: [c.climateId],
+          yIds: query.yIds,
+          yGroupIds: query.yGroupIds
+        }
+
+        apiPostClimateStatsCategorical(data, result => {
+          Vue.set(this.categoricalClimateFiles, c.climateId, result)
+        })
+      })
+    },
     updateGroups: function () {
       const request = {
         datasetIds: this.datasetIds,

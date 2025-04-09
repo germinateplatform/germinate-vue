@@ -4,30 +4,59 @@ export function plotlyBarChart (Plotly) {
   let xCategory = ''
   let yCategory = ''
   let xLabels = null
+  let groupBy = null
   let darkMode = false
   let onPointClicked = null
   let mode = 'traces'
   let x = ''
+  let columnsToIgnore = []
   let colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
 
   function chart (selection) {
     selection.each(function (rows) {
       let dims = Object.keys(rows[0])
-      dims = dims.filter(d => d !== x)
+      dims = dims.filter(d => d !== x && !columnsToIgnore.includes(d))
 
       const data = []
+      let xValues = null
 
-      const xValues = unpack(rows, x)
-      for (let i = 0; i < dims.length; i++) {
-        data.push({
-          x: xValues,
-          y: unpack(rows, dims[i]),
-          name: dims[i],
-          type: 'bar',
-          marker: {
-            color: mode === 'traces' ? colors[i % colors.length] : colors
+      if (groupBy) {
+        const set = new Set(unpack(rows, x))
+        xValues = [...set]
+
+        const groupBySet = new Set(unpack(rows, groupBy))
+        const groupByValues = [...groupBySet]
+
+        if (groupByValues.length < 2) {
+          xValues = null
+        } else {
+          for (let i = 0; i < groupByValues.length; i++) {
+            data.push({
+              x: xValues,
+              y: unpackConditional(rows, dims[0], groupBy, groupByValues[i]),
+              name: groupByValues[i],
+              type: 'bar',
+              marker: {
+                color: mode === 'traces' ? colors[i % colors.length] : colors
+              }
+            })
           }
-        })
+        }
+      }
+
+      if (!xValues) {
+        xValues = unpack(rows, x)
+        for (let i = 0; i < dims.length; i++) {
+          data.push({
+            x: xValues,
+            y: unpack(rows, dims[i]),
+            name: dims[i],
+            type: 'bar',
+            marker: {
+              color: mode === 'traces' ? colors[i % colors.length] : colors
+            }
+          })
+        }
       }
 
       const config = {
@@ -81,8 +110,14 @@ export function plotlyBarChart (Plotly) {
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h',
+          x: 0,
+          y: 1.1,
           font: { color: darkMode ? 'white' : 'black' }
         }
+      }
+
+      if (groupBy) {
+        layout.barmode = 'group'
       }
 
       // Plotly.purge(this)
@@ -106,6 +141,10 @@ export function plotlyBarChart (Plotly) {
     return rows.map(row => row[key])
   }
 
+  function unpackConditional (rows, key, referenceColumn, referenceValue) {
+    return rows.filter(row => row[referenceColumn] === referenceValue).map(row => row[key])
+  }
+
   chart.x = (_) => {
     if (!arguments.length) {
       return x
@@ -127,6 +166,14 @@ export function plotlyBarChart (Plotly) {
       return xCategory
     }
     xCategory = _
+    return chart
+  }
+
+  chart.groupBy = (_) => {
+    if (!arguments.length) {
+      return groupBy
+    }
+    groupBy = _
     return chart
   }
 
@@ -175,6 +222,14 @@ export function plotlyBarChart (Plotly) {
       return mode
     }
     mode = _
+    return chart
+  }
+
+  chart.columnsToIgnore = (_) => {
+    if (!arguments.length) {
+      return columnsToIgnore
+    }
+    columnsToIgnore = _
     return chart
   }
 

@@ -18,8 +18,13 @@
       <span v-if="data.item.climateValue !== undefined && data.item.climateValue !== null">
         <template v-if="data.item.climateDataType === 'numeric'">{{ (+data.item.climateValue).toFixed(2) }}</template>
         <template v-else-if="data.item.climateDataType === 'date'">{{ new Date(data.item.climateValue).toLocaleDateString() }}</template>
-        <template v-else>{{ data.item.climateValue }}</template>
+        <template v-else>{{ isNaN(data.item.climateValue) ? data.item.climateValue : parseFloat(data.item.climateValue).toFixed(2) }}</template>
       </span>
+    </template>
+
+    <!-- Trait data type icon -->
+    <template v-slot:cell(climateDataType)="data">
+      <span class="text-nowrap"><span :style="`color: ${dataTypes[data.item.climateDataType].color()};`"><MdiIcon :path="dataTypes[data.item.climateDataType].path" /></span> {{ dataTypes[data.item.climateDataType].text() }}</span>
     </template>
   </BaseTable>
 </template>
@@ -28,7 +33,7 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import { locationTypes } from '@/mixins/types.js'
+import { locationTypes, dataTypes } from '@/mixins/types.js'
 
 export default {
   name: 'LocationTable',
@@ -38,6 +43,7 @@ export default {
   data: function () {
     return {
       locationTypes,
+      dataTypes,
       options: {
         idColumn: 'locationId',
         tableName: 'climateData'
@@ -110,6 +116,11 @@ export default {
           sortable: true,
           label: this.$t('tableColumnClimateName'),
           preferredSortingColumn: true
+        }, {
+          key: 'climateDataType',
+          type: 'dataType',
+          sortable: true,
+          label: this.$t('tableColumnTraitDataType')
         }, {
           key: 'unitName',
           type: String,

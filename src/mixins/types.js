@@ -483,7 +483,7 @@ const datasetTypes = {
   climate: {
     id: 5,
     path: mdiWeatherSnowyRainy,
-    pageName: Pages.exportClimate,
+    pageName: Pages.exportClimates,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[1 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('datasetTypeClimate')
   },

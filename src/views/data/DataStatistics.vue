@@ -15,6 +15,7 @@
         <p>{{ $t('pageStatisticsBiologicalStatusText') }}</p>
         <!-- Biological status chart -->
         <BarChart xColumn="biologicalstatus"
+                  groupBy="genus"
                   :xTitle="$t('pageStatisticsBiologicalStatusXAxis')"
                   :yTitle="$t('genericCount')"
                   downloadName="biological-status"

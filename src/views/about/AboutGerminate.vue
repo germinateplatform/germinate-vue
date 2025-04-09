@@ -33,7 +33,7 @@
     <!-- Banner buttons -->
     <b-row class="about-banners" v-if="banners">
       <b-col cols=12 sm=6 xl=3 v-for="(banner, index) in banners" :key="'about-banners-' + banner.key" class="my-3">
-        <BannerCard :templateColorIndex="index" headingComponent="h5" :text-value="banner.text()" :link="banner.link" :iconPath="banner.path" />
+        <BannerCard :templateColorIndex="index" headingComponent="h5" :text-value="banner.text()" :isExternalLink="true" :link="banner.link" :iconPath="banner.path" />
       </b-col>
     </b-row>
     <!-- Text -->

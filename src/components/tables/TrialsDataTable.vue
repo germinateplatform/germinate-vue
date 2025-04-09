@@ -46,9 +46,18 @@
     <template v-slot:cell(countryName)="data">
       <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'fi fi-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
     </template>
+    <!-- Trait data type icon -->
+    <template v-slot:cell(traitDataType)="data">
+      <span class="text-nowrap"><span :style="`color: ${dataTypes[data.item.traitDataType].color()};`"><MdiIcon :path="dataTypes[data.item.traitDataType].path" /></span> {{ dataTypes[data.item.traitDataType].text() }}</span>
+    </template>
     <!-- Trait value -->
     <template v-slot:cell(traitValue)="data">
-      <span v-if="data.item.traitValue">{{ isNaN(data.item.traitValue) ? data.item.traitValue : parseFloat(data.item.traitValue).toFixed(2) }}</span>
+      <span v-if="data.item.traitValue !== undefined && data.item.traitValue !== null">
+        <template v-if="data.item.traitDataType === 'numeric'">{{ (+data.item.traitValue).toFixed(2) }}</template>
+        <template v-else-if="data.item.traitDataType === 'date'">{{ new Date(data.item.traitValue).toLocaleDateString() }}</template>
+        <template v-else-if="data.item.traitDataType === 'categorical'">{{ data.item.traitValue }}</template>
+        <template v-else>{{ isNaN(data.item.traitValue) ? data.item.traitValue : parseFloat(data.item.traitValue).toFixed(2) }}</template>
+      </span>
     </template>
   </BaseTable>
 </template>
@@ -57,7 +66,7 @@
 import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
-import { entityTypes } from '@/mixins/types.js'
+import { entityTypes, dataTypes } from '@/mixins/types.js'
 import { truncateAfterWords } from '@/mixins/formatting'
 import { Pages } from '@/mixins/pages'
 
@@ -74,6 +83,7 @@ export default {
     return {
       Pages,
       entityTypes,
+      dataTypes,
       tableShown: false,
       options: {
         idColumn: 'germplasmId',
@@ -157,6 +167,11 @@ export default {
           type: String,
           sortable: true,
           label: this.$t('tableColumnTraitName')
+        }, {
+          key: 'traitDataType',
+          type: 'dataType',
+          sortable: true,
+          label: this.$t('tableColumnTraitDataType')
         }, {
           key: 'treatment',
           type: String,

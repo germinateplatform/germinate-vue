@@ -10,7 +10,12 @@
           <MdiIcon :size="48" :path="iconPath" />
         </b-col>
       </b-row>
-      <router-link class="stretched-link" :disabled="isDisabled" :event="isDisabled ? '' : 'click'" :to="{ name: link, params: linkParams }" :title="`${title ? ($t(title) + ': ') : ''}${numericValue ? numericValue.toLocaleString() : textValue}`" v-if="numericValue || textValue" />
+      <template v-if="isExternalLink">
+        <a :href="link" class="stretched-link" target="_blank" rel="noopener noreferrer" />
+      </template>
+      <template v-else>
+        <router-link class="stretched-link" :disabled="isDisabled" :event="isDisabled ? '' : 'click'" :to="{ name: link, params: linkParams }" :title="`${title ? ($t(title) + ': ') : ''}${numericValue ? numericValue.toLocaleString() : textValue}`" v-if="numericValue || textValue" />
+      </template>
     </b-card-body>
   </b-card>
 </template>
@@ -41,6 +46,10 @@ export default {
     textValue: {
       type: String,
       default: null
+    },
+    isExternalLink: {
+      type: Boolean,
+      default: false
     },
     link: {
       type: String,
