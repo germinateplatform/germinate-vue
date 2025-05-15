@@ -20,7 +20,7 @@
       <!-- Download -->
       <template v-slot:cell(fileresourceSize)="data">
         <div class="d-flex flex-column justify-content-center align-items-center">
-          <b-button class="text-nowrap" variant="primary" @click="downloadFileresource(data.item)"><MdiIcon :path="mdiDownload"/> {{ $t('buttonDownload') }}</b-button>
+          <b-button class="text-nowrap" variant="primary" :href="getFileResourceUrl(data.item)"><MdiIcon :path="mdiDownload"/> {{ $t('buttonDownload') }}</b-button>
           <small>({{ getNumberWithSuffix(data.item.fileresourceSize, 2, 1024, ' ') }})</small>
         </div>
       </template>
@@ -76,7 +76,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'storeToken'
+      'storeToken',
+      'storeBaseUrl'
     ]),
     columns: function () {
       const result = [
@@ -149,6 +150,9 @@ export default {
     isTruncatedAfterWords,
     truncateAfterWords,
     getNumberWithSuffix,
+    getFileResourceUrl: function (fileresource) {
+      return `${this.storeBaseUrl}fileresource/${fileresource.fileresourceId}/download?token=${this.storeToken ? this.storeToken.token : null}`
+    },
     showDatasets: function (fileresource) {
       const filter = [{
         column: 'fileresourceIds',

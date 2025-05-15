@@ -37,6 +37,8 @@
       <b-col class="mb-3" :cols="radarCols.cols" :md="radarCols.md" :lg="radarCols.lg" v-for="(data, index) in radarChartDataArray" :key="`radar-chart-data-${index}`">
         <h3 v-if="individualCharts">{{ data[0].displayName }}</h3>
         <RadarChart :baseFilename="`radar-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" @rotated="e => updateRotation(index, e)" :ref="`radar-chart-${index}`" />
+
+        <ParallelCoordinatesChart :baseFilename="`parallel-coordinates-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" @rotated="e => updateRotation(index, e)" :ref="`radar-chart-${index}`" />
         <b-row>
           <b-col cols="12" lg="6">
             <BalloonChart :baseFilename="`balloon-chart-${datasetIds.join(',')}`" :plotData="data" :stats="plotDataStats" :ref="`baloon-chart-${index}`" />
@@ -53,6 +55,7 @@
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 import RadarChart from '@/components/charts/RadarChart'
+import ParallelCoordinatesChart from '@/components/charts/ParallelCoordinatesChart'
 import BalloonChart from '@/components/charts/BalloonChart'
 import HeatmapChart from '@/components/charts/HeatmapChart'
 import SearchableSelect from '@/components/util/SearchableSelect'
@@ -277,6 +280,7 @@ export default {
     SearchableSelect,
     TrialGermplasmLookup,
     RadarChart,
+    ParallelCoordinatesChart,
     BalloonChart,
     HeatmapChart
   },

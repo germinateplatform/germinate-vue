@@ -211,6 +211,7 @@
   "formLabelInstitutionAcronym": "Institution acronym",
   "formLabelInstitutionAddress": "Institution address",
   "formLabelInstitutionName": "Institution name",
+  "formLabelInstitutionSearch": "Search by name",
   "formLabelMapExportChromosomeSelection": "Select chromosomes to include in the export. Only markers on the selected chromosomes will be included in the output.",
   "formLabelMapExportDownloadText": "Would you like to subset the map before downloading it?",
   "formLabelMapExportIntervalFirstMarker": "First marker",

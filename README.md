@@ -76,7 +76,7 @@ We are very grateful for the funding Germinate has received over the years. Belo
     </tr>
     <tr>
       <td align="center" valign="middle">
-        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/norad.svg?sanitize=true" width="222px" alt="The Norwegian Agency for Development Coorperation">
+        <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/norway.svg?sanitize=true" width="222px" alt="Norway">
       </td>
       <td align="center" valign="middle">
         <img src="https://raw.githubusercontent.com/germinateplatform/germinate-vue/master/public/img/funders/norwegian-ministry-of-foreign-affairs.svg?sanitize=true" width="222px" alt="Norwegian Ministry of Foreign Affairs">

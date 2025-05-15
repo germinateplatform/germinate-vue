@@ -207,9 +207,9 @@ export default {
           logo: 'funders/cwr.svg'
         },
         {
-          name: 'The Norwegian Agency for Development Coorperation',
-          href: 'https://www.norad.no/en/',
-          logo: 'funders/norad.svg'
+          name: 'Norway',
+          href: 'https://www.norway.no/',
+          logo: 'funders/norway.svg'
         },
         {
           name: 'Norwegian Ministry of Foreign Affairs',
