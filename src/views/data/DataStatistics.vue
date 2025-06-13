@@ -2,27 +2,31 @@
   <div>
     <h1>{{ $t('pageStatisticsTitle') }}<small> - {{ $t('pageStatisticsSubtitle') }}</small></h1>
     <hr />
+    <h2>{{ $t('pageStatisticsTaxonomyTitle') }}</h2>
+    <p>{{ $t('pageStatisticsTaxonomyText') }}</p>
     <b-row>
       <b-col cols=12 sm=6>
-        <h2>{{ $t('pageStatisticsTaxonomyTitle') }}</h2>
-        <p>{{ $t('pageStatisticsTaxonomyText') }}</p>
-        <!-- Taxonomy sunburst chart -->
         <TaxonomySunburst />
-        <TaxonomySankey />
       </b-col>
       <b-col cols=12 sm=6>
-        <h2>{{ $t('pageStatisticsBiologicalStatusTitle') }}</h2>
-        <p>{{ $t('pageStatisticsBiologicalStatusText') }}</p>
-        <!-- Biological status chart -->
-        <BarChart xColumn="biologicalstatus"
-                  groupBy="genus"
-                  :xTitle="$t('pageStatisticsBiologicalStatusXAxis')"
-                  :yTitle="$t('genericCount')"
-                  downloadName="biological-status"
-                  :sourceFile="biologicalstatusFile"
-                  v-on:bar-clicked="biologicalStatusClicked" />
+        <TaxonomyTreemap />
+      </b-col>
+      <b-col cols=12 sm=6>
+        <TaxonomySankey />
       </b-col>
     </b-row>
+
+    <h2>{{ $t('pageStatisticsBiologicalStatusTitle') }}</h2>
+    <p>{{ $t('pageStatisticsBiologicalStatusText') }}</p>
+    <!-- Biological status chart -->
+    <BarChart xColumn="biologicalstatus"
+              groupBy="genus"
+              :xTitle="$t('pageStatisticsBiologicalStatusXAxis')"
+              :yTitle="$t('genericCount')"
+              downloadName="biological-status"
+              :sourceFile="biologicalstatusFile"
+              v-on:bar-clicked="biologicalStatusClicked" />
+
     <h2>{{ $t('pageStatisticsPdciTitle') }}</h2>
     <p v-html="$t('pagePassportPdciModal')" />
     <!-- PDCI chart -->
@@ -59,6 +63,7 @@
 import BarChart from '@/components/charts/BarChart'
 import ChoroplethChart from '@/components/charts/ChoroplethChart'
 import TaxonomySunburst from '@/components/charts/TaxonomySunburst'
+import TaxonomyTreemap from '@/components/charts/TaxonomyTreemap'
 import TaxonomySankey from '@/components/charts/TaxonomySankey'
 import InstitutionDatasetTable from '@/components/tables/InstitutionDatasetTable'
 import { apiGetStatsFile } from '@/mixins/api/stats'
@@ -79,6 +84,7 @@ export default {
     BarChart,
     ChoroplethChart,
     TaxonomySankey,
+    TaxonomyTreemap,
     TaxonomySunburst,
     InstitutionDatasetTable
   },

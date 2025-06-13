@@ -1,4 +1,4 @@
-import { BadgePlugin, ButtonGroupPlugin, FormFilePlugin, ButtonPlugin, CardPlugin, CarouselPlugin, FormCheckboxPlugin, FormDatepickerPlugin, FormGroupPlugin, FormInputPlugin, FormPlugin, FormRadioPlugin, FormSelectPlugin, FormTagsPlugin, FormTextareaPlugin, ImagePlugin, InputGroupPlugin, LayoutPlugin, ListGroupPlugin, ModalPlugin, NavbarPlugin, PaginationPlugin, PopoverPlugin, ProgressPlugin, SidebarPlugin, SpinnerPlugin, TablePlugin, TabsPlugin, TooltipPlugin, VBScrollspyPlugin, ToastPlugin, CalendarPlugin } from 'bootstrap-vue'
+import { BadgePlugin, ButtonGroupPlugin, FormFilePlugin, ButtonPlugin, CardPlugin, CarouselPlugin, FormCheckboxPlugin, FormDatepickerPlugin, FormGroupPlugin, FormInputPlugin, FormPlugin, FormRadioPlugin, FormSelectPlugin, FormTagsPlugin, FormTextareaPlugin, ImagePlugin, InputGroupPlugin, LayoutPlugin, ListGroupPlugin, ModalPlugin, NavbarPlugin, PaginationPlugin, PopoverPlugin, ProgressPlugin, SidebarPlugin, SpinnerPlugin, TablePlugin, TabsPlugin, TooltipPlugin, VBScrollspyPlugin, ToastPlugin, CalendarPlugin, AlertPlugin } from 'bootstrap-vue'
 
 import Vue from 'vue'
 import App from '@/App.vue'
@@ -42,6 +42,7 @@ Vue.use(TabsPlugin)
 Vue.use(TooltipPlugin)
 Vue.use(ToastPlugin)
 Vue.use(VBScrollspyPlugin)
+Vue.use(AlertPlugin)
 
 Vue.use(VueGtag, {
   bootstrap: false,

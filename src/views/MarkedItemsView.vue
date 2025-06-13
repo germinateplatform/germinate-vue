@@ -16,6 +16,10 @@
       <MarkerTable    v-show="itemTypeLocal === markedItemTypes.markers"   :getData="getMarkerData"    :getIds="getMarkerIds"    :downloadTable="downloadMarkers"   ref="markerTable" />
       <LocationTable  v-show="itemTypeLocal === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  :downloadTable="downloadLocations" ref="locationTable" />
 
+      <template v-if="itemTypeLocal === markedItemTypes.germplasm && genesysAvailable">
+        <b-button :to="pages.genesysRequest"><MdiIcon :path="genesysIcon" /> {{ $t('buttonGoToGenesysOrdering') }}</b-button>
+      </template>
+
       <template v-if="(itemTypeLocal === markedItemTypes.germplasm) && externalIdentifiers && (externalIdentifiers.length > 0)">
         <h3 class="mt-3">{{ $t('pageMarkedGermplasmExportTitle') }}</h3>
         <a :href="externalLink" v-if="externalLink">{{ $t('pageMarkedGermplasmExportText') }}</a> <MdiIcon :path="mdiOpenInNew" />
@@ -34,7 +38,8 @@ import MarkerTable from '@/components/tables/MarkerTable'
 import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostExternalLinkIdentifiers } from '@/mixins/api/germplasm'
 import { apiPostMarkerTable, apiPostMarkerTableIds } from '@/mixins/api/genotype'
 import { apiPostLocationTable, apiPostLocationTableIds } from '@/mixins/api/location'
-import { apiPostTableExport } from '@/mixins/api/misc'
+import { apiGetGenesysAvailable, apiPostTableExport } from '@/mixins/api/misc'
+import { genesysIcon } from '@/mixins/util'
 import { markedItemTypes } from '@/mixins/types'
 
 import { mdiOpenInNew } from '@mdi/js'
@@ -49,7 +54,10 @@ export default {
       itemTypeLocal: null,
       options: [],
       externalIdentifiers: null,
-      isPopup: false
+      isPopup: false,
+      genesysAvailable: false,
+      pages: Pages,
+      genesysIcon
     }
   },
   props: {
@@ -199,6 +207,10 @@ export default {
     }]
 
     this.updateExternalIdentifiers()
+
+    apiGetGenesysAvailable(available => {
+      this.genesysAvailable = available
+    })
   }
 }
 </script>

@@ -53,7 +53,8 @@ const Pages = Object.freeze({
   projectDetails: 'project-details',
   fourZeroThree: '403',
   fourZeroFour: '404',
-  fallback: 'fallback'
+  fallback: 'fallback',
+  genesysRequest: 'genesys-request'
 })
 
 export {

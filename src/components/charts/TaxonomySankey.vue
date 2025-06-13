@@ -12,7 +12,6 @@ import BaseChart from '@/components/charts/BaseChart'
 import { apiGetStatsFile } from '@/mixins/api/stats.js'
 import { Pages } from '@/mixins/pages'
 // import { getColors } from '@/mixins/colors.js'
-// import { Pages } from '@/mixins/pages'
 const d3Dsv = require('d3-dsv')
 
 const Plotly = require('plotly.js/lib/core')

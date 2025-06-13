@@ -158,6 +158,10 @@ const apiPostTemplateImage = (formData, onSuccess, onError) => authForm({ url: '
 
 const apiDeleteStoryStep = (storyId, storyStepId, onSuccess, onError) => authAxios({ url: `story/${storyId}/step/${storyStepId}`, method: 'DELETE', success: onSuccess, error: onError })
 
+const apiGetGenesysAvailable = (onSuccess, onError) => authAxios({ url: 'genesys/germplasm/status', success: onSuccess, error: onError })
+
+const apiPostGenesysRequest = (data, onSuccess, onError) => authAxios({ url: 'genesys/germplasm', method: 'POST', data: data, success: onSuccess, error: onError })
+
 export {
   apiGetSettings,
   apiGetAdminSettings,
@@ -215,5 +219,7 @@ export {
   apiPatchStory,
   apiDeleteStoryStep,
   apiPatchTemplateI18n,
-  apiPostTemplateImage
+  apiPostTemplateImage,
+  apiGetGenesysAvailable,
+  apiPostGenesysRequest
 }

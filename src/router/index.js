@@ -324,6 +324,12 @@ const routes = [
             beforeEnter: requireAuth
           },
           {
+            path: 'genesys-request',
+            name: Pages.genesysRequest,
+            component: () => import(/* webpackChunkName: "genesys-request" */ '@/views/Genesys.vue'),
+            beforeEnter: requireAuth
+          },
+          {
             path: 'data-resources',
             name: Pages.dataResources,
             component: () => import(/* webpackChunkName: "data-resources" */ '@/views/data/DataResources.vue'),
