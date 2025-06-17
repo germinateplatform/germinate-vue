@@ -55,6 +55,8 @@
 
           <div class="col-md-4 d-flex align-items-center justify-content-center">
             <a @click.prevent="showChangelog" href="#" class="text-muted">{{ $t('pageFooterVersion', { version: germinateVersion }) }}</a>
+            <a class="text-muted ml-3" v-if="$te('pageFooterImprintURL') && $t('pageFooterImprintURL')" :href="$t('pageFooterImprintURL')" target="_blank" rel="noopener noreferrer">{{ $t('pageFooterImprint') }}</a>
+            <a class="text-muted ml-3" v-if="$te('pageFooterDataProtectionURL') && $t('pageFooterDataProtectionURL')" :href="$t('pageFooterDataProtectionURL')" target="_blank" rel="noopener noreferrer">{{ $t('pageFooterDataProtection') }}</a>
           </div>
 
           <ul class="nav col-md-4 justify-content-center justify-content-md-end list-unstyled d-flex">
