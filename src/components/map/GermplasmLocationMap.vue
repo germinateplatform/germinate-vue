@@ -292,7 +292,7 @@ export default {
 
             switch (this.colorBy.type) {
               case 'text':
-                colorByValue = this.colorBy.fields.map(part => g[part]).join(' ')
+                colorByValue = this.colorBy.fields.map(part => g[part]).join(' ') || 'N/A'
                 potentialColor = categoricalColorMapping[colorByValue]
                 if (potentialColor) {
                   color = potentialColor
