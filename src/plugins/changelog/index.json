@@ -1,5 +1,19 @@
 [
   {
+    "version": "4.8.8",
+    "date": "2025-07-16",
+    "items": [
+      {
+        "type": "update",
+        "title": "Big dependency update",
+        "text": "Updated lots of dependencies behind the scenes.",
+        "categories": [
+          "admin"
+        ]
+      }
+    ]
+  },
+  {
     "version": "4.8.4",
     "date": "2025-03-25",
     "items": [
