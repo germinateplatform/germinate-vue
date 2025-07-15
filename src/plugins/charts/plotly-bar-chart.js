@@ -70,7 +70,6 @@ export function plotlyBarChart (Plotly) {
       let xTickValues = null
 
       if (xLabels) {
-        xTickValues = xValues
         xTickLabels = []
 
         xLabels.forEach(scale => {
@@ -81,6 +80,24 @@ export function plotlyBarChart (Plotly) {
               xTickLabels[i] += '<br>' + l
             }
           })
+        })
+
+        xTickValues = xValues.sort((a, b) => {
+          let aI = -1
+          let bI = -1
+
+          xLabels.forEach(scale => {
+            scale.forEach((l, i) => {
+              if (a === l) {
+                aI = i
+              }
+              if (b === l) {
+                bI = i
+              }
+            })
+          })
+
+          return Math.sign(aI - bI) || Math.sign(a.localeCompare(b))
         })
       }
 
