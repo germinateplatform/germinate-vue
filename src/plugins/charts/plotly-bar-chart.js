@@ -69,36 +69,30 @@ export function plotlyBarChart (Plotly) {
       let xTickLabels = null
       let xTickValues = null
 
-      if (xLabels) {
+      function setTicks () {
         xTickLabels = []
+
+        const potentialLabels = []
 
         xLabels.forEach(scale => {
           scale.forEach((l, i) => {
-            if (i > xTickLabels.length - 1) {
-              xTickLabels.push(l)
+            if (i > potentialLabels.length - 1) {
+              potentialLabels.push([l])
             } else {
-              xTickLabels[i] += '<br>' + l
+              potentialLabels[i].push(l)
             }
           })
         })
 
-        xTickValues = xValues.sort((a, b) => {
-          let aI = -1
-          let bI = -1
+        xTickLabels = potentialLabels.map(lbs => lbs.join('<br>'))
 
-          xLabels.forEach(scale => {
-            scale.forEach((l, i) => {
-              if (a === l) {
-                aI = i
-              }
-              if (b === l) {
-                bI = i
-              }
-            })
-          })
-
-          return Math.sign(aI - bI) || Math.sign(a.localeCompare(b))
+        xTickValues = potentialLabels.map(lbs => {
+          return lbs.map(lb => xValues.includes(lb) ? lb : undefined).find(lb => lb !== undefined) || null
         })
+      }
+
+      if (xLabels) {
+        setTicks()
       }
 
       const layout = {
