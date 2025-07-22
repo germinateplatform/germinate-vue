@@ -17,6 +17,16 @@ const uuidv4 = () => {
   })
 }
 
+const getGermplasmDisplayName = (germplasm) => {
+  if (!germplasm) {
+    return 'N/A'
+  } else if (germplasm.germplasmDisplayName && (germplasm.germplasmDisplayName !== germplasm.germplasmName)) {
+    return `${germplasm.germplasmDisplayName} (${germplasm.germplasmName})`
+  } else {
+    return germplasm.germplasmName
+  }
+}
+
 const isNumber = (value, isInt) => {
   try {
     const int = Number(value)
@@ -200,6 +210,7 @@ export {
   dataURLtoFile,
   mcpdDateToJsDate,
   isNumber,
+  getGermplasmDisplayName,
   bskyIcon,
   genesysIcon
 }

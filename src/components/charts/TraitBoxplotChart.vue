@@ -52,7 +52,7 @@ import BaseChart from '@/components/charts/BaseChart'
 import MarkedItems from '@/components/tables/MarkedItems'
 import { getColor } from '@/mixins/colors.js'
 import Tour from '@/components/util/Tour'
-import { uuidv4 } from '@/mixins/util'
+import { getGermplasmDisplayName, uuidv4 } from '@/mixins/util'
 import Passport from '@/views/data/germplasm/Passport'
 
 import { mdiHelpCircleOutline, mdiCheckboxMarked, mdiCheckboxBlankOutline } from '@mdi/js'
@@ -139,7 +139,8 @@ export default {
       }],
       groupBy: 'dataset',
       selectedIds: [],
-      selectedGermplasmId: null
+      selectedGermplasmId: null,
+      baseSourceFile: null
     }
   },
   computed: {
@@ -157,13 +158,6 @@ export default {
         text: this.$t('widgetChartColoringByGroup'),
         value: 'group'
       }]
-    },
-    baseSourceFile: function () {
-      return {
-        blob: new Blob([JSON.stringify(plotData)], { type: 'application/json' }),
-        filename: this.baseFilename,
-        extension: 'json'
-      }
     },
     baseFilename: function () {
       let name = 'trait-boxplot'
@@ -218,6 +212,12 @@ export default {
         plotData = result.data
         this.chart()
         this.loading = false
+
+        this.baseSourceFile = {
+          blob: new Blob([JSON.stringify(plotData)], { type: 'application/json' }),
+          filename: this.baseFilename,
+          extension: 'json'
+        }
       })
     },
     toggleItems: function (add) {
@@ -278,7 +278,7 @@ export default {
             y: datasetData.map(td => td.traitName),
             x: datasetData.map(td => +td.traitValue),
             ids: datasetData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: datasetData.map(td => td.germplasmName),
+            text: datasetData.map(td => getGermplasmDisplayName(td)),
             name: ds.name,
             marker: { color: getColor(index), size: 4 },
             type: 'box',
@@ -296,7 +296,7 @@ export default {
             y: treatmentData.map(td => td.traitName),
             x: treatmentData.map(td => +td.traitValue),
             ids: treatmentData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: treatmentData.map(td => td.germplasmName),
+            text: treatmentData.map(td => getGermplasmDisplayName(td)),
             name: treatment,
             marker: { color: getColor(index), size: 4 },
             type: 'box',
@@ -314,7 +314,7 @@ export default {
             y: groupData.map(td => td.traitName),
             x: groupData.map(td => +td.traitValue),
             ids: groupData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: groupData.map(td => td.germplasmName),
+            text: groupData.map(td => getGermplasmDisplayName(td)),
             name: group.name,
             marker: { color: getColor(index), size: 4 },
             type: 'box',

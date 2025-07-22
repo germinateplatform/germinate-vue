@@ -390,6 +390,7 @@
   "importStatusGenericMissingColumn": "A required column hasn't been found. Please make sure not to remove default columns found in the templates.",
   "importStatusGenericMissingCountry": "A location has been specified without a country code. Please either remove the location information or add a country code.",
   "importStatusGenericMissingExcelSheet": "Missing Excel spreadsheet. Make sure to not rename the predefined sheet names.",
+  "importStatusGenericDisplayNameUsedButNotUnique": "A germplasm display name was specified during import, but this name is not unique in the database. Please fall back to the actual germplasm name as specified under ACCENUMB in the germplasm MCPD file.",
   "importStatusMcpdDuplicateAccenumb": "You've specified a duplicate ACCENUMB in your sheet. This may be a duplicate of another row in the same file or a duplicate of an existing entry in the database.",
   "importStatusMcpdInvalidCollsrc": "Invalid COLLSRC (Collecting/acquisition source) found. Please check the MCPD 2.1 documentation for all valid codes.",
   "importStatusMcpdInvalidCountryCode": "An invalid country code has been found. Please make sure to use the ISO 3166-1 alpha-3 country codes.",

@@ -83,6 +83,11 @@ export default {
           operator: 'or',
           values: [name]
         }, {
+          column: 'germplasmDisplayName',
+          comparator: 'equals',
+          operator: 'or',
+          values: [name]
+        }, {
           column: 'germplasmPuid',
           comparator: 'equals',
           operator: 'or',
