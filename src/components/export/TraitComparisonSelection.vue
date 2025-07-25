@@ -34,6 +34,7 @@ import { getColor } from '@/mixins/colors'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { apiPostGroupGermplasmTableIds } from '@/mixins/api/germplasm.js'
 import { apiPostTrialsDataTable } from '@/mixins/api/trait.js'
+import { getGermplasmDisplayName } from '@/mixins/util'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -134,7 +135,7 @@ export default {
       }
     },
     getTraitSubset: function (trait) {
-      const headers = ['germplasmId', 'germplasmGid', 'germplasmName', 'entityParentName', 'entityParentGeneralIdentifier', 'entityType', 'datasetId', 'datasetName', 'datasetDescription', 'locationName', 'countryName', 'countryCode2', 'traitId', 'traitName', 'traitNameShort', 'traitRestrictions', 'unitName', 'treatment', 'recordingDate', 'traitValue']
+      const headers = ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmDisplayName', 'entityParentName', 'entityParentGeneralIdentifier', 'entityType', 'datasetId', 'datasetName', 'datasetDescription', 'locationName', 'countryName', 'countryCode2', 'traitId', 'traitName', 'traitNameShort', 'traitRestrictions', 'unitName', 'treatment', 'recordingDate', 'traitValue']
       let result = headers.join('\t') + '\n'
       this.rawData.filter(d => +d.traitId === trait.traitId).forEach(r => {
         result += headers.map(h => r[h] || '').join('\t') + '\n'
@@ -152,7 +153,7 @@ export default {
         const tempSplit = new Set()
         this.rawData.forEach(r => {
           const germplasmId = r.germplasmId
-          const germplasmName = r.germplasmName
+          const germplasmName = getGermplasmDisplayName(r)
           const traitId = r.traitId
           const traitValue = r.traitValue
 
