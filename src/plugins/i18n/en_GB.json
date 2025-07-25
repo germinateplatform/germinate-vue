@@ -459,6 +459,8 @@
   "menuDataResources": "Data resources",
   "menuDatasets": "Datasets",
   "menuDataStatistics": "Data statistics",
+  "menuDataTemplates": "Data templates",
+  "menuDataTemplatesURL": "",
   "menuDataStories": "Data stories",
   "menuEnvironment": "Environment",
   "menuExperiments": "Experiments",

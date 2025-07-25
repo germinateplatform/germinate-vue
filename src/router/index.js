@@ -340,6 +340,12 @@ const routes = [
             name: Pages.statistics,
             component: () => import(/* webpackChunkName: "data-statistics" */ '@/views/data/DataStatistics.vue'),
             beforeEnter: requireAuth
+          },
+          {
+            path: 'templates',
+            name: Pages.templates,
+            component: () => import(/* webpackChunkName: "data-statistics" */ '@/views/data/Templates.vue'),
+            beforeEnter: requireAuth
           }
         ]
       },
