@@ -1,8 +1,35 @@
 [
   {
-    "version": "4.8.8",
-    "date": "2025-07-16",
+    "version": "4.9.0",
+    "date": "2025-xx-xx",
     "items": [
+      {
+        "type": "update",
+        "title": "Germplasm display name",
+        "text": "Germinate will now prefer the 'display name' over the internal unique identifier when exporting or visualizing data. The 'display name' is set during import using the 'ACCENAME' field in the MCPD. If none is specified Germinate will automatically use 'ACCENUMB' as the display name.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "update",
+        "title": "Improved data import feedback",
+        "text": "Where appropriate, import status errors can now occur multiple times. Prevously each error type was only shown a single time to prevent huge lists of errors when thousands of issues are found in the input file. Now some error types - those we don't expect to see in huge numbers - can be reported back multiple times.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "update",
+        "title": "New command-line interface",
+        "text": "Germinate now offers a complete command-line interface (CLI). Currently, this supports data import via the Germinate Data Templates. Please refer to the <a href='https://germinateplatform.github.io/germinate-server/cli.html' target='_blank'>CLI documentation</a> for more information.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
       {
         "type": "update",
         "title": "Big dependency update",

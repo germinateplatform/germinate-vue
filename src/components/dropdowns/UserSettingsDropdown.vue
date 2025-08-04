@@ -8,6 +8,7 @@
     <template v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
       <b-dropdown-header class="text-center border-bottom mb-2"><strong>{{ $t('dropdownUserSettingsAdvancedSettings') }}</strong></b-dropdown-header>
       <b-dropdown-item :to="{ name: Pages.germinateSettings }" v-if="userIsAtLeast(storeToken.userType, USER_TYPE_ADMINISTRATOR)"><span class="text-warning"><MdiIcon :path="mdiCog"/></span> {{ $t('dropdownUserSettingsGerminateSettings') }}</b-dropdown-item>
+      <b-dropdown-item :to="{ name: Pages.backup }" v-if="userIsAtLeast(storeToken.userType, USER_TYPE_ADMINISTRATOR)"><span class="text-warning"><MdiIcon :path="mdiBackupRestore"/></span> {{ $t('dropdownUserSettingsBackup') }}</b-dropdown-item>
       <b-dropdown-item :to="{ name: Pages.userPermissions }" v-if="userIsAtLeast(storeToken.userType, USER_TYPE_ADMINISTRATOR)"><span class="text-warning"><MdiIcon :path="mdiAccountKey"/></span> {{ $t('dropdownUserSettingsUserPermissions') }}</b-dropdown-item>
       <b-dropdown-item v-if="storeServerSettings.dataImportMode !== 'NONE'" :to="{ name: Pages.importUpload }"><span class="text-warning"><MdiIcon :path="mdiUpload"/></span> {{ $t('dropdownUserSettingsDataUpload') }}</b-dropdown-item>
       <b-dropdown-item :to="{ name: Pages.germplasmUnifier }"><span class="text-warning"><MdiIcon :path="mdiSetMerge"/></span> {{ $t('dropdownUserSettingsGermplasmUnifier') }}</b-dropdown-item>
@@ -35,7 +36,7 @@ import GetTokenModal from '@/components/modals/GetTokenModal'
 import MdiIcon from '@/components/icons/MdiIcon'
 import { userIsAtLeast, apiDeleteToken, apiPostToken, USER_TYPE_ADMINISTRATOR, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
 
-import { mdiAccount, mdiCog, mdiAccountKey, mdiUpload, mdiCircleMultiple, mdiSetMerge, mdiLogoutVariant, mdiLoginVariant, mdiCommentQuoteOutline, mdiTextSearch } from '@mdi/js'
+import { mdiAccount, mdiCog, mdiAccountKey, mdiUpload, mdiCircleMultiple, mdiSetMerge, mdiLogoutVariant, mdiLoginVariant, mdiCommentQuoteOutline, mdiTextSearch, mdiBackupRestore } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
@@ -49,6 +50,7 @@ export default {
     return {
       Pages,
       mdiAccount,
+      mdiBackupRestore,
       mdiCog,
       mdiCircleMultiple,
       mdiAccountKey,

@@ -21,6 +21,7 @@ import { apiPostDatasetTable } from '@/mixins/api/dataset.js'
 export default {
   data: function () {
     return {
+      datasetId: null
     }
   },
   components: {
@@ -35,6 +36,20 @@ export default {
 
       return isExternal.map(ie => {
         const filter = []
+
+        if (this.datasetId) {
+          filter.push({
+            column: {
+              name: 'datasetId',
+              type: Number
+            },
+            comparator: 'equals',
+            operator: 'and',
+            values: [this.datasetId],
+            canBeChanged: true
+          })
+        }
+
         if (this.storeSelectedProjects && this.storeSelectedProjects.length > 0) {
           filter.push({
             column: {
@@ -66,6 +81,11 @@ export default {
   methods: {
     getData: function (data, callback) {
       return apiPostDatasetTable(data, callback)
+    }
+  },
+  beforeMount: function () {
+    if (this.$route.params && this.$route.params.datasetId) {
+      this.datasetId = +(this.$route.params.datasetId)
     }
   }
 }

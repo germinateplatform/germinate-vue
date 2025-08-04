@@ -36,7 +36,7 @@ FROM tomcat:10.1-jdk21
 LABEL maintainer="sebastian.raubach@hutton.ac.uk"
 
 RUN apt-get update && \
-    apt-get --yes --force-yes install imagemagick unzip zip && \
+    apt-get --yes --force-yes install imagemagick unzip zip mysql-client && \
     # Obscuring server info
     cd ${CATALINA_HOME}/lib && \
     mkdir -p org/apache/catalina/util/ && \
