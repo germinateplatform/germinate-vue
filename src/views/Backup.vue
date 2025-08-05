@@ -3,13 +3,22 @@
     <h1 class="mt-3">{{ $t('pageBackupTitle') }}</h1>
     <p>{{ $t('pageBackupText') }}</p>
 
+    <div class="mb-3" v-if="serverAdminSettings">
+      <b-badge variant="warning" :to="{ name: Pages.germinateSettings }" class="mr-2 mb-2" v-if="serverAdminSettings.databaseBackupMaxSizeGB">
+        <MdiIcon :path="mdiFileCabinet" />{{ $t('formLabelAdminSettingsBackupMaxSizeGb') }}: {{ serverAdminSettings.databaseBackupMaxSizeGB }}GB
+      </b-badge>
+      <b-badge variant="warning" :to="{ name: Pages.germinateSettings }" class="mr-2 mb-2" v-if="serverAdminSettings.databaseBackupEveryDays">
+        <MdiIcon :path="mdiCalendarClock" />{{ $t('formLabelAdminSettingsBackupEveryDays') }}: {{ serverAdminSettings.databaseBackupEveryDays }}
+      </b-badge>
+    </div>
+
     <b-button variant="info" @click="createBackup"><MdiIcon :path="mdiDatabaseArrowRight" />{{ $t('buttonGenerateBackup') }}</b-button>
 
     <b-row class="mt-3">
       <b-col cols="12" md="6" lg="3" v-for="backup in backups" :key="`backup-${backup.filename}`">
         <b-card no-body>
           <b-card-body>
-            <b-card-title><MdiIcon :path="backupTypes[backup.type].icon" /> {{ backupTypes[backup.type].title }}</b-card-title>
+            <b-card-title><MdiIcon :color="backupTypes[backup.type].color" :path="backupTypes[backup.type].icon" /> {{ backupTypes[backup.type].title }}</b-card-title>
             <b-card-sub-title>{{ backupTypes[backup.type].text }}</b-card-sub-title>
             <hr />
             <b-card-text>
@@ -36,10 +45,12 @@
 
 <script>
 import MdiIcon from '@/components/icons/MdiIcon.vue'
-import { apiDeleteBackup, apiGetBackups, apiPutBackup } from '@/mixins/api/misc'
+import { apiDeleteBackup, apiGetAdminSettings, apiGetBackups, apiPutBackup } from '@/mixins/api/misc'
+import { getTemplateColor } from '@/mixins/colors'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { mdiCalendarClock, mdiCog, mdiDatabaseArrowRight, mdiDatabaseClock, mdiDatabaseEdit, mdiDatabaseSync, mdiDelete, mdiDownload, mdiFileCabinet, mdiTag } from '@mdi/js'
 import { mapGetters } from 'vuex'
+import { Pages } from '@/mixins/pages'
 
 const emitter = require('tiny-emitter/instance')
 
@@ -49,6 +60,7 @@ export default {
   },
   data: function () {
     return {
+      Pages,
       mdiTag,
       mdiFileCabinet,
       mdiCog,
@@ -56,30 +68,35 @@ export default {
       mdiDelete,
       mdiDownload,
       mdiCalendarClock,
-      backups: []
+      backups: [],
+      serverAdminSettings: null
     }
   },
   computed: {
     ...mapGetters([
       'storeBaseUrl',
-      'storeToken'
+      'storeToken',
+      'storeServerSettings'
     ]),
     backupTypes: function () {
       return {
         PERIODICAL: {
           title: this.$t('pageBackupTypePeriodicalTitle'),
           text: this.$t('pageBackupTypePeriodicalText'),
-          icon: mdiDatabaseClock
+          icon: mdiDatabaseClock,
+          color: getTemplateColor(0)
         },
         UPDATE: {
           title: this.$t('pageBackupTypeUpdateTitle'),
           text: this.$t('pageBackupTypeUpdateText'),
-          icon: mdiDatabaseSync
+          icon: mdiDatabaseSync,
+          color: getTemplateColor(1)
         },
         MANUAL: {
           title: this.$t('pageBackupTypeManualTitle'),
           text: this.$t('pageBackupTypeManualText'),
-          icon: mdiDatabaseEdit
+          icon: mdiDatabaseEdit,
+          color: getTemplateColor(2)
         }
       }
     }
@@ -142,6 +159,10 @@ export default {
   },
   mounted: function () {
     this.update()
+
+    apiGetAdminSettings(result => {
+      this.serverAdminSettings = result
+    })
   }
 }
 </script>

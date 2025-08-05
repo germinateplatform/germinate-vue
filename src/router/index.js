@@ -87,6 +87,7 @@ const routes = [
       {
         path: 'backup',
         name: Pages.backup,
+        meta: { minUserType: USER_TYPE_ADMINISTRATOR },
         component: () => import(/* webpackChunkName: "backup" */ '@/views/Backup'),
         beforeEnter: requireAuth
       },

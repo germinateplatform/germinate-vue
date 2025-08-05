@@ -34,7 +34,7 @@ export function plotlyBarChart (Plotly) {
             data.push({
               x: xValues,
               y: unpackConditional(rows, dims[0], groupBy, groupByValues[i]),
-              name: groupByValues[i],
+              name: groupByValues[i] || 'N/A',
               type: 'bar',
               marker: {
                 color: mode === 'traces' ? colors[i % colors.length] : colors
@@ -141,7 +141,10 @@ export function plotlyBarChart (Plotly) {
         this.on('plotly_unhover', () => { dragLayer.style.cursor = '' })
         this.on('plotly_click', data => {
           if (data && data.points && data.points.length > 0 && data.event && data.event.button === 0) {
-            onPointClicked(data.points[0].x)
+            onPointClicked({
+              x: data.points[0].x,
+              trace: data.points[0].data.name
+            })
           }
         })
       }
