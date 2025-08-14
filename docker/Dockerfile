@@ -25,10 +25,10 @@ RUN rm -f .env && \
 # Download Gradle and build the server code
 RUN apk add --no-cache openjdk21 && \
     wget https://services.gradle.org/distributions/gradle-9.0.0-bin.zip -P /tmp/ && \
-    unzip /tmp/gradle-8.8-bin.zip -d /opt/ && \
+    unzip /tmp/gradle-9.0.0-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
-    /opt/gradle-8.8/bin/gradle -p /opt/germinate-server war
+    /opt/gradle-9.0.0/bin/gradle -p /opt/germinate-server war
 
 
 FROM tomcat:10.1-jdk21
