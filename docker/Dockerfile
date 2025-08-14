@@ -24,7 +24,7 @@ RUN rm -f .env && \
 
 # Download Gradle and build the server code
 RUN apk add --no-cache openjdk21 && \
-    wget https://services.gradle.org/distributions/gradle-8.8-bin.zip -P /tmp/ && \
+    wget https://services.gradle.org/distributions/gradle-9.0.0-bin.zip -P /tmp/ && \
     unzip /tmp/gradle-8.8-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
