@@ -85,6 +85,13 @@ const routes = [
         beforeEnter: requireAuth
       },
       {
+        path: 'backup',
+        name: Pages.backup,
+        meta: { minUserType: USER_TYPE_ADMINISTRATOR },
+        component: () => import(/* webpackChunkName: "backup" */ '@/views/Backup'),
+        beforeEnter: requireAuth
+      },
+      {
         path: 'projects',
         name: Pages.projects,
         component: () => import(/* webpackChunkName: "projects" */ '@/views/Projects'),
@@ -309,6 +316,12 @@ const routes = [
             path: 'datasets',
             name: Pages.datasets,
             component: () => import(/* webpackChunkName: "datasets" */ '@/views/data/Datasets.vue'),
+            beforeEnter: requireAuth
+          },
+          {
+            path: 'datasets/:datasetId',
+            name: Pages.datasetsDetails,
+            component: () => import(/* webpackChunkName: "dataset-details" */ '@/views/data/Datasets.vue'),
             beforeEnter: requireAuth
           },
           {

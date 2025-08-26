@@ -211,6 +211,27 @@ $grid-breakpoints: (
 @import '@/assets/dark-mode.scss';
 @import '~flag-icons/css/flag-icons.min.css';
 
+.card-columns {
+  @include media-breakpoint-only(sm) {
+    column-count: 1;
+  }
+  @include media-breakpoint-only(md) {
+    column-count: 1;
+  }
+  @include media-breakpoint-only(lg) {
+    column-count: 1;
+  }
+  @include media-breakpoint-only(xl) {
+    column-count: 2;
+  }
+  @include media-breakpoint-only(xxl) {
+    column-count: 2;
+  }
+  @include media-breakpoint-only(xxxl) {
+    column-count: 2;
+  }
+}
+
 .list-group-item.info {
   border-left: 4px solid $info !important;
 }

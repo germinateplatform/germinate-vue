@@ -30,8 +30,11 @@
           <b-col lg=1 class="d-none d-lg-block"></b-col>
           <!-- Germinate logo -->
           <b-col lg=4>
-            <div id="svg-logo" class="d-flex justify-content-center align-items-center h-100 py-3">
-              <b-img src="./img/germinate-square-name.svg" fluid />
+            <div id="svg-logo-container" class="d-flex justify-content-center align-items-center h-100 py-3">
+              <router-link id="svg-logo" :to="{ name: 'home' }" v-if="isNotFullAuth">
+                <b-img src="./img/germinate-square-name.svg" fluid />
+              </router-link>
+              <b-img id="svg-logo" src="./img/germinate-square-name.svg" fluid v-else />
             </div>
           </b-col>
           <!-- Horizontal logos below, same width as login+registration -->
@@ -77,7 +80,14 @@ export default {
     ...mapGetters([
       'storeBaseUrl',
       'storeServerSettings'
-    ])
+    ]),
+    isNotFullAuth: function () {
+      if (this.storeServerSettings) {
+        return this.storeServerSettings.authMode !== 'FULL'
+      } else {
+        return false
+      }
+    }
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
@@ -137,7 +147,7 @@ export default {
 #login {
   min-height: 100vh;
 }
-#svg-logo > img {
+#svg-logo-container > #svg-logo {
   max-width: 300px;
   max-height: 300px;
 }

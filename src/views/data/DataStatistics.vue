@@ -31,6 +31,7 @@
     <p v-html="$t('pagePassportPdciModal')" />
     <!-- PDCI chart -->
     <BarChart xColumn="bin"
+              groupBy="genus"
               xTitle="PDCI"
               :yTitle="$t('genericCount')"
               downloadName="pdci"
@@ -92,13 +93,23 @@ export default {
     getInstitutionDatasets: function (data, callback) {
       return apiPostInstitutionDatasetTable(data, callback)
     },
-    biologicalStatusClicked: function (status) {
+    biologicalStatusClicked: function (point) {
       const filter = [{
         column: 'biologicalStatusName',
         comparator: 'contains',
         operator: 'and',
-        values: [status + '%']
+        values: [point.x + '%']
       }]
+
+      if (point.trace) {
+        filter.push({
+          column: 'genus',
+          comparator: 'equals',
+          operator: 'and',
+          values: [point.trace]
+        })
+      }
+
       this.$router.push({
         name: Pages.germplasm,
         query: {
@@ -106,14 +117,24 @@ export default {
         }
       })
     },
-    pdciClicked: function (bar) {
-      const parts = bar.split('-')
+    pdciClicked: function (point) {
+      const parts = point.x.split('-')
       const filter = [{
         column: 'pdci',
         comparator: 'between',
         operator: 'and',
         values: parts
       }]
+
+      if (point.trace) {
+        filter.push({
+          column: 'genus',
+          comparator: 'equals',
+          operator: 'and',
+          values: [point.trace]
+        })
+      }
+
       this.$router.push({
         name: Pages.germplasm,
         query: {

@@ -95,7 +95,7 @@ export default {
 
       this.checkNumbers()
     },
-    climateValueClicked: function (value) {
+    climateValueClicked: function (point) {
       this.tableFilter = [{
         column: {
           name: 'climateId',
@@ -112,7 +112,7 @@ export default {
         },
         comparator: 'equals',
         operator: 'and',
-        values: [value]
+        values: [point.x]
       }]
 
       this.$nextTick(() => this.$refs.climateDetailsTable.refresh())

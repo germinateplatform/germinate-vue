@@ -132,6 +132,12 @@ const apiPutPublicationReference = (publicationId, data, onSuccess, onError) => 
 
 const apiDeletePublicationReference = (publicationId, referenceType, referenceId, onSuccess, onError) => authAxios({ url: `publication/${publicationId}/reference/${referenceType}/${referenceId || ''}`, method: 'DELETE', success: onSuccess, error: onError })
 
+const apiGetBackups = (onSuccess, onError) => authAxios({ url: 'backup', method: 'GET', success: onSuccess, error: onError })
+
+const apiDeleteBackup = (backup, onSuccess, onError) => authAxios({ url: 'backup', method: 'DELETE', data: backup, success: onSuccess, error: onError })
+
+const apiPutBackup = (onSuccess, onError) => authAxios({ url: 'backup', method: 'PUT', success: onSuccess, error: onError })
+
 const apiPostUserFeedbackTable = (queryData, onSuccess, onError) => {
   queryData.page -= 1
   return authAxios({ url: 'feedback/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -221,5 +227,8 @@ export {
   apiPatchTemplateI18n,
   apiPostTemplateImage,
   apiGetGenesysAvailable,
-  apiPostGenesysRequest
+  apiPostGenesysRequest,
+  apiGetBackups,
+  apiPutBackup,
+  apiDeleteBackup
 }

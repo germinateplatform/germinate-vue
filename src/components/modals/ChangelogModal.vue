@@ -18,7 +18,7 @@
       <dl class="row mb-0">
         <template v-for="(item, index) in version.items">
           <dt :key="`changelog-${version.version}-dt-${index}`" class="col-md-4"><div><b-badge :variant="badge[item.type].variant">{{ badge[item.type].text }}</b-badge> {{ item.title }}</div><b-badge v-for="cat in item.categories.sort()" variant="light" :key="`changelog-${version.version}-dd-${index}-cats-${cat}`" class="border mr-2" :style="{ borderColor: `${categories[cat].bgColor} !important` }">{{ categories[cat].text }}</b-badge></dt>
-          <dd :key="`changelog-${version.version}-dd-${index}`" class="col-md-8">{{ item.text }}</dd>
+          <dd :key="`changelog-${version.version}-dd-${index}`" class="col-md-8"><span v-html="item.text" /></dd>
           <template v-if="item.categories">
             <dt :key="`changelog-${version.version}-dt-${index}-cats`" class="col-md-4"></dt>
             <dd :key="`changelog-${version.version}-dd-${index}-cats`" class="col-md-8"></dd>

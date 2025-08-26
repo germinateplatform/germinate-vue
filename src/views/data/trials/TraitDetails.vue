@@ -164,7 +164,7 @@ export default {
         href: url
       }).click()
     },
-    traitValueClicked: function (value) {
+    traitValueClicked: function (point) {
       this.tableFilter = [{
         column: {
           name: 'traitId',
@@ -181,7 +181,7 @@ export default {
         },
         comparator: 'equals',
         operator: 'and',
-        values: [value]
+        values: [point.x]
       }]
 
       this.$nextTick(() => this.$refs.traitDetailsTable.refresh())

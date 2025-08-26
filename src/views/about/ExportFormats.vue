@@ -4,20 +4,35 @@
     <hr />
     <p>{{ $t('pageExportFormatsText') }}</p>
 
-    <!-- Badges for the types -->
-    <b-badge v-for="(tag, name) in tags"
-             :key="`export-format-tag-${name}`"
-             class="display-inline mr-2"
-             :to="{ name: Pages.aboutExportFormatsType, params: { format: name } }"
-             :style="`background: ${getBackgroundColor(name)}; color: ${getTextColor(name)}`"
-             event=""
-             @click.prevent="selectTag(name)">
-      <MdiIcon :path="mdiTag" /> {{ tag.text() }}
-    </b-badge>
+    <div>
+      <!-- Badges for the types -->
+      <b-badge v-for="(tag, name) in tags"
+              :key="`export-format-tag-${name}`"
+              class="display-inline mr-2 mb-2"
+              :to="{ name: Pages.aboutExportFormatsType, params: { format: name } }"
+              :style="`background: ${getBackgroundColor(tags, name)}; color: ${getTextColor(tags, name)}`"
+              event=""
+              @click.prevent="selectTag(name)">
+        <MdiIcon :path="mdiTag" /> {{ tag.text() }}
+      </b-badge>
+    </div>
+
+    <div>
+      <!-- Badges for the types -->
+      <b-badge v-for="(type, name) in types"
+              :key="`export-format-type-${name}`"
+              class="display-inline mr-2 mb-2"
+              :style="`background: ${getBackgroundColor(types, name)}; color: ${getTextColor(types, name)}`"
+              href="#"
+              event=""
+              @click.prevent="selectType(name)">
+        <MdiIcon :path="type.icon" /> {{ type.text() }}
+      </b-badge>
+    </div>
 
     <!-- Format cards -->
     <b-row class="mt-3">
-      <b-col cols=12 sm=6 xl=4 v-for="format in filteredExportFormats" :key="`export-format-${format.name}`" class="export-format mb-4 col-xxl-3 col-xxxl-2">
+      <b-col cols=12 sm=6 xl=4 v-for="format in filteredExportFormats" :key="`export-format-${format.name}`" class="export-format mb-4 col-xxl-4 col-xxxl-3">
         <b-card
           :img-src="`./img/${format.logo}`"
           :img-alt="format.name"
@@ -25,15 +40,24 @@
           no-body
           bg-variant="light"
           class="mb-2 h-100">
-          <b-card-body class="d-flex flex-column bg-dark">
-            <b-card-title class="text-light">{{ format.name }}</b-card-title>
-            <b-card-text class="text-light">
-              {{ format.text() }}
-            </b-card-text>
+          <b-card-body class="d-flex flex-column justify-content-between bg-dark">
             <div>
-              <b-badge v-for="(tag, index) in format.tags" :key="`export-format-tag-individual-${index}`" class="dispay-inline mr-2" variant="light" :style="`background: ${getBackgroundColor(tag)}; color: ${getTextColor(tag)}`">
-                <MdiIcon :path="mdiTag" /> {{ tags[tag].text() }}
-              </b-badge>
+              <b-card-title class="text-light">{{ format.name }}</b-card-title>
+              <b-card-text class="text-light">
+                {{ format.text() }}
+              </b-card-text>
+            </div>
+            <div>
+              <div>
+                <b-badge v-for="(tag, index) in format.tags" :key="`export-format-tag-individual-${index}`" class="dispay-inline mr-2" variant="light" :style="`background: ${getBackgroundColor(tags, tag)}; color: ${getTextColor(tags, tag)}`">
+                  <MdiIcon :path="mdiTag" /> {{ tags[tag].text() }}
+                </b-badge>
+              </div>
+              <div>
+                <b-badge v-for="(type, index) in format.types" :key="`export-format-type-individual-${index}`" class="dispay-inline mr-2" variant="light" :style="`background: ${getBackgroundColor(types, type)}; color: ${getTextColor(types, type)}`">
+                  <MdiIcon :path="types[type].icon" /> {{ types[type].text() }}
+                </b-badge>
+              </div>
             </div>
           </b-card-body>
           <!-- Download button -->
@@ -55,7 +79,7 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import { exportFormats } from '@/mixins/types'
 import { getHighContrastTextColor } from '@/mixins/colors'
 
-import { mdiTag, mdiDownload, mdiOpenInNew } from '@mdi/js'
+import { mdiTag, mdiDownload, mdiOpenInNew, mdiCloudUpload, mdiCloudDownload, mdiCloud } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 
 export default {
@@ -68,7 +92,10 @@ export default {
       mdiTag,
       mdiDownload,
       mdiOpenInNew,
+      mdiCloudUpload,
+      mdiCloudDownload,
       selectedTag: 'all',
+      selectedType: 'all',
       tags: {
         all: {
           text: () => this.$t('exportFormatDataTypeAll')
@@ -85,6 +112,20 @@ export default {
         pca: {
           text: () => this.$t('exportFormatDataTypePca')
         }
+      },
+      types: {
+        all: {
+          icon: mdiCloud,
+          text: () => this.$t('exportFormatDataTypeAll')
+        },
+        provider: {
+          icon: mdiCloudDownload,
+          text: () => this.$t('exportFormatTypeProvider')
+        },
+        receiver: {
+          icon: mdiCloudUpload,
+          text: () => this.$t('exportFormatTypeConsumer')
+        }
       }
     }
   },
@@ -99,9 +140,9 @@ export default {
       'storeServerSettings'
     ]),
     filteredExportFormats: function () {
-      if (this.selectedTag && this.selectedTag !== 'all') {
+      if ((this.selectedTag && this.selectedTag !== 'all') || (this.selectedType && this.selectedType !== 'all')) {
         return Object.keys(exportFormats)
-          .filter(f => exportFormats[f].tags.indexOf(this.selectedTag) !== -1)
+          .filter(f => exportFormats[f].tags.indexOf(this.selectedTag) !== -1 || exportFormats[f].types.indexOf(this.selectedType) !== -1)
           .map(f => exportFormats[f])
       } else {
         return exportFormats
@@ -109,13 +150,16 @@ export default {
     }
   },
   methods: {
-    getBackgroundColor: function (tag) {
-      const index = Object.keys(this.tags).indexOf(tag)
+    getBackgroundColor: function (tags, tag) {
+      const index = Object.keys(tags).indexOf(tag)
       return this.storeServerSettings.colorsTemplate[index % this.storeServerSettings.colorsTemplate.length]
     },
-    getTextColor: function (tag) {
-      const color = this.getBackgroundColor(tag)
+    getTextColor: function (tags, tag) {
+      const color = this.getBackgroundColor(tags, tag)
       return getHighContrastTextColor(color)
+    },
+    selectType: function (newType) {
+      this.selectedType = newType
     },
     selectTag: function (newTag) {
       if (newTag) {
