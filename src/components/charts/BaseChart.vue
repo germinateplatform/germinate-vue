@@ -1,173 +1,195 @@
 <template>
-  <div class="base-chart">
-    <div class="text-right">
-      <!-- Chart options -->
-      <b-button-group>
-        <b-dropdown no-caret right v-b-tooltip.hover="$t('chartTooltipOptions')" id="additional-options">
-          <template v-slot:button-content>
-            <MdiIcon :path="mdiDotsVertical" />
-            <slot name="buttonContent" />
-          </template>
-          <!-- Download options -->
-          <b-dropdown-item @click="getFilename('png')" v-if="supportsPngDownload"><MdiIcon :path="mdiFileImage" /> {{ $t('buttonDownloadPng') }}</b-dropdown-item>
-          <b-dropdown-item @click="getFilename('svg')" v-if="supportsSvgDownload"><MdiIcon :path="mdiFileCode" /> {{ $t('buttonDownloadSvg') }}</b-dropdown-item>
-          <b-dropdown-item @click="downloadSource()" v-if="sourceFile"><MdiIcon :path="mdiFileDocument" /> {{ $t('buttonDownloadFile') }}</b-dropdown-item>
-          <b-dropdown-item @click="$refs.customChartColorModal.show()" v-if="canChangeColors"><MdiIcon :path="mdiPalette" /> {{ $t('buttonChangeChartColors') }}</b-dropdown-item>
-          <!-- Additional options -->
-          <slot name="additionalMenuItems" />
-        </b-dropdown>
-        <!-- Additional buttons -->
-        <slot name="additionalButtons" />
-      </b-button-group>
-    </div>
+  <v-card
+    :model-value:loading="localLoading"
+    @update:loading="notifyLoading"
+  >
+    <v-toolbar density="comfortable" color="surface" :title="compProps.title ? $t(compProps.title) : undefined">
+      <slot name="toolbar-prepend" />
+      <v-spacer />
+      <v-menu>
+        <template #activator="{ props }">
+          <v-btn v-bind="props" icon="mdi-dots-vertical" />
+        </template>
 
-    <!-- Loading indicator -->
-    <div class="text-center" v-if="loading">
-      <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
-    </div>
+        <v-list>
+          <slot name="list-prepend" />
+          <v-list-item @click="downloadChart('png')" :title="$t('buttonDownloadPng')" prepend-icon="mdi-file-image" v-if="compProps.supportsPngDownload" />
+          <v-list-item @click="downloadChart('svg')" :title="$t('buttonDownloadSvg')" prepend-icon="mdi-file-code" v-if="compProps.supportsSvgDownload" />
+          <v-list-item @click="downloadSource" :title="$t('buttonDownloadFile')" prepend-icon="mdi-file-document" />
+          <v-list-item @click="bottomSheetVisible = true" :title="$t('buttonChangeChartColors')" prepend-icon="mdi-palette" v-if="compProps.canChangeColors" />
+          <slot name="list-append" />
+        </v-list>
+      </v-menu>
+      <slot name="toolbar-append" />
+    </v-toolbar>
 
-    <slot name="prepend" />
-    <!-- This is where the chart goes -->
-    <slot name="chart" ref="chart" />
-    <slot name="append" />
+    <v-card-text>
+      <slot name="chart-content" ref="chart" />
+    </v-card-text>
 
-    <!-- Modal to ask for filenames -->
-    <b-modal ref="chartModal" :title="$t('modalTitleChartFilename')" :ok-title="$t('buttonOk')" :cancel-title="$t('buttonCancel')" @ok="download">
-      <b-form v-on:submit.prevent="download">
-        <b-form-input v-model="userFilename" autofocus />
-      </b-form>
-    </b-modal>
+    <v-bottom-sheet
+      v-model="bottomSheetVisible"
+      inset
+      persistent
+      max-height="75vh"
+    >
+      <v-card
+        :title="$t('modalTitleChartColors')"
+        class="pb-10"
+      >
+        <v-card-text>
+          <v-btn class="mb-3" prepend-icon="mdi-undo-variant" :text="$t('buttonResetColorsToDefault')" @click="resetToDefault" />
+          <v-row>
+            <v-col cols="12" md="6">
+              <VColorInput
+                hide-actions
+                v-model="newColor"
+                append-icon="mdi-plus"
+                @click:append="addColor"
+              />
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-chip
+                label
+                closable
+                class="me-2 mb-2"
+                variant="flat"
+                v-for="(color, index) in colors"
+                :key="`color-${color}-${index}`"
+                :color="color"
+                :text="color"
+                @click:close="removeColor(index)"
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
 
-    <CustomChartColorModal ref="customChartColorModal" v-on:colors-changed="onColorsChanged" />
-  </div>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn :text="$t('buttonCancel')" @click="bottomSheetVisible = false" />
+          <v-btn :text="$t('buttonSave')" color="primary" variant="tonal" :disabled="colors.length === 0" @click="saveColors" />
+        </v-card-actions>
+      </v-card>
+    </v-bottom-sheet>
+  </v-card>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import MdiIcon from '@/components/icons/MdiIcon'
-import CustomChartColorModal from '@/components/modals/CustomChartColorModal'
-import { getDateTimeString } from '@/mixins/formatting'
-import { downloadBlob, downloadSvgsFromContainer } from '@/mixins/util'
+<script lang="ts" setup>
+  import { downloadBlob, downloadSvgsFromContainer, type DownloadBlob } from '@/plugins/util'
+  import { getDateTimeString } from '@/plugins/util/formatting'
+  import { coreStore } from '@/stores/app'
+  import Plotly from 'plotly.js/lib/core'
+  import { VColorInput } from 'vuetify/labs/VColorInput'
 
-import { mdiDotsVertical, mdiFileImage, mdiFileCode, mdiFileDocument, mdiPalette } from '@mdi/js'
+  const emit = defineEmits(['update:loading', 'force-redraw'])
 
-const emitter = require('tiny-emitter/instance')
-
-const Plotly = require('plotly.js/lib/core')
-
-export default {
-  data: function () {
-    return {
-      mdiDotsVertical,
-      mdiFileImage,
-      mdiFileCode,
-      mdiFileDocument,
-      mdiPalette,
-      userFilename: 'plotly-chart',
-      imageType: null
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeDarkMode'
-    ])
-  },
-  props: {
-    width: {
-      type: Function,
-      default: () => 1280
-    },
-    height: {
-      type: Function,
-      default: () => 600
-    },
-    supportsSvgDownload: {
-      type: Boolean,
-      default: true
-    },
-    supportsPngDownload: {
-      type: Boolean,
-      default: true
-    },
-    filename: {
-      type: String,
-      default: null
-    },
-    sourceFile: {
-      type: Object,
-      default: null
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    chartType: {
-      type: String,
-      default: 'plotly'
-    },
-    canChangeColors: {
-      type: Boolean,
-      default: true
-    }
-  },
-  watch: {
-    storeDarkMode: function () {
-      this.$emit('force-redraw')
-    }
-  },
-  components: {
-    MdiIcon,
-    CustomChartColorModal
-  },
-  methods: {
-    onColorsChanged: function () {
-      emitter.emit('chart-colors-changed')
-    },
-    downloadSource: function () {
-      const request = this.sourceFile
-
-      request.filename = request.filename + '-' + getDateTimeString()
-
-      if (!request.extension) {
-        request.extension = 'txt'
-      }
-
-      downloadBlob(request)
-    },
-    getFilename: function (imageType) {
-      this.imageType = imageType
-      if (this.filename) {
-        this.userFilename = this.filename
-      }
-      this.$refs.chartModal.show()
-    },
-    download: function () {
-      this.$refs.chartModal.hide()
-
-      if (this.imageType === 'svg') {
-        downloadSvgsFromContainer(this.$slots.chart[0].elm, this.chartType === 'plotly', this.userFilename + '-' + getDateTimeString())
-      } else if (this.imageType === 'png') {
-        const container = this.$slots.chart[0].elm
-        const chart = container.classList.contains('js-plotly-plot') ? container : container.querySelector('.js-plotly-plot')
-        Plotly.downloadImage(chart, { format: 'png', width: this.width(), height: this.height(), filename: this.userFilename + '-' + getDateTimeString() })
-      }
-    },
-    chartColorsChangedHandler: function () {
-      this.$emit('force-redraw')
-    }
-  },
-  mounted: function () {
-    emitter.on('chart-colors-changed', this.chartColorsChangedHandler)
-  },
-  destroyed: function () {
-    emitter.off('chart-colors-changed', this.chartColorsChangedHandler)
+  interface ChartProps {
+    loading?: boolean
+    title?: string
+    downloadWidth?: number
+    downloadHeight?: number
+    supportsSvgDownload?: boolean
+    supportsPngDownload?: boolean
+    filename: string
+    sourceFile?: DownloadBlob
+    chartType?: 'plotly' | 'd3.js'
+    canChangeColors?: boolean
+    chartId: string
   }
-}
-</script>
 
-<style>
-.text-center .plotly .svg-container {
-  margin-left: auto!important;
-  margin-right: auto!important;
-}
-</style>
+  const compProps = withDefaults(defineProps<ChartProps>(), {
+    loading: false,
+    downloadWidth: 1280,
+    downloadHeight: 600,
+    supportsPngDownload: true,
+    supportsSvgDownload: true,
+    chartType: 'plotly' as const,
+    canChangeColors: true,
+  })
+
+  const store = coreStore()
+
+  const bottomSheetVisible = ref(false)
+  const localLoading = ref(false)
+  const colors = ref<string[]>([])
+  const newColor = ref('#ffffff')
+
+  watch(() => compProps.loading, async (newValue: boolean) => {
+    localLoading.value = newValue
+  })
+
+  function notifyLoading (value: boolean) {
+    emit('update:loading', value)
+  }
+
+  function addColor () {
+    colors.value.push(newColor.value)
+  }
+
+  function downloadChart (imageType: string) {
+    const element = document.querySelector(`#${compProps.chartId}`)
+
+    if (element) {
+      if (imageType === 'svg') {
+        downloadSvgsFromContainer(element, compProps.chartType === 'plotly', compProps.filename + '-' + getDateTimeString())
+      } else if (imageType === 'png') {
+        const chart = element.classList.contains('js-plotly-plot') ? element : element.querySelector('.js-plotly-plot')
+        if (chart) {
+          // @ts-ignore
+          Plotly.downloadImage(chart, { format: 'png', width: compProps.downloadWidth, height: compProps.downloadHeight, filename: compProps.filename + '-' + getDateTimeString() })
+        }
+      }
+    }
+  }
+
+  function downloadSource () {
+    const request = compProps.sourceFile
+
+    if (!request) {
+      return
+    }
+
+    request.filename = request.filename + '-' + getDateTimeString()
+
+    if (!request.extension) {
+      request.extension = 'txt'
+    }
+
+    downloadBlob(request)
+  }
+
+  function removeColor (index: number) {
+    colors.value.splice(index, 1)
+  }
+
+  function updateColors () {
+    colors.value = store.storeChartColors
+  }
+
+  function resetToDefault () {
+    console.log(store.storeServerSettings?.colorsCharts)
+    colors.value = store.storeServerSettings?.colorsCharts || store.storeChartColors
+  }
+
+  function saveColors () {
+    store.setCustomChartColors(colors.value)
+    bottomSheetVisible.value = false
+  }
+
+  watch(() => store.storeTheme, async () => {
+    nextTick(() => emit('force-redraw'))
+  })
+  watch(() => store.storeChartColors, async () => {
+    updateColors()
+    nextTick(() => emit('force-redraw'))
+  })
+  watch(bottomSheetVisible, async (newValue: boolean) => {
+    if (newValue) {
+      updateColors()
+    }
+  })
+
+  onMounted(() => {
+    updateColors()
+  })
+</script>

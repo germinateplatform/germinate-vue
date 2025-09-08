@@ -1,209 +1,210 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               ref="fileresourceTable"
-               v-on="$listeners">
-      <!-- Fileresource description -->
-      <template v-slot:cell(fileresourceDescription)="data">
-        <span :title="data.item.fileresourceDescription" v-if="data.item.fileresourceDescription">{{ truncateAfterWords(data.item.fileresourceDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullDescription('tableColumnFileresourceDescription', data.item.fileresourceDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.fileresourceDescription, 10)" >&nbsp;
-          <MdiIcon :path="mdiPageNext" /></a>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableFileresources} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :show-details="false"
+    item-key="fileresourceId"
+    table-key="fileresources"
+    header-icon="mdi-file-download"
+    :header-title="$t('pageDataResourcesTitle')"
+    v-bind="$attrs"
+  >
+    <template #header>
+      <v-btn v-if="store.storeUserIsDataCurator" variant="tonal" prepend-icon="mdi-file-plus" @click="addFileresourceModal?.show()">{{ $t('tableButtonAddFileresource') }}</v-btn>
+    </template>
+
+    <template #item.fileresourceDescription="{ item, value }">
+      <template v-if="item.fileresourceDescription && item.fileresourceDescription.length > 0">
+        <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
+        <a href="#" class="ms-2 table-icon-link" @click.prevent="showFileresourceModal('tableColumnFileresourceDescription', item.fileresourceDescription)" v-if="isTruncatedAfterWords(value, 10)">
+          <v-icon icon="mdi-page-next" />
+        </a>
       </template>
-      <!-- Fileresource type description -->
-      <template v-slot:cell(fileresourcetypeDescription)="data">
-        <span :title="data.item.fileresourcetypeDescription" v-if="data.item.fileresourcetypeDescription">{{ truncateAfterWords(data.item.fileresourcetypeDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullDescription('tableColumnFileresourcetypeDescription', data.item.fileresourcetypeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.fileresourcetypeDescription, 10)" >&nbsp;
-          <MdiIcon :path="mdiPageNext" /></a>
+    </template>
+    <template #item.fileresourcetypeDescription="{ item, value }">
+      <template v-if="item.fileresourceDescription && item.fileresourceDescription.length > 0">
+        <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
+        <a href="#" class="ms-2 table-icon-link" @click.prevent="showFileresourceModal('tableColumnFileresourcetypeDescription', item.fileresourcetypeDescription)" v-if="isTruncatedAfterWords(value, 10)">
+          <v-icon icon="mdi-page-next" />
+        </a>
       </template>
-      <!-- Download -->
-      <template v-slot:cell(fileresourceSize)="data">
-        <div class="d-flex flex-column justify-content-center align-items-center">
-          <b-button class="text-nowrap" variant="primary" :href="getFileResourceUrl(data.item)"><MdiIcon :path="mdiDownload"/> {{ $t('buttonDownload') }}</b-button>
-          <small>({{ getNumberWithSuffix(data.item.fileresourceSize, 2, 1024, ' ') }})</small>
-        </div>
-      </template>
-      <!-- Show datasets -->
-      <template v-slot:cell(datasetIds)="data">
-        <b-button class="text-nowrap" @click="showDatasets(data.item)" v-if="data.item.datasetIds && data.item.datasetIds.length > 0"><MdiIcon :path="mdiDatabase"/> {{ $t('buttonShow') }}</b-button>
-      </template>
-      <!-- Delete resource -->
-      <template v-slot:cell(deleteFileresource)="data">
-        <b-button variant="danger" class="ml-3" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" @click="onDeleteResource(data.item)"><MdiIcon :path="mdiDelete" /></b-button>
-      </template>
-    </BaseTable>
-  </div>
+    </template>
+
+    <!-- Download -->
+    <template #item.fileresourceSize="{ item }">
+      <div class="d-flex flex-column justify-content-center my-2 align-center">
+        <v-btn color="primary" :href="getFileResourceUrl(item)"><v-icon icon="mdi-download" /> {{ $t('buttonDownload') }}</v-btn>
+        <small>({{ getNumberWithSuffix(item.fileresourceSize, 2, 1024, ' ') }})</small>
+      </div>
+    </template>
+    <!-- Show datasets -->
+    <template #item.datasetIds="{ item }">
+      <div class="d-flex align-start h-100 pt-2">
+        <v-btn @click="showDatasets(item)" v-if="item.datasetIds && item.datasetIds.length > 0"><v-icon icon="mdi-database" /> {{ $t('buttonShow') }}</v-btn>
+      </div>
+    </template>
+
+    <!-- Delete resource -->
+    <template #item.deleteFileresource="{ item }">
+      <div class="d-flex align-start h-100 pt-2">
+        <v-btn color="error" @click="deleteResource(item)"><v-icon icon="mdi-delete" /></v-btn>
+      </div>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
+
+  <AddFileresourceModal ref="addFileresourceModal" @fileresource-added="baseTable?.refresh()" />
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
-import { isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
-import { apiDeleteFileresource, apiGetDataResource } from '@/mixins/api/dataset'
-import { downloadBlob } from '@/mixins/util'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-import MdiIcon from '@/components/icons/MdiIcon'
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { AxiosResponse } from 'axios'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableFileresources } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { getNumberWithSuffix, isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
 
-import { mdiPageNext, mdiDownload, mdiDelete, mdiDatabase } from '@mdi/js'
-import { Pages } from '@/mixins/pages'
+  import emitter from 'tiny-emitter/instance'
+  import { coreStore } from '@/stores/app'
+  import { Pages } from '@/plugins/pages'
+  import { apiDeleteFileresource } from '@/plugins/api/dataset'
+  import AddFileresourceModal from '@/components/modals/AddFileresourceModal.vue'
 
-const emitter = require('tiny-emitter/instance')
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableFileresources[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
 
-export default {
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  name: 'FileresourceTable',
-  props: {
-    ...defaultProps.BASE
-  },
-  data: function () {
-    return {
-      mdiPageNext,
-      mdiDownload,
-      mdiDelete,
-      mdiDatabase,
-      options: {
-        idColumn: 'fileresourceId',
-        tableName: 'fileresources'
+  const addFileresourceModal = useTemplateRef('addFileresourceModal')
+  const baseTable = useTemplateRef('baseTable')
+  const router = useRouter()
+  const store = coreStore()
+  const { t } = useI18n()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers: ExtendedDataTableHeader[] = [{
+      key: 'fileresourceId',
+      title: t('tableColumnFileresourceId'),
+      dataType: 'integer',
+    }, {
+      key: 'fileresourceDescription',
+      title: t('tableColumnFileresourceDescription'),
+      dataType: 'string',
+    }, {
+      key: 'fileresourcetypeId',
+      dataType: 'string',
+      title: t('tableColumnFileresourcetypeId'),
+    }, {
+      key: 'fileresourcetypeName',
+      dataType: 'string',
+      title: t('tableColumnFileresourcetypeName'),
+    }, {
+      key: 'fileresourcetypeDescription',
+      title: t('tableColumnFileresourcetypeDescription'),
+      dataType: 'string',
+    }, {
+      key: 'fileresourceCreatedOn',
+      dataType: 'date',
+      title: t('tableColumnFileresourceCreatedOn'),
+      value: value => value.fileresourceCreatedOn ? new Date(value.fileresourceCreatedOn).toLocaleString() : undefined,
+    }, {
+      key: 'datasetIds',
+      dataType: 'json',
+      sortable: false,
+      title: t('tableColumnFileresourceDatasets'),
+    }, {
+      key: 'fileresourceSize',
+      dataType: 'string',
+      sortable: true,
+      align: 'center' as 'end' | 'start' | 'center',
+      title: t('tableColumnFileresourceSize'),
+    }]
+
+    if (store.storeUserIsDataCurator) {
+      headers.push({
+        key: 'deleteFileresource',
+        dataType: undefined,
+        visibleInFilter: false,
+        sortable: false,
+        title: '',
+      })
+    }
+
+    return headers
+  })
+
+  function deleteResource (fileresource: ViewTableFileresources) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTitleSure'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          apiDeleteFileresource(fileresource.fileresourceId || -1, result => {
+            if (result) {
+              baseTable.value?.refresh()
+              emitter.emit('update-sidebar-menu')
+            }
+          })
+        }
       },
-      USER_TYPE_DATA_CURATOR
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeToken',
-      'storeBaseUrl'
-    ]),
-    columns: function () {
-      const result = [
-        {
-          key: 'fileresourceId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnFileresourceId')
-        }, {
-          key: 'fileresourceName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnFileresourceName')
-        }, {
-          key: 'fileresourceDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnFileresourceDescription')
-        }, {
-          key: 'fileresourceCreatedOn',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnFileresourceCreatedOn'),
-          formatter: value => value ? new Date(value).toLocaleString() : null
-        }, {
-          key: 'fileresourcetypeId',
-          type: String,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnFileresourcetypeId')
-        }, {
-          key: 'fileresourcetypeName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnFileresourcetypeName')
-        }, {
-          key: 'fileresourcetypeDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnFileresourcetypeDescription')
-        }, {
-          key: 'datasetIds',
-          type: 'json',
-          sortable: false,
-          class: 'px-1',
-          label: this.$t('tableColumnFileresourceDatasets')
-        }, {
-          key: 'fileresourceSize',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnFileresourceSize')
-        }
-      ]
-
-      if (this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)) {
-        result.push({
-          key: 'deleteFileresource',
-          type: undefined,
-          sortable: false,
-          label: ''
-        })
-      }
-
-      return result
-    }
-  },
-  methods: {
-    userIsAtLeast,
-    isTruncatedAfterWords,
-    truncateAfterWords,
-    getNumberWithSuffix,
-    getFileResourceUrl: function (fileresource) {
-      return `${this.storeBaseUrl}fileresource/${fileresource.fileresourceId}/download?token=${this.storeToken ? this.storeToken.token : null}`
-    },
-    showDatasets: function (fileresource) {
-      const filter = [{
-        column: 'fileresourceIds',
-        comparator: 'contains',
-        operator: 'and',
-        values: [fileresource.fileresourceId]
-      }]
-      this.$router.push({
-        name: Pages.datasets,
-        query: {
-          'datasets-filter': JSON.stringify(filter)
-        }
-      })
-    },
-    onDeleteResource: function (resource) {
-      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
-        okVariant: 'danger',
-        okTitle: this.$t('genericYes'),
-        cancelTitle: this.$t('genericNo')
-      })
-        .then(value => {
-          if (value) {
-            apiDeleteFileresource(resource.fileresourceId, result => {
-              if (result) {
-                this.refresh()
-                emitter.emit('update-sidebar-menu')
-              }
-            })
-          }
-        })
-    },
-    downloadFileresource: function (resource) {
-      apiGetDataResource(resource.fileresourceId, result => {
-        downloadBlob({
-          blob: result,
-          filename: resource.fileresourcePath
-        })
-      })
-    },
-    showFullDescription: function (title, description) {
-      this.$bvModal.msgBoxOk(description, {
-        title: this.$t(title),
-        okTitle: this.$t('genericOk')
-      })
-    },
-    refresh: function () {
-      this.$refs.fileresourceTable.refresh()
-    }
+    })
   }
-}
+
+  function getFileResourceUrl (fileresource: ViewTableFileresources) {
+    return `${store.storeBaseUrl}fileresource/${fileresource.fileresourceId}/download?token=${store.storeToken ? store.storeToken.token : null}`
+  }
+
+  function showDatasets (fileresource: ViewTableFileresources) {
+    const filter: FilterGroup[] = [{
+      filters: [{
+        column: 'fileresourceIds',
+        comparator: FilterComparator.contains,
+        values: [`${fileresource.fileresourceId}`],
+      }],
+      operator: FilterOperator.and,
+    }]
+
+    router.push({
+      path: Pages.datasets.path,
+      query: {
+        'datasets-filter': JSON.stringify(filter),
+      },
+    })
+  }
+
+  function showFileresourceModal (key: string, value: string) {
+    emitter.emit('show-confirm', {
+      title: t(key),
+      message: value,
+      okTitle: t('genericOk'),
+      cancelTitle: undefined,
+      okOnly: true,
+      okVariant: 'primary',
+    })
+  }
+
+  defineExpose({
+    refresh: () => baseTable.value?.refresh(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>

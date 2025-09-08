@@ -1,159 +1,162 @@
 <template>
-  <div>
-    <BaseChart :width="() => 720" :height="() => 720" :sourceFile="baseSourceFile" :filename="baseFilename" v-on:force-redraw="redraw(sourceFile)">
-      <div slot="chart" id="taxonomy-chart" ref="taxonomyChart" class="chart-taxonomy text-center" />
-    </BaseChart>
-  </div>
+  <BaseChart
+    title="pageStatisticsBiologicalStatusTreemapTitle"
+    :chart-id="id"
+    :filename="filename"
+    :source-file="sourceFile"
+    @force-redraw="redraw"
+  >
+    <template #chart-content>
+      <div :id="id" ref="taxonomyChart" />
+    </template>
+  </BaseChart>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import BaseChart from '@/components/charts/BaseChart'
-import { plotlyTreemapChart } from '@/plugins/charts/plotly-treemap-chart.js'
-import { apiGetStatsFile } from '@/mixins/api/stats.js'
-import { getColors } from '@/mixins/colors.js'
-import { Pages } from '@/mixins/pages'
-const d3Select = require('d3-selection')
-const d3Dsv = require('d3-dsv')
+<script setup lang="ts">
+  import BaseChart from '@/components/charts/BaseChart.vue'
+  import { uuidv4, type DownloadBlob } from '@/plugins/util'
+  import { plotlyTreemapChart } from '@/plugins/charts/plotly-treemap-chart'
 
-const Plotly = require('plotly.js/lib/core')
-// Only register the chart types we're actually using to reduce the final bundle size
-Plotly.register([
-  require('plotly.js/lib/treemap')
-])
+  import { tsvParse } from 'd3-dsv'
+  import { select } from 'd3-selection'
 
-export default {
-  data: function () {
-    return {
-      sourceFile: null
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeDarkMode'
-    ]),
-    baseSourceFile: function () {
-      return {
-        blob: this.sourceFile,
-        filename: this.baseFilename
+  import Plotly from 'plotly.js/lib/core'
+  import treemap from 'plotly.js/lib/treemap'
+  import { coreStore } from '@/stores/app'
+  import { Pages } from '@/plugins/pages'
+  import { getColors } from '@/plugins/util/colors'
+  import { FilterComparator, FilterOperator, type FilterGroup } from '@/plugins/types/germinate'
+  import { apiGetStatsFile } from '@/plugins/api/stats'
+
+  // Only register the chart types we're actually using to reduce the final bundle size
+  Plotly.register([
+    treemap,
+  ])
+
+  const store = coreStore()
+  const router = useRouter()
+
+  const sourceFile = ref<DownloadBlob>()
+  const systemTheme = ref('dark')
+  const taxonomyChart = useTemplateRef('taxonomyChart')
+  const id = ref('taxonomy-' + uuidv4())
+
+  const filename = computed(() => {
+    return 'taxonomy-treemap'
+  })
+
+  async function redraw (source?: Blob) {
+    if (source) {
+      sourceFile.value = {
+        blob: source,
+        filename: filename.value,
+        extension: 'tsv',
       }
-    },
-    baseFilename: function () {
-      return 'taxonomy-treemap'
     }
-  },
-  components: {
-    BaseChart
-  },
-  methods: {
-    redraw: function (result) {
-      this.sourceFile = result
 
-      Plotly.purge(this.$refs.taxonomyChart)
+    if (taxonomyChart.value) {
+      Plotly.purge(taxonomyChart.value)
 
-      const reader = new FileReader()
-      reader.onload = () => {
-        const data = d3Dsv.tsvParse(reader.result)
+      const text = await sourceFile.value?.blob.text()
 
-        const sunburst = {}
+      const data = tsvParse(text || '')
 
-        data.forEach(t => {
-          if (t.subtaxa) {
-            const key = `${t.subtaxa}->${t.genus} | ${t.species}`
-            if (!sunburst[key]) {
-              sunburst[key] = 0
-            }
+      const sunburst: { [key: string]: number } = {}
 
-            sunburst[key] += parseInt(t.count)
+      data.forEach(t => {
+        if (t.subtaxa) {
+          const key = `${t.subtaxa}->${t.genus} | ${t.species}`
+          if (!sunburst[key]) {
+            sunburst[key] = 0
           }
 
-          if (t.species) {
-            const key = `${t.genus} | ${t.species}->${t.genus}`
-            if (!sunburst[key]) {
-              sunburst[key] = 0
-            }
-
-            sunburst[key] += parseInt(t.count)
-          }
-
-          if (t.genus) {
-            const key = `${t.genus}->NULL`
-            if (!sunburst[key]) {
-              sunburst[key] = 0
-            }
-
-            sunburst[key] += parseInt(t.count)
-          }
-        })
-
-        const chartData = {
-          labels: [],
-          parents: [],
-          values: []
+          sunburst[key] += Number.parseInt(t.count)
         }
 
-        Object.keys(sunburst).forEach(k => {
-          const parts = k.split('->')
+        if (t.species) {
+          const key = `${t.genus} | ${t.species}->${t.genus}`
+          if (!sunburst[key]) {
+            sunburst[key] = 0
+          }
+
+          sunburst[key] += Number.parseInt(t.count)
+        }
+
+        if (t.genus) {
+          const key = `${t.genus}->NULL`
+          if (!sunburst[key]) {
+            sunburst[key] = 0
+          }
+
+          sunburst[key] += Number.parseInt(t.count)
+        }
+      })
+
+      const chartData = {
+        labels: [] as string[],
+        parents: [] as string[],
+        values: [] as number[],
+      }
+
+      Object.keys(sunburst).forEach(k => {
+        const parts = k.split('->')
+        if (parts.length === 2) {
           chartData.labels.push(parts[0])
           chartData.parents.push(parts[1] === 'NULL' ? '' : parts[1])
           chartData.values.push(sunburst[k])
-        })
+        }
+      })
 
-        d3Select.select(this.$refs.taxonomyChart)
-          .datum(chartData)
-          .call(plotlyTreemapChart(Plotly)
-            .darkMode(this.storeDarkMode)
-            .height(500)
-            .onLeafClicked(path => {
-              // Then store a filter using genus, species and subtaxa
-              const genus = path[0]
-              const species = path.length > 1 ? path[1] : null
-              const subtaxa = path.length > 2 ? path[2] : null
-              const query = [{
-                column: 'genus',
-                comparator: 'equals',
-                operator: 'and',
-                values: [genus]
-              }]
+      select(taxonomyChart.value)
+        .datum(chartData)
+        .call(plotlyTreemapChart(Plotly)
+          .darkMode(store.storeTheme === 'system' ? systemTheme.value : store.storeTheme)
+          .height(500)
+          .onLeafClicked((path: string[]) => {
+            const query: FilterGroup[] = [{
+              filters: [],
+              operator: FilterOperator.and,
+            }]
 
-              if (species) {
-                query.push({
-                  column: 'species',
-                  comparator: 'equals',
-                  operator: 'and',
-                  values: [species]
-                })
-              }
-              if (subtaxa) {
-                query.push({
-                  column: 'subtaxa',
-                  comparator: 'equals',
-                  operator: 'and',
-                  values: [subtaxa]
-                })
-              }
+            // Then store a filter using genus, species and subtaxa
+            const genus = path[0]
+            const species = path.length > 1 ? path[1].split(' | ')[1] : null
+            const subtaxa = path.length > 2 ? path[2] : null
 
-              // Navigate to the germplasm page
-              this.$router.push({
-                name: Pages.germplasm,
-                query: {
-                  'germplasm-filter': JSON.stringify(query)
-                }
-              })
+            query[0].filters?.push({
+              column: 'genus',
+              comparator: FilterComparator.equals,
+              values: [genus],
             })
-            .colors(getColors()))
-      }
-      reader.readAsText(result)
-    }
-  },
-  mounted: function () {
-    apiGetStatsFile('taxonomy', result => this.redraw(result))
-  }
-}
-</script>
 
-<style>
-.chart-taxonomy g.slice:hover {
-  cursor: pointer;
-}
-</style>
+            if (species) {
+              query[0].filters?.push({
+                column: 'species',
+                comparator: FilterComparator.equals,
+                values: [species],
+              })
+            }
+            if (subtaxa) {
+              query[0].filters?.push({
+                column: 'subtaxa',
+                comparator: FilterComparator.equals,
+                values: [subtaxa],
+              })
+            }
+
+            // Navigate to the germplasm page
+            router.push({
+              path: Pages.germplasm.path,
+              query: {
+                'germplasm-filter': JSON.stringify(query),
+              },
+            })
+          })
+          .colors(getColors()))
+    }
+  }
+
+  onMounted(() => {
+    apiGetStatsFile('taxonomy', (result: Blob) => redraw(result))
+  })
+</script>

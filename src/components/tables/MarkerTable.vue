@@ -1,107 +1,92 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               primary-key="markerId"
-               v-bind="$props"
-               itemType="markers"
-               ref="markerTable"
-               v-on="$listeners">
-      <!-- Marker id link -->
-      <template v-slot:cell(markerId)="data">
-        <router-link :to="{name: Pages.markerDetails, params: { markerId: data.item.markerId }}">{{ data.item.markerId }}</router-link>
-      </template>
-      <!-- Marker name link -->
-      <template v-slot:cell(markerName)="data">
-        <router-link :to="{name: Pages.markerDetails, params: { markerId: data.item.markerId }}">{{ data.item.markerName }}</router-link>
-      </template>
-      <!-- Synonyms -->
-      <template v-slot:cell(markerSynonyms)="data">
-        <span v-if="data.item.markerSynonyms">{{ data.item.markerSynonyms.join(', ') }}</span>
-      </template>
-    </BaseTable>
-  </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMarkers} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :selection-type="selectionType"
+    :show-details="false"
+    item-key="markerId"
+    table-key="markers"
+    marked-item-type="markers"
+    header-icon="mdi-format-indent-increase"
+    :header-title="$t('pageMarkersTitle')"
+    v-bind="$attrs"
+  >
+    <!-- Marker id link -->
+    <template #item.markerId="{ item }">
+      <router-link :to="Pages.getPath(Pages.markerDetails, item.markerId)">{{ item.markerId }}</router-link>
+    </template>
+    <!-- Marker name link -->
+    <template #item.markerName="{ item }">
+      <router-link :to="Pages.getPath(Pages.markerDetails, item.markerId)">{{ item.markerName }}</router-link>
+    </template>
+    <!-- Synonyms -->
+    <template #item.markerSynonyms="{ item }">
+      <span v-if="item.markerSynonyms">{{ item.markerSynonyms.join(', ') }}</span>
+    </template>
+    <template #item.markerType="{ item }">
+      <v-chip label v-if="item.markerType">{{ item.markerType }}</v-chip>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { Pages } from '@/mixins/pages'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-export default {
-  name: 'MarkerTable',
-  props: {
-    ...defaultProps.FULL,
-    selectable: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data: function () {
-    return {
-      Pages,
-      options: {
-        idColumn: 'markerId',
-        tableName: 'markers'
-      }
-    }
-  },
-  computed: {
-    columns: function () {
-      const result = [
-        {
-          key: 'markerId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnMarkerId')
-        }, {
-          key: 'markerName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnMarkerName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'markerType',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnMarkerType')
-        }, {
-          key: 'markerSynonyms',
-          type: 'json',
-          sortable: true,
-          label: this.$t('tableColumnMarkerSynonyms')
-        }, {
-          key: 'marked',
-          type: undefined,
-          sortable: false,
-          class: 'text-right',
-          label: ''
-        }
-      ]
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableMarkers } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { Pages } from '@/plugins/pages'
 
-      if (this.selectable === true) {
-        result.unshift({
-          key: 'selected',
-          type: undefined,
-          sortable: false,
-          label: ''
-        })
-      }
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMarkers[]>>> }
+    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
 
-      return result
-    }
-  },
-  components: {
-    BaseTable
-  },
-  methods: {
-    refresh: function () {
-      this.$refs.markerTable.refresh()
-    }
-  }
-}
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'markerId',
+      title: t('tableColumnMarkerId'),
+      dataType: 'integer',
+    }, {
+      key: 'markerName',
+      title: t('tableColumnMarkerName'),
+      dataType: 'string',
+    }, {
+      key: 'markerType',
+      dataType: 'string',
+      title: t('tableColumnMarkerType'),
+    }, {
+      key: 'markerSynonyms',
+      dataType: 'json',
+      title: t('tableColumnMarkerSynonyms'),
+    }]
+
+    return headers
+  })
+
+  defineExpose({
+    refresh: () => baseTable.value?.refresh(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>

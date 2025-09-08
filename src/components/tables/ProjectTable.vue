@@ -1,266 +1,299 @@
 <template>
-  <div>
-    <CoolLightBox
-      :items="coolboxImages"
-      :index="coolboxIndex"
-      effect="fade"
-      @close="coolboxIndex = null" />
-    <BaseTable :options="options"
-               :columns="columns"
-               :filterOn="filterOn"
-               :tableActions="userIsDataCurator ? localTableActions : null"
-               primary-key="projectId"
-               ref="table"
-               v-bind="$props"
-               v-on="$listeners">
-      <!-- Project id link -->
-      <template v-slot:cell(projectId)="data">
-        <router-link :to="{ name: Pages.projectDetails, params: { projectId: data.item.projectId } }" event="" @click.native.prevent="$emit('project-selected', data.item.projectId)">{{ data.item.projectId }}</router-link>
-      </template>
-      <!-- Project name link -->
-      <template v-slot:cell(projectName)="data">
-        <router-link :to="{ name: Pages.projectDetails, params: { projectId: data.item.projectId } }" event="" @click.native.prevent="$emit('project-selected', data.item.projectId)">{{ data.item.projectName }}</router-link>
-      </template>
-      <!-- Project description link -->
-      <template v-slot:cell(projectDescription)="data">
-        <router-link :to="{ name: Pages.projectDetails, params: { projectId: data.item.projectId } }" event="" @click.native.prevent="$emit('project-selected', data.item.projectId)">{{ data.item.projectDescription }}</router-link>
-      </template>
-      <!-- Project datasets -->
-      <template v-slot:cell(datasets)="data">
-        <span v-if="data.item.datasets">{{ data.item.datasets.length.toLocaleString() }}</span>
-      </template>
-      <!-- Project image/logo -->
-      <template v-slot:cell(projectImageId)="data">
-        <a :href="getSrc(data.item, 'large')" @click.prevent="update(data.item)" v-if="data.item.projectImageId">
-          <b-img-lazy :src="getSrc(data.item, 'small')" class="table-image" alt="Image" />
-        </a>
-      </template>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableProjects} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :show-details="false"
+    :selection-type="TableSelectionType.all"
+    item-key="projectId"
+    table-key="projects"
+    header-icon="mdi-clipboard-list"
+    :header-title="$t('pageProjectsTitle')"
+    @selection-changed="selectionChanged"
+    v-bind="$attrs"
+  >
+    <template #header v-if="store.storeUserIsDataCurator">
+      <v-btn variant="outlined" :text="$t('buttonAddProject')" prepend-icon="mdi-plus" @click="addItem" />
+    </template>
 
-      <!-- Edit project -->
-      <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onProjectEditClicked(data.item)" v-if="userIsDataCurator">
-          <span v-b-tooltip.hover :title="$t('tableTooltipProjectEdit')"><MdiIcon :path="mdiSquareEditOutline"/></span>
-        </a>
-      </template>
-      <!-- Delete project -->
-      <template v-slot:cell(delete)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onProjectDeleteClicked(data.item)" v-if="userIsDataCurator">
-          <span v-b-tooltip.hover :title="$t('tableTooltipProjectDelete')"><MdiIcon className="text-danger" :path="mdiDelete"/></span>
-        </a>
-      </template>
-    </BaseTable>
+    <!-- Project id link -->
+    <template #item.projectId="{ item }">
+      <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectId }}</router-link>
+    </template>
+    <!-- Project name link -->
+    <template #item.projectName="{ item }">
+      <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectName }}</router-link>
+    </template>
+    <!-- Project description link -->
+    <template #item.projectDescription="{ item }">
+      <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectDescription }}</router-link>
+    </template>
+    <!-- Project datasets -->
+    <template #item.datasets="{ item }">
+      <span v-if="item.datasets">{{ getNumberWithSuffix(item.datasets.length, 1) }}</span>
+    </template>
+    <template #item.projectExternalUrl="{ item }">
+      <a :href="item.projectExternalUrl" target="_blank" rel="noopener noreferrer" v-if="item.projectExternalUrl">{{ item.projectExternalUrl }}</a>
+    </template>
+    <!-- Project image/logo -->
+    <template #item.projectImageId="{ item }">
+      <v-img :src="getSrc(item, 'small')" class="table-image py-2" alt="Image" />
+    </template>
 
-    <!-- Project edit modal -->
-    <AddProjectModal :projectToEdit="project" v-if="userIsDataCurator" @projects-changed="projectAddedEdited" ref="projectEditModal" />
-  </div>
+    <template #item.projectActions="{ item }" v-if="store.storeUserIsDataCurator">
+      <v-icon class="mx-1" color="info" icon="mdi-pencil" @click="editItem(item)" />
+      <v-icon class="mx-1" color="error" icon="mdi-delete" @click="deleteItem(item)" />
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
+
+  <!-- @vue-generic {typeof import('@/plugins/types/ExtendedViewTableProjects')} -->
+  <GenericAddEditFormModal
+    title="modalTitleAddProject"
+    :item="selectedProject"
+    :notify="onSendProject"
+    :fields="projectFields"
+    @items-changed="baseTable?.refresh()"
+    ref="projectModal"
+    v-if="selectedProject"
+  />
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-import MdiIcon from '@/components/icons/MdiIcon'
-import CoolLightBox from 'vue-cool-lightbox'
-import 'vue-cool-lightbox/dist/vue-cool-lightbox.min.css'
-import BaseTable from '@/components/tables/BaseTable'
-import AddProjectModal from '@/components/modals/AddProjectModal'
-import defaultProps from '@/const/table-props.js'
-import { Pages } from '@/mixins/pages'
-import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
-import { mdiDelete, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
-import { apiDeleteProject } from '@/mixins/api/project'
-import { getImageUrlById } from '@/mixins/image'
+  import { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableProjects } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  // import AddEditProjectModal from '@/components/modals/AddEditProjectModal.vue'
+  import GenericAddEditFormModal from '@/components/modals/GenericAddEditFormModal.vue'
+  import { coreStore } from '@/stores/app'
+  import type { ExtendedViewTableProjects } from '@/plugins/types/ExtendedViewTableProjects'
+  import { apiPatchProject, apiPostProject, apiDeleteProject } from '@/plugins/api/project'
+  import { Pages } from '@/plugins/pages'
+  import { getNumberWithSuffix } from '@/plugins/util/formatting'
+  import { getImageUrlById } from '@/plugins/util/image'
 
-const emitter = require('tiny-emitter/instance')
+  import emitter from 'tiny-emitter/instance'
 
-export default {
-  name: 'ProjectTable',
-  props: {
-    ...defaultProps.BASE,
-    ...defaultProps.IDS,
-    ...defaultProps.ACTIONS,
-    selectable: {
-      type: Boolean,
-      default: false
-    },
-    selectionMode: {
-      type: String,
-      default: 'multi'
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableProjects[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
+
+  const store = coreStore()
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+  const selectedProject = ref<ViewTableProjects>()
+  const projectModal = useTemplateRef('projectModal')
+
+  const projectFields = [{
+    key: 'projectName',
+    title: 'formLabelProjectName',
+    type: 'text' as const,
+    required: true,
+    width: 1,
+    valid: (value: string) => value !== undefined && value !== null && value.trim().length > 0,
+  }, {
+    key: 'projectDescription',
+    title: 'formLabelProjectDescription',
+    type: 'textarea' as const,
+    required: false,
+    width: 1,
+  }, {
+    key: 'projectPageContent',
+    title: 'formLabelProjectPageContent',
+    type: 'markdown' as const,
+    required: false,
+    width: 2,
+  }, {
+    key: 'projectStartDate',
+    title: 'formLabelProjectStartDate',
+    type: 'date' as const,
+    required: false,
+    width: 1,
+  }, {
+    key: 'projectEndDate',
+    title: 'formLabelProjectEndDate',
+    type: 'date' as const,
+    required: false,
+    width: 1,
+  }, {
+    key: 'projectExternalUrl',
+    title: 'formLabelProjectExternalUrl',
+    type: 'text' as const,
+    inputType: 'url',
+    required: false,
+    width: 1,
+  }, {
+    key: 'file',
+    title: 'pageDataUploadFilePlaceholder',
+    type: 'file' as const,
+    required: false,
+    width: 1,
+    accepts: '.jpeg, .png, .jpg',
+  }]
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'projectId',
+      title: t('tableColumnProjectId'),
+      dataType: 'integer',
+    }, {
+      key: 'projectName',
+      title: t('tableColumnProjectName'),
+      dataType: 'string',
+    }, {
+      key: 'projectDescription',
+      dataType: 'string',
+      title: t('tableColumnProjectDescription'),
+    }, {
+      key: 'projectExternalUrl',
+      dataType: 'string',
+      title: t('tableColumnProjectUrl'),
+    }, {
+      key: 'projectImageId',
+      dataType: undefined,
+      sortable: false,
+      title: t('tableColumnProjectImage'),
+    }, {
+      key: 'datasets',
+      dataType: undefined,
+      sortable: false,
+      class: 'text-right',
+      title: t('tableColumnProjectDatasets'),
+    }, {
+      key: 'projectStartDate',
+      dataType: 'date',
+      title: t('tableColumnProjectStartDate'),
+      value: (item: ViewTableProjects) => (item && item.projectStartDate) ? new Date(item.projectStartDate).toLocaleDateString() : '',
+    }, {
+      key: 'projectEndDate',
+      dataType: 'date',
+      title: t('tableColumnProjectEndDate'),
+      value: (item: ViewTableProjects) => (item && item.projectEndDate) ? new Date(item.projectEndDate).toLocaleDateString() : '',
+    }, {
+      key: 'projectActions',
+      title: '',
+      align: 'end' as 'start' | 'end' | 'center',
+      visibleInFilter: false,
+      dataType: undefined,
+    }]
+
+    return headers
+  })
+
+  function getSrc (item: ViewTableProjects, size: string) {
+    if (!item || !item.projectImageId) {
+      return
     }
-  },
-  data: function () {
-    return {
-      mdiDelete,
-      mdiSquareEditOutline,
-      Pages,
-      options: {
-        idColumn: 'projectId',
-        tableName: 'projects'
-      },
-      project: null,
-      coolboxIndex: null,
-      coolboxImages: []
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeToken',
-      'storeSelectedProjects'
-    ]),
-    userIsDataCurator: function () {
-      return this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)
-    },
-    localTableActions: function () {
-      return [{
-        id: 1,
-        text: this.$t('buttonAddProject'),
-        variant: null,
-        disabled: () => false,
-        path: mdiPlusBox,
-        callback: () => {
-          this.project = null
-          this.$nextTick(() => this.$refs.projectEditModal.show())
-        }
-      }]
-    },
-    columns: function () {
-      const columns = [
-        {
-          key: 'projectId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnProjectId')
-        }, {
-          key: 'projectName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnProjectName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'projectDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnProjectDescription')
-        }, {
-          key: 'projectImageId',
-          type: undefined,
-          sortable: false,
-          label: this.$t('tableColumnProjectImage')
-        }, {
-          key: 'datasets',
-          type: undefined,
-          sortable: false,
-          class: 'text-right',
-          label: this.$t('tableColumnProjectDatasets')
-        }, {
-          key: 'projectStartDate',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnProjectStartDate'),
-          formatter: value => value ? new Date(value).toLocaleDateString() : null
-        }, {
-          key: 'projectEndDate',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnProjectEndDate'),
-          formatter: value => value ? new Date(value).toLocaleDateString() : null
-        }
-      ]
 
-      if (this.userIsDataCurator) {
-        columns.push({
-          key: 'edit',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        })
-
-        columns.push({
-          key: 'delete',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        })
-      }
-
-      if (this.selectable === true) {
-        columns.unshift({
-          key: 'selected',
-          type: undefined,
-          sortable: false,
-          class: 'table-primary',
-          label: ''
-        })
-      }
-
-      return columns
-    }
-  },
-  components: {
-    AddProjectModal,
-    CoolLightBox,
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    getSrc: function (project, size) {
-      return getImageUrlById(project.projectImageId, {
-        type: 'projects',
-        size: size,
-        token: this.storeToken ? this.storeToken.imageToken : ''
-      })
-    },
-    update: function (project) {
-      this.coolboxImages = [{
-        src: this.getSrc(project, 'large'),
-        title: project.projectName
-      }]
-      this.coolboxIndex = 0
-    },
-    projectAddedEdited: function () {
-      this.refresh()
-      this.$emit('projects-updated')
-      emitter.emit('update-sidebar-menu')
-    },
-    setSelectedItems: function (toSelect) {
-      this.$refs.table.setSelectedItems(toSelect)
-    },
-    refresh: function () {
-      this.$refs.table.refresh()
-    },
-    onProjectEditClicked: function (project) {
-      this.project = project
-
-      this.$nextTick(() => this.$refs.projectEditModal.show())
-    },
-    onProjectDeleteClicked: function (project) {
-      this.$bvModal.msgBoxConfirm(this.$t('modalTextProjectDelete'), {
-        title: this.$t('modalTitleSure'),
-        okVariant: 'danger',
-        okTitle: this.$t('genericYes'),
-        cancelTitle: this.$t('genericNo')
-      })
-        .then(value => {
-          if (value) {
-            // Delete the image
-            apiDeleteProject(project.projectId, result => {
-              if (result) {
-                const copy = this.storeSelectedProjects.concat().filter(p => p !== project.projectId)
-                this.$store.dispatch('setSelectedProjects', copy)
-
-                this.refresh()
-
-                emitter.emit('update-sidebar-menu')
-              }
-            })
-          }
-        })
-    }
+    return getImageUrlById(item.projectImageId, {
+      type: 'projects',
+      size: size,
+      token: store.storeToken ? store.storeToken.imageToken : '',
+    })
   }
-}
+
+  function addItem () {
+    selectedProject.value = {}
+
+    nextTick(() => projectModal.value?.show())
+  }
+
+  function editItem (project: ViewTableProjects) {
+    selectedProject.value = project
+
+    nextTick(() => projectModal.value?.show())
+  }
+
+  function deleteItem (project: ViewTableProjects) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTitleSure'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          apiDeleteProject(project.projectId || -1, result => {
+            if (result) {
+              baseTable.value?.refresh()
+              emitter.emit('update-sidebar-menu')
+            }
+          })
+        }
+      },
+    })
+  }
+
+  function selectionChanged (ids: number[]) {
+    store.setSelectedProjects(ids)
+  }
+
+  function onSendProject (item: ExtendedViewTableProjects) {
+    const formData = new FormData()
+    formData.append('name', item.projectName || '')
+    if (item.projectDescription && item.projectDescription !== '') {
+      formData.append('description', item.projectDescription)
+    }
+    if (item.projectPageContent && item.projectPageContent !== '') {
+      formData.append('pageContent', item.projectPageContent)
+    }
+    if (item.projectStartDate) {
+      formData.append('startDate', item.projectStartDate)
+    }
+    if (item.projectEndDate) {
+      formData.append('endDate', item.projectEndDate)
+    }
+    if (item.projectExternalUrl && item.projectExternalUrl !== '') {
+      formData.append('externalUrl', item.projectExternalUrl)
+    }
+
+    if (item.file) {
+      formData.append('image', item.file)
+    }
+
+    console.log(formData)
+
+    return new Promise<boolean>(resolve => {
+      if (selectedProject.value?.projectId) {
+        apiPatchProject(selectedProject.value?.projectId, formData, () => {
+          resolve(true)
+        })
+      } else {
+        apiPostProject(formData, () => {
+          resolve(true)
+        })
+      }
+    })
+  }
+
+  defineExpose({
+    refresh: () => baseTable.value?.refresh(),
+  })
+
+  onMounted(() => {
+    baseTable.value?.setSelection(store.storeSelectedProjects || [])
+  })
 </script>
+
+<style scoped>
+</style>
 
 <style scoped>
 .table-image {

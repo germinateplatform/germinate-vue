@@ -1,5 +1,4 @@
 export function plotlyBarChart (Plotly) {
-  let width = 1280
   let height = 600
   let xCategory = ''
   let yCategory = ''
@@ -37,8 +36,8 @@ export function plotlyBarChart (Plotly) {
               name: groupByValues[i] || 'N/A',
               type: 'bar',
               marker: {
-                color: mode === 'traces' ? colors[i % colors.length] : colors
-              }
+                color: mode === 'traces' ? colors[i % colors.length] : colors,
+              },
             })
           }
         }
@@ -53,8 +52,8 @@ export function plotlyBarChart (Plotly) {
             name: dims[i],
             type: 'bar',
             marker: {
-              color: mode === 'traces' ? colors[i % colors.length] : colors
-            }
+              color: mode === 'traces' ? colors[i % colors.length] : colors,
+            },
           })
         }
       }
@@ -63,7 +62,7 @@ export function plotlyBarChart (Plotly) {
         modeBarButtonsToRemove: ['toImage'],
         displayModeBar: false,
         responsive: true,
-        displaylogo: false
+        displaylogo: false,
       }
 
       let xTickLabels = null
@@ -96,7 +95,7 @@ export function plotlyBarChart (Plotly) {
       }
 
       const layout = {
-        height: height,
+        height,
         hovermode: 'closest',
         barmode: 'group',
         paper_bgcolor: 'transparent',
@@ -108,7 +107,7 @@ export function plotlyBarChart (Plotly) {
           ticktext: xTickLabels,
           tickvals: xTickValues,
           automargin: true,
-          fixedrange: true
+          fixedrange: true,
         },
         yaxis: {
           title: { text: yCategory, font: { color: darkMode ? 'white' : 'black' } },
@@ -116,20 +115,22 @@ export function plotlyBarChart (Plotly) {
           automargin: true,
           fixedrange: true,
           showgrid: true,
-          gridcolor: darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)'
+          gridcolor: darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h',
           x: 0,
           y: 1.1,
-          font: { color: darkMode ? 'white' : 'black' }
-        }
+          font: { color: darkMode ? 'white' : 'black' },
+        },
       }
 
       if (groupBy) {
         layout.barmode = 'group'
       }
+
+      console.log(data)
 
       // Plotly.purge(this)
       Plotly.react(this, data, layout, config)
@@ -137,13 +138,17 @@ export function plotlyBarChart (Plotly) {
       if (onPointClicked) {
         const dragLayer = this.getElementsByClassName('nsewdrag')[0]
 
-        this.on('plotly_hover', () => { dragLayer.style.cursor = 'pointer' })
-        this.on('plotly_unhover', () => { dragLayer.style.cursor = '' })
+        this.on('plotly_hover', () => {
+          dragLayer.style.cursor = 'pointer'
+        })
+        this.on('plotly_unhover', () => {
+          dragLayer.style.cursor = ''
+        })
         this.on('plotly_click', data => {
           if (data && data.points && data.points.length > 0 && data.event && data.event.button === 0) {
             onPointClicked({
               x: data.points[0].x,
-              trace: data.points[0].data.name
+              trace: data.points[0].data.name,
             })
           }
         })
@@ -159,99 +164,58 @@ export function plotlyBarChart (Plotly) {
     return rows.filter(row => row[referenceColumn] === referenceValue).map(row => row[key])
   }
 
-  chart.x = (_) => {
-    if (!arguments.length) {
-      return x
-    }
-    x = _
+  chart.x = nx => {
+    x = nx
     return chart
   }
 
-  chart.onPointClicked = (_) => {
-    if (!arguments.length) {
-      return onPointClicked
-    }
-    onPointClicked = _
+  chart.onPointClicked = opc => {
+    onPointClicked = opc
     return chart
   }
 
-  chart.xCategory = (_) => {
-    if (!arguments.length) {
-      return xCategory
-    }
-    xCategory = _
+  chart.xCategory = xc => {
+    xCategory = xc
     return chart
   }
 
-  chart.groupBy = (_) => {
-    if (!arguments.length) {
-      return groupBy
-    }
-    groupBy = _
+  chart.groupBy = gb => {
+    groupBy = gb
     return chart
   }
 
-  chart.xLabels = (_) => {
-    if (!arguments.length) {
-      return xLabels
-    }
-    xLabels = _
+  chart.xLabels = xl => {
+    xLabels = xl
     return chart
   }
 
-  chart.yCategory = (_) => {
-    if (!arguments.length) {
-      return yCategory
-    }
-    yCategory = _
+  chart.yCategory = yc => {
+    yCategory = yc
     return chart
   }
 
-  chart.width = (_) => {
-    if (!arguments.length) {
-      return width
-    }
-    width = _
+  chart.height = h => {
+    height = h
     return chart
   }
 
-  chart.height = (_) => {
-    if (!arguments.length) {
-      return height
-    }
-    height = _
+  chart.colors = c => {
+    colors = c
     return chart
   }
 
-  chart.colors = (_) => {
-    if (!arguments.length) {
-      return colors
-    }
-    colors = _
+  chart.mode = m => {
+    mode = m
     return chart
   }
 
-  chart.mode = (_) => {
-    if (!arguments.length) {
-      return mode
-    }
-    mode = _
+  chart.columnsToIgnore = cti => {
+    columnsToIgnore = cti
     return chart
   }
 
-  chart.columnsToIgnore = (_) => {
-    if (!arguments.length) {
-      return columnsToIgnore
-    }
-    columnsToIgnore = _
-    return chart
-  }
-
-  chart.darkMode = (_) => {
-    if (!arguments.length) {
-      return darkMode
-    }
-    darkMode = _
+  chart.darkMode = d => {
+    darkMode = d
     return chart
   }
 

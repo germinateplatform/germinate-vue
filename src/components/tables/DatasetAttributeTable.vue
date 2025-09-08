@@ -1,114 +1,113 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               ref="datasetAttributeTable"
-               v-on="$listeners">
-      <template v-slot:cell(attributeDescription)="data">
-        <span :title="data.item.attributeDescription" v-if="data.item.attributeDescription">{{ truncateAfterWords(data.item.attributeDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullAttributeDescription(data.item.attributeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.attributeDescription, 10)" >&nbsp;
-          <MdiIcon :path="mdiPageNext" />
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableDatasetAttributes} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :selection-type="selectionType"
+    :show-details="false"
+    item-key="datasetId"
+    table-key="datasetAttributes"
+    header-icon="mdi-file-document"
+    :header-title="$t('modalTitleDatasetAttributes')"
+    v-bind="$attrs"
+  >
+    <template #item.attributeDescription="{ item, value }">
+      <template v-if="item.attributeDescription && item.attributeDescription.length > 0">
+        <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
+        <a href="#" class="ms-2 table-icon-link" @click.prevent="showDatasetAttributeModal(item)" v-if="isTruncatedAfterWords(value, 10)">
+          <v-icon icon="mdi-page-next" />
         </a>
       </template>
-      <!-- Attribute type -->
-      <template v-slot:cell(attributeType)="data">
-        <span v-if="data.item.attributeType">
-          <span :style="`color: ${dataTypes[data.item.attributeType].color()};`"><MdiIcon :path="dataTypes[data.item.attributeType].path" /></span>
-          <span> {{ dataTypes[data.item.attributeType].text() }}</span>
-        </span>
-      </template>
-    </BaseTable>
-  </div>
+    </template>
+
+    <template #item.attributeType="{ item }">
+      <v-chip label :color="dataTypes[item.attributeType].color()" :prepend-icon="dataTypes[item.attributeType].path">{{ dataTypes[item.attributeType].text() }}</v-chip>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { dataTypes } from '@/mixins/types.js'
-import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
-import { mdiPageNext } from '@mdi/js'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-export default {
-  name: 'datasetAttributeTable',
-  props: {
-    ...defaultProps.BASE,
-    ...defaultProps.DOWNLOAD
-  },
-  data: function () {
-    return {
-      dataTypes,
-      mdiPageNext,
-      options: {
-        idColumn: 'datasetId',
-        tableName: 'datasetAttributes'
-      }
-    }
-  },
-  computed: {
-    columns: function () {
-      return [
-        {
-          key: 'datasetId',
-          type: undefined,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnAttributeDatasetId')
-        }, {
-          key: 'datasetName',
-          type: undefined,
-          sortable: true,
-          label: this.$t('tableColumnAttributeDatasetName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'datasetDescription',
-          type: undefined,
-          sortable: true,
-          label: this.$t('tableColumnAttributeDatasetDescription')
-        }, {
-          key: 'attributeName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnAttributeName')
-        }, {
-          key: 'attributeDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnAttributeDescription')
-        }, {
-          key: 'attributeType',
-          type: 'dataType',
-          sortable: true,
-          label: this.$t('tableColumnAttributeDataType')
-        }, {
-          key: 'attributeValue',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnAttributeValue')
-        }
-      ]
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    isTruncatedAfterWords,
-    truncateAfterWords,
-    showFullAttributeDescription: function (description) {
-      this.$bvModal.msgBoxOk(description, {
-        title: this.$t('tableColumnAttributeDescription'),
-        okTitle: this.$t('genericOk')
-      })
-    },
-    refresh: function () {
-      this.$refs.datasetAttributeTable.refresh()
-    }
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableDatasetAttributes } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
+  import { dataTypes } from '@/plugins/util/types'
+  import emitter from 'tiny-emitter/instance'
+
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasetAttributes[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'datasetId',
+      dataType: undefined,
+      title: t('tableColumnAttributeDatasetId'),
+    }, {
+      key: 'datasetName',
+      dataType: undefined,
+      title: t('tableColumnAttributeDatasetName'),
+    }, {
+      key: 'datasetDescription',
+      dataType: undefined,
+      title: t('tableColumnAttributeDatasetDescription'),
+    }, {
+      key: 'attributeName',
+      dataType: 'string',
+      title: t('tableColumnAttributeName'),
+    }, {
+      key: 'attributeDescription',
+      dataType: 'string',
+      title: t('tableColumnAttributeDescription'),
+    }, {
+      key: 'attributeType',
+      dataType: 'dataType',
+      title: t('tableColumnAttributeDataType'),
+    }, {
+      key: 'attributeValue',
+      dataType: 'string',
+      title: t('tableColumnAttributeValue'),
+    }]
+
+    return headers
+  })
+
+  function showDatasetAttributeModal (dataset: ViewTableDatasetAttributes) {
+    emitter.emit('show-confirm', {
+      title: t('tableColumnAttributeDescription'),
+      message: dataset.attributeDescription,
+      okTitle: t('genericOk'),
+      cancelTitle: undefined,
+      okOnly: true,
+      okVariant: 'primary',
+    })
   }
-}
+
+  defineExpose({
+    refresh: () => baseTable.value?.refresh(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>

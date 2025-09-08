@@ -1,741 +1,397 @@
 <template>
-  <div>
-    <BaseTable v-bind="$props"
-              :columns="columns"
-              :options="options"
-              :tableActions="userIsDataCurator ? localTableActions : null"
-              primary-key="datasetId"
-              class="dataset-table"
-              ref="datasetTable"
-              v-on="$listeners">
-      <!-- HEAD: Database object count -->
-      <template v-slot:head(dataObjectCount)="data">
-        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataObjects')"><MdiIcon :path="mdiHelpCircle" /></span>
-      </template>
-      <!-- HEAD: Data point count -->
-      <template v-slot:head(dataPointCount)="data">
-        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.hover.bottom :title="$t('tableColumnTooltipDatasetDataPoints')"><MdiIcon :path="mdiHelpCircle" /></span>
-      </template>
-
-      <!-- Dataset id -->
-      <template v-slot:cell(datasetId)="data">
-        <span v-if="disableLinks">{{ data.item.datasetId }}</span>
-        <!-- If clickHandler is provided, just let it handle clicks -->
-        <a href="#" @click.prevent="clickHandler(data.item)" v-else-if="clickHandler && (typeof clickHandler === 'function')">{{ data.item.datasetId }}</a>
-        <!-- Else, if we can link to the target page, let's do so -->
-        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item)) && datasetTypes[data.item.datasetType].pageName">{{ data.item.datasetId }}</router-link>
-        <!-- If neither is true, just show the id -->
-        <span v-else>{{ data.item.datasetId }}</span>
-      </template>
-      <!-- Dataset name -->
-      <template v-slot:cell(datasetName)="data">
-        <span v-if="disableLinks" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</span>
-        <!-- If clickHandler is provided, just let it handle clicks -->
-        <a href="#" @click.prevent="clickHandler(data.item)" v-else-if="clickHandler && (typeof clickHandler === 'function')" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</a>
-        <!-- Else, if there's a hyperlink for an external dataset, show that -->
-        <span v-else-if="data.item.hyperlink && data.item.isExternal"><a target="_blank" rel="noopener noreferrer" :href="data.item.hyperlink" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }} </a>
-        <MdiIcon :path="mdiOpenInNew" />
-        </span>
-        <!-- Else, if we can link to the target page, let's do so -->
-        <router-link :to="{ name: datasetTypes[data.item.datasetType].pageName, params: { datasetIds: data.item.datasetId.toString() } }" v-else-if="!data.item.isExternal && isPageAvailable(data.item.datasetType) && (!data.item.licenseName || isAccepted(data.item)) && datasetTypes[data.item.datasetType].pageName" :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</router-link>
-        <!-- If none are true, just show the name -->
-        <span v-else :title="data.item.datasetName">{{ truncateAfterWords(data.item.datasetName, 10) }}</span>
-      </template>
-      <!-- Dataset description -->
-      <template v-slot:cell(datasetDescription)="data">
-        <span :title="data.item.datasetDescription" v-if="data.item.datasetDescription">{{ truncateAfterWords(data.item.datasetDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullDatasetDescription(data.item.datasetDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.datasetDescription, 10)" >&nbsp;
-          <MdiIcon :path="mdiPageNext" />
-        </a>
-      </template>
-      <!-- Experiment name -->
-      <template v-slot:cell(experimentName)="data">
-        <span :title="data.item.experimentName" v-if="data.item.experimentName">{{ truncateAfterWords(data.item.experimentName, 10) }}</span>
-        <!-- Append a link that takes the user to the experiment details page -->
-        <router-link :to="{ name: Pages.experimentDetails, params: { experimentId: data.item.experimentId.toString() } }" class="table-icon-link" v-b-tooltip.hover :title="$t('tableTooltipExperimentDetailsLink')">
-          &nbsp;<MdiIcon :path="mdiInformationOutline" />
-        </router-link>
-      </template>
-      <!-- Dataset location country flag -->
-      <template v-slot:cell(countries)="data">
-        <span v-for="country in getCountries(data.item.locations)" :key="`country-flag-${country}`" class="table-country text-nowrap mr-2" v-b-tooltip.hover :title="getCountryName(country)"><i :class="'fi fi-' + country.toLowerCase()" v-if="country"/> <span> {{ country }}</span></span>
-      </template>
-      <!-- Display the number of locations associated with this dataset -->
-      <template v-slot:cell(locations)="data">
-        <template v-if="data.item.locations !== undefined && data.item.locations !== null && data.item.locations.length > 0">
-          <template v-if="data.item.locations[0].locationLatitude && data.item.locations[0].locationLongitude">
-            <a href="#" class="text-decoration-none text-nowrap" @click.prevent="showDetails('location', data)" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
-              <MdiIcon :path="mdiMapMarker" />
-              <span>{{ data.item.locations.length }}</span>
-            </a>
-          </template>
-          <div v-else>
-            <MdiIcon :path="mdiMapMarker" />
-            <span>{{ data.item.locations.length }}</span>
-          </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableDatasets} -->
+  <BaseTable
+    ref="baseTable"
+    v-model:bottom-sheet-visible="bottomVisible"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :show-details="true"
+    item-key="datasetId"
+    table-key="datasets"
+    header-icon="mdi-database"
+    :get-row-props="getRowProps"
+    :header-title="$t('pageDatasetsTitle')"
+    v-bind="$attrs"
+  >
+    <template #header.dataObjectCount="{ column }">
+      {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataObjects')">
+        <template #activator="{ props }">
+          <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
         </template>
-      </template>
-      <!-- Dataset type icon -->
-      <template v-slot:cell(datasetType)="data">
-        <b-badge class="w-100" :style="`color: ${getHighContrastTextColor(datasetTypes[data.item.datasetType].color())}; background-color: ${datasetTypes[data.item.datasetType].color()};`"><MdiIcon :path="datasetTypes[data.item.datasetType].path" /> {{ datasetTypes[data.item.datasetType].text() }}</b-badge>
-      </template>
-      <!-- Data point count -->
-      <template v-slot:cell(dataPointCount)="data">
-        <span v-if="data.item.dataPointCount !== undefined && data.item.dataPointCount.value">{{ getDataPointCount(data.item) }}</span>
-      </template>
-      <!-- Dataset license -->
-      <template v-slot:cell(licenseName)="data">
-        <div v-if="data.item.licenseName">
-          <!-- Show the license modal -->
-          <a href="#" @click.prevent="onLicenseClicked(data.item)" class="text-nowrap">
-            <span>{{ data.item.licenseName }} </span>
-          </a>
-          <!-- Show the status -->
-          <span class="text-success" v-if="isAccepted(data.item)"><MdiIcon :path="mdiCheck" /></span>
-          <span class="text-danger" v-else><MdiIcon :path="mdiNewBox" /></span>
-        </div>
-      </template>
-      <!-- Dataset state -->
-      <template v-slot:cell(datasetState)="data">
-        <span v-b-tooltip.hover :title="datasetStates[data.item.datasetState].text()"><MdiIcon :path="datasetStates[data.item.datasetState].path" /></span>
-      </template>
-      <!-- External dataset? -->
-      <template v-slot:cell(isExternal)="data">
-        <span v-if="data.item.isExternal !== undefined" v-b-tooltip.hover :title="data.item.isExternal ? $t('datasetExternal') : $t('datasetInternal')"><MdiIcon :path="data.item.isExternal ? mdiLinkBoxVariantOutline : mdiTextBoxOutline" /></span>
-      </template>
-      <!-- Show publications -->
-      <template v-slot:cell(publications)="data">
-        <a href="#" class="text-decoration-none" v-if="data.item.publications !== 0 || userIsDataCurator" @click.prevent="showPublications(data.item)">
-          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetPublications')"><MdiIcon :path="mdiTextBoxCheckOutline"/></span>
-        </a>
-        <MdiIcon :path="mdiTextBoxCheckOutline" className="text-muted" v-else/>
-      </template>
-      <!-- Show collaborators -->
-      <template v-slot:cell(collaborators)="data">
-        <a href="#" class="text-decoration-none" v-if="data.item.collaborators !== 0" @click.prevent="showDetails('collaborators', data)">
-          <span class="text-nowrap" v-b-tooltip.hover :title="$t('tableTooltipDatasetCollaborators')"><MdiIcon :path="mdiAccountMultiple"/> <span> {{ data.item.collaborators }}</span></span>
-        </a>
-        <MdiIcon :path="mdiAccountMultiple" className="text-muted" v-else/>
-      </template>
-      <!-- Display the number of institutions associated with this dataset -->
-      <template v-slot:cell(institutions)="data">
-        <template v-if="data.item.institutions !== undefined && data.item.institutions !== null && data.item.institutions.length > 0">
-          <div>
-            <a href="#" class="text-decoration-none text-nowrap" @click.prevent="showDetails('institutions', data)" v-b-tooltip.hover :title="$t('tableTooltipDatasetLocations')">
-              <MdiIcon :path="mdiCity" />
-              <span>{{ data.item.institutions.length }}</span>
-            </a>
-          </div>
-        </template>
-      </template>
-      <!-- Show attributes -->
-      <template v-slot:cell(attributes)="data">
-        <a href="#" class="text-decoration-none" v-if="(data.item.attributes !== 0 || data.item.dublinCore) && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="showDetails('attributes', data)">
-          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetAttributes')"><MdiIcon :path="mdiFilePlus"/></span>
-        </a>
-        <MdiIcon :path="mdiFilePlus" className="text-muted" v-else/>
-      </template>
-      <!-- Show file resources -->
-      <template v-slot:cell(fileresourceIds)="data">
-        <b-button class="text-nowrap" @click="showFileresources(data.item)" v-if="data.item.fileresourceIds && (data.item.fileresourceIds.length > 0) && dataResourcesVisible && (!data.item.licenseName || isAccepted(data.item))"><MdiIcon :path="mdiAttachment"/> {{ $t('buttonShow') }}</b-button>
-      </template>
-      <!-- Download the dataset -->
-      <template v-slot:cell(download)="data">
-        <a href="#" class="text-decoration-none" v-if="!data.item.isExternal && (!data.item.licenseName || isAccepted(data.item))" @click.prevent="downloadDataset(data.item)">
-          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetDownload')"><MdiIcon :path="mdiDownload"/></span>
-        </a>
-        <MdiIcon :path="mdiDownload" className="text-muted" v-else/>
-      </template>
-      <!-- Edit dataset -->
-      <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onDatasetEditClicked(data.item)" v-if="userIsDataCurator">
-          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetEdit')"><MdiIcon :path="mdiSquareEditOutline"/></span>
-        </a>
-      </template>
-      <!-- Delete dataset -->
-      <template v-slot:cell(delete)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onDatasetDeleteClicked(data.item)" v-if="userIsDataCurator">
-          <span v-b-tooltip.hover :title="$t('tableTooltipDatasetDelete')"><MdiIcon className="text-danger" :path="mdiDelete"/></span>
-        </a>
-      </template>
+      </v-tooltip>
+    </template>
 
-      <!-- Row details is where the dataset locations are shown on a map -->
-      <template v-slot:row-details="data">
-        <template v-if="detailType === 'location'">
-          <LocationMap :locations="data.item.locations" v-if="data.item.locations && data.item.locations.length > 0" :showLinks="false"/>
+    <template #header.dataPointCount="{ column }">
+      {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataPoints')">
+        <template #activator="{ props }">
+          <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
         </template>
-        <div v-else-if="detailType === 'collaborators'" class="border-top border-primary bg-white p-3">
-          <!-- Collaborators modal -->
-          <CollaboratorDetails :dataset="data.item" v-if="data.item && data.item.collaborators !== 0" />
-        </div>
-        <div v-else-if="detailType === 'attributes'" class="border-top border-primary bg-white p-3">
-          <!-- Attribute modal -->
-          <AttributeDetails :dataset="data.item" v-if="data.item && (data.item.dublinCore !== undefined || data.item.attributes !== 0)" />
-        </div>
-        <div v-else-if="detailType === 'institutions'" class="border-top border-primary bg-white p-3">
-          <!-- Institution table -->
-          <InstitutionDetails :dataset="data.item" v-if="data.item && data.item.institutions && data.item.institutions.length > 0" />
-        </div>
-      </template>
-    </BaseTable>
+      </v-tooltip>
+    </template>
 
-    <!-- License modal -->
-    <LicenseModal :license="license" :dataset="dataset" :isAccepted="dataset.acceptedBy && dataset.acceptedBy.length > 0" ref="licenseModal" v-if="dataset" />
-    <!-- Publications modal -->
-    <PublicationsModal referenceType="dataset" :referencingId="dataset.datasetId" v-if="dataset && (dataset.publications !== 0 || userIsDataCurator)" ref="publicationsModal" />
-    <!-- Genotype export modal for direct downloads from the table -->
-    <GenotypeExportModal v-if="dataset && dataset.datasetType === 'genotype'" ref="genotypeExportModal" @formats-selected="downloadGenotypicDataset" />
-    <!-- Dataset edit modal -->
-    <DatasetEditModal :datasetType="datasetType" :dataset="dataset" v-if="userIsDataCurator" @changed="refresh" ref="datasetEditModal" />
-  </div>
+    <template #item.datasetDescription="{ item, value }">
+      <template v-if="item.datasetDescription && item.datasetDescription.length > 0">
+        <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
+        <a href="#" class="ms-2 table-icon-link" @click.prevent="showDatasetModal(item)" v-if="isTruncatedAfterWords(value, 10)">
+          <v-icon icon="mdi-page-next" />
+        </a>
+      </template>
+    </template>
+
+    <!-- Experiment name -->
+    <template #item.experimentName="{ item }">
+      <span :title="item.experimentName" v-if="item.experimentName">{{ truncateAfterWords(item.experimentName, 10) }}</span>
+      <!-- Append a link that takes the user to the experiment details page -->
+      &nbsp;<router-link :to="{ path: Pages.getPath(Pages.experimentDetails, `${item.experimentId}`) }" v-tooltip:top="$t('tableTooltipExperimentDetailsLink')">
+        <v-icon icon="mdi-information-outline" />
+      </router-link>
+    </template>
+
+    <!-- Dataset type icon -->
+    <template #item.datasetType="{ item }">
+      <v-chip label :color="datasetTypes[item.datasetType].color()" :prepend-icon="datasetTypes[item.datasetType].path">{{ datasetTypes[item.datasetType].text() }}</v-chip>
+    </template>
+
+    <template #item.data-table-expand="{ item, internalItem, toggleExpand }">
+      <template v-if="item.locations !== undefined && item.locations !== null && item.locations.length > 0">
+        <template v-if="item.locations[0].locationLatitude && item.locations[0].locationLongitude">
+          <v-chip label @click="toggleExpand(internalItem)" prepend-icon="mdi-map-marker">{{ item.locations.length }}</v-chip>
+        </template>
+        <v-chip label v-else prepend-icon="mdi-map-marker">{{ item.locations.length }}</v-chip>
+      </template>
+    </template>
+
+    <!-- Dataset license -->
+    <template #item.licenseName="{ item }">
+      <!-- Show the license modal -->
+      <v-chip
+        v-if="item.licenseName"
+        href="#"
+        label
+        @click.prevent="onLicenseClicked(item)"
+        :color="isAccepted(item) ? 'success' : 'error'"
+        :prepend-icon="isAccepted(item) ? 'mdi-check' : 'mdi-new-box'"
+      >
+        {{ item.licenseName }}
+      </v-chip>
+    </template>
+
+    <!-- Show file resources -->
+    <template #item.fileresourceIds="{ item }">
+      <v-btn @click="redirectToFileresources(item)" v-if="item.fileresourceIds && (item.fileresourceIds.length > 0) && isPageAvailable(Pages.dataResources.name) && (!item.licenseName || isAccepted(item))" prepend-icon="mdi-attachment">{{ $t('buttonShow') }}</v-btn>
+    </template>
+
+    <template #item.datasetDetails="{ item }">
+      <div class="text-no-wrap">
+        <v-icon class="mx-1" color="primary" :icon="item.isExternal ? 'mdi-link-variant' : 'mdi-database-arrow-right'" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
+        <v-icon class="mx-1" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="datasetStates[item.datasetState].text()" />
+        <v-icon class="mx-1" color="primary" icon="mdi-account-multiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
+        <v-icon class="mx-1" icon="mdi-account-multiple" color="muted" v-else />
+        <v-icon class="mx-1" color="primary" icon="mdi-file-plus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
+        <v-icon class="mx-1" icon="mdi-file-plus" color="muted" v-else />
+      </div>
+    </template>
+
+    <template #expanded-row="{ columns, item }">
+      <tr>
+        <td :colspan="columns.length" class="pa-0">
+          <v-sheet>
+            <LocationMap
+              :rounded="false"
+              :locations="item.locations"
+            />
+          </v-sheet>
+        </td>
+      </tr>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+
+    <template #bottom-sheet-content>
+      <CollaboratorTable :get-data="getCollaboratorData" v-if="selectedDataset && visibleDetails === 'collaborators'" />
+      <AttributeDetails v-if="selectedDataset && visibleDetails === 'attributes'" :dataset="selectedDataset" />
+    </template>
+  </BaseTable>
+
+  <LicenseModal :dataset="selectedDataset" :license="selectedLicense" :is-accepted="selectedDataset?.acceptedBy && selectedDataset?.acceptedBy.length > 0" ref="licenseModal" />
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import LicenseModal from '@/components/modals/LicenseModal'
-import CollaboratorDetails from '@/components/tables/details/CollaboratorDetails'
-import InstitutionDetails from '@/components/tables/details/InstitutionDetails'
-import GenotypeExportModal from '@/components/modals/GenotypeExportModal'
-import DatasetEditModal from '@/components/modals/DatasetEditModal'
-import PublicationsModal from '@/components/modals/PublicationsModal'
-import LocationMap from '@/components/map/LocationMap'
-import AttributeDetails from '@/components/tables/details/AttributeDetails'
-import defaultProps from '@/const/table-props'
-import { apiPostDatasetExport, apiGetDatasetSourceFile, apiPostLicenseTable, apiDeleteDataset } from '@/mixins/api/dataset'
-import { apiPostGenotypeDatasetExport } from '@/mixins/api/genotype'
-import { apiPostPedigreeDatasetExport } from '@/mixins/api/germplasm'
-import { datasetStates, datasetTypes } from '@/mixins/types'
-import { getHighContrastTextColor } from '@/mixins/colors'
-import { isPageAvailable, downloadBlob } from '@/mixins/util'
-import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
-import { getDateTimeString, isTruncatedAfterWords, truncateAfterWords, getNumberWithSuffix } from '@/mixins/formatting'
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { AxiosResponse } from 'axios'
+  import { FilterComparator, FilterOperator, type ViewTableLicenses, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
 
-import { mdiHelpCircle, mdiOpenInNew, mdiPageNext, mdiInformationOutline, mdiCity, mdiPlusBox, mdiDelete, mdiAttachment, mdiMapMarker, mdiCheck, mdiNewBox, mdiTextBoxCheckOutline, mdiAccountMultiple, mdiFilePlus, mdiDownload, mdiSquareEditOutline, mdiLinkBoxVariantOutline, mdiTextBoxOutline } from '@mdi/js'
-import { Pages } from '@/mixins/pages'
+  import emitter from 'tiny-emitter/instance'
+  import { getNumberWithSuffix, isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
+  import { Pages } from '@/plugins/pages'
+  import { datasetStates, datasetTypes } from '@/plugins/util/types'
+  import { coreStore } from '@/stores/app'
+  import LicenseModal from '@/components/modals/LicenseModal.vue'
+  import { apiPostDatasetCollaboratorsTable, apiPostLicenseTable } from '@/plugins/api/dataset'
+  import type { ItemKeySlot } from 'vuetify/lib/components/VDataTable/types.mjs'
+  import { isPageAvailable } from '@/plugins/util'
+  import AttributeDetails from '@/components/widgets/AttributeDetails.vue'
+  import CollaboratorTable from '@/components/tables/CollaboratorTable.vue'
 
-const emitter = require('tiny-emitter/instance')
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
 
-const countries = require('i18n-iso-countries')
-countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
+  const router = useRouter()
+  const emit = defineEmits(['license-accepted'])
 
-export default {
-  name: 'DatasetTable',
-  props: {
-    ...defaultProps.FULL,
-    selectable: {
-      type: Boolean,
-      default: false
-    },
-    clickHandler: {
-      type: Function,
-      default: null
-    },
-    selectionMode: {
-      type: String,
-      default: 'multi'
-    },
-    disableLinks: {
-      type: Boolean,
-      default: false
-    },
-    datasetType: {
-      type: String,
-      default: null
-    }
-  },
-  data: function () {
-    return {
-      Pages,
-      datasetStates,
-      datasetTypes,
-      mdiDelete,
-      mdiHelpCircle,
-      mdiCity,
-      mdiOpenInNew,
-      mdiPageNext,
-      mdiInformationOutline,
-      mdiMapMarker,
-      mdiCheck,
-      mdiNewBox,
-      mdiTextBoxCheckOutline,
-      mdiAccountMultiple,
-      mdiFilePlus,
-      mdiDownload,
-      mdiSquareEditOutline,
-      mdiAttachment,
-      mdiLinkBoxVariantOutline,
-      mdiTextBoxOutline,
-      options: {
-        idColumn: 'datasetId',
-        tableName: 'datasets',
-        rowVariant: this.getRowVariant
-      },
-      dataset: null,
-      license: null,
-      previousDetailsRow: null,
-      detailType: 'location'
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeLocale',
-      'storeToken',
-      'storeSelectedProjects'
-    ]),
-    dataResourcesVisible: function () {
-      return isPageAvailable(Pages.dataResources)
-    },
-    userIsDataCurator: function () {
-      return this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)
-    },
-    localTableActions: function () {
-      return [{
-        id: 1,
-        text: this.$t('buttonAddDataset'),
-        variant: null,
-        disabled: () => false,
-        path: mdiPlusBox,
-        callback: () => {
-          this.dataset = null
-          this.$refs.datasetEditModal.show()
-        }
-      }]
-    },
-    columns: function () {
-      const result = [
-        {
-          key: 'projectId',
-          type: Number,
-          sortable: false,
-          class: 'd-none text-right',
-          label: this.$t('tableColumnProjectId')
-        }, {
-          key: 'datasetId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnDatasetId')
-        }, {
-          key: 'datasetName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnDatasetName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'datasetDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnDatasetDescription')
-        }, {
-          key: 'experimentId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnExperimentId')
-        }, {
-          key: 'experimentName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnExperimentName')
-        }, {
-          key: 'datasetType',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnDatasetDatasetType')
-        }, {
-          key: 'datatype',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnDatasetDataType')
-        }, {
-          key: 'licenseName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnDatasetLicenseName')
-        }, {
-          key: 'contact',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnDatasetContact')
-        }, {
-          key: 'countries',
-          type: undefined,
-          sortable: false,
-          label: this.$t('tableColumnDatasetCountryName')
-        }, {
-          key: 'locations',
-          type: 'json',
-          sortable: true,
-          label: this.$t('tableColumnDatasetLocations')
-        }, {
-          key: 'startDate',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnDatasetStartDate'),
-          formatter: value => value ? new Date(value).toLocaleDateString() : null
-        }, {
-          key: 'endDate',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnDatasetEndDate'),
-          formatter: value => value ? new Date(value).toLocaleDateString() : null
-        }, {
-          key: 'createdOn',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnDatasetCreatedOn'),
-          formatter: value => value ? new Date(value).toLocaleDateString() : null
-        }, {
-          key: 'dataObjectCount',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnDatasetObjectCount'),
-          formatter: value => value ? getNumberWithSuffix(value.value, 2) : null
-        }, {
-          key: 'dataPointCount',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnDatasetPointCount')
-        }, {
-          key: 'fileresourceIds',
-          type: 'json',
-          sortable: false,
-          class: 'px-1',
-          label: this.$t('tableColumnDatasetFileresources')
-        }, {
-          key: 'isExternal',
-          type: Boolean,
-          sortable: false,
-          class: 'px-1',
-          label: this.$t('tableColumnDatasetExternal')
-        }, {
-          key: 'datasetState',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        }, {
-          key: 'publications',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        }, {
-          key: 'institutions',
-          type: 'json',
-          sortable: false,
-          label: ''
-        }, {
-          key: 'collaborators',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        }, {
-          key: 'attributes',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        }, {
-          key: 'download',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        }
-      ]
+  type DetailsType = 'collaborators' | 'publications' | 'attributes' | undefined
 
-      if (this.userIsDataCurator) {
-        result.push({
-          key: 'edit',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        })
+  const store = coreStore()
+  const baseTable = useTemplateRef('baseTable')
+  const licenseModal = useTemplateRef('licenseModal')
+  const selectedDataset = ref<ViewTableDatasets | undefined>()
+  const selectedLicense = ref<ViewTableLicenses | undefined>()
+  const visibleDetails = ref<DetailsType>()
+  const bottomVisible = ref<boolean>(false)
+  const { t } = useI18n()
 
-        result.push({
-          key: 'delete',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        })
-      }
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'projectId',
+      dataType: 'number',
+      sortable: false,
+      visibleInTable: false,
+      title: t('tableColumnProjectId'),
+    }, {
+      key: 'datasetId',
+      title: t('tableColumnDatasetId'),
+      dataType: 'integer',
+    }, {
+      key: 'datasetName',
+      title: t('tableColumnDatasetName'),
+      dataType: 'string',
+    }, {
+      key: 'datasetDescription',
+      title: t('tableColumnDatasetDescription'),
+      dataType: 'string',
+    }, {
+      key: 'experimentId',
+      dataType: 'number',
+      title: t('tableColumnExperimentId'),
+    }, {
+      key: 'experimentName',
+      dataType: 'string',
+      title: t('tableColumnExperimentName'),
+    }, {
+      key: 'datasetType',
+      dataType: 'string',
+      title: t('tableColumnDatasetDatasetType'),
+    }, {
+      key: 'datatype',
+      dataType: 'string',
+      title: t('tableColumnDatasetDataType'),
+    }, {
+      key: 'licenseName',
+      dataType: 'string',
+      title: t('tableColumnDatasetLicenseName'),
+    }, {
+      key: 'contact',
+      dataType: 'string',
+      title: t('tableColumnDatasetContact'),
+    }, {
+      key: 'countries',
+      dataType: undefined,
+      sortable: false,
+      title: t('tableColumnDatasetCountryName'),
+    }, {
+      key: 'data-table-expand',
+      visibleInFilter: false,
+      title: t('tableColumnDatasetLocations'),
+      dataType: 'string',
+    }, {
+      key: 'locations',
+      dataType: 'json',
+      visibleInTable: false,
+      title: t('tableColumnDatasetLocations'),
+    }, {
+      key: 'startDate',
+      dataType: 'date',
+      title: t('tableColumnDatasetStartDate'),
+      value: (value: ViewTableDatasets) => value.startDate ? new Date(value.startDate).toLocaleDateString() : undefined,
+    }, {
+      key: 'endDate',
+      dataType: 'date',
+      title: t('tableColumnDatasetEndDate'),
+      value: (value: ViewTableDatasets) => value.endDate ? new Date(value.endDate).toLocaleDateString() : undefined,
+    }, {
+      key: 'dataObjectCount',
+      dataType: 'number',
+      align: 'end' as 'end' | 'start' | 'center',
+      title: t('tableColumnDatasetObjectCount'),
+      value: (value: ViewTableDatasets) => value.dataObjectCount ? getNumberWithSuffix(value.dataObjectCount.value, 2) : undefined,
+    }, {
+      key: 'dataPointCount',
+      dataType: 'number',
+      align: 'end' as 'end' | 'start' | 'center',
+      title: t('tableColumnDatasetPointCount'),
+      value: (value: ViewTableDatasets) => value.dataPointCount ? `${(value.datasetType === 'genotype' || value.datasetType === 'allelefreq') ? '≤' : ''}${getNumberWithSuffix(value.dataPointCount.value, 2)}` : undefined,
+    }, {
+      key: 'fileresourceIds',
+      dataType: 'json',
+      sortable: false,
+      title: t('tableColumnDatasetFileresources'),
+    }, {
+      key: 'datasetDetails',
+      dataType: undefined,
+      sortable: false,
+      title: '',
+    }, {
+      key: 'isExternal',
+      dataType: 'boolean',
+      sortable: false,
+      visibleInTable: false,
+      title: t('tableColumnDatasetExternal'),
+    }]
+    // }, {
+    //   key: 'datasetState',
+    //   dataType: undefined,
+    //   sortable: false,
+    //   title: '',
+    // }, {
+    //   key: 'collaborators',
+    //   dataType: undefined,
+    //   sortable: false,
+    //   title: '',
+    // }, {
+    //   key: 'attributes',
+    //   dataType: undefined,
+    //   sortable: false,
+    //   title: '',
+    // }]
 
-      if (this.selectable === true) {
-        result.unshift({
-          key: 'selected',
-          type: undefined,
-          sortable: false,
-          class: 'table-primary',
-          label: ''
-        })
-      }
+    return headers
+  })
 
-      return result
-    }
-  },
-  components: {
-    MdiIcon,
-    AttributeDetails,
-    BaseTable,
-    CollaboratorDetails,
-    InstitutionDetails,
-    DatasetEditModal,
-    GenotypeExportModal,
-    LocationMap,
-    LicenseModal,
-    PublicationsModal
-  },
-  watch: {
-    storeSelectedProjects: function () {
-      this.$refs.datasetTable.refresh()
-    }
-  },
-  methods: {
-    userIsAtLeast,
-    isTruncatedAfterWords,
-    truncateAfterWords,
-    getHighContrastTextColor,
-    isPageAvailable,
-    showDetails: function (type, data) {
-      if (!data.detailsShowing || type === this.detailType) {
-        this.$nextTick(() => data.toggleDetails())
-      }
+  function getCollaboratorData (data: PaginatedRequest) {
+    return apiPostDatasetCollaboratorsTable(selectedDataset.value?.datasetId || -1, data)
+  }
 
-      this.detailType = type
-    },
-    showFullDatasetDescription: function (description) {
-      this.$bvModal.msgBoxOk(description, {
-        title: this.$t('tableColumnDatasetDescription'),
-        okTitle: this.$t('genericOk')
-      })
-    },
-    getCountries: function (locations) {
-      if (locations) {
-        return [...new Set(locations.map(l => l.countryName))]
-      } else {
-        return []
-      }
-    },
-    getCountryName: function (code2) {
-      return countries.getName(code2, 'en')
-    },
-    getRowVariant: function (dataset) {
-      if (!dataset.licenseName) {
-        return null
-      } else {
-        return this.isAccepted(dataset) ? null : 'danger'
-      }
-    },
-    isAccepted: function (dataset) {
-      if (this.storeToken) {
-        return dataset.acceptedBy && dataset.acceptedBy.indexOf(this.storeToken.id) !== -1
-      } else {
-        return dataset.acceptedBy && dataset.acceptedBy.indexOf(-1000) !== -1
-      }
-    },
-    getDataPointCount: function (dataset) {
-      let result = ''
-      if (dataset.datasetType === 'genotype' || dataset.datasetType === 'allelefreq') {
-        result = '≤'
-      }
-      result += getNumberWithSuffix(dataset.dataPointCount.value, 2)
-      return result
-    },
-    downloadDataset: function (dataset) {
-      switch (dataset.datasetType) {
-        case 'trials':
-          this.initDownload(dataset, 'trial')
-          break
-        case 'climate':
-          this.initDownload(dataset, 'climate')
-          break
-        case 'pedigree':
-          this.downloadPedigreeDataset(dataset)
-          break
-        case 'allelefreq':
-          // For allelefreq data, just request the underlying data file
-          apiGetDatasetSourceFile(dataset.datasetId, result => {
-            downloadBlob({
-              filename: `allelefreq-${dataset.datasetId}-${getDateTimeString()}`,
-              extension: 'txt',
-              blob: result
-            })
-          })
-          break
-        case 'genotype':
-          // For genotypic data, ask for the additional data types to download.
-          this.dataset = dataset
-          this.$nextTick(() => this.$refs.genotypeExportModal.show())
-          break
-      }
-    },
-    downloadPedigreeDataset: function (dataset) {
-      const query = {
-        datasetIds: [dataset.datasetId],
-        includeAttributes: true
-      }
-      emitter.emit('show-loading', true)
-      this.$gtag.event('export', 'async', 'pedigree', query.datasetIds.join('-'))
-      apiPostPedigreeDatasetExport(query, result => {
-        result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
+  function showDatasetModal (dataset: ViewTableDatasets) {
+    emitter.emit('show-confirm', {
+      title: t('tableColumnDatasetDescription'),
+      message: dataset.datasetDescription,
+      okTitle: t('genericOk'),
+      cancelTitle: undefined,
+      okOnly: true,
+      okVariant: 'primary',
+    })
+  }
 
-        // Show the sidebar
-        emitter.emit('toggle-aside', 'download')
-        emitter.emit('show-loading', false)
-      })
-    },
-    downloadGenotypicDataset: function (selectedFormats) {
-      // Then export
-      const genotypeQuery = {
-        datasetIds: [this.dataset.datasetId],
-        generateFlapjackProject: selectedFormats.indexOf('flapjack') !== -1,
-        generateHapMap: selectedFormats.indexOf('hapmap') !== -1,
-        generateFlatFile: selectedFormats.indexOf('flat') !== -1
-      }
-      emitter.emit('show-loading', true)
-      this.$gtag.event('export', 'async', 'genotype', genotypeQuery.datasetIds.join('-'))
-      apiPostGenotypeDatasetExport(genotypeQuery, result => {
-        result.forEach(r => this.$store.commit('ON_ASYNC_JOB_UUID_ADD_MUTATION', r.uuid))
-
-        // Show the sidebar
-        emitter.emit('toggle-aside', 'download')
-        emitter.emit('show-loading', false)
-      })
-      this.dataset = null
-    },
-    initDownload: function (dataset, type) {
-      // Request data export for all columns and rows for this current dataset
-      const query = {
-        xGroupIds: null,
-        xIds: null,
-        yGroupIds: null,
-        yIds: null,
-        currentTraitCount: null,
-        datasetIds: [dataset.datasetId]
-      }
-      emitter.emit('show-loading', true)
-      apiPostDatasetExport(type, query, result => {
-        const request = {
-          blob: result,
-          filename: `${type}-dataset-${dataset.datasetId}-${getDateTimeString()}`,
-          extension: 'txt'
-        }
-
-        downloadBlob(request)
-        emitter.emit('show-loading', false)
-      })
-    },
-    showPublications: function (dataset) {
-      this.dataset = dataset
-      this.$nextTick(() => this.$refs.publicationsModal.show())
-    },
-    showFileresources: function (dataset) {
-      const filter = [{
+  function redirectToFileresources (dataset: ViewTableDatasets) {
+    // Set up the filter
+    const filter: FilterGroup[] = [{
+      filters: [{
         column: 'datasetIds',
-        comparator: 'contains',
-        operator: 'and',
-        values: [dataset.datasetId]
-      }]
-      this.$router.push({
-        name: Pages.dataResources,
-        query: {
-          'fileresources-filter': JSON.stringify(filter)
-        }
-      })
-    },
-    getSelected: function () {
-      return this.$refs.datasetTable.getSelected()
-    },
-    setSelectedItems: function (toSelect) {
-      this.$refs.datasetTable.setSelectedItems(toSelect)
-    },
-    refresh: function () {
-      this.dataset = null
-      this.$refs.datasetTable.refresh()
-    },
-    onLicenseAccepted: function () {
-      // this.$refs.licenseModal.hide()
-      this.$emit('license-accepted')
-      this.refresh()
-    },
-    onDatasetEditClicked: function (dataset) {
-      this.dataset = dataset
+        comparator: FilterComparator.contains,
+        values: [`${dataset.datasetId}`],
+      }],
+      operator: FilterOperator.and,
+    }]
+    // Then redirect to the datasets page
+    router.push({
+      path: Pages.dataResources.path,
+      query: {
+        'fileresources-filter': JSON.stringify(filter),
+      },
+    })
+  }
 
-      this.$nextTick(() => this.$refs.datasetEditModal.show())
-    },
-    onDatasetDeleteClicked: function (dataset) {
-      this.$bvModal.msgBoxConfirm(this.$t('modalTextDatasetDelete'), {
-        title: this.$t('modalTitleSure'),
-        okVariant: 'danger',
-        okTitle: this.$t('genericYes'),
-        cancelTitle: this.$t('genericNo')
-      })
-        .then(value => {
-          if (value) {
-            // Delete the image
-            apiDeleteDataset(dataset.datasetId, result => {
-              if (result) {
-                this.refresh()
-              }
-            })
-          }
-        })
-    },
-    onLicenseClicked: function (dataset) {
-      this.dataset = dataset
+  function getRowProps (item: ItemKeySlot<ViewTableDatasets>) {
+    if (item.item.licenseId && !isAccepted(item.item)) {
+      return {
+        class: 'bg-red-lighten-4',
+      }
+    }
+  }
 
-      if (this.license && this.license.licenseId === this.dataset.licenseId) {
-        // If we already have the correct license, just show it
-        this.$refs.licenseModal.show()
-      } else {
-        // Otherwise, go get it
-        const query = {
-          page: 1,
-          prevCount: -1,
-          filter: [{
+  function isAccepted (dataset: ViewTableDatasets) {
+    if (store.storeToken) {
+      return dataset.acceptedBy && dataset.acceptedBy.includes(store.storeToken.id)
+    } else {
+      return dataset.acceptedBy && dataset.acceptedBy.includes(-1000)
+    }
+  }
+
+  function showDetails (type: DetailsType, item: ViewTableDatasets) {
+    visibleDetails.value = type
+    selectedDataset.value = item
+
+    nextTick(() => {
+      bottomVisible.value = true
+    })
+  }
+
+  function onLicenseClicked (dataset: ViewTableDatasets) {
+    selectedDataset.value = dataset
+
+    if (selectedLicense.value && selectedLicense.value.licenseId === selectedDataset.value.licenseId) {
+      // If we already have the correct license, just show it
+      licenseModal.value?.show()
+    } else {
+      // Otherwise, go get it
+      const query: PaginatedRequest = {
+        page: 1,
+        prevCount: -1,
+        limit: 1,
+        filters: [{
+          filters: [{
             column: 'licenseId',
-            comparator: 'equals',
-            operator: 'and',
-            values: [dataset.licenseId]
+            comparator: FilterComparator.equals,
+            values: [`${dataset.licenseId}`],
           }, {
             column: 'datasetId',
-            comparator: 'equals',
-            operator: 'and',
-            values: [this.dataset.datasetId]
-          }]
-        }
-        apiPostLicenseTable(query, result => {
-          if (result && result.data && result.data.length > 0) {
-            this.license = result.data[0]
-            this.$refs.licenseModal.show()
-          }
-        })
+            comparator: FilterComparator.equals,
+            values: [`${dataset.datasetId}`],
+          }],
+          operator: FilterOperator.and,
+        }],
       }
+      apiPostLicenseTable<PaginatedResult<ViewTableLicenses[]>>(query, (result: PaginatedResult<ViewTableLicenses[]>) => {
+        if (result && result.data && result.data.length > 0) {
+          selectedLicense.value = result.data[0]
+          licenseModal.value?.show()
+        }
+      })
     }
-  },
-  mounted: function () {
-    emitter.on('license-accepted', this.onLicenseAccepted)
-  },
-  beforeDestroy: function () {
-    emitter.off('license-accepted', this.onLicenseAccepted)
   }
-}
+
+  function licenseAccepted () {
+    emit('license-accepted')
+    baseTable.value?.refresh()
+  }
+
+  defineExpose({
+    refresh: () => baseTable.value?.refresh(),
+  })
+
+  onMounted(() => {
+    emitter.on('license-accepted', licenseAccepted)
+  })
+  onBeforeUnmount(() => {
+    emitter.off('license-accepted', licenseAccepted)
+  })
 </script>
 
-<style>
-.table-icon-link:hover {
-  text-decoration: none;
-}
-.dataset-table .b-table-details > td {
-  padding: 0;
-}
+<style scoped>
 </style>

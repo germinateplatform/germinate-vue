@@ -1,116 +1,80 @@
 <template>
-  <b-modal id="license-modal" ref="licenseModal" scrollable :title="$t('modalTitleLicense')" size="lg" modal-class="d-print-none">
-    <div v-if="license">
-      <div v-html="licenseContent" class="d-print-block"></div>
-      <a :href="htmlData" target="_blank" rel="noopener noreferrer" style="display: none;" :download="htmlFilename" ref="htmlDownloadLink" />
-    </div>
-    <div slot="modal-footer">
-      <b-button-group>
-        <!-- Options to download the license -->
-        <b-dropdown>
-          <template slot="button-content"><MdiIcon :path="mdiDownload" /> {{ $t('buttonDownload') }}</template>
-          <b-dropdown-item @click="onPrint"><MdiIcon :path="mdiPrinter" /> {{ $t('buttonPrint') }}</b-dropdown-item>
-          <b-dropdown-item @click="onDownload"><MdiIcon :path="mdiFileCode" /> {{ $t('buttonHtml') }}</b-dropdown-item>
-        </b-dropdown>
-        <!-- Close the dialog -->
-        <b-button v-if="isAccepted" @click="hide"><MdiIcon :path="mdiCancel" /> {{ $t('buttonClose') }}</b-button>
-        <!-- Accept/decline the license -->
+  <v-dialog v-model="dialog" scrollable max-width="min(800px, 50vw)">
+    <v-card :title="$t('modalTitleLicense')" v-if="compProps.dataset && compProps.license">
+      <v-card-text>
+        <div v-html="licenseContent" />
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer />
+        <v-btn prepend-icon="mdi-download" @click="download">{{ $t('buttonDownload') }}</v-btn>
+        <!-- Close OR accept/decline -->
+        <v-btn color="primary" variant="flat" v-if="compProps.isAccepted" @click="hide" prepend-icon="mdi-cancel">{{ $t('buttonClose') }}</v-btn>
         <template v-else>
-          <b-button variant="success" @click="accept"><MdiIcon :path="mdiCheck" /> {{ $t('buttonAccept') }}</b-button>
-          <b-button variant="danger" @click="hide"><MdiIcon :path="mdiCancel" /> {{ $t('buttonDecline') }}</b-button>
+          <v-btn color="error" variant="flat" @click="hide" prepend-icon="mdi-cancel">{{ $t('buttonDecline') }}</v-btn>
+          <v-btn color="success" variant="flat" @click="accept" prepend-icon="mdi-check">{{ $t('buttonAccept') }}</v-btn>
         </template>
-      </b-button-group>
-    </div>
-  </b-modal>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import MdiIcon from '@/components/icons/MdiIcon'
-import { apiGetAcceptLicense } from '@/mixins/api/dataset.js'
+<script setup lang="ts">
+  import { apiGetAcceptLicense } from '@/plugins/api/dataset'
+  import type { ViewTableDatasets, ViewTableLicenses } from '@/plugins/types/germinate'
+  import { downloadBlob } from '@/plugins/util'
+  import { coreStore } from '@/stores/app'
 
-import { mdiDownload, mdiPrinter, mdiFileCode, mdiCancel, mdiCheck } from '@mdi/js'
+  import emitter from 'tiny-emitter/instance'
 
-const emitter = require('tiny-emitter/instance')
+  const compProps = defineProps<{
+    dataset?: ViewTableDatasets
+    license?: ViewTableLicenses
+    isAccepted?: boolean
+  }>()
 
-export default {
-  components: {
-    MdiIcon
-  },
-  props: {
-    license: {
-      type: Object,
-      default: null
-    },
-    dataset: {
-      type: Object,
-      default: null
-    },
-    isAccepted: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data: function () {
-    return {
-      mdiDownload,
-      mdiPrinter,
-      mdiFileCode,
-      mdiCancel,
-      mdiCheck,
-      htmlData: null,
-      htmlFilename: null
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeLocale'
-    ]),
-    licenseContent: function () {
-      if (this.license) {
-        if (this.license.licenseContent) {
-          return this.license.licenseContent[this.storeLocale] || this.license.licenseContent.en_GB
-        } else {
-          return null
-        }
+  const store = coreStore()
+  const dialog = ref(false)
+
+  const licenseContent = computed(() => {
+    if (compProps.license) {
+      if (compProps.license.licenseContent) {
+        return compProps.license.licenseContent[store.storeLocale] || compProps.license.licenseContent.en_GB
       } else {
-        return null
+        return undefined
       }
+    } else {
+      return undefined
     }
-  },
-  methods: {
-    show: function () {
-      this.$refs.licenseModal.show()
-    },
-    hide: function () {
-      this.$refs.licenseModal.hide()
-    },
-    accept: function () {
-      apiGetAcceptLicense(this.license.licenseId, () => {
-        emitter.emit('license-accepted', this.license.licenseId)
+  })
 
-        this.hide()
+  function show () {
+    dialog.value = true
+  }
+  function hide () {
+    dialog.value = false
+  }
+
+  function accept () {
+    if (compProps.license) {
+      apiGetAcceptLicense(compProps.license.licenseId, () => {
+        emitter.emit('license-accepted', compProps.license?.licenseId)
+
+        hide()
       })
-    },
-    onPrint: function () {
-      emitter.emit('on-print', this.licenseContent)
-    },
-    onDownload: function () {
-      this.htmlData = 'data:application/octet-stream;base64,' + btoa(unescape(encodeURIComponent(this.licenseContent)))
-      let filename = this.license.licenseName.replace(' ', '-') + '.html'
-      if (this.dataset) {
-        filename = this.dataset.datasetId + '-' + filename
-      }
-
-      this.htmlFilename = filename
-
-      setTimeout(() => {
-        this.$refs.htmlDownloadLink.click()
-      }, 0)
     }
   }
-}
-</script>
 
-<style>
-</style>
+  function download () {
+    downloadBlob({
+      blob: new Blob([licenseContent.value || ''], { type: 'text/html' }),
+      filename: compProps.license?.licenseName.replace(' ', '-') || '',
+      extension: 'html',
+    })
+  }
+
+  defineExpose({
+    show,
+    hide,
+  })
+</script>

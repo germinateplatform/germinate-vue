@@ -15,20 +15,20 @@ RUN apk add --no-cache git && \
 # Build the client code
 WORKDIR /opt/germinate-client
 RUN rm -f .env && \
-    echo "VUE_APP_BASE_URL=./api/" > .env && \
+    echo "VITE_BASE_URL=./api/" > .env && \
     apk add --no-cache python3 build-base gcc wget && \
-    npm i --legacy-peer-deps && \
+    npm i && \
     npm run build && \
     mkdir /opt/germinate-server/client/ && \
     cp -a /opt/germinate-client/dist/. /opt/germinate-server/client/
 
 # Download Gradle and build the server code
 RUN apk add --no-cache openjdk21 && \
-    wget https://services.gradle.org/distributions/gradle-9.0.0-bin.zip -P /tmp/ && \
-    unzip /tmp/gradle-9.0.0-bin.zip -d /opt/ && \
+    wget https://services.gradle.org/distributions/gradle-8.8-bin.zip -P /tmp/ && \
+    unzip /tmp/gradle-8.8-bin.zip -d /opt/ && \
     echo "data.directory.external=/data/germinate" > /opt/germinate-server/config.properties && \
     echo "project.name=germinate" >> /opt/germinate-server/gradle.properties && \
-    /opt/gradle-9.0.0/bin/gradle -p /opt/germinate-server war
+    /opt/gradle-8.8/bin/gradle -p /opt/germinate-server war
 
 
 FROM tomcat:10.1-jdk21

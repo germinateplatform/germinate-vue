@@ -13,34 +13,34 @@ export function plotlyTreemapChart (Plotly) {
         labels: rows.labels,
         parents: rows.parents,
         values: rows.values,
-        pathbar: { visible: true }
+        pathbar: { visible: true },
       }]
 
       const config = {
         modeBarButtonsToRemove: ['toImage'],
         displayModeBar: false,
         responsive: true,
-        displaylogo: false
+        displaylogo: false,
       }
 
       const layout = {
-        height: height,
+        height,
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
         margin: { l: 20, r: 20, b: 20, t: 20 },
         xaxis: {
-          automargin: true
+          automargin: true,
         },
         yaxis: {
-          automargin: true
+          automargin: true,
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h',
-          font: { color: darkMode ? 'white' : 'black' }
+          font: { color: darkMode ? 'white' : 'black' },
         },
         treemapcolorway: colors,
-        extendtreemapcolorway: true
+        extendtreemapcolorway: true,
       }
 
       // Plotly.purge(this)
@@ -70,35 +70,23 @@ export function plotlyTreemapChart (Plotly) {
     })
   }
 
-  chart.height = (_) => {
-    if (!arguments.length) {
-      return height
-    }
-    height = _
+  chart.height = h => {
+    height = h
     return chart
   }
 
-  chart.colors = (_) => {
-    if (!arguments.length) {
-      return colors
-    }
-    colors = _
+  chart.colors = c => {
+    colors = c
     return chart
   }
 
-  chart.onLeafClicked = (_) => {
-    if (!arguments.length) {
-      return onLeafClicked
-    }
-    onLeafClicked = _
+  chart.onLeafClicked = olc => {
+    onLeafClicked = olc
     return chart
   }
 
-  chart.darkMode = (_) => {
-    if (!arguments.length) {
-      return darkMode
-    }
-    darkMode = _
+  chart.darkMode = d => {
+    darkMode = d
     return chart
   }
 

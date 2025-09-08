@@ -1,119 +1,110 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               ref="collaboratorTable"
-               v-on="$listeners">
-      <!-- Collaborator email link -->
-      <template v-slot:cell(collaboratorEmail)="data">
-        <a :href="`mailto:${data.item.collaboratorEmail}`" v-if="data.item.collaboratorEmail">{{ data.item.collaboratorEmail }}</a>
-      </template>
-      <!-- Collaborator country represented by a flag icon -->
-      <template v-slot:cell(countryName)="data">
-        <span class="table-country" v-b-tooltip.hover :title="data.item.countryName"><i :class="'fi fi-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
-      </template>
-      <!-- External ID link if URL or ORCID -->
-      <template v-slot:cell(collaboratorExternalId)="data">
-        <template v-if="data.item.collaboratorExternalId">
-          <a rel="noopener noreferrer" :href="`https://orcid.org/${data.item.collaboratorExternalId}`" v-if="isOrcid(data.item.collaboratorExternalId)">{{ `https://orcid.org/${data.item.collaboratorExternalId}` }}</a>
-          <a rel="noopener noreferrer" :href="data.item.collaboratorExternalId" v-else-if="data.item.collaboratorExternalId.startsWith('https')">{{ data.item.collaboratorExternalId }}</a>
-          <span v-else>{{ data.item.collaboratorExternalId }}</span>
-        </template>
-      </template>
-    </BaseTable>
-  </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableCollaborators} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :selection-type="selectionType"
+    :show-details="false"
+    item-key="collaboratorId"
+    table-key="collaborators"
+    header-icon="mdi-account-multiple"
+    :header-title="$t('modalTitleCollaborators')"
+    v-bind="$attrs"
+  >
+    <!-- Country flag -->
+    <template #item.countryName="{ item }">
+      <span class="text-no-wrap" v-tooltip:top="item.countryName" v-if="item.countryCode2">
+        <i :class="'fi fi-' + item.countryCode2.toLowerCase()" /> <span> {{ item.countryCode2 }}</span>
+      </span>
+      <span v-else>
+        {{ item.countryName }}
+      </span>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-export default {
-  name: 'CollaboratorTable',
-  props: {
-    ...defaultProps.BASE
-  },
-  data: function () {
-    return {
-      options: {
-        idColumn: 'collaboratorId',
-        tableName: 'collaborators'
-      }
-    }
-  },
-  computed: {
-    columns: function () {
-      return [
-        {
-          key: 'projectIds',
-          type: 'json',
-          sortable: false,
-          class: 'd-none text-right',
-          label: this.$t('tableColumnProjectId')
-        }, {
-          key: 'collaboratorId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnCollaboratorId')
-        }, {
-          key: 'collaboratorFirstName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnCollaboratorFirstName')
-        }, {
-          key: 'collaboratorLastName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnCollaboratorLastName')
-        }, {
-          key: 'collaboratorEmail',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnCollaboratorEmail')
-        }, {
-          key: 'collaboratorExternalId',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnCollaboratorExternalId')
-        }, {
-          key: 'collaboratorRoles',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnCollaboratorRoles')
-        }, {
-          key: 'institutionName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnInstitutionName')
-        }, {
-          key: 'institutionAddress',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnInstitutionAddress')
-        }, {
-          key: 'countryName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnCountryName')
-        }
-      ]
-    }
-  },
-  components: {
-    BaseTable
-  },
-  methods: {
-    isOrcid: function (input) {
-      return /^(\d{4}-){3}\d{3}(\d|X)$/.test(input)
-    },
-    refresh: function () {
-      this.$refs.collaboratorTable.refresh()
-    }
-  }
-}
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableCollaborators } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableCollaborators[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'projectIds',
+      dataType: 'json',
+      sortable: false,
+      visibleInTable: false,
+      title: t('tableColumnProjectId'),
+    }, {
+      key: 'collaboratorId',
+      dataType: 'integer',
+      title: t('tableColumnCollaboratorId'),
+    }, {
+      key: 'collaboratorFirstName',
+      dataType: 'string',
+      title: t('tableColumnCollaboratorFirstName'),
+    }, {
+      key: 'collaboratorLastName',
+      dataType: 'string',
+      title: t('tableColumnCollaboratorLastName'),
+    }, {
+      key: 'collaboratorEmail',
+      dataType: 'string',
+      title: t('tableColumnCollaboratorEmail'),
+    }, {
+      key: 'collaboratorExternalId',
+      dataType: 'string',
+      title: t('tableColumnCollaboratorExternalId'),
+    }, {
+      key: 'collaboratorRoles',
+      dataType: 'string',
+      title: t('tableColumnCollaboratorRoles'),
+    }, {
+      key: 'institutionName',
+      dataType: 'string',
+      title: t('tableColumnInstitutionName'),
+    }, {
+      key: 'institutionAddress',
+      dataType: 'string',
+      title: t('tableColumnInstitutionAddress'),
+    }, {
+      key: 'countryName',
+      dataType: 'string',
+      title: t('tableColumnCountryName'),
+    }]
+
+    return headers
+  })
+
+  defineExpose({
+    refresh: () => baseTable.value?.refresh(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>
