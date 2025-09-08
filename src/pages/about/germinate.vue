@@ -58,36 +58,35 @@
 
       <h2 class="mt-10 mb-3">{{ $t('pageAboutGerminateTeamTitle') }}<small class="text-muted"> - {{ $t('pageAboutGerminateTeamSubtitle') }}</small></h2>
       <v-row>
-        <v-col v-for="member in team" :key="`team-member-${member.name}`">
-          <v-card color="surface-variant" class="pa-5">
-            <v-lazy min-height="128">
-              <div class="d-flex team-member">
+        <v-col v-for="member in team" :key="`team-member-${member.name}`" class="d-flex">
+          <v-card color="surface-variant" class="pa-5 d-flex">
+            <div class="d-flex team-member">
+              <div class="d-flex flex-column align-center">
                 <v-avatar :image="`/img/${member.img}`" size="160" />
+                <v-chip variant="tonal" label color="success" class="mt-3" prepend-icon="mdi-calendar">Since {{ member.since }}</v-chip>
+              </div>
 
-                <div class="ps-6">
-                  <div class="text-h5 mb-1 font-weight-bold d-flex align-center">
-                    <span class="me-3">{{ member.name }}</span>
-                    <a
-                      v-for="link in member.links"
-                      :key="`team-member-${member.name}-${link.title}`"
-                      :href="link.href"
-                      class="d-inline-flex text-decoration-none me-1" rel="noopener" target="_blank"
-                    >
-                      <v-icon size="small" :icon="link.path" v-tooltip:bottom="link.title" />
-                    </a>
-                  </div>
+              <div class="ps-6">
+                <div class="text-h5 mb-1 font-weight-bold d-flex align-center">
+                  <span class="me-3">{{ member.name }}</span>
+                  <a
+                    v-for="link in member.links"
+                    :key="`team-member-${member.name}-${link.title}`"
+                    :href="link.href"
+                    class="d-inline-flex text-decoration-none me-1" rel="noopener" target="_blank"
+                  >
+                    <v-icon size="small" :icon="link.path" v-tooltip:bottom="link.title" />
+                  </a>
+                </div>
 
-                  <div class="text-subtitle d-flex align-center my-2">
-                    <v-icon :color="getTemplateColor(1)" icon="mdi-briefcase-variant" class="me-2" /> {{ member.job() }}
-                  </div>
-                  <div class="text-subtitle d-flex align-start my-2">
-                    <v-icon :color="getTemplateColor(2)" icon="mdi-information" class="me-2" /> {{ member.about() }}
-                  </div>
-
-                  <v-chip variant="tonal" label color="success" prepend-icon="mdi-calendar">Since {{ member.since }}</v-chip>
+                <div class="text-subtitle d-flex align-center my-2">
+                  <v-icon :color="getTemplateColor(1)" icon="mdi-briefcase-variant" class="me-2" /> {{ member.job() }}
+                </div>
+                <div class="text-subtitle d-flex align-start my-2">
+                  <v-icon :color="getTemplateColor(2)" icon="mdi-information" class="me-2" /> {{ member.about() }}
                 </div>
               </div>
-            </v-lazy>
+            </div>
           </v-card>
         </v-col>
       </v-row>

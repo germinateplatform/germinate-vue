@@ -5,7 +5,7 @@
     <p v-html="$t('pageTaxonomyProviderText')" />
 
     <template v-if="taxonomy">
-      <v-list>
+      <v-list class="mb-3">
         <v-list-item :title="$t('tableColumnTaxonomyGenus')">
           <template #subtitle>
             <span class="font-italic">{{ taxonomy.taxonomyGenus }}</span>

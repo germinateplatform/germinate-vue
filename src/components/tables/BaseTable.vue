@@ -1,7 +1,61 @@
 <template>
   <v-card>
+    <div
+      v-if="displayType === 'grid'"
+      class="v-table v-table--has-top v-table--has-bottom v-table--striped-odd v-table--density-default v-data-table base-table"
+    >
+      <TableToolbar
+        v-model="displayType"
+        :headers="componentProps.headers"
+        :marked-item-type="componentProps.markedItemType"
+        @clear-filter="clearFilter"
+        @show-filter="tableFilterModal?.show()"
+        @toggle-header="toggleHeader"
+        :filtered="filters && filters.length > 0"
+        :marked-item-config="markedItemConfig"
+        :table-key="componentProps.tableKey"
+        :header-icon="componentProps.headerIcon"
+        :header-title="componentProps.headerTitle"
+        :supports-grid-cards="componentProps.supportsGridCards"
+      >
+        <template #header>
+          <slot name="header" />
+        </template>
+      </TableToolbar>
+      <v-card-text>
+        <!-- @vue-ignore -->
+        <DataGrid
+          v-model="selected"
+          v-model:items-per-page="itemsPerPage"
+          v-model:sort-by="sortByColumns"
+          v-model:page="currentPage"
+          :items="serverItems"
+          :items-length="totalItems"
+          :loading="loading"
+          :search="search"
+          :item-value="componentProps.itemKey"
+          @update:options="loadItems"
+        >
+          <!-- Pass on all named slots -->
+          <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+            <slot :name="slot" v-bind="slotProps" />
+          </template>
+
+          <template #footer.prepend>
+            <v-btn-group density="compact" class="me-auto ms-2">
+              <v-btn v-if="componentProps.download" size="small" @click="downloadTable" variant="tonal" v-tooltip:top="$t('buttonDownload')">
+                <v-icon icon="mdi-download" />
+              </v-btn>
+              <slot name="footer" />
+            </v-btn-group>
+          </template>
+        </DataGrid>
+      </v-card-text>
+    </div>
+
     <!-- @vue-ignore -->
     <v-data-table-server
+      v-if="displayType === 'table'"
       v-model="selected"
       v-model:items-per-page="itemsPerPage"
       v-model:sort-by="sortByColumns"
@@ -19,46 +73,27 @@
       :show-select="componentProps.selectionType !== undefined"
       :select-strategy="componentProps.selectionType"
       @update:options="loadItems"
+      :items-per-page-options="perPageOptions"
     >
       <template #top>
-        <v-toolbar
-          flat
-          density="compact"
-          class="justify-space-between pa-2"
+        <TableToolbar
+          v-model="displayType"
+          :headers="componentProps.headers"
+          :marked-item-type="componentProps.markedItemType"
+          @clear-filter="clearFilter"
+          @show-filter="tableFilterModal?.show()"
+          @toggle-header="toggleHeader"
+          :filtered="filters && filters.length > 0"
+          :marked-item-config="markedItemConfig"
+          :table-key="componentProps.tableKey"
+          :header-icon="componentProps.headerIcon"
+          :header-title="componentProps.headerTitle"
+          :supports-grid-cards="componentProps.supportsGridCards"
         >
-          <v-toolbar-title class="flex-unset ms-2">
-            <v-icon color="medium-emphasis" :icon="componentProps.headerIcon" size="x-small" start />
-            {{ componentProps.headerTitle }}
-          </v-toolbar-title>
-
-          <slot name="header" />
-
-          <div>
-            <v-btn-group density="compact">
-              <v-menu :close-on-content-click="false">
-                <template #activator="{ props }">
-                  <v-btn v-tooltip:top="$t('tooltipTableColumnSelector')" v-bind="props" :append-icon="props['aria-expanded'] === 'true' ? 'mdi-menu-up' : 'mdi-menu-down'"><v-icon icon="mdi-view-column" /></v-btn>
-                </template>
-                <v-list max-height="75vh">
-                  <v-list-item v-for="header in dropdownHeaders" :key="`table-header-${componentProps.tableKey}-${header.key}`">
-                    <template #prepend>
-                      <v-list-item-action start>
-                        <v-checkbox-btn :model-value="selectedHeaderKeys.has(header.key || '')" @update:model-value="toggleHeader(header)" />
-                      </v-list-item-action>
-                    </template>
-                    {{ header.title }}
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-              <v-btn @click="tableFilterModal?.show()" :color="filters.length > 0 ? 'success' : undefined" v-tooltip:top="$t('tooltipTableFilter')"><v-icon icon="mdi-filter" /></v-btn>
-              <v-btn v-if="filters.length > 0" color="error" v-tooltip:top="$t('tooltipTableClearFilter')" @click="clearFilter"><v-icon icon="mdi-delete" /></v-btn>
-            </v-btn-group>
-            <v-btn-group class="ms-2" density="compact" v-if="markedItemConfig">
-              <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')"><v-chip size="small" label>{{ getNumberWithSuffix(markedItemConfig.count, 1) }}</v-chip></v-btn>
-              <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon icon="mdi-delete" /></v-btn>
-            </v-btn-group>
-          </div>
-        </v-toolbar>
+          <template #header>
+            <slot name="header" />
+          </template>
+        </TableToolbar>
       </template>
 
       <template #header.data-table-select="{ allSelected, someSelected }">
@@ -140,15 +175,18 @@
   import type { DataTableHeader, DataTableSortItem } from 'vuetify'
   import { useI18n } from 'vue-i18n'
   import { coreStore } from '@/stores/app'
-  import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
+  import { getDateTimeString } from '@/plugins/util/formatting'
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
   import TableFilterModal from '@/components/modals/TableFilterModal.vue'
 
   import emitter from 'tiny-emitter/instance'
   import { downloadBlob } from '@/plugins/util'
   import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
+  import DataGrid from '@/components/tables/DataGrid.vue'
 
-  interface MarkedItemConfig {
+  export type DisplayType = 'table' | 'grid'
+
+  export interface MarkedItemConfig {
     type: string
     count: number
     markedIds: Set<number>
@@ -179,6 +217,16 @@
   const search = ref('')
   const isResetCall = ref(true)
   const tableFilterModal = useTemplateRef('tableFilterModal')
+  const displayType = ref<DisplayType>('table')
+
+  const perPageOptions = computed(() => {
+    return [
+      { value: 10, title: '10' },
+      { value: 25, title: '25' },
+      { value: 50, title: '50' },
+      { value: 100, title: '100' },
+    ]
+  })
 
   const markedItemConfig: ComputedRef<MarkedItemConfig | undefined> = computed(() => {
     if (componentProps.markedItemType) {
@@ -192,25 +240,6 @@
     } else {
       return undefined
     }
-  })
-
-  const selectedHeaderKeys: ComputedRef<Set<string>> = computed(() => {
-    const result = new Set<string>()
-
-    const headers = (componentProps.headers || []).concat()
-
-    const hiddenColumns = store.storeHiddenColumns[componentProps.tableKey]
-    headers.forEach(h => {
-      if (h.key && !hiddenColumns.includes(h.key)) {
-        result.add(h.key)
-      }
-    })
-
-    return result
-  })
-
-  const dropdownHeaders: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    return ((componentProps.headers || []) as ExtendedDataTableHeader[]).concat().filter(h => h.title && h.visibleInTable !== false)
   })
 
   const filterColumns: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
@@ -250,12 +279,6 @@
 
   function isMarked (id: number) {
     return markedItemConfig.value ? markedItemConfig.value.markedIds.has(id) : false
-  }
-
-  function clearMarkedItems () {
-    if (componentProps.markedItemType) {
-      store.clearMarkedIds(componentProps.markedItemType)
-    }
   }
 
   function setSelection (selection: number[]) {

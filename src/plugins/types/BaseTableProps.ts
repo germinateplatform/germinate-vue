@@ -20,4 +20,5 @@ export interface BaseTableProps<T> {
   showDetails?: boolean
   storeUrlParameters?: boolean
   bottomSheetVisible?: boolean
+  supportsGridCards?: boolean
 }

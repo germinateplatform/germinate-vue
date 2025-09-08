@@ -14,6 +14,7 @@
     table-key="images"
     header-icon="mdi-image-multiple"
     :header-title="$t('pageImagesTitle')"
+    :supports-grid-cards="true"
     v-bind="$attrs"
   >
     <!-- Reference table -->
@@ -53,6 +54,29 @@
 
     <template #item.image="{ item }">
       <v-img width="200" height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
+    </template>
+
+    <template #card-item="{ item }">
+      <v-card>
+        <v-img height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
+        <v-card-title>
+          <!-- Germplasm -->
+          <router-link :to="Pages.getPath(Pages.passport, item.imageForeignId)" v-if="item.imageRefTable === 'germinatebase'">{{ item.referenceName }}</router-link>
+          <!-- Trait -->
+          <router-link :to="Pages.getPath(Pages.traitDetails, item.imageForeignId)" v-else-if="item.imageRefTable === 'phenotypes'">{{ item.referenceName }}</router-link>
+          <!-- Anything else -->
+          <span v-else>{{ item.referenceName }}</span>
+        </v-card-title>
+        <v-card-subtitle class="text-wrap" v-if="item.createdOn">{{ new Date(item.createdOn).toLocaleDateString() }}</v-card-subtitle>
+        <v-card-text>
+          <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
+        </v-card-text>
+        <v-card-text class="text-wrap">{{ item.imageDescription }}</v-card-text>
+
+        <v-card-text v-if="item.tags">
+          <v-chip label variant="flat" size="small" v-for="(tag, index) in item.tags" :key="`image-tag-${item.imageId}-${index}`" class="me-2 mb-1" href="#" @click.prevent="emit('tag-clicked', tag)" :color="getTagColor(tag)" :text="tag.tagName" />
+        </v-card-text>
+      </v-card>
     </template>
 
     <!-- Pass on all named slots -->

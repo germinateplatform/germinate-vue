@@ -91,9 +91,10 @@
         <UserDropdown v-if="showElements" />
 
         <v-btn icon @click="emitter.emit('toggle-aside')">
-          <v-badge location="bottom left" color="info" :offset-x="-2" :offset-y="-2" :content="store.storeAsyncJobUuids.length">
+          <v-badge location="bottom left" color="info" :offset-x="-2" :offset-y="-2" :content="store.storeAsyncJobUuids.length" v-if="store.storeAsyncJobUuids.length > 0">
             <v-icon icon="mdi-file-arrow-up-down" />
           </v-badge>
+          <v-icon icon="mdi-file-arrow-up-down" v-else />
         </v-btn>
       </v-app-bar>
 

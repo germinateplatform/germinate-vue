@@ -1515,6 +1515,8 @@
   "tooltipTableLoadingIndicator": "The table is loading the requested data...",
   "tooltipTableMarkedItems": "This is the number of currently marked items. Clicking on it will show you a table with all marked items.",
   "tooltipTableMarkedItemsClear": "Clear all marked items",
+  "tooltipTableTypeSwitchTable": "Show data as table",
+  "tooltipTableTypeSwitchGrid": "Show data as grid",
   "tooltipTagEdit": "Edit tags",
   "tooltipGermplasmMarkedItem": "Click to mark/unmark germplasm",
   "tooltipMarkerMarkedItem": "Click to mark/unmark marker",

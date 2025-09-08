@@ -106,6 +106,7 @@ p a, p a:visited,
 table a, table a:visited,
 footer a, footer a:visited,
 #about-page a, #about-page a:visited,
+.v-card-title a, .v-card-title a:visited,
 .v-list-item a, .v-list-item a:visited,
 form a, form a:visited {
   color: rgb(var(--v-theme-primary));
@@ -135,5 +136,9 @@ p {
 
 .mdi-rotate-90 {
   transform: rotate(90deg);
+}
+
+.v-window {
+  overflow: unset !important;
 }
 </style>
