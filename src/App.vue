@@ -107,7 +107,10 @@ table a, table a:visited,
 footer a, footer a:visited,
 #about-page a, #about-page a:visited,
 .v-card-title a, .v-card-title a:visited,
+.scale-heading a, .scale-heading a:visited,
+.v-messages a, .v-messages a:visited,
 .v-list-item a, .v-list-item a:visited,
+.v-card-text ul a, .v-card-text ul a:visited,
 form a, form a:visited {
   color: rgb(var(--v-theme-primary));
 }
@@ -140,5 +143,19 @@ p {
 
 .v-window {
   overflow: unset !important;
+}
+
+.g-no-gutters {
+  margin-left: -16px;
+  margin-right: -16px;
+}
+
+.g-trim-rows-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }
 </style>

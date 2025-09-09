@@ -1,32 +1,34 @@
 <template>
-  <v-toolbar color="primary" extended>
-    <v-toolbar-title :text="$t('pageGermplasmTitle')" />
-    <template #extension>
-      <v-tabs
-        v-model="tab"
-        bg-color="primary"
-        fixed-tabs
-        grow
-        v-if="germplasm && germplasm.entityParentId"
-      >
-        <v-tab :value="1" prepend-icon="mdi-arrow-up-box">{{ germplasm.entityParentName }}</v-tab>
-        <v-tab :value="2" prepend-icon="mdi-arrow-down-box">{{ germplasm.germplasmDisplayName }}</v-tab>
-      </v-tabs>
-    </template>
-  </v-toolbar>
-  <v-container fluid class="mt-0 pt-0">
-    <h3 v-if="noGermplasmFound">{{ $t('headingNoData') }}</h3>
-    <template v-else-if="germplasm">
-      <v-tabs-window v-model="tab">
-        <v-tabs-window-item :transition="false" :reverse-transition="false" :value="1">
-          <Passport :germplasm-id="germplasm.entityParentId" />
-        </v-tabs-window-item>
-        <v-tabs-window-item :transition="false" :reverse-transition="false" :value="2">
-          <Passport :germplasm-id="germplasm.germplasmId" />
-        </v-tabs-window-item>
-      </v-tabs-window>
-    </template>
-  </v-container>
+  <div>
+    <v-toolbar color="primary" :extended="germplasm?.entityParentId !== undefined">
+      <v-toolbar-title :text="$t('pageGermplasmTitle')" />
+      <template #extension>
+        <v-tabs
+          v-model="tab"
+          bg-color="primary"
+          fixed-tabs
+          grow
+          v-if="germplasm && germplasm.entityParentId"
+        >
+          <v-tab :value="1" prepend-icon="mdi-arrow-down-box">{{ germplasm.germplasmDisplayName }}</v-tab>
+          <v-tab :value="2" prepend-icon="mdi-arrow-up-box">{{ germplasm.entityParentName }}</v-tab>
+        </v-tabs>
+      </template>
+    </v-toolbar>
+    <v-container fluid class="mt-0 pt-0">
+      <h3 v-if="noGermplasmFound">{{ $t('headingNoData') }}</h3>
+      <template v-else-if="germplasm">
+        <v-tabs-window v-model="tab">
+          <v-tabs-window-item :transition="false" :reverse-transition="false" :value="1">
+            <Passport :germplasm-id="germplasm.germplasmId" />
+          </v-tabs-window-item>
+          <v-tabs-window-item :transition="false" :reverse-transition="false" :value="2" v-if="germplasm.entityParentId">
+            <Passport :germplasm-id="germplasm.entityParentId" />
+          </v-tabs-window-item>
+        </v-tabs-window>
+      </template>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">

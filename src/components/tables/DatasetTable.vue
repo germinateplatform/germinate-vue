@@ -1,125 +1,127 @@
 <template>
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableDatasets} -->
-  <BaseTable
-    ref="baseTable"
-    v-model:bottom-sheet-visible="bottomVisible"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
-    :headers="headers"
-    :filter-on="filterOn"
-    :show-details="true"
-    item-key="datasetId"
-    table-key="datasets"
-    header-icon="mdi-database"
-    :get-row-props="getRowProps"
-    :header-title="$t('pageDatasetsTitle')"
-    v-bind="$attrs"
-  >
-    <template #header.dataObjectCount="{ column }">
-      {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataObjects')">
-        <template #activator="{ props }">
-          <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
-        </template>
-      </v-tooltip>
-    </template>
-
-    <template #header.dataPointCount="{ column }">
-      {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataPoints')">
-        <template #activator="{ props }">
-          <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
-        </template>
-      </v-tooltip>
-    </template>
-
-    <template #item.datasetDescription="{ item, value }">
-      <template v-if="item.datasetDescription && item.datasetDescription.length > 0">
-        <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
-        <a href="#" class="ms-2 table-icon-link" @click.prevent="showDatasetModal(item)" v-if="isTruncatedAfterWords(value, 10)">
-          <v-icon icon="mdi-page-next" />
-        </a>
+  <div>
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableDatasets} -->
+    <BaseTable
+      ref="baseTable"
+      v-model:bottom-sheet-visible="bottomVisible"
+      :get-data="compProps.getData"
+      :get-ids="compProps.getIds"
+      :download="compProps.download"
+      :headers="headers"
+      :filter-on="filterOn"
+      :show-details="true"
+      item-key="datasetId"
+      table-key="datasets"
+      header-icon="mdi-database"
+      :get-row-props="getRowProps"
+      :header-title="$t('pageDatasetsTitle')"
+      v-bind="$attrs"
+    >
+      <template #header.dataObjectCount="{ column }">
+        {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataObjects')">
+          <template #activator="{ props }">
+            <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
+          </template>
+        </v-tooltip>
       </template>
-    </template>
 
-    <!-- Experiment name -->
-    <template #item.experimentName="{ item }">
-      <span :title="item.experimentName" v-if="item.experimentName">{{ truncateAfterWords(item.experimentName, 10) }}</span>
-      <!-- Append a link that takes the user to the experiment details page -->
-      &nbsp;<router-link :to="{ path: Pages.getPath(Pages.experimentDetails, `${item.experimentId}`) }" v-tooltip:top="$t('tableTooltipExperimentDetailsLink')">
-        <v-icon icon="mdi-information-outline" />
-      </router-link>
-    </template>
-
-    <!-- Dataset type icon -->
-    <template #item.datasetType="{ item }">
-      <v-chip label :color="datasetTypes[item.datasetType].color()" :prepend-icon="datasetTypes[item.datasetType].path">{{ datasetTypes[item.datasetType].text() }}</v-chip>
-    </template>
-
-    <template #item.data-table-expand="{ item, internalItem, toggleExpand }">
-      <template v-if="item.locations !== undefined && item.locations !== null && item.locations.length > 0">
-        <template v-if="item.locations[0].locationLatitude && item.locations[0].locationLongitude">
-          <v-chip label @click="toggleExpand(internalItem)" prepend-icon="mdi-map-marker">{{ item.locations.length }}</v-chip>
-        </template>
-        <v-chip label v-else prepend-icon="mdi-map-marker">{{ item.locations.length }}</v-chip>
+      <template #header.dataPointCount="{ column }">
+        {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataPoints')">
+          <template #activator="{ props }">
+            <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
+          </template>
+        </v-tooltip>
       </template>
-    </template>
 
-    <!-- Dataset license -->
-    <template #item.licenseName="{ item }">
-      <!-- Show the license modal -->
-      <v-chip
-        v-if="item.licenseName"
-        href="#"
-        label
-        @click.prevent="onLicenseClicked(item)"
-        :color="isAccepted(item) ? 'success' : 'error'"
-        :prepend-icon="isAccepted(item) ? 'mdi-check' : 'mdi-new-box'"
-      >
-        {{ item.licenseName }}
-      </v-chip>
-    </template>
+      <template #item.datasetDescription="{ item, value }">
+        <template v-if="item.datasetDescription && item.datasetDescription.length > 0">
+          <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
+          <a href="#" class="ms-2 table-icon-link" @click.prevent="showDatasetModal(item)" v-if="isTruncatedAfterWords(value, 10)">
+            <v-icon icon="mdi-page-next" />
+          </a>
+        </template>
+      </template>
 
-    <!-- Show file resources -->
-    <template #item.fileresourceIds="{ item }">
-      <v-btn @click="redirectToFileresources(item)" v-if="item.fileresourceIds && (item.fileresourceIds.length > 0) && isPageAvailable(Pages.dataResources.name) && (!item.licenseName || isAccepted(item))" prepend-icon="mdi-attachment">{{ $t('buttonShow') }}</v-btn>
-    </template>
+      <!-- Experiment name -->
+      <template #item.experimentName="{ item }">
+        <span :title="item.experimentName" v-if="item.experimentName">{{ truncateAfterWords(item.experimentName, 10) }}</span>
+        <!-- Append a link that takes the user to the experiment details page -->
+        &nbsp;<router-link :to="{ path: Pages.getPath(Pages.experimentDetails, `${item.experimentId}`) }" v-tooltip:top="$t('tableTooltipExperimentDetailsLink')">
+          <v-icon icon="mdi-information-outline" />
+        </router-link>
+      </template>
 
-    <template #item.datasetDetails="{ item }">
-      <div class="text-no-wrap">
-        <v-icon class="mx-1" color="primary" :icon="item.isExternal ? 'mdi-link-variant' : 'mdi-database-arrow-right'" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
-        <v-icon class="mx-1" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="datasetStates[item.datasetState].text()" />
-        <v-icon class="mx-1" color="primary" icon="mdi-account-multiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
-        <v-icon class="mx-1" icon="mdi-account-multiple" color="muted" v-else />
-        <v-icon class="mx-1" color="primary" icon="mdi-file-plus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
-        <v-icon class="mx-1" icon="mdi-file-plus" color="muted" v-else />
-      </div>
-    </template>
+      <!-- Dataset type icon -->
+      <template #item.datasetType="{ item }">
+        <v-chip label :color="datasetTypes[item.datasetType].color()" :prepend-icon="datasetTypes[item.datasetType].path">{{ datasetTypes[item.datasetType].text() }}</v-chip>
+      </template>
 
-    <template #expanded-row="{ columns, item }">
-      <tr>
-        <td :colspan="columns.length" class="pa-0">
-          <v-sheet>
-            <LocationMap
-              :rounded="false"
-              :locations="item.locations"
-            />
-          </v-sheet>
-        </td>
-      </tr>
-    </template>
+      <template #item.data-table-expand="{ item, internalItem, toggleExpand }">
+        <template v-if="item.locations !== undefined && item.locations !== null && item.locations.length > 0">
+          <template v-if="item.locations[0].locationLatitude && item.locations[0].locationLongitude">
+            <v-chip label @click="toggleExpand(internalItem)" prepend-icon="mdi-map-marker">{{ item.locations.length }}</v-chip>
+          </template>
+          <v-chip label v-else prepend-icon="mdi-map-marker">{{ item.locations.length }}</v-chip>
+        </template>
+      </template>
 
-    <!-- Pass on all named slots -->
-    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
-      <slot :name="slot" v-bind="slotProps" />
-    </template>
+      <!-- Dataset license -->
+      <template #item.licenseName="{ item }">
+        <!-- Show the license modal -->
+        <v-chip
+          v-if="item.licenseName"
+          href="#"
+          label
+          @click.prevent="onLicenseClicked(item)"
+          :color="isAccepted(item) ? 'success' : 'error'"
+          :prepend-icon="isAccepted(item) ? 'mdi-check' : 'mdi-new-box'"
+        >
+          {{ item.licenseName }}
+        </v-chip>
+      </template>
 
-    <template #bottom-sheet-content>
-      <CollaboratorTable :get-data="getCollaboratorData" v-if="selectedDataset && visibleDetails === 'collaborators'" />
-      <AttributeDetails v-if="selectedDataset && visibleDetails === 'attributes'" :dataset="selectedDataset" />
-    </template>
-  </BaseTable>
+      <!-- Show file resources -->
+      <template #item.fileresourceIds="{ item }">
+        <v-btn @click="redirectToFileresources(item)" v-if="item.fileresourceIds && (item.fileresourceIds.length > 0) && isPageAvailable(Pages.dataResources.name) && (!item.licenseName || isAccepted(item))" prepend-icon="mdi-attachment">{{ $t('buttonShow') }}</v-btn>
+      </template>
 
-  <LicenseModal :dataset="selectedDataset" :license="selectedLicense" :is-accepted="selectedDataset?.acceptedBy && selectedDataset?.acceptedBy.length > 0" ref="licenseModal" />
+      <template #item.datasetDetails="{ item }">
+        <div class="text-no-wrap">
+          <v-icon class="mx-1" color="primary" :icon="item.isExternal ? 'mdi-link-variant' : 'mdi-database-arrow-right'" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
+          <v-icon class="mx-1" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="datasetStates[item.datasetState].text()" />
+          <v-icon class="mx-1" color="primary" icon="mdi-account-multiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
+          <v-icon class="mx-1" icon="mdi-account-multiple" color="muted" v-else />
+          <v-icon class="mx-1" color="primary" icon="mdi-file-plus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
+          <v-icon class="mx-1" icon="mdi-file-plus" color="muted" v-else />
+        </div>
+      </template>
+
+      <template #expanded-row="{ columns, item }">
+        <tr>
+          <td :colspan="columns.length" class="pa-0">
+            <v-sheet>
+              <LocationMap
+                :rounded="false"
+                :locations="item.locations"
+              />
+            </v-sheet>
+          </td>
+        </tr>
+      </template>
+
+      <!-- Pass on all named slots -->
+      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+        <slot :name="slot" v-bind="slotProps" />
+      </template>
+
+      <template #bottom-sheet-content>
+        <CollaboratorTable :get-data="getCollaboratorData" v-if="selectedDataset && visibleDetails === 'collaborators'" />
+        <AttributeDetails v-if="selectedDataset && visibleDetails === 'attributes'" :dataset="selectedDataset" />
+      </template>
+    </BaseTable>
+
+    <LicenseModal :dataset="selectedDataset" :license="selectedLicense" :is-accepted="selectedDataset?.acceptedBy && selectedDataset?.acceptedBy.length > 0" ref="licenseModal" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -169,7 +171,7 @@
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     const headers = [{
       key: 'projectId',
-      dataType: 'number',
+      dataType: 'integer',
       sortable: false,
       visibleInTable: false,
       title: t('tableColumnProjectId'),
@@ -187,7 +189,7 @@
       dataType: 'string',
     }, {
       key: 'experimentId',
-      dataType: 'number',
+      dataType: 'integer',
       title: t('tableColumnExperimentId'),
     }, {
       key: 'experimentName',
@@ -236,13 +238,13 @@
       value: (value: ViewTableDatasets) => value.endDate ? new Date(value.endDate).toLocaleDateString() : undefined,
     }, {
       key: 'dataObjectCount',
-      dataType: 'number',
+      dataType: 'integer',
       align: 'end' as 'end' | 'start' | 'center',
       title: t('tableColumnDatasetObjectCount'),
       value: (value: ViewTableDatasets) => value.dataObjectCount ? getNumberWithSuffix(value.dataObjectCount.value, 2) : undefined,
     }, {
       key: 'dataPointCount',
-      dataType: 'number',
+      dataType: 'integer',
       align: 'end' as 'end' | 'start' | 'center',
       title: t('tableColumnDatasetPointCount'),
       value: (value: ViewTableDatasets) => value.dataPointCount ? `${(value.datasetType === 'genotype' || value.datasetType === 'allelefreq') ? '≤' : ''}${getNumberWithSuffix(value.dataPointCount.value, 2)}` : undefined,
@@ -263,22 +265,6 @@
       visibleInTable: false,
       title: t('tableColumnDatasetExternal'),
     }]
-    // }, {
-    //   key: 'datasetState',
-    //   dataType: undefined,
-    //   sortable: false,
-    //   title: '',
-    // }, {
-    //   key: 'collaborators',
-    //   dataType: undefined,
-    //   sortable: false,
-    //   title: '',
-    // }, {
-    //   key: 'attributes',
-    //   dataType: undefined,
-    //   sortable: false,
-    //   title: '',
-    // }]
 
     return headers
   })

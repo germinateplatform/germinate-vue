@@ -120,7 +120,7 @@ const publicationTypes = {
     text: () => i18n.global.t('publicationTypeGroup'),
   },
   database: {
-    path: mdiGerminate, // TODO
+    path: '$germinate',
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('publicationTypeDatabase'),
   },

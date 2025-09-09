@@ -15,6 +15,7 @@
         :marked-item-config="markedItemConfig"
         :table-key="componentProps.tableKey"
         :header-icon="componentProps.headerIcon"
+        :header-icon-color="componentProps.headerIconColor"
         :header-title="componentProps.headerTitle"
         :supports-grid-cards="componentProps.supportsGridCards"
       >
@@ -22,6 +23,9 @@
           <slot name="header" />
         </template>
       </TableToolbar>
+
+      <slot name="card-text" />
+
       <v-card-text>
         <!-- @vue-ignore -->
         <DataGrid
@@ -87,6 +91,7 @@
           :marked-item-config="markedItemConfig"
           :table-key="componentProps.tableKey"
           :header-icon="componentProps.headerIcon"
+          :header-icon-color="componentProps.headerIconColor"
           :header-title="componentProps.headerTitle"
           :supports-grid-cards="componentProps.supportsGridCards"
         >
@@ -94,6 +99,8 @@
             <slot name="header" />
           </template>
         </TableToolbar>
+
+        <slot name="card-text" />
       </template>
 
       <template #header.data-table-select="{ allSelected, someSelected }">

@@ -6,7 +6,7 @@
   >
     <div class="d-flex flex-row align-center">
       <v-toolbar-title class="flex-unset ms-2">
-        <v-icon color="medium-emphasis" :icon="compProps.headerIcon" size="x-small" start />
+        <v-icon :icon="compProps.headerIcon" :color="headerIconColor || 'medium-emphasis'" size="x-small" start />
         {{ compProps.headerTitle }}
       </v-toolbar-title>
       <v-btn-toggle
@@ -68,6 +68,7 @@
     markedItemConfig?: MarkedItemConfig
     tableKey: string
     headerIcon: string
+    headerIconColor?: string
     headerTitle: string
     supportsGridCards?: boolean
     headers: DataTableHeader[]

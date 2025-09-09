@@ -24,7 +24,6 @@
   import bar from 'plotly.js/lib/bar'
   import { coreStore } from '@/stores/app'
   import { getColors } from '@/plugins/util/colors'
-  import { apiGetStatsFile } from '@/plugins/api/stats'
   import { useI18n } from 'vue-i18n'
 
   // Only register the chart types we're actually using to reduce the final bundle size
@@ -91,7 +90,7 @@
           .xLabels(compProps.xLabels)
           .groupBy(compProps.groupBy)
           .mode(compProps.mode)
-          .onPointClicked((data: ClickEvent) => {
+          .onPointClicked((data: any) => {
             emit('bar-clicked', data)
           }))
     }

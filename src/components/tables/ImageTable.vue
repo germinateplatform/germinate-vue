@@ -1,97 +1,99 @@
 <template>
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableImages} -->
-  <BaseTable
-    ref="baseTable"
-    class="image-table"
-    v-model:bottom-sheet-visible="bottomVisible"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
-    :headers="headers"
-    :filter-on="filterOn"
-    :show-details="false"
-    item-key="imageId"
-    table-key="images"
-    header-icon="mdi-image-multiple"
-    :header-title="$t('pageImagesTitle')"
-    :supports-grid-cards="true"
-    v-bind="$attrs"
-  >
-    <!-- Reference table -->
-    <template #item.imageRefTable="{ item }">
-      <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
-    </template>
-
-    <!-- Show whether it's a trait reference image. -->
-    <template #item.imageIsReference="{ item }">
-      <v-icon icon="mdi-book-information-variant" color="primary" v-tooltip:top="$t('tableTooltipImagesIsReference')" v-if="item.imageIsReference === true" />
-      <v-icon icon="mdi-book-information-variant" color="muted" v-else />
-    </template>
-
-    <!-- Reference name -->
-    <template #item.referenceName="{ item }">
-      <!-- Germplasm -->
-      <router-link :to="Pages.getPath(Pages.passport, item.imageForeignId)" v-if="item.imageRefTable === 'germinatebase'">{{ item.referenceName }}</router-link>
-      <!-- Trait -->
-      <router-link :to="Pages.getPath(Pages.traitDetails, item.imageForeignId)" v-else-if="item.imageRefTable === 'phenotypes'">{{ item.referenceName }}</router-link>
-      <!-- Anything else -->
-      <span v-else>{{ item.referenceName }}</span>
-    </template>
-
-    <!-- Tags -->
-    <template #item.tags="{ item }">
-      <div v-if="item.tags">
-        <v-chip label variant="flat" size="small" v-for="(tag, index) in item.tags" :key="`image-tag-${item.imageId}-${index}`" class="me-2 mt-1" href="#" @click.prevent="emit('tag-clicked', tag)" :color="getTagColor(tag)" :text="tag.tagName" />
-      </div>
-    </template>
-
-    <!-- EXIF -->
-    <template #item.imageExif="{ item }">
-      <template v-if="item.imageExif && Object.keys(item.imageExif).length > 0">
-        <v-btn @click="showExif(item)" prepend-icon="mdi-image-text" :text="$t('buttonShow')" />
+  <div>
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableImages} -->
+    <BaseTable
+      ref="baseTable"
+      class="image-table"
+      v-model:bottom-sheet-visible="bottomVisible"
+      :get-data="compProps.getData"
+      :get-ids="compProps.getIds"
+      :download="compProps.download"
+      :headers="headers"
+      :filter-on="filterOn"
+      :show-details="false"
+      item-key="imageId"
+      table-key="images"
+      header-icon="mdi-image-multiple"
+      :header-title="$t('pageImagesTitle')"
+      :supports-grid-cards="true"
+      v-bind="$attrs"
+    >
+      <!-- Reference table -->
+      <template #item.imageRefTable="{ item }">
+        <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
       </template>
-    </template>
 
-    <template #item.image="{ item }">
-      <v-img width="200" height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
-    </template>
+      <!-- Show whether it's a trait reference image. -->
+      <template #item.imageIsReference="{ item }">
+        <v-icon icon="mdi-book-information-variant" color="primary" v-tooltip:top="$t('tableTooltipImagesIsReference')" v-if="item.imageIsReference === true" />
+        <v-icon icon="mdi-book-information-variant" color="muted" v-else />
+      </template>
 
-    <template #card-item="{ item }">
-      <v-card>
-        <v-img height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
-        <v-card-title>
-          <!-- Germplasm -->
-          <router-link :to="Pages.getPath(Pages.passport, item.imageForeignId)" v-if="item.imageRefTable === 'germinatebase'">{{ item.referenceName }}</router-link>
-          <!-- Trait -->
-          <router-link :to="Pages.getPath(Pages.traitDetails, item.imageForeignId)" v-else-if="item.imageRefTable === 'phenotypes'">{{ item.referenceName }}</router-link>
-          <!-- Anything else -->
-          <span v-else>{{ item.referenceName }}</span>
-        </v-card-title>
-        <v-card-subtitle class="text-wrap" v-if="item.createdOn">{{ new Date(item.createdOn).toLocaleDateString() }}</v-card-subtitle>
-        <v-card-text>
-          <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
-        </v-card-text>
-        <v-card-text class="text-wrap">{{ item.imageDescription }}</v-card-text>
+      <!-- Reference name -->
+      <template #item.referenceName="{ item }">
+        <!-- Germplasm -->
+        <router-link :to="Pages.getPath(Pages.passport, item.imageForeignId)" v-if="item.imageRefTable === 'germinatebase'">{{ item.referenceName }}</router-link>
+        <!-- Trait -->
+        <router-link :to="Pages.getPath(Pages.traitDetails, item.imageForeignId)" v-else-if="item.imageRefTable === 'phenotypes'">{{ item.referenceName }}</router-link>
+        <!-- Anything else -->
+        <span v-else>{{ item.referenceName }}</span>
+      </template>
 
-        <v-card-text v-if="item.tags">
-          <v-chip label variant="flat" size="small" v-for="(tag, index) in item.tags" :key="`image-tag-${item.imageId}-${index}`" class="me-2 mb-1" href="#" @click.prevent="emit('tag-clicked', tag)" :color="getTagColor(tag)" :text="tag.tagName" />
-        </v-card-text>
-      </v-card>
-    </template>
+      <!-- Tags -->
+      <template #item.tags="{ item }">
+        <div v-if="item.tags">
+          <v-chip label variant="flat" size="small" v-for="(tag, index) in item.tags" :key="`image-tag-${item.imageId}-${index}`" class="me-2 mt-1" href="#" @click.prevent="emit('tag-clicked', tag)" :color="getTagColor(tag)" :text="tag.tagName" />
+        </div>
+      </template>
 
-    <!-- Pass on all named slots -->
-    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
-      <slot :name="slot" v-bind="slotProps" />
-    </template>
+      <!-- EXIF -->
+      <template #item.imageExif="{ item }">
+        <template v-if="item.imageExif && Object.keys(item.imageExif).length > 0">
+          <v-btn @click="showExif(item)" prepend-icon="mdi-image-text" :text="$t('buttonShow')" />
+        </template>
+      </template>
 
-    <template #bottom-sheet-content>
-      <ExifInfo :image="selectedImage" />
-    </template>
-  </BaseTable>
+      <template #item.image="{ item }">
+        <v-img width="200" height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
+      </template>
 
-  <v-overlay class="align-center justify-center image-wrapper" v-model="lightboxVisible">
-    <v-img :src="getSrc(selectedImage, 'large')" contain v-if="selectedImage" @click="lightboxVisible = false" />
-  </v-overlay>
+      <template #card-item="{ item }">
+        <v-card>
+          <v-img height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
+          <v-card-title>
+            <!-- Germplasm -->
+            <router-link :to="Pages.getPath(Pages.passport, item.imageForeignId)" v-if="item.imageRefTable === 'germinatebase'">{{ item.referenceName }}</router-link>
+            <!-- Trait -->
+            <router-link :to="Pages.getPath(Pages.traitDetails, item.imageForeignId)" v-else-if="item.imageRefTable === 'phenotypes'">{{ item.referenceName }}</router-link>
+            <!-- Anything else -->
+            <span v-else>{{ item.referenceName }}</span>
+          </v-card-title>
+          <v-card-subtitle class="text-wrap" v-if="item.createdOn">{{ new Date(item.createdOn).toLocaleDateString() }}</v-card-subtitle>
+          <v-card-text>
+            <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
+          </v-card-text>
+          <v-card-text class="text-wrap">{{ item.imageDescription }}</v-card-text>
+
+          <v-card-text v-if="item.tags">
+            <v-chip label variant="flat" size="small" v-for="(tag, index) in item.tags" :key="`image-tag-${item.imageId}-${index}`" class="me-2 mb-1" href="#" @click.prevent="emit('tag-clicked', tag)" :color="getTagColor(tag)" :text="tag.tagName" />
+          </v-card-text>
+        </v-card>
+      </template>
+
+      <!-- Pass on all named slots -->
+      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+        <slot :name="slot" v-bind="slotProps" />
+      </template>
+
+      <template #bottom-sheet-content>
+        <ExifInfo :image="selectedImage" />
+      </template>
+    </BaseTable>
+
+    <v-overlay class="align-center justify-center image-wrapper" v-model="lightboxVisible">
+      <v-img :src="getSrc(selectedImage, 'large')" contain v-if="selectedImage" @click="lightboxVisible = false" />
+    </v-overlay>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -136,6 +138,11 @@
       key: 'referenceName',
       dataType: 'string',
       title: t('tableColumnImageReferenceName'),
+    }, {
+      key: 'imageForeignId',
+      dataType: 'integer',
+      visibleInTable: false,
+      title: t('tableColumnImageForeignId'),
     }, {
       key: 'imageRefTable',
       dataType: 'string',

@@ -245,6 +245,7 @@
     dataType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
     locationType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
     entityType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+    groupType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
     json: [FilterComparator.jsonSearch, FilterComparator.isNull, FilterComparator.isNotNull],
     jsonObject: [FilterComparator.jsonSearch],
     integer: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],

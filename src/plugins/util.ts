@@ -1,5 +1,10 @@
 import { coreStore } from '@/stores/app'
-import type { ViewTableGermplasm } from './types/germinate'
+import type { PublicationDoiLookupDetails, ViewTableGermplasm, ViewTablePublications } from '@/plugins/types/germinate'
+
+// @ts-ignore
+import { Cite } from '@citation-js/core'
+import '@citation-js/plugin-doi'
+import '@citation-js/plugin-csl'
 
 const germinateVersion = '4.9.0'
 
@@ -190,6 +195,70 @@ const downloadSvgsFromContainer = (container: Element, isPlotly: boolean, filena
   document.body.removeChild(downloadLink)
 }
 
+function getFromCache (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
+  if (!publication) {
+    return undefined
+  }
+
+  try {
+    const citation = new Cite(publication.publicationFallbackCache)
+
+    if (citation && citation.data && citation.data.length > 0) {
+      const temp = citation.format('data', { format: 'object' })[0]
+      return {
+        title: temp.title,
+        container: temp['container-title'],
+        fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
+        URL: temp.URL,
+        date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
+      }
+    } else {
+      return {
+        title: 'N/A',
+        fullReference: 'N/A',
+        URL: publication.publicationDoi,
+      }
+    }
+  } catch {
+    return {
+      title: 'N/A',
+      fullReference: 'N/A',
+      URL: publication.publicationDoi,
+    }
+  }
+}
+
+function lookupDoiInformation (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
+  if (publication) {
+    let result: PublicationDoiLookupDetails | undefined
+
+    if (publication.publicationFallbackCache) {
+      result = getFromCache(publication)
+    } else {
+      try {
+        const citation = Cite.async(publication.publicationDoi.trim())
+        if (citation && citation.data && citation.data.length > 0) {
+          const temp = citation.format('data', { format: 'object' })[0]
+          result = {
+            title: temp.title,
+            container: temp['container-title'],
+            fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
+            URL: temp.URL,
+            date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
+          }
+        } else {
+          result = getFromCache(publication)
+        }
+      } catch {
+        result = getFromCache(publication)
+      }
+    }
+    return result
+  } else {
+    return undefined
+  }
+}
+
 export {
   germinateVersion,
   uuidv4,
@@ -204,4 +273,5 @@ export {
   getGermplasmDisplayName,
   bskyIcon,
   genesysIcon,
+  lookupDoiInformation,
 }

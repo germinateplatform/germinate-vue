@@ -1,12 +1,12 @@
 <template>
-  <v-card variant="tonal">
+  <v-card variant="tonal" v-if="displayData">
     <v-card-text>
-      <div>{{ displayData['container-title'] }}</div>
+      <div>{{ displayData.container }}</div>
 
       <p class="text-h5 font-weight-black">{{ displayData.title }}</p>
 
-      <p v-if="displayData && displayData.issued && displayData.issued['date-parts'] && displayData.issued['date-parts'].length > 0 && displayData.issued['date-parts'][0].length > 0">
-        {{ displayData.issued['date-parts'][0][0] }}
+      <p v-if="displayData.date">
+        {{ displayData.date }}
       </p>
 
       <div class="text-medium-emphasis limit-rows">
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { ViewTablePublications } from '@/plugins/types/germinate'
+  import type { PublicationDoiLookupDetails, ViewTablePublications } from '@/plugins/types/germinate'
   // @ts-ignore
   import { Cite } from '@citation-js/core'
   import '@citation-js/plugin-doi'
@@ -83,7 +83,7 @@
 
   const displayData = computed(() => {
     if (publication) {
-      let result
+      let result: PublicationDoiLookupDetails
 
       if (publication.publicationFallbackCache) {
         result = getFromCache()
@@ -91,8 +91,13 @@
         try {
           const citation = Cite.async(publication.publicationDoi.trim())
           if (citation && citation.data && citation.data.length > 0) {
-            result = citation.format('data', { format: 'object' })[0]
-            result.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
+            const temp = citation.format('data', { format: 'object' })[0]
+            result = {
+              title: temp.title,
+              fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
+              URL: temp.URL,
+              date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
+            }
           } else {
             result = getFromCache()
           }
@@ -102,7 +107,7 @@
       }
       return result
     } else {
-      return null
+      return undefined
     }
   })
 </script>

@@ -1,68 +1,70 @@
 <template>
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableFileresources} -->
-  <BaseTable
-    ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
-    :headers="headers"
-    :filter-on="filterOn"
-    :show-details="false"
-    item-key="fileresourceId"
-    table-key="fileresources"
-    header-icon="mdi-file-download"
-    :header-title="$t('pageDataResourcesTitle')"
-    v-bind="$attrs"
-  >
-    <template #header>
-      <v-btn v-if="store.storeUserIsDataCurator" variant="tonal" prepend-icon="mdi-file-plus" @click="addFileresourceModal?.show()">{{ $t('tableButtonAddFileresource') }}</v-btn>
-    </template>
-
-    <template #item.fileresourceDescription="{ item, value }">
-      <template v-if="item.fileresourceDescription && item.fileresourceDescription.length > 0">
-        <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
-        <a href="#" class="ms-2 table-icon-link" @click.prevent="showFileresourceModal('tableColumnFileresourceDescription', item.fileresourceDescription)" v-if="isTruncatedAfterWords(value, 10)">
-          <v-icon icon="mdi-page-next" />
-        </a>
+  <div>
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableFileresources} -->
+    <BaseTable
+      ref="baseTable"
+      :get-data="compProps.getData"
+      :get-ids="compProps.getIds"
+      :download="compProps.download"
+      :headers="headers"
+      :filter-on="filterOn"
+      :show-details="false"
+      item-key="fileresourceId"
+      table-key="fileresources"
+      header-icon="mdi-file-download"
+      :header-title="$t('pageDataResourcesTitle')"
+      v-bind="$attrs"
+    >
+      <template #header>
+        <v-btn v-if="store.storeUserIsDataCurator" variant="tonal" prepend-icon="mdi-file-plus" @click="addFileresourceModal?.show()">{{ $t('tableButtonAddFileresource') }}</v-btn>
       </template>
-    </template>
-    <template #item.fileresourcetypeDescription="{ item, value }">
-      <template v-if="item.fileresourceDescription && item.fileresourceDescription.length > 0">
-        <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
-        <a href="#" class="ms-2 table-icon-link" @click.prevent="showFileresourceModal('tableColumnFileresourcetypeDescription', item.fileresourcetypeDescription)" v-if="isTruncatedAfterWords(value, 10)">
-          <v-icon icon="mdi-page-next" />
-        </a>
+
+      <template #item.fileresourceDescription="{ item, value }">
+        <template v-if="item.fileresourceDescription && item.fileresourceDescription.length > 0">
+          <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
+          <a href="#" class="ms-2 table-icon-link" @click.prevent="showFileresourceModal('tableColumnFileresourceDescription', item.fileresourceDescription)" v-if="isTruncatedAfterWords(value, 10)">
+            <v-icon icon="mdi-page-next" />
+          </a>
+        </template>
       </template>
-    </template>
+      <template #item.fileresourcetypeDescription="{ item, value }">
+        <template v-if="item.fileresourceDescription && item.fileresourceDescription.length > 0">
+          <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
+          <a href="#" class="ms-2 table-icon-link" @click.prevent="showFileresourceModal('tableColumnFileresourcetypeDescription', item.fileresourcetypeDescription)" v-if="isTruncatedAfterWords(value, 10)">
+            <v-icon icon="mdi-page-next" />
+          </a>
+        </template>
+      </template>
 
-    <!-- Download -->
-    <template #item.fileresourceSize="{ item }">
-      <div class="d-flex flex-column justify-content-center my-2 align-center">
-        <v-btn color="primary" :href="getFileResourceUrl(item)"><v-icon icon="mdi-download" /> {{ $t('buttonDownload') }}</v-btn>
-        <small>({{ getNumberWithSuffix(item.fileresourceSize, 2, 1024, ' ') }})</small>
-      </div>
-    </template>
-    <!-- Show datasets -->
-    <template #item.datasetIds="{ item }">
-      <div class="d-flex align-start h-100 pt-2">
-        <v-btn @click="showDatasets(item)" v-if="item.datasetIds && item.datasetIds.length > 0"><v-icon icon="mdi-database" /> {{ $t('buttonShow') }}</v-btn>
-      </div>
-    </template>
+      <!-- Download -->
+      <template #item.fileresourceSize="{ item }">
+        <div class="d-flex flex-column justify-content-center my-2 align-center">
+          <v-btn color="primary" :href="getFileResourceUrl(item)"><v-icon icon="mdi-download" /> {{ $t('buttonDownload') }}</v-btn>
+          <small>({{ getNumberWithSuffix(item.fileresourceSize, 2, 1024, ' ') }})</small>
+        </div>
+      </template>
+      <!-- Show datasets -->
+      <template #item.datasetIds="{ item }">
+        <div class="d-flex align-start h-100 pt-2">
+          <v-btn @click="showDatasets(item)" v-if="item.datasetIds && item.datasetIds.length > 0"><v-icon icon="mdi-database" /> {{ $t('buttonShow') }}</v-btn>
+        </div>
+      </template>
 
-    <!-- Delete resource -->
-    <template #item.deleteFileresource="{ item }">
-      <div class="d-flex align-start h-100 pt-2">
-        <v-btn color="error" @click="deleteResource(item)"><v-icon icon="mdi-delete" /></v-btn>
-      </div>
-    </template>
+      <!-- Delete resource -->
+      <template #item.deleteFileresource="{ item }">
+        <div class="d-flex align-start h-100 pt-2">
+          <v-btn color="error" @click="deleteResource(item)"><v-icon icon="mdi-delete" /></v-btn>
+        </div>
+      </template>
 
-    <!-- Pass on all named slots -->
-    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
-      <slot :name="slot" v-bind="slotProps" />
-    </template>
-  </BaseTable>
+      <!-- Pass on all named slots -->
+      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+        <slot :name="slot" v-bind="slotProps" />
+      </template>
+    </BaseTable>
 
-  <AddFileresourceModal ref="addFileresourceModal" @fileresource-added="baseTable?.refresh()" />
+    <AddFileresourceModal ref="addFileresourceModal" @fileresource-added="baseTable?.refresh()" />
+  </div>
 </template>
 
 <script setup lang="ts">

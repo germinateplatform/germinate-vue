@@ -1,57 +1,59 @@
 <template>
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGroups} -->
-  <BaseTable
-    ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
-    :headers="headers"
-    :filter-on="filterOn"
-    :show-details="false"
-    item-key="groupId"
-    table-key="groups"
-    header-icon="mdi-group"
-    :header-title="$t('pageGroupsTitle')"
-    v-bind="$attrs"
-  >
-    <template #header v-if="store.storeUserIsAuthenticated">
-      <v-btn variant="outlined" :text="$t('buttonAddGroup')" prepend-icon="mdi-plus" @click="addItem" />
-    </template>
-
-    <template #item.groupId="{ item }">
-      <router-link :to="Pages.getPath(Pages.groupDetails, item.groupId)">{{ item.groupId }}</router-link>
-    </template>
-    <template #item.groupName="{ item }">
-      <router-link :to="Pages.getPath(Pages.groupDetails, item.groupId)">{{ item.groupName }}</router-link>
-    </template>
-
-    <template #item.groupType="{ item }">
-      <v-chip label :color="groupTypes[item.groupType].color()" :prepend-icon="groupTypes[item.groupType].path">{{ groupTypes[item.groupType].text() }}</v-chip>
-    </template>
-
-    <template #item.groupActions="{ item }">
-      <template v-if="store.storeUserIsAdmin || (item.userId === store.storeToken?.id)">
-        <v-icon class="mx-1" color="info" icon="mdi-pencil" @click="editItem(item)" />
-        <v-icon class="mx-1" color="error" icon="mdi-delete" @click="deleteItem(item)" />
+  <div>
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGroups} -->
+    <BaseTable
+      ref="baseTable"
+      :get-data="compProps.getData"
+      :get-ids="compProps.getIds"
+      :download="compProps.download"
+      :headers="headers"
+      :filter-on="filterOn"
+      :show-details="false"
+      item-key="groupId"
+      table-key="groups"
+      header-icon="mdi-group"
+      :header-title="$t('pageGroupsTitle')"
+      v-bind="$attrs"
+    >
+      <template #header v-if="store.storeUserIsAuthenticated">
+        <v-btn variant="outlined" :text="$t('buttonAddGroup')" prepend-icon="mdi-plus" @click="addItem" />
       </template>
-    </template>
 
-    <!-- Pass on all named slots -->
-    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
-      <slot :name="slot" v-bind="slotProps" />
-    </template>
-  </BaseTable>
+      <template #item.groupId="{ item }">
+        <router-link :to="Pages.getPath(Pages.groupDetails, item.groupId)">{{ item.groupId }}</router-link>
+      </template>
+      <template #item.groupName="{ item }">
+        <router-link :to="Pages.getPath(Pages.groupDetails, item.groupId)">{{ item.groupName }}</router-link>
+      </template>
 
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGroups} -->
-  <GenericAddEditFormModal
-    title="modalTitleEditGroup"
-    :item="selectedGroup"
-    :notify="onSendGroup"
-    :fields="groupFields"
-    @items-changed="baseTable?.refresh()"
-    ref="groupModal"
-    v-if="selectedGroup"
-  />
+      <template #item.groupType="{ item }">
+        <v-chip label :color="groupTypes[item.groupType].color()" :prepend-icon="groupTypes[item.groupType].path">{{ groupTypes[item.groupType].text() }}</v-chip>
+      </template>
+
+      <template #item.groupActions="{ item }">
+        <template v-if="store.storeUserIsAdmin || (item.userId === store.storeToken?.id)">
+          <v-icon class="mx-1" color="info" icon="mdi-pencil" @click="editItem(item)" />
+          <v-icon class="mx-1" color="error" icon="mdi-delete" @click="deleteItem(item)" />
+        </template>
+      </template>
+
+      <!-- Pass on all named slots -->
+      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+        <slot :name="slot" v-bind="slotProps" />
+      </template>
+    </BaseTable>
+
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGroups} -->
+    <GenericAddEditFormModal
+      title="modalTitleEditGroup"
+      :item="selectedGroup"
+      :notify="onSendGroup"
+      :fields="groupFields"
+      @items-changed="baseTable?.refresh()"
+      ref="groupModal"
+      v-if="selectedGroup"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

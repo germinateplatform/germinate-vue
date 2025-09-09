@@ -40,6 +40,52 @@ export interface ViewTableGermplasm {
     hasPedigreeData: number;
 }
 
+export interface ViewTablePedigreedefinitions extends Serializable {
+    germplasmId: number;
+    germplasmName: string;
+    germplasmDisplayName: string;
+    pedigreeNotationName: string;
+    pedigreeNotationDescription: string;
+    pedigreeNotationUrl: string;
+    datasetId: number;
+    datasetName: string;
+    definitionId: number;
+    definition: string;
+    pedigreeDescriptionName: string;
+    pedigreeDescriptionDescription: string;
+    pedigreeDescriptionAuthor: string;
+    createdOn: Date;
+}
+
+export interface ViewTablePedigrees extends Serializable {
+    parentId: number;
+    parentGid: string;
+    parentName: string;
+    parentDisplayName: string;
+    parentNumber: string;
+    childId: number;
+    childGid: string;
+    childName: string;
+    childDisplayName: string;
+    childNumber: string;
+    datasetId: number;
+    datasetName: string;
+    experimentId: number;
+    experimentName: string;
+    relationshipType: ViewTablePedigreesRelationshipType;
+    relationshipDescription: string;
+    pedigreeDescription: string;
+    pedigreeAuthor: string;
+}
+
+export interface PublicationDoiLookupDetails {
+    title: string;
+    container?: string;
+    fullReference: string;
+    URL: string;
+    date?: string
+}
+
 export interface ViewTableLocations extends Serializable {
     locationId: number;
     locationName: string;
@@ -375,6 +421,7 @@ export interface ViewTablePublications extends Serializable {
     projectIds?: number[];
     createdOn: Date;
     updatedOn: Date;
+    lookupDetails?: PublicationDoiLookupDetails
 }
 
 export interface Filter {
@@ -555,6 +602,19 @@ export const enum ViewTablePedigreesRelationshipType {
 
 export interface JooqWeirdnessValue {
     value: number;
+}
+
+export interface GermplasmStats {
+    germplasmId: number;
+    germplasmName: string;
+    traitId: number;
+    traitName: string;
+    traitNameShort: string;
+    min: number;
+    avg: number;
+    max: number;
+    count: number;
+    isSelected: boolean;
 }
 
 export interface ViewTableDatasets extends Serializable {
@@ -1082,6 +1142,76 @@ export interface ImportJobStats {
     groups: number;
 }
 
+export interface ViewMcpd {
+    id: number;
+    puid: string;
+    instcode: string;
+    accenumb: string;
+    collnumb: string;
+    collcode: string;
+    collname: string;
+    collinstaddress: string;
+    collmissid: string;
+    genus: string;
+    species: string;
+    spauthor: string;
+    subtaxa: string;
+    subtauthor: string;
+    cropname: string;
+    accename: string;
+    acqdate: string;
+    origcty: string;
+    collsite: string;
+    declatitude: number;
+    latitude: any;
+    declongitude: number;
+    longitude: any;
+    coorduncert: number;
+    coorddatum: string;
+    georefmeth: string;
+    elevation: number;
+    colldate: string;
+    bredcode: string;
+    bredname: string;
+    sampstat: number;
+    ancest: string;
+    collsrc: number;
+    donorcode: string;
+    donorname: string;
+    donornumb: string;
+    othernumb: string;
+    duplsite: string;
+    duplinstname: string;
+    storage: string;
+    mlsstat: number;
+    remarks: string;
+    entitytype: string;
+    entityparentid: number;
+    entityparentaccenumb: string;
+}
+
+export interface Datawarnings extends Serializable {
+    id: number;
+    description: string;
+    category: DatawarningsCategory;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface ViewTableLinks extends Serializable {
+    linkId: number;
+    linkDescription: string;
+    linkVisibility: boolean;
+    linktypeId: number;
+    linktypeDescription: string;
+    linktypeTargetTable: string;
+    linktypeTargetColumn: string;
+    linkForeignId: number;
+    hyperlink: string;
+    placeholder: string;
+    updatedOn: Date;
+}
+
 export const enum DataImportJobsDatatype {
     mcpd = 'mcpd',
     trial = 'trial',
@@ -1215,4 +1345,13 @@ export const enum ImportStatus {
 export const enum StatusType {
     WARNING = 'WARNING',
     ERROR = 'ERROR',
+}
+
+export const enum DatawarningsCategory {
+    generic = 'generic',
+    quality = 'quality',
+    source = 'source',
+    deprecated = 'deprecated',
+    missing = 'missing',
+    inaccuracy = 'inaccuracy',
 }

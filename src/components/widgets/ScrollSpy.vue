@@ -1,6 +1,6 @@
 <template>
   <v-tabs
-    class="passport-tabs-sticky"
+    class="passport-tabs-sticky g-no-gutters"
     v-model="activeHref"
     center-active
     bg-color="surface"
@@ -13,11 +13,12 @@
         v-if="item.tooltip"
         :color="item.href === activeHref ? 'primary' : undefined"
         :text="item.title ? t(item.title) : undefined"
-        :prepend-icon="item.icon"
         @click.prevent="scrollTo(item)"
         v-tooltip:top="t(item.tooltip)"
         :value="item.href"
-      />
+      >
+        <v-icon :icon="item.icon" />
+      </v-tab>
       <v-tab
         v-else
         :color="item.href === activeHref ? 'primary' : undefined"
@@ -70,5 +71,6 @@
 .passport-tabs-sticky {
   position: sticky;
   top: 64px;
+  z-index: 1;
 }
 </style>

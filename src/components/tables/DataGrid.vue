@@ -1,36 +1,39 @@
 <template>
-  <v-row>
-    <!-- @vue-ignore -->
-    <v-col
-      v-for="item in items"
-      :key="`item-${item[itemValue]}`"
-      cols="12"
-      sm="6"
-      md="4"
-      lg="3"
-    >
-      <slot name="card-item" v-bind="{ item }" />
-    </v-col>
-  </v-row>
+  <div>
+    <v-row>
+      <!-- @vue-ignore -->
+      <v-col
+        v-for="item in items"
+        :key="`item-${item[itemValue]}`"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        class="d-flex"
+      >
+        <slot name="card-item" v-bind="{ item }" />
+      </v-col>
+    </v-row>
 
-  <div class="v-data-table-footer d-flex justify-end flex-wrap">
-    <slot name="footer.prepend" />
-    <v-spacer />
-    <div class="d-flex align-center g-items-per-page">
-      <div class="pe-2">{{ t('$vuetify.dataFooter.itemsPerPageText') }}</div>
-      <v-select
-        :items="perPageOptions"
-        v-model="localItemsPerPage"
-        hide-details
-        variant="outlined"
-        density="compact"
-        class="flex-shrink-0"
-      />
+    <div class="v-data-table-footer d-flex justify-end flex-wrap">
+      <slot name="footer.prepend" />
+      <v-spacer />
+      <div class="d-flex align-center g-items-per-page">
+        <div class="pe-2">{{ t('$vuetify.dataFooter.itemsPerPageText') }}</div>
+        <v-select
+          :items="perPageOptions"
+          v-model="localItemsPerPage"
+          hide-details
+          variant="outlined"
+          density="compact"
+          class="flex-shrink-0"
+        />
+      </div>
+      <div class="v-data-table-footer__info">
+        {{ t('$vuetify.dataFooter.pageText', !itemsLength ? 0 : startIndex + 1, stopIndex, itemsLength) }}
+      </div>
+      <v-pagination v-model="localPage" :length="totalPages" :total-visible="0" show-first-last-page />
     </div>
-    <div class="v-data-table-footer__info">
-      {{ t('$vuetify.dataFooter.pageText', !itemsLength ? 0 : startIndex + 1, stopIndex, itemsLength) }}
-    </div>
-    <v-pagination v-model="localPage" :length="totalPages" :total-visible="0" show-first-last-page />
   </div>
 </template>
 

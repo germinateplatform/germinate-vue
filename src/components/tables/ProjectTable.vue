@@ -1,70 +1,72 @@
 <template>
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableProjects} -->
-  <BaseTable
-    ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
-    :headers="headers"
-    :filter-on="filterOn"
-    :show-details="false"
-    :selection-type="TableSelectionType.all"
-    item-key="projectId"
-    table-key="projects"
-    header-icon="mdi-clipboard-list"
-    :header-title="$t('pageProjectsTitle')"
-    @selection-changed="selectionChanged"
-    v-bind="$attrs"
-  >
-    <template #header v-if="store.storeUserIsDataCurator">
-      <v-btn variant="outlined" :text="$t('buttonAddProject')" prepend-icon="mdi-plus" @click="addItem" />
-    </template>
+  <div>
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableProjects} -->
+    <BaseTable
+      ref="baseTable"
+      :get-data="compProps.getData"
+      :get-ids="compProps.getIds"
+      :download="compProps.download"
+      :headers="headers"
+      :filter-on="filterOn"
+      :show-details="false"
+      :selection-type="TableSelectionType.all"
+      item-key="projectId"
+      table-key="projects"
+      header-icon="mdi-clipboard-list"
+      :header-title="$t('pageProjectsTitle')"
+      @selection-changed="selectionChanged"
+      v-bind="$attrs"
+    >
+      <template #header v-if="store.storeUserIsDataCurator">
+        <v-btn variant="outlined" :text="$t('buttonAddProject')" prepend-icon="mdi-plus" @click="addItem" />
+      </template>
 
-    <!-- Project id link -->
-    <template #item.projectId="{ item }">
-      <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectId }}</router-link>
-    </template>
-    <!-- Project name link -->
-    <template #item.projectName="{ item }">
-      <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectName }}</router-link>
-    </template>
-    <!-- Project description link -->
-    <template #item.projectDescription="{ item }">
-      <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectDescription }}</router-link>
-    </template>
-    <!-- Project datasets -->
-    <template #item.datasets="{ item }">
-      <span v-if="item.datasets">{{ getNumberWithSuffix(item.datasets.length, 1) }}</span>
-    </template>
-    <template #item.projectExternalUrl="{ item }">
-      <a :href="item.projectExternalUrl" target="_blank" rel="noopener noreferrer" v-if="item.projectExternalUrl">{{ item.projectExternalUrl }}</a>
-    </template>
-    <!-- Project image/logo -->
-    <template #item.projectImageId="{ item }">
-      <v-img :src="getSrc(item, 'small')" class="table-image py-2" alt="Image" />
-    </template>
+      <!-- Project id link -->
+      <template #item.projectId="{ item }">
+        <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectId }}</router-link>
+      </template>
+      <!-- Project name link -->
+      <template #item.projectName="{ item }">
+        <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectName }}</router-link>
+      </template>
+      <!-- Project description link -->
+      <template #item.projectDescription="{ item }">
+        <router-link :to="{ path: Pages.getPath(Pages.projectDetails, item.projectId) }">{{ item.projectDescription }}</router-link>
+      </template>
+      <!-- Project datasets -->
+      <template #item.datasets="{ item }">
+        <span v-if="item.datasets">{{ getNumberWithSuffix(item.datasets.length, 1) }}</span>
+      </template>
+      <template #item.projectExternalUrl="{ item }">
+        <a :href="item.projectExternalUrl" target="_blank" rel="noopener noreferrer" v-if="item.projectExternalUrl">{{ item.projectExternalUrl }}</a>
+      </template>
+      <!-- Project image/logo -->
+      <template #item.projectImageId="{ item }">
+        <v-img :src="getSrc(item, 'small')" class="table-image py-2" alt="Image" />
+      </template>
 
-    <template #item.projectActions="{ item }" v-if="store.storeUserIsDataCurator">
-      <v-icon class="mx-1" color="info" icon="mdi-pencil" @click="editItem(item)" />
-      <v-icon class="mx-1" color="error" icon="mdi-delete" @click="deleteItem(item)" />
-    </template>
+      <template #item.projectActions="{ item }" v-if="store.storeUserIsDataCurator">
+        <v-icon class="mx-1" color="info" icon="mdi-pencil" @click="editItem(item)" />
+        <v-icon class="mx-1" color="error" icon="mdi-delete" @click="deleteItem(item)" />
+      </template>
 
-    <!-- Pass on all named slots -->
-    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
-      <slot :name="slot" v-bind="slotProps" />
-    </template>
-  </BaseTable>
+      <!-- Pass on all named slots -->
+      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+        <slot :name="slot" v-bind="slotProps" />
+      </template>
+    </BaseTable>
 
-  <!-- @vue-generic {typeof import('@/plugins/types/ExtendedViewTableProjects')} -->
-  <GenericAddEditFormModal
-    title="modalTitleAddProject"
-    :item="selectedProject"
-    :notify="onSendProject"
-    :fields="projectFields"
-    @items-changed="baseTable?.refresh()"
-    ref="projectModal"
-    v-if="selectedProject"
-  />
+    <!-- @vue-generic {typeof import('@/plugins/types/ExtendedViewTableProjects')} -->
+    <GenericAddEditFormModal
+      title="modalTitleAddProject"
+      :item="selectedProject"
+      :notify="onSendProject"
+      :fields="projectFields"
+      @items-changed="baseTable?.refresh()"
+      ref="projectModal"
+      v-if="selectedProject"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

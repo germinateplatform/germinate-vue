@@ -15,7 +15,7 @@
           <slot name="list-prepend" />
           <v-list-item @click="downloadChart('png')" :title="$t('buttonDownloadPng')" prepend-icon="mdi-file-image" v-if="compProps.supportsPngDownload" />
           <v-list-item @click="downloadChart('svg')" :title="$t('buttonDownloadSvg')" prepend-icon="mdi-file-code" v-if="compProps.supportsSvgDownload" />
-          <v-list-item @click="downloadSource" :title="$t('buttonDownloadFile')" prepend-icon="mdi-file-document" />
+          <v-list-item @click="downloadSource" :title="$t('buttonDownloadFile')" prepend-icon="mdi-file-document" v-if="compProps.supportsFileDownload" />
           <v-list-item @click="bottomSheetVisible = true" :title="$t('buttonChangeChartColors')" prepend-icon="mdi-palette" v-if="compProps.canChangeColors" />
           <slot name="list-append" />
         </v-list>
@@ -26,6 +26,10 @@
     <v-card-text>
       <slot name="chart-content" ref="chart" />
     </v-card-text>
+
+    <v-card-actions>
+      <slot name="card-actions" />
+    </v-card-actions>
 
     <v-bottom-sheet
       v-model="bottomSheetVisible"
@@ -81,7 +85,7 @@
   import Plotly from 'plotly.js/lib/core'
   import { VColorInput } from 'vuetify/labs/VColorInput'
 
-  const emit = defineEmits(['update:loading', 'force-redraw'])
+  const emit = defineEmits(['update:loading', 'force-redraw', 'download-png-manually'])
 
   interface ChartProps {
     loading?: boolean
@@ -90,6 +94,7 @@
     downloadHeight?: number
     supportsSvgDownload?: boolean
     supportsPngDownload?: boolean
+    supportsFileDownload?: boolean
     filename: string
     sourceFile?: DownloadBlob
     chartType?: 'plotly' | 'd3.js'
@@ -103,6 +108,7 @@
     downloadHeight: 600,
     supportsPngDownload: true,
     supportsSvgDownload: true,
+    supportsFileDownload: true,
     chartType: 'plotly' as const,
     canChangeColors: true,
   })
@@ -133,10 +139,14 @@
       if (imageType === 'svg') {
         downloadSvgsFromContainer(element, compProps.chartType === 'plotly', compProps.filename + '-' + getDateTimeString())
       } else if (imageType === 'png') {
-        const chart = element.classList.contains('js-plotly-plot') ? element : element.querySelector('.js-plotly-plot')
-        if (chart) {
-          // @ts-ignore
-          Plotly.downloadImage(chart, { format: 'png', width: compProps.downloadWidth, height: compProps.downloadHeight, filename: compProps.filename + '-' + getDateTimeString() })
+        if (compProps.chartType === 'd3.js') {
+          emit('download-png-manually')
+        } else {
+          const chart = element.classList.contains('js-plotly-plot') ? element : element.querySelector('.js-plotly-plot')
+          if (chart) {
+            // @ts-ignore
+            Plotly.downloadImage(chart, { format: 'png', width: compProps.downloadWidth, height: compProps.downloadHeight, filename: compProps.filename + '-' + getDateTimeString() })
+          }
         }
       }
     }

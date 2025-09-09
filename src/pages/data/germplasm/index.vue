@@ -10,16 +10,17 @@
     <v-divider class="mb-3" />
 
     <v-row>
-      <v-col>
+      <v-col class="d-flex">
         <v-card
           :title="$t('pageGermplasmDownloadTabGermplasmTitle')"
           :subtitle="$t('pageGermplasmDownloadTabGermplasmSubtitle')"
+          class="d-flex flex-column justify-space-between"
         >
           <template #prepend>
             <v-icon color="primary" icon="mdi-passport" />
           </template>
-          <v-card-text>{{ $t('pageGermplasmDownloadTabGermplasmText') }}</v-card-text>
-          <v-card-text>
+          <v-card-text class="flex-grow-0">{{ $t('pageGermplasmDownloadTabGermplasmText') }}</v-card-text>
+          <v-card-text class="flex-grow-1">
             <v-btn-toggle
               color="primary"
               border
@@ -54,7 +55,7 @@
         </v-card>
       </v-col>
 
-      <v-col v-if="hasPedigreeData">
+      <v-col class="d-flex" v-if="hasPedigreeData">
         <v-card
           :title="$t('pageGermplasmDownloadTabPedigreeTitle')"
           :subtitle="$t('pageGermplasmDownloadTabPedigreeSubtitle')"

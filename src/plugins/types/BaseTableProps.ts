@@ -14,6 +14,7 @@ export interface BaseTableProps<T> {
   itemKey: string
   tableKey: string
   headerIcon: string
+  headerIconColor?: string
   headerTitle: string
   filterOn?: FilterGroup[]
   markedItemType?: string

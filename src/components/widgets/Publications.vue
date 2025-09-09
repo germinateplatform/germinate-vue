@@ -1,18 +1,20 @@
 <template>
-  <v-row>
-    <v-col
-      v-for="publication in publicationsOnPage"
-      :key="`publication-card-${publication.publicationId}`"
-      cols="12"
-      sm="6"
-      md="4"
-      xl="3"
-    >
-      <PublicationCard :publication="publication" @delete="onDelete(publication)" />
-    </v-col>
-  </v-row>
+  <div>
+    <v-row>
+      <v-col
+        v-for="publication in publicationsOnPage"
+        :key="`publication-card-${publication.publicationId}`"
+        cols="12"
+        sm="6"
+        md="4"
+        xl="3"
+      >
+        <PublicationCard :publication="publication" @delete="onDelete(publication)" />
+      </v-col>
+    </v-row>
 
-  <v-pagination :length="totalPages" v-model="page" v-if="totalPages > 1" />
+    <v-pagination :length="totalPages" v-model="page" v-if="totalPages > 1" />
+  </div>
 </template>
 
 <script setup lang="ts">

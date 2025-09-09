@@ -947,6 +947,8 @@
   "pagePassportTraitStatsText": "This section shows the performance of the selected germplasm compared to all other germplasm in the database per trait. For this, the average value for this germplasm per trait is shown against the minimum and maximum across all the data.",
   "pagePublicationsTitle": "Publications",
   "pagePublicationDetailsTitle": "Publication details",
+  "pagePedigreeDefinitionsTitle": "Pedigree string definitions",
+  "pagePedigreeTitle": "Pedigree relationships",
   "pageSearchResultSectionAll": "All data",
   "pageSearchResultSectionDatasetAttributes": "Dataset attribute data",
   "pageSearchResultSectionDatasets": "Datasets",

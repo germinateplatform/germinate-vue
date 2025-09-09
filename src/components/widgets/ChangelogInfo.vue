@@ -1,49 +1,51 @@
 <template>
-  <v-pagination v-model="page" :length="length" />
+  <div>
+    <v-pagination v-model="page" :length="length" />
 
-  <v-list class="changelog">
-    <template
-      v-for="(version, index) in visibleChangelog"
-      :key="`changelog-${version.version}`"
-    >
-      <v-divider v-if="index > 0" />
-      <v-list-item
-        :title="version.version"
+    <v-list class="changelog">
+      <template
+        v-for="(version, index) in visibleChangelog"
+        :key="`changelog-${version.version}`"
       >
-        <template #title="{ title }">
-          <div class="d-flex justify-space-between mt-3">
-            <div class="mb-2"><v-icon size="large" color="primary" icon="mdi-tag" /> <span class="text-h5">v{{ title }}</span></div>
-            <v-chip color="muted" prepend-icon="mdi-calendar" label>{{ new Date(version.date).toLocaleDateString() }}</v-chip>
-          </div>
-        </template>
-
-        <v-row class="my-3">
-          <template
-            v-for="(item, iindex) in version.items"
-            :key="`changelog-${version.version}-${iindex}`"
-          >
-            <v-col cols="12" md="4">
-              <div><v-chip label :color="badges[item.type].color" :text="badges[item.type].text" /> {{ item.title }}</div>
-              <div>
-                <v-chip
-                  v-for="cat in item.categories"
-                  :key="`changelog-${version.version}-${iindex}-${cat}`"
-                  label
-                  class="mt-2 me-2"
-                  variant="tonal"
-                  :color="categories[cat].color"
-                  :text="categories[cat].text"
-                />
-              </div>
-            </v-col>
-            <v-col cols="12" md="8">
-              <span v-html="item.text" />
-            </v-col>
+        <v-divider v-if="index > 0" />
+        <v-list-item
+          :title="version.version"
+        >
+          <template #title="{ title }">
+            <div class="d-flex justify-space-between mt-3">
+              <div class="mb-2"><v-icon size="large" color="primary" icon="mdi-tag" /> <span class="text-h5">v{{ title }}</span></div>
+              <v-chip color="muted" prepend-icon="mdi-calendar" label>{{ new Date(version.date).toLocaleDateString() }}</v-chip>
+            </div>
           </template>
-        </v-row>
-      </v-list-item>
-    </template>
-  </v-list>
+
+          <v-row class="my-3">
+            <template
+              v-for="(item, iindex) in version.items"
+              :key="`changelog-${version.version}-${iindex}`"
+            >
+              <v-col cols="12" md="4">
+                <div><v-chip label :color="badges[item.type].color" :text="badges[item.type].text" /> {{ item.title }}</div>
+                <div>
+                  <v-chip
+                    v-for="cat in item.categories"
+                    :key="`changelog-${version.version}-${iindex}-${cat}`"
+                    label
+                    class="mt-2 me-2"
+                    variant="tonal"
+                    :color="categories[cat].color"
+                    :text="categories[cat].text"
+                  />
+                </div>
+              </v-col>
+              <v-col cols="12" md="8">
+                <span v-html="item.text" />
+              </v-col>
+            </template>
+          </v-row>
+        </v-list-item>
+      </template>
+    </v-list>
+  </div>
 </template>
 
 <script setup lang="ts">

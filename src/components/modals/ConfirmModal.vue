@@ -4,7 +4,7 @@
       <v-toolbar dark dense flat>
         <v-toolbar-title class="white--text">{{ internalTitle }}</v-toolbar-title>
       </v-toolbar>
-      <v-card-text v-show="!!internalMessage" class="pa-4">{{ internalMessage }}</v-card-text>
+      <v-card-text v-show="!!internalMessage" class="pa-4"><span v-html="internalMessage" /></v-card-text>
 
       <v-checkbox v-if="internalNeedsConfirmation" v-model="internalConfirmed">{{ $t('modalConfirmMessageConfirm') }}</v-checkbox>
       <v-card-actions class="pt-0">
