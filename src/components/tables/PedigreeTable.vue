@@ -67,6 +67,7 @@
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTablePedigreedefinitions } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
+  import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePedigreedefinitions[]>>> }
@@ -80,67 +81,17 @@
   const { t } = useI18n()
 
   // @ts-ignore
+  // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers = [
-      {
-        key: 'datasetId',
-        dataType: 'integer',
-        title: t('tableColumnPedigreeDatasetId'),
-      },
-      {
-        key: 'datasetName',
-        dataType: 'string',
-        title: t('tableColumnPedigreeDatasetName'),
-      },
-      {
-        key: 'parentId',
-        dataType: 'number',
-        title: t('tableColumnPedigreeParentId'),
-      }, {
-        key: 'parentGid',
-        dataType: 'string',
-        title: t('tableColumnPedigreeParentGid'),
-      }, {
-        key: 'parentName',
-        dataType: 'string',
-        title: t('tableColumnPedigreeParentName'),
-      }, {
-        key: 'childId',
-        dataType: 'number',
-        class: 'text-right',
-        title: t('tableColumnPedigreeChildId'),
-      }, {
-        key: 'childGid',
-        dataType: 'string',
-        title: t('tableColumnPedigreeChildGid'),
-      }, {
-        key: 'childName',
-        dataType: 'string',
-        title: t('tableColumnPedigreeChildName'),
-      }, {
-        key: 'relationshipType',
-        dataType: 'string',
-        title: t('tableColumnPedigreeRelationshipType'),
-      }, {
-        key: 'relationshipDescription',
-        dataType: 'string',
-        title: t('tableColumnPedigreeRelationshipDescription'),
-      }, {
-        key: 'pedigreeDescription',
-        dataType: 'string',
-        title: t('tableColumnPedigreeDescription'),
-      }, {
-        key: 'pedigreeAuthor',
-        dataType: 'string',
-        title: t('tableColumnPedigreeAuthor'),
-      },
-    ]
-
-    return headers
+    return columns.pedigrees.map(c => {
+      c.title = t(c.title || '')
+      return c
+    })
   })
 
   defineExpose({
-    refresh: () => baseTable.value?.refresh(),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    getSelection: () => baseTable.value?.getSelection(),
   })
 </script>
 

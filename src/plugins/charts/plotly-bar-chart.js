@@ -96,7 +96,7 @@ export function plotlyBarChart (Plotly) {
 
       const layout = {
         height,
-        hovermode: 'closest',
+        hovermode: 'x',
         barmode: 'group',
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
@@ -129,8 +129,6 @@ export function plotlyBarChart (Plotly) {
       if (groupBy) {
         layout.barmode = 'group'
       }
-
-      console.log(data)
 
       // Plotly.purge(this)
       Plotly.react(this, data, layout, config)

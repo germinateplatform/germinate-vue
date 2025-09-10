@@ -4,10 +4,16 @@
     :chart-id="id"
     :filename="compProps.downloadName"
     :source-file="sourceFile"
+    :header-icon="compProps.headerIcon"
     @force-redraw="redraw"
   >
     <template #chart-content>
       <div :id="id" ref="barChart" />
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
     </template>
   </BaseChart>
 </template>
@@ -44,6 +50,7 @@
     yTitle: string
     xColumn: string
     xLabels?: string[]
+    headerIcon?: string
     groupBy?: string
     downloadName?: string
     mode?: 'traces'
@@ -52,6 +59,7 @@
   const compProps = withDefaults(defineProps<BarChartProps>(), {
     downloadName: 'bar-chart',
     mode: 'traces',
+    headerIcon: 'mdi-chart-bar',
   })
 
   const store = coreStore()

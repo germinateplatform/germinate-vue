@@ -8,6 +8,7 @@
     :headers="headers"
     :filter-on="filterOn"
     :show-details="false"
+    :display-type="compProps.displayType"
     item-key="publicationId"
     table-key="publications"
     header-icon="mdi-book-open-variant"
@@ -15,6 +16,10 @@
     :supports-grid-cards="true"
     v-bind="$attrs"
   >
+    <template #header v-if="store.storeUserIsAuthenticated">
+      <v-btn variant="outlined" :text="$t('buttonAddPublication')" prepend-icon="mdi-plus" @click="addItem" />
+    </template>
+
     <template #item.publicationName="{ item }">
       <template v-if="item.publicationFallbackCache">
         <span v-html="item.publicationFallbackCache.title" />
@@ -83,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable from '@/components/tables/BaseTable.vue'
+  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
 
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
@@ -91,6 +96,7 @@
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTablePublications } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { publicationTypes } from '@/plugins/util/types'
+  import { coreStore } from '@/stores/app'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePublications[]>>> }
@@ -98,8 +104,10 @@
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
+    displayType?: DisplayType
   }>()
 
+  const store = coreStore()
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
 
@@ -158,8 +166,13 @@
     return headers
   })
 
+  function addItem () {
+    // TODO
+  }
+
   defineExpose({
-    refresh: () => baseTable.value?.refresh(),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    getSelection: () => baseTable.value?.getSelection(),
   })
 </script>
 

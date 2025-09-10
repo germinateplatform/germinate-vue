@@ -2,6 +2,28 @@
   <v-app>
     <v-main>
       <v-app-bar :extension-height="60" class="border-b border-primary border-opacity-100">
+        <template #extension v-if="searchVisible">
+          <v-container>
+            <v-row justify="end">
+              <v-col cols="12">
+                <v-text-field
+                  autofocus
+                  name="name"
+                  v-model="searchTerm"
+                  :label="$t('inputPlaceholderSearch')"
+                  density="compact"
+                  type="search"
+                  hide-details
+                  single-line
+                  append-inner-icon="mdi-magnify"
+                  @keyup.exact.enter="runSearch"
+                  @click:append-inner="runSearch"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </template>
+
         <v-img
           class="ms-4"
           src="/img/germinate-square.svg"
@@ -21,6 +43,8 @@
         </v-app-bar-title>
 
         <v-spacer />
+
+        <v-btn icon="mdi-magnify" @click="searchVisible = !searchVisible" v-if="showElements" />
 
         <v-badge class="pe-none" location="bottom left" color="info" :content="getNumberWithSuffix(store.storeSelectedProjects.length, 1)" :offset-x="10" :offset-y="10" v-if="showElements && store.storeSelectedProjects && store.storeSelectedProjects.length > 0">
           <v-btn :to="Pages.projects.path" icon="mdi-clipboard-list" />
@@ -148,6 +172,7 @@
   import { germinateVersion } from '@/plugins/util'
 
   // Composition
+  const router = useRouter()
   const theme = useTheme()
   const store = coreStore()
   const { smAndUp } = useDisplay()
@@ -159,9 +184,11 @@
   const bottomSheetVisible = ref(false)
   const bottomSheetType = ref<'changelog'>('changelog')
   const changelogVersionNumber = ref()
+  const searchVisible = ref(false)
+  const searchTerm = ref<string>()
 
   // Methods
-  const changeLocale = function (locale: string) {
+  function changeLocale (locale: string) {
     store.setLocale(locale)
   }
 
@@ -206,6 +233,12 @@
   apiGetLocales((result: Locale[]) => {
     locales.value = result
   })
+
+  function runSearch () {
+    router.push(Pages.getPath(Pages.searchQuery, searchTerm.value || ''))
+    searchTerm.value = undefined
+    searchVisible.value = false
+  }
 
   function showLogin () {
     loginModal.value?.show()

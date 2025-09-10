@@ -1,8 +1,12 @@
 <template>
   <div>
-    <ImageTags v-model="selectedTag" />
-
-    <ImageTable :get-data="getData" :filter-on="localFilterOn" @tag-clicked="tag => { selectedTag = tag }" @filter-changed="updateLocalSelection" />
+    <ImageTable :get-data="getData" :header-icon-color="headerIconColor" :filter-on="localFilterOn" @tag-clicked="tag => { selectedTag = tag }" @filter-changed="updateLocalSelection">
+      <template #card-text>
+        <v-card-text>
+          <ImageTags v-model="selectedTag" />
+        </v-card-text>
+      </template>
+    </ImageTable>
   </div>
 </template>
 
@@ -13,6 +17,7 @@
 
   const compProps = defineProps<{
     filterOn?: FilterGroup[]
+    headerIconColor?: string
   }>()
 
   const selectedTag = ref<ImageTag>()

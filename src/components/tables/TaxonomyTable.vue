@@ -152,7 +152,8 @@
   }
 
   defineExpose({
-    refresh: () => baseTable.value?.refresh(),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    getSelection: () => baseTable.value?.getSelection(),
   })
 </script>
 

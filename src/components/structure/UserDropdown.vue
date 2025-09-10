@@ -81,6 +81,10 @@
 
   const visible = ref(false)
 
+  function showTokenModal () {
+    // TODO
+  }
+
   function showLogin () {
     emitter.emit('show-login')
   }

@@ -8,24 +8,30 @@
 
     <v-row>
       <v-col cols="12" sm="6">
-        <TaxonomySunburst />
+        <TaxonomySunburst class="mb-5" />
       </v-col>
       <v-col cols="12" sm="6">
-        <TaxonomyTreemap />
+        <TaxonomyTreemap class="mb-5" />
       </v-col>
     </v-row>
 
-    <h2 class="text-h5 mb-3">{{ $t('pageStatisticsBiologicalStatusTitle') }}</h2>
-    <p>{{ $t('pageStatisticsBiologicalStatusText') }}</p>
     <BarChart
       x-column="biologicalstatus"
       group-by="genus"
       x-title="pageStatisticsBiologicalStatusXAxis"
       y-title="genericCount"
+      :title="$t('pageStatisticsBiologicalStatusTitle')"
       download-name="biological-status"
       @bar-clicked="biologicalStatusClicked"
       ref="biologicalStatusBarChart"
-    />
+      class="mb-5"
+    >
+      <template #card-text>
+        <v-card-text>
+          {{ $t('pageStatisticsBiologicalStatusText') }}
+        </v-card-text>
+      </template>
+    </BarChart>
 
   </v-container>
 </template>

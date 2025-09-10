@@ -46,6 +46,7 @@
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableLocations } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { locationTypes } from '@/plugins/util/types'
+  import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableLocations[]>>> }
@@ -60,55 +61,15 @@
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers = [{
-      key: 'locationId',
-      title: t('tableColumnLocationId'),
-      dataType: 'integer',
-    }, {
-      key: 'locationName',
-      title: t('tableColumnLocationName'),
-      dataType: 'string',
-    }, {
-      key: 'locationRegion',
-      title: t('tableColumnLocationRegion'),
-      dataType: 'string',
-    }, {
-      key: 'locationState',
-      title: t('tableColumnLocationState'),
-      dataType: 'string',
-    }, {
-      key: 'locationType',
-      title: t('tableColumnLocationType'),
-      dataType: 'locationType',
-    }, {
-      key: 'locationElevation',
-      dataType: 'float',
-      align: 'end' as 'start' | 'end' | 'center',
-      title: t('tableColumnLocationElevation'),
-      value: (value: ViewTableLocations) => value.locationElevation ? value.locationElevation.toFixed(2) : undefined,
-    }, {
-      key: 'locationLatitude',
-      dataType: 'float',
-      align: 'end' as 'start' | 'end' | 'center',
-      title: t('tableColumnLocationLatitude'),
-      value: (value: ViewTableLocations) => value.locationLatitude ? value.locationLatitude.toFixed(2) : undefined,
-    }, {
-      key: 'locationLongitude',
-      dataType: 'float',
-      align: 'end' as 'start' | 'end' | 'center',
-      title: t('tableColumnLocationLongitude'),
-      value: (value: ViewTableLocations) => value.locationLongitude ? value.locationLongitude.toFixed(2) : undefined,
-    }, {
-      key: 'countryName',
-      dataType: 'string',
-      title: t('tableColumnLocationCountryName'),
-    }]
-
-    return headers
+    return columns.locations.map(c => {
+      c.title = t(c.title || '')
+      return c
+    })
   })
 
   defineExpose({
-    refresh: () => baseTable.value?.refresh(),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    getSelection: () => baseTable.value?.getSelection(),
   })
 </script>
 

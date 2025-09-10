@@ -1,11 +1,11 @@
 <template>
   <v-card>
     <div
-      v-if="displayType === 'grid'"
+      v-if="filters !== undefined && localDisplayType === 'grid'"
       class="v-table v-table--has-top v-table--has-bottom v-table--striped-odd v-table--density-default v-data-table base-table"
     >
       <TableToolbar
-        v-model="displayType"
+        v-model="localDisplayType"
         :headers="componentProps.headers"
         :marked-item-type="componentProps.markedItemType"
         @clear-filter="clearFilter"
@@ -59,7 +59,7 @@
 
     <!-- @vue-ignore -->
     <v-data-table-server
-      v-if="displayType === 'table'"
+      v-if="filters !== undefined && localDisplayType === 'table'"
       v-model="selected"
       v-model:items-per-page="itemsPerPage"
       v-model:sort-by="sortByColumns"
@@ -81,13 +81,13 @@
     >
       <template #top>
         <TableToolbar
-          v-model="displayType"
+          v-model="localDisplayType"
           :headers="componentProps.headers"
           :marked-item-type="componentProps.markedItemType"
           @clear-filter="clearFilter"
           @show-filter="tableFilterModal?.show()"
           @toggle-header="toggleHeader"
-          :filtered="filters && filters.length > 0"
+          :filtered="filters !== undefined && filters.length > 0"
           :marked-item-config="markedItemConfig"
           :table-key="componentProps.tableKey"
           :header-icon="componentProps.headerIcon"
@@ -119,6 +119,7 @@
             </v-btn>
           </template>
           <v-list>
+            <v-list-item :title="$t('tableItemMarkingCreateGroup')" prepend-icon="mdi-group" @click="addGroup" v-if="store.storeUserIsAuthenticated" :disabled="!markedItemConfig || markedItemConfig.count === 0" />
             <v-list-item :title="$t('tableItemMarkingMarkAll')" prepend-icon="mdi-checkbox-multiple-marked" @click="markAllItems(true)" />
             <v-list-item :title="$t('tableItemMarkingUnmarkAll')" prepend-icon="mdi-checkbox-multiple-blank-outline" @click="markAllItems(false)" />
           </v-list>
@@ -173,11 +174,22 @@
         </v-card-text>
       </v-card>
     </v-bottom-sheet>
+
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGroups} -->
+    <GenericAddEditFormModal
+      title="modalTitleEditGroup"
+      :item="newGroup"
+      :notify="onSendGroup"
+      :fields="groupFields"
+      @items-changed="redirectToGroup"
+      ref="groupModal"
+      v-if="newGroup && markedItemConfig"
+    />
   </v-card>
 </template>
 
 <script setup lang="ts" generic="T">
-  import type { FilterGroup, PaginatedResult } from '@/plugins/types/germinate'
+  import type { ViewTableGroups, FilterGroup, PaginatedResult, Grouptypes } from '@/plugins/types/germinate'
   import type { AxiosResponse } from 'axios'
   import type { DataTableHeader, DataTableSortItem } from 'vuetify'
   import { useI18n } from 'vue-i18n'
@@ -190,6 +202,9 @@
   import { downloadBlob } from '@/plugins/util'
   import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
   import DataGrid from '@/components/tables/DataGrid.vue'
+  import { apiGetGroupTypes, apiPatchGroupMembers, apiPutGroup } from '@/plugins/api/group'
+  import { groupTypes } from '@/plugins/util/types'
+  import { Pages } from '@/plugins/pages'
 
   export type DisplayType = 'table' | 'grid'
 
@@ -202,6 +217,7 @@
   const componentProps = withDefaults(defineProps<BaseTableProps<T>>(), {
     showDetails: false,
     storeUrlParameters: true,
+    displayType: 'table',
   })
 
   const emit = defineEmits(['data-changed', 'selection-changed', 'update:bottomSheetVisible', 'filter-changed'])
@@ -211,6 +227,7 @@
   const store = coreStore()
   const { t } = useI18n()
 
+  const newGroup = ref<ViewTableGroups>({})
   const urlPageToForce = ref()
   const localBottomSheetVisible = ref(false)
   const currentPage = ref(1)
@@ -218,13 +235,48 @@
   const sortByColumns = ref<DataTableSortItem[] | undefined>([])
   const selected = ref<number[]>([])
   const serverItems = ref<T[]>([])
-  const filters = ref<FilterGroup[]>([])
+  const filters = ref<FilterGroup[] | undefined>(undefined)
   const loading = ref(true)
   const totalItems = ref(-1)
   const search = ref('')
   const isResetCall = ref(true)
   const tableFilterModal = useTemplateRef('tableFilterModal')
-  const displayType = ref<DisplayType>('table')
+  const groupModal = useTemplateRef('groupModal')
+  const localDisplayType = ref<DisplayType>('table')
+  const localGroupTypes = ref<Grouptypes[]>([])
+
+  const groupFields = computed(() => {
+    return [{
+      key: 'groupTypeId',
+      title: 'formLabelGroupType',
+      hint: 'formDescriptionGroupTypeDisabled',
+      type: 'select' as const,
+      required: true,
+      width: 2,
+      disabled: true,
+      selectOptions: localGroupTypes.value?.map(gt => {
+        return {
+          value: gt.id,
+          title: groupTypes[gt.targetTable].text(),
+        }
+      }),
+    }, {
+      key: 'groupName',
+      title: 'formLabelGroupName',
+      hint: 'formDescriptionGroupName',
+      type: 'text' as const,
+      required: true,
+      width: 2,
+      valid: (value: string) => value !== undefined && value !== null && value.trim().length > 0,
+    }, {
+      key: 'groupDescription',
+      title: 'formLabelGroupDescription',
+      hint: 'formDescriptionGroupDescription',
+      type: 'textarea' as const,
+      required: false,
+      width: 2,
+    }]
+  })
 
   const perPageOptions = computed(() => {
     return [
@@ -259,10 +311,10 @@
     const hiddenColumns = store.storeHiddenColumns[componentProps.tableKey]
 
     if (componentProps.selectionType !== undefined) {
-      headers.unshift({ title: '', key: 'item-selected', width: '1em', cellProps: { class: 'ma-0 pa-0' }, headerProps: { class: 'ma-0 pa-0' }, dataType: 'boolean', visibleInFilter: false })
+      headers.unshift({ title: '', key: 'item-selected', width: '1em', cellProps: { class: 'ma-0 pa-0' }, sortable: false, headerProps: { class: 'ma-0 pa-0' }, dataType: 'boolean', visibleInFilter: false })
     }
     if (markedItemConfig.value) {
-      headers.push({ title: '', key: 'marked-items', width: '1em', dataType: 'boolean', visibleInFilter: false, align: 'end' as 'start' | 'end' | 'center' })
+      headers.push({ title: '', key: 'marked-items', width: '1em', dataType: 'boolean', sortable: false, visibleInFilter: false, align: 'end' as 'start' | 'end' | 'center' })
     }
 
     if (hiddenColumns) {
@@ -381,11 +433,14 @@
     emit('filter-changed', JSON.parse(JSON.stringify(newFilters)))
   }
 
-  function refresh () {
-    isResetCall.value = true
-    selected.value = []
-
-    search.value = `${Date.now()}`
+  function refresh (readFilter = false) {
+    if (readFilter) {
+      tableFilterModal.value?.loadFilters()
+    } else {
+      isResetCall.value = true
+      selected.value = []
+      search.value = `${Date.now()}`
+    }
   }
 
   function manuallySelectAll (allSelected: any) {
@@ -516,15 +571,77 @@
     }
   }
 
+  function onSendGroup (item: ViewTableGroups) {
+    return new Promise<boolean>(resolve => {
+      apiPutGroup({
+        id: item.groupId,
+        grouptypeId: item.groupTypeId,
+        name: item.groupName,
+        description: item.groupDescription,
+        visibility: item.groupVisibility,
+        createdBy: store.storeToken?.id,
+        createdOn: item.createdOn,
+        updatedOn: item.updatedOn,
+      }, (id: number) => {
+        newGroup.value.groupId = id
+
+        const data = {
+          ids: store.storeMarkedGermplasm,
+          addition: true,
+        }
+
+        // Now add the group members
+        apiPatchGroupMembers(id, newGroup.value.groupType || '', data, () => {
+          resolve(true)
+        })
+      })
+    })
+  }
+
+  function addGroup () {
+    newGroup.value = {}
+    if (!localGroupTypes.value || localGroupTypes.value.length === 0) {
+      apiGetGroupTypes<PaginatedResult<Grouptypes[]>>(result => {
+        localGroupTypes.value = result.data
+        const tableGroupType = Object.values(groupTypes).find(gt => gt.itemType === componentProps.markedItemType)
+        const match = localGroupTypes.value.find(gt => groupTypes[gt.targetTable].id === tableGroupType?.id)
+        newGroup.value.groupTypeId = match?.id
+        newGroup.value.groupType = tableGroupType?.apiName
+
+        nextTick(() => groupModal.value?.show())
+      })
+    } else {
+      const tableGroupType = Object.values(groupTypes).find(gt => gt.itemType === componentProps.markedItemType)
+      const match = localGroupTypes.value.find(gt => groupTypes[gt.targetTable].id === tableGroupType?.id)
+      newGroup.value.groupTypeId = match?.id
+      newGroup.value.groupType = tableGroupType?.apiName
+
+      nextTick(() => groupModal.value?.show())
+    }
+  }
+
+  function redirectToGroup () {
+    if (newGroup.value && newGroup.value.groupId) {
+      router.push(Pages.getPath(Pages.groupDetails, `${newGroup.value.groupId}`))
+    }
+  }
+
   watch(itemsPerPage, (newValue: number) => {
     updateUrlParameters()
     store.setTablePerPage(newValue)
   })
-  watch(currentPage, () => updateUrlParameters())
-  watch(sortByColumns, () => updateUrlParameters())
+  watch(currentPage, async () => updateUrlParameters())
+  watch(sortByColumns, async () => updateUrlParameters())
+  watch(() => componentProps.displayType, (newValue: DisplayType) => {
+    localDisplayType.value = newValue
+  })
 
   onBeforeMount(() => {
     readUrlParams()
+  })
+
+  onMounted(() => {
+    localDisplayType.value = componentProps.displayType
   })
 
   defineExpose({

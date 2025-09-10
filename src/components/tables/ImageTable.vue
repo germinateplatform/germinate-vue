@@ -13,6 +13,7 @@
       :show-details="false"
       item-key="imageId"
       table-key="images"
+      :display-type="compProps.displayType"
       header-icon="mdi-image-multiple"
       :header-title="$t('pageImagesTitle')"
       :supports-grid-cards="true"
@@ -97,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable from '@/components/tables/BaseTable.vue'
+  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
 
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
@@ -117,6 +118,7 @@
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
+    displayType?: DisplayType
   }>()
 
   const store = coreStore()
@@ -223,7 +225,8 @@
   const emit = defineEmits(['tag-clicked'])
 
   defineExpose({
-    refresh: () => baseTable.value?.refresh(),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    getSelection: () => baseTable.value?.getSelection(),
   })
 </script>
 

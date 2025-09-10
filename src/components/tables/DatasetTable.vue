@@ -134,7 +134,7 @@
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
-  import { getNumberWithSuffix, isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
+  import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
   import { datasetStates, datasetTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
@@ -144,6 +144,7 @@
   import { isPageAvailable } from '@/plugins/util'
   import AttributeDetails from '@/components/widgets/AttributeDetails.vue'
   import CollaboratorTable from '@/components/tables/CollaboratorTable.vue'
+  import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>> }
@@ -167,106 +168,11 @@
   const bottomVisible = ref<boolean>(false)
   const { t } = useI18n()
 
-  // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers = [{
-      key: 'projectId',
-      dataType: 'integer',
-      sortable: false,
-      visibleInTable: false,
-      title: t('tableColumnProjectId'),
-    }, {
-      key: 'datasetId',
-      title: t('tableColumnDatasetId'),
-      dataType: 'integer',
-    }, {
-      key: 'datasetName',
-      title: t('tableColumnDatasetName'),
-      dataType: 'string',
-    }, {
-      key: 'datasetDescription',
-      title: t('tableColumnDatasetDescription'),
-      dataType: 'string',
-    }, {
-      key: 'experimentId',
-      dataType: 'integer',
-      title: t('tableColumnExperimentId'),
-    }, {
-      key: 'experimentName',
-      dataType: 'string',
-      title: t('tableColumnExperimentName'),
-    }, {
-      key: 'datasetType',
-      dataType: 'string',
-      title: t('tableColumnDatasetDatasetType'),
-    }, {
-      key: 'datatype',
-      dataType: 'string',
-      title: t('tableColumnDatasetDataType'),
-    }, {
-      key: 'licenseName',
-      dataType: 'string',
-      title: t('tableColumnDatasetLicenseName'),
-    }, {
-      key: 'contact',
-      dataType: 'string',
-      title: t('tableColumnDatasetContact'),
-    }, {
-      key: 'countries',
-      dataType: undefined,
-      sortable: false,
-      title: t('tableColumnDatasetCountryName'),
-    }, {
-      key: 'data-table-expand',
-      visibleInFilter: false,
-      title: t('tableColumnDatasetLocations'),
-      dataType: 'string',
-    }, {
-      key: 'locations',
-      dataType: 'json',
-      visibleInTable: false,
-      title: t('tableColumnDatasetLocations'),
-    }, {
-      key: 'startDate',
-      dataType: 'date',
-      title: t('tableColumnDatasetStartDate'),
-      value: (value: ViewTableDatasets) => value.startDate ? new Date(value.startDate).toLocaleDateString() : undefined,
-    }, {
-      key: 'endDate',
-      dataType: 'date',
-      title: t('tableColumnDatasetEndDate'),
-      value: (value: ViewTableDatasets) => value.endDate ? new Date(value.endDate).toLocaleDateString() : undefined,
-    }, {
-      key: 'dataObjectCount',
-      dataType: 'integer',
-      align: 'end' as 'end' | 'start' | 'center',
-      title: t('tableColumnDatasetObjectCount'),
-      value: (value: ViewTableDatasets) => value.dataObjectCount ? getNumberWithSuffix(value.dataObjectCount.value, 2) : undefined,
-    }, {
-      key: 'dataPointCount',
-      dataType: 'integer',
-      align: 'end' as 'end' | 'start' | 'center',
-      title: t('tableColumnDatasetPointCount'),
-      value: (value: ViewTableDatasets) => value.dataPointCount ? `${(value.datasetType === 'genotype' || value.datasetType === 'allelefreq') ? '≤' : ''}${getNumberWithSuffix(value.dataPointCount.value, 2)}` : undefined,
-    }, {
-      key: 'fileresourceIds',
-      dataType: 'json',
-      sortable: false,
-      title: t('tableColumnDatasetFileresources'),
-    }, {
-      key: 'datasetDetails',
-      dataType: undefined,
-      sortable: false,
-      title: '',
-    }, {
-      key: 'isExternal',
-      dataType: 'boolean',
-      sortable: false,
-      visibleInTable: false,
-      title: t('tableColumnDatasetExternal'),
-    }]
-
-    return headers
+    return columns.datasets.map(c => {
+      c.title = t(c.title || '')
+      return c
+    })
   })
 
   function getCollaboratorData (data: PaginatedRequest) {
@@ -368,7 +274,8 @@
   }
 
   defineExpose({
-    refresh: () => baseTable.value?.refresh(),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    getSelection: () => baseTable.value?.getSelection(),
   })
 
   onMounted(() => {

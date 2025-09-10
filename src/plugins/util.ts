@@ -14,7 +14,7 @@ const genesysIcon = 'M11.3,0C5.1,0,0,5.1,0,11.3c0,6.3,5.1,11.3,11.3,11.3s11.3-5.
 /**
      * Generates a v4 UUID
      */
-const uuidv4 = () => {
+function uuidv4 () {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = Math.trunc(Math.random() * 16)
     const v = c === 'x' ? r : (r & 0x3 | 0x8)
@@ -22,7 +22,7 @@ const uuidv4 = () => {
   })
 }
 
-const getGermplasmDisplayName = (germplasm: ViewTableGermplasm) => {
+function getGermplasmDisplayName (germplasm: ViewTableGermplasm) {
   if (!germplasm) {
     return 'N/A'
   } else if (germplasm.germplasmDisplayName && (germplasm.germplasmDisplayName !== germplasm.germplasmName)) {
@@ -32,7 +32,7 @@ const getGermplasmDisplayName = (germplasm: ViewTableGermplasm) => {
   }
 }
 
-const isNumber = (value: string, isInt: boolean) => {
+function isNumber (value: string, isInt: boolean) {
   try {
     const int = Number(value)
     if (Number.isNaN(value) || Number.isNaN(int) || (isInt && !Number.isInteger(int))) {
@@ -45,7 +45,7 @@ const isNumber = (value: string, isInt: boolean) => {
   }
 }
 
-const mcpdDateToJsDate = (input: string) => {
+function mcpdDateToJsDate (input: string) {
   if (!input) {
     return null
   }
@@ -70,7 +70,7 @@ const mcpdDateToJsDate = (input: string) => {
  * @param {String} columnKey The name of the column
  * @returns The style that should be applied to this column
  */
-const getTableColumnStyle = (tableName: string, columnKey: string) => {
+function getTableColumnStyle (tableName: string, columnKey: string) {
   const store = coreStore()
   if (store.storeHiddenColumns[tableName]) {
     return (!store.storeHiddenColumns[tableName].includes(columnKey)) ? 'd-none' : ''
@@ -83,7 +83,7 @@ const getTableColumnStyle = (tableName: string, columnKey: string) => {
  * Checks if the page with the given name is available in this configuration.
  * @param {String} name The name of the page to check (refer to router for names)
  */
-const isPageAvailable = (name: string) => {
+function isPageAvailable (name: string) {
   const store = coreStore()
   if (store.storeServerSettings != null && store.storeServerSettings.hiddenPages != null) {
     return !store.storeServerSettings.hiddenPages.includes(name)
@@ -92,7 +92,7 @@ const isPageAvailable = (name: string) => {
   }
 }
 
-const objectsAreSame = (x: any, y: any) => {
+function objectsAreSame (x: any, y: any) {
   let objectsAreSame = true
   for (const propertyName in x) {
     if (x[propertyName] !== y[propertyName]) {
@@ -103,7 +103,7 @@ const objectsAreSame = (x: any, y: any) => {
   return objectsAreSame
 }
 
-const objectArraysAreSame = (x: any[], y: any[]) => {
+function objectArraysAreSame (x: any[], y: any[]) {
   if ((x === null && y !== null) || (x !== null && y === null)) {
     return false
   } else if (x.length !== y.length) {
@@ -136,7 +136,7 @@ export interface DownloadBlob {
  * Downloads the data file given in the parameter using the blow, filename and extension.
  * @param {Object} object Object of type `{ filename: '', blob: '', extension: '' }`
  */
-const downloadBlob = (object: DownloadBlob) => {
+function downloadBlob (object: DownloadBlob) {
   if (!object || !object.blob) {
     return
   }
@@ -168,7 +168,7 @@ const downloadBlob = (object: DownloadBlob) => {
  * @param {Boolean} isPlotly Is this a plotly.js chart?
  * @param {String} filename The file name to use for the downloaded file
  */
-const downloadSvgsFromContainer = (container: Element, isPlotly: boolean, filename: string) => {
+function downloadSvgsFromContainer (container: Element, isPlotly: boolean, filename: string) {
   // get svg source.
   const serializer = new XMLSerializer()
   const svgs = isPlotly ? container.querySelectorAll('svg:not(.icon):not(:last-child)') : container.querySelectorAll('svg')

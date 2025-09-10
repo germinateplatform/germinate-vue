@@ -3,6 +3,7 @@
     title="pageStatisticsBiologicalStatusTreemapTitle"
     :chart-id="id"
     :filename="filename"
+    header-icon="mdi-chart-tree"
     :source-file="sourceFile"
     @force-redraw="redraw"
   >

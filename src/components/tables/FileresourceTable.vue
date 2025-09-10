@@ -16,7 +16,7 @@
       v-bind="$attrs"
     >
       <template #header>
-        <v-btn v-if="store.storeUserIsDataCurator" variant="tonal" prepend-icon="mdi-file-plus" @click="addFileresourceModal?.show()">{{ $t('tableButtonAddFileresource') }}</v-btn>
+        <v-btn v-if="store.storeUserIsDataCurator" variant="outlined" prepend-icon="mdi-file-plus" @click="addFileresourceModal?.show()">{{ $t('tableButtonAddFileresource') }}</v-btn>
       </template>
 
       <template #item.fileresourceDescription="{ item, value }">
@@ -204,7 +204,8 @@
   }
 
   defineExpose({
-    refresh: () => baseTable.value?.refresh(),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    getSelection: () => baseTable.value?.getSelection(),
   })
 </script>
 

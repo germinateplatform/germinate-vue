@@ -3,7 +3,6 @@
     <h1 class="text-h4 mb-3">{{ group.groupName }} <v-chip v-if="group.groupType" label :color="groupTypes[group.groupType].color()" :prepend-icon="groupTypes[group.groupType].path">{{ groupTypes[group.groupType].text() }}</v-chip></h1>
     <v-divider class="mb-3" />
     <!-- Description -->
-    {{ group }}
     <v-list>
       <v-list-item v-if="group.groupDescription" :title="$t('pageGroupsDescriptionTitle')" :subtitle="group.groupDescription" />
       <v-list-item :title="$t('pageGroupsVisibilityTitle')">

@@ -34,7 +34,7 @@
       <h2 class="text-h5">{{ $t('pageDashboardPublicationsTitle') }}</h2>
       <p>{{ $t('pageDashboardPublicationsText') }}</p>
 
-      <Publications reference-type="database" @publication-count-changed="count => showPublications = count > 0" />
+      <PublicationTable display-type="grid" :get-data="getPublicationData" :filter-on="publicationsFilter" />
     </div>
   </v-container>
 </template>
@@ -47,7 +47,10 @@
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import ImageCarousel from '@/components/structure/ImageCarousel.vue'
-  import Publications from '@/components/widgets/Publications.vue'
+  import PublicationTable from '@/components/tables/PublicationTable.vue'
+  import { apiPostPublicationsTable } from '@/plugins/api/misc'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications } from '@/plugins/types/germinate'
+  import { lookupDoiInformation } from '@/plugins/util'
 
   const store = coreStore()
   const stats = ref<OverviewStats>()
@@ -68,6 +71,36 @@
       return statCategories
     }
   })
+
+  const publicationsFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    const result = [{
+      filters: [{
+        column: 'isDatabasePub',
+        comparator: FilterComparator.equals,
+        values: ['1'],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.or,
+    }]
+
+    return result
+  })
+
+  function getPublicationData (data: PaginatedRequest) {
+    return apiPostPublicationsTable<PaginatedResult<ViewTablePublications[]>>(data, result => {
+      if (result && result.data && result.data.length > 0) {
+        showPublications.value = true
+        result.data.forEach(p => {
+          p.lookupDetails = lookupDoiInformation(p)
+          try {
+            p.publicationFallbackCache = JSON.parse(p.publicationFallbackCache || '')
+          } catch {
+            //
+          }
+        })
+      }
+    })
+  }
 
   onBeforeMount(() => {
     apiGetOverviewStats<OverviewStats>((result: OverviewStats) => {

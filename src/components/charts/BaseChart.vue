@@ -3,7 +3,8 @@
     :model-value:loading="localLoading"
     @update:loading="notifyLoading"
   >
-    <v-toolbar density="comfortable" color="surface" :title="compProps.title ? $t(compProps.title) : undefined">
+    <v-toolbar density="comfortable" :color="compProps.toolbarColor">
+      <v-toolbar-title class="ms-4"><v-icon size="x-small" start :color="headerIconColor" :icon="compProps.headerIcon" /> {{ compProps.title ? $t(compProps.title) : undefined }}</v-toolbar-title>
       <slot name="toolbar-prepend" />
       <v-spacer />
       <v-menu>
@@ -22,6 +23,8 @@
       </v-menu>
       <slot name="toolbar-append" />
     </v-toolbar>
+
+    <slot name="card-text" />
 
     <v-card-text>
       <slot name="chart-content" ref="chart" />
@@ -100,6 +103,9 @@
     chartType?: 'plotly' | 'd3.js'
     canChangeColors?: boolean
     chartId: string
+    toolbarColor?: string
+    headerIconColor?: string
+    headerIcon?: string
   }
 
   const compProps = withDefaults(defineProps<ChartProps>(), {
@@ -111,6 +117,9 @@
     supportsFileDownload: true,
     chartType: 'plotly' as const,
     canChangeColors: true,
+    toolbarColor: 'surface',
+    headerIconColor: 'medium-emphasis',
+    headerIcon: 'mdi-chart-areaspline',
   })
 
   const store = coreStore()

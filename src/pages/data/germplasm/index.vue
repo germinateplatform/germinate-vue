@@ -182,7 +182,7 @@
       includeAttributes: passportIncludeAttributes.value,
     }
 
-    apiExportPassport(request, result => {
+    apiExportPassport(request, (result: Blob) => {
       downloadBlob({
         blob: result,
         filename: `germplasm-${getDateTimeString()}`,

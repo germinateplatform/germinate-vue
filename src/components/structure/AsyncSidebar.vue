@@ -231,6 +231,18 @@
     }
   })
 
+  function showFeedback (job: DataImportJobs) {
+    // TODO
+  }
+
+  function downloadImportJobLog (job: DataImportJobs) {
+    // TODO
+  }
+
+  function startActualImport (job: DataImportJobs) {
+    // TODO
+  }
+
   function toggleSidebar (at: string | undefined) {
     if (!visible.value) {
       visible.value = true

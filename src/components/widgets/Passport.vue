@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section v-if="dataWarnings && dataWarnings.length > 0" class="mb-3 g-no-gutters">
+    <section v-if="dataWarnings && dataWarnings.length > 0" class="mb-10 g-no-gutters">
       <v-banner
         v-for="(warning, index) in dataWarnings"
         :key="`data-warning-${index}`"
@@ -17,17 +17,17 @@
 
     <template v-if="germplasm">
       <h1 class="text-h4 my-3 d-flex justify-space-between align-center">{{ title }}<v-chip label :prepend-icon="entityTypes[germplasm.entityTypeName].path" :text="entityTypes[germplasm.entityTypeName].text()" :color="entityTypes[germplasm.entityTypeName].color()" /></h1>
-      <v-divider class="mb-3" />
+      <v-divider class="mb-10" />
       <p>{{ $t('pagePassportText') }}</p>
 
       <v-row>
         <v-col cols="12" md="6">
           <!-- MCPD -->
-          <McpdInfo class="mb-3" :germplasm="germplasm" id="mcpd" v-intersect="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+          <McpdInfo class="mb-10" :germplasm="germplasm" id="mcpd" v-intersect="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
         </v-col>
         <v-col cols="12" md="6">
           <!-- PDCI -->
-          <v-card class="mb-3" :title="$t('pagePassportPdciTitle')" id="pdci" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+          <v-card class="mb-10" :title="$t('pagePassportPdciTitle')" id="pdci" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
             <template #prepend><v-icon icon="mdi-chart-donut" color="primary" /></template>
             <template #append><v-icon icon="mdi-help-circle" @click="showPdciInfo" /></template>
             <template #text>
@@ -35,7 +35,7 @@
             </template>
           </v-card>
           <!-- Synonyms -->
-          <v-card class="mb-3" :title="$t('pagePassportSynonymsTitle')" v-if="germplasm.synonyms" id="synonyms" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+          <v-card class="mb-10" :title="$t('pagePassportSynonymsTitle')" v-if="germplasm.synonyms" id="synonyms" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
             <template #prepend><v-icon icon="mdi-tag-text-outline" color="primary" /></template>
             <template #text>
               <ul>
@@ -46,14 +46,14 @@
             </template>
           </v-card>
           <!-- Links -->
-          <v-card class="mb-3" :title="$t('pagePassportLinksTitle')" id="links" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+          <v-card class="mb-10" :title="$t('pagePassportLinksTitle')" id="links" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
             <template #prepend><v-icon icon="mdi-link-variant" color="primary" /></template>
             <template #text>
               <ExternalLinks :foreign-id="germplasm.germplasmId" target-table="germinatebase" />
             </template>
           </v-card>
 
-          <v-card class="mb-3" title="Humbug" id="humbug">
+          <v-card class="mb-10" title="Humbug" id="humbug">
             <template #prepend><v-icon icon="mdi-barcode" color="primary" /></template>
             <template #text>
               <v-btn :text="$t('pagePassportGenerateBarcode')" target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.germplasmName}`" />
@@ -62,8 +62,8 @@
         </v-col>
       </v-row>
 
-      <InstitutionTable class="mb-3" header-icon-color="primary" :get-data="getInstitutionData" id="institutions" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
-      <PublicationTable class="mb-3" header-icon-color="primary" :get-data="getPublicationData" :filter-on="publicationFilter" id="publications" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <InstitutionTable class="mb-10" header-icon-color="primary" :get-data="getInstitutionData" id="institutions" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+      <PublicationTable class="mb-10" header-icon-color="primary" :get-data="getPublicationData" :filter-on="publicationFilter" id="publications" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportPublicationsText')" />
@@ -71,9 +71,14 @@
         </template>
       </PublicationTable>
 
-      <v-card v-show="performanceDataCount > 0" class="mb-3" :title="$t('pagePassportTraitStatsTitle')" id="performance" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
-        <template #prepend><v-icon color="primary" icon="mdi-speedometer" /></template>
-        <template #text>
+      <v-card v-show="performanceDataCount > 0" class="mb-10" id="performance" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <v-toolbar
+          flat
+          density="compact"
+        >
+          <v-toolbar-title class="ms-4"><v-icon size="x-small" start color="primary" icon="mdi-speedometer" /> {{ $t('pagePassportTraitStatsTitle') }}</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
           <p>{{ $t('pagePassportTraitStatsText') }}</p>
 
           <v-expansion-panels eager>
@@ -87,35 +92,44 @@
               </template>
             </v-expansion-panel>
           </v-expansion-panels>
-        </template>
+        </v-card-text>
       </v-card>
 
-      <DatasetTable class="mb-3" header-icon-color="primary" :get-data="getDatasetData" id="datasets" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <DatasetTable class="mb-10" header-icon-color="primary" :get-data="getDatasetData" id="datasets" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportDatasetText')" />
           </v-card-text>
         </template>
       </DatasetTable>
-      <PedigreeDefinitionTable class="mb-3" header-icon-color="primary" :get-data="getPedigreedefinitionData" :filter-on="pedigreeDefinitionFilter" id="pedigree" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <PedigreeDefinitionTable class="mb-10" header-icon-color="primary" :get-data="getPedigreedefinitionData" :filter-on="pedigreeDefinitionFilter" id="pedigree" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportPedigreeText')" />
           </v-card-text>
         </template>
       </PedigreeDefinitionTable>
-      <PedigreeTable class="mb-3" header-icon-color="primary" :get-data="getPedigreeData" :filter-on="pedigreeFilter" />
+      <PedigreeTable class="mb-10" header-icon-color="primary" :get-data="getPedigreeData" :filter-on="pedigreeFilter" />
 
-      <PedigreeChart class="mb-3" :germplasm="germplasm" />
+      <PedigreeChart class="mb-10" header-icon-color="primary" :germplasm="germplasm" />
 
-      <v-card class="mb-3" :title="$t('pagePassportImageTitle')" id="images" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
-        <template #prepend><v-icon color="primary" icon="mdi-image-multiple" /></template>
-        <template #text>
-          <Images :filter-on="imageFilter" />
-        </template>
+      <v-card v-if="location" class="mb-10" id="location" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <v-toolbar
+          flat
+          density="compact"
+        >
+          <v-toolbar-title class="ms-4"><v-icon size="x-small" start color="primary" icon="mdi-speedometer" /> {{ $t('pagePassportLocationTitle') }}</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <p>{{ $t('pagePassportLocationText') }}</p>
+
+          <LocationMap :locations="[location]" />
+        </v-card-text>
       </v-card>
 
-      <GroupTable class="mb-3" header-icon-color="primary" :get-data="getGroupData" id="groups" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <Images class="mb-10" :filter-on="imageFilter" header-icon-color="primary" id="images" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+
+      <GroupTable class="mb-10" header-icon-color="primary" :get-data="getGroupData" id="groups" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportGroupText')" />
@@ -129,7 +143,7 @@
 <script setup lang="ts">
   import ScrollSpy from '@/components/widgets/ScrollSpy.vue'
   import { apiGetGermplasmDataWarnings, apiPostGermplasmDatasetTable, apiPostGermplasmGroupTable, apiPostGermplasmTable, apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
-  import { type Datawarnings, FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm, type ViewTableGroups, type ViewTablePublications } from '@/plugins/types/germinate'
+  import { type Datawarnings, FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations, type ViewTablePublications } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
   import McpdInfo from '@/components/germplasm/McpdInfo.vue'
   import ExternalLinks from '@/components/widgets/ExternalLinks.vue'
@@ -179,6 +193,21 @@
     }
   })
   const isMarked = computed(() => store.storeMarkedGermplasm.includes(compProps.germplasmId))
+  const location: ComputedRef<ViewTableLocations | undefined> = computed(() => {
+    if (germplasm.value && germplasm.value.latitude && germplasm.value.longitude) {
+      return {
+        locationId: germplasm.value.locationId,
+        locationLatitude: germplasm.value.latitude,
+        locationLongitude: germplasm.value.longitude,
+        locationName: germplasm.value.location,
+        locationType: 'collectingsites',
+        countryName: germplasm.value.countryName,
+        countryCode2: germplasm.value.countryCode,
+      }
+    } else {
+      return undefined
+    }
+  })
   const scrollSpyItems = computed(() => {
     return [
       { href: '#', tooltip: 'tooltipGermplasmMarkedItem', icon: isMarked.value ? 'mdi-bookmark-check' : 'mdi-bookmark-outline', click: () => markItem() },
@@ -186,7 +215,7 @@
       { href: '#links', icon: 'mdi-open-in-new', title: 'pagePassportLinksTitle' },
       { href: '#institutions', icon: 'mdi-office-building-cog', title: 'pagePassportInstitutionTitle' },
       { href: '#publications', icon: 'mdi-book-open-variant', title: 'pagePassportPublicationsTitle' },
-      ...performanceDataCount.value > 0 ? [{ href: '#performance', icon: 'mdi-speedometer', title: 'pagePassportTraitStatsTitle' }] : [],
+      ...location.value ? [{ href: '#performance', icon: 'mdi-speedometer', title: 'pagePassportTraitStatsTitle' }] : [],
       { href: '#datasets', icon: 'mdi-database', title: 'pagePassportDatasetTitle' },
       { href: '#pedigree', icon: 'mdi-family-tree', title: 'pagePassportPedigreeTitle' },
       ...germplasm.value?.latitude && germplasm.value?.longitude ? [{ href: '#location', icon: 'mdi-map-marker', title: 'pagePassportLocationTitle' }] : [],

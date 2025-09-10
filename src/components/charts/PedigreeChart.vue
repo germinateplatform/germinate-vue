@@ -1,8 +1,5 @@
 <template>
   <div v-if="datasets && datasets.length > 0">
-    <h4>{{ $t('pagePassportPedigreeChartTitle') }}</h4>
-    <v-select :items="datasets" item-value="datasetId" item-title="datasetName" v-model="selectedDataset" :label="$t('formLabelPedigreeChartDatasetSelect')" />
-
     <div v-if="hasPlotData">
       <BaseChart
         :title="$t('pagePedigreeChartTitle')"
@@ -10,16 +7,22 @@
         chart-type="d3.js"
         :filename="filename"
         :source-file="sourceFile"
+        header-icon="mdi-family-tree"
+        :header-icon-color="headerIconColor"
         :supports-svg-download="false"
         :supports-file-download="false"
+        :toolbar-color="''"
         @force-redraw="redraw"
         @download-png-manually="downloadImage"
       >
         <template #chart-content>
-          <div :id="id" ref="graph" class="pedigree-chart" />
+          <h4>{{ $t('pagePassportPedigreeChartTitle') }}</h4>
+          <v-select :items="datasets" item-value="datasetId" item-title="datasetName" v-model="selectedDataset" :label="$t('formLabelPedigreeChartDatasetSelect')" />
+
+          <div :id="id" ref="graph" class="pedigree-chart" v-if="hasPlotData" />
         </template>
 
-        <template #card-actions>
+        <template #card-actions v-if="hasPlotData">
           <div class="d-flex flex-column align-start">
             <v-btn prepend-icon="$helium" variant="tonal" :text="$t('buttonDownloadForHelium')" />
             <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="Pages.aboutExportFormats.path" v-tooltip:top="$t('tooltipExportFormatLearnMore')"> <v-icon icon="mdi-information-outline" /></router-link> </p>
@@ -48,6 +51,7 @@
 
   const compProps = defineProps<{
     germplasm: ViewTableGermplasm
+    headerIconColor?: string
   }>()
 
   const store = coreStore()

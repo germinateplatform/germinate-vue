@@ -212,6 +212,7 @@
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
   import { type Filter, type FilterGroup, FilterComparator, FilterOperator } from '@/plugins/types/germinate'
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
+  import { validCompsForType } from '@/plugins/util/table-columns'
   import { entityTypes, locationTypes, groupTypes, dataTypes } from '@/plugins/util/types'
   import { useDate } from 'vuetify'
 
@@ -238,20 +239,6 @@
   const dialog = ref<boolean>(false)
   const filterGroups = ref<InternalFilterGroup[]>([])
   const overallOperator = ref<FilterOperator>(FilterOperator.and)
-
-  const validCompsForType: { [key: string]: FilterComparator[] } = {
-    string: [FilterComparator.equals, FilterComparator.contains, FilterComparator.startsWith, FilterComparator.endsWith, FilterComparator.inSet, FilterComparator.isNotNull, FilterComparator.isNull],
-    boolean: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
-    dataType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
-    locationType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
-    entityType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
-    groupType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
-    json: [FilterComparator.jsonSearch, FilterComparator.isNull, FilterComparator.isNotNull],
-    jsonObject: [FilterComparator.jsonSearch],
-    integer: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],
-    float: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],
-    date: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.isNull, FilterComparator.isNotNull],
-  }
 
   const hasForcedFilter = computed(() => {
     return filterGroups.value.some(fg => fg.internalFilters.some(ifi => ifi.filter.canBeChanged === false))
@@ -334,7 +321,7 @@
     if (filter.column) {
       // @ts-ignore
       const comp = getComparatorConfig(filter.filter.comparator)
-      filter.filter.values = new Array(comp.values).fill(filter.column.dataType === 'boolean' ? '0' : '')
+      filter.filter.values = new Array(comp?.values).fill(filter.column.dataType === 'boolean' ? '0' : '')
     }
   }
 
@@ -355,7 +342,7 @@
         filter: {
           column: column.key || '',
           comparator: compString,
-          values: new Array(comp.values).fill(''),
+          values: new Array(comp?.values).fill(''),
         },
       }],
       operator: FilterOperator.and,
@@ -378,7 +365,7 @@
       filter: {
         column: column.key || '',
         comparator: compString,
-        values: new Array(comp.values).fill(''),
+        values: new Array(comp?.values).fill(''),
       },
     })
   }
@@ -524,7 +511,7 @@
             filter: {
               column: column.key || '',
               comparator: compString,
-              values: new Array(comp.values).fill(''),
+              values: new Array(comp?.values).fill(''),
             },
           }],
           operator: FilterOperator.and,
@@ -541,6 +528,7 @@
     show,
     hide,
     clear,
+    loadFilters,
   })
 
   watch(() => compProps.filterOn, () => loadFilters())

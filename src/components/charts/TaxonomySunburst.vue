@@ -4,6 +4,7 @@
     :chart-id="id"
     :filename="filename"
     :source-file="sourceFile"
+    header-icon="mdi-chart-donut-variant"
     @force-redraw="redraw"
   >
     <template #chart-content>

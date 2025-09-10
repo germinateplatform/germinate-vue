@@ -180,6 +180,7 @@
   import { getImageUrl } from '@/plugins/util/image'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/misc'
+  import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasm[]>>> }
@@ -197,151 +198,10 @@
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers = [{
-      key: 'germplasmId',
-      title: t('tableColumnGermplasmId'),
-      dataType: 'integer',
-    }, {
-      key: 'germplasmName',
-      title: t('tableColumnGermplasmName'),
-      dataType: 'string',
-      preferredSortingColumn: true,
-    }, {
-      key: 'germplasmDisplayName',
-      title: t('tableColumnGermplasmDisplayName'),
-      dataType: 'string',
-    }, {
-      key: 'germplasmGid',
-      dataType: 'string',
-      title: t('tableColumnGermplasmGeneralIdentifier'),
-    }, {
-      key: 'germplasmNumber',
-      dataType: 'string',
-      title: t('tableColumnGermplasmNumber'),
-    }, {
-      key: 'germplasmPuid',
-      dataType: 'string',
-      title: t('tableColumnGermplasmPuid'),
-    }, {
-      key: 'entityTypeName',
-      dataType: 'entityType',
-      title: t('tableColumnEntityType'),
-    }, {
-      key: 'entityParentName',
-      dataType: 'string',
-      title: t('tableColumnGermplasmEntityParentName'),
-    }, {
-      key: 'entityParentGeneralIdentifier',
-      dataType: 'string',
-      title: t('tableColumnGermplasmEntityParentGeneralIdentifier'),
-    }, {
-      key: 'biologicalStatusName',
-      dataType: 'string',
-      title: t('tableColumnBiologicalStatus'),
-    }, {
-      key: 'genus',
-      dataType: 'string',
-      title: t('tableColumnGenus'),
-      cellProps: { class: 'font-italic' },
-    }, {
-      key: 'species',
-      dataType: 'string',
-      title: t('tableColumnSpecies'),
-      cellProps: { class: 'font-italic' },
-    }, {
-      key: 'subtaxa',
-      dataType: 'string',
-      title: t('tableColumnSubtaxa'),
-      cellProps: { class: 'font-italic' },
-    }, {
-      key: 'synonyms',
-      dataType: 'json',
-      title: t('tableColumnSynonyms'),
-    }, {
-      key: 'collectorNumber',
-      dataType: 'string',
-      title: t('tableColumnCollectorNumber'),
-    }, {
-      key: 'institutions',
-      dataType: 'jsonObject',
-      title: t('tableColumnGermplasmInstitutions'),
-      value: (value: ViewTableGermplasm) => value.institutions ? value.institutions.map(i => `Code: ${i.code || 'N/A'}, name: ${i.name}, type: ${i.type}`).join('; ') : undefined,
-    }, {
-      key: 'locationId',
-      dataType: 'integer',
-      title: t('tableColumnGermplasmLocationId'),
-      visibleInTable: false,
-      visibleInFilter: true,
-    }, {
-      key: 'location',
-      visibleInTable: false,
-      visibleInFilter: true,
-      title: t('tableColumnGermplasmLocation'),
-      dataType: 'string',
-    }, {
-      key: 'data-table-expand',
-      visibleInFilter: false,
-      title: t('tableColumnGermplasmLocation'),
-      dataType: 'string',
-    }, {
-      key: 'elevation',
-      dataType: 'float',
-      align: 'end' as 'start' | 'end' | 'center',
-      title: t('tableColumnElevation'),
-      value: (value: ViewTableGermplasm) => value.elevation ? value.elevation.toFixed(2) : undefined,
-    }, {
-      key: 'latitude',
-      dataType: 'float',
-      align: 'end' as 'start' | 'end' | 'center',
-      title: t('tableColumnLatitude'),
-      value: (value: ViewTableGermplasm) => value.latitude ? value.latitude.toFixed(2) : undefined,
-    }, {
-      key: 'longitude',
-      dataType: 'float',
-      align: 'end' as 'start' | 'end' | 'center',
-      title: t('tableColumnLongitude'),
-      value: (value: ViewTableGermplasm) => value.longitude ? value.longitude.toFixed(2) : undefined,
-    }, {
-      key: 'countryName',
-      dataType: 'string',
-      title: t('tableColumnCountryName'),
-    }, {
-      key: 'hasTrialsData',
-      dataType: 'boolean',
-      title: t('tableColumnHasTrialsData'),
-      cellProps: { class: 'px-1 mx-0' },
-      headerProps: { class: 'px-1 mx-0' },
-    }, {
-      key: 'hasGenotypicData',
-      dataType: 'boolean',
-      title: t('tableColumnHasGenotypicData'),
-      cellProps: { class: 'px-1 mx-0' },
-      headerProps: { class: 'px-1 mx-0' },
-    }, {
-      key: 'hasPedigreeData',
-      dataType: 'boolean',
-      title: t('tableColumnHasPedigreeData'),
-      cellProps: { class: 'px-1 mx-0' },
-      headerProps: { class: 'px-1 mx-0' },
-    }, {
-      key: 'hasAllelefreqData',
-      dataType: 'boolean',
-      title: t('tableColumnHasAllelefreqData'),
-      cellProps: { class: 'px-1 mx-0' },
-      headerProps: { class: 'px-1 mx-0' },
-    }, {
-      key: 'imageCount',
-      dataType: 'integer',
-      align: 'end' as 'start' | 'end' | 'center',
-      title: t('tableColumnGermplasmImageCount'),
-    }, {
-      key: 'pdci',
-      dataType: 'float',
-      align: 'center' as 'start' | 'end' | 'center',
-      title: t('tableColumnPdci'),
-    }]
-
-    return headers
+    return columns.germplasm.map(c => {
+      c.title = t(c.title || '')
+      return c
+    })
   })
 
   function showInstitutionModal (item: ViewTableGermplasm) {
@@ -366,7 +226,7 @@
   }
 
   defineExpose({
-    refresh: () => baseTable.value?.refresh(),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
     getSelection: () => baseTable.value?.getSelection(),
   })
 </script>
