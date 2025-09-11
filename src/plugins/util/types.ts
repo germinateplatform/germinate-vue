@@ -26,11 +26,20 @@ interface IdState {
 interface PathState {
   path: string
 }
+interface LinkState {
+  link: string
+}
 interface ColorState {
   color: Function
 }
 interface TextState {
   text: Function
+}
+interface AcceptsState {
+  accepts: string
+}
+interface ValueState {
+  value: string
 }
 export interface FormatState {
   name: string
@@ -41,6 +50,75 @@ export interface FormatState {
   link: string
   linkType: 'link' | 'download'
 }
+
+const newsTypes: { [key: string]: IdState & TextState & PathState & ColorState } = {
+  Projects: {
+    id: 4,
+    text: () => i18n.global.t('widgetNewsTypeRelatedProject'),
+    path: 'mdi-newspaper-variant-outline',
+    color: () => getTemplateColor(0),
+  },
+  Data: {
+    id: 3,
+    text: () => i18n.global.t('widgetNewsTypeDataChanges'),
+    path: 'mdi-database',
+    color: () => getTemplateColor(1),
+  },
+  Updates: {
+    id: 2,
+    text: () => i18n.global.t('widgetNewsTypeGeneralUpdates'),
+    path: 'mdi-refresh',
+    color: () => getTemplateColor(2),
+  },
+  General: {
+    id: 1,
+    text: () => i18n.global.t('widgetNewsTypeGeneralNews'),
+    path: 'mdi-newspaper',
+    color: () => getTemplateColor(3),
+  },
+}
+
+export interface Status {
+  text: Function
+  color: string
+  path: string
+}
+
+const asyncJobStatus: { [key: string]: Status } = {
+  running: {
+    color: 'info',
+    path: 'mdi-progress-wrench',
+    text: () => i18n.global.t('asyncJobStatusRunning'),
+  },
+  failed: {
+    color: 'error',
+    path: 'mdi-alert',
+    text: () => i18n.global.t('asyncJobStatusFailed'),
+  },
+  completed: {
+    color: 'success',
+    path: 'mdi-check-circle',
+    text: () => i18n.global.t('asyncJobStatusCompleted'),
+  },
+  waiting: {
+    color: 'info',
+    path: 'mdi-pause-circle',
+    text: () => i18n.global.t('asyncJobStatusWaiting'),
+  },
+  cancelled: {
+    color: 'warning',
+    path: 'mdi-cancel',
+    text: () => i18n.global.t('asyncJobStatusCancelled'),
+  },
+}
+
+const newsTypeImageFit: (TextState & ValueState)[] = [{
+  value: 'cover',
+  text: () => i18n.global.t('widgetNewsImageFitCover'),
+}, {
+  value: 'contain',
+  text: () => i18n.global.t('widgetNewsImageFitContain'),
+}]
 
 const exportFormats: { [key: string]: FormatState } = {
   gridscore: {
@@ -272,7 +350,7 @@ const locationTypes: { [key: string]: BaseType } = {
   },
 }
 
-const templateImportTypes = {
+const templateImportTypes: { [key: string]: PathState & ColorState & TextState & AcceptsState } = {
   mcpd: {
     path: 'mdi-passport',
     color: () => getTemplateColor(0),
@@ -388,120 +466,116 @@ const dashboardSections = [
   },
 ]
 
-const statCategories = [
-  {
+const statCategories: { [id: string]: ValueState & TextState & PathState & LinkState } = {
+  germplasm: {
     value: 'germplasm',
-    textI18n: 'dashboardBannerGermplasm',
-    text: i18n.global.t('dashboardBannerGermplasm'),
+    text: () => i18n.global.t('dashboardBannerGermplasm'),
     path: 'mdi-sprout',
     link: Pages.germplasm.path,
   },
-  {
+  markers: {
     value: 'markers',
-    textI18n: 'dashboardBannerMarkers',
-    text: i18n.global.t('dashboardBannerMarkers'),
+    text: () => i18n.global.t('dashboardBannerMarkers'),
     path: 'mdi-dna',
     link: Pages.markers.path,
   },
-  {
+  maps: {
     value: 'maps',
-    textI18n: 'dashboardBannerMaps',
-    text: i18n.global.t('dashboardBannerMaps'),
+    text: () => i18n.global.t('dashboardBannerMaps'),
     path: 'mdi-reorder-vertical',
     link: Pages.maps.path,
   },
-  {
+  traits: {
     value: 'traits',
-    textI18n: 'dashboardBannerTraits',
-    text: i18n.global.t('dashboardBannerTraits'),
+    text: () => i18n.global.t('dashboardBannerTraits'),
     path: 'mdi-tag-text-outline',
     link: Pages.traits.path,
   },
-  {
+  locations: {
     value: 'locations',
-    textI18n: 'dashboardBannerLocations',
-    text: i18n.global.t('dashboardBannerLocations'),
+    text: () => i18n.global.t('dashboardBannerLocations'),
     path: 'mdi-map-marker',
     link: Pages.locations.path,
   },
-  {
+  datasets: {
     value: 'datasets',
-    textI18n: 'dashboardBannerDatasets',
-    text: i18n.global.t('dashboardBannerDatasets'),
+    text: () => i18n.global.t('dashboardBannerDatasets'),
     path: 'mdi-database',
     link: Pages.datasets.path,
   },
-  {
+  datasetId: {
+    value: 'datasets',
+    text: () => i18n.global.t('dashboardBannerDatasets'),
+    path: 'mdi-database',
+    link: Pages.datasets.path,
+  },
+  experiments: {
     value: 'experiments',
-    textI18n: 'dashboardBannerExperiments',
-    text: i18n.global.t('dashboardBannerExperiments'),
+    text: () => i18n.global.t('dashboardBannerExperiments'),
     path: 'mdi-folder-table',
     link: Pages.experiments.path,
   },
-  {
+  datasetsAllelefreq: {
     value: 'datasetsAllelefreq',
-    textI18n: 'dashboardBannerDatasetsAllelefreq',
-    text: i18n.global.t('dashboardBannerDatasetsAllelefreq'),
+    text: () => i18n.global.t('dashboardBannerDatasetsAllelefreq'),
     path: 'mdi-pulse',
     link: Pages.getPath(Pages.export, 'allelefreq'),
   },
-  {
+  datasetsGenotype: {
     value: 'datasetsGenotype',
-    textI18n: 'dashboardBannerDatasetsGenotype',
-    text: i18n.global.t('dashboardBannerDatasetsGenotype'),
+    text: () => i18n.global.t('dashboardBannerDatasetsGenotype'),
     path: 'mdi-dna',
     link: Pages.getPath(Pages.export, 'genotype'),
   },
-  {
+  datasetsTrials: {
     value: 'datasetsTrials',
-    textI18n: 'dashboardBannerDatasetsTrials',
-    text: i18n.global.t('dashboardBannerDatasetsTrials'),
+    text: () => i18n.global.t('dashboardBannerDatasetsTrials'),
     path: 'mdi-shovel',
     link: Pages.getPath(Pages.export, 'trials'),
   },
-  {
+  datasetsClimate: {
     value: 'datasetsClimate',
-    textI18n: 'dashboardBannerDatasetsClimate',
-    text: i18n.global.t('dashboardBannerDatasetsClimate'),
+    text: () => i18n.global.t('dashboardBannerDatasetsClimate'),
     path: 'mdi-chart-sankey',
     link: Pages.getPath(Pages.export, 'climate'),
   },
-  {
+  datasetsPedigree: {
     value: 'datasetsPedigree',
-    textI18n: 'dashboardBannerDatasetsPedigree',
-    text: i18n.global.t('dashboardBannerDatasetsPedigree'),
+    text: () => i18n.global.t('dashboardBannerDatasetsPedigree'),
     path: 'mdi-family-tree',
     link: Pages.getPath(Pages.export, 'pedigree'),
   },
-  {
+  groups: {
     value: 'groups',
-    textI18n: 'dashboardBannerGroups',
-    text: i18n.global.t('dashboardBannerGroups'),
+    text: () => i18n.global.t('dashboardBannerGroups'),
     path: 'mdi-group',
     link: Pages.groups.path,
   },
-  {
+  climates: {
     value: 'climates',
-    textI18n: 'dashboardBannerClimates',
-    text: i18n.global.t('dashboardBannerClimates'),
+    text: () => i18n.global.t('dashboardBannerClimates'),
     path: 'mdi-weather-snowy-rainy',
     link: Pages.climates.path,
   },
-  {
+  images: {
     value: 'images',
-    textI18n: 'dashboardBannerImages',
-    text: i18n.global.t('dashboardBannerImages'),
+    text: () => i18n.global.t('dashboardBannerImages'),
     path: 'mdi-image-multiple',
     link: Pages.images.path,
   },
-  {
+  fileresources: {
     value: 'fileresources',
-    textI18n: 'dashboardBannerFileResources',
-    text: i18n.global.t('dashboardBannerFileResources'),
+    text: () => i18n.global.t('dashboardBannerFileResources'),
     path: 'mdi-file-download',
     link: Pages.dataResources.path,
   },
-]
+  fileResourceId: {
+    value: 'fileresources',
+    text: () => i18n.global.t('dashboardBannerFileResources'),
+    path: 'mdi-file-download',
+    link: Pages.dataResources.path,
+  },
+}
 
 const germplasmInstitutionTypes: { [key: string]: PathState & ColorState & TextState } = {
   maintenance: {
@@ -638,6 +712,7 @@ export {
   publicationTypes,
   dataTypes,
   entityTypes,
+  newsTypes,
   groupTypes,
   markedItemTypes,
   imageTypes,
@@ -645,7 +720,9 @@ export {
   templateImportTypes,
   commentTypes,
   datasetStates,
+  newsTypeImageFit,
   statCategories,
+  asyncJobStatus,
   dashboardSections,
   germplasmInstitutionTypes,
   datasetTypes,

@@ -36,6 +36,9 @@ const defaultUserState: StoreContent = {
   hiddenColumns: {
     germplasm: [],
     germplasmAttributes: [],
+    news: [],
+    backups: [],
+    dataUpdate: [],
     images: [],
     climates: [],
     climateData: [],
@@ -67,7 +70,7 @@ const defaultUserState: StoreContent = {
     markers: [],
     locations: [],
   },
-  tablePerPage: 10,
+  tablePerPage: 12,
   asyncJobUuids: [],
   selectedProjects: [],
   changelogVersionNumber: undefined,

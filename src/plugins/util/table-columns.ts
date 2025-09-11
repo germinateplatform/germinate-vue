@@ -401,6 +401,7 @@ const validCompsForType: { [key: string]: FilterComparator[] } = {
   dataType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   locationType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   entityType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  newsType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   groupType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   json: [FilterComparator.jsonSearch, FilterComparator.isNull, FilterComparator.isNotNull],
   jsonObject: [FilterComparator.jsonSearch],

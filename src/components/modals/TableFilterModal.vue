@@ -154,6 +154,14 @@
                               :disabled="filter.filter.canBeChanged === false"
                               v-model="filter.filter.values[vIndex]"
                             />
+                            <v-select
+                              v-else-if="filter.column?.dataType === 'newsType'"
+                              :items="newsTypeOptions"
+                              density="compact"
+                              hide-details
+                              :disabled="filter.filter.canBeChanged === false"
+                              v-model="filter.filter.values[vIndex]"
+                            />
                             <v-text-field
                               v-else
                               :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
@@ -213,7 +221,7 @@
   import { type Filter, type FilterGroup, FilterComparator, FilterOperator } from '@/plugins/types/germinate'
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
   import { validCompsForType } from '@/plugins/util/table-columns'
-  import { entityTypes, locationTypes, groupTypes, dataTypes } from '@/plugins/util/types'
+  import { entityTypes, locationTypes, groupTypes, dataTypes, newsTypes } from '@/plugins/util/types'
   import { useDate } from 'vuetify'
 
   const route = useRoute()
@@ -286,6 +294,15 @@
       return {
         value: e,
         title: dataTypes[e].text(),
+      }
+    })
+  })
+
+  const newsTypeOptions = computed(() => {
+    return Object.keys(newsTypes).map(e => {
+      return {
+        value: e,
+        title: newsTypes[e].text(),
       }
     })
   })
@@ -387,6 +404,8 @@
         return 'mdi-file-compare'
       case 'locationType':
         return 'mdi-land-plots-marker'
+      case 'newsType':
+        return 'mdi-newspaper'
       case 'integer':
       case 'float':
         return 'mdi-numeric'

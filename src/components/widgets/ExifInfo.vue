@@ -11,15 +11,7 @@
             <v-card-subtitle>{{ property.value }}</v-card-subtitle>
           </div>
 
-          <v-img
-            class="ma-3"
-            rounded="0"
-            aspect-ratio="1/1"
-            width="64"
-            height="64"
-            inline
-            :src="property.img"
-          />
+          <component :is="property.img" width="64" height="64" class="g-svg ma-2" />
         </div>
       </v-card>
     </v-col>
@@ -28,19 +20,17 @@
 
 <script setup lang="ts">
   import type { ViewTableImages } from '@/plugins/types/germinate'
-  import camera from '@/assets/img/image-icon-camera.svg?url'
-  import lens from '@/assets/img/image-icon-lens.svg?url'
-  import fLength from '@/assets/img/image-icon-focal-length.svg?url'
-  import aperture from '@/assets/img/image-icon-aperture.svg?url'
-  import exposure from '@/assets/img/image-icon-exposure.svg?url'
-  import iso from '@/assets/img/image-icon-iso.svg?url'
-  import flash from '@/assets/img/image-icon-flash.svg?url'
-  import noFlash from '@/assets/img/image-icon-flash-no.svg?url'
-  import gps from '@/assets/img/image-icon-gps.svg?url'
-  import date from '@/assets/img/image-icon-date.svg?url'
+  import CameraIcon from '@/assets/img/image-icon-camera.svg'
+  import LensIcon from '@/assets/img/image-icon-lens.svg'
+  import FLengthIcon from '@/assets/img/image-icon-focal-length.svg'
+  import ApertureIcon from '@/assets/img/image-icon-aperture.svg'
+  import ExposureIcon from '@/assets/img/image-icon-exposure.svg'
+  import IsoIcon from '@/assets/img/image-icon-iso.svg'
+  import FlashIcon from '@/assets/img/image-icon-flash.svg'
+  import NoFlashIcon from '@/assets/img/image-icon-flash-no.svg'
+  import GpsIcon from '@/assets/img/image-icon-gps.svg'
+  import DateIcon from '@/assets/img/image-icon-date.svg'
   import { useI18n } from 'vue-i18n'
-
-  console.log(gps)
 
   const compProps = defineProps<{
     image?: ViewTableImages
@@ -73,49 +63,49 @@
 
       return [{
         key: 'cameraMake',
-        img: camera,
+        img: CameraIcon,
         text: t('widgetExifCameraMake'),
         value: `${compProps.image.imageExif.cameraMake} ${compProps.image.imageExif.cameraModel || ''}`,
       }, {
         key: 'lensMake',
-        img: lens,
+        img: LensIcon,
         text: t('widgetExifLensMake'),
         value: `${compProps.image.imageExif.lensMake} ${compProps.image.imageExif.lensModel || ''}`,
       }, {
         key: 'focalLength',
-        img: fLength,
+        img: FLengthIcon,
         text: t('widgetExifFocalLength'),
         value: compProps.image.imageExif.focalLength,
       }, {
         key: 'fNumber',
-        img: aperture,
+        img: ApertureIcon,
         text: t('widgetExifAperture'),
         value: compProps.image.imageExif.fNumber,
       }, {
         key: 'exposureTime',
-        img: exposure,
+        img: ExposureIcon,
         text: t('widgetExifExposure'),
         value: compProps.image.imageExif.exposureTime,
       }, {
         key: 'isoSpeedRatings',
-        img: iso,
+        img: IsoIcon,
         text: t('widgetExifIso'),
         value: compProps.image.imageExif.isoSpeedRatings,
       }, {
         key: 'flash',
-        img: f ? flash : noFlash,
+        img: f ? FlashIcon : NoFlashIcon,
         text: t('widgetExifFlash'),
         value: compProps.image.imageExif.flash,
       }, {
         key: 'gpsLatitude',
-        img: gps,
+        img: GpsIcon,
         text: t('widgetExifLocation'),
         description: t('widgetExifLocationClickToSee'),
         value: `${compProps.image.imageExif.gpsLatitude ? compProps.image.imageExif.gpsLatitude.toFixed(4) : ''}, ${compProps.image.imageExif.gpsLongitude ? compProps.image.imageExif.gpsLongitude.toFixed(4) : ''}`,
         link: (compProps.image.imageExif.gpsLatitude && compProps.image.imageExif.gpsLongitude) ? `https://geohack.toolforge.org/geohack.php?params=${compProps.image.imageExif.gpsLatitude};${compProps.image.imageExif.gpsLongitude}` : undefined,
       }, {
         key: 'dateTime',
-        img: date,
+        img: DateIcon,
         text: t('widgetExifDateTime'),
         value: `${dateTime.value ? new Date(dateTime.value).toLocaleString() : ''}`,
       }]

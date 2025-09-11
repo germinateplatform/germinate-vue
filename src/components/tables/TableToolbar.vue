@@ -98,7 +98,7 @@
 
     const hiddenColumns = store.storeHiddenColumns[compProps.tableKey]
     headers.forEach(h => {
-      if (h.key && !hiddenColumns.includes(h.key)) {
+      if (h.key && (!hiddenColumns || !hiddenColumns.includes(h.key))) {
         result.add(h.key)
       }
     })

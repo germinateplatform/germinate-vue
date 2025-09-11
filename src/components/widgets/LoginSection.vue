@@ -68,6 +68,8 @@
   import type { AxiosResponse } from 'axios'
   import { useI18n } from 'vue-i18n'
 
+  import emitter from 'tiny-emitter/instance'
+
   const visible = ref(false)
   const username = ref('')
   const password = ref('')
@@ -104,6 +106,8 @@
       error.value = null
 
       emit('close')
+
+      emitter.emit('update-sidebar-menu')
     }, {
       codes: [403, 503],
       callback: (e: AxiosResponse) => {

@@ -2,7 +2,7 @@ import { coreStore } from '@/stores/app'
 
 const padTo2Digits = (num: number) => num.toString().padStart(2, '0')
 
-const getDateTimeString = (date?: Date) => {
+function getDateTimeString (date?: Date) {
   if (!date) {
     date = new Date()
   }
@@ -10,7 +10,7 @@ const getDateTimeString = (date?: Date) => {
   return `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())}-${padTo2Digits(date.getHours())}-${padTo2Digits(date.getMinutes())}-${padTo2Digits(date.getSeconds())}`
 }
 
-const getDateString = (date: Date) => {
+function getDateString (date: Date) {
   if (!date) {
     date = new Date()
   }
@@ -25,7 +25,7 @@ const getDateString = (date: Date) => {
  * @param {Number} k The thousand value (e.g. 1000 or 1024)
  * @param {String} separator The separator between the number and the letter
  */
-const getNumberWithSuffix = (value: number, decimals = 2, k = 1000, separator = '') => {
+function getNumberWithSuffix (value: number, decimals = 2, k = 1000, separator = '') {
   if (value === undefined || value === null || value === 0) {
     return '0'
   }
@@ -66,14 +66,14 @@ const getNumberWithSuffix = (value: number, decimals = 2, k = 1000, separator = 
  * Converts the given object into a safe URL string
  * @param {Object} params The object to convert
  */
-const toUrlString = (params: { [key: string]: string | undefined }) => {
+function toUrlString (params: { [key: string]: string | undefined }) {
   return Object.keys(params)
     .filter(key => params[key] !== undefined && params[key] !== null && params[key] !== '')
     .map(key => params[key] ? (key + '=' + encodeURIComponent(params[key])) : '')
     .join('&')
 }
 
-const isTruncatedAfterWords = (str: string, words: number) => {
+function isTruncatedAfterWords (str: string, words: number) {
   if (!str) {
     return false
   }
@@ -83,7 +83,7 @@ const isTruncatedAfterWords = (str: string, words: number) => {
   return parts.length > words
 }
 
-const truncateAfterWords = (str: string, words: number) => {
+function truncateAfterWords (str: string, words: number) {
   if (!str) {
     return str
   }
@@ -97,7 +97,7 @@ const truncateAfterWords = (str: string, words: number) => {
   }
 }
 
-const truncateAfterChars = (str: string, length: number) => {
+function truncateAfterChars (str: string, length: number) {
   if (!str) {
     return str
   }
@@ -109,7 +109,7 @@ const truncateAfterChars = (str: string, length: number) => {
   }
 }
 
-const isAnyMissing = (...parts: (string | undefined)[]): boolean => {
+function isAnyMissing (...parts: (string | undefined)[]): boolean {
   return !parts || parts.some(p => !p || p.trim().length === 0)
 }
 

@@ -8,7 +8,7 @@
 
         <v-row>
           <v-col
-            v-for="config in compProps.fields"
+            v-for="config in visibleFields"
             :key="`form-field-${config.key}`"
             cols="12"
             :md="6 * config.width"
@@ -51,8 +51,13 @@
                   :label="$t(config.title)"
                   :required="config.required"
                   :hint="config.hint ? $t(config.hint) : undefined"
+                  :messages="['f']"
                   :persistent-hint="config.hint !== undefined"
-                />
+                >
+                  <template #message>
+                    <a href="https://www.markdownguide.org/" rel="noopener noreferrer" target="_blank">{{ $t('formDescriptionMarkdown') }}</a>
+                  </template>
+                </v-textarea>
               </v-col>
 
               <v-col cols="12" md="6">
@@ -108,10 +113,10 @@
 
   export interface SelectOption {
     title: string
-    value: number
+    value: number | string
   }
 
-  export interface FieldConfig {
+  export interface FieldConfig<T> {
     key: string
     title: string
     hint?: string
@@ -124,13 +129,14 @@
     inputType?: string
     inputDatalist?: string[]
     accepts?: string
+    visible?: (item: T) => boolean
   }
 
   const compProps = defineProps<{
     title: string
     text?: string
     item: T
-    fields: FieldConfig[]
+    fields: FieldConfig<T>[]
     notify: (args: T) => Promise<boolean>
   }>()
 
@@ -139,6 +145,14 @@
   // @ts-ignore
   const formModel = ref<T>({})
   const emit = defineEmits(['items-changed'])
+
+  const visibleFields = computed(() => {
+    if (compProps.fields) {
+      return compProps.fields.filter(f => !f.visible || (f.visible(formModel.value) === true))
+    } else {
+      return []
+    }
+  })
 
   const valid = computed(() => {
     return !compProps.fields.some(f => f.valid && !f.valid(formModel.value[f.key]))

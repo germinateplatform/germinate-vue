@@ -62,15 +62,15 @@
 
   const { t } = useLocale()
   const localPage = ref(1)
-  const localItemsPerPage = ref(10)
+  const localItemsPerPage = ref(12)
 
   const totalPages = computed(() => Math.ceil(compProps.itemsLength / compProps.itemsPerPage))
   const perPageOptions = computed(() => {
     return [
-      { value: 10, title: '10' },
-      { value: 25, title: '25' },
-      { value: 50, title: '50' },
-      { value: 100, title: '100' },
+      { value: 12, title: '12' },
+      { value: 24, title: '24' },
+      { value: 48, title: '48' },
+      { value: 96, title: '96' },
     ]
   })
   const startIndex = computed(() => (localPage.value - 1) * localItemsPerPage.value)

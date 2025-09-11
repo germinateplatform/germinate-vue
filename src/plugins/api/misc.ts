@@ -136,6 +136,11 @@ const apiDeletePublicationReference = <T>(publicationId: number, referenceType: 
 
 const apiGetBackups = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'backup', method: 'GET', success: onSuccess, error: onError })
 
+const apiPostBackupTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+  queryData.page -= 1
+  return authAxios({ url: 'backup/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 const apiDeleteBackup = <T>(backup: BackupResult, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'backup', method: 'DELETE', data: backup, success: onSuccess, error: onError })
 
 const apiPutBackup = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'backup', method: 'PUT', success: onSuccess, error: onError })
@@ -233,4 +238,5 @@ export {
   apiGetBackups,
   apiPutBackup,
   apiDeleteBackup,
+  apiPostBackupTable,
 }

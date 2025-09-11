@@ -135,6 +135,8 @@
 
       <AppFooter />
 
+      <v-snackbar-queue timeout="6000" v-model="snackbarQueue" />
+
       <v-bottom-sheet
         v-model="bottomSheetVisible"
         inset
@@ -157,7 +159,7 @@
   import AppFooter from '@/components/AppFooter.vue'
 
   import { apiGetLocales } from '@/plugins/api/misc'
-  import { useDisplay, useTheme } from 'vuetify'
+  import { useDisplay, useTheme, type SnackbarQueueMessage } from 'vuetify'
   import { coreStore } from '@/stores/app'
   import type { Locale } from '@/plugins/types/Locale'
   import { loadLanguageAsync } from '@/plugins/vuetify'
@@ -186,6 +188,7 @@
   const changelogVersionNumber = ref()
   const searchVisible = ref(false)
   const searchTerm = ref<string>()
+  const snackbarQueue = ref<SnackbarQueueMessage[]>([])
 
   // Methods
   function changeLocale (locale: string) {
@@ -250,15 +253,21 @@
     bottomSheetVisible.value = true
   }
 
+  function showSnackbar (message: SnackbarQueueMessage) {
+    snackbarQueue.value.push(message)
+  }
+
   onBeforeMount(() => {
     loadLanguageAsync(store.storeLocale)
 
     emitter.on('show-login', showLogin)
     emitter.on('show-changelog', showChangelog)
+    emitter.on('show-snackbar', showSnackbar)
   })
   onBeforeUnmount(() => {
     emitter.off('show-login', showLogin)
     emitter.off('show-changelog', showChangelog)
+    emitter.off('show-snackbar', showSnackbar)
   })
   onMounted(() => {
     changelogVersionNumber.value = store.storeChangelogVersionNumber

@@ -31,7 +31,7 @@
         <DataGrid
           v-model="selected"
           v-model:items-per-page="itemsPerPage"
-          v-model:sort-by="sortByColumns"
+          v-model:sort-by="localSortByColumns"
           v-model:page="currentPage"
           :items="serverItems"
           :items-length="totalItems"
@@ -62,7 +62,7 @@
       v-if="filters !== undefined && localDisplayType === 'table'"
       v-model="selected"
       v-model:items-per-page="itemsPerPage"
-      v-model:sort-by="sortByColumns"
+      v-model:sort-by="localSortByColumns"
       v-model:page="currentPage"
       class="base-table"
       :row-props="componentProps.getRowProps"
@@ -231,8 +231,8 @@
   const urlPageToForce = ref()
   const localBottomSheetVisible = ref(false)
   const currentPage = ref(1)
-  const itemsPerPage = ref(store.storeTablePerPage || 10)
-  const sortByColumns = ref<DataTableSortItem[] | undefined>([])
+  const itemsPerPage = ref(store.storeTablePerPage || 12)
+  const localSortByColumns = ref<DataTableSortItem[] | undefined>([])
   const selected = ref<number[]>([])
   const serverItems = ref<T[]>([])
   const filters = ref<FilterGroup[] | undefined>(undefined)
@@ -280,10 +280,10 @@
 
   const perPageOptions = computed(() => {
     return [
-      { value: 10, title: '10' },
-      { value: 25, title: '25' },
-      { value: 50, title: '50' },
-      { value: 100, title: '100' },
+      { value: 12, title: '12' },
+      { value: 24, title: '24' },
+      { value: 48, title: '48' },
+      { value: 96, title: '96' },
     ]
   })
 
@@ -381,8 +381,8 @@
       page: currentPage.value,
       limit: itemsPerPage.value,
       prevCount: isResetCall ? -1 : totalItems.value,
-      orderBy: (sortByColumns.value && sortByColumns.value.length > 0) ? sortByColumns.value[0].key : undefined,
-      ascending: +((sortByColumns.value && sortByColumns.value.length > 0) ? sortByColumns.value[0].order === 'asc' : false),
+      orderBy: (localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].key : undefined,
+      ascending: +((localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].order === 'asc' : false),
       filters: filters.value || [],
     }).then((result: AxiosResponse<Blob>) => {
       downloadBlob({
@@ -456,8 +456,8 @@
         page: currentPage.value,
         limit: itemsPerPage.value,
         prevCount: isResetCall ? -1 : totalItems.value,
-        orderBy: (sortByColumns.value && sortByColumns.value.length > 0) ? sortByColumns.value[0].key : undefined,
-        ascending: +((sortByColumns.value && sortByColumns.value.length > 0) ? sortByColumns.value[0].order === 'asc' : false),
+        orderBy: (localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].key : undefined,
+        ascending: +((localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].order === 'asc' : false),
         filters: filters.value || [],
       }).then((result: AxiosResponse<PaginatedResult<number[]>>) => {
         isResetCall.value = false
@@ -482,8 +482,8 @@
         page: currentPage.value,
         limit: itemsPerPage.value,
         prevCount: isResetCall ? -1 : totalItems.value,
-        orderBy: (sortByColumns.value && sortByColumns.value.length > 0) ? sortByColumns.value[0].key : undefined,
-        ascending: +((sortByColumns.value && sortByColumns.value.length > 0) ? sortByColumns.value[0].order === 'asc' : false),
+        orderBy: (localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].key : undefined,
+        ascending: +((localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].order === 'asc' : false),
         filters: filters.value || [],
       })
         .then((result: AxiosResponse<PaginatedResult<number[]>>) => {
@@ -530,9 +530,9 @@
       const query = Object.assign({}, route.query)
       query[`${componentProps.tableKey}-page`] = `${currentPage.value}`
       query[`${componentProps.tableKey}-per-page`] = `${itemsPerPage.value}`
-      if (sortByColumns.value && sortByColumns.value.length > 0) {
-        query[`${componentProps.tableKey}-sort`] = sortByColumns.value[0].key
-        query[`${componentProps.tableKey}-sort-desc`] = `${sortByColumns.value[0].order === 'desc'}`
+      if (localSortByColumns.value && localSortByColumns.value.length > 0) {
+        query[`${componentProps.tableKey}-sort`] = localSortByColumns.value[0].key
+        query[`${componentProps.tableKey}-sort-desc`] = `${localSortByColumns.value[0].order === 'desc'}`
       } else {
         delete query[`${componentProps.tableKey}-sort`]
         delete query[`${componentProps.tableKey}-sort-desc`]
@@ -566,7 +566,7 @@
       }
 
       if (sortItem.key && sortItem.order) {
-        sortByColumns.value = [sortItem]
+        localSortByColumns.value = [sortItem]
       }
     }
   }
@@ -631,7 +631,7 @@
     store.setTablePerPage(newValue)
   })
   watch(currentPage, async () => updateUrlParameters())
-  watch(sortByColumns, async () => updateUrlParameters())
+  watch(localSortByColumns, async () => updateUrlParameters())
   watch(() => componentProps.displayType, (newValue: DisplayType) => {
     localDisplayType.value = newValue
   })
@@ -642,6 +642,7 @@
 
   onMounted(() => {
     localDisplayType.value = componentProps.displayType
+    localSortByColumns.value = componentProps.sortBy || []
   })
 
   defineExpose({

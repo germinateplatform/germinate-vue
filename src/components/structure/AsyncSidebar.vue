@@ -29,7 +29,7 @@
         :key="`export-job-${job.uuid}`"
       >
         <v-list-item
-          :class="`border-s-lg border-opacity-100 border-${status[job.status].color}`"
+          :class="`border-s-lg border-opacity-100 border-${asyncJobStatus[job.status].color}`"
           :title="dataExportTypes[job.datatype].text()"
         >
           <template #prepend>
@@ -44,9 +44,9 @@
           </template>
 
           <v-list-item-subtitle v-if="job.updatedOn">{{ new Date(job.updatedOn).toLocaleString() }}</v-list-item-subtitle>
-          <v-list-item-subtitle :class="`mt-2 text-${status[job.status].color}`">
+          <v-list-item-subtitle :class="`mt-2 text-${asyncJobStatus[job.status].color}`">
             <v-progress-circular color="info" indeterminate size="18" width="3" v-if="job.status === DataExportJobsStatus.running" />
-            <v-icon :icon="status[job.status].path" v-else /> {{ status[job.status].text() }}
+            <v-icon :icon="asyncJobStatus[job.status].path" v-else /> {{ asyncJobStatus[job.status].text() }}
           </v-list-item-subtitle>
           <v-list-item-subtitle class="mt-2 text-caption" v-if="job.status === DataExportJobsStatus.completed"><v-icon icon="mdi-paperclip" /> {{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}</v-list-item-subtitle>
 
@@ -97,7 +97,7 @@
               </template>
             </template>
           </template>
-          <v-list-item-subtitle :class="`mt-2 text-${status[job.status].color}`" v-if="showStandardStatus(job)"><v-icon :icon="status[job.status].path" /> {{ status[job.status].text() }}</v-list-item-subtitle>
+          <v-list-item-subtitle :class="`mt-2 text-${asyncJobStatus[job.status].color}`" v-if="showStandardStatus(job)"><v-icon :icon="asyncJobStatus[job.status].path" /> {{ asyncJobStatus[job.status].text() }}</v-list-item-subtitle>
         </v-list-item>
         <v-divider />
       </template>
@@ -116,6 +116,7 @@
   import emitter from 'tiny-emitter/instance'
   import { useDisplay } from 'vuetify'
   import { useI18n } from 'vue-i18n'
+  import { asyncJobStatus } from '@/plugins/util/types'
 
   const store = coreStore()
   const { name } = useDisplay()
@@ -133,40 +134,6 @@
     text: Function
     path: string
     color: string
-  }
-
-  interface Status {
-    text: Function
-    color: string
-    path: string
-  }
-
-  const status: { [key: string]: Status } = {
-    running: {
-      color: 'info',
-      path: 'mdi-progress-wrench',
-      text: () => t('asyncJobStatusRunning'),
-    },
-    failed: {
-      color: 'error',
-      path: 'mdi-alert',
-      text: () => t('asyncJobStatusFailed'),
-    },
-    completed: {
-      color: 'success',
-      path: 'mdi-check-circle',
-      text: () => t('asyncJobStatusCompleted'),
-    },
-    waiting: {
-      color: 'info',
-      path: 'mdi-pause-circle',
-      text: () => t('asyncJobStatusWaiting'),
-    },
-    cancelled: {
-      color: 'warning',
-      path: 'mdi-cancel',
-      text: () => t('asyncJobStatusCancelled'),
-    },
   }
 
   const dataExportTypes: { [key: string]: DataExportType } = {
@@ -354,7 +321,7 @@
     } else if (job.errorStatus === 'WARNING') {
       return 'warning'
     } else {
-      return status[job.status].color
+      return asyncJobStatus[job.status].color
     }
   }
 

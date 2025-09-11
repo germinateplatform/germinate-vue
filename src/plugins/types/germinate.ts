@@ -117,6 +117,7 @@ export interface BackupResult {
     filename: string;
     type: BackupType;
     filesize: number;
+    href?: string
 }
 
 export const enum BackupType {
@@ -927,16 +928,35 @@ export interface LinkRequest {
 }
 
 export interface News extends Serializable {
-    id: number;
-    newstypeId: number;
-    title: string;
-    content: string;
-    image: string;
-    imageFit: NewsImageFit;
-    hyperlink: string;
-    userId: number;
-    createdOn: Date;
-    updatedOn: Date;
+    id?: number;
+    newstypeId?: number;
+    title?: string;
+    content?: string;
+    image?: string | File;
+    imageFit?: NewsImageFit;
+    hyperlink?: string;
+    userId?: number;
+    createdOn?: Date;
+    updatedOn?: Date;
+}
+
+export interface ViewTableNews extends Serializable {
+    newsId?: number;
+    newsTitle?: string;
+    newsContent?: string;
+    newsHyperlink?: string;
+    newsImage?: string;
+    newsImageFit?: ViewTableNewsNewsImageFit;
+    newstypeId?: number;
+    newstypeName?: string;
+    newstypeDescription?: string;
+    createdOn?: Date;
+    updatedOn?: Date;
+}
+
+export const enum ViewTableNewsNewsImageFit {
+    contain = 'contain',
+    cover = 'cover',
 }
 
 export const enum NewsImageFit {
@@ -956,6 +976,37 @@ export interface ViewTableImages extends Serializable {
     referenceName: string;
     createdOn: Date;
     tags: ImageTag[];
+}
+
+export interface ViewTableImportJobs extends Serializable {
+    id: number;
+    isUpdate: boolean;
+    datasetstateId: number;
+    datatype: ViewTableImportJobsDatatype;
+    status: ViewTableImportJobsStatus;
+    stats: ImportJobStats;
+    createdOn: Date;
+}
+
+export const enum ViewTableImportJobsDatatype {
+    mcpd = 'mcpd',
+    trial = 'trial',
+    compound = 'compound',
+    genotype = 'genotype',
+    pedigree = 'pedigree',
+    groups = 'groups',
+    climate = 'climate',
+    images = 'images',
+    shapefile = 'shapefile',
+    geotiff = 'geotiff',
+}
+
+export const enum ViewTableImportJobsStatus {
+    waiting = 'waiting',
+    running = 'running',
+    failed = 'failed',
+    completed = 'completed',
+    cancelled = 'cancelled',
 }
 
 export interface ImageTag {

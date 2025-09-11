@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="400">
+  <v-dialog v-model="dialog" :max-width="`min(90vw, ${internalWidth || 400}px)`">
     <v-card>
       <v-toolbar dark dense flat>
         <v-toolbar-title class="white--text">{{ internalTitle }}</v-toolbar-title>
@@ -32,6 +32,7 @@
   const internalOkOnly = ref(false)
   const internalNeedsConfirmation = ref(false)
   const internalConfirmed = ref(false)
+  const internalWidth = ref(400)
   const callback = ref()
 
   function show (params: any) {
@@ -45,6 +46,7 @@
     callback.value = params.callback
     internalNeedsConfirmation.value = params.needsConfirmation || false
     internalConfirmed.value = false
+    internalWidth.value = params.width || 400
 
     dialog.value = true
   }

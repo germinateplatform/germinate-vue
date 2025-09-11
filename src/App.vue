@@ -103,13 +103,14 @@ ol:not([class]) li:not([class])
 }
 
 p a, p a:visited,
-table a, table a:visited,
+table a:not(.v-btn), table a:not(.v-btn):visited,
 footer a, footer a:visited,
 #about-page a, #about-page a:visited,
 .v-card-title a, .v-card-title a:visited,
 .scale-heading a, .scale-heading a:visited,
 .v-messages a, .v-messages a:visited,
 .v-list-item a, .v-list-item a:visited,
+a.table-icon-link, a.table-icon-link:visited,
 .v-card-text ul a, .v-card-text ul a:visited,
 form a, form a:visited {
   color: rgb(var(--v-theme-primary));
@@ -157,5 +158,36 @@ p {
   line-clamp: 2;
   -webkit-line-clamp: 2; /* number of lines to show */
   -webkit-box-orient: vertical;
+}
+
+.g-trim-rows-3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.g-trim-rows-4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 4;
+  -webkit-line-clamp: 4; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.g-trim-rows-5 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 5;
+  -webkit-line-clamp: 5; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+svg.g-svg {
+  color: rgb(var(--v-theme-primary));
 }
 </style>
