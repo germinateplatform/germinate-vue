@@ -291,7 +291,7 @@ const groupTypes: { [key: string]: GroupType } = {
   },
 }
 
-const markedItemTypes = {
+const markedItemTypes: { [key: string]: PathState & ColorState & TextState } = {
   germplasm: {
     path: 'mdi-sprout',
     color: () => getTemplateColor(0),

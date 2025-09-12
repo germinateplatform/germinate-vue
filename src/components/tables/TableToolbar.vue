@@ -45,7 +45,7 @@
         <v-btn v-if="filtered" color="error" v-tooltip:top="$t('tooltipTableClearFilter')" @click="emit('clear-filter')"><v-icon icon="mdi-delete" /></v-btn>
       </v-btn-group>
       <v-btn-group class="ms-2" density="compact" v-if="markedItemConfig">
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')"><v-chip size="small" label>{{ getNumberWithSuffix(markedItemConfig.count, 1) }}</v-chip></v-btn>
+        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, compProps.markedItemType || '')"><v-chip size="small" label>{{ getNumberWithSuffix(markedItemConfig.count, 1) }}</v-chip></v-btn>
         <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon icon="mdi-delete" /></v-btn>
       </v-btn-group>
     </div>
@@ -58,6 +58,7 @@
   import type { DisplayType, MarkedItemConfig } from '@/components/tables/BaseTable.vue'
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
   import type { DataTableHeader } from 'vuetify'
+  import { Pages } from '@/plugins/pages'
 
   const store = coreStore()
 

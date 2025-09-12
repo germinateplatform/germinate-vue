@@ -66,7 +66,7 @@ const defaultUserState: StoreContent = {
     projects: [],
   },
   markedIds: {
-    germplasm: [1, 2, 3],
+    germplasm: [],
     markers: [],
     locations: [],
   },

@@ -171,8 +171,6 @@ const apiPostTemplateImage = <T>(formData: FormData, onSuccess?: GerminateRespon
 
 const apiDeleteStoryStep = <T>(storyId: number, storyStepId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `story/${storyId}/step/${storyStepId}`, method: 'DELETE', success: onSuccess, error: onError })
 
-const apiGetGenesysAvailable = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'genesys/germplasm/status', success: onSuccess, error: onError })
-
 const apiPostGenesysRequest = <T>(data: GenesysRequestDetails, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'genesys/germplasm', method: 'POST', data, success: onSuccess, error: onError })
 
 export {
@@ -233,7 +231,6 @@ export {
   apiDeleteStoryStep,
   apiPatchTemplateI18n,
   apiPostTemplateImage,
-  apiGetGenesysAvailable,
   apiPostGenesysRequest,
   apiGetBackups,
   apiPutBackup,

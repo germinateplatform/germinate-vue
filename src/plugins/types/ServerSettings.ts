@@ -2,28 +2,29 @@ import type { HiddenColumns } from '@/plugins/types/germinate'
 
 export interface ServerSettings {
   authMode: string
-  colorsTemplate?: string[] | undefined
-  colorsCharts?: string[] | undefined
-  colorsGradient?: string[] | undefined
-  colorPrimary?: string | undefined
+  colorsTemplate?: string[]
+  colorsCharts?: string[]
+  colorsGradient?: string[]
+  colorPrimary?: string
   commentsEnabled: boolean
-  dashboardCategories?: string[] | undefined
-  dashboardSections?: string[] | undefined
-  dataImportMode: string | undefined
-  externalLinkIdentifier?: string | undefined
-  externalLinkTemplate?: string | undefined
-  googleAnalyticsKey?: string | undefined
-  plausibleDomain?: string | undefined
-  plausibleHashMode?: boolean | undefined
-  plausibleApiHost?: string | undefined
-  gatekeeperUrl?: string | undefined
-  hiddenPages?: string[] | undefined
-  registrationEnabled: boolean | undefined
-  showGdprNotification: boolean | undefined
-  gridscoreUrl?: string | undefined
-  heliumUrl?: string | undefined
-  fieldhubUrl?: string | undefined
-  hiddenColumns?: HiddenColumns | undefined
-  supportsFeedback?: boolean | undefined
-  genesysUrl?: string | undefined
+  dashboardCategories?: string[]
+  dashboardSections?: string[]
+  dataImportMode: string
+  externalLinkIdentifier?: string
+  externalLinkTemplate?: string
+  googleAnalyticsKey?: string
+  genesysAvailable?: boolean
+  plausibleDomain?: string
+  plausibleHashMode?: boolean
+  plausibleApiHost?: string
+  gatekeeperUrl?: string
+  hiddenPages?: string[]
+  registrationEnabled: boolean
+  showGdprNotification: boolean
+  gridscoreUrl?: string
+  heliumUrl?: string
+  fieldhubUrl?: string
+  hiddenColumns?: HiddenColumns
+  supportsFeedback?: boolean
+  genesysUrl?: string
 }

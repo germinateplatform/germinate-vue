@@ -74,6 +74,7 @@
       :item-value="componentProps.itemKey"
       :show-expand="showDetails"
       striped="odd"
+      hover
       :show-select="componentProps.selectionType !== undefined"
       :select-strategy="componentProps.selectionType"
       @update:options="loadItems"
