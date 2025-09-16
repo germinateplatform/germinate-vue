@@ -1,5 +1,5 @@
 <template>
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMarkers} -->
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMapdefinitions} -->
   <BaseTable
     ref="baseTable"
     :get-data="compProps.getData"
@@ -10,10 +10,10 @@
     :selection-type="selectionType"
     :show-details="false"
     item-key="markerId"
-    table-key="markers"
+    table-key="mapDefinitions"
     marked-item-type="markers"
     header-icon="mdi-format-indent-increase"
-    :header-title="$t('pageMarkersTitle')"
+    :header-title="compProps.headerTitle || $t('pageMarkersTitle')"
     v-bind="$attrs"
   >
     <!-- Marker id link -->
@@ -29,7 +29,7 @@
       <span v-if="item.markerSynonyms">{{ item.markerSynonyms.join(', ') }}</span>
     </template>
     <template #item.markerType="{ item }">
-      <v-chip label prepend-icon="mdi-label-variant" v-if="item.markerType">{{ item.markerType }}</v-chip>
+      <v-chip label v-if="item.markerType">{{ item.markerType }}</v-chip>
     </template>
 
     <!-- Pass on all named slots -->
@@ -45,16 +45,18 @@
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
   import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableMarkers } from '@/plugins/types/germinate'
+  import type { FilterGroup, FilterOperator, PaginatedRequest, PaginatedResult, ViewTableMapdefinitions } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
+  import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
   const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMarkers[]>>> }
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMapdefinitions[]>>> }
     getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
+    headerTitle?: string
   }>()
 
   const baseTable = useTemplateRef('baseTable')
@@ -71,13 +73,32 @@
       title: t('tableColumnMarkerName'),
       dataType: 'string',
     }, {
-      key: 'markerType',
-      dataType: 'string',
-      title: t('tableColumnMarkerType'),
-    }, {
       key: 'markerSynonyms',
       dataType: 'json',
       title: t('tableColumnMarkerSynonyms'),
+    }, {
+      key: 'mapFeatureType',
+      dataType: 'string',
+      title: t('tableColumnMapFeatureType'),
+    }, {
+      key: 'mapId',
+      dataType: 'integer',
+      class: 'text-right',
+      title: t('tableColumnMarkerMapId'),
+    }, {
+      key: 'mapName',
+      dataType: 'string',
+      title: t('tableColumnMapName'),
+    }, {
+      key: 'chromosome',
+      dataType: 'string',
+      title: t('tableColumnMapChromosome'),
+    }, {
+      key: 'position',
+      dataType: 'integer',
+      class: 'text-right',
+      title: t('tableColumnMapPosition'),
+      value: (item: ViewTableMapdefinitions) => (item.position !== undefined && item.position !== null) ? getNumberWithSuffix(item.position, 2) : null,
     }]
 
     return headers
@@ -86,6 +107,7 @@
   defineExpose({
     refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
     getSelection: () => baseTable.value?.getSelection(),
+    setOverallOperator: (operator: FilterOperator) => baseTable.value?.setOverallOperator(operator),
   })
 </script>
 

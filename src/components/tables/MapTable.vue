@@ -1,5 +1,5 @@
 <template>
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMarkers} -->
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMaps} -->
   <BaseTable
     ref="baseTable"
     :get-data="compProps.getData"
@@ -9,27 +9,23 @@
     :filter-on="filterOn"
     :selection-type="selectionType"
     :show-details="false"
-    item-key="markerId"
-    table-key="markers"
-    marked-item-type="markers"
-    header-icon="mdi-format-indent-increase"
-    :header-title="$t('pageMarkersTitle')"
+    item-key="mapId"
+    table-key="maps"
+    header-icon="mdi-reorder-horizontal"
+    :header-title="$t('pageMapsTitle')"
     v-bind="$attrs"
   >
-    <!-- Marker id link -->
-    <template #item.markerId="{ item }">
-      <router-link :to="Pages.getPath(Pages.markerDetails, item.markerId)">{{ item.markerId }}</router-link>
+    <!-- Map id link -->
+    <template #item.mapId="{ item }">
+      <router-link :to="Pages.getPath(Pages.mapDetails, item.mapId)">{{ item.mapId }}</router-link>
     </template>
-    <!-- Marker name link -->
-    <template #item.markerName="{ item }">
-      <router-link :to="Pages.getPath(Pages.markerDetails, item.markerId)">{{ item.markerName }}</router-link>
+    <!-- Map name link -->
+    <template #item.mapName="{ item }">
+      <router-link :to="Pages.getPath(Pages.mapDetails, item.mapId)">{{ item.mapName }}</router-link>
     </template>
-    <!-- Synonyms -->
-    <template #item.markerSynonyms="{ item }">
-      <span v-if="item.markerSynonyms">{{ item.markerSynonyms.join(', ') }}</span>
-    </template>
-    <template #item.markerType="{ item }">
-      <v-chip label prepend-icon="mdi-label-variant" v-if="item.markerType">{{ item.markerType }}</v-chip>
+    <!-- Map description -->
+    <template #item.mapDescription="{ item }">
+      <span v-html="item.mapDescription" />
     </template>
 
     <!-- Pass on all named slots -->
@@ -45,13 +41,14 @@
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
   import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableMarkers } from '@/plugins/types/germinate'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableMaps } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
+  import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
 
   const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMarkers[]>>> }
-    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMaps[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
@@ -63,21 +60,22 @@
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     const headers = [{
-      key: 'markerId',
-      title: t('tableColumnMarkerId'),
+      key: 'mapId',
+      title: t('tableColumnMapId'),
       dataType: 'integer',
     }, {
-      key: 'markerName',
-      title: t('tableColumnMarkerName'),
+      key: 'mapName',
+      title: t('tableColumnMapName'),
       dataType: 'string',
     }, {
-      key: 'markerType',
+      key: 'mapDescription',
       dataType: 'string',
-      title: t('tableColumnMarkerType'),
+      title: t('tableColumnMapDescription'),
     }, {
-      key: 'markerSynonyms',
-      dataType: 'json',
-      title: t('tableColumnMarkerSynonyms'),
+      key: 'markerCount',
+      dataType: 'integer',
+      title: t('tableColumnMapMarkerCount'),
+      value: (item: ViewTableMaps) => item.markerCount ? getNumberWithSuffix(item.markerCount, 1) : undefined,
     }]
 
     return headers

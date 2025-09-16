@@ -40,7 +40,7 @@ export interface ViewTableGermplasm {
     hasPedigreeData: number;
 }
 
-export interface ViewTablePedigreedefinitions extends Serializable {
+export interface ViewTablePedigreedefinitions {
     germplasmId: number;
     germplasmName: string;
     germplasmDisplayName: string;
@@ -57,7 +57,7 @@ export interface ViewTablePedigreedefinitions extends Serializable {
     createdOn: Date;
 }
 
-export interface ViewTablePedigrees extends Serializable {
+export interface ViewTablePedigrees {
     parentId: number;
     parentGid: string;
     parentName: string;
@@ -86,7 +86,7 @@ export interface PublicationDoiLookupDetails {
     date?: string
 }
 
-export interface ViewTableLocations extends Serializable {
+export interface ViewTableLocations {
     locationId: number;
     locationName: string;
     locationNameShort?: string;
@@ -99,11 +99,11 @@ export interface ViewTableLocations extends Serializable {
     locationCoordinateUncertainty?: number;
     countryId?: number;
     countryName?: string;
-    countryCode2: string;
+    countryCode2?: string;
     countryCode3?: string;
 }
 
-export interface Publications extends Serializable {
+export interface Publications {
     id: number;
     doi: string;
     fallbackCache: string;
@@ -126,7 +126,7 @@ export const enum BackupType {
     MANUAL = 'MANUAL',
 }
 
-export interface ViewTableStories extends Serializable {
+export interface ViewTableStories {
     storyId: number;
     storyName: string;
     storyDescription: string;
@@ -146,7 +146,7 @@ export interface ViewTableStories extends Serializable {
     storyUpdatedOn: Date;
 }
 
-export interface Storysteps extends Serializable {
+export interface Storysteps {
     id: number;
     storyId: number;
     storyIndex: number;
@@ -220,7 +220,7 @@ export interface StoryRequirements {
     groupIds: number[];
 }
 
-export interface ViewTableCollaborators extends Serializable {
+export interface ViewTableCollaborators {
     collaboratorId: number;
     collaboratorFirstName: string;
     collaboratorLastName: string;
@@ -239,7 +239,7 @@ export interface ViewTableCollaborators extends Serializable {
     projectIds: number[];
 }
 
-export interface ViewTableDatasetAttributes extends Serializable {
+export interface ViewTableDatasetAttributes {
     datasetId: number;
     datasetName: string;
     datasetDescription: string;
@@ -291,7 +291,7 @@ export interface NewUnapprovedUser extends LocaleRequest {
     unapprovedUser: UnapprovedUsers;
 }
 
-export interface UnapprovedUsers extends Serializable {
+export interface UnapprovedUsers {
     id: number;
     userUsername: string;
     userPassword: string;
@@ -306,6 +306,12 @@ export interface UnapprovedUsers extends Serializable {
     hasBeenRejected: number;
     needsApproval: number;
     activationKey: string;
+}
+
+export interface LocaleConfig {
+    locale: string;
+    name: string;
+    flag: string;
 }
 
 export interface LocaleRequest {
@@ -393,7 +399,7 @@ export const enum AuthenticationMode {
     NONE = 'NONE',
 }
 
-export interface Publicationdata extends Serializable {
+export interface Publicationdata {
     id: number;
     foreignId: number;
     publicationId: number;
@@ -410,7 +416,7 @@ export const enum PublicationdataReferenceType {
     experiment = 'experiment',
 }
 
-export interface ViewTablePublications extends Serializable {
+export interface ViewTablePublications {
     publicationId: number;
     publicationDoi: string;
     publicationFallbackCache?: string;
@@ -433,7 +439,7 @@ export interface Filter {
     safeColumn?: string;
 }
 
-export interface ViewTableLicenses extends Serializable {
+export interface ViewTableLicenses {
     licenseId: number;
     licenseName: string;
     licenseDescription: string;
@@ -452,11 +458,11 @@ export interface SubsettedGenotypeDatasetRequest extends SubsettedDatasetRequest
 
 export interface MapExportRequest {
     format: string;
-    method: string;
-    chromosomes: string[];
-    regions: Region[];
-    markerIdInterval: number[];
-    radius: Radius;
+    method?: string;
+    chromosomes?: string[];
+    regions?: Region[];
+    markerIdInterval?: number[];
+    radius?: Radius;
 }
 
 export interface AlleleFrequencyDatasetRequest extends SubsettedGenotypeDatasetRequest {
@@ -507,7 +513,7 @@ export const enum FilterComparator {
     inSet = 'inSet',
 }
 
-export interface ViewTableTaxonomies extends Serializable {
+export interface ViewTableTaxonomies {
     taxonomyId: number;
     taxonomyGenus: string;
     taxonomySpecies: string;
@@ -553,9 +559,115 @@ export interface ServerSetupConfig {
     gkConfig: GatekeeperConfig;
 }
 
-export interface PaginatedResult<T> extends Serializable {
+export interface PaginatedResult<T> {
     data: T;
     count: number;
+}
+
+export interface PaginatedPolygonRequest extends PaginatedRequest {
+    polygons: LatLng[][];
+}
+
+export interface PaginatedLocationRequest extends PaginatedRequest {
+    latitude: number;
+    longitude: number;
+}
+
+export interface TraitTimelineRequest {
+    datasetIds: number[];
+    traitIds: number[];
+    groupIds: number[];
+    markedIds: number[];
+}
+
+export interface Phenotypes {
+    id: number;
+    name: string;
+    shortName: string;
+    description: string;
+    datatype: PhenotypesDatatype;
+    restrictions: TraitRestrictions;
+    unitId: number;
+    categoryId: number;
+    setsize: number;
+    isTimeseries: boolean;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface PaginatedDatasetRequest extends PaginatedRequest {
+    datasetIds: number[];
+}
+
+export interface UnacceptedLicenseRequest extends PaginatedRequest {
+    justUnacceptedLicenses: boolean;
+}
+
+export interface TraitUnificationRequest {
+    preferredTraitId: number;
+    otherTraitIds: number[];
+}
+
+export interface TrialCreationDetails {
+    datasetId: number;
+    plots: PlotDetails[];
+}
+
+export interface PlotDetails {
+    row: number;
+    column: number;
+    germplasm: string;
+    rep: string;
+}
+
+export interface TraitDatasetRequest extends DatasetRequest {
+    traitIds: number[];
+}
+
+export interface ViewTableTraits {
+    traitId: number;
+    traitName: string;
+    traitNameShort: string;
+    traitDescription: string;
+    dataType: ViewTableTraitsDataType;
+    traitRestrictions: TraitRestrictions;
+    traitSetSize: number;
+    traitIsTimeseries: boolean;
+    categoryId: number;
+    categoryName: string;
+    categoryDescription: string;
+    unitId: number;
+    unitName: string;
+    unitDescription: string;
+    unitAbbreviation: string;
+    synonyms: string[];
+    datasetIds: number[];
+    count: number;
+}
+
+export const enum ViewTableTraitsDataType {
+    categorical = 'categorical',
+    numeric = 'numeric',
+    text = 'text',
+    date = 'date',
+}
+
+export interface TraitRestrictions {
+    categories: string[][];
+    min: number;
+    max: number;
+}
+
+export const enum PhenotypesDatatype {
+    categorical = 'categorical',
+    numeric = 'numeric',
+    text = 'text',
+    date = 'date',
+}
+
+export interface LatLng {
+    lat: number;
+    lng: number;
 }
 
 export interface PaginatedRequest {
@@ -574,7 +686,7 @@ export interface GermplasmExportRequest extends ExportRequest {
     includeAttributes: boolean;
 }
 
-export interface ViewTablePedigrees extends Serializable {
+export interface ViewTablePedigrees {
     parentId: number;
     parentGid: string;
     parentName: string;
@@ -618,7 +730,7 @@ export interface GermplasmStats {
     isSelected: boolean;
 }
 
-export interface ViewTableDatasets extends Serializable {
+export interface ViewTableDatasets {
     datasetId: number;
     datasetName: string;
     datasetDescription: string;
@@ -654,7 +766,7 @@ export interface ViewTableDatasets extends Serializable {
     acceptedBy: number[];
 }
 
-export interface ViewTableProjects extends Serializable {
+export interface ViewTableProjects {
     projectId?: number;
     projectName?: string;
     projectDescription?: string;
@@ -682,7 +794,7 @@ export interface Dataset {
     datasetIsExternal: number;
 }
 
-export interface ViewTableInstitutions extends Serializable {
+export interface ViewTableInstitutions {
     institutionId: number;
     institutionName: string;
     institutionCode: string;
@@ -704,10 +816,7 @@ export interface GermplasmInstitution {
     type: GermplasminstitutionsType;
 }
 
-export interface Serializable {
-}
-
-export interface ViewTableGroups extends Serializable {
+export interface ViewTableGroups {
     groupId?: number;
     groupName?: string;
     groupDescription?: string;
@@ -722,7 +831,7 @@ export interface ViewTableGroups extends Serializable {
     count?: number;
 }
 
-export interface Grouptypes extends Serializable {
+export interface Grouptypes {
     id: number;
     description: string;
     targetTable: string;
@@ -744,7 +853,7 @@ export interface GroupModificationRequest {
     addition: boolean;
 }
 
-export interface Groups extends Serializable {
+export interface Groups {
     id?: number;
     grouptypeId?: number;
     name?: string;
@@ -755,7 +864,7 @@ export interface Groups extends Serializable {
     updatedOn?: Date;
 }
 
-export interface DataExportJobs extends Serializable {
+export interface DataExportJobs {
     id: number;
     uuid: string;
     jobId: string;
@@ -781,26 +890,48 @@ export const enum DataExportJobsDatatype {
     images = 'images',
 }
 
-export interface Datasets extends Serializable {
+export interface Datasets {
     id: number;
     experimentId: number;
-    datasettypeId: number;
+    datasettypeId?: number;
     name: string;
     description: string;
     dateStart: Date;
     dateEnd: Date;
-    sourceFile: string;
-    datatype: string;
-    dublinCore: DublinCore;
-    version: string;
-    createdBy: number;
+    sourceFile?: string;
+    datatype?: string;
+    dublinCore?: DublinCore;
+    version?: string;
+    createdBy?: number;
     datasetStateId: number;
-    licenseId: number;
-    isExternal: boolean;
+    licenseId?: number;
+    isExternal?: boolean;
     hyperlink: string;
-    createdOn: Date;
-    updatedOn: Date;
-    contact: string;
+    createdOn?: Date;
+    updatedOn?: Date;
+    contact?: string;
+}
+
+export interface ViewTableMapdefinitions {
+    markerId: number;
+    markerName: string;
+    synonyms: string[];
+    mapFeatureType: string;
+    mapId: number;
+    userId: number;
+    visibility: boolean;
+    mapName: string;
+    chromosome: string;
+    position: number;
+}
+
+export interface ViewTableMaps {
+    mapId: number;
+    mapName: string;
+    mapDescription: string;
+    userId: number;
+    visibility: boolean;
+    markerCount: number;
 }
 
 export interface DublinCore {
@@ -822,29 +953,29 @@ export interface DublinCore {
 }
 
 export interface ViewTableExperiments {
-    projectId: number;
-    experimentId: number;
-    experimentName: string;
-    experimentDescription: string;
-    experimentDate: Date;
-    createdOn: Date;
-    genotypeCount: number;
-    trialsCount: number;
-    alleleFreqCount: number;
-    climateCount: number;
-    compoundCount: number;
-    pedigreeCount: number;
+    projectId?: number;
+    experimentId?: number;
+    experimentName?: string;
+    experimentDescription?: string;
+    experimentDate?: Date;
+    createdOn?: Date;
+    genotypeCount?: number;
+    trialsCount?: number;
+    alleleFreqCount?: number;
+    climateCount?: number;
+    compoundCount?: number;
+    pedigreeCount?: number;
 }
 
-export interface ViewTableLicenseDefinitions extends Serializable {
-    licenseId: number;
-    licenseName: string;
-    licenseDescription: string;
-    createdOn: Date;
-    licenseData: { [index: string]: string };
+export interface ViewTableLicenseDefinitions {
+    licenseId?: number;
+    licenseName?: string;
+    licenseDescription?: string;
+    createdOn?: Date;
+    licenseData?: { [index: string]: string };
 }
 
-export interface ViewTableFileresources extends Serializable {
+export interface ViewTableFileresources {
     fileresourceId?: number;
     fileresourceName: string;
     fileresourcePath: string;
@@ -882,7 +1013,7 @@ export const enum DataType {
     GERMPLASM_COLUMN = 'GERMPLASM_COLUMN',
 }
 
-export interface Fileresourcetypes extends Serializable {
+export interface Fileresourcetypes {
     id?: number;
     name: string;
     description?: string;
@@ -911,7 +1042,7 @@ export type AboutConfig = AboutInfo[]
 
 export type TemplateI18n = { [key: string]: string }
 
-export interface Comments extends Serializable {
+export interface Comments {
     id: number;
     commenttypeId: number;
     userId: number;
@@ -927,7 +1058,7 @@ export interface LinkRequest {
     foreignId: number;
 }
 
-export interface News extends Serializable {
+export interface News {
     id?: number;
     newstypeId?: number;
     title?: string;
@@ -940,7 +1071,7 @@ export interface News extends Serializable {
     updatedOn?: Date;
 }
 
-export interface ViewTableNews extends Serializable {
+export interface ViewTableNews {
     newsId?: number;
     newsTitle?: string;
     newsContent?: string;
@@ -964,7 +1095,7 @@ export const enum NewsImageFit {
     cover = 'cover',
 }
 
-export interface ViewTableImages extends Serializable {
+export interface ViewTableImages {
     imageId: number;
     imageDescription: string;
     imageForeignId: number;
@@ -978,7 +1109,7 @@ export interface ViewTableImages extends Serializable {
     tags: ImageTag[];
 }
 
-export interface ViewTableImportJobs extends Serializable {
+export interface ViewTableImportJobs {
     id: number;
     isUpdate: boolean;
     datasetstateId: number;
@@ -1012,6 +1143,35 @@ export const enum ViewTableImportJobsStatus {
 export interface ImageTag {
     tagId: number;
     tagName: string;
+}
+
+export interface Phenotypecategories {
+    id: number;
+    name: string;
+    description?: string;
+    createdOn?: Date;
+    updatedOn?: Date;
+}
+
+export interface ViewTableClimates {
+    climateId: number;
+    climateName: string;
+    climateNameShort: string;
+    climateDescription: string;
+    dataType: ViewTableClimatesDataType;
+    unitId: number;
+    unitName: string;
+    unitDescription: string;
+    overlays: number;
+    unitAbbreviation: string;
+    count: number;
+}
+
+export const enum ViewTableClimatesDataType {
+    categorical = 'categorical',
+    numeric = 'numeric',
+    text = 'text',
+    date = 'date',
 }
 
 export interface Exif {
@@ -1104,7 +1264,7 @@ export interface SgoneGermplasmUnificationRequest {
     unifications: SgoneGermplasmUnification[];
 }
 
-export interface Locations extends Serializable {
+export interface Locations {
     id: number;
     locationtypeId: number;
     countryId: number;
@@ -1152,7 +1312,7 @@ export interface BinningConfig {
     splitPoint: number;
 }
 
-export interface DataImportJobs extends Serializable {
+export interface DataImportJobs {
     id: number;
     uuid: string;
     jobId: string;
@@ -1241,7 +1401,7 @@ export interface ViewMcpd {
     entityparentaccenumb: string;
 }
 
-export interface Datawarnings extends Serializable {
+export interface Datawarnings {
     id: number;
     description: string;
     category: DatawarningsCategory;
@@ -1249,7 +1409,7 @@ export interface Datawarnings extends Serializable {
     updatedOn: Date;
 }
 
-export interface ViewTableLinks extends Serializable {
+export interface ViewTableLinks {
     linkId: number;
     linkDescription: string;
     linkVisibility: boolean;

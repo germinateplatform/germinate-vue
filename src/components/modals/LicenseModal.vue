@@ -1,6 +1,21 @@
 <template>
   <v-dialog v-model="dialog" scrollable max-width="min(800px, 50vw)">
-    <v-card :title="$t('modalTitleLicense')" v-if="compProps.dataset && compProps.license">
+    <v-card v-if="compProps.dataset && compProps.license">
+      <template #title>
+        <div class="d-flex justify-space-between align-center">
+          {{ $t('modalTitleLicense') }}
+          <v-menu v-if="store.storeUserIsDataCurator">
+            <template #activator="{ props }">
+              <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props" />
+            </template>
+
+            <v-list>
+              <v-list-item prepend-icon="mdi-delete" :title="$t('buttonLicenseRemoveFromDataset')" @click="onDelete" />
+              <v-list-item prepend-icon="mdi-square-edit-outline" :title="$t('buttonEdit')" @click="onEdit" />
+            </v-list>
+          </v-menu>
+        </div>
+      </template>
       <v-card-text>
         <div v-html="licenseContent" />
       </v-card-text>
@@ -33,6 +48,8 @@
     isAccepted?: boolean
   }>()
 
+  const emit = defineEmits(['delete-clicked', 'edit-clicked'])
+
   const store = coreStore()
   const dialog = ref(false)
 
@@ -47,6 +64,16 @@
       return undefined
     }
   })
+
+  function onDelete () {
+    emit('delete-clicked')
+    hide()
+  }
+
+  function onEdit () {
+    emit('edit-clicked')
+    hide()
+  }
 
   function show () {
     dialog.value = true

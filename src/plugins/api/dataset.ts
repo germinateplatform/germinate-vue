@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedRequest, SubsettedDatasetRequest, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
+import type { DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedRequest, SubsettedDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
 
 const apiPostPublicationDatasetTable = <T>(publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
   queryData.page -= 1
@@ -116,7 +116,7 @@ const apiPostFileresourceDatasetTable = <T>(fileresourceId: number, queryData: P
 
 const apiPostCrossDataTypeComparison = <T>(data: DatasetCrossDataTypeRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/crosscomparison', method: 'POST', dataType: 'blob', data, success: onSuccess, error: onError })
 
-const apiPatchDataset = <T>(id: number, data: ViewTableFileresources, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/${id}`, method: 'PATCH', data, success: onSuccess, error: onError })
+const apiPatchDataset = <T>(id: number, data: Datasets, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/${id}`, method: 'PATCH', data, success: onSuccess, error: onError })
 
 const apiPostDataset = <T>(data: Datasets, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset', method: 'POST', data, success: onSuccess, error: onError })
 

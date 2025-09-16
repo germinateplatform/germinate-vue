@@ -47,6 +47,7 @@
     "@types/d3-dsv": "^3.0.7",
     "@types/d3-selection": "^3.0.11",
     "@types/leaflet": "^1.9.20",
+    "@types/leaflet-draw": "^1.0.13",
     "@types/node": "^22.9.0",
     "@types/plotly.js": "^3.0.3",
     "@types/semver": "^7.7.1",

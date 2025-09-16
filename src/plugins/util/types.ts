@@ -29,6 +29,9 @@ interface PathState {
 interface LinkState {
   link: string
 }
+interface IsCountState {
+  isCount: boolean
+}
 interface ColorState {
   color: Function
 }
@@ -466,114 +469,136 @@ const dashboardSections = [
   },
 ]
 
-const statCategories: { [id: string]: ValueState & TextState & PathState & LinkState } = {
+const statCategories: { [id: string]: ValueState & TextState & PathState & LinkState & IsCountState } = {
   germplasm: {
     value: 'germplasm',
     text: () => i18n.global.t('dashboardBannerGermplasm'),
     path: 'mdi-sprout',
     link: Pages.germplasm.path,
+    isCount: true,
   },
   markers: {
     value: 'markers',
     text: () => i18n.global.t('dashboardBannerMarkers'),
     path: 'mdi-dna',
     link: Pages.markers.path,
+    isCount: true,
   },
   maps: {
     value: 'maps',
     text: () => i18n.global.t('dashboardBannerMaps'),
     path: 'mdi-reorder-vertical',
     link: Pages.maps.path,
+    isCount: true,
   },
   traits: {
     value: 'traits',
     text: () => i18n.global.t('dashboardBannerTraits'),
     path: 'mdi-tag-text-outline',
     link: Pages.traits.path,
+    isCount: true,
   },
   locations: {
     value: 'locations',
     text: () => i18n.global.t('dashboardBannerLocations'),
     path: 'mdi-map-marker',
     link: Pages.locations.path,
+    isCount: true,
   },
   datasets: {
     value: 'datasets',
     text: () => i18n.global.t('dashboardBannerDatasets'),
     path: 'mdi-database',
     link: Pages.datasets.path,
+    isCount: true,
   },
   datasetId: {
     value: 'datasets',
     text: () => i18n.global.t('dashboardBannerDatasets'),
     path: 'mdi-database',
     link: Pages.datasets.path,
+    isCount: false,
   },
   experiments: {
     value: 'experiments',
     text: () => i18n.global.t('dashboardBannerExperiments'),
     path: 'mdi-folder-table',
     link: Pages.experiments.path,
+    
+    isCount: true,
   },
   datasetsAllelefreq: {
     value: 'datasetsAllelefreq',
     text: () => i18n.global.t('dashboardBannerDatasetsAllelefreq'),
     path: 'mdi-pulse',
     link: Pages.getPath(Pages.export, 'allelefreq'),
+    
+    isCount: false,
   },
   datasetsGenotype: {
     value: 'datasetsGenotype',
     text: () => i18n.global.t('dashboardBannerDatasetsGenotype'),
     path: 'mdi-dna',
     link: Pages.getPath(Pages.export, 'genotype'),
+    
+    isCount: false,
   },
   datasetsTrials: {
     value: 'datasetsTrials',
     text: () => i18n.global.t('dashboardBannerDatasetsTrials'),
     path: 'mdi-shovel',
     link: Pages.getPath(Pages.export, 'trials'),
+    isCount: false,
   },
   datasetsClimate: {
     value: 'datasetsClimate',
     text: () => i18n.global.t('dashboardBannerDatasetsClimate'),
     path: 'mdi-chart-sankey',
     link: Pages.getPath(Pages.export, 'climate'),
+    
+    isCount: false,
   },
   datasetsPedigree: {
     value: 'datasetsPedigree',
     text: () => i18n.global.t('dashboardBannerDatasetsPedigree'),
     path: 'mdi-family-tree',
     link: Pages.getPath(Pages.export, 'pedigree'),
+    isCount: false,
   },
   groups: {
     value: 'groups',
     text: () => i18n.global.t('dashboardBannerGroups'),
     path: 'mdi-group',
     link: Pages.groups.path,
+    isCount: true,
   },
   climates: {
     value: 'climates',
     text: () => i18n.global.t('dashboardBannerClimates'),
     path: 'mdi-weather-snowy-rainy',
     link: Pages.climates.path,
+    isCount: true,
   },
   images: {
     value: 'images',
     text: () => i18n.global.t('dashboardBannerImages'),
     path: 'mdi-image-multiple',
     link: Pages.images.path,
+    isCount: true,
   },
   fileresources: {
     value: 'fileresources',
     text: () => i18n.global.t('dashboardBannerFileResources'),
     path: 'mdi-file-download',
     link: Pages.dataResources.path,
+    isCount: true,
   },
   fileResourceId: {
     value: 'fileresources',
     text: () => i18n.global.t('dashboardBannerFileResources'),
     path: 'mdi-file-download',
     link: Pages.dataResources.path,
+    isCount: false,
   },
 }
 

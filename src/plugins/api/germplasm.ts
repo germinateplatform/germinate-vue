@@ -1,6 +1,6 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { ExportRequest, GermplasmExportRequest, GermplasmUnificationRequest, Locations, PaginatedRequest, PedigreeRequest, SgoneGermplasmUnificationRequest } from '../types/germinate'
+import type { ExportRequest, GermplasmExportRequest, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PedigreeRequest, SgoneGermplasmUnificationRequest } from '@/plugins/types/germinate'
 
 function apiGetGermplasmMcpd<T> (germplasmId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/${germplasmId}/mcpd`, success: onSuccess, error: onError })
@@ -53,18 +53,18 @@ function apiPostGroupGermplasmTableIds<T> (groupId: number, queryData: Paginated
   return authAxios({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmDistanceTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostGermplasmDistanceTable<T> (queryData: PaginatedLocationRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'germplasm/distance/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmDistanceTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostGermplasmDistanceTableIds<T> (queryData: PaginatedLocationRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'germplasm/distance/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmPolygonTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostGermplasmPolygonTable<T> (queryData: PaginatedPolygonRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   if (queryData.orderBy === 'distance') {
     delete queryData.orderBy
@@ -73,7 +73,7 @@ function apiPostGermplasmPolygonTable<T> (queryData: PaginatedRequest, onSuccess
   return authAxios({ url: 'germplasm/polygon/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmPolygonTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostGermplasmPolygonTableIds<T> (queryData: PaginatedPolygonRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'germplasm/polygon/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })

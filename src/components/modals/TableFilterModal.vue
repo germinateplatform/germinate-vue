@@ -455,7 +455,7 @@
 
     if (compProps.filterOn) {
       const internal = compProps.filterOn as InternalFilterGroup[]
-      presetFilters = presetFilters.concat(internal.map(fg => {
+      presetFilters = internal.map(fg => {
         if (fg.filters) {
           fg.internalFilters = fg.filters.map(f => {
             const existingColumn = compProps.columns.find(c => c.key === f.column)
@@ -467,7 +467,7 @@
         }
 
         return fg
-      }))
+      })
     }
 
     // Read URL parameters
@@ -543,11 +543,15 @@
   function hide () {
     dialog.value = false
   }
+  function setOverallOperator (operator: FilterOperator) {
+    overallOperator.value = operator
+  }
   defineExpose({
     show,
     hide,
     clear,
     loadFilters,
+    setOverallOperator,
   })
 
   watch(() => compProps.filterOn, () => loadFilters())

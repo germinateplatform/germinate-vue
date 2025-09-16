@@ -128,7 +128,7 @@
   const bottomVisible = ref(false)
   const lightboxVisible = ref(false)
 
-  const tags: string[] = []
+  const tags: { [key: number]: string } = {}
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
@@ -213,13 +213,10 @@
   }
 
   function getTagColor (tag: ImageTag) {
-    let index = tags.indexOf(tag.tagName)
-    if (index === -1) {
-      tags.push(tag.tagName)
-      index = tags.length
+    if (!tags[tag.tagId]) {
+      tags[tag.tagId] = getTemplateColor(Object.keys(tags).length)
     }
-
-    return getTemplateColor(index)
+    return tags[tag.tagId]
   }
 
   const emit = defineEmits(['tag-clicked'])

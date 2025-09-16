@@ -259,6 +259,15 @@ function lookupDoiInformation (publication: ViewTablePublications): PublicationD
   }
 }
 
+function isUrl (str: string): boolean {
+  try {
+    new URL(str)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export {
   germinateVersion,
   uuidv4,
@@ -274,4 +283,5 @@ export {
   bskyIcon,
   genesysIcon,
   lookupDoiInformation,
+  isUrl,
 }

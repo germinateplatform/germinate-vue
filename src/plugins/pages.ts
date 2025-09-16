@@ -111,7 +111,7 @@ export class Pages {
 
   static mapDetails: Page = {
     name: 'mapDetails',
-    path: '/data/genotypes/map/:id',
+    path: '/data/genotypes/maps/:id',
   }
 
   static exportCrossComparison: Page = {

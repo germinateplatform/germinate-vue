@@ -30,12 +30,38 @@
         <v-list-item link :to="Pages.germplasm.path" prepend-icon="mdi-sprout" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ $t('menuGermplasm') }} <template #append><v-chip size="small">{{ formatBadge('germplasm') }}</v-chip></template></v-list-item>
         <v-list-item link :to="Pages.taxonomies.path" prepend-icon="mdi-graph" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.taxonomies.name)">{{ $t('menuTaxonomies') }} <template #append><v-chip size="small">{{ formatBadge('taxonomies') }}</v-chip></template></v-list-item>
 
+        <v-list-group value="trials">
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" link prepend-icon="mdi-tag-multiple">{{ $t('menuTrialsData') }}</v-list-item>
+          </template>
+
+          <v-list-item link :to="Pages.traits.path" prepend-icon="mdi-tag-text-outline" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.traits.name)">{{ $t('menuTrialsTraits') }} <template #append><v-chip size="small">{{ formatBadge('traits') }}</v-chip></template></v-list-item>
+        </v-list-group>
+
+        <v-list-group value="genotypes">
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" link prepend-icon="mdi-dna">{{ $t('menuGenotypicData') }}</v-list-item>
+          </template>
+
+          <v-list-item link :to="Pages.markers.path" prepend-icon="mdi-format-indent-increase" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.markers.name)">{{ $t('menuGenotypicMarkers') }} <template #append><v-chip size="small">{{ formatBadge('markers') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.maps.path" prepend-icon="mdi-reorder-horizontal" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.maps.name)">{{ $t('menuGenotypicMaps') }} <template #append><v-chip size="small">{{ formatBadge('maps') }}</v-chip></template></v-list-item>
+        </v-list-group>
+
         <v-list-group value="geography">
           <template #activator="{ props }">
             <v-list-item v-bind="props" link prepend-icon="mdi-earth">{{ $t('menuGeography') }}</v-list-item>
           </template>
 
           <v-list-item link :to="Pages.locations.path" prepend-icon="mdi-map" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.locations.name)">{{ $t('menuLocations') }} <template #append><v-chip size="small">{{ formatBadge('locations') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.geographicSearch.path" prepend-icon="mdi-map-search" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.geographicSearch.name)">{{ $t('menuGeographicSearch') }}</v-list-item>
+        </v-list-group>
+
+        <v-list-group value="climate">
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" link prepend-icon="mdi-weather-snowy-rainy">{{ $t('menuClimateData') }}</v-list-item>
+          </template>
+
+          <v-list-item link :to="Pages.climates.path" prepend-icon="mdi-weather-snowy-rainy" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.climates.name)">{{ $t('menuClimateClimates') }} <template #append><v-chip size="small">{{ formatBadge('climates') }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-item link :to="Pages.datasets.path" prepend-icon="mdi-database" v-if="!store.storeServerSettings?.hiddenPages?.includes(Pages.datasets.name)">{{ $t('menuDatasets') }} <template #append><v-chip size="small">{{ formatBadge('datasets') }}</v-chip></template></v-list-item>
@@ -82,7 +108,7 @@
 
   const badgeCounts = ref<OverviewStats>()
 
-  const formatBadge = function (key: string) {
+  function formatBadge (key: string) {
     let value = null
 
     if (badgeCounts.value && badgeCounts.value[key]) {

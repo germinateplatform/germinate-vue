@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AddEditDatasetModal: typeof import('./components/modals/AddEditDatasetModal.vue')['default']
     AddFileresourceModal: typeof import('./components/modals/AddFileresourceModal.vue')['default']
     AddFileresourceTypeModal: typeof import('./components/modals/AddFileresourceTypeModal.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
@@ -18,9 +19,11 @@ declare module 'vue' {
     BaseChart: typeof import('./components/charts/BaseChart.vue')['default']
     BaseTable: typeof import('./components/tables/BaseTable.vue')['default']
     ChangelogInfo: typeof import('./components/widgets/ChangelogInfo.vue')['default']
+    ClimateTable: typeof import('./components/tables/ClimateTable.vue')['default']
     CollaboratorTable: typeof import('./components/tables/CollaboratorTable.vue')['default']
     ColorGradient: typeof import('./components/widgets/ColorGradient.vue')['default']
     ConfirmModal: typeof import('./components/modals/ConfirmModal.vue')['default']
+    copy: typeof import('./components/tables/MapTable copy.vue')['default']
     DataGrid: typeof import('./components/tables/DataGrid.vue')['default']
     DatasetAttributeTable: typeof import('./components/tables/DatasetAttributeTable.vue')['default']
     Datasets: typeof import('./components/widgets/Datasets.vue')['default']
@@ -42,12 +45,16 @@ declare module 'vue' {
     ImageTags: typeof import('./components/widgets/ImageTags.vue')['default']
     InstitutionTable: typeof import('./components/tables/InstitutionTable.vue')['default']
     LicenseModal: typeof import('./components/modals/LicenseModal.vue')['default']
+    LicenseSelectModal: typeof import('./components/modals/LicenseSelectModal.vue')['default']
     LocationMap: typeof import('./components/map/LocationMap.vue')['default']
     LocationTable: typeof import('./components/tables/LocationTable.vue')['default']
     LoginModal: typeof import('./components/modals/LoginModal.vue')['default']
     LoginSection: typeof import('./components/widgets/LoginSection.vue')['default']
     MainComponent: typeof import('./components/structure/MainComponent.vue')['default']
     MainNavigation: typeof import('./components/structure/MainNavigation.vue')['default']
+    MapChart: typeof import('./components/charts/MapChart.vue')['default']
+    MapDefinitionTable: typeof import('./components/tables/MapDefinitionTable.vue')['default']
+    MapTable: typeof import('./components/tables/MapTable.vue')['default']
     MarkedItems: typeof import('./components/widgets/MarkedItems.vue')['default']
     MarkerTable: typeof import('./components/tables/MarkerTable.vue')['default']
     McpdInfo: typeof import('./components/germplasm/McpdInfo.vue')['default']
@@ -70,6 +77,8 @@ declare module 'vue' {
     TaxonomySunburst: typeof import('./components/charts/TaxonomySunburst.vue')['default']
     TaxonomyTable: typeof import('./components/tables/TaxonomyTable.vue')['default']
     TaxonomyTreemap: typeof import('./components/charts/TaxonomyTreemap.vue')['default']
+    TraitCategories: typeof import('./components/widgets/TraitCategories.vue')['default']
+    TraitTable: typeof import('./components/tables/TraitTable.vue')['default']
     UserDropdown: typeof import('./components/structure/UserDropdown.vue')['default']
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="map" ref="mapElement" :class="`${props.rounded ? 'rounded-lg' : ''} location-map`">
+    <div :id="`map-${id}`" ref="mapElement" :class="`${props.selectionMode === 'point' ? 'point-search' : ''} ${props.rounded ? 'rounded-lg' : ''} location-map map`">
       <div ref="popupContent" class="popup-content">
         <v-list v-if="currentLocation">
           <v-list-item :title="$t('tableColumnLocationName')">
@@ -55,7 +55,7 @@
 <script lang="ts" setup>
   import { coreStore } from '@/stores/app'
 
-  import L, { type TileLayer, type Map, type Marker } from 'leaflet'
+  import L, { type TileLayer, type Map, type Marker, type FeatureGroup } from 'leaflet'
   import 'leaflet/dist/leaflet.css'
   import 'leaflet.markercluster/dist/MarkerCluster.css'
   import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
@@ -80,6 +80,7 @@
   import * as countries from 'i18n-iso-countries'
   // @ts-ignore
   import countryDataEn from 'i18n-iso-countries/langs/en.json'
+  import { uuidv4 } from '@/plugins/util'
   countries.registerLocale(countryDataEn)
 
   // Set the leaflet marker icon
@@ -111,7 +112,8 @@
   const emit = defineEmits(['map-loaded'])
 
   // Refs
-  const mapElement = ref('')
+  const id = ref(uuidv4())
+  const mapElement = useTemplateRef('mapElement')
   const popupContent = ref('')
   const systemTheme = ref('dark')
   const internalLocations = ref<ExtendedViewTableLocations[]>([])
@@ -125,6 +127,7 @@
   let heat: any
   const markers: Marker[] = []
   let gradientColors: string[] = []
+  let editableLayers: FeatureGroup
 
   function updateThemeLayer () {
     if (themeLayer) {
@@ -198,6 +201,23 @@
       }
     })
 
+    map.on('click', e => {
+      if (props.selectionMode === 'point') {
+        const l: ExtendedViewTableLocations = {
+          locationId: -1,
+          locationName: 'Query',
+          locationLatitude: e.latlng.lat,
+          locationLongitude: e.latlng.lng,
+        }
+
+        internalLocations.value = [l]
+
+        map.panTo(e.latlng)
+
+        updateMarkers()
+      }
+    })
+
     L.control.layers(baseMaps).addTo(map)
 
     // Disable zoom until focus gained, disable when blur
@@ -207,6 +227,45 @@
 
     if (internalLocations.value) {
       updateMarkers()
+    }
+
+    if (props.selectionMode === 'polygon') {
+      editableLayers = new L.FeatureGroup()
+      map.addLayer(editableLayers)
+
+      const options = {
+        position: 'topright',
+        draw: {
+          polyline: false,
+          circle: false,
+          rectangle: false,
+          marker: false,
+          circlemarker: false,
+          polygon: {
+            allowIntersection: false,
+            drawError: {
+              color: '#c0392b',
+            },
+          },
+        },
+        edit: {
+          featureGroup: editableLayers,
+          remove: true,
+        },
+      }
+
+      // @ts-ignore
+      const result = new L.Control.Draw(options)
+      map.addControl(result)
+
+      // @ts-ignore
+      map.on(L.Draw.Event.CREATED, e => editableLayers.addLayer(e.layer))
+
+      nextTick(() => {
+        // Enable the polygon draw feature by default
+        // @ts-ignore
+        document.querySelector(`#map-${id.value}`)?.querySelector('.leaflet-draw-draw-polygon')?.click()
+      })
     }
 
     emit('map-loaded', map)
@@ -320,6 +379,15 @@
             markers.push(marker)
           })
       }
+    } else {
+      if (markerClusterer) {
+        // If it exists, clear all layers
+        markerClusterer.clearLayers()
+      }
+      if (heat) {
+        // If it exists, just set it
+        heat.setLatLngs([])
+      }
     }
   }
 
@@ -361,6 +429,42 @@
     }
   }
 
+  function invalidateSize () {
+    nextTick(() => map.invalidateSize())
+  }
+
+  function setPolygons (polygons: any[]) {
+    if (props.selectionMode === 'polygon' && editableLayers) {
+      polygons.forEach(p => L.polygon(p).addTo(editableLayers))
+    }
+  }
+
+  function getPolygons () {
+    if (props.selectionMode === 'polygon' && editableLayers) {
+      const polygons: any[] = []
+
+      editableLayers.eachLayer(layer => {
+        const polygon = []
+        // @ts-ignore
+        const latLngs = layer.getLatLngs()[0]
+        for (let i = 0; i < latLngs.length; i++) {
+          polygon.push(latLngs[i])
+        }
+        polygons.push(polygon)
+      })
+
+      return polygons
+    } else {
+      return null
+    }
+  }
+
+  function getLatLngs () {
+    return internalLocations.value.map(l => {
+      return L.latLng(l.locationLatitude || 0, l.locationLongitude || 0)
+    })
+  }
+
   watch(() => store.storeTheme, async () => updateThemeLayer())
   watch(() => props.locations, async newValue => {
     internalLocations.value = newValue.concat()
@@ -371,16 +475,22 @@
     if (store.storeServerSettings && store.storeServerSettings.colorsGradient && store.storeServerSettings.colorsGradient.length > 0) {
       gradientColors = store.storeServerSettings.colorsGradient.concat()
     } else {
-      gradientColors.push('#ffffff')
-      gradientColors.push(getColor(0))
+      gradientColors.push('#ffffff', getColor(0))
     }
 
     initMap()
   })
+
+  defineExpose({
+    invalidateSize,
+    getPolygons,
+    setPolygons,
+    getLatLngs,
+  })
 </script>
 
 <style scoped>
-#map {
+.map {
   height: 50vh;
 }
 </style>
@@ -411,6 +521,10 @@
   text-wrap: wrap;
   line-clamp: unset;
   -webkit-line-clamp: unset;
+}
+
+.location-map.point-search {
+  cursor: crosshair;
 }
 
 .marker-cluster-small, .prunecluster-small {

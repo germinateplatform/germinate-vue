@@ -8,6 +8,7 @@
     :download="compProps.download"
     :headers="headers"
     :filter-on="filterOn"
+    :sort-by="compProps.sortBy"
     :selection-type="selectionType"
     item-key="germplasmId"
     table-key="germplasm"
@@ -181,14 +182,21 @@
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/misc'
   import { columns } from '@/plugins/util/table-columns'
+  import type { DataTableSortItem } from 'vuetify'
 
-  const compProps = defineProps<{
+  interface GermplasmTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasm[]>>> }
     getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
+    sortBy?: DataTableSortItem[]
     selectionType?: TableSelectionType
-  }>()
+    tableMode?: 'base' | 'distance'
+  }
+
+  const compProps = withDefaults(defineProps<GermplasmTableProps>(), {
+    tableMode: 'base',
+  })
 
   const baseTable = useTemplateRef('baseTable')
   const store = coreStore()
@@ -198,10 +206,20 @@
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    return columns.germplasm.map(c => {
+    const result = columns.germplasm.map(c => {
       c.title = t(c.title || '')
       return c
     })
+
+    if (compProps.tableMode === 'distance') {
+      result.unshift({
+        key: 'distance',
+        title: t('tableColumnGermplasmDistance'),
+        dataType: 'float',
+      })
+    }
+
+    return result
   })
 
   function showInstitutionModal (item: ViewTableGermplasm) {

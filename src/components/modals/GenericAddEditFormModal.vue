@@ -75,10 +75,23 @@
               :display-format="(d: any) => d ? d.toLocaleDateString() : ''"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
+              :clearable="!config.required"
               prepend-icon=""
               prepend-inner-icon="$calendar"
               :model-value="formModel[config.key] ? date.toJsDate(formModel[config.key]) : undefined"
               @update:model-value="v => { formModel[config.key] = date.toISO(v) }"
+            />
+            <v-date-input
+              v-else-if="config.type === 'dateobject'"
+              hide-details
+              :label="$t(config.title)"
+              :display-format="(d: any) => d ? d.toLocaleDateString() : ''"
+              :hint="config.hint ? $t(config.hint) : undefined"
+              :persistent-hint="config.hint !== undefined"
+              :clearable="!config.required"
+              prepend-icon=""
+              prepend-inner-icon="$calendar"
+              v-model="formModel[config.key]"
             />
             <v-file-input
               v-else-if="config.type === 'file'"
@@ -90,8 +103,18 @@
               prepend-inner-icon="mdi-paperclip"
               :accept="config.accepts"
             />
+            <v-checkbox
+              v-else-if="config.type === 'boolean'"
+              v-model="formModel[config.key]"
+              :label="$t(config.title)"
+              :disabled="config.disabled === true"
+              :hint="config.hint ? $t(config.hint) : undefined"
+              :persistent-hint="config.hint !== undefined"
+            />
           </v-col>
         </v-row>
+
+        <slot name="additional-fields" v-bind="{ item: formModel }" />
       </template>
 
       <v-divider />
@@ -120,7 +143,7 @@
     key: string
     title: string
     hint?: string
-    type: 'text' | 'textarea' | 'number' | 'date' | 'markdown' | 'boolean' | 'file' | 'select'
+    type: 'text' | 'textarea' | 'number' | 'date' | 'dateobject' | 'markdown' | 'boolean' | 'file' | 'select'
     valid?: (args: any) => boolean
     selectOptions?: SelectOption[]
     disabled?: boolean

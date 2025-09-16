@@ -111,7 +111,7 @@
       select(taxonomyChart.value)
         .datum(chartData)
         .call(plotlySunburstChart(Plotly)
-          .darkMode(store.storeTheme === 'system' ? systemTheme.value : store.storeTheme)
+          .darkMode((store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark')
           .height(500)
           .onLeafClicked((path: string[]) => {
             // Then store a filter using genus, species and subtaxa

@@ -48,23 +48,38 @@
   import { locationTypes } from '@/plugins/util/types'
   import { columns } from '@/plugins/util/table-columns'
 
-  const compProps = defineProps<{
+  interface LocationTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableLocations[]>>> }
     getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
-  }>()
+    tableMode?: 'base' | 'distance'
+  }
+
+  const compProps = withDefaults(defineProps<LocationTableProps>(), {
+    tableMode: 'base',
+  })
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    return columns.locations.map(c => {
+    const result = columns.locations.map(c => {
       c.title = t(c.title || '')
       return c
     })
+
+    if (compProps.tableMode === 'distance') {
+      result.unshift({
+        key: 'distance',
+        title: t('tableColumnLocationDistance'),
+        dataType: 'float',
+      })
+    }
+
+    return result
   })
 
   defineExpose({

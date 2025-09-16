@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ImageTable :get-data="getData" :header-icon-color="headerIconColor" :filter-on="localFilterOn" @tag-clicked="tag => { selectedTag = tag }" @filter-changed="updateLocalSelection">
+    <ImageTable :get-data="getData" :header-icon-color="headerIconColor" :filter-on="localFilterOn" @tag-clicked="tag => { selectedTag = tag }" @filter-changed="updateLocalSelection" @data-changed="(req: PaginatedRequest, res: PaginatedResult<ViewTableImages[]>) => emit('data-changed', req, res)">
       <template #card-text>
         <v-card-text>
           <ImageTags v-model="selectedTag" />
@@ -13,12 +13,14 @@
 <script setup lang="ts">
   import ImageTags from '@/components/widgets/ImageTags.vue'
   import { apiPostImages } from '@/plugins/api/misc'
-  import { FilterComparator, FilterOperator, type FilterGroup, type ImageTag, type PaginatedRequest } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type FilterGroup, type ImageTag, type PaginatedRequest, type PaginatedResult, type ViewTableImages } from '@/plugins/types/germinate'
 
   const compProps = defineProps<{
     filterOn?: FilterGroup[]
     headerIconColor?: string
   }>()
+
+  const emit = defineEmits(['data-changed'])
 
   const selectedTag = ref<ImageTag>()
 

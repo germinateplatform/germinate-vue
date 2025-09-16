@@ -190,7 +190,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
-  import type { ViewTableGroups, FilterGroup, PaginatedResult, Grouptypes } from '@/plugins/types/germinate'
+  import type { ViewTableGroups, FilterGroup, PaginatedResult, Grouptypes, FilterOperator } from '@/plugins/types/germinate'
   import type { AxiosResponse } from 'axios'
   import type { DataTableHeader, DataTableSortItem } from 'vuetify'
   import { useI18n } from 'vue-i18n'
@@ -516,7 +516,7 @@
         serverItems.value = result.data.data
         totalItems.value = result.data.count
 
-        emit('data-changed', request)
+        emit('data-changed', request, result.data)
 
         if (urlPageToForce.value) {
           currentPage.value = urlPageToForce.value
@@ -538,6 +538,8 @@
         delete query[`${componentProps.tableKey}-sort`]
         delete query[`${componentProps.tableKey}-sort-desc`]
       }
+
+      // TODO: ADD FILTERING!!!!
 
       await router.replace({ query })
     }
@@ -627,6 +629,10 @@
     }
   }
 
+  function setOverallOperator (operator: FilterOperator) {
+    tableFilterModal.value?.setOverallOperator(operator)
+  }
+
   watch(itemsPerPage, (newValue: number) => {
     updateUrlParameters()
     store.setTablePerPage(newValue)
@@ -650,6 +656,7 @@
     refresh,
     setSelection,
     getSelection,
+    setOverallOperator,
   })
 </script>
 

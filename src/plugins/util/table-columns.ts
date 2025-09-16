@@ -229,7 +229,7 @@ const pedigreeColumns: ExtendedDataTableHeader[] = [
   },
   {
     key: 'parentId',
-    dataType: 'number',
+    dataType: 'integer',
     title: 'tableColumnPedigreeParentId',
   }, {
     key: 'parentGid',
@@ -243,7 +243,7 @@ const pedigreeColumns: ExtendedDataTableHeader[] = [
     searchable: true,
   }, {
     key: 'childId',
-    dataType: 'number',
+    dataType: 'integer',
     title: 'tableColumnPedigreeChildId',
   }, {
     key: 'childGid',
