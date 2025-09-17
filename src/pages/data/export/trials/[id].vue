@@ -39,19 +39,38 @@
         </v-col>
       </v-row>
 
-      <TraitBoxplots
-        :traits="traits"
-        :groups="groups || []"
-        :dataset-ids="datasetIds || []"
-        v-if="selectedTab === 'overview'"
-      />
+      <RevealOnShowPanel
+        v-show="selectedTab === 'overview'"
+        :showing="selectedTab === 'overview'"
+      >
+        <TraitBoxplots
+          :traits="traits"
+          :groups="groups || []"
+          :dataset-ids="datasetIds || []"
+        />
+      </RevealOnShowPanel>
 
-      <TraitDataTable
-        :get-data="getTableData"
-        :get-ids="getTableIds"
-        :download="downloadTable"
-        v-if="selectedTab === 'table'"
-      />
+      <RevealOnShowPanel
+        v-show="selectedTab === 'table'"
+        :showing="selectedTab === 'table'"
+      >
+        <TraitDataTable
+          :get-data="getTableData"
+          :get-ids="getTableIds"
+          :download="downloadTable"
+        />
+      </RevealOnShowPanel>
+
+      <RevealOnShowPanel
+        v-show="selectedTab === 'export'"
+        :showing="selectedTab === 'export'"
+      >
+        <TraitDataExport
+          :traits="traits"
+          :groups="groups || []"
+          :dataset-ids="datasetIds || []"
+        />
+      </RevealOnShowPanel>
     </div>
   </v-container>
 </template>
@@ -59,6 +78,8 @@
 <script setup lang="ts">
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import TraitDataTable from '@/components/tables/TraitDataTable.vue'
+  import TraitBoxplots from '@/components/trials/TraitBoxplots.vue'
+  import RevealOnShowPanel from '@/components/widgets/RevealOnShowPanel.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostDatasetGroups } from '@/plugins/api/group'

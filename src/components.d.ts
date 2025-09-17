@@ -8,7 +8,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AddEditDatasetModal: typeof import('./components/modals/AddEditDatasetModal.vue')['default']
     AddFileresourceModal: typeof import('./components/modals/AddFileresourceModal.vue')['default']
     AddFileresourceTypeModal: typeof import('./components/modals/AddFileresourceTypeModal.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
@@ -23,7 +22,6 @@ declare module 'vue' {
     CollaboratorTable: typeof import('./components/tables/CollaboratorTable.vue')['default']
     ColorGradient: typeof import('./components/widgets/ColorGradient.vue')['default']
     ConfirmModal: typeof import('./components/modals/ConfirmModal.vue')['default']
-    copy: typeof import('./components/tables/GermplasmTable copy.vue')['default']
     DataGrid: typeof import('./components/tables/DataGrid.vue')['default']
     DatasetAttributeTable: typeof import('./components/tables/DatasetAttributeTable.vue')['default']
     Datasets: typeof import('./components/widgets/Datasets.vue')['default']
@@ -35,7 +33,6 @@ declare module 'vue' {
     ExternalLinks: typeof import('./components/widgets/ExternalLinks.vue')['default']
     FileResourceTable: typeof import('./components/tables/FileResourceTable.vue')['default']
     GenericAddEditFormModal: typeof import('./components/modals/GenericAddEditFormModal.vue')['default']
-    GermplasmSelection: typeof import('./components/widgets/selections/GermplasmSelection.vue')['default']
     GermplasmTable: typeof import('./components/tables/GermplasmTable.vue')['default']
     GermplasmTraitStats: typeof import('./components/widgets/GermplasmTraitStats.vue')['default']
     GroupSelection: typeof import('./components/widgets/selections/GroupSelection.vue')['default']
@@ -69,6 +66,7 @@ declare module 'vue' {
     PublicationCard: typeof import('./components/cards/PublicationCard.vue')['default']
     Publications: typeof import('./components/widgets/Publications.vue')['default']
     PublicationTable: typeof import('./components/tables/PublicationTable.vue')['default']
+    RevealOnShowPanel: typeof import('./components/widgets/RevealOnShowPanel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Scale: typeof import('./components/widgets/Scale.vue')['default']
@@ -80,8 +78,9 @@ declare module 'vue' {
     TaxonomyTable: typeof import('./components/tables/TaxonomyTable.vue')['default']
     TaxonomyTreemap: typeof import('./components/charts/TaxonomyTreemap.vue')['default']
     TraitBoxplotChart: typeof import('./components/charts/TraitBoxplotChart.vue')['default']
-    TraitBoxplots: typeof import('./components/widgets/TraitBoxplots.vue')['default']
-    TraitCategories: typeof import('./components/widgets/TraitCategories.vue')['default']
+    TraitBoxplots: typeof import('./components/trials/TraitBoxplots.vue')['default']
+    TraitCategories: typeof import('./components/trials/TraitCategories.vue')['default']
+    TraitDataExport: typeof import('./components/trials/TraitDataExport.vue')['default']
     TraitDataTable: typeof import('./components/tables/TraitDataTable.vue')['default']
     TraitSelection: typeof import('./components/widgets/selections/TraitSelection.vue')['default']
     TraitTable: typeof import('./components/tables/TraitTable.vue')['default']

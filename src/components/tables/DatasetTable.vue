@@ -398,7 +398,7 @@
     }, () => baseTable.value?.refresh())
   }
 
-  function editLicense (dataset: ViewTableDatasets) {
+  function editLicense (dataset?: ViewTableDatasets) {
     selectedDataset.value = dataset
 
     nextTick(() => licenseSelectModal.value?.show())

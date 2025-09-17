@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedRequest, SubsettedDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
+import type { DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedRequest, SubsettedDatasetRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
 
 const apiPostPublicationDatasetTable = <T>(publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
   queryData.page -= 1
@@ -17,6 +17,8 @@ const apiPostDatasetCollaboratorsTable = <T>(datasetId: number, queryData: Pagin
   queryData.page -= 1
   return authAxios({ url: `dataset/${datasetId}/collaborator`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
+
+const apiPostTrialDatasetExport = <T>(queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/export/trial?format=tab', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 const apiPostDatasetExport = <T>(datasetType: string, queryData: any, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/export/${datasetType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
@@ -124,6 +126,7 @@ export {
   apiPostPublicationDatasetTable,
   apiPostDatasetCollaboratorsTable,
   apiPostDatasetExport,
+  apiPostTrialDatasetExport,
   apiPostDatasetAttributeExport,
   apiGetDatasetSourceFile,
   apiPostExperimentTable,

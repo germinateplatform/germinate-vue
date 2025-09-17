@@ -62,7 +62,7 @@
             <v-list-item
               v-for="(details, itemType) in markedItemTypes"
               :key="`marked-item-${itemType}`"
-              :to="Pages.getPath(Pages.markedItemType, itemType)"
+              :to="Pages.getPath(Pages.markedItemType, itemType as string)"
             >
               <v-list-item-title>{{ details.text() }}</v-list-item-title>
               <template #prepend>

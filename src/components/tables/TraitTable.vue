@@ -54,7 +54,7 @@
           </template>
           <div v-if="item.traitRestrictions.min !== undefined && item.traitRestrictions.min !== null"><v-icon size="small" icon="mdi-greater-than-or-equal" /> {{ item.traitRestrictions.min }}</div>
           <div v-if="item.traitRestrictions.max !== undefined && item.traitRestrictions.max !== null"><v-icon size="small" icon="mdi-less-than-or-equal" /> {{ item.traitRestrictions.max }}</div>
-          <div v-if="item.traitRestrictions.categories"><v-icon size="small" icon="mdi-code-brackets" /> {{ item.traitRestrictions.categories.map(c => c.join(', ')).join(', ') }}</div>
+          <div v-if="item.traitRestrictions.categories"><v-icon size="small" icon="mdi-code-brackets" /> {{ item.traitRestrictions.categories.map((c: string[]) => c.join(', ')).join(', ') }}</div>
         </v-tooltip>
       </template>
 

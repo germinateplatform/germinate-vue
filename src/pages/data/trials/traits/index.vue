@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
   import TraitTable from '@/components/tables/TraitTable.vue'
-  import TraitCategories from '@/components/widgets/TraitCategories.vue'
+  import TraitCategories from '@/components/trials/TraitCategories.vue'
   import { apiPostTraitTable } from '@/plugins/api/trait'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type Phenotypecategories } from '@/plugins/types/germinate'
 

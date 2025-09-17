@@ -137,6 +137,10 @@
   }
 
   function initMap () {
+    if (!mapElement.value) {
+      return
+    }
+    
     map = L.map(mapElement.value)
     map.setView([22.5937, 2.1094], 3)
 
