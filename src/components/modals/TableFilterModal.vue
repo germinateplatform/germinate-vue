@@ -450,6 +450,28 @@
     loadFilters()
   })
 
+  function forceFilters (f: FilterGroup[]) {
+    if (f) {
+      const internal = f as InternalFilterGroup[]
+
+      filterGroups.value = internal.map(fg => {
+        if (fg.filters) {
+          fg.internalFilters = fg.filters.map(f => {
+            const existingColumn = compProps.columns.find(c => c.key === f.column)
+            return {
+              filter: f,
+              column: existingColumn,
+            }
+          })
+        }
+
+        return fg
+      })
+
+      checkFilter()
+    }
+  }
+
   function loadFilters () {
     let presetFilters: InternalFilterGroup[] | undefined = []
 
@@ -552,6 +574,7 @@
     clear,
     loadFilters,
     setOverallOperator,
+    forceFilters,
   })
 
   watch(() => compProps.filterOn, () => loadFilters())

@@ -15,6 +15,7 @@
         density="compact"
         color="primary"
         mandatory
+        :disabled="compProps.disabled"
         class="ms-3"
       >
         <v-btn value="table" v-tooltip:top="$t('tooltipTableTypeSwitchTable')"><v-icon icon="mdi-table" /></v-btn>
@@ -25,7 +26,7 @@
     <slot name="header" />
 
     <div>
-      <v-btn-group density="compact">
+      <v-btn-group density="compact" :disabled="compProps.disabled">
         <v-menu :close-on-content-click="false" v-if="displayType === 'table'">
           <template #activator="{ props }">
             <v-btn v-tooltip:top="$t('tooltipTableColumnSelector')" v-bind="props" :append-icon="props['aria-expanded'] === 'true' ? 'mdi-menu-up' : 'mdi-menu-down'"><v-icon icon="mdi-view-column" /></v-btn>
@@ -44,7 +45,7 @@
         <v-btn @click="emit('show-filter')" :color="filtered ? 'success' : undefined" v-tooltip:top="$t('tooltipTableFilter')"><v-icon icon="mdi-filter" /></v-btn>
         <v-btn v-if="filtered" color="error" v-tooltip:top="$t('tooltipTableClearFilter')" @click="emit('clear-filter')"><v-icon icon="mdi-delete" /></v-btn>
       </v-btn-group>
-      <v-btn-group class="ms-2" density="compact" v-if="markedItemConfig">
+      <v-btn-group class="ms-2" density="compact" v-if="markedItemConfig" :disabled="compProps.disabled">
         <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, compProps.markedItemType || '')"><v-chip size="small" label>{{ getNumberWithSuffix(markedItemConfig.count, 1) }}</v-chip></v-btn>
         <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon icon="mdi-delete" /></v-btn>
       </v-btn-group>
@@ -73,6 +74,7 @@
     headerTitle: string
     supportsGridCards?: boolean
     headers: DataTableHeader[]
+    disabled?: boolean
   }>()
 
   const emit = defineEmits([

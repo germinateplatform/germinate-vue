@@ -1,5 +1,6 @@
 import type { Page } from '@/plugins/types/Page'
 import { UserType } from '@/plugins/types/germinate'
+import { coreStore } from '@/stores/app'
 
 export class Pages {
   static home: Page = {
@@ -136,6 +137,7 @@ export class Pages {
 
   static exportTraits: Page = {
     name: 'exportTraits',
+    identifiers: ['export-trials'],
     path: '/data/export/trials/:id',
   }
 
@@ -289,5 +291,15 @@ export class Pages {
 
   static getPath(page: Page, param: string): string {
     return page.path.replace(':id', param)
+  }
+
+  static isAvailable(page: Page): boolean {
+    const store = coreStore()
+
+    if (store.serverSettings && store.serverSettings.hiddenPages) {
+      return !store.serverSettings.hiddenPages.includes(page.name) && !(page.identifiers || []).some(i => store.serverSettings?.hiddenPages?.includes(i))
+    } else {
+      return true
+    }
   }
 }

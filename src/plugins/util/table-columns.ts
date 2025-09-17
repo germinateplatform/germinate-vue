@@ -13,26 +13,31 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   dataType: 'string',
   preferredSortingColumn: true,
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'germplasmDisplayName',
   title: 'tableColumnGermplasmDisplayName',
   dataType: 'string',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'germplasmGid',
   dataType: 'string',
   title: 'tableColumnGermplasmGeneralIdentifier',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'germplasmNumber',
   dataType: 'string',
   title: 'tableColumnGermplasmNumber',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'germplasmPuid',
   dataType: 'string',
   title: 'tableColumnGermplasmPuid',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'entityTypeName',
   dataType: 'entityType',
@@ -73,6 +78,7 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   dataType: 'json',
   title: 'tableColumnSynonyms',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'collectorNumber',
   dataType: 'string',
@@ -161,6 +167,127 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   dataType: 'float',
   align: 'center' as 'start' | 'end' | 'center',
   title: 'tableColumnPdci',
+}]
+
+const traitDataColumns: ExtendedDataTableHeader[] = [{
+  key: 'germplasmId',
+  title: 'tableColumnGermplasmId',
+  dataType: 'integer',
+  searchable: true,
+}, {
+  key: 'germplasmName',
+  title: 'tableColumnGermplasmName',
+  dataType: 'string',
+  preferredSortingColumn: true,
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmDisplayName',
+  title: 'tableColumnGermplasmDisplayName',
+  dataType: 'string',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmGid',
+  dataType: 'string',
+  title: 'tableColumnGermplasmGeneralIdentifier',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'entityType',
+  dataType: 'entityType',
+  title: 'tableColumnEntityType',
+}, {
+  key: 'entityParentName',
+  dataType: 'string',
+  title: 'tableColumnGermplasmEntityParentName',
+}, {
+  key: 'entityParentGeneralIdentifier',
+  dataType: 'string',
+  title: 'tableColumnGermplasmEntityParentGeneralIdentifier',
+}, {
+  key: 'germplasmSynonyms',
+  dataType: 'json',
+  title: 'tableColumnSynonyms',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'locationName',
+  title: 'tableColumnGermplasmLocation',
+  dataType: 'string',
+  searchable: true,
+}, {
+  key: 'countryName',
+  dataType: 'string',
+  title: 'tableColumnCountryName',
+  searchable: true,
+}, {
+  key: 'traitId',
+  dataType: 'integer',
+  title: 'tableColumnTraitId',
+}, {
+  key: 'traitName',
+  dataType: 'string',
+  title: 'tableColumnTraitName',
+}, {
+  key: 'traitDataType',
+  dataType: 'dataType',
+  title: 'tableColumnTraitDataType',
+}, {
+  key: 'treatment',
+  dataType: 'string',
+  title: 'tableColumnTraitTreatment',
+}, {
+  key: 'rep',
+  dataType: 'string',
+  title: 'tableColumnTraitRep',
+}, {
+  key: 'block',
+  dataType: 'string',
+  title: 'tableColumnTraitBlock',
+}, {
+  key: 'trialRow',
+  dataType: 'integer',
+  title: 'tableColumnTraitRow',
+}, {
+  key: 'trialColumn',
+  dataType: 'integer',
+  title: 'tableColumnTraitColumn',
+}, {
+  key: 'elevation',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnElevation',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.elevation ? value.elevation.toFixed(2) : undefined,
+}, {
+  key: 'latitude',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLatitude',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.latitude ? value.latitude.toFixed(2) : undefined,
+}, {
+  key: 'longitude',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLongitude',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.longitude ? value.longitude.toFixed(2) : undefined,
+}, {
+  key: 'unitName',
+  dataType: 'string',
+  title: 'tableColumnTraitUnitName',
+}, {
+  key: 'recordingDate',
+  dataType: 'date',
+  title: 'tableColumnTraitDataRecordingDate',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.recordingDate ? new Date(value.recordingDate).toLocaleDateString() : undefined,
+}, {
+  key: 'traitValue',
+  dataType: 'string',
+  title: 'tableColumnTrialsDataTraitValue',
 }]
 
 const locationColumns: ExtendedDataTableHeader[] = [{
@@ -393,6 +520,7 @@ const columns: { [key: string]: ExtendedDataTableHeader[] } = {
   locations: locationColumns,
   pedigrees: pedigreeColumns,
   datasets: datasetColumns,
+  traitData: traitDataColumns,
 }
 
 const validCompsForType: { [key: string]: FilterComparator[] } = {

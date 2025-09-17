@@ -135,7 +135,25 @@
 
       <AppFooter />
 
-      <v-snackbar-queue timeout="6000" v-model="snackbarQueue" />
+      <v-snackbar-queue timeout="6000" location="top" v-model="snackbarQueue" />
+
+      <v-overlay
+        :model-value="loading"
+        class="align-center justify-center"
+        :close-on-content-click="false"
+        persistent
+      >
+        <v-card :title="$t('modalTitleLoading')" width="min(50vw, 400px)" class="d-flex align-center justify-center" :loading="loading">
+          <template #loader="{ isActive }">
+            <v-progress-linear
+              :active="isActive"
+              color="primary"
+              height="4"
+              indeterminate
+            />
+          </template>
+        </v-card>
+      </v-overlay>
 
       <v-bottom-sheet
         v-model="bottomSheetVisible"
@@ -189,6 +207,7 @@
   const searchVisible = ref(false)
   const searchTerm = ref<string>()
   const snackbarQueue = ref<SnackbarQueueMessage[]>([])
+  const loading = ref(false)
 
   // Methods
   function changeLocale (locale: string) {
@@ -257,17 +276,23 @@
     snackbarQueue.value.push(message)
   }
 
+  function showLoading (visible: boolean) {
+    loading.value = visible
+  }
+
   onBeforeMount(() => {
     loadLanguageAsync(store.storeLocale)
 
     emitter.on('show-login', showLogin)
     emitter.on('show-changelog', showChangelog)
     emitter.on('show-snackbar', showSnackbar)
+    emitter.on('show-loading', showLoading)
   })
   onBeforeUnmount(() => {
     emitter.off('show-login', showLogin)
     emitter.off('show-changelog', showChangelog)
     emitter.off('show-snackbar', showSnackbar)
+    emitter.off('show-loading', showLoading)
   })
   onMounted(() => {
     changelogVersionNumber.value = store.storeChangelogVersionNumber

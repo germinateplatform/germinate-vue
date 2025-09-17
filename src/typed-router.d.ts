@@ -28,6 +28,8 @@ declare module 'vue-router/auto-routes' {
     '/data/datasets/': RouteRecordInfo<'/data/datasets/', '/data/datasets', Record<never, never>, Record<never, never>>,
     '/data/datasets/[id]': RouteRecordInfo<'/data/datasets/[id]', '/data/datasets/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/data/experiments': RouteRecordInfo<'/data/experiments', '/data/experiments', Record<never, never>, Record<never, never>>,
+    '/data/export/[id]': RouteRecordInfo<'/data/export/[id]', '/data/export/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/data/export/trials/[id]': RouteRecordInfo<'/data/export/trials/[id]', '/data/export/trials/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/data/genesys-request': RouteRecordInfo<'/data/genesys-request', '/data/genesys-request', Record<never, never>, Record<never, never>>,
     '/data/genotypes/maps/': RouteRecordInfo<'/data/genotypes/maps/', '/data/genotypes/maps', Record<never, never>, Record<never, never>>,
     '/data/genotypes/maps/[id]': RouteRecordInfo<'/data/genotypes/maps/[id]', '/data/genotypes/maps/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,

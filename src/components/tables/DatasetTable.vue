@@ -10,6 +10,8 @@
       :headers="headers"
       :filter-on="filterOn"
       :show-details="true"
+      :selection-type="selectionType"
+      :disabled="compProps.disabled"
       item-key="datasetId"
       table-key="datasets"
       header-icon="mdi-database"
@@ -214,6 +216,7 @@
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
+    disabled?: boolean
   }>()
 
   const router = useRouter()

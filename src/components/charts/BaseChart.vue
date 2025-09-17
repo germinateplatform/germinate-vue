@@ -9,7 +9,10 @@
       <v-spacer />
       <v-menu>
         <template #activator="{ props }">
-          <v-btn v-bind="props" icon="mdi-dots-vertical" />
+          <v-badge v-if="compProps.badgeCount" location="bottom left" color="info" :content="getNumberWithSuffix(compProps.badgeCount, 1)" :offset-x="10" :offset-y="10">
+            <v-btn v-bind="props" icon="mdi-dots-vertical" />
+          </v-badge>
+          <v-btn v-bind="props" icon="mdi-dots-vertical" v-else />
         </template>
 
         <v-list>
@@ -83,7 +86,7 @@
 
 <script lang="ts" setup>
   import { downloadBlob, downloadSvgsFromContainer, type DownloadBlob } from '@/plugins/util'
-  import { getDateTimeString } from '@/plugins/util/formatting'
+  import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
   import { coreStore } from '@/stores/app'
   import Plotly from 'plotly.js/lib/core'
   import { VColorInput } from 'vuetify/labs/VColorInput'
@@ -106,6 +109,7 @@
     toolbarColor?: string
     headerIconColor?: string
     headerIcon?: string
+    badgeCount?: number
   }
 
   const compProps = withDefaults(defineProps<ChartProps>(), {

@@ -6,4 +6,5 @@ export interface ExtendedDataTableHeader extends DataTableHeader {
   visibleInFilter?: boolean
   dataType?: string
   searchable?: boolean
+  quickSearchable?: boolean
 }

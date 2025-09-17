@@ -1,5 +1,5 @@
 import { coreStore } from '@/stores/app'
-import type { PublicationDoiLookupDetails, ViewTableGermplasm, ViewTablePublications } from '@/plugins/types/germinate'
+import type { PublicationDoiLookupDetails, ViewTableGermplasm, ViewTablePublications, ViewTableTrialsData } from '@/plugins/types/germinate'
 
 // @ts-ignore
 import { Cite } from '@citation-js/core'
@@ -22,7 +22,7 @@ function uuidv4 () {
   })
 }
 
-function getGermplasmDisplayName (germplasm: ViewTableGermplasm) {
+function getGermplasmDisplayName (germplasm: ViewTableGermplasm | ViewTableTrialsData) {
   if (!germplasm) {
     return 'N/A'
   } else if (germplasm.germplasmDisplayName && (germplasm.germplasmDisplayName !== germplasm.germplasmName)) {

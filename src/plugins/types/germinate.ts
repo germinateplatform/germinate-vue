@@ -1242,6 +1242,48 @@ export interface AsyncExportResult {
     uuid: string;
 }
 
+export interface TrialsExportDatasetRequest extends PaginatedRequest {
+    traitIds?: number[];
+    germplasmIds?: number[];
+    germplasmGroupIds?: number[];
+    datasetIds: number[];
+}
+
+export interface ViewTableTrialsData {
+    germplasmId: number;
+    germplasmGid: string;
+    germplasmName: string;
+    germplasmDisplayName: string;
+    germplasmSynonyms: string[];
+    entityParentName: string;
+    entityParentGeneralIdentifier: string;
+    entityType: string;
+    datasetId: number;
+    datasetName: string;
+    datasetDescription: string;
+    locationName: string;
+    countryName: string;
+    countryCode2: string;
+    traitId: number;
+    traitName: string;
+    traitNameShort: string;
+    traitRestrictions: TraitRestrictions;
+    traitDataType: PhenotypesDatatype;
+    unitName: string;
+    treatment: string;
+    trialsetupId: number;
+    rep: string;
+    block: string;
+    trialRow: number;
+    trialColumn: number;
+    groups: Groups[];
+    latitude: number;
+    longitude: number;
+    elevation: number;
+    recordingDate: Date;
+    traitValue: string;
+}
+
 export interface SubsettedDatasetRequest extends PaginatedRequest {
     datasetIds: number[];
     xIds?: number[];

@@ -4,7 +4,8 @@
     <v-divider class="mb-3" />
     <p v-html="$t('pageGermplasmText')" />
 
-    <GermplasmTable :get-data="getData" :get-ids="getIds" :download="downloadTable" :selection-type="TableSelectionType.all" />
+    <!-- <GermplasmTable :get-data="getData" :get-ids="getIds" :download="downloadTable" :selection-type="TableSelectionType.all" /> -->
+    <GermplasmTable :get-data="getData" :get-ids="getIds" :download="downloadTable" />
 
     <h2 class="text-h5 my-3">{{ $t('pageGermplasmDownloadTitle') }}</h2>
     <v-divider class="mb-3" />

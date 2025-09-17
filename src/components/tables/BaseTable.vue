@@ -18,8 +18,22 @@
         :header-icon-color="componentProps.headerIconColor"
         :header-title="componentProps.headerTitle"
         :supports-grid-cards="componentProps.supportsGridCards"
+        :disabled="componentProps.disabled"
       >
         <template #header>
+          <v-text-field
+            v-if="searchVisible"
+            v-model="searchTerm"
+            type="search"
+            width="min(50vw, 250px)"
+            prepend-inner-icon="mdi-magnify"
+            :placeholder="$t('inputPlaceholderSearch')"
+            append-inner-icon="mdi-arrow-right"
+            @click:append-inner="runSearch"
+            @keyup.enter="runSearch"
+            hide-details
+            density="compact"
+          />
           <slot name="header" />
         </template>
       </TableToolbar>
@@ -73,6 +87,7 @@
       :search="search"
       :item-value="componentProps.itemKey"
       :show-expand="showDetails"
+      :disable-sort="componentProps.disabled"
       striped="odd"
       hover
       :show-select="componentProps.selectionType !== undefined"
@@ -95,9 +110,25 @@
           :header-icon-color="componentProps.headerIconColor"
           :header-title="componentProps.headerTitle"
           :supports-grid-cards="componentProps.supportsGridCards"
+          :disabled="componentProps.disabled"
         >
           <template #header>
-            <slot name="header" />
+            <div>
+              <v-text-field
+                v-if="searchVisible"
+                v-model="searchTerm"
+                type="search"
+                width="min(50vw, 250px)"
+                prepend-inner-icon="mdi-magnify"
+                :placeholder="$t('inputPlaceholderSearch')"
+                append-inner-icon="mdi-arrow-right"
+                @click:append-inner="runSearch"
+                @keyup.enter="runSearch"
+                hide-details
+                density="compact"
+              />
+              <slot name="header" />
+            </div>
           </template>
         </TableToolbar>
 
@@ -190,7 +221,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
-  import type { ViewTableGroups, FilterGroup, PaginatedResult, Grouptypes, FilterOperator } from '@/plugins/types/germinate'
+  import { type ViewTableGroups, type FilterGroup, type PaginatedResult, type Grouptypes, FilterOperator, FilterComparator } from '@/plugins/types/germinate'
   import type { AxiosResponse } from 'axios'
   import type { DataTableHeader, DataTableSortItem } from 'vuetify'
   import { useI18n } from 'vue-i18n'
@@ -228,6 +259,7 @@
   const store = coreStore()
   const { t } = useI18n()
 
+  const searchTerm = ref<string>()
   const newGroup = ref<ViewTableGroups>({})
   const urlPageToForce = ref()
   const localBottomSheetVisible = ref(false)
@@ -302,6 +334,8 @@
     }
   })
 
+  const searchVisible = computed(() => (componentProps.headers || []).some(h => h.quickSearchable === true))
+
   const filterColumns: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     return ((componentProps.headers || []) as ExtendedDataTableHeader[]).concat().filter(h => h.title && h.visibleInFilter !== false && h.dataType !== undefined)
   })
@@ -371,6 +405,45 @@
     }
   }
 
+  function runSearch () {
+    const trimmed = searchTerm.value?.trim() || ''
+
+    if (trimmed.length === 0) {
+      tableFilterModal.value?.loadFilters()
+    } else {
+      const quickSearchable = componentProps.headers.filter(h => h.quickSearchable === true)
+      const filters: FilterGroup[] = [{
+        // @ts-ignore
+        filters: quickSearchable.map(qs => {
+          let comp: FilterComparator
+
+          switch (qs.dataType) {
+            case 'string':
+            case 'integer':
+            case 'float':
+              comp = FilterComparator.contains
+              break
+            case 'json':
+              comp = FilterComparator.jsonSearch
+              break
+            default:
+              comp = FilterComparator.equals
+              break
+          }
+
+          return {
+            column: qs.key || '',
+            comparator: comp,
+            values: [searchTerm.value],
+          }
+        }),
+        operator: FilterOperator.or,
+      }]
+
+      tableFilterModal.value?.forceFilters(filters)
+    }
+  }
+
   function requestDownload () {
     if (!componentProps.download) {
       return
@@ -428,6 +501,8 @@
 
   function updateFilters (newFilters: FilterGroup[]) {
     filters.value = JSON.parse(JSON.stringify(newFilters))
+
+    searchTerm.value = undefined
 
     refresh()
 
