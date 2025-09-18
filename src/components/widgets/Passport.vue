@@ -13,7 +13,7 @@
       </v-banner>
     </section>
 
-    <ScrollSpy :items="scrollSpyItems" ref="scrollSpy" />
+    <ScrollSpy :items="scrollSpyItems" :top-gap="topGap" ref="scrollSpy" />
 
     <template v-if="germplasm">
       <h1 class="text-h4 my-3 d-flex justify-space-between align-center">{{ title }}<v-chip label :prepend-icon="entityTypes[germplasm.entityTypeName].path" :text="entityTypes[germplasm.entityTypeName].text()" :color="entityTypes[germplasm.entityTypeName].color()" /></h1>
@@ -162,6 +162,7 @@
 
   const compProps = defineProps<{
     germplasmId: number
+    topGap: boolean
   }>()
 
   const { t } = useI18n()

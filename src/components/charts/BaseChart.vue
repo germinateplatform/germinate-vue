@@ -4,7 +4,7 @@
     @update:loading="notifyLoading"
   >
     <v-toolbar density="comfortable" :color="compProps.toolbarColor">
-      <v-toolbar-title class="ms-4"><v-icon size="x-small" start :color="headerIconColor" :icon="compProps.headerIcon" /> {{ compProps.title ? $t(compProps.title) : undefined }}</v-toolbar-title>
+      <v-toolbar-title class="ms-4"><v-icon size="x-small" start :color="headerIconColor" :icon="compProps.headerIcon" /> {{ compProps.title ? $t(compProps.title) : undefined }}<slot name="title-append" /></v-toolbar-title>
       <slot name="toolbar-prepend" />
       <v-spacer />
       <v-menu>

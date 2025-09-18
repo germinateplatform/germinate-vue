@@ -40,7 +40,7 @@
     "vue-draggable-next": "^2.3.0",
     "vue-i18n": "^11.1.11",
     "vue3-markdown-it": "^1.0.10",
-    "vuetify": "^3.9.1"
+    "vuetify": "^3.10.2"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",

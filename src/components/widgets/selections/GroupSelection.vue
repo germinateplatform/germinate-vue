@@ -5,15 +5,16 @@
     <v-autocomplete
       v-model="selectedGroups"
       autocomplete="off"
+      :label="$t('pageTrialsExportSelectGroupTitle')"
       :disabled="groupSelection === 'all'"
       return-object
       hide-details
-      multiple
+      :multiple="multiple"
       chips
       clearable
       :items="allGroups"
     />
-    <v-btn-toggle class="mt-2" color="primary" variant="outlined" v-model="groupSelection">
+    <v-btn-toggle class="mt-2" color="primary" variant="outlined" v-model="groupSelection" v-if="multiple">
       <v-btn value="groups" :text="$t('pageExportGroupSelectModeSelect')" prepend-icon="mdi-arrow-up-box" />
       <v-btn value="all" :text="$t('pageExportGroupSelectModeAll')" prepend-icon="mdi-select-all" />
     </v-btn-toggle>
@@ -32,20 +33,25 @@
     type?: string
   }
 
-  export type GroupSelectionType = 'all' | 'groups'
-
-  const compProps = defineProps<{
+  interface GroupSelectionProps {
     markedItemType: string
     modelValue: ViewTableGroups[]
     groups: ViewTableGroups[]
-  }>()
+    multiple?: boolean
+  }
+
+  export type GroupSelectionType = 'all' | 'groups'
+
+  const compProps = withDefaults(defineProps<GroupSelectionProps>(), {
+    multiple: true,
+  })
 
   const emit = defineEmits(['update:model-value'])
 
   const store = coreStore()
   const { t } = useI18n()
 
-  const selectedGroups = ref<GroupSelectItem[]>([])
+  const selectedGroups = ref<GroupSelectItem[] | GroupSelectItem>([])
   const groupSelection = defineModel<GroupSelectionType>('groupSelection', {
     default: 'all',
   })
@@ -66,7 +72,8 @@
     }
   })
   watch(selectedGroups, async newValue => {
-    const toNotify = (newValue || []).map(nv => nv.value)
+    const asArray = Array.isArray(newValue) ? newValue : [newValue]
+    const toNotify = (asArray || []).map(nv => nv.value)
     if (JSON.stringify(toNotify) !== JSON.stringify(compProps.modelValue)) {
       emit('update:model-value', toNotify)
     }

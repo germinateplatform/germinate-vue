@@ -190,4 +190,9 @@ p {
 svg.g-svg {
   color: rgb(var(--v-theme-primary));
 }
+
+.plotly > .svg-container {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
 </style>

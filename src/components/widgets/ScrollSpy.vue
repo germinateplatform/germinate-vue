@@ -1,6 +1,6 @@
 <template>
   <v-tabs
-    class="passport-tabs-sticky g-no-gutters"
+    :class="`passport-tabs-sticky g-no-gutters ${topGap ? 'passport-tabs-sticky-top-gap' : ''}`"
     v-model="activeHref"
     center-active
     bg-color="surface"
@@ -60,6 +60,7 @@
 
   defineProps<{
     items: ScrollItem[]
+    topGap?: boolean
   }>()
 
   defineExpose({
@@ -69,8 +70,12 @@
 
 <style scoped>
 .passport-tabs-sticky {
+  top: 0px;
   position: sticky;
-  top: 64px;
   z-index: 1;
+}
+
+.passport-tabs-sticky-top-gap {
+  top: 64px;
 }
 </style>

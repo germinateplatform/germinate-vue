@@ -3,7 +3,7 @@
     :title="compProps.title ? $t(compProps.title) : undefined"
     :chart-id="id"
     :filename="compProps.downloadName"
-    :source-file="sourceFile"
+    :source-file="sourceFileDownload"
     :header-icon="compProps.headerIcon"
     @force-redraw="redraw"
   >
@@ -49,12 +49,13 @@
     xTitle: string
     yTitle: string
     xColumn: string
-    xLabels?: string[]
+    xLabels?: string[][]
     headerIcon?: string
     groupBy?: string
     downloadName?: string
     mode?: 'traces'
     height?: number
+    sourceFile?: Blob
   }
   const compProps = withDefaults(defineProps<BarChartProps>(), {
     downloadName: 'bar-chart',
@@ -64,14 +65,14 @@
 
   const store = coreStore()
 
-  const sourceFile = ref<DownloadBlob>()
+  const sourceFileDownload = ref<DownloadBlob>()
   const systemTheme = ref('dark')
   const barChart = useTemplateRef('barChart')
   const id = ref('taxonomy-' + uuidv4())
 
   async function redraw (source?: Blob) {
     if (source) {
-      sourceFile.value = {
+      sourceFileDownload.value = {
         blob: source,
         filename: compProps.downloadName,
         extension: 'tsv',
@@ -81,7 +82,7 @@
     if (barChart.value) {
       Plotly.purge(barChart.value)
 
-      const text = await sourceFile.value?.blob.text()
+      const text = await sourceFileDownload.value?.blob.text()
 
       const data = tsvParse(text || '')
 
@@ -103,6 +104,12 @@
           }))
     }
   }
+
+  onMounted(() => {
+    if (compProps.sourceFile) {
+      nextTick(() => redraw(compProps.sourceFile))
+    }
+  })
 
   defineExpose({
     redraw,

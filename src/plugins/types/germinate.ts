@@ -1231,7 +1231,7 @@ export interface ExportRequest {
     forcedFileExtension?: string;
 }
 
-export interface PedigreeRequest extends SubsettedDatasetRequest {
+export interface PedigreeRequest extends TrialsExportDatasetRequest {
     levelsUp?: number;
     levelsDown?: number;
     includeAttributes: boolean;

@@ -20,10 +20,10 @@
       <template v-else-if="germplasm">
         <v-tabs-window v-model="tab">
           <v-tabs-window-item :transition="false" :reverse-transition="false" :value="1">
-            <Passport :germplasm-id="germplasm.germplasmId" />
+            <Passport top-gap :germplasm-id="germplasm.germplasmId" />
           </v-tabs-window-item>
           <v-tabs-window-item :transition="false" :reverse-transition="false" :value="2" v-if="germplasm.entityParentId">
-            <Passport :germplasm-id="germplasm.entityParentId" />
+            <Passport top-gap :germplasm-id="germplasm.entityParentId" />
           </v-tabs-window-item>
         </v-tabs-window>
       </template>

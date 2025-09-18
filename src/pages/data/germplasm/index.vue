@@ -158,8 +158,8 @@
       filters: [],
       page: 1,
       limit: MAX_JAVA_INTEGER,
-      yIds: pedigreeSelection.value === 'marked' ? store.storeMarkedGermplasm : undefined,
-      yGroupIds: (pedigreeSelection.value === 'group' && selectedPedigreeGroup.value) ? [selectedPedigreeGroup.value.groupId || -1] : undefined,
+      germplasmIds: pedigreeSelection.value === 'marked' ? store.storeMarkedGermplasm : undefined,
+      germplasmGroupIds: (pedigreeSelection.value === 'group' && selectedPedigreeGroup.value) ? [selectedPedigreeGroup.value.groupId || -1] : undefined,
       includeAttributes: pedigreeIncludeAttributes.value,
       datasetIds: selectedPedigreeDataset.value ? [selectedPedigreeDataset.value.datasetId] : [],
     }

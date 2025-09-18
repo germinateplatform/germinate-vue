@@ -10,7 +10,15 @@
     @force-redraw="redraw"
   >
     <template #card-text>
-      <v-card-text>{{ $t('pageTrialsExportTraitBoxplotText') }}</v-card-text>
+      <v-card-text>
+        <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
+
+        <v-select
+          v-model="groupBy"
+          :items="groupByOptions"
+          :label="$t('formLabelTraitChartGrouping')"
+        />
+      </v-card-text>
     </template>
     <template #toolbar-append>
       <v-btn-group class="mx-2" density="compact" variant="tonal">
@@ -40,6 +48,7 @@
   import { getColor } from '@/plugins/util/colors'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
+  import { useI18n } from 'vue-i18n'
 
   // Only register the chart types we're actually using to reduce the final bundle size
   Plotly.register([
@@ -52,6 +61,7 @@
     plotData: ViewTableTrialsData[]
   }>()
 
+  const { t } = useI18n()
   const store = coreStore()
 
   const sourceFile = ref<DownloadBlob>()
@@ -62,6 +72,19 @@
   const loading = ref(false)
   const selectedIds = ref<number[]>([])
   const selectedGermplasmId = ref<number>()
+
+  const groupByOptions = computed(() => {
+    return [{
+      title: t('widgetChartColoringByDataset'),
+      value: 'dataset',
+    }, {
+      title: t('widgetChartColoringByTreatment'),
+      value: 'treatment',
+    }, {
+      title: t('widgetChartColoringByGroup'),
+      value: 'group',
+    }]
+  })
 
   const filename = computed(() => {
     let name = 'trait-boxplot'
@@ -79,7 +102,7 @@
     return name
   })
 
-  const height = computed(() => {
+  function getHeight () {
     switch (groupBy.value) {
       case 'dataset':
         return (traits.length + datasets.length) * 150
@@ -90,7 +113,7 @@
       default:
         return traits.length * 150
     }
-  })
+  }
 
   const markedItemCount = computed(() => selectedIds.value.length)
   const darkMode = computed(() => (store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark')
@@ -120,7 +143,10 @@
       const treatmentSet = new Set()
       const groupSet = new Set<string>()
 
-      compProps.plotData.forEach(pd => {
+      const data = compProps.plotData.concat()
+      data.sort((a, b) => b.traitName.localeCompare(a.traitName) || (b.traitId - a.traitId))
+
+      data.forEach(pd => {
         if (pd.datasetId) {
           dsSet.add(JSON.stringify({ id: pd.datasetId, name: pd.datasetName }))
         }
@@ -142,7 +168,7 @@
 
       if (groupBy.value === 'dataset') {
         traces = datasets.map((ds, index) => {
-          const datasetData = compProps.plotData.filter(pd => pd.datasetId === ds.id)
+          const datasetData = data.filter(pd => pd.datasetId === ds.id)
 
           return {
             y: datasetData.map(td => td.traitName),
@@ -160,7 +186,7 @@
         })
       } else if (groupBy.value === 'treatment') {
         traces = treatments.map((treatment, index) => {
-          const treatmentData = compProps.plotData.filter(pd => pd.treatment === treatment)
+          const treatmentData = data.filter(pd => pd.treatment === treatment)
 
           return {
             y: treatmentData.map(td => td.traitName),
@@ -178,7 +204,7 @@
         })
       } else if (groupBy.value === 'group' && groups) {
         traces = groups.map((group, index) => {
-          const groupData = compProps.plotData.filter(pd => pd.groups && pd.groups.some(g => g.id === group.id))
+          const groupData = data.filter(pd => pd.groups && pd.groups.some(g => g.id === group.id))
 
           return {
             y: groupData.map(td => td.traitName),
@@ -208,7 +234,7 @@
         },
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
-        height: height.value,
+        height: getHeight(),
         autosize: true,
         boxmode: 'group' as const,
         dragmode: 'select' as const,
@@ -273,6 +299,8 @@
       store.removeMarkedIds('germplasm', selectedIds.value)
     }
   }
+
+  watch(groupBy, async () => redraw())
 
   watch(() => compProps.plotData, async () => nextTick(() => redraw()), { immediate: true })
 </script>

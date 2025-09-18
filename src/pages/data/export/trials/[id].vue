@@ -51,6 +51,28 @@
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
+        v-show="selectedTab === 'matrix'"
+        :showing="selectedTab === 'matrix'"
+      >
+        <TraitMatrix
+          :traits="traits"
+          :groups="groups || []"
+          :dataset-ids="datasetIds || []"
+        />
+      </RevealOnShowPanel>
+
+      <RevealOnShowPanel
+        v-show="selectedTab === 'comparison'"
+        :showing="selectedTab === 'comparison'"
+      >
+        <TraitComparison
+          :traits="numericTraits"
+          :groups="groups || []"
+          :dataset-ids="datasetIds || []"
+        />
+      </RevealOnShowPanel>
+
+      <RevealOnShowPanel
         v-show="selectedTab === 'table'"
         :showing="selectedTab === 'table'"
       >
@@ -65,7 +87,7 @@
         v-show="selectedTab === 'export'"
         :showing="selectedTab === 'export'"
       >
-        <TraitDataExport
+        <TraitDataDownload
           :traits="traits"
           :groups="groups || []"
           :dataset-ids="datasetIds || []"
@@ -79,6 +101,8 @@
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import TraitDataTable from '@/components/tables/TraitDataTable.vue'
   import TraitBoxplots from '@/components/trials/TraitBoxplots.vue'
+  import TraitComparison from '@/components/trials/TraitComparison.vue'
+  import TraitDataDownload from '@/components/trials/TraitDataDownload.vue'
   import RevealOnShowPanel from '@/components/widgets/RevealOnShowPanel.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
@@ -146,6 +170,8 @@
       help: t('pageDataExportTabHelpDataExport'),
     }]
   })
+
+  const numericTraits = computed(() => traits.value.filter(t => t.dataType === 'numeric'))
 
   watch(datasetIds, async newValue => {
     emitter.emit('show-loading', true)
@@ -262,6 +288,19 @@
       return dataset.acceptedBy && dataset.acceptedBy.includes(-1000)
     }
   }
+
+  watch(selectedTab, async newValue => {
+    const query = Object.assign({}, route.query)
+    query.tab = newValue
+
+    await router.replace({ query })
+  })
+
+  onBeforeMount(() => {
+    if (route.query && route.query.tab) {
+      selectedTab.value = route.query.tab as string
+    }
+  })
 
   onMounted(() => {
     if (route && route.params && route.params.id) {

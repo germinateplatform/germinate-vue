@@ -68,7 +68,7 @@ const apiPostDatasetAttributeTable = <T>(datasetId: number, queryData: Paginated
 
 const apiPostTraitStats = <T>(statsType: string, queryData: SubsettedDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 
-const apiPostTraitStatsCategorical = <T>(queryData: SubsettedDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/categorical/trial', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+const apiPostTraitStatsCategorical = <T>(queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/categorical/trial', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 const apiPostClimateStatsCategorical = <T>(queryData: SubsettedDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/categorical/climate', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 

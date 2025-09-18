@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" scrollable max-width="min(800px, 50vw)">
+  <v-dialog v-model="dialog" scrollable max-width="min(800px, 50vw)" max-height="75vh">
     <v-card v-if="compProps.dataset && compProps.license">
       <template #title>
         <div class="d-flex justify-space-between align-center">
