@@ -339,6 +339,7 @@
     apiPostGermplasmTable<PaginatedResult<ViewTableGermplasm[]>>({
       page: 1,
       limit: MAX_JAVA_INTEGER,
+      minimal: true,
     }, result => {
       if (result && result.data) {
         allGermplasm.value = result.data

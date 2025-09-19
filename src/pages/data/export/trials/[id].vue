@@ -84,6 +84,15 @@
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
+        v-show="selectedTab === 'locations'"
+        :showing="selectedTab === 'locations'"
+      >
+        <TrialLocationMap
+          :dataset-ids="datasetIds || []"
+        />
+      </RevealOnShowPanel>
+
+      <RevealOnShowPanel
         v-show="selectedTab === 'export'"
         :showing="selectedTab === 'export'"
       >
@@ -98,6 +107,7 @@
 </template>
 
 <script setup lang="ts">
+  import TrialLocationMap from '@/components/map/TrialLocationMap.vue'
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import TraitDataTable from '@/components/tables/TraitDataTable.vue'
   import TraitBoxplots from '@/components/trials/TraitBoxplots.vue'
@@ -108,7 +118,7 @@
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostDatasetGroups } from '@/plugins/api/group'
   import { apiPostTableExport } from '@/plugins/api/misc'
-  import { apiPostDatasetTraits, apiPostTrialsDataTable, apiPostTrialsDataTableIds } from '@/plugins/api/trait'
+  import { apiPostDatasetTraits, apiPostTrialLocationCount, apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTrialsDataTimepoints } from '@/plugins/api/trait'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
@@ -137,8 +147,11 @@
   const traits = ref<ViewTableTraits[]>([])
   const groups = ref<ViewTableGroups[]>([])
 
+  const trialLocationsAvailable = ref(false)
+  const trialTimepointsAvailable = ref(false)
+
   const tabs: ComputedRef<Tab[]> = computed(() => {
-    return [{
+    const result = [{
       key: 'overview',
       text: t('pageDataExportTabDataStatistics'),
       path: 'mdi-eye',
@@ -163,12 +176,34 @@
       text: t('pageDataExportTabDataTable'),
       path: 'mdi-table-search',
       help: t('pageDataExportTabHelpDataTable'),
-    }, {
+    }]
+
+    if (trialLocationsAvailable.value) {
+      result.push({
+        key: 'locations',
+        text: t('pageDataExportTabLocations'),
+        path: 'mdi-map-marker-path',
+        help: t('pageDataExportTabHelpLocations'),
+      })
+    }
+
+    if (trialTimepointsAvailable.value) {
+      result.push({
+        key: 'timeseries',
+        text: t('pageDataExportTabTimeseries'),
+        path: 'mdi-chart-bell-curve',
+        help: t('pageDataExportTabHelpTimeseries'),
+      })
+    }
+
+    result.push({
       key: 'export',
       text: t('pageDataExportTabDataExport'),
       path: 'mdi-file-download-outline',
       help: t('pageDataExportTabHelpDataExport'),
-    }]
+    })
+
+    return result
   })
 
   const numericTraits = computed(() => traits.value.filter(t => t.dataType === 'numeric'))
@@ -306,6 +341,22 @@
     if (route && route.params && route.params.id) {
       try {
         datasetIds.value = route.params.id.split(',').map(Number)
+
+        apiPostTrialLocationCount<number>({
+          datasetIds: datasetIds.value,
+        }, result => {
+          if (result) {
+            trialLocationsAvailable.value = result > 0
+          }
+        })
+
+        apiPostTrialsDataTimepoints<string[]>({
+          datasetIds: datasetIds.value,
+        }, result => {
+          if (result && result.length > 1) {
+            trialTimepointsAvailable.value = true
+          }
+        })
       } catch {
         datasetIds.value = []
       }

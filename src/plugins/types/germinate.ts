@@ -575,9 +575,9 @@ export interface PaginatedLocationRequest extends PaginatedRequest {
 
 export interface TraitTimelineRequest {
     datasetIds: number[];
-    traitIds: number[];
-    groupIds: number[];
-    markedIds: number[];
+    traitIds?: number[];
+    groupIds?: number[];
+    markedIds?: number[];
 }
 
 export interface Phenotypes {

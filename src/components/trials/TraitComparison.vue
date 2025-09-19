@@ -26,6 +26,12 @@
             <p>{{ $t('pageTrialsExportSelectGroupChartText') }}</p>
           </template>
         </GroupSelection>
+
+        <GermplasmSelection
+          class="mt-5"
+          :germplasm="allGermplasm"
+          v-model="selectedGermplasm"
+        />
       </v-col>
     </v-row>
 
@@ -63,12 +69,12 @@
 </template>
 
 <script setup lang="ts">
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableTrialsData, type ViewTableGroups, type ViewTableTraits } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableTrialsData, type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
   import emitter from 'tiny-emitter/instance'
   import { coreStore } from '@/stores/app'
-  import { apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
+  import { apiPostGermplasmTable, apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostTrialsDataTable } from '@/plugins/api/trait'
   import { getGermplasmDisplayName } from '@/plugins/util'
@@ -76,6 +82,9 @@
   import { getColor } from '@/plugins/util/colors'
   import TraitComparisonChart from '@/components/charts/TraitComparisonChart.vue'
   import { dataTypes } from '@/plugins/util/types'
+  import GroupSelection from '@/components/widgets/selections/GroupSelection.vue'
+  import GermplasmSelection from '@/components/widgets/selections/GermplasmSelection.vue'
+  import TraitSelection from '@/components/widgets/selections/TraitSelection.vue'
 
   export interface BoxPlotData {
     count: number
@@ -106,6 +115,8 @@
   const selectedTraits = ref<ViewTableTraits[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])
   const groupSelection = ref<GroupSelectionType>('groups')
+  const allGermplasm = ref<ViewTableGermplasm[]>([])
+  const selectedGermplasm = ref<ViewTableGermplasm[]>([])
 
   const plotData = ref<{ [key: number]: BoxPlotData }>()
   const splitValues = ref<string[]>([])
@@ -136,7 +147,7 @@
   })
 
   const canContinue = computed(() => {
-    return selectedTraits.value.length > 0 && selectedTraits.value.length < (compProps.max || Number.MAX_SAFE_INTEGER) && (groupSelection.value === 'all' || selectedGroups.value.length > 0)
+    return selectedTraits.value.length > 0 && selectedTraits.value.length < (compProps.max || Number.MAX_SAFE_INTEGER) && (groupSelection.value === 'all' || selectedGroups.value.length > 0 || selectedGermplasm.value.length > 0)
   })
 
   function update (germplasmIds: number[]) {
@@ -170,24 +181,30 @@
   function plot () {
     emitter.emit('show-loading', true)
 
-    let germplasmIds: number[] = []
+    const germplasmIds: Set<number> = new Set()
 
-    if (selectedGroups.value[0].groupId === -1) {
-      germplasmIds = store.storeMarkedGermplasm
-      update(germplasmIds)
+    if (selectedGermplasm.value) {
+      selectedGermplasm.value.forEach(g => germplasmIds.add(g.germplasmId))
+    }
+
+    if (selectedGroups.value.length > 0) {
+      if (selectedGroups.value[0].groupId === -1) {
+        store.storeMarkedGermplasm.forEach(id => germplasmIds.add(id))
+        update([...germplasmIds])
+      } else {
+        apiPostGroupGermplasmTableIds<PaginatedResult<number[]>>(selectedGroups.value[0].groupId || -1, {
+          page: 1,
+          limit: MAX_JAVA_INTEGER,
+        }, result => {
+          if (result && result.data) {
+            result.data.forEach(id => germplasmIds.add(id))
+          }
+
+          update([...germplasmIds])
+        })
+      }
     } else {
-      apiPostGroupGermplasmTableIds<PaginatedResult<number[]>>(selectedGroups.value[0].groupId || -1, {
-        page: 1,
-        limit: MAX_JAVA_INTEGER,
-      }, result => {
-        if (result && result.data) {
-          germplasmIds = result.data
-        } else {
-          germplasmIds = []
-        }
-
-        update(germplasmIds)
-      })
+      update([...germplasmIds])
     }
   }
 
@@ -301,4 +318,18 @@
   }
 
   watch(groupBy, async () => redraw())
+
+  onMounted(() => {
+    apiPostGermplasmTable<PaginatedResult<ViewTableGermplasm[]>>({
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      minimal: true,
+    }, result => {
+      if (result && result.data) {
+        allGermplasm.value = result.data
+      } else {
+        allGermplasm.value = []
+      }
+    })
+  })
 </script>

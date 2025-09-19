@@ -72,6 +72,9 @@
     }
   })
   watch(selectedGroups, async newValue => {
+    if (!newValue) {
+      newValue = []
+    }
     const asArray = Array.isArray(newValue) ? newValue : [newValue]
     const toNotify = (asArray || []).map(nv => nv.value)
     if (JSON.stringify(toNotify) !== JSON.stringify(compProps.modelValue)) {

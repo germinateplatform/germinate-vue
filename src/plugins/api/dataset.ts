@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedRequest, SubsettedDatasetRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
+import type { DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, SubsettedDatasetRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
 
 const apiPostPublicationDatasetTable = <T>(publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
   queryData.page -= 1
@@ -94,7 +94,7 @@ const apiPostFileResourceTable = <T>(queryData: PaginatedRequest, onSuccess?: Ge
   return authAxios({ url: 'fileresource/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDatasetfileresource = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+const apiPostDatasetfileresource = <T>(queryData: PaginatedDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
   queryData.page -= 1
   return authAxios({ url: 'dataset/fileresource', data: queryData, method: 'POST', success: onSuccess, error: onError })
 }

@@ -55,6 +55,7 @@
 <script lang="ts" setup>
   import { coreStore } from '@/stores/app'
 
+  import shp from 'shpjs'
   import L, { type TileLayer, type Map, type Marker, type FeatureGroup } from 'leaflet'
   import 'leaflet/dist/leaflet.css'
   import 'leaflet.markercluster/dist/MarkerCluster.css'
@@ -81,6 +82,8 @@
   // @ts-ignore
   import countryDataEn from 'i18n-iso-countries/langs/en.json'
   import { uuidv4 } from '@/plugins/util'
+import { addShapefileToMap } from '@/plugins/util/geo'
+import { apiGetDataResource } from '../../plugins/api/dataset'
   countries.registerLocale(countryDataEn)
 
   // Set the leaflet marker icon
@@ -102,6 +105,7 @@
     showLinks?: boolean
     showClimateOverlays?: boolean
     rounded?: boolean
+    shapefileId?: number
   }
 
   const props = withDefaults(defineProps<MapProps>(), {
@@ -128,6 +132,7 @@
   const markers: Marker[] = []
   let gradientColors: string[] = []
   let editableLayers: FeatureGroup
+  let shapefileLayers: { [key: string]: Layer[] } = {}
 
   function updateThemeLayer () {
     if (themeLayer) {
@@ -140,7 +145,7 @@
     if (!mapElement.value) {
       return
     }
-    
+
     map = L.map(mapElement.value)
     map.setView([22.5937, 2.1094], 3)
 
@@ -270,6 +275,10 @@
         // @ts-ignore
         document.querySelector(`#map-${id.value}`)?.querySelector('.leaflet-draw-draw-polygon')?.click()
       })
+    }
+
+    if (props.shapefileId) {
+      updateShapefile()
     }
 
     emit('map-loaded', map)
@@ -469,11 +478,29 @@
     })
   }
 
+  function updateShapefile () {
+    if (shapefileLayers) {
+      Object.keys(shapefileLayers).forEach(k => shapefileLayers[k].forEach(l => l.remove()))
+      shapefileLayers = {}
+    }
+
+    if (props.shapefileId) {
+      apiGetDataResource<Blob>(props.shapefileId, async result => {
+        const content = await result.arrayBuffer()
+        const shape = await shp(content)
+
+        // @ts-ignore
+        shapefileLayers = addShapefileToMap(map, shape)
+      })
+    }
+  }
+
   watch(() => store.storeTheme, async () => updateThemeLayer())
   watch(() => props.locations, async newValue => {
     internalLocations.value = newValue.concat()
     updateMarkers()
   }, { immediate: true })
+  watch(() => props.shapefileId, async () => updateShapefile())
 
   onMounted(() => {
     if (store.storeServerSettings && store.storeServerSettings.colorsGradient && store.storeServerSettings.colorsGradient.length > 0) {

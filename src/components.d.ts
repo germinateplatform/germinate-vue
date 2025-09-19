@@ -92,6 +92,7 @@ declare module 'vue' {
     TraitScatterChart: typeof import('./components/charts/TraitScatterChart.vue')['default']
     TraitSelection: typeof import('./components/widgets/selections/TraitSelection.vue')['default']
     TraitTable: typeof import('./components/tables/TraitTable.vue')['default']
+    TrialLocationMap: typeof import('./components/map/TrialLocationMap.vue')['default']
     UserDropdown: typeof import('./components/structure/UserDropdown.vue')['default']
   }
 }

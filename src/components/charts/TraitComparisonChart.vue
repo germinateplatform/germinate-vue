@@ -37,7 +37,7 @@
   const compProps = defineProps<{
     datasetIds: number[]
     trait: ViewTableTraits
-    groupBy: 'year' | 'treatment' | 'dataset' | 'trialsite' | undefined
+    groupBy: 'year' | 'treatment' | 'dataset' | 'trialsite' | 'undefined'
     germplasmData: BoxPlotData
     germplasm: GermplasmInfo[]
     categories: string[]
