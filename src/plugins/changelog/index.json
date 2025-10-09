@@ -33,7 +33,7 @@
       {
         "type": "update",
         "title": "QBMS support",
-        "text": "Germinate now supports QMBS (starting with QBMS v2.0.0), an R package used to interact with BrAPI data providers. Find out more on the <a href='https://icarda.github.io/QBMS/articles/germinate_example.html' target='_blank'>QBMS Germinate page</a>.",
+        "text": "Germinate now supports QBMS (starting with QBMS v2.0.0), an R package used to interact with BrAPI data providers. Find out more on the <a href='https://icarda.github.io/QBMS/articles/germinate_example.html' target='_blank'>QBMS Germinate page</a>.",
         "categories": [
           "admin",
           "user"

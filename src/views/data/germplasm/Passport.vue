@@ -3,28 +3,28 @@
     <h3 v-if="noGermplasmFound">{{ $t('headingNoData') }}</h3>
     <div v-else-if="germplasm" class="passport">
       <!-- If there is a parent entity, show both as tabs -->
-      <template v-if="germplasm.entityparentid">
+      <template v-if="germplasm.entityParentId">
         <b-tabs active-nav-item-class="text-primary" v-model="tabIndex">
           <!-- Entity child -->
           <b-tab active @click="updateChildMap">
             <template v-slot:title>
-              <MdiIcon :path="mdiArrowDownBoldBoxOutline" /> {{ germplasm.accenumb }}
+              <MdiIcon :path="mdiArrowDownBoldBoxOutline" /> {{ germplasm.germplasmDisplayName }}
             </template>
             <!-- Passport -->
-            <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" ref="child"/>
+            <SpecificPassport :germplasmId="germplasm.germplasmId" :isPopup="isPopup" ref="child"/>
           </b-tab>
           <!-- Entity parent -->
           <b-tab @click="updateParentMap">
             <template v-slot:title>
-              <MdiIcon :path="mdiArrowUpBoldBoxOutline" /> {{ germplasm.entityparentaccenumb }}
+              <MdiIcon :path="mdiArrowUpBoldBoxOutline" /> {{ germplasm.entityParentName }}
             </template>
             <!-- Passport -->
-            <SpecificPassport :germplasmId="germplasm.entityparentid" :isPopup="isPopup" v-if="germplasm.entityparentid" ref="parent"/>
+            <SpecificPassport :germplasmId="germplasm.entityParentId" :isPopup="isPopup" v-if="germplasm.entityParentId" ref="parent"/>
           </b-tab>
         </b-tabs>
       </template>
       <!-- Else, just show this one individually -->
-      <SpecificPassport :germplasmId="germplasm.id" :isPopup="isPopup" v-else/>
+      <SpecificPassport :germplasmId="germplasm.germplasmId" :isPopup="isPopup" v-else/>
     </div>
   </div>
 </template>
@@ -32,7 +32,7 @@
 <script>
 import MdiIcon from '@/components/icons/MdiIcon'
 import SpecificPassport from '@/components/germplasm/SpecificPassport'
-import { apiGetGermplasmMcpd, apiPostGermplasmTable } from '@/mixins/api/germplasm'
+import { apiPostGermplasmTable } from '@/mixins/api/germplasm'
 
 import { mdiArrowDownBoldBoxOutline, mdiArrowUpBoldBoxOutline } from '@mdi/js'
 
@@ -70,9 +70,23 @@ export default {
       this.$nextTick(() => this.$refs.parent.invalidateSize())
     },
     getGermplasm: function () {
-      apiGetGermplasmMcpd(this.currentGermplasmId, result => {
-        this.germplasm = result
-        this.noGermplasmFound = result === null
+      const query = {
+        filter: [{
+          column: 'germplasmId',
+          comparator: 'equals',
+          operator: 'and',
+          values: [this.currentGermplasmId]
+        }],
+        page: 1,
+        limit: 1
+      }
+      apiPostGermplasmTable(query, result => {
+        if (result && result.data && result.data.length > 0) {
+          this.germplasm = result.data[0]
+          this.currentGermplasmId = result.data[0].germplasmId
+        } else {
+          this.noGermplasmFound = true
+        }
       })
     },
     getGermplasmIdByName: function (name) {
@@ -98,8 +112,8 @@ export default {
       }
       apiPostGermplasmTable(query, result => {
         if (result && result.data && result.data.length > 0) {
+          this.germplasm = result.data[0]
           this.currentGermplasmId = result.data[0].germplasmId
-          this.getGermplasm()
         } else {
           this.noGermplasmFound = true
         }
@@ -121,7 +135,7 @@ export default {
     }
   },
   mounted: function () {
-    if (this.currentGermplasmId) {
+    if (this.currentGermplasmId && !this.germplasm) {
       this.getGermplasm()
     }
   }

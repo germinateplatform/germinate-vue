@@ -266,7 +266,7 @@ export default {
         columnNameMapping: { germplasmName: 'TREATMENT' },
         // We force .csv here, because FielDHub will not accept .txt files even if they have valid .csv content.
         forcedFileExtension: 'csv',
-        filter: [{
+        filter: [{ // TODO: Convert to filter groups
           column: 'germplasmId',
           comparator: 'inSet',
           operator: 'and',
