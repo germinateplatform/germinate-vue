@@ -121,12 +121,6 @@ export default {
       name: 'contact',
       type: String
     }, {
-      name: 'startDate',
-      type: Date
-    }, {
-      name: 'endDate',
-      type: Date
-    }, {
       name: 'dataObjectCount',
       type: Number
     }, {
@@ -195,9 +189,6 @@ export default {
     }, {
       name: 'unitName',
       type: String
-    }, {
-      name: 'recordingDate',
-      type: Date
     }, {
       name: 'traitValue',
       type: String

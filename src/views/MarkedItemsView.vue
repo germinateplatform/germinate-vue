@@ -17,7 +17,7 @@
       <LocationTable  v-show="itemTypeLocal === markedItemTypes.locations" :getData="getLocationData"  :getIds="getLocationIds"  :downloadTable="downloadLocations" ref="locationTable" />
 
       <template v-if="itemTypeLocal === markedItemTypes.germplasm && genesysAvailable">
-        <b-button :to="pages.genesysRequest"><MdiIcon :path="genesysIcon" /> {{ $t('buttonGoToGenesysOrdering') }}</b-button>
+        <b-button :to="{ name: pages.genesysRequest }"><MdiIcon :path="genesysIcon" /> {{ $t('buttonGoToGenesysOrdering') }}</b-button>
       </template>
 
       <template v-if="(itemTypeLocal === markedItemTypes.germplasm) && externalIdentifiers && (externalIdentifiers.length > 0)">

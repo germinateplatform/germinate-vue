@@ -1,6 +1,6 @@
 {
   "name": "germinate",
-  "version": "4.9.0",
+  "version": "4.9.1",
   "description": "Germinate is an open source plant database infrastructure and application programming platform on which complex data from genetic resource collections can be stored, queried and visualized",
   "author": "Sebastian Raubach",
   "scripts": {
@@ -53,8 +53,8 @@
     "vuedraggable": "^2.24.3",
     "vuex": "~3.6.2",
     "vuex-persistedstate": "~4.1.0",
-    "zxcvbn": "~4.4.2",
-    "xlsx": "./lib/xlsx-0.20.3.tgz"
+    "xlsx": "./lib/xlsx-0.20.3.tgz",
+    "zxcvbn": "~4.4.2"
   },
   "devDependencies": {
     "@babel/core": "~7.12.16",

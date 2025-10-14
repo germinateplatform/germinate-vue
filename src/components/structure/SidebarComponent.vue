@@ -25,7 +25,7 @@ import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
 import { getNumberWithSuffix } from '@/mixins/formatting'
 
-import { mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiViewGridPlusOutline, mdiChartAreaspline, mdiBookOpenPageVariant, mdiChartGantt, mdiChartSankey, mdiChevronRight, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFileExport, mdiFolderTable, mdiFormatIndentIncrease, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMagnify, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPulse, mdiReorderVertical, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy, mdiClipboardList } from '@mdi/js'
+import { mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiViewGridPlusOutline, mdiChartAreaspline, mdiBookOpenPageVariant, mdiChartGantt, mdiChartSankey, mdiChevronRight, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMagnify, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPulse, mdiReorderVertical, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy, mdiClipboardList, mdiApplicationBrackets } from '@mdi/js'
 
 import { apiGetOverviewStats } from '@/mixins/api/stats'
 import { Pages } from '@/mixins/pages'
@@ -494,7 +494,7 @@ export default {
               icon: {
                 element: SidebarIcon,
                 attributes: {
-                  path: mdiFileExport
+                  path: mdiApplicationBrackets
                 }
               }
             }

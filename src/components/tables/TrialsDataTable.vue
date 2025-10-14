@@ -137,7 +137,7 @@ export default {
           label: this.$t('tableColumnSynonyms')
         }, {
           key: 'entityType',
-          type: 'entityTyp',
+          type: 'entityType',
           sortable: true,
           label: this.$t('tableColumnEntityType')
         }, {

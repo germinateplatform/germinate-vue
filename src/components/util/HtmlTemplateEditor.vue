@@ -24,7 +24,6 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import { VueEditor, Quill } from 'vue2-editor'
 import { apiDeleteTemplateImageByName, apiPatchTemplateI18n, apiPostTemplateImage } from '@/mixins/api/misc'
 import { USER_TYPE_ADMINISTRATOR, userIsAtLeast } from '@/mixins/api/auth'
-import Vue from 'vue'
 import { getImageUrl } from '@/mixins/image'
 
 // Make sure images added use bootstrap's 'img-fluid' class
@@ -80,8 +79,7 @@ export default {
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [{ align: [] }],
         ['link', 'image']
-      ],
-      imageMapping: {}
+      ]
     }
   },
   watch: {
@@ -110,8 +108,6 @@ export default {
       console.log(file)
 
       apiPostTemplateImage(formData, result => {
-        Vue.set(this.imageMapping, file.name, result)
-
         Editor.insertEmbed(cursorLocation, 'image', getImageUrl(result, {
           name: result,
           type: 'template',

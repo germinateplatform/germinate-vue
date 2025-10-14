@@ -322,12 +322,7 @@ export default {
     },
     title: function () {
       if (this.germplasmTableData) {
-        const parts = []
-        parts.push(this.germplasmTableData.germplasmName)
-        parts.push(this.germplasmTableData.germplasmDisplayName)
-        parts.push(this.germplasmTableData.germplasmNumber)
-
-        return parts.filter(p => p !== null).join(' / ')
+        return [this.germplasmTableData.germplasmName, this.germplasmTableData.germplasmDisplayName, this.germplasmTableData.germplasmNumber].filter(p => p !== null).join(' / ')
       } else {
         return ''
       }

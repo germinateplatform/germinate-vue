@@ -101,6 +101,9 @@ export default {
 
         if (parsed) {
           cl = this.changelog.filter(c => semver.gt(c.version, this.prevVersion))
+          if (cl.length === 0) {
+            cl = this.changelog
+          }
         } else {
           cl = this.changelog
         }
