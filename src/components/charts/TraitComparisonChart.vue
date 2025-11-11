@@ -48,14 +48,11 @@
   const store = coreStore()
 
   const sourceFile = ref<DownloadBlob>()
-  const systemTheme = ref('dark')
   const boxplotChart = useTemplateRef('boxplotChart')
   const id = ref('boxplot-' + uuidv4())
   const loading = ref(false)
 
   const filename = computed(() => `comparison-${compProps.trait.traitName.replace(' ', '-')}`)
-
-  const darkMode = computed(() => (store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark')
 
   function getTraces () {
     let traces
@@ -183,22 +180,22 @@
         xaxis: {
           zeroline: false,
           side: 'top',
-          title: { font: { color: darkMode.value ? 'white' : 'black' } },
-          tickfont: { color: darkMode.value ? 'white' : 'black' },
+          title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
+          tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
         height: 400,
         autosize: true,
         yaxis: {
           automargin: true,
-          title: { text: compProps.trait.traitName, font: { color: darkMode.value ? 'white' : 'black' } },
-          tickfont: { color: darkMode.value ? 'white' : 'black' },
+          title: { text: compProps.trait.traitName, font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
+          tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
           showgrid: true,
-          gridcolor: darkMode.value ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          gridcolor: store.storeIsDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h',
-          font: { color: darkMode.value ? 'white' : 'black' },
+          font: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
         shapes: [{
           type: 'line',

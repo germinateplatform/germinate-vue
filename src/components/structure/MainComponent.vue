@@ -190,15 +190,16 @@
   import emitter from 'tiny-emitter/instance'
   import ChangelogInfo from '@/components/widgets/ChangelogInfo.vue'
   import { germinateVersion } from '@/plugins/util'
+  import { useDark } from '@vueuse/core'
 
   // Composition
   const router = useRouter()
   const theme = useTheme()
   const store = coreStore()
+  const isDark = useDark()
   const { smAndUp } = useDisplay()
 
   // Refs
-  const systemTheme = ref<string>('dark')
   const locales = ref<Locale[]>([])
   const loginModal = useTemplateRef('loginModal')
   const bottomSheetVisible = ref(false)
@@ -215,23 +216,11 @@
   }
 
   // Listen for theme changes in the store
-  let media: MediaQueryList
-  watch(() => store.storeTheme, (value: string) => {
-    if (value === 'system') {
-      // If currently system, get prefered scheme and listen to changes
-      media = window.matchMedia('(prefers-color-scheme: dark)')
-      media.addEventListener('change', onThemeChange)
-      onThemeChange()
-    } else if (media) {
-      // Else, remove listener
-      media.removeEventListener('change', onThemeChange)
-    }
-  }, { immediate: true })
-  function onThemeChange () {
-    systemTheme.value = media!.matches ? 'dark' : 'light'
-  }
-  // Listen for changes to the theme and update Vuetify global theme
-  watchEffect(() => theme.change(store.storeTheme === 'system' ? systemTheme.value : store.storeTheme))
+  watchEffect(() => {
+    const str = isDark.value ? 'dark' : 'light'
+    theme.change(store.storeTheme === 'system' ? str : store.storeTheme)
+    store.setSystemTheme(str)
+  })
 
   // Listen for changes to store locale and update Vuetify current
   watchEffect(() => {

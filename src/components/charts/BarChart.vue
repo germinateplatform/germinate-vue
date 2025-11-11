@@ -66,7 +66,6 @@
   const store = coreStore()
 
   const sourceFileDownload = ref<DownloadBlob>()
-  const systemTheme = ref('dark')
   const barChart = useTemplateRef('barChart')
   const id = ref('taxonomy-' + uuidv4())
 
@@ -89,7 +88,7 @@
       select(barChart.value)
         .datum(data)
         .call(plotlyBarChart(Plotly)
-          .darkMode((store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark')
+          .darkMode(store.storeIsDarkMode)
           .height(compProps.height)
           .colors(getColors())
           .x(compProps.xColumn)

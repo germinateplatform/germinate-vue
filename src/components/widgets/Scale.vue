@@ -32,7 +32,7 @@
 
       <template #activator="{ props }">
         <div class="d-flex my-2" :id="`scale-${id}`" v-bind="props">
-          <div class="d-flex align-center scale-container w-100" :style="{ backgroundColor: isDark ? 'rgb(var(--v-theme-surface-light))' : 'rgb(var(--v-theme-surface-dark))' }">
+          <div class="d-flex align-center scale-container w-100" :style="{ backgroundColor: store.storeIsDarkMode ? 'rgb(var(--v-theme-surface-light))' : 'rgb(var(--v-theme-surface-dark))' }">
             <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: 'rgb(var(--v-theme-primary))' }" />
           </div>
         </div>
@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
   import { uuidv4 } from '@/plugins/util'
-import { getNumberWithSuffix, toFixed } from '@/plugins/util/formatting'
+  import { getNumberWithSuffix, toFixed } from '@/plugins/util/formatting'
   import { coreStore } from '@/stores/app'
 
   export interface ScaleProps {
@@ -68,7 +68,6 @@ import { getNumberWithSuffix, toFixed } from '@/plugins/util/formatting'
   const store = coreStore()
   const emit = defineEmits(['update:model-value'])
 
-  const systemTheme = ref('dark')
   const id = ref<string>(uuidv4())
   const localSelected = ref<boolean>(false)
 
@@ -77,7 +76,6 @@ import { getNumberWithSuffix, toFixed } from '@/plugins/util/formatting'
   })
   watch(localSelected, async (newValue: boolean) => emit('update:model-value', newValue))
 
-  const isDark = computed(() => store.storeTheme === 'system' ? systemTheme.value : store.storeTheme)
   const markerPercentage = computed(() => (compProps.marker - compProps.min) * (100 - 0) / (compProps.max - compProps.min))
 </script>
 

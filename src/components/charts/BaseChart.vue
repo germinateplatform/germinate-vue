@@ -199,7 +199,7 @@
     bottomSheetVisible.value = false
   }
 
-  watch(() => store.storeTheme, async () => {
+  watch(() => store.storeIsDarkMode, async () => {
     nextTick(() => emit('force-redraw'))
   })
   watch(() => store.storeChartColors, async () => {

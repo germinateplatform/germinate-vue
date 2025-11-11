@@ -61,7 +61,6 @@
   const datasets = ref<ViewTableDatasets[]>([])
   const selectedDataset = ref<number>()
   const sourceFile = ref<DownloadBlob>()
-  const systemTheme = ref('dark')
   const id = ref('pedigree-' + uuidv4())
 
   let plotData: ViewTablePedigrees[] = []
@@ -136,7 +135,7 @@
         const data: any[] = []
         const bgColor = getColor(0)
         const fgColor = getHighContrastTextColor(bgColor)
-        const dark = (store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark'
+        const dark = store.storeIsDarkMode
         Object.keys(nodes).forEach(n => {
           const node = nodes[n]
           const bg = node.name === compProps.germplasm.germplasmName ? bgColor : (dark ? '#000000' : '#ffffff')

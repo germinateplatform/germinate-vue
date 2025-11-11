@@ -4,6 +4,7 @@
     <slot name="text"><p>{{ $t('pageTrialsExportSelectGermplasmText') }}</p></slot>
     <v-autocomplete
       v-model="selectedGermplasm"
+      v-model:search="searchTerm"
       autocomplete="off"
       return-object
       hide-details
@@ -51,6 +52,7 @@
     canSelectAll: false,
   })
 
+  const searchTerm = ref<string>()
   const selectedGermplasm = defineModel<ViewTableGermplasm[]>()
 
   const allSelected = computed(() => (selectedGermplasm.value || []).length === compProps.germplasm.length)
@@ -60,6 +62,12 @@
     if (allSelected.value) {
       selectedGermplasm.value = []
     } else {
+      // Search for the currently filtered items (if any)
+      const st = (searchTerm.value || '').trim().toLowerCase()
+      selectedGermplasm.value = compProps.germplasm.filter(t => {
+        const dpn = [t.germplasmDisplayName, t.germplasmName, t.germplasmNumber].filter(i => i !== undefined && i !== null && i.trim().length > 0).join(' | ')
+        return dpn.toLowerCase().includes(st)
+      })
       selectedGermplasm.value = compProps.germplasm
     }
   }

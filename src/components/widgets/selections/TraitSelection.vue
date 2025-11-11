@@ -11,6 +11,7 @@
       :label="$t('pageTrialsExportSelectTraitTitle')"
       chips
       clearable
+      v-model:search="searchTerm"
       :items="compProps.traits"
       item-value="traitId"
       :item-title="(item: ViewTableTraits) => item.unitId ? `${item.traitName} [${item.unitAbbreviation || item.unitName}]` : item.traitName"
@@ -52,6 +53,8 @@
     canSelectAll: false,
   })
 
+  const searchTerm = ref<string>()
+
   const selectedTraits = defineModel<ViewTableTraits[]>()
 
   const allSelected = computed(() => (selectedTraits.value || []).length === compProps.traits.length)
@@ -61,7 +64,9 @@
     if (allSelected.value) {
       selectedTraits.value = []
     } else {
-      selectedTraits.value = compProps.traits
+      // Search for the currently filtered items (if any)
+      const st = (searchTerm.value || '').trim().toLowerCase()
+      selectedTraits.value = compProps.traits.filter(t => t.traitName.toLowerCase().includes(st))
     }
   }
 </script>

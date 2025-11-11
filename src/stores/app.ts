@@ -14,6 +14,7 @@ if (!name) {
 
 export interface StoreContent {
   theme: string
+  systemTheme: string
   locale: string
   mapLayer: string
   hiddenColumns: HiddenColumns
@@ -31,6 +32,7 @@ type UserState = { [key: number]: StoreContent }
 
 const defaultUserState: StoreContent = {
   theme: 'system',
+  systemTheme: 'dark',
   locale: 'en_GB',
   mapLayer: 'theme',
   hiddenColumns: {
@@ -111,6 +113,12 @@ export const coreStore = defineStore('germinate', {
     storeToken: (state): Token | undefined => state.token,
     storeBaseUrl: (state): string | undefined => state.baseUrl,
     storeServerSettings: (state): ServerSettings | undefined => state.serverSettings,
+    storeIsDarkMode (): boolean {
+      return (this.userStates[this.storeUserId].theme === 'system' ? this.userStates[this.storeUserId].systemTheme : this.userStates[this.storeUserId].theme) === 'dark'
+    },
+    storeSystemTheme (): string {
+      return this.userStates[this.storeUserId].systemTheme || 'dark'
+    },
     storeTheme (): string {
       return this.userStates[this.storeUserId].theme || 'system'
     },
@@ -183,6 +191,9 @@ export const coreStore = defineStore('germinate', {
           }
         }
       }
+    },
+    setSystemTheme (newSystemTheme: string) {
+      this.userStates[this.storeUserId].systemTheme = newSystemTheme
     },
     setTheme (newTheme: string) {
       this.userStates[this.storeUserId].theme = newTheme

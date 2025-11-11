@@ -38,7 +38,6 @@
   const router = useRouter()
 
   const sourceFile = ref<DownloadBlob>()
-  const systemTheme = ref('dark')
   const taxonomyChart = useTemplateRef('taxonomyChart')
   const id = ref('taxonomy-' + uuidv4())
 
@@ -111,7 +110,7 @@
       select(taxonomyChart.value)
         .datum(chartData)
         .call(plotlySunburstChart(Plotly)
-          .darkMode((store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark')
+          .darkMode(store.storeIsDarkMode)
           .height(500)
           .onLeafClicked((path: string[]) => {
             // Then store a filter using genus, species and subtaxa

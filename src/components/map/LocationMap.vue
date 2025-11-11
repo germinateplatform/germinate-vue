@@ -56,7 +56,7 @@
   import { coreStore } from '@/stores/app'
 
   import shp from 'shpjs'
-  import L, { type TileLayer, type Map, type Marker, type FeatureGroup } from 'leaflet'
+  import L, { type TileLayer, type Map, type Marker, type FeatureGroup, type Layer } from 'leaflet'
   import 'leaflet/dist/leaflet.css'
   import 'leaflet.markercluster/dist/MarkerCluster.css'
   import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
@@ -82,8 +82,8 @@
   // @ts-ignore
   import countryDataEn from 'i18n-iso-countries/langs/en.json'
   import { uuidv4 } from '@/plugins/util'
-import { addShapefileToMap } from '@/plugins/util/geo'
-import { apiGetDataResource } from '../../plugins/api/dataset'
+  import { addShapefileToMap } from '@/plugins/util/geo'
+  import { apiGetDataResource } from '@/plugins/api/dataset'
   countries.registerLocale(countryDataEn)
 
   // Set the leaflet marker icon
@@ -119,7 +119,6 @@ import { apiGetDataResource } from '../../plugins/api/dataset'
   const id = ref(uuidv4())
   const mapElement = useTemplateRef('mapElement')
   const popupContent = ref('')
-  const systemTheme = ref('dark')
   const internalLocations = ref<ExtendedViewTableLocations[]>([])
   const currentLocation = ref<ExtendedViewTableLocations>()
   const loading = ref<boolean>(false)
@@ -136,8 +135,7 @@ import { apiGetDataResource } from '../../plugins/api/dataset'
 
   function updateThemeLayer () {
     if (themeLayer) {
-      const theme = store.storeTheme === 'system' ? systemTheme.value : store.storeTheme
-      themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${theme === 'dark' ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
+      themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${store.storeIsDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
     }
   }
 
@@ -149,9 +147,8 @@ import { apiGetDataResource } from '../../plugins/api/dataset'
     map = L.map(mapElement.value)
     map.setView([22.5937, 2.1094], 3)
 
-    const theme = store.storeTheme === 'system' ? systemTheme.value : store.storeTheme
-    themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${theme === 'dark' ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
-      id: theme === 'dark' ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
+    themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${store.storeIsDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
+      id: store.storeIsDarkMode ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
       attribution: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
       maxZoom: 21,
       maxNativeZoom: 15,
@@ -495,7 +492,7 @@ import { apiGetDataResource } from '../../plugins/api/dataset'
     }
   }
 
-  watch(() => store.storeTheme, async () => updateThemeLayer())
+  watch(() => store.storeIsDarkMode, async () => updateThemeLayer())
   watch(() => props.locations, async newValue => {
     internalLocations.value = newValue.concat()
     updateMarkers()

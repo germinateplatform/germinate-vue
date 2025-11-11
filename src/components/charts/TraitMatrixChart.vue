@@ -110,7 +110,6 @@
   const store = coreStore()
 
   const sourceFile = ref<DownloadBlob>()
-  const systemTheme = ref('dark')
   const matrixChart = useTemplateRef('matrixChart')
   const id = ref('scattermatrixplot-' + uuidv4())
   const groupBy = ref<'dataset_name' | 'entity_parent_name' | 'year' | 'Date' | 'taxonomy' | 'treatments_description' | 'rep' | 'block' | 'trial_row' | 'trial_column' | 'trial_site' | 'location' | 'marked_items' | 'specified_names' | 'groups' | undefined>()
@@ -213,7 +212,6 @@
   })
 
   const markedItemCount = computed(() => selectedIds.value.length)
-  const darkMode = computed(() => (store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark')
 
   const germplasmNames = computed(() => selectedGermplasm.value ? selectedGermplasm.value.map(g => g.germplasmDisplayName) : undefined)
   const colorByValue = computed(() => {
@@ -254,7 +252,7 @@
         select(matrixChart.value)
           .datum(tsvData)
           .call(plotlyScatterPlot(Plotly)
-            .darkMode(darkMode.value)
+            .darkMode(store.storeIsDarkMode)
             .colorBy(colorByValue.value)
             .xCategory(swapAxes.value ? twoName : oneName)
             .yCategory(swapAxes.value ? oneName : twoName)
@@ -276,7 +274,7 @@
         select(matrixChart.value)
           .datum(tsvData)
           .call(plotlyScatterMatrix(Plotly)
-            .darkMode(darkMode.value)
+            .darkMode(store.storeIsDarkMode)
             .colorBy(colorByValue.value)
             .columnsToIgnore(['name', 'puid', 'taxonomy', 'latitude', 'longitude', 'elevation', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'block', 'trial_row', 'trial_column', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'location', 'trial_site', 'Site', 'treatments_description', 'year', 'groups'])
             .onPointClicked((p: number) => {

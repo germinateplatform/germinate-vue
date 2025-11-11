@@ -65,7 +65,6 @@
   const store = coreStore()
 
   const sourceFile = ref<DownloadBlob>()
-  const systemTheme = ref('dark')
   const boxplotChart = useTemplateRef('boxplotChart')
   const id = ref('boxplot-' + uuidv4())
   const groupBy = ref<'dataset' | 'treatment' | 'group'>('dataset')
@@ -116,7 +115,6 @@
   }
 
   const markedItemCount = computed(() => selectedIds.value.length)
-  const darkMode = computed(() => (store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark')
 
   let datasets = []
   let groups = []
@@ -226,10 +224,10 @@
         xaxis: {
           zeroline: false,
           side: 'top' as const,
-          title: { font: { color: darkMode.value ? 'white' : 'black' } },
-          tickfont: { color: darkMode.value ? 'white' : 'black' },
+          title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
+          tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
           showgrid: true,
-          gridcolor: darkMode.value ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          gridcolor: store.storeIsDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
           mirror: 'ticks' as const,
         },
         paper_bgcolor: 'transparent',
@@ -240,13 +238,13 @@
         dragmode: 'select' as const,
         yaxis: {
           automargin: true,
-          title: { font: { color: darkMode.value ? 'white' : 'black' } },
-          tickfont: { color: darkMode.value ? 'white' : 'black' },
+          title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
+          tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h' as const,
-          font: { color: darkMode.value ? 'white' : 'black' },
+          font: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
       }
 

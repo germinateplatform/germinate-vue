@@ -48,7 +48,6 @@
   const store = coreStore()
 
   const sourceFile = ref<DownloadBlob>()
-  const systemTheme = ref('dark')
   const mapChart = useTemplateRef('mapChart')
   const id = ref('taxonomy-' + uuidv4())
   const distinctChromosomes = ref<number>(0)
@@ -90,7 +89,7 @@
     select(mapChart.value)
       .datum(tsvData)
       .call(plotlyMapChart(Plotly)
-        .darkMode((store.storeTheme === 'system' ? systemTheme.value : store.storeTheme) === 'dark')
+        .darkMode(store.storeIsDarkMode)
         .colors(getColors())
         .onPointsSelected((chromosome: string, start: number, end: number) => {
           // this.chartSelection.push({

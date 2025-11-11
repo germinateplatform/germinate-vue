@@ -19,70 +19,70 @@
           <a class="text-white" href="#" @click.prevent="emitter.emit('show-changelog')">{{ subtitle }}</a>
         </template>
       </v-list-item>
-      <v-list-item to="/" link prepend-icon="mdi-home">{{ $t('menuHome') }}</v-list-item>
-      <v-list-item link :to="Pages.projects.path" prepend-icon="mdi-clipboard-list" v-if="Pages.isAvailable(Pages.projects)">{{ $t('menuProjects') }} <template #append><v-chip size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge('projects')}` }}</v-chip></template></v-list-item>
+      <v-list-item to="/" link prepend-icon="mdi-home" :title="$t('menuHome')" />
+      <v-list-item link :to="Pages.projects.path" prepend-icon="mdi-clipboard-list" v-if="Pages.isAvailable(Pages.projects)" :title="$t('menuProjects')"><template #append><v-chip size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge('projects')}` }}</v-chip></template></v-list-item>
 
       <v-list-group value="data">
         <template #activator="{ props }">
-          <v-list-item v-bind="props" link prepend-icon="mdi-harddisk">{{ $t('menuData') }}</v-list-item>
+          <v-list-item v-bind="props" link prepend-icon="mdi-harddisk" :title="$t('menuData')" />
         </template>
 
-        <v-list-item link :to="Pages.germplasm.path" prepend-icon="mdi-sprout" v-if="Pages.isAvailable(Pages.germplasm)">{{ $t('menuGermplasm') }} <template #append><v-chip size="small">{{ formatBadge('germplasm') }}</v-chip></template></v-list-item>
-        <v-list-item link :to="Pages.taxonomies.path" prepend-icon="mdi-graph" v-if="Pages.isAvailable(Pages.taxonomies)">{{ $t('menuTaxonomies') }} <template #append><v-chip size="small">{{ formatBadge('taxonomies') }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.germplasm.path" prepend-icon="mdi-sprout" v-if="Pages.isAvailable(Pages.germplasm)" :title="$t('menuGermplasm')"><template #append><v-chip size="small">{{ formatBadge('germplasm') }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.taxonomies.path" prepend-icon="mdi-graph" v-if="Pages.isAvailable(Pages.taxonomies)" :title="$t('menuTaxonomies')"><template #append><v-chip size="small">{{ formatBadge('taxonomies') }}</v-chip></template></v-list-item>
 
         <v-list-group value="trials">
           <template #activator="{ props }">
-            <v-list-item v-bind="props" link prepend-icon="mdi-tag-multiple">{{ $t('menuTrialsData') }}</v-list-item>
+            <v-list-item v-bind="props" link prepend-icon="mdi-tag-multiple" :title="$t('menuTrialsData')" />
           </template>
 
-          <v-list-item link :to="Pages.traits.path" prepend-icon="mdi-tag-text-outline" v-if="Pages.isAvailable(Pages.traits)">{{ $t('menuTrialsTraits') }} <template #append><v-chip size="small">{{ formatBadge('traits') }}</v-chip></template></v-list-item>
-          <v-list-item link :to="Pages.getPath(Pages.export, 'trials')" prepend-icon="mdi-shovel" v-if="Pages.isAvailable(Pages.exportTraits)">{{ $t('menuTrialsDataExport') }} <template #append><v-chip size="small">{{ formatBadge('datasetsTrials') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.traits.path" prepend-icon="mdi-tag-text-outline" v-if="Pages.isAvailable(Pages.traits)" :title="$t('menuTrialsTraits')"><template #append><v-chip size="small">{{ formatBadge('traits') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.getPath(Pages.export, 'trials')" prepend-icon="mdi-shovel" v-if="Pages.isAvailable(Pages.exportTraits)" :title="$t('menuTrialsDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsTrials') }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="genotypes">
           <template #activator="{ props }">
-            <v-list-item v-bind="props" link prepend-icon="mdi-dna">{{ $t('menuGenotypicData') }}</v-list-item>
+            <v-list-item v-bind="props" link prepend-icon="mdi-dna" :title="$t('menuGenotypicData')" />
           </template>
 
-          <v-list-item link :to="Pages.markers.path" prepend-icon="mdi-format-indent-increase" v-if="Pages.isAvailable(Pages.markers)">{{ $t('menuGenotypicMarkers') }} <template #append><v-chip size="small">{{ formatBadge('markers') }}</v-chip></template></v-list-item>
-          <v-list-item link :to="Pages.maps.path" prepend-icon="mdi-reorder-horizontal" v-if="Pages.isAvailable(Pages.maps)">{{ $t('menuGenotypicMaps') }} <template #append><v-chip size="small">{{ formatBadge('maps') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.markers.path" prepend-icon="mdi-format-indent-increase" v-if="Pages.isAvailable(Pages.markers)" :title="$t('menuGenotypicMarkers')"><template #append><v-chip size="small">{{ formatBadge('markers') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.maps.path" prepend-icon="mdi-reorder-horizontal" v-if="Pages.isAvailable(Pages.maps)" :title="$t('menuGenotypicMaps')"><template #append><v-chip size="small">{{ formatBadge('maps') }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="geography">
           <template #activator="{ props }">
-            <v-list-item v-bind="props" link prepend-icon="mdi-earth">{{ $t('menuGeography') }}</v-list-item>
+            <v-list-item v-bind="props" link prepend-icon="mdi-earth" :title="$t('menuGeography')" />
           </template>
 
-          <v-list-item link :to="Pages.locations.path" prepend-icon="mdi-map" v-if="Pages.isAvailable(Pages.locations)">{{ $t('menuLocations') }} <template #append><v-chip size="small">{{ formatBadge('locations') }}</v-chip></template></v-list-item>
-          <v-list-item link :to="Pages.geographicSearch.path" prepend-icon="mdi-map-search" v-if="Pages.isAvailable(Pages.geographicSearch)">{{ $t('menuGeographicSearch') }}</v-list-item>
+          <v-list-item link :to="Pages.locations.path" prepend-icon="mdi-map" v-if="Pages.isAvailable(Pages.locations)" :title="$t('menuLocations')"><template #append><v-chip size="small">{{ formatBadge('locations') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.geographicSearch.path" prepend-icon="mdi-map-search" v-if="Pages.isAvailable(Pages.geographicSearch)" :title="$t('menuGeographicSearch')" />
         </v-list-group>
 
         <v-list-group value="climate">
           <template #activator="{ props }">
-            <v-list-item v-bind="props" link prepend-icon="mdi-weather-snowy-rainy">{{ $t('menuClimateData') }}</v-list-item>
+            <v-list-item v-bind="props" link prepend-icon="mdi-weather-snowy-rainy" :title="$t('menuClimateData')" />
           </template>
 
-          <v-list-item link :to="Pages.climates.path" prepend-icon="mdi-weather-snowy-rainy" v-if="Pages.isAvailable(Pages.climates)">{{ $t('menuClimateClimates') }} <template #append><v-chip size="small">{{ formatBadge('climates') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.climates.path" prepend-icon="mdi-weather-snowy-rainy" v-if="Pages.isAvailable(Pages.climates)" :title="$t('menuClimateClimates')"><template #append><v-chip size="small">{{ formatBadge('climates') }}</v-chip></template></v-list-item>
         </v-list-group>
 
-        <v-list-item link :to="Pages.datasets.path" prepend-icon="mdi-database" v-if="Pages.isAvailable(Pages.datasets)">{{ $t('menuDatasets') }} <template #append><v-chip size="small">{{ formatBadge('datasets') }}</v-chip></template></v-list-item>
-        <v-list-item link :to="Pages.experiments.path" prepend-icon="mdi-folder-table" v-if="Pages.isAvailable(Pages.experiments)">{{ $t('menuExperiments') }} <template #append><v-chip size="small">{{ formatBadge('experiments') }}</v-chip></template></v-list-item>
-        <v-list-item link :to="Pages.dataResources.path" prepend-icon="mdi-file-download" v-if="Pages.isAvailable(Pages.dataResources)">{{ $t('menuDataResources') }} <template #append><v-chip size="small">{{ formatBadge('fileresources') }}</v-chip></template></v-list-item>
-        <v-list-item link prepend-icon="mdi-book-open-page-variant" v-if="Pages.isAvailable(Pages.stories)">{{ $t('menuDataStories') }}</v-list-item>
-        <v-list-item link :to="Pages.statistics.path" prepend-icon="mdi-chart-areaspline" v-if="Pages.isAvailable(Pages.statistics)">{{ $t('menuDataStatistics') }}</v-list-item>
+        <v-list-item link :to="Pages.datasets.path" prepend-icon="mdi-database" v-if="Pages.isAvailable(Pages.datasets)" :title="$t('menuDatasets')"><template #append><v-chip size="small">{{ formatBadge('datasets') }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.experiments.path" prepend-icon="mdi-folder-table" v-if="Pages.isAvailable(Pages.experiments)" :title="$t('menuExperiments')"><template #append><v-chip size="small">{{ formatBadge('experiments') }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.dataResources.path" prepend-icon="mdi-file-download" v-if="Pages.isAvailable(Pages.dataResources)" :title="$t('menuDataResources')"><template #append><v-chip size="small">{{ formatBadge('fileresources') }}</v-chip></template></v-list-item>
+        <v-list-item link prepend-icon="mdi-book-open-page-variant" v-if="Pages.isAvailable(Pages.stories)" :title="$t('menuDataStories')" />
+        <v-list-item link :to="Pages.statistics.path" prepend-icon="mdi-chart-areaspline" v-if="Pages.isAvailable(Pages.statistics)" :title="$t('menuDataStatistics')" />
       </v-list-group>
 
-      <v-list-item link :to="Pages.images.path" prepend-icon="mdi-image-multiple" v-if="Pages.isAvailable(Pages.images)">{{ $t('menuImages') }} <template #append><v-chip size="small">{{ formatBadge('images') }}</v-chip></template></v-list-item>
-      <v-list-item link :to="Pages.groups.path" prepend-icon="mdi-group" v-if="Pages.isAvailable(Pages.groups)">{{ $t('menuGroups') }} <template #append><v-chip size="small">{{ formatBadge('groups') }}</v-chip></template></v-list-item>
+      <v-list-item link :to="Pages.images.path" prepend-icon="mdi-image-multiple" v-if="Pages.isAvailable(Pages.images)" :title="$t('menuImages')"><template #append><v-chip size="small">{{ formatBadge('images') }}</v-chip></template></v-list-item>
+      <v-list-item link :to="Pages.groups.path" prepend-icon="mdi-group" v-if="Pages.isAvailable(Pages.groups)" :title="$t('menuGroups')"><template #append><v-chip size="small">{{ formatBadge('groups') }}</v-chip></template></v-list-item>
 
       <v-list-group value="about">
         <template #activator="{ props }">
-          <v-list-item v-bind="props" link prepend-icon="mdi-information">{{ $t('menuAbout') }}</v-list-item>
+          <v-list-item v-bind="props" link prepend-icon="mdi-information" :title="$t('menuAbout')" />
         </template>
 
-        <v-list-item link :to="Pages.aboutProject.path" prepend-icon="mdi-information-outline" v-if="Pages.isAvailable(Pages.aboutProject)">{{ $t('menuAboutProject') }}</v-list-item>
-        <v-list-item link :to="Pages.aboutGerminate.path" prepend-icon="$germinate">{{ $t('menuAboutGerminate') }}</v-list-item>
-        <v-list-item link :to="Pages.aboutExportFormats.path" prepend-icon="mdi-application-brackets" v-if="Pages.isAvailable(Pages.aboutExportFormats)">{{ $t('menuAboutExportFormat') }}</v-list-item>
+        <v-list-item link :to="Pages.aboutProject.path" prepend-icon="mdi-information-outline" v-if="Pages.isAvailable(Pages.aboutProject)" :title="$t('menuAboutProject')" />
+        <v-list-item link :to="Pages.aboutGerminate.path" prepend-icon="$germinate" :title="$t('menuAboutGerminate')" />
+        <v-list-item link :to="Pages.aboutExportFormats.path" prepend-icon="mdi-application-brackets" v-if="Pages.isAvailable(Pages.aboutExportFormats)" :title="$t('menuAboutExportFormat')" />
       </v-list-group>
 
       <v-list-item class="pa-5" v-if="logoVisible">
