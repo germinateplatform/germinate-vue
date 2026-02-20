@@ -99,6 +99,10 @@
 
       store.setToken(result)
 
+      emitter.emit('show-snackbar', {
+        text: t('pageLoginToastSuccessful'),
+        color: 'success',
+      })
       router.push('/')
 
       username.value = ''

@@ -41,7 +41,7 @@
     >
       <template #loader="{ isActive }">
         <v-progress-linear
-          :active="isActive"#
+          :active="isActive"
           color="primary"
           height="4"
           indeterminate

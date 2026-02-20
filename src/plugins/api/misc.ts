@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AboutConfig, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, Publicationdata, Publications, TemplateI18n, ViewTableImages, ViewTableStories } from '@/plugins/types/germinate'
+import type { AboutConfig, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, Publicationdata, Publications, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableStories } from '@/plugins/types/germinate'
 
 const apiGetSettings = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'settings', success: onSuccess, error: onError })
 
@@ -15,7 +15,7 @@ const apiPostGatekeeperNew = <T>(queryData: NewUnapprovedUserRequest, onSuccess?
 
 const apiGetLocales = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `clientlocale?random=${uuidv4()}`, success: onSuccess, error: onError })
 
-const apiPostTableExport = <T>(queryData: ExportRequest, tableType: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `${tableType}/table/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+const apiPostTableExport = <T>(queryData: TrialsExportDatasetRequest, tableType: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `${tableType}/table/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
 
 const apiPostInstitutionTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
   queryData.page -= 1

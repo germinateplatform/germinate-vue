@@ -96,18 +96,18 @@
   import type { PaginatedRequest, ViewTableDatasets } from '@/plugins/types/germinate'
   import { downloadBlob } from '@/plugins/util'
   import DatasetAttributeTable from '@/components/tables/DatasetAttributeTable.vue'
-  import { apiPostDatasetAttributeTable, apiPostDatasetAttributeTableExport } from '@/plugins/api/dataset';
+  import { apiPostDatasetAttributeTable, apiPostDatasetAttributeTableExport } from '@/plugins/api/dataset'
 
   const compProps = defineProps<{
     dataset: ViewTableDatasets
   }>()
 
   function getAttributeData (data: PaginatedRequest) {
-    return apiPostDatasetAttributeTable(compProps.dataset.datasetId, data)
+    return apiPostDatasetAttributeTable(compProps.dataset.datasetId || -1, data)
   }
 
   function downloadAttributesTable (data: PaginatedRequest) {
-    return apiPostDatasetAttributeTableExport(compProps.dataset.datasetId, data)
+    return apiPostDatasetAttributeTableExport(compProps.dataset.datasetId || -1, data)
   }
 
   function downloadAttributes () {

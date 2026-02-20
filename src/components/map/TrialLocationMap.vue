@@ -5,6 +5,7 @@
       :items="shapefiles"
       :label="$t('formLabelTraitTimelineShapefile')"
       return-object
+      clearable
       item-key="fileresourceId"
       item-title="fileresourceName"
       v-if="shapefiles"

@@ -12,12 +12,6 @@
     <template #card-text>
       <v-card-text>
         <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
-
-        <v-select
-          v-model="groupBy"
-          :items="groupByOptions"
-          :label="$t('formLabelTraitChartGrouping')"
-        />
       </v-card-text>
     </template>
     <template #toolbar-append>
@@ -44,11 +38,13 @@
   import Plotly from 'plotly.js/lib/core'
   import box from 'plotly.js/lib/box'
   import { coreStore } from '@/stores/app'
-  import type { ViewTableTrialsData } from '@/plugins/types/germinate'
+  import type { ViewTableDatasets, ViewTableGroups, ViewTableTraits, ViewTableTrialsData } from '@/plugins/types/germinate'
   import { getColor } from '@/plugins/util/colors'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { useI18n } from 'vue-i18n'
+
+  import emitter from 'tiny-emitter/instance'
+  import type { UserSelection } from '@/components/widgets/selections/HighlightSelection.vue'
 
   // Only register the chart types we're actually using to reduce the final bundle size
   Plotly.register([
@@ -57,33 +53,22 @@
 
   const compProps = defineProps<{
     datasetIds: number[]
-    traitIds: number[]
+    traits: ViewTableTraits[]
     plotData: ViewTableTrialsData[]
+    groups: ViewTableGroups[]
+    datasets: ViewTableDatasets[]
+    userSelection?: UserSelection
+    showIndividuals?: boolean
   }>()
 
-  const { t } = useI18n()
   const store = coreStore()
 
   const sourceFile = ref<DownloadBlob>()
   const boxplotChart = useTemplateRef('boxplotChart')
   const id = ref('boxplot-' + uuidv4())
-  const groupBy = ref<'dataset' | 'treatment' | 'group'>('dataset')
   const loading = ref(false)
   const selectedIds = ref<number[]>([])
   const selectedGermplasmId = ref<number>()
-
-  const groupByOptions = computed(() => {
-    return [{
-      title: t('widgetChartColoringByDataset'),
-      value: 'dataset',
-    }, {
-      title: t('widgetChartColoringByTreatment'),
-      value: 'treatment',
-    }, {
-      title: t('widgetChartColoringByGroup'),
-      value: 'group',
-    }]
-  })
 
   const filename = computed(() => {
     let name = 'trait-boxplot'
@@ -92,8 +77,8 @@
     } else {
       name += '-all-datasets'
     }
-    if (compProps.traitIds) {
-      name += `-${compProps.traitIds.join('-')}`
+    if (compProps.traits) {
+      name += `-${compProps.traits.map(t => t.variableId).join('-')}`
     } else {
       name += '-all-traits'
     }
@@ -102,30 +87,31 @@
   })
 
   function getHeight () {
-    switch (groupBy.value) {
-      case 'dataset':
-        return (traits.length + datasets.length) * 150
-      case 'group':
-        return (traits.length + groups.length) * 150
-      case 'treatment':
-        return (treatments.length + traits.length) * 150
-      default:
-        return traits.length * 150
+    if (compProps.userSelection) {
+      switch (compProps.userSelection.type) {
+        case 'dataset':
+          return Math.max(300, (compProps.traits.length + compProps.datasetIds.length + 1) * 150)
+        default:
+          return Math.max(300, (compProps.traits.length + compProps.userSelection.selectedItems.length + 1) * 150)
+      }
+    } else {
+      return Math.max(300, compProps.traits.length * 150)
     }
   }
 
   const markedItemCount = computed(() => selectedIds.value.length)
 
-  let datasets = []
-  let groups = []
-  let traits = []
-  let treatments = []
-
   async function redraw () {
+    emitter.emit('show-loading', true)
+
     loading.value = true
-    if (compProps.plotData) {
+    const traitIdSet = new Set<number>(compProps.traits.map(t => t.variableId))
+    const data = compProps.plotData.filter(pd => traitIdSet.has(pd.traitId)).concat()
+    data.sort((a, b) => b.traitName.localeCompare(a.traitName) || (b.traitId - a.traitId))
+
+    if (data) {
       sourceFile.value = {
-        blob: new Blob([JSON.stringify(compProps.plotData)], { type: 'application/json' }),
+        blob: new Blob([JSON.stringify(data)], { type: 'application/json' }),
         filename: filename.value,
         extension: 'json',
       }
@@ -134,90 +120,89 @@
     if (boxplotChart.value) {
       Plotly.purge(boxplotChart.value)
 
-      let traces
+      const x: number[] = []
+      const y: string[] = []
+      const ids: string[] = []
+      const text: string[] = []
 
-      const dsSet = new Set<string>()
-      const traitSet = new Set()
-      const treatmentSet = new Set()
-      const groupSet = new Set<string>()
-
-      const data = compProps.plotData.concat()
-      data.sort((a, b) => b.traitName.localeCompare(a.traitName) || (b.traitId - a.traitId))
-
-      data.forEach(pd => {
-        if (pd.datasetId) {
-          dsSet.add(JSON.stringify({ id: pd.datasetId, name: pd.datasetName }))
-        }
-        if (pd.traitId) {
-          traitSet.add(pd.traitId)
-        }
-        if (pd.treatment) {
-          treatmentSet.add(pd.treatment)
-        }
-        if (pd.groups) {
-          pd.groups.forEach(g => groupSet.add(JSON.stringify(g)))
-        }
+      data.forEach(dp => {
+        x.push(+dp.traitValue)
+        y.push(dp.traitName)
+        ids.push(`${dp.germplasmId}-${uuidv4()}`)
+        text.push(getGermplasmDisplayName(dp))
       })
 
-      datasets = [...dsSet].map(ds => JSON.parse(ds))
-      traits = [...traitSet]
-      treatments = [...treatmentSet]
-      groups = [...groupSet].map(g => JSON.parse(g))
+      const traces = [{
+        y,
+        x,
+        ids,
+        text,
+        marker: { color: getColor(0), size: 4 },
+        name: 'All data',
+        type: 'box' as const,
+        boxmean: false,
+        orientation: 'h' as const,
+        jitter: 0.3,
+        boxpoints: (compProps.showIndividuals ? ('all' as const) : false) as false | 'all',
+      }]
 
-      if (groupBy.value === 'dataset') {
-        traces = datasets.map((ds, index) => {
-          const datasetData = data.filter(pd => pd.datasetId === ds.id)
+      if (compProps.userSelection) {
+        switch (compProps.userSelection.type) {
+          case 'dataset':
+            traces.push(...compProps.datasets.map((dataset, index) => {
+              return getData(data, dp => dp.datasetId === dataset.datasetId, index, dataset.datasetName || 'N/A')
+            }))
+            break
+          case 'germplasm':
+            traces.push(...compProps.userSelection.selectedItems.map((germplasm, index) => {
+              return getData(data, dp => dp.germplasmDisplayName === germplasm, index, germplasm)
+            }))
+            break
+          case 'taxonomies':
+            traces.push(...compProps.userSelection.selectedItems.map((taxonomy, index) => {
+              return getData(data, dp => dp.taxonomyFull === taxonomy, index, taxonomy)
+            }))
+            break
+          case 'plot':
+            traces.push(...compProps.userSelection.selectedItems.map((plot, index) => {
+              const [row, column] = plot.split('|').map(Number)
+              return getData(data, dp => dp.trialRow === row && dp.trialColumn === column, index, plot)
+            }))
+            break
+          case 'year':
+            traces.push(...compProps.userSelection.selectedItems.map((year, index) => {
+              return getData(data, dp => {
+                if (!dp.recordingDate) {
+                  return false
+                } else {
+                  const date = new Date(dp.recordingDate)
+                  return date.getFullYear() === +year
+                }
+              }, index, `&nbsp;${year}`)
+            }))
+            break
+          case 'reps':
+            traces.push(...compProps.userSelection.selectedItems.map((rep, index) => {
+              return getData(data, dp => dp.rep === rep, index, `&nbsp;${rep}`)
+            }))
+            break
+          case 'group':
+            const groupNames: { [index: number]: string } = {}
 
-          return {
-            y: datasetData.map(td => td.traitName),
-            x: datasetData.map(td => +td.traitValue),
-            ids: datasetData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: datasetData.map(td => getGermplasmDisplayName(td)),
-            name: ds.name,
-            marker: { color: getColor(index), size: 4 },
-            type: 'box' as const,
-            boxmean: false,
-            orientation: 'h' as const,
-            jitter: 0.3,
-            boxpoints: 'all' as const,
-          }
-        })
-      } else if (groupBy.value === 'treatment') {
-        traces = treatments.map((treatment, index) => {
-          const treatmentData = data.filter(pd => pd.treatment === treatment)
+            compProps.groups.forEach(g => {
+              groupNames[g.groupId || -1] = g.groupName || ''
+            })
 
-          return {
-            y: treatmentData.map(td => td.traitName),
-            x: treatmentData.map(td => +td.traitValue),
-            ids: treatmentData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: treatmentData.map(td => getGermplasmDisplayName(td)),
-            name: treatment,
-            marker: { color: getColor(index), size: 4 },
-            type: 'box' as const,
-            boxmean: false,
-            orientation: 'h' as const,
-            jitter: 0.3,
-            boxpoints: 'all' as const,
-          }
-        })
-      } else if (groupBy.value === 'group' && groups) {
-        traces = groups.map((group, index) => {
-          const groupData = data.filter(pd => pd.groups && pd.groups.some(g => g.id === group.id))
-
-          return {
-            y: groupData.map(td => td.traitName),
-            x: groupData.map(td => +td.traitValue),
-            ids: groupData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: groupData.map(td => getGermplasmDisplayName(td)),
-            name: group.name,
-            marker: { color: getColor(index), size: 4 },
-            type: 'box' as const,
-            boxmean: false,
-            orientation: 'h' as const,
-            jitter: 0.3,
-            boxpoints: 'all' as const,
-          }
-        })
+            traces.push(...compProps.userSelection.selectedItems.map((groupId, index) => {
+              return getData(data, dp => dp.groups !== undefined && dp.groups.some(g => `${g.id}` === groupId), index, groupNames[+groupId] || `${groupId}`)
+            }))
+            break
+          case 'treatments':
+            traces.push(...compProps.userSelection.selectedItems.map((treatment, index) => {
+              return getData(data, dp => dp.treatment === treatment, index, treatment)
+            }))
+            break
+        }
       }
 
       const layout = {
@@ -244,46 +229,67 @@
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h' as const,
+          x: 0,
+          y: 1.1,
           font: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
       }
 
       const config = {
         modeBarButtonsToRemove: ['toImage' as const],
-        displayModeBar: true,
         responsive: true,
         displaylogo: false,
       }
 
       if (traces) {
         Plotly.react(boxplotChart.value, traces, layout, config)
+          .then(() => {
+            emitter.emit('show-loading', false)
 
-        // @ts-ignore
-        boxplotChart.value.on('plotly_selected', eventData => {
-          if (boxplotChart.value && (!eventData || (eventData.points.length === 0))) {
-            Plotly.restyle(boxplotChart.value, { selectedpoints: null })
+            // @ts-ignore
+            boxplotChart.value.on('plotly_selected', eventData => {
+              if (boxplotChart.value && (!eventData || (eventData.points.length === 0))) {
+                Plotly.restyle(boxplotChart.value, { selectedpoints: null })
 
-            selectedIds.value = []
-          } else {
-            selectedIds.value = [...new Set<number>(eventData.points.map((p: any) => Number.parseInt(p.id.split('-')[0])).filter((value: number, index: number, self: number[]) => self.indexOf(value) === index))]
-          }
-        })
+                selectedIds.value = []
+              } else {
+                selectedIds.value = [...new Set<number>(eventData.points.map((p: any) => Number.parseInt(p.id.split('-')[0])).filter((value: number, index: number, self: number[]) => self.indexOf(value) === index))]
+              }
+            })
 
-        // @ts-ignore
-        boxplotChart.value.on('plotly_click', (data: any) => {
-          if (data.points.length > 0) {
-            selectedGermplasmId.value = Number.parseInt(data.points[0].id.split('-')[0])
+            // @ts-ignore
+            boxplotChart.value.on('plotly_click', (data: any) => {
+              if (data.points.length > 0) {
+                selectedGermplasmId.value = Number.parseInt(data.points[0].id.split('-')[0])
 
-            // nextTick(() => this.$refs.passportModal.show())
-            // TODO: Show passport popup?
-          } else {
-            selectedGermplasmId.value = undefined
-          }
-        })
+                // nextTick(() => this.$refs.passportModal.show())
+                // TODO: Show passport popup?
+              } else {
+                selectedGermplasmId.value = undefined
+              }
+            })
+          })
       }
     }
 
     loading.value = false
+  }
+
+  function getData (data: ViewTableTrialsData[], filter: (dp: ViewTableTrialsData) => boolean, index: number, name: string) {
+    const dps = data.filter(filter)
+    return {
+      y: dps.map(dp => dp.traitName),
+      x: dps.map(dp => +dp.traitValue),
+      ids: dps.map(dp => `${dp.germplasmId}-${uuidv4()}`),
+      text: dps.map(dp => getGermplasmDisplayName(dp)),
+      marker: { color: getColor(index + 1), size: 4 },
+      name: name,
+      type: 'box' as const,
+      boxmean: false,
+      orientation: 'h' as const,
+      jitter: 0.3,
+      boxpoints: (compProps.showIndividuals ? ('all' as const) : false) as false | 'all',
+    }
   }
 
   function clearMarkedItems () {
@@ -298,7 +304,9 @@
     }
   }
 
-  watch(groupBy, async () => redraw())
-
   watch(() => compProps.plotData, async () => nextTick(() => redraw()), { immediate: true })
+
+  defineExpose({
+    redraw,
+  })
 </script>

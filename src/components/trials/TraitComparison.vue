@@ -35,152 +35,100 @@
       </v-col>
     </v-row>
 
-    <v-btn class="my-5" :disabled="!canContinue" color="primary" prepend-icon="mdi-arrow-right-box" :text="$t('buttonPlot')" @click="plot" />
+    <v-btn class="my-5" color="primary" :disabled="!canContinue" prepend-icon="mdi-arrow-right-box" :text="$t('buttonPlot')" @click="collectGermplasm" />
 
-    <template v-if="plotData">
-      <p>{{ $t('pageTrialsExportComparisonChartText') }}</p>
-
-      <v-select
-        v-model="groupBy"
-        :items="groupByOptions"
-        :label="$t('formLabelTraitChartGrouping')"
+    <div v-if="plotTraces && plotTraces.length > 0">
+      <TraitRadarChart
+        :traces="plotTraces"
+        :average="plotAverageTrace"
       />
 
-      <div v-for="trait in selectedTraits" :key="`trait-${trait.traitId}`" class="mt-5">
-        <TraitComparisonChart
-          :title="trait.traitName"
-          :dataset-ids="datasetIds"
-          :categories="splitValues"
-          :trait="trait"
-          :get-plot-data="getTraitSubset"
-          :germplasm-data="plotData[trait.traitId]"
-          :germplasm="germplasm"
-          :color-mapping="colorMapping"
-          :group-by="groupBy"
-          v-if="plotData[trait.traitId]"
-        >
-          <template #title-append>
-            <v-chip class="ms-2" size="small" :text="dataTypes[trait.dataType].text()" :color="dataTypes[trait.dataType].color()" :prepend-icon="dataTypes[trait.dataType].path" />
-          </template>
-        </TraitComparisonChart>
-      </div>
-    </template>
+      <v-row class="mt-5">
+        <v-col cols="12" lg="6">
+          <TraitBubbleChart
+            :traces="plotTraces"
+            :average="plotAverageTrace"
+          />
+        </v-col>
+        <v-col cols="12" lg="6">
+          <TraitHeatmap
+            :traces="plotTraces"
+            :average="plotAverageTrace"
+            :custom-range="{ from: 0, to: 100 }"
+          />
+        </v-col>
+      </v-row>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableTrialsData, type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm } from '@/plugins/types/germinate'
+  import { type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm, type TrialsExportDatasetRequest, type ViewTableTrialsData, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
-  import emitter from 'tiny-emitter/instance'
-  import { coreStore } from '@/stores/app'
   import { apiPostGermplasmTable, apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostTrialsDataTable } from '@/plugins/api/trait'
-  import { getGermplasmDisplayName } from '@/plugins/util'
-  import { useI18n } from 'vue-i18n'
-  import { getColor } from '@/plugins/util/colors'
-  import TraitComparisonChart from '@/components/charts/TraitComparisonChart.vue'
-  import { dataTypes } from '@/plugins/util/types'
   import GroupSelection from '@/components/widgets/selections/GroupSelection.vue'
   import GermplasmSelection from '@/components/widgets/selections/GermplasmSelection.vue'
   import TraitSelection from '@/components/widgets/selections/TraitSelection.vue'
+  import { coreStore } from '@/stores/app'
 
-  export interface BoxPlotData {
-    count: number
-    total: number
-    germplasmData: { [key: number]: GermplasmData }
-  }
-
-  export interface GermplasmData {
-    germplasmName: string
-    values: { [key: string]: number[] }
-  }
-
-  export interface GermplasmInfo {
-    id: number
-    name: string
-  }
+  import emitter from 'tiny-emitter/instance'
+  import { apiPostTraitDatasetStats, apiPostTrialsDataTable } from '@/plugins/api/trait'
+  import { getColor } from '@/plugins/util/colors'
+  import TraitRadarChart from '@/components/charts/TraitRadarChart.vue'
+  import { useI18n } from 'vue-i18n'
+  import TraitBubbleChart from '@/components/charts/TraitBubbleChart.vue'
+  import TraitHeatmap from '@/components/charts/TraitHeatmap.vue'
 
   const compProps = defineProps<{
     datasetIds: number[]
     traits: ViewTableTraits[]
     groups: ViewTableGroups[]
-    max?: number
   }>()
 
-  const { t } = useI18n()
-  const store = coreStore()
-
-  const selectedTraits = ref<ViewTableTraits[]>([])
-  const selectedGroups = ref<ViewTableGroups[]>([])
-  const groupSelection = ref<GroupSelectionType>('groups')
-  const allGermplasm = ref<ViewTableGermplasm[]>([])
-  const selectedGermplasm = ref<ViewTableGermplasm[]>([])
-
-  const plotData = ref<{ [key: number]: BoxPlotData }>()
-  const splitValues = ref<string[]>([])
-  const germplasm = ref<GermplasmInfo[]>([])
-  const colorMapping = ref<{ [key: string]: string }>({})
-
-  const groupBy = ref<'year' | 'treatment' | 'dataset' | 'trialsite' | 'undefined'>('undefined')
-
-  let rawData: ViewTableTrialsData[] = []
-
-  const groupByOptions = computed(() => {
-    return [{
-      title: t('widgetChartColoringNoColoring'),
-      value: 'undefined',
-    }, {
-      title: t('widgetChartColoringByDataset'),
-      value: 'dataset',
-    }, {
-      title: t('widgetChartColoringByYear'),
-      value: 'year',
-    }, {
-      title: t('widgetChartColoringByTreatment'),
-      value: 'treatment',
-    }, {
-      title: t('widgetChartColoringByTrialSite'),
-      value: 'trialsite',
-    }]
-  })
-
-  const canContinue = computed(() => {
-    return selectedTraits.value.length > 0 && selectedTraits.value.length < (compProps.max || Number.MAX_SAFE_INTEGER) && (groupSelection.value === 'all' || selectedGroups.value.length > 0 || selectedGermplasm.value.length > 0)
-  })
-
-  function update (germplasmIds: number[]) {
-    apiPostTrialsDataTable<PaginatedResult<ViewTableTrialsData[]>>({
-      page: 1,
-      limit: MAX_JAVA_INTEGER,
-      prevCount: -1,
-      datasetIds: compProps.datasetIds,
-      filters: [{
-        filters: [{
-          column: 'germplasmId',
-          comparator: FilterComparator.inSet,
-          values: germplasmIds.map(String),
-        }, {
-          column: 'traitId',
-          comparator: FilterComparator.inSet,
-          values: selectedTraits.value.map(t => `${t.traitId}`),
-        }],
-        operator: FilterOperator.and,
-      }],
-    }, result => {
-      if (result && result.data) {
-        rawData = result.data
-        redraw()
-      }
-
-      emitter.emit('show-loading', false)
-    })
+  interface StatsTrait extends ViewTableTraits {
+    // Domain is original value set (e.g [3.3, 104.2]). Basically FROM
+    domainMin: number
+    domainMax: number
+    // Range is the target value area (e.g. [0, 100]). Basically TO
+    rangeMin: number
+    rangeMax: number
+    avg?: number
+    categoricalCustomData?: string[]
   }
 
-  function plot () {
-    emitter.emit('show-loading', true)
+  export interface TraitComparisonChartTrace {
+    values: (number | null)[]
+    name: string
+    id: number | undefined
+    dimensions: string[]
+    customdata: (string | undefined | null)[]
+    color: string
+  }
 
+  const store = coreStore()
+  const { t } = useI18n()
+
+  const canContinue = computed(() => selectedTraits.value.length > 0 && (selectedGroups.value.length > 0 || selectedGermplasm.value.length > 0))
+
+  // User selections
+  const groupSelection = ref<GroupSelectionType>('groups')
+  const selectedTraits = ref<ViewTableTraits[]>([])
+  const selectedGroups = ref<ViewTableGroups[]>([])
+  const selectedGermplasm = ref<ViewTableGermplasm[]>([])
+
+  // Server responses
+  const allGermplasm = ref<ViewTableGermplasm[]>([])
+  const traitData = ref<ViewTableTrialsData[]>()
+
+  // Computed
+  const plotAverageTrace = ref<TraitComparisonChartTrace>()
+  const plotTraces = ref<TraitComparisonChartTrace[]>([])
+  const selectedTraitStats = ref<StatsTrait[]>([])
+  const allSelectedGermplasmIds = ref<number[]>([])
+
+  function collectGermplasm () {
     const germplasmIds: Set<number> = new Set()
 
     if (selectedGermplasm.value) {
@@ -192,7 +140,7 @@
         store.storeMarkedGermplasm.forEach(id => germplasmIds.add(id))
         update([...germplasmIds])
       } else {
-        apiPostGroupGermplasmTableIds<PaginatedResult<number[]>>(selectedGroups.value[0].groupId || -1, {
+        apiPostGroupGermplasmTableIds(selectedGroups.value[0].groupId || -1, {
           page: 1,
           limit: MAX_JAVA_INTEGER,
         }, result => {
@@ -208,119 +156,204 @@
     }
   }
 
-  function redraw () {
-    const tempTraitChartData: { [key: number]: BoxPlotData } = {}
-    const germplasmMapping: Map<number, string> = new Map()
-    const tempSplit = new Set<string>()
-    rawData.forEach(r => {
-      const germplasmId = r.germplasmId
-      const germplasmName = getGermplasmDisplayName(r)
-      const traitId = r.traitId
-      const traitValue = r.traitValue
+  function update (germplasmIds: number[]) {
+    allSelectedGermplasmIds.value = germplasmIds
 
-      let split = 'undefined'
+    emitter.emit('show-loading', true)
 
-      switch (groupBy.value) {
-        case 'year':
-          try {
-            split = `${new Date(r.recordingDate).getFullYear()}`
-          } catch {
-            split = 'undefined'
+    const query: TrialsExportDatasetRequest = {
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      prevCount: -1,
+      datasetIds: compProps.datasetIds,
+      traitIds: selectedTraits.value.map(t => t.traitId),
+      germplasmIds: germplasmIds,
+      minimal: true,
+    }
+
+    apiPostTrialsDataTable(query, result => {
+      traitData.value = result?.data || []
+
+      emitter.emit('show-loading', false)
+    })
+
+    apiPostTraitDatasetStats({
+      datasetIds: compProps.datasetIds,
+      traitIds: selectedTraits.value.map(t => t.variableId),
+    }, result => {
+      if (result) {
+        const st: StatsTrait[] = JSON.parse(JSON.stringify(selectedTraits.value))
+
+        result.forEach(r => {
+          const matchingTrait = st.find(t => t.variableId === r.variableId)
+
+          if (matchingTrait) {
+            if (matchingTrait.scaleDatatype === ViewTableTraitsScaleDatatype.categorical) {
+              matchingTrait.rangeMin = 0
+              matchingTrait.rangeMax = matchingTrait.scaleRestrictions.categories[0].length - 1
+              matchingTrait.domainMin = 0
+              matchingTrait.domainMax = matchingTrait.scaleRestrictions.categories[0].length - 1
+              matchingTrait.avg = r.avg
+              matchingTrait.count = r.count
+              matchingTrait.categoricalCustomData = getTraitCategoryCustomdata(matchingTrait)
+            } else {
+              matchingTrait.rangeMin = 0
+              matchingTrait.rangeMax = 100
+              matchingTrait.domainMin = r.min
+              matchingTrait.domainMax = r.max
+              matchingTrait.avg = r.avg
+              matchingTrait.count = r.count
+            }
           }
-          break
-        case 'treatment':
-          split = r.treatment
-          break
-        case 'dataset':
-          split = `${r.datasetId}`
-          break
-        case 'trialsite':
-          split = r.locationName
-          break
+        })
+
+        selectedTraitStats.value = st
+      } else {
+        selectedTraitStats.value = []
       }
 
-      tempSplit.add(split)
+      updateChartData()
+    })
+  }
 
-      if (!germplasmMapping.has(germplasmId)) {
-        germplasmMapping.set(germplasmId, germplasmName)
-      }
+  function findTraitValueIndex (value: string, trait: ViewTableTraits) {
+    let result = -1
 
-      let data = tempTraitChartData[traitId]
+    trait.scaleRestrictions.categories.forEach(c => {
+      result = Math.max(result, c.indexOf(value))
+    })
 
-      if (!data) {
-        data = {
-          count: 0,
-          total: 0,
-          germplasmData: {},
+    return result === -1 ? undefined : result
+  }
+
+  function getTraitCategoryCustomdata (trait: ViewTableTraits) {
+    if (trait.scaleDatatype === ViewTableTraitsScaleDatatype.categorical) {
+      const cats: string[][] = trait.scaleRestrictions.categories
+
+      if (cats && cats.length > 0) {
+        const length = cats[0].length
+
+        if (cats.every(c => c.length === length)) {
+          const values = cats[0].map((_, index) => `${index} -> `)
+
+          for (let other = 0; other < cats.length; other++) {
+            cats[other].forEach((o, i) => {
+              values[i] += `${other > 0 ? ':' : ''}${o}`
+            })
+          }
+
+          return values
         }
       }
+    }
 
-      if (!data.germplasmData[germplasmId]) {
-        data.germplasmData[germplasmId] = {
-          germplasmName: germplasmName,
-          values: {},
+    return undefined
+  }
+
+  function updateChartData () {
+    if (traitData.value && traitData.value.length > 0 && selectedTraitStats.value && selectedTraitStats.value.length > 0) {
+      const avg: TraitComparisonChartTrace = {
+        name: t('chartLegendAverageLong'),
+        id: undefined,
+        values: [],
+        customdata: [],
+        dimensions: [],
+        color: 'grey',
+      }
+
+      selectedTraitStats.value.forEach(traitStats => {
+        let v = traitStats.avg || 0
+
+        if (traitStats.scaleDatatype === ViewTableTraitsScaleDatatype.categorical) {
+          avg.customdata.push(`${traitStats.variableName}<br>${v}<br>${(traitStats.categoricalCustomData || []).join('<br>')}`)
+        } else {
+          avg.customdata.push(`${traitStats.variableName}<br>${v}`)
         }
+
+        v = (v - traitStats.domainMin) / (traitStats.domainMax - traitStats.domainMin) * 100
+        avg.values.push(v)
+        avg.dimensions.push(traitStats.variableName)
+      })
+
+      if (avg.values.length > 0) {
+        avg.values.push(avg.values[0])
+      }
+      if (avg.dimensions.length > 0) {
+        avg.dimensions.push(avg.dimensions[0])
       }
 
-      if (!data.germplasmData[germplasmId].values[split]) {
-        data.germplasmData[germplasmId].values[split] = []
-      }
+      plotAverageTrace.value = avg
 
-      data.germplasmData[germplasmId].values[split].push(+traitValue)
-      data.count++
-      data.total += +traitValue
+      const result: TraitComparisonChartTrace[] = []
+      allSelectedGermplasmIds.value.forEach((gId, i) => {
+        const g = allGermplasm.value.find(g => g.germplasmId === gId)
 
-      tempTraitChartData[traitId] = data
-    })
+        if (!g) {
+          return
+        }
 
-    plotData.value = tempTraitChartData
+        const germplasmData: TraitComparisonChartTrace = {
+          color: getColor(i),
+          id: g.germplasmId,
+          name: g.germplasmDisplayName,
+          dimensions: [],
+          values: [],
+          customdata: [],
+        }
 
-    splitValues.value = Array.from(tempSplit).sort()
+        const dataPoints = traitData.value?.filter(td => td.germplasmId === g.germplasmId) || []
 
-    const g: GermplasmInfo[] = []
-    germplasmMapping.forEach((value, key) => {
-      g.push({
-        id: key,
-        name: value,
+        selectedTraitStats.value.forEach(trait => {
+          const traitDataPoints = dataPoints?.filter(dp => dp.traitId === trait.variableId)
+
+          if (!traitDataPoints || traitDataPoints.length === 0) {
+            germplasmData.dimensions.push(trait.variableName)
+            germplasmData.values.push(null)
+            germplasmData.customdata.push(null)
+          } else {
+            let v: number
+
+            if (trait.scaleDatatype === ViewTableTraitsScaleDatatype.categorical) {
+              const existing = traitDataPoints.map(tdp => findTraitValueIndex(tdp.traitValue, trait)).filter(tv => tv !== undefined)
+              v = existing.reduce((a, b) => a + b) / existing.length
+              germplasmData.customdata.push(`${trait.variableName}<br>${v}<br>${(trait.categoricalCustomData || []).join('<br>')}`)
+            } else {
+              v = traitDataPoints.map(tdp => +tdp.traitValue).reduce((a, b) => a + b) / traitDataPoints.length
+              germplasmData.customdata.push(`${trait.variableName}<br>${v}`)
+            }
+
+            v = (v - trait.domainMin) / (trait.domainMax - trait.domainMin) * 100
+
+            germplasmData.dimensions.push(trait.variableName)
+            germplasmData.values.push(v)
+          }
+        })
+
+        if (germplasmData.customdata && germplasmData.customdata.length > 0) {
+          germplasmData.customdata.push(germplasmData.customdata[0])
+        }
+
+        if (germplasmData.dimensions.length > 0) {
+          germplasmData.dimensions.push(germplasmData.dimensions[0])
+        }
+
+        if (germplasmData.values.length > 0) {
+          germplasmData.values.push(germplasmData.values[0])
+        }
+
+        result.push(germplasmData)
       })
-    })
 
-    germplasm.value = g
+      plotTraces.value = result
 
-    updateChartColors()
-  }
-
-  function updateChartColors () {
-    const tempColorMapping: { [key: string]: string } = {}
-
-    if (splitValues.value && splitValues.value.length > 0) {
-      splitValues.value.forEach((t, i) => {
-        tempColorMapping[t] = getColor(i)
-      })
+      console.log(result)
+    } else {
+      plotTraces.value = []
     }
-    if (germplasm.value && germplasm.value.length > 0) {
-      germplasm.value.forEach((g, i) => {
-        tempColorMapping[g.id] = getColor(i)
-      })
-    }
-
-    colorMapping.value = tempColorMapping
   }
-
-  function getTraitSubset (trait: ViewTableTraits) {
-    const headers = ['germplasmId', 'germplasmGid', 'germplasmName', 'germplasmDisplayName', 'entityParentName', 'entityParentGeneralIdentifier', 'entityType', 'datasetId', 'datasetName', 'datasetDescription', 'locationName', 'countryName', 'countryCode2', 'traitId', 'traitName', 'traitNameShort', 'traitRestrictions', 'unitName', 'treatment', 'recordingDate', 'traitValue']
-    let result = headers.join('\t') + '\n'
-    rawData.filter(d => +d.traitId === trait.traitId).forEach(r => {
-      // @ts-ignore
-      result += headers.map(h => r[h] || '').join('\t') + '\n'
-    })
-    return result
-  }
-
-  watch(groupBy, async () => redraw())
 
   onMounted(() => {
-    apiPostGermplasmTable<PaginatedResult<ViewTableGermplasm[]>>({
+    apiPostGermplasmTable({
       page: 1,
       limit: MAX_JAVA_INTEGER,
       minimal: true,

@@ -9,16 +9,15 @@
       return-object
       hide-details
       multiple
-      chips
       clearable
       :items="compProps.germplasm"
       item-value="germplasmId"
       :item-title="(item: ViewTableGermplasm) => [item.germplasmDisplayName, item.germplasmName, item.germplasmNumber].filter(i => i !== undefined && i !== null && i.trim().length > 0).join(' | ')"
     >
       <template #selection="{ item, index }">
-        <v-chip v-if="index < 2" :text="item.title" />
+        <v-chip size="small" v-if="index < 5" :text="item.title" />
 
-        <span v-if="index === 2" class="text-grey text-caption align-self-center">(+{{ (selectedGermplasm || []).length - 2 }} others)</span>
+        <span v-if="index === 5" class="text-grey text-caption align-self-center">(+{{ (selectedGermplasm || []).length - 5 }} others)</span>
       </template>
 
       <template #prepend-item v-if="canSelectAll">

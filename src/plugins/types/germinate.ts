@@ -439,6 +439,20 @@ export interface Filter {
     safeColumn?: string;
 }
 
+export interface TraitStats {
+    variableId: number;
+    variableName: string;
+    traitId: number;
+    traitName: string;
+    traitNameShort: string;
+    min: number;
+    avg: number;
+    max: number;
+    count: number;
+    categories: string[][];
+    dataType: string;
+}
+
 export interface ViewTableLicenses {
     licenseId: number;
     licenseName: string;
@@ -614,6 +628,7 @@ export interface TrialCreationDetails {
 }
 
 export interface PlotDetails {
+    id: string;
     row: number;
     column: number;
     germplasm: string;
@@ -624,28 +639,264 @@ export interface TraitDatasetRequest extends DatasetRequest {
     traitIds: number[];
 }
 
+export interface ViewTableTraitAttributes {
+    attributeValueId: number;
+    variableId: number;
+    variableName: string;
+    attributeId: number;
+    attributeName: string;
+    attributeDescription: string;
+    attributeType: ViewTableTraitAttributesAttributeType;
+    targetTable: string;
+    foreignId: number;
+    createdOn: Date;
+    attributeValue: string;
+}
+
 export interface ViewTableTraits {
+    variableId: number;
+    variableName: string;
+    variableDescription: string;
     traitId: number;
     traitName: string;
-    traitNameShort: string;
     traitDescription: string;
-    dataType: ViewTableTraitsDataType;
-    traitRestrictions: TraitRestrictions;
-    traitSetSize: number;
-    traitIsTimeseries: boolean;
-    categoryId: number;
-    categoryName: string;
-    categoryDescription: string;
-    unitId: number;
-    unitName: string;
-    unitDescription: string;
-    unitAbbreviation: string;
-    synonyms: string[];
+    methodId: number;
+    methodName: string;
+    methodDescription: string;
+    methodClass: ViewTableTraitsMethodClass;
+    scaleId: number;
+    scaleName: string;
+    scaleDescription: string;
+    traitAbbreviation: string;
+    traitClass: ViewTableTraitsTraitClass;
+    traitSynonyms: string[];
+    methodSetSize: number;
+    methodIsTimeseries: boolean;
+    scaleDatatype: ViewTableTraitsScaleDatatype;
+    scaleRestrictions: TraitRestrictions;
+    scaleUnit: string;
     datasetIds: number[];
     count: number;
 }
 
-export const enum ViewTableTraitsDataType {
+export interface Methodontologies {
+    ontologyId: number;
+    methodId: number;
+    ontologyPuid: string;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface Methods {
+    id: number;
+    name: string;
+    description: string;
+    methodClass: MethodsMethodClass;
+    setsize: number;
+    isTimeseries: boolean;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface Scaleontologies {
+    ontologyId: number;
+    scaleId: number;
+    ontologyPuid: string;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface Scales {
+    id: number;
+    name: string;
+    description: string;
+    unit: string;
+    datatype: ScalesDatatype;
+    restrictions: JSON;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface Variableontologies {
+    ontologyId: number;
+    variableId: number;
+    ontologyPuid: string;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface Variables {
+    id: number;
+    name: string;
+    description: string;
+    traitId: number;
+    methodId: number;
+    scaleId: number;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface ViewTableTraitsTemplate {
+    variableCropontologyId: string;
+    variableName: string;
+    variableDescription: string;
+    traitCopontologyId: string;
+    traitName: string;
+    traitDescription: string;
+    traitAbbreviation: string;
+    traitClass: ViewTableTraitsTemplateTraitClass;
+    traitCategory: string;
+    methodCropontologyId: string;
+    methodName: string;
+    methodDescription: string;
+    methodClass: ViewTableTraitsTemplateMethodClass;
+    methodSetSize: number;
+    methodIsTimeseries: boolean;
+    scaleCropontologyId: string;
+    scaleName: string;
+    scaleDescription: string;
+    scaleUnit: string;
+    scaleDataType: ViewTableTraitsTemplateScaleDataType;
+    scaleMinimum: JSON;
+    scaleMaximum: JSON;
+    scaleValidValues: JSON;
+}
+
+export interface TrialSetupStats {
+    reps: string[];
+    treatments: Treatments[];
+    taxonomies: Taxonomies[];
+    plots: PlotDetails[];
+    years: number[];
+}
+
+export interface Taxonomies {
+    id: number;
+    genus: string;
+    species: string;
+    subtaxa: string;
+    speciesAuthor: string;
+    subtaxaAuthor: string;
+    cropname: string;
+    ploidy: number;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface Treatments {
+    id: number;
+    name: string;
+    description: string;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export interface Traits {
+    id: number;
+    name: string;
+    description: string;
+    abbreviation: string;
+    traitClass: TraitsTraitClass;
+    traitcategoryId: number;
+    synonyms: string[];
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export const enum ViewTableTraitsMethodClass {
+    measurement = 'measurement',
+    estimation = 'estimation',
+    counting = 'counting',
+    computation = 'computation',
+    prediction = 'prediction',
+    description = 'description',
+    classification = 'classification',
+    other = 'other',
+}
+
+export const enum TraitsTraitClass {
+    abiotic_stress = 'abiotic_stress',
+    agronomic = 'agronomic',
+    biochemical = 'biochemical',
+    biotic_stress = 'biotic_stress',
+    fertility = 'fertility',
+    morphological = 'morphological',
+    phenological = 'phenological',
+    physiological = 'physiological',
+    quality = 'quality',
+    other = 'other',
+}
+
+export const enum ScalesDatatype {
+    categorical = 'categorical',
+    numeric = 'numeric',
+    text = 'text',
+    date = 'date',
+}
+
+export const enum ViewTableTraitAttributesAttributeType {
+    categorical = 'categorical',
+    numeric = 'numeric',
+    text = 'text',
+    date = 'date',
+}
+
+export const enum ViewTableTraitsTraitClass {
+    abiotic_stress = 'abiotic_stress',
+    agronomic = 'agronomic',
+    biochemical = 'biochemical',
+    biotic_stress = 'biotic_stress',
+    fertility = 'fertility',
+    morphological = 'morphological',
+    phenological = 'phenological',
+    physiological = 'physiological',
+    quality = 'quality',
+    other = 'other',
+}
+
+export const enum ViewTableTraitsScaleDatatype {
+    categorical = 'categorical',
+    numeric = 'numeric',
+    text = 'text',
+    date = 'date',
+}
+
+export const enum ViewTableTraitsTemplateTraitClass {
+    abiotic_stress = 'abiotic_stress',
+    agronomic = 'agronomic',
+    biochemical = 'biochemical',
+    biotic_stress = 'biotic_stress',
+    fertility = 'fertility',
+    morphological = 'morphological',
+    phenological = 'phenological',
+    physiological = 'physiological',
+    quality = 'quality',
+    other = 'other',
+}
+
+export const enum ViewTableTraitsTemplateMethodClass {
+    measurement = 'measurement',
+    estimation = 'estimation',
+    counting = 'counting',
+    computation = 'computation',
+    prediction = 'prediction',
+    description = 'description',
+    classification = 'classification',
+    other = 'other',
+}
+
+export const enum MethodsMethodClass {
+    measurement = 'measurement',
+    estimation = 'estimation',
+    counting = 'counting',
+    computation = 'computation',
+    prediction = 'prediction',
+    description = 'description',
+    classification = 'classification',
+    other = 'other',
+}
+
+export const enum ViewTableTraitsTemplateScaleDataType {
     categorical = 'categorical',
     numeric = 'numeric',
     text = 'text',
@@ -731,39 +982,39 @@ export interface GermplasmStats {
 }
 
 export interface ViewTableDatasets {
-    datasetId: number;
-    datasetName: string;
-    datasetDescription: string;
-    hyperlink: string;
-    sourceFile: string;
-    version: string;
-    datasetType: string;
-    experimentId: number;
-    experimentName: string;
-    experimentDescription: string;
-    projectId: number;
-    projectName: string;
-    projectDescription: string;
-    datatype: string;
+    datasetId?: number;
+    datasetName?: string;
+    datasetDescription?: string;
+    hyperlink?: string;
+    sourceFile?: string;
+    version?: string;
+    datasetType?: string;
+    experimentId?: number;
+    experimentName?: string;
+    experimentDescription?: string;
+    projectId?: number;
+    projectName?: string;
+    projectDescription?: string;
+    datatype?: string;
     datasetState: string;
-    locations: ViewTableLocations[];
-    institutions: ViewTableInstitutions[];
-    licenseId: number;
-    licenseName: string;
-    contact: string;
-    startDate: Date;
-    endDate: Date;
-    dublinCore: DublinCore;
+    locations?: ViewTableLocations[];
+    institutions?: ViewTableInstitutions[];
+    licenseId?: number;
+    licenseName?: string;
+    contact?: string;
+    startDate?: Date;
+    endDate?: Date;
+    dublinCore?: DublinCore;
     createdOn: Date;
     updatedOn: Date;
-    dataObjectCount: JooqWeirdnessValue;
-    dataPointCount: JooqWeirdnessValue;
+    dataObjectCount?: JooqWeirdnessValue;
+    dataPointCount?: JooqWeirdnessValue;
     isExternal: boolean;
-    publications: number;
-    fileresourceIds: number[];
-    collaborators: number;
-    attributes: number;
-    acceptedBy: number[];
+    publications?: number;
+    fileresourceIds?: number[];
+    collaborators?: number;
+    attributes?: number;
+    acceptedBy?: number[];
 }
 
 export interface ViewTableProjects {
@@ -892,12 +1143,12 @@ export const enum DataExportJobsDatatype {
 
 export interface Datasets {
     id: number;
-    experimentId: number;
+    experimentId?: number;
     datasettypeId?: number;
     name: string;
     description: string;
-    dateStart: Date;
-    dateEnd: Date;
+    dateStart?: Date;
+    dateEnd?: Date;
     sourceFile?: string;
     datatype?: string;
     dublinCore?: DublinCore;
@@ -906,7 +1157,7 @@ export interface Datasets {
     datasetStateId: number;
     licenseId?: number;
     isExternal?: boolean;
-    hyperlink: string;
+    hyperlink?: string;
     createdOn?: Date;
     updatedOn?: Date;
     contact?: string;
@@ -1246,7 +1497,7 @@ export interface TrialsExportDatasetRequest extends PaginatedRequest {
     traitIds?: number[];
     germplasmIds?: number[];
     germplasmGroupIds?: number[];
-    datasetIds: number[];
+    datasetIds?: number[];
 }
 
 export interface ViewTableTrialsData {
@@ -1255,6 +1506,8 @@ export interface ViewTableTrialsData {
     germplasmName: string;
     germplasmDisplayName: string;
     germplasmSynonyms: string[];
+    taxonomyId: number;
+    taxonomyFull: string;
     entityParentName: string;
     entityParentGeneralIdentifier: string;
     entityType: string;
@@ -1516,10 +1769,11 @@ export const enum GermplasminstitutionsType {
 }
 
 export const enum UserType {
-    ADMIN = 'ADMIN',
-    DATA_CURATOR = 'DATA_CURATOR',
-    AUTH_USER = 'AUTH_USER',
-    UNKNOWN = 'UNKNOWN',
+    ADMIN = 'Administrator',
+    DATA_CURATOR = 'Data Curator',
+    REGULAR_USER = 'Regular User',
+    SUSPENDED_USER = 'Suspended User',
+    UNKNOWN = 'Unknown',
 }
 
 export const enum RunType {

@@ -58,15 +58,23 @@
 
       <h2 class="mt-10 mb-3">{{ $t('pageAboutGerminateTeamTitle') }}<small class="text-muted"> - {{ $t('pageAboutGerminateTeamSubtitle') }}</small></h2>
       <v-row>
-        <v-col v-for="member in team" :key="`team-member-${member.name}`" class="d-flex">
+        <v-col
+          v-for="member in team"
+          :key="`team-member-${member.name}`"
+          class="d-flex"
+          cols="12"
+          md="6"
+          xl="4"
+        >
           <v-card color="surface-variant" class="pa-5 d-flex">
-            <div class="d-flex team-member">
-              <div class="d-flex flex-column align-center">
-                <v-avatar :image="`/img/${member.img}`" size="160" />
-                <v-chip variant="tonal" label color="success" class="mt-3" prepend-icon="mdi-calendar">Since {{ member.since }}</v-chip>
-              </div>
-
-              <div class="ps-6">
+            <v-row>
+              <v-col cols="12" lg="4">
+                <div class="d-flex flex-column align-center">
+                  <v-avatar :image="`/img/${member.img}`" :size="lg ? 120 : 160" />
+                  <v-chip variant="tonal" label color="success" class="mt-3" prepend-icon="mdi-calendar">Since {{ member.since }}</v-chip>
+                </div>
+              </v-col>
+              <v-col cols="12" lg="8">
                 <div class="text-h5 mb-1 font-weight-bold d-flex align-center">
                   <span class="me-3">{{ member.name }}</span>
                   <a
@@ -85,8 +93,8 @@
                 <div class="text-subtitle d-flex align-start my-2">
                   <v-icon :color="getTemplateColor(2)" icon="mdi-information" class="me-2" /> {{ member.about() }}
                 </div>
-              </div>
-            </div>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>
@@ -120,8 +128,10 @@
   import { getTemplateColor } from '@/plugins/util/colors'
   import { useI18n } from 'vue-i18n'
   import emitter from 'tiny-emitter/instance'
+  import { useDisplay } from 'vuetify'
 
   const { t } = useI18n()
+  const { lg } = useDisplay()
 
   interface TeamMember {
     name: string

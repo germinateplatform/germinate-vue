@@ -55,7 +55,7 @@
     return apiPostLocationTableIds(data)
   }
   function downloadTable(data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'location')
+    return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'location')
   }
 
   function onDataChanged (request: PaginatedRequest) {
@@ -64,7 +64,7 @@
     const customRequest = Object.assign({}, request)
     customRequest.limit = MAX_JAVA_INTEGER
     customRequest.page = 1
-    apiPostLocationTable(customRequest, (result: PaginatedResult<ViewTableLocations[]>) => {
+    apiPostLocationTable(customRequest, result => {
       locations.value = result.data
     })
   }

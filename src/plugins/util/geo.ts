@@ -3,6 +3,30 @@ import type { FeatureCollectionWithFilename } from 'shpjs'
 import L from 'leaflet'
 
 import emitter from 'tiny-emitter/instance'
+import type { LatLng } from '@/plugins/types/germinate'
+
+const radEarth = 6378.16
+const oneDegree = (2 * Math.PI * radEarth) / 360
+const oneKm = 1 / oneDegree
+
+function jitter (lat: number, lng: number, kms: number, fixed: number): LatLng {
+  const randomInRange = (from: number, to: number, fixed = 10): number => {
+    return Number.parseFloat((Math.random() * (to - from) + from).toFixed(fixed))
+  }
+
+  return {
+    lat: randomInRange(
+      lat - (kms * oneKm),
+      lat + (kms * oneKm),
+      fixed,
+    ),
+    lng: randomInRange(
+      lng - (kms * oneKm),
+      lng + (kms * oneKm),
+      fixed,
+    ),
+  }
+}
 
 function addShapefileToMap (map: Map, shp: FeatureCollectionWithFilename): { [key: string]: Layer[] } {
   const bounds = L.latLngBounds([])
@@ -52,7 +76,7 @@ function addShapefileToMap (map: Map, shp: FeatureCollectionWithFilename): { [ke
             color: 'rgba(var(--v-theme-primary), 0.6)',
             weight: 1,
           }
-        }
+        },
       })
 
       layer.addTo(map)
@@ -70,4 +94,5 @@ function addShapefileToMap (map: Map, shp: FeatureCollectionWithFilename): { [ke
 
 export {
   addShapefileToMap,
+  jitter,
 }

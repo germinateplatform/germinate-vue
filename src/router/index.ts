@@ -11,6 +11,8 @@ import { routes } from 'vue-router/auto-routes'
 import emitter from 'tiny-emitter/instance'
 import { coreStore } from '@/stores/app'
 import { Pages } from '@/plugins/pages'
+import { userIsAtLeast } from '@/plugins/api/auth'
+import { UserType } from '@/plugins/types/germinate'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -31,9 +33,15 @@ router.beforeEach((to, from, next) => {
 
   const store = coreStore()
 
-  // Redirect to login page if we're in FULL auth mode and not logged in
-  if (store.storeServerSettings && store.storeServerSettings.authMode === 'FULL' && !store.storeToken && (to.path !== Pages.login.path)) {
-    next('/login')
+  if (store.storeServerSettings) {
+    if (store.storeServerSettings.authMode === 'FULL' && !store.storeToken && (to.path !== Pages.login.path)) {
+      next('/login')
+    // @ts-ignore
+    } else if (to.meta && to.meta.requiredUserType && !userIsAtLeast(store.storeToken?.userType || UserType.REGULAR_USER, to.meta.requiredUserType)) {
+      next('/login')
+    } else {
+      next()
+    }
   } else {
     next()
   }

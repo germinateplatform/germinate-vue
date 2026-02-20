@@ -15,7 +15,7 @@
       :header-title="$t('pageTraitsTitle')"
       v-bind="$attrs"
     >
-      <template #header.traitSetSize="{ column }">
+      <template #header.methodSetSize="{ column }">
         {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipTraitSet')">
           <template #activator="{ props }">
             <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
@@ -23,38 +23,51 @@
         </v-tooltip>
       </template>
 
-      <!-- Trait id link -->
-      <template #item.traitId="{ item }">
-        <router-link :to="Pages.getPath(Pages.traitDetails, item.traitId)">{{ item.traitId }}</router-link>
+      <!-- Variable id link -->
+      <template #item.variableId="{ item }">
+        <router-link :to="Pages.getPath(Pages.traitDetails, item.variableId)">{{ item.variableId }}</router-link>
       </template>
-      <!-- Trait name link -->
-      <template #item.traitName="{ item }">
-        <router-link :to="Pages.getPath(Pages.traitDetails, item.traitId)">{{ item.traitName }}</router-link>
+      <!-- Variable name link -->
+      <template #item.variableName="{ item }">
+        <router-link :to="Pages.getPath(Pages.traitDetails, item.variableId)">{{ item.variableName }}</router-link>
       </template>
-      <!-- Trait short name link -->
-      <template #item.traitNameShort="{ item }">
-        <router-link :to="Pages.getPath(Pages.traitDetails, item.traitId)">{{ item.traitNameShort }}</router-link>
+      <!-- Variable description link -->
+      <template #item.variableDescription="{ item }">
+        <router-link :to="Pages.getPath(Pages.traitDetails, item.variableId)" v-if="item.variableDescription && item.variableDescription.length > 0">
+          <ShowFullCell :content="item.variableDescription" title="tableColumnVariableDescription" />
+        </router-link>
       </template>
-      <!-- Trait description link -->
+
       <template #item.traitDescription="{ item }">
-        <router-link :to="Pages.getPath(Pages.traitDetails, item.traitId)">{{ item.traitDescription }}</router-link>
+        <ShowFullCell :content="item.traitDescription" title="tableColumnTraitDescription" v-if="item.traitDescription && item.traitDescription.length > 0" />
+      </template>
+      <template #item.traitClass="{ item }">
+        <v-chip label :color="traitClasses[item.traitClass].color()" :prepend-icon="traitClasses[item.traitClass].path">{{ traitClasses[item.traitClass].text() }}</v-chip>
+      </template>
+      <template #item.methodClass="{ item }">
+        <v-chip label :color="methodClasses[item.methodClass].color()" :prepend-icon="methodClasses[item.methodClass].path">{{ methodClasses[item.methodClass].text() }}</v-chip>
+      </template>
+      <template #item.methodDescription="{ item }">
+        <ShowFullCell :content="item.methodDescription" title="tableColumnMethodDescription" v-if="item.methodDescription && item.methodDescription.length > 0" />
+      </template>
+      <template #item.scaleDatatype="{ item }">
+        <v-chip label :color="dataTypes[item.scaleDatatype].color()" :prepend-icon="dataTypes[item.scaleDatatype].path">{{ dataTypes[item.scaleDatatype].text() }}</v-chip>
+      </template>
+      <template #item.scaleDescription="{ item }">
+        <ShowFullCell :content="item.scaleDescription" title="tableColumnScaleDescription" v-if="item.scaleDescription && item.scaleDescription.length > 0" />
+      </template>
+      <template #item.traitSynonyms="{ item }">
+        <span v-if="item.traitSynonyms">{{ item.traitSynonyms.join(', ') }}</span>
       </template>
 
-      <template #item.dataType="{ item }">
-        <v-chip label :color="dataTypes[item.dataType].color()" :prepend-icon="dataTypes[item.dataType].path">{{ dataTypes[item.dataType].text() }}</v-chip>
-      </template>
-      <template #item.synonyms="{ item }">
-        <span v-if="item.synonyms">{{ item.synonyms.join(', ') }}</span>
-      </template>
-
-      <template #item.traitRestrictions="{ item }">
-        <v-tooltip v-if="item.traitRestrictions">
+      <template #item.scaleRestrictions="{ item }">
+        <v-tooltip v-if="item.scaleRestrictions">
           <template #activator="{ props: activatorProps }">
             <v-icon color="primary" v-bind="activatorProps" icon="mdi-code-brackets" />
           </template>
-          <div v-if="item.traitRestrictions.min !== undefined && item.traitRestrictions.min !== null"><v-icon size="small" icon="mdi-greater-than-or-equal" /> {{ item.traitRestrictions.min }}</div>
-          <div v-if="item.traitRestrictions.max !== undefined && item.traitRestrictions.max !== null"><v-icon size="small" icon="mdi-less-than-or-equal" /> {{ item.traitRestrictions.max }}</div>
-          <div v-if="item.traitRestrictions.categories"><v-icon size="small" icon="mdi-code-brackets" /> {{ item.traitRestrictions.categories.map((c: string[]) => c.join(', ')).join(', ') }}</div>
+          <div v-if="item.scaleRestrictions.min !== undefined && item.scaleRestrictions.min !== null"><v-icon size="small" icon="mdi-greater-than-or-equal" /> {{ item.scaleRestrictions.min }}</div>
+          <div v-if="item.scaleRestrictions.max !== undefined && item.scaleRestrictions.max !== null"><v-icon size="small" icon="mdi-less-than-or-equal" /> {{ item.scaleRestrictions.max }}</div>
+          <div v-if="item.scaleRestrictions.categories"><v-icon size="small" icon="mdi-code-brackets" /> {{ item.scaleRestrictions.categories.map((c: string[]) => c.join(', ')).join(', ') }}</div>
         </v-tooltip>
       </template>
 
@@ -64,11 +77,11 @@
       </template>
 
       <!-- Category -->
-      <template #item.categoryName="{ item }">
+      <!-- <template #item.categoryName="{ item }">
         <div v-if="item.categoryName">
           <v-chip label variant="flat" size="small" href="#" @click.prevent="emit('category-clicked', { id: item.categoryId, name: item.categoryName })" :color="getTagColor(item.categoryId)" :text="item.categoryName" />
         </div>
-      </template>
+      </template> -->
 
       <!-- Pass on all named slots -->
       <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
@@ -85,10 +98,9 @@
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableTraits } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
-  import { getTemplateColor } from '@/plugins/util/colors'
-  import { getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { dataTypes } from '@/plugins/util/types'
+  import { dataTypes, methodClasses, traitClasses } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
+  import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTraits[]>>> }
@@ -100,94 +112,15 @@
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
 
-  const categories: { [key: number]: string } = {}
-
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers: ExtendedDataTableHeader[] = [{
-      key: 'traitId',
-      dataType: 'integer',
-      title: t('tableColumnTraitId'),
-    }, {
-      key: 'traitName',
-      dataType: 'string',
-      title: t('tableColumnTraitName'),
-    }, {
-      key: 'traitNameShort',
-      dataType: 'string',
-      title: t('tableColumnTraitNameShort'),
-    }, {
-      key: 'traitDescription',
-      dataType: 'string',
-      title: t('tableColumnTraitDescription'),
-    }, {
-      key: 'dataType',
-      dataType: 'dataType',
-      title: t('tableColumnTraitDataType'),
-    }, {
-      key: 'traitRestrictions',
-      dataType: undefined,
-      sortable: false,
-      title: t('tableColumnTraitConstraints'),
-    }, {
-      key: 'synonyms',
-      dataType: 'json',
-      title: t('tableColumnTraitSynonyms'),
-    }, {
-      key: 'categoryId',
-      dataType: 'integer',
-      visibleInTable: false,
-      title: t('tableColumnTraitCategoryId'),
-    }, {
-      key: 'categoryName',
-      dataType: 'string',
-      title: t('tableColumnTraitCategoryName'),
-    }, {
-      key: 'traitSetSize',
-      dataType: 'integer',
-      title: t('tableColumnTraitSetSize'),
-    }, {
-      key: 'traitIsTimeseries',
-      dataType: 'boolean',
-      title: t('tableColumnTraitIsTimeseries'),
-    }, {
-      key: 'unitName',
-      dataType: 'string',
-      title: t('tableColumnTraitUnitName'),
-    }, {
-      key: 'unitDescription',
-      dataType: 'string',
-      title: t('tableColumnTraitUnitDescription'),
-    }, {
-      key: 'unitAbbreviation',
-      dataType: 'string',
-      title: t('tableColumnTraitUnitAbbreviation'),
-    }, {
-      key: 'datasetIds',
-      dataType: undefined,
-      sortable: false,
-      title: t('tableColumnTraitNrDataset'),
-    }, {
-      key: 'count',
-      dataType: 'integer',
-      class: 'text-right',
-      title: t('tableColumnTraitDataPoints'),
-      // @ts-ignore
-      value: (item: ViewTableTraits) => item.count !== undefined ? getNumberWithSuffix(item.count, 2) : undefined,
-    }]
+    const result = columns.traits.map(c => {
+      c.title = t(c.title || '')
+      return c
+    })
 
-    return headers
+    return result
   })
-
-  function getTagColor (category: number) {
-    if (!categories[category]) {
-      categories[category] = getTemplateColor(Object.keys(categories).length)
-    }
-
-    return categories[category]
-  }
-
-  const emit = defineEmits(['category-clicked'])
 
   defineExpose({
     refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),

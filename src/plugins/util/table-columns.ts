@@ -222,6 +222,14 @@ const traitDataColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnCountryName',
   searchable: true,
 }, {
+  key: 'variableId',
+  dataType: 'integer',
+  title: 'tableColumnVariableId',
+}, {
+  key: 'variableName',
+  dataType: 'string',
+  title: 'tableColumnVariableName',
+}, {
   key: 'traitId',
   dataType: 'integer',
   title: 'tableColumnTraitId',
@@ -230,7 +238,7 @@ const traitDataColumns: ExtendedDataTableHeader[] = [{
   dataType: 'string',
   title: 'tableColumnTraitName',
 }, {
-  key: 'traitDataType',
+  key: 'scaleDatatype',
   dataType: 'dataType',
   title: 'tableColumnTraitDataType',
 }, {
@@ -275,7 +283,7 @@ const traitDataColumns: ExtendedDataTableHeader[] = [{
   // @ts-ignore
   value: (value: ViewTableGermplasm) => value.longitude ? value.longitude.toFixed(2) : undefined,
 }, {
-  key: 'unitName',
+  key: 'scaleUnit',
   dataType: 'string',
   title: 'tableColumnTraitUnitName',
 }, {
@@ -405,6 +413,117 @@ const pedigreeColumns: ExtendedDataTableHeader[] = [
   },
 ]
 
+const traitColumns: ExtendedDataTableHeader[] = [{
+  key: 'variableId',
+  dataType: 'integer',
+  title: 'tableColumnVariableId',
+}, {
+  key: 'variableName',
+  dataType: 'string',
+  title: 'tableColumnVariableName',
+  quickSearchable: true,
+}, {
+  key: 'variableDescription',
+  dataType: 'string',
+  title: 'tableColumnVariableDescription',
+  quickSearchable: true,
+}, {
+  key: 'traitId',
+  dataType: 'integer',
+  title: 'tableColumnTraitId',
+}, {
+  key: 'traitName',
+  dataType: 'string',
+  title: 'tableColumnTraitName',
+  quickSearchable: true,
+}, {
+  key: 'traitDescription',
+  dataType: 'string',
+  title: 'tableColumnTraitDescription',
+  quickSearchable: true,
+}, {
+  key: 'traitAbbreviation',
+  dataType: 'string',
+  title: 'tableColumnTraitAbbreviation',
+  quickSearchable: true,
+}, {
+  key: 'traitClass',
+  dataType: 'traitClass',
+  title: 'tableColumnTraitClass',
+}, {
+  key: 'traitSynonyms',
+  dataType: 'json',
+  title: 'tableColumnTraitSynonyms',
+  quickSearchable: true,
+}, {
+  key: 'scaleId',
+  dataType: 'integer',
+  title: 'tableColumnScaleId',
+}, {
+  key: 'scaleName',
+  dataType: 'string',
+  title: 'tableColumnScaleName',
+  quickSearchable: true,
+}, {
+  key: 'scaleDescription',
+  dataType: 'string',
+  title: 'tableColumnScaleDescription',
+  quickSearchable: true,
+}, {
+  key: 'scaleDatatype',
+  dataType: 'dataType',
+  title: 'tableColumnScaleDataType',
+}, {
+  key: 'scaleRestrictions',
+  dataType: undefined,
+  sortable: false,
+  title: 'tableColumnScaleRestrictions',
+}, {
+  key: 'scaleUnit',
+  dataType: 'string',
+  title: 'tableColumnScaleUnit',
+  quickSearchable: true,
+}, {
+  key: 'methodId',
+  dataType: 'integer',
+  title: 'tableColumnMethodId',
+}, {
+  key: 'methodName',
+  dataType: 'string',
+  title: 'tableColumnMethodName',
+  quickSearchable: true,
+}, {
+  key: 'methodDescription',
+  dataType: 'string',
+  title: 'tableColumnMethodDescription',
+  quickSearchable: true,
+}, {
+  key: 'methodClass',
+  dataType: 'methodClass',
+  title: 'tableColumnMethodClass',
+  quickSearchable: true,
+}, {
+  key: 'methodSetSize',
+  dataType: 'integer',
+  title: 'tableColumnMethodSetSize',
+}, {
+  key: 'methodIsTimeseries',
+  dataType: 'boolean',
+  title: 'tableColumnMethodIsTimeseries',
+}, {
+  key: 'datasetIds',
+  dataType: undefined,
+  sortable: false,
+  title: 'tableColumnTraitNrDataset',
+}, {
+  key: 'count',
+  dataType: 'integer',
+  cellProps: { class: 'text-end' },
+  title: 'tableColumnTraitDataPoints',
+  // @ts-ignore
+  value: (item: ViewTableTraits) => item.count !== undefined ? getNumberWithSuffix(item.count, 2) : undefined,
+}]
+
 const datasetColumns: ExtendedDataTableHeader[] = [
   {
     key: 'projectId',
@@ -421,11 +540,13 @@ const datasetColumns: ExtendedDataTableHeader[] = [
     title: 'tableColumnDatasetName',
     dataType: 'string',
     searchable: true,
+    quickSearchable: true,
   }, {
     key: 'datasetDescription',
     title: 'tableColumnDatasetDescription',
     dataType: 'string',
     searchable: true,
+    quickSearchable: true,
   }, {
     key: 'experimentId',
     dataType: 'integer',
@@ -435,6 +556,7 @@ const datasetColumns: ExtendedDataTableHeader[] = [
     dataType: 'string',
     title: 'tableColumnExperimentName',
     searchable: true,
+    quickSearchable: true,
   }, {
     key: 'datasetType',
     dataType: 'string',
@@ -521,6 +643,7 @@ const columns: { [key: string]: ExtendedDataTableHeader[] } = {
   pedigrees: pedigreeColumns,
   datasets: datasetColumns,
   traitData: traitDataColumns,
+  traits: traitColumns,
 }
 
 const validCompsForType: { [key: string]: FilterComparator[] } = {
@@ -531,6 +654,8 @@ const validCompsForType: { [key: string]: FilterComparator[] } = {
   entityType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   newsType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   groupType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  methodClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
+  traitClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
   json: [FilterComparator.jsonSearch, FilterComparator.isNull, FilterComparator.isNotNull],
   jsonObject: [FilterComparator.jsonSearch],
   integer: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],

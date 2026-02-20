@@ -21,13 +21,8 @@
       <router-link :to="Pages.datasets.path" @click.prevent="redirectToDatasets(item)">{{ item.experimentName }}</router-link>
     </template>
 
-    <template #item.experimentDescription="{ item, value }">
-      <template v-if="item.experimentDescription && item.experimentDescription.length > 0">
-        <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
-        <a href="#" class="ms-2 table-icon-link" @click.prevent="showExperimentModal(item)" v-if="isTruncatedAfterWords(value, 10)">
-          <v-icon icon="mdi-page-next" />
-        </a>
-      </template>
+    <template #item.experimentDescription="{ item }">
+      <ShowFullCell :content="item.experimentDescription" title="tableColumnExperimentDescription" v-if="item.experimentDescription && item.experimentDescription.length > 0" />
     </template>
 
     <!-- Experiment dataset types -->
@@ -70,10 +65,9 @@
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableExperiments } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
-  import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import { datasetTypes } from '@/plugins/util/types'
 
-  import emitter from 'tiny-emitter/instance'
+  import ShowFullCell from '@/components/tables/ShowFullCell.vue'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableExperiments[]>>> }
@@ -122,7 +116,7 @@
       filters: [{
         column: 'experimentId',
         comparator: FilterComparator.equals,
-        values: [`${experiment.experimentId}`]
+        values: [`${experiment.experimentId}`],
       }],
       operator: FilterOperator.and,
     }]
@@ -151,17 +145,6 @@
       query: {
         'datasets-filter': JSON.stringify(filter),
       },
-    })
-  }
-
-  function showExperimentModal (experiment: ViewTableExperiments) {
-    emitter.emit('show-confirm', {
-      title: t('tableColumnExperimentDescription'),
-      message: experiment.experimentDescription,
-      okTitle: t('genericOk'),
-      cancelTitle: undefined,
-      okOnly: true,
-      okVariant: 'primary',
     })
   }
 

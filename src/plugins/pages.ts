@@ -1,5 +1,4 @@
 import type { Page } from '@/plugins/types/Page'
-import { UserType } from '@/plugins/types/germinate'
 import { coreStore } from '@/stores/app'
 
 export class Pages {
@@ -27,25 +26,21 @@ export class Pages {
   static userPermissions: Page = {
     name: 'userPermissions',
     path: '/admin/settings/user-permissions',
-    required: UserType.ADMIN,
   }
 
   static germinateSettings: Page = {
     name: 'germinateSettings',
     path: '/admin/settings/germinate-settings',
-    required: UserType.ADMIN,
   }
 
   static userFeedback: Page = {
     name: 'userFeedback',
     path: '/admin/settings/user-feedback',
-    required: UserType.ADMIN,
   }
 
   static backup: Page = {
     name: 'backup',
     path: '/admin/settings/backup',
-    required: UserType.ADMIN,
   }
 
   // DATA
@@ -92,7 +87,6 @@ export class Pages {
   static trialCreation: Page = {
     name: 'trialCreation',
     path: '/data/trials/create',
-    required: UserType.DATA_CURATOR,
   }
 
   static markers: Page = {
@@ -219,14 +213,12 @@ export class Pages {
   // IMPORT
   static importUpload: Page = {
     name: 'importUpload',
-    path: '/import/data-upload',
-    required: UserType.DATA_CURATOR,
+    path: '/data/upload',
   }
 
   static importUploadType: Page = {
     name: 'importUploadType',
     path: '/import/data-upload:/id',
-    required: UserType.DATA_CURATOR,
   }
 
   static search: Page = {

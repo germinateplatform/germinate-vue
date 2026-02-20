@@ -19,6 +19,10 @@
       :header-title="$t('pageDatasetsTitle')"
       v-bind="$attrs"
     >
+      <template #header>
+        <v-btn v-if="store.storeUserIsDataCurator" variant="outlined" prepend-icon="mdi-file-plus" @click="addItem">{{ $t('tableButtonAddDataset') }}</v-btn>
+      </template>
+
       <template #header.dataObjectCount="{ column }">
         {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataObjects')">
           <template #activator="{ props }">
@@ -35,13 +39,8 @@
         </v-tooltip>
       </template>
 
-      <template #item.datasetDescription="{ item, value }">
-        <template v-if="item.datasetDescription && item.datasetDescription.length > 0">
-          <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
-          <a href="#" class="ms-2 table-icon-link" @click.prevent="showDatasetModal(item)" v-if="isTruncatedAfterWords(value, 10)">
-            <v-icon icon="mdi-page-next" />
-          </a>
-        </template>
+      <template #item.datasetDescription="{ item }">
+        <ShowFullCell :content="item.datasetDescription" title="tableColumnDatasetDescription" v-if="item.datasetDescription && item.datasetDescription.length > 0" />
       </template>
 
       <!-- Experiment name -->
@@ -195,7 +194,7 @@
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
-  import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
+  import { truncateAfterWords } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
   import { datasetStates, datasetTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
@@ -326,10 +325,21 @@
       type: 'text' as const,
       inputType: 'url',
       visible: (item: ViewTableDatasets) => item.isExternal === true,
-      required: true,
+      required: false,
       width: 1,
     }]
   })
+
+  function addItem () {
+    selectedDataset.value = {
+      isExternal: false,
+      datasetState: 'public',
+      createdOn: new Date(),
+      updatedOn: new Date(),
+    }
+
+    nextTick(() => datasetEditModal.value?.show())
+  }
 
   function editDataset (dataset: ViewTableDatasets) {
     selectedDataset.value = dataset
@@ -365,10 +375,10 @@
 
   function sendDataset (dataset: ViewTableDatasets) {
     return new Promise<boolean>(resolve => {
-      apiPatchDataset(dataset.datasetId, {
-        id: dataset.datasetId,
-        name: dataset.datasetName,
-        description: dataset.datasetDescription,
+      apiPatchDataset(dataset.datasetId || -1, {
+        id: dataset.datasetId || -1,
+        name: dataset.datasetName || '',
+        description: dataset.datasetDescription || '',
         licenseId: dataset.licenseId,
         experimentId: dataset.experimentId,
         dateStart: dataset.startDate,
@@ -385,10 +395,10 @@
     if (!ds) {
       return
     }
-    apiPatchDataset(ds.datasetId, {
-      id: ds.datasetId,
-      name: ds.datasetName,
-      description: ds.datasetDescription,
+    apiPatchDataset(ds.datasetId || -1, {
+      id: ds.datasetId || -1,
+      name: ds.datasetName || '',
+      description: ds.datasetDescription || '',
       licenseId: licenseId,
       experimentId: ds.experimentId,
       dateStart: ds.startDate,
@@ -402,17 +412,6 @@
     selectedDataset.value = dataset
 
     nextTick(() => licenseSelectModal.value?.show())
-  }
-
-  function showDatasetModal (dataset: ViewTableDatasets) {
-    emitter.emit('show-confirm', {
-      title: t('tableColumnDatasetDescription'),
-      message: dataset.datasetDescription,
-      okTitle: t('genericOk'),
-      cancelTitle: undefined,
-      okOnly: true,
-      okVariant: 'primary',
-    })
   }
 
   function redirectToFileresources (dataset: ViewTableDatasets) {

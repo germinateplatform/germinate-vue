@@ -9,17 +9,16 @@
       hide-details
       multiple
       :label="$t('pageTrialsExportSelectTraitTitle')"
-      chips
       clearable
       v-model:search="searchTerm"
       :items="compProps.traits"
       item-value="traitId"
-      :item-title="(item: ViewTableTraits) => item.unitId ? `${item.traitName} [${item.unitAbbreviation || item.unitName}]` : item.traitName"
+      :item-title="(item: ViewTableTraits) => item.scaleUnit ? `${item.traitName} [${item.scaleUnit}]` : item.traitName"
     >
       <template #selection="{ item, index }">
-        <v-chip v-if="index < 2" :text="item.title" />
+        <v-chip size="small" v-if="index < 4" :text="item.title" />
 
-        <span v-if="index === 2" class="text-grey text-caption align-self-center">(+{{ (selectedTraits || []).length - 2 }} others)</span>
+        <span v-if="index === 4" class="text-grey text-caption align-self-center">(+{{ (selectedTraits || []).length - 4 }} others)</span>
       </template>
 
       <template #prepend-item v-if="canSelectAll">

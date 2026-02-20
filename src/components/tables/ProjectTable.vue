@@ -270,8 +270,6 @@
       formData.append('image', item.file)
     }
 
-    console.log(formData)
-
     return new Promise<boolean>(resolve => {
       if (selectedProject.value?.projectId) {
         apiPatchProject(selectedProject.value?.projectId, formData, () => {

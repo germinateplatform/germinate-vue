@@ -92,7 +92,7 @@
     return apiPostGermplasmTableIds(data)
   }
   function downloadGermplasm (data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'germplasm')
+    return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'germplasm')
   }
   function getMarkerData (data: PaginatedRequest) {
     return apiPostMarkerTable(data)
@@ -101,7 +101,7 @@
     return apiPostMarkerTableIds(data)
   }
   function downloadMarkers (data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'marker')
+    return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'marker')
   }
   function getLocationData (data: PaginatedRequest) {
     return apiPostLocationTable(data)
@@ -110,7 +110,7 @@
     return apiPostLocationTableIds(data)
   }
   function downloadLocations (data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'location')
+    return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'location')
   }
 
   watch(() => compProps.type, async (newValue: MarkedItemType | undefined) => {

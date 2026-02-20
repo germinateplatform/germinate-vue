@@ -20,11 +20,17 @@
   import BackupTable from '@/components/tables/BackupTable.vue'
   import { apiGetAdminSettings, apiPostBackupTable, apiPutBackup } from '@/plugins/api/misc'
   import { Pages } from '@/plugins/pages'
-  import type { BackupResult, PaginatedResult, ClientAdminConfiguration, PaginatedRequest } from '@/plugins/types/germinate'
+  import { type BackupResult, type PaginatedResult, type ClientAdminConfiguration, type PaginatedRequest, UserType } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
+
+  definePage({
+    meta: {
+      requiredUserType: UserType.ADMIN,
+    },
+  })
 
   const store = coreStore()
   const { t } = useI18n()

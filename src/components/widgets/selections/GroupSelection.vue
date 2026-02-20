@@ -14,7 +14,7 @@
       clearable
       :items="allGroups"
     />
-    <v-btn-toggle class="mt-2" color="primary" variant="outlined" v-model="groupSelection" v-if="multiple">
+    <v-btn-toggle class="mt-2" color="primary" variant="outlined" v-model="groupSelection" v-if="multiple && type === 'export'">
       <v-btn value="groups" :text="$t('pageExportGroupSelectModeSelect')" prepend-icon="mdi-arrow-up-box" />
       <v-btn value="all" :text="$t('pageExportGroupSelectModeAll')" prepend-icon="mdi-select-all" />
     </v-btn-toggle>
@@ -35,15 +35,16 @@
 
   interface GroupSelectionProps {
     markedItemType: string
-    modelValue: ViewTableGroups[]
     groups: ViewTableGroups[]
     multiple?: boolean
+    type?: 'groups' | 'export'
   }
 
   export type GroupSelectionType = 'all' | 'groups'
 
   const compProps = withDefaults(defineProps<GroupSelectionProps>(), {
     multiple: true,
+    type: 'export',
   })
 
   const emit = defineEmits(['update:model-value'])
@@ -52,6 +53,7 @@
   const { t } = useI18n()
 
   const selectedGroups = ref<GroupSelectItem[] | GroupSelectItem>([])
+  const modelValue = defineModel<ViewTableGroups[]>()
   const groupSelection = defineModel<GroupSelectionType>('groupSelection', {
     default: 'all',
   })
@@ -63,7 +65,7 @@
     }
   })
 
-  watch(() => compProps.modelValue, async newValue => {
+  watch(modelValue, async newValue => {
     if (newValue) {
       const ids = new Set(newValue.map(nv => nv.groupId))
       selectedGroups.value = allGroups.value.filter(ag => ag.type !== 'subheader' && ids.has(ag.value.groupId))
@@ -77,7 +79,7 @@
     }
     const asArray = Array.isArray(newValue) ? newValue : [newValue]
     const toNotify = (asArray || []).map(nv => nv.value)
-    if (JSON.stringify(toNotify) !== JSON.stringify(compProps.modelValue)) {
+    if (JSON.stringify(toNotify) !== JSON.stringify(modelValue.value)) {
       emit('update:model-value', toNotify)
     }
   })
@@ -91,7 +93,7 @@
       }
     })
 
-    if (store.storeMarkedIds[compProps.markedItemType]) {
+    if (store.storeMarkedIds[compProps.markedItemType] && compProps.type === 'export') {
       localGroups.unshift({ type: 'subheader', title: t('pageGroupsTitle') })
       const count = (store.storeMarkedIds[compProps.markedItemType] || []).length
       localGroups.unshift({
@@ -107,5 +109,19 @@
     }
 
     return localGroups
+  })
+
+  watch(() => compProps.type, async newValue => {
+    if (newValue === 'groups') {
+      groupSelection.value = 'groups'
+    }
+  }, { immediate: true })
+
+  watch(() => store.storeMarkedIds[compProps.markedItemType], async newValue => {
+    const asArray = Array.isArray(selectedGroups.value) ? selectedGroups.value : [selectedGroups.value]
+    if ((!newValue || newValue.length === 0) && asArray && asArray.length > 0 && asArray[0].value.groupId === -1) {
+      // Marked items group was selected, but items have been unmarked elsewhere -> de-select group
+      selectedGroups.value = asArray.filter(g => g.value.groupId !== -1)
+    }
   })
 </script>

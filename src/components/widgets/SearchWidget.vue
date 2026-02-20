@@ -157,7 +157,7 @@
   })
 
   function getGermplasmData (data: PaginatedRequest) {
-    return apiPostGermplasmTable<PaginatedResult<ViewTableGermplasm[]>>(data, result => {
+    return apiPostGermplasmTable(data, result => {
       stats.value.germplasm = result.count
     })
   }
@@ -165,7 +165,7 @@
     return apiPostGermplasmTableIds(data)
   }
   function downloadGermplasmTable (data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'germplasm')
+    return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'germplasm')
   }
   function getPedigreeData (data: PaginatedRequest) {
     return apiPostPedigreeTable<PaginatedResult<ViewTablePedigrees[]>>(data, result => {
@@ -173,12 +173,12 @@
     })
   }
   function getDatasetData (data: PaginatedRequest) {
-    return apiPostDatasetTable<PaginatedResult<ViewTableDatasets[]>>(data, result => {
+    return apiPostDatasetTable(data, result => {
       stats.value.datasets = result.count
     })
   }
   function getLocationData (data: PaginatedRequest) {
-    return apiPostLocationTable<PaginatedResult<ViewTableGermplasm[]>>(data, result => {
+    return apiPostLocationTable(data, result => {
       stats.value.locations = result.count
     })
   }
@@ -186,7 +186,7 @@
     return apiPostLocationTableIds(data)
   }
   function downloadLocationTable (data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'location')
+    return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'location')
   }
 
   function initiateSearch () {

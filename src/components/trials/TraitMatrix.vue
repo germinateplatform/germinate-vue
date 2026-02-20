@@ -30,7 +30,17 @@
 
     <v-btn class="my-5" :disabled="!canContinue" color="primary" prepend-icon="mdi-arrow-right-box" :text="$t('buttonPlot')" @click="plot" />
 
-    <TraitMatrixChart :plot-data="chartData" v-if="chartData" :dataset-ids="datasetIds" :traits="selectedTraits" :has-groups-data="hasGroupsData" />
+    <template v-if="chartData">
+      <HighlightSelection
+        ref="highlightSelection"
+        :groups="groups"
+        :dataset-ids="datasetIds"
+      />
+
+      <v-btn @click="traitMatrixChart?.redraw()" class="mb-5" prepend-icon="mdi-refresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
+    </template>
+
+    <TraitMatrixChart :user-selection="userSelection" :groups="groups || []" :plot-data="chartData" v-if="chartData" :dataset-ids="datasetIds" :traits="selectedTraits" :has-groups-data="hasGroupsData" ref="traitMatrixChart" />
   </div>
 </template>
 
@@ -43,6 +53,7 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { coreStore } from '@/stores/app'
   import TraitMatrixChart from '@/components/charts/TraitMatrixChart.vue'
+  import type HighlightSelection from '@/components/widgets/selections/HighlightSelection.vue'
 
   const compProps = defineProps<{
     datasetIds: number[]
@@ -56,6 +67,11 @@
   const selectedTraits = ref<ViewTableTraits[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])
   const groupSelection = ref<GroupSelectionType>('all')
+
+  const traitMatrixChart = useTemplateRef('traitMatrixChart')
+  const highlightSelection = ref<InstanceType<typeof HighlightSelection>>()
+  const userSelection = computed(() => highlightSelection.value?.userSelection)
+  const userSelectionValid = computed(() => highlightSelection.value?.valid || false)
 
   const hasGroupsData = ref(false)
   const chartData = ref<Blob>()

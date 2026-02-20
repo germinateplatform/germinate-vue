@@ -81,7 +81,7 @@
         }]
       }
 
-      apiPostGermplasmTable<PaginatedResult<ViewTableGermplasm[]>>(query, result => {
+      apiPostGermplasmTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           germplasm.value = result.data[0]
         } else {

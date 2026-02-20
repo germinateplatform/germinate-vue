@@ -1,14 +1,14 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { ExportRequest, GermplasmExportRequest, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PedigreeRequest, SgoneGermplasmUnificationRequest } from '@/plugins/types/germinate'
+import type { ExportRequest, GermplasmExportRequest, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, ViewTableGermplasm } from '@/plugins/types/germinate'
 
 function apiGetGermplasmMcpd<T> (germplasmId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/${germplasmId}/mcpd`, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostGermplasmTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableGermplasm[]>>({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 function apiPostTaxonomyTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
@@ -47,10 +47,10 @@ function apiPostGroupGermplasmTableExport<T> (groupId: number, queryData: Export
   return authAxios({ url: `group/${groupId}/germplasm/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGroupGermplasmTableIds<T> (groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostGroupGermplasmTableIds (groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
-  return authAxios({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<number[]>>({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 function apiPostGermplasmDistanceTable<T> (queryData: PaginatedLocationRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {

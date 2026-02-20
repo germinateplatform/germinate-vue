@@ -46,13 +46,13 @@
 
         <v-btn icon="mdi-magnify" @click="searchVisible = !searchVisible" v-if="showElements" />
 
-        <v-badge class="pe-none" location="bottom left" color="info" :content="getNumberWithSuffix(store.storeSelectedProjects.length, 1)" :offset-x="10" :offset-y="10" v-if="showElements && store.storeSelectedProjects && store.storeSelectedProjects.length > 0">
+        <v-badge class="pe-none" location="bottom" color="primary" :content="getNumberWithSuffix(store.storeSelectedProjects.length, 1)" :offset-x="10" :offset-y="10" v-if="showElements && store.storeSelectedProjects && store.storeSelectedProjects.length > 0">
           <v-btn :to="Pages.projects.path" icon="mdi-clipboard-list" />
         </v-badge>
 
         <v-menu v-if="showElements">
           <template #activator="{ props }">
-            <v-badge class="pe-none" location="bottom left" color="info" :content="totalMarkedItemCount" :offset-x="10" :offset-y="10" v-if="totalMarkedItemCount">
+            <v-badge class="pe-none" location="bottom" color="primary" :content="totalMarkedItemCount" :offset-x="10" :offset-y="10" v-if="totalMarkedItemCount">
               <v-btn v-bind="props" icon="mdi-bookmark-box-multiple" />
             </v-badge>
             <v-btn v-bind="props" icon="mdi-bookmark-box-multiple" v-else />
@@ -115,7 +115,7 @@
         <UserDropdown v-if="showElements" />
 
         <v-btn icon @click="emitter.emit('toggle-aside')">
-          <v-badge location="bottom left" color="info" :offset-x="-2" :offset-y="-2" :content="store.storeAsyncJobUuids.length" v-if="store.storeAsyncJobUuids.length > 0">
+          <v-badge location="bottom left" color="primary" :offset-x="-2" :offset-y="-2" :content="store.storeAsyncJobUuids.length" v-if="store.storeAsyncJobUuids.length > 0">
             <v-icon icon="mdi-file-arrow-up-down" />
           </v-badge>
           <v-icon icon="mdi-file-arrow-up-down" v-else />
@@ -296,5 +296,12 @@
 <style>
 body.print .v-overlay-container {
   display: none;
+}
+
+.v-navigation-drawer--rail:not(.v-navigation-drawer--is-hovering) .v-list-group__items * {
+  display: none;
+}
+.v-navigation-drawer--top.v-navigation-drawer--active  {
+  height: auto !important;
 }
 </style>

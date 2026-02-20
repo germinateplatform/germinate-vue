@@ -22,7 +22,7 @@
       >
         <template #header>
           <v-text-field
-            v-if="searchVisible"
+            v-if="searchVisible && componentProps.disabled !== true"
             v-model="searchTerm"
             type="search"
             width="min(50vw, 250px)"
@@ -32,6 +32,7 @@
             @click:append-inner="runSearch"
             @keyup.enter="runSearch"
             hide-details
+            clearable
             density="compact"
           />
           <slot name="header" />
@@ -85,7 +86,7 @@
       :items-length="totalItems"
       :loading="loading"
       :search="search"
-      :item-value="componentProps.itemKey"
+      :item-value="componentProps.itemId || componentProps.itemKey"
       :show-expand="showDetails"
       :disable-sort="componentProps.disabled"
       striped="odd"
@@ -115,12 +116,13 @@
           <template #header>
             <div>
               <v-text-field
-                v-if="searchVisible"
+                v-if="searchVisible && componentProps.disabled !== true"
                 v-model="searchTerm"
                 type="search"
                 width="min(50vw, 250px)"
                 prepend-inner-icon="mdi-magnify"
                 :placeholder="$t('inputPlaceholderSearch')"
+                clearable
                 append-inner-icon="mdi-arrow-right"
                 @click:append-inner="runSearch"
                 @keyup.enter="runSearch"
@@ -180,6 +182,14 @@
         <slot :name="slot" v-bind="slotProps" />
       </template>
 
+      <template #body.append v-if="componentProps.selectionType !== undefined">
+        <tr>
+          <td :colspan="allHeaders.length + 1" class="py-2">
+            <v-icon class="px-4 pb-3" color="primary" icon="mdi-arrow-up-left-bold" /> {{ $t('widgetTableMultiSelectInfo') }}
+          </td>
+        </tr>
+      </template>
+
       <template #footer.prepend>
         <v-btn-group density="compact" class="me-auto ms-2">
           <v-btn v-if="componentProps.download" size="small" @click="downloadTable" variant="tonal" v-tooltip:top="$t('buttonDownload')">
@@ -237,6 +247,7 @@
   import { apiGetGroupTypes, apiPatchGroupMembers, apiPutGroup } from '@/plugins/api/group'
   import { groupTypes } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
+  import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
 
   export type DisplayType = 'table' | 'grid'
 
@@ -452,11 +463,9 @@
     emitter.emit('show-loading', true)
     // Download the current table data
     componentProps.download({
-      page: currentPage.value,
-      limit: itemsPerPage.value,
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
       prevCount: isResetCall ? -1 : totalItems.value,
-      orderBy: (localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].key : undefined,
-      ascending: +((localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].order === 'asc' : false),
       filters: filters.value || [],
     }).then((result: AxiosResponse<Blob>) => {
       downloadBlob({

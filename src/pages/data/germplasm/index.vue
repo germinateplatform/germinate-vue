@@ -4,8 +4,23 @@
     <v-divider class="mb-3" />
     <p v-html="$t('pageGermplasmText')" />
 
-    <!-- <GermplasmTable :get-data="getData" :get-ids="getIds" :download="downloadTable" :selection-type="TableSelectionType.all" /> -->
     <GermplasmTable :get-data="getData" :get-ids="getIds" :download="downloadTable" />
+
+    <v-expansion-panels class="my-5">
+      <v-expansion-panel
+        @group:selected="showMap"
+      >
+        <template #title>
+          <v-icon icon="mdi-map-marker-multiple" class="me-2" /> {{ $t('widgetGermplasmMapTitle') }}
+        </template>
+
+        <template #text>
+          <p>{{ $t('widgetGermplasmMapText') }}</p>
+
+          <GermplasmLocationMap ref="germplasmLocationMap" />
+        </template>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
     <h2 class="text-h5 my-3">{{ $t('pageGermplasmDownloadTitle') }}</h2>
     <v-divider class="mb-3" />
@@ -119,7 +134,6 @@
   import { apiExportPassport, apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostPedigreeDatasetExport, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import { apiPostGroupTable } from '@/plugins/api/group'
   import { FilterComparator, FilterOperator, type AsyncExportResult, type GermplasmExportRequest, type PaginatedRequest, type PaginatedResult, type PedigreeRequest, type ViewTableDatasets, type ViewTableGroups, type ViewTablePedigrees } from '@/plugins/types/germinate'
-  import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { downloadBlob } from '@/plugins/util'
   import { coreStore } from '@/stores/app'
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -130,6 +144,8 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
 
   const store = coreStore()
+
+  const germplasmLocationMap = useTemplateRef('germplasmLocationMap')
 
   const passportIncludeAttributes = ref(false)
   const pedigreeIncludeAttributes = ref(false)
@@ -149,7 +165,11 @@
     return apiPostGermplasmTableIds(data)
   }
   function downloadTable (data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'germplasm')
+    const filter = { filters: data.filters } as PaginatedRequest
+    return apiPostTableExport(filter, 'germplasm')
+  }
+  function showMap () {
+    setTimeout(() => germplasmLocationMap.value?.invalidateSize(), 500)
   }
 
   function downloadPedigree () {
@@ -161,7 +181,7 @@
       germplasmIds: pedigreeSelection.value === 'marked' ? store.storeMarkedGermplasm : undefined,
       germplasmGroupIds: (pedigreeSelection.value === 'group' && selectedPedigreeGroup.value) ? [selectedPedigreeGroup.value.groupId || -1] : undefined,
       includeAttributes: pedigreeIncludeAttributes.value,
-      datasetIds: selectedPedigreeDataset.value ? [selectedPedigreeDataset.value.datasetId] : [],
+      datasetIds: selectedPedigreeDataset.value ? [selectedPedigreeDataset.value.datasetId || -1] : [],
     }
 
     emitter.emit('show-loading', true)
@@ -222,7 +242,7 @@
       }
     })
 
-    apiPostDatasetTable<PaginatedResult<ViewTableDatasets[]>>({
+    apiPostDatasetTable({
       page: 1,
       limit: MAX_JAVA_INTEGER,
       filters: [{

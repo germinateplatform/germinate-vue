@@ -97,7 +97,6 @@ export function plotlyMapChart (Plotly) {
 
       const config = {
         modeBarButtonsToRemove: ['toImage'],
-        displayModeBar: true,
         responsive: true,
         displaylogo: false,
       }

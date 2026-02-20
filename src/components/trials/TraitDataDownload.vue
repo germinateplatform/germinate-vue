@@ -6,6 +6,7 @@
       <v-col cols="12" md="6">
         <TraitSelection
           v-model="selectedTraits"
+          can-select-all
           :traits="traits"
         >
           <template #text>
@@ -27,12 +28,41 @@
       </v-col>
     </v-row>
 
-    <v-btn :disabled="!canContinue" color="primary" prepend-icon="mdi-arrow-right-box" :text="$t('buttonExport')" @click="downloadData" />
+    <!-- <v-btn :disabled="!canContinue" color="primary" prepend-icon="mdi-arrow-right-box" :text="$t('buttonExport')" @click="downloadWideFormat" /> -->
+
+    <v-row>
+      <v-col cols="12" lg="6">
+        <v-card
+          class="card-subtitle-wrap"
+          :title="$t('pageTrialsExportTraitExportLongFormatTitle')"
+          :subtitle="$t('pageTrialsExportTraitExportLongFormatSubtitle')"
+          prepend-icon="mdi-format-list-group"
+        >
+          <template #actions>
+            <v-spacer />
+            <v-btn color="primary" variant="tonal" :disabled="!canContinue" prepend-icon="mdi-download" :text="$t('buttonExport')" @click="downloadLongFormat" />
+          </template>
+        </v-card>
+      </v-col>
+      <v-col cols="12" lg="6">
+        <v-card
+          class="card-subtitle-wrap"
+          :title="$t('pageTrialsExportTraitExportWideFormatTitle')"
+          :subtitle="$t('pageTrialsExportTraitExportWideFormatSubtitle')"
+          prepend-icon="mdi-table-column-width"
+        >
+          <template #actions>
+            <v-spacer />
+            <v-btn color="primary" variant="tonal" :disabled="!canContinue" prepend-icon="mdi-download" :text="$t('buttonExport')" @click="downloadWideFormat" />
+          </template>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableGroups, type ViewTableTraits } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
   import emitter from 'tiny-emitter/instance'
@@ -40,6 +70,8 @@
   import { coreStore } from '@/stores/app'
   import { apiPostTrialDatasetExport } from '@/plugins/api/dataset'
   import { downloadBlob } from '@/plugins/util'
+  import { apiPostTableExport } from '@/plugins/api/misc'
+  import type { AxiosResponse } from 'axios'
 
   const compProps = defineProps<{
     datasetIds: number[]
@@ -58,7 +90,35 @@
     return selectedTraits.value.length > 0 && selectedTraits.value.length < (compProps.max || Number.MAX_SAFE_INTEGER) && (groupSelection.value === 'all' || selectedGroups.value.length > 0)
   })
 
-  function downloadData () {
+  function downloadLongFormat () {
+    emitter.emit('show-loading', true)
+
+    // Download the current table data
+    apiPostTableExport({
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      datasetIds: compProps.datasetIds,
+      germplasmIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedGermplasm : undefined,
+      germplasmGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
+      filters: [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'variableId',
+          comparator: FilterComparator.inSet,
+          values: selectedTraits.value.map(t => `${t.variableId}`),
+        }],
+      }],
+    }, 'dataset/data/trial').then((result: AxiosResponse<Blob>) => {
+      downloadBlob({
+        blob: result.data,
+        filename: 'trials-long-dataset-' + compProps.datasetIds.join('-'),
+        extension: 'zip',
+      })
+      emitter.emit('show-loading', false)
+    })
+  }
+
+  function downloadWideFormat () {
     emitter.emit('show-loading', true)
 
     const query = {
@@ -75,7 +135,7 @@
     apiPostTrialDatasetExport<Blob>(query, result => {
       const downloadRequest = {
         blob: result,
-        filename: 'trials-dataset-' + compProps.datasetIds.join('-'),
+        filename: 'trials-wide-dataset-' + compProps.datasetIds.join('-'),
         extension: 'txt',
       }
 

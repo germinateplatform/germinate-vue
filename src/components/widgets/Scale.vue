@@ -32,7 +32,7 @@
 
       <template #activator="{ props }">
         <div class="d-flex my-2" :id="`scale-${id}`" v-bind="props">
-          <div class="d-flex align-center scale-container w-100" :style="{ backgroundColor: store.storeIsDarkMode ? 'rgb(var(--v-theme-surface-light))' : 'rgb(var(--v-theme-surface-dark))' }">
+          <div class="d-flex align-center scale-container w-100" :style="{ backgroundColor: 'rgb(var(--v-theme-surface-light))' }">
             <div class="scale-marker" :style="{ marginLeft: `calc(${markerPercentage}% - 1px)`, backgroundColor: 'rgb(var(--v-theme-primary))' }" />
           </div>
         </div>

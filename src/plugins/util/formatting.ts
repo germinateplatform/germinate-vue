@@ -113,6 +113,10 @@ function isAnyMissing (...parts: (string | undefined)[]): boolean {
   return !parts || parts.some(p => !p || p.trim().length === 0)
 }
 
+function concat(separator: string, parts: (string | undefined)[]) {
+  return parts.filter(p => p !== undefined && p.trim().length > 0).join(separator)
+}
+
 /**
  * Formats the given decimal number with the given number of decimal places
  * @param {Number} number The number to format
@@ -131,4 +135,5 @@ export {
   truncateAfterWords,
   toFixed,
   isAnyMissing,
+  concat,
 }

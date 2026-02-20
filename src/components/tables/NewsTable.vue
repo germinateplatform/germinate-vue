@@ -306,8 +306,6 @@
   function addItem () {
     newNews.value = {}
 
-    console.log(newsModal.value)
-
     nextTick(() => newsModal.value?.show())
   }
 

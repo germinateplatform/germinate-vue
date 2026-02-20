@@ -45,8 +45,9 @@
       >
         <TraitBoxplots
           :traits="traits"
+          :datasets="datasets || []"
           :groups="groups || []"
-          :dataset-ids="datasetIds || []"
+          :dataset-ids="datasetIds"
         />
       </RevealOnShowPanel>
 
@@ -57,7 +58,7 @@
         <TraitMatrix
           :traits="traits"
           :groups="groups || []"
-          :dataset-ids="datasetIds || []"
+          :dataset-ids="datasetIds"
         />
       </RevealOnShowPanel>
 
@@ -66,9 +67,9 @@
         :showing="selectedTab === 'comparison'"
       >
         <TraitComparison
-          :traits="numericTraits"
+          :traits="traits"
           :groups="groups || []"
-          :dataset-ids="datasetIds || []"
+          :dataset-ids="datasetIds"
         />
       </RevealOnShowPanel>
 
@@ -88,7 +89,8 @@
         :showing="selectedTab === 'locations'"
       >
         <TrialLocationMap
-          :dataset-ids="datasetIds || []"
+          :dataset-ids="datasetIds"
+          ref="trialLocationMap"
         />
       </RevealOnShowPanel>
 
@@ -99,7 +101,7 @@
         <TraitDataDownload
           :traits="traits"
           :groups="groups || []"
-          :dataset-ids="datasetIds || []"
+          :dataset-ids="datasetIds"
         />
       </RevealOnShowPanel>
     </div>
@@ -111,7 +113,6 @@
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import TraitDataTable from '@/components/tables/TraitDataTable.vue'
   import TraitBoxplots from '@/components/trials/TraitBoxplots.vue'
-  import TraitComparison from '@/components/trials/TraitComparison.vue'
   import TraitDataDownload from '@/components/trials/TraitDataDownload.vue'
   import RevealOnShowPanel from '@/components/widgets/RevealOnShowPanel.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
@@ -120,7 +121,7 @@
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { apiPostDatasetTraits, apiPostTrialLocationCount, apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTrialsDataTimepoints } from '@/plugins/api/trait'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest, ScalesDatatype, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { coreStore } from '@/stores/app'
   import type { AxiosResponse } from 'axios'
@@ -141,8 +142,10 @@
   const route = useRoute('/data/export/trials/[id]')
   const store = coreStore()
 
+  const trialLocationMap = useTemplateRef('trialLocationMap')
+
   const selectedTab = ref<string>('overview')
-  const datasetIds = ref<number[]>()
+  const datasetIds = ref<number[]>([])
   const datasets = ref<ViewTableDatasets[]>()
   const traits = ref<ViewTableTraits[]>([])
   const groups = ref<ViewTableGroups[]>([])
@@ -162,15 +165,15 @@
       path: 'mdi-grid',
       help: t('pageDataExportTabHelpDataMatrix'),
     }, {
-      key: 'radar',
-      text: t('pageDataExportTabDataRadar'),
-      path: 'mdi-spider-web',
-      help: t('pageDataExportTabHelpDataRadar'),
-    }, {
       key: 'comparison',
       text: t('pageDataExportTabComparison'),
-      path: 'mdi-distribute-horizontal-center',
+      path: 'mdi-compare',
       help: t('pageDataExportTabHelpComparison'),
+    // }, {
+    //   key: 'comparison',
+    //   text: t('pageDataExportTabComparison'),
+    //   path: 'mdi-distribute-horizontal-center',
+    //   help: t('pageDataExportTabHelpComparison'),
     }, {
       key: 'table',
       text: t('pageDataExportTabDataTable'),
@@ -206,8 +209,6 @@
     return result
   })
 
-  const numericTraits = computed(() => traits.value.filter(t => t.dataType === 'numeric'))
-
   watch(datasetIds, async newValue => {
     emitter.emit('show-loading', true)
 
@@ -222,21 +223,26 @@
 
   function getTableData (data: PaginatedRequest) {
     const request = data as TrialsExportDatasetRequest
-    request.datasetIds = datasetIds.value || []
+    request.datasetIds = datasetIds.value
     return apiPostTrialsDataTable(request)
   }
 
   function getTableIds (data: PaginatedRequest) {
     const request = data as TrialsExportDatasetRequest
-    request.datasetIds = datasetIds.value || []
+    request.datasetIds = datasetIds.value
     return apiPostTrialsDataTableIds(request)
   }
 
   function downloadTable (data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'dataset/data/trial')
+    return apiPostTableExport({
+      page: 1,
+      datasetIds: datasetIds.value,
+      limit: MAX_JAVA_INTEGER,
+      filters: data.filters,
+    }, 'dataset/data/trial')
   }
 
-  function getDatasetTableData (data: PaginatedRequest) {
+  function getDatasetTableData () {
     return new Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>>(resolve => {
       // @ts-ignore
       resolve({
@@ -271,7 +277,7 @@
       }],
     }
 
-    apiPostDatasetTable<PaginatedResult<ViewTableDatasets[]>>(request, result => {
+    apiPostDatasetTable(request, result => {
       datasets.value = result.data.filter(d => {
         // Exclude the ones where a license exists, but hasn't been accepted
         return (!d.licenseName || isAccepted(d))
@@ -329,6 +335,12 @@
     query.tab = newValue
 
     await router.replace({ query })
+
+    if (newValue === 'locations') {
+      nextTick(() => {
+        trialLocationMap.value?.invalidateSize()
+      })
+    }
   })
 
   onBeforeMount(() => {

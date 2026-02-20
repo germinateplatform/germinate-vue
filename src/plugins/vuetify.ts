@@ -24,6 +24,7 @@ import { createI18n, useI18n } from 'vue-i18n'
 import { en, de } from 'vuetify/locale'
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'
 import { VDateInput } from 'vuetify/labs/VDateInput'
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
 
 const aliases: IconAliases = {
   ...defaultAliases,
@@ -58,6 +59,7 @@ const i18n = createI18n({
 const vuetify = createVuetify({
   components: {
     VDateInput,
+    VFileUpload,
   },
   icons: {
     aliases,

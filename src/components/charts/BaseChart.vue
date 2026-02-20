@@ -89,6 +89,7 @@
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
   import { coreStore } from '@/stores/app'
   import Plotly from 'plotly.js/lib/core'
+  import { useI18n } from 'vue-i18n'
   import { VColorInput } from 'vuetify/labs/VColorInput'
 
   const emit = defineEmits(['update:loading', 'force-redraw', 'download-png-manually'])
@@ -127,6 +128,7 @@
   })
 
   const store = coreStore()
+  const { locale } = useI18n()
 
   const bottomSheetVisible = ref(false)
   const localLoading = ref(false)
@@ -190,7 +192,6 @@
   }
 
   function resetToDefault () {
-    console.log(store.storeServerSettings?.colorsCharts)
     colors.value = store.storeServerSettings?.colorsCharts || store.storeChartColors
   }
 
@@ -199,9 +200,8 @@
     bottomSheetVisible.value = false
   }
 
-  watch(() => store.storeIsDarkMode, async () => {
-    nextTick(() => emit('force-redraw'))
-  })
+  watch(locale, async () => nextTick(() => emit('force-redraw')))
+  watch(() => store.storeIsDarkMode, async () => nextTick(() => emit('force-redraw')))
   watch(() => store.storeChartColors, async () => {
     updateColors()
     nextTick(() => emit('force-redraw'))

@@ -2,9 +2,9 @@ import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
 import type { ExportRequest, PaginatedRequest } from '@/plugins/types/germinate'
 
-const apiPostLocationTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+const apiPostLocationTable = (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) => {
   queryData.page -= 1
-  return authAxios({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableGermplasm[]>>({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiPostLocationDistanceTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {

@@ -2,40 +2,11 @@
   <div>
     <div :id="`map-${id}`" ref="mapElement" :class="`${props.selectionMode === 'point' ? 'point-search' : ''} ${props.rounded ? 'rounded-lg' : ''} location-map map`">
       <div ref="popupContent" class="popup-content">
-        <v-list v-if="currentLocation">
-          <v-list-item :title="$t('tableColumnLocationName')">
-            <template #subtitle>
-              <template v-if="showLinks">
-                <span v-if="currentLocation.locationType === 'datasets' || !currentLocation.locationId">{{ currentLocation.locationName }}</span>
-                <router-link :to="Pages.germplasm.path" v-else-if="currentLocation.locationType === 'collectingsites'" @click.prevent="navigateToGermplasm(currentLocation)" event="">{{ currentLocation.locationName }}</router-link>
-                <span v-else>{{ currentLocation.locationName }}</span>
-              </template>
-              <span v-else v-html="currentLocation.locationName" />
-            </template>
-          </v-list-item>
-          <v-list-item v-if="currentLocation.locationType" :title="$t('tableColumnLocationType')">
-            <template #subtitle>
-              <span :style="`color: ${locationTypes[currentLocation.locationType].color()};`"><v-icon :icon="locationTypes[currentLocation.locationType].path" /></span> {{ locationTypes[currentLocation.locationType].text() }}
-            </template>
-          </v-list-item>
-          <v-list-item v-if="currentLocation.countryCode2 || currentLocation.countryCode3" :title="$t('tableColumnCountryName')">
-            <template #subtitle>
-              <i :class="'fi fi-' + getFlag(currentLocation)" /> {{ getCountry(currentLocation) }}
-            </template>
-          </v-list-item>
-          <v-list-item :title="$t('tableColumnLocationLatitude')" :subtitle="currentLocation.locationLatitude?.toFixed(2)" />
-          <v-list-item :title="$t('tableColumnLocationLongitude')" :subtitle="currentLocation.locationLongitude?.toFixed(2)" />
-          <v-list-item :title="$t('tableColumnLocationElevation')" :subtitle="currentLocation.locationElevation?.toFixed(2)" v-if="currentLocation.locationElevation" />
-
-          <template v-if="currentLocation.additionalInfo">
-            <v-list-item
-              v-for="(value, key) in currentLocation.additionalInfo"
-              :key="`additional-info-${currentLocation.locationId}-${key}`"
-              :title="key"
-              :subtitle="value"
-            />
-          </template>
-        </v-list>
+        <LocationPopup
+          :location="currentLocation"
+          :show-links="showLinks"
+          v-if="currentLocation"
+        />
       </div>
 
       <v-overlay
@@ -65,7 +36,6 @@
   import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
   import iconUrl from 'leaflet/dist/images/marker-icon.png'
   import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
-  import { FilterComparator, FilterOperator, type FilterGroup } from '@/plugins/types/germinate'
   import type { ExtendedViewTableLocations } from '@/plugins/types/ExtendedViewTableLocations'
   import { getColor } from '@/plugins/util/colors'
   import ColorGradient from '@/components/widgets/ColorGradient.vue'
@@ -74,17 +44,10 @@
   import 'leaflet.sync'
   import 'leaflet.markercluster'
   import 'leaflet-draw'
-  import { Pages } from '@/plugins/pages'
-  import { locationTypes } from '@/plugins/util/types'
 
-  // @ts-ignore
-  import * as countries from 'i18n-iso-countries'
-  // @ts-ignore
-  import countryDataEn from 'i18n-iso-countries/langs/en.json'
   import { uuidv4 } from '@/plugins/util'
   import { addShapefileToMap } from '@/plugins/util/geo'
   import { apiGetDataResource } from '@/plugins/api/dataset'
-  countries.registerLocale(countryDataEn)
 
   // Set the leaflet marker icon
   // @ts-ignore
@@ -96,7 +59,6 @@
   })
 
   const store = coreStore()
-  const router = useRouter()
 
   interface MapProps {
     locations: ExtendedViewTableLocations[]
@@ -329,6 +291,7 @@
           // @ts-ignore
           markerClusterer = L.markerClusterGroup({
             chunkedLoading: true,
+            disableClusteringAtZoom: 16,
             chunkProgress: (processed: number, total: number) => {
               loading.value = processed !== total
               loadingProgress.value = Math.round(processed / total * 100)
@@ -398,44 +361,6 @@
         // If it exists, just set it
         heat.setLatLngs([])
       }
-    }
-  }
-
-  function navigateToGermplasm (location: ExtendedViewTableLocations) {
-    // Navigate to the germplasm overview page and filter on location
-    const filter: FilterGroup[] = [{
-      filters: [{
-        column: 'locationId',
-        comparator: FilterComparator.equals,
-        values: [`${location.locationId}`],
-      }],
-      operator: FilterOperator.and,
-    }]
-    router.push({
-      path: Pages.germplasm.path,
-      query: {
-        'germplasm-filter': JSON.stringify(filter),
-      },
-    })
-  }
-
-  function getFlag (country: ExtendedViewTableLocations) {
-    if (country.countryCode2) {
-      return country.countryCode2.toLowerCase()
-    } else if (country.countryCode3) {
-      return countries.alpha3ToAlpha2(country.countryCode3)?.toLowerCase()
-    } else {
-      return ''
-    }
-  }
-
-  function getCountry (country: ExtendedViewTableLocations) {
-    if (country.countryCode2) {
-      return countries.getName(country.countryCode2.toUpperCase(), 'en')
-    } else if (country.countryCode3) {
-      return countries.getName(country.countryCode3.toUpperCase(), 'en')
-    } else {
-      return ''
     }
   }
 

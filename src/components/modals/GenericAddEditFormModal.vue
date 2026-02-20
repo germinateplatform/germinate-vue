@@ -178,7 +178,7 @@
   })
 
   const valid = computed(() => {
-    return !compProps.fields.some(f => f.valid && !f.valid(formModel.value[f.key]))
+    return !compProps.fields.some(f => (f.valid && !f.valid(formModel.value[f.key])) || (f.required && formModel.value[f.key] === undefined))
   })
 
   function show () {

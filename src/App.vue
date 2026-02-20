@@ -195,4 +195,14 @@ svg.g-svg {
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
+.v-avatar--variant-elevated, .v-avatar--variant-flat {
+  background: unset;
+}
+
+.v-card-subtitle {
+  text-wrap: wrap;
+  line-clamp: unset;
+  -webkit-line-clamp: unset;
+}
 </style>

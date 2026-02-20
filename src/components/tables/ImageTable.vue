@@ -59,7 +59,7 @@
       </template>
 
       <template #card-item="{ item }">
-        <v-card>
+        <v-card class="flex-grow-1">
           <v-img height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
           <v-card-title>
             <!-- Germplasm -->

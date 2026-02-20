@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, SubsettedDatasetRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
+import type { PaginatedResult, DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, SubsettedDatasetRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
 
 const apiPostPublicationDatasetTable = <T>(publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
   queryData.page -= 1
@@ -31,9 +31,9 @@ const apiPostExperimentTable = <T>(queryData: PaginatedRequest, onSuccess?: Germ
   return authAxios({ url: 'experiment/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDatasetTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+const apiPostDatasetTable = (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) => {
   queryData.page -= 1
-  return authAxios({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableDatasets[]>>({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiDeleteDataset = <T>(datasetId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/${datasetId}`, method: 'DELETE', success: onSuccess, error: onError })

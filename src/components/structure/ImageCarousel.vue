@@ -33,7 +33,7 @@
       <v-scroll-x-transition mode="out-in" appear>
         <v-sheet
           :key="currentIndex"
-          rounded="xl"
+          rounded
           border
         >
           <v-list-item

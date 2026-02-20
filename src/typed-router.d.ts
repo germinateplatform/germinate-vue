@@ -44,6 +44,7 @@ declare module 'vue-router/auto-routes' {
     '/data/taxonomies/[id]/providers': RouteRecordInfo<'/data/taxonomies/[id]/providers', '/data/taxonomies/:id/providers', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/data/trials/traits/': RouteRecordInfo<'/data/trials/traits/', '/data/trials/traits', Record<never, never>, Record<never, never>>,
     '/data/trials/traits/[id]': RouteRecordInfo<'/data/trials/traits/[id]', '/data/trials/traits/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/data/upload': RouteRecordInfo<'/data/upload', '/data/upload', Record<never, never>, Record<never, never>>,
     '/groups/': RouteRecordInfo<'/groups/', '/groups', Record<never, never>, Record<never, never>>,
     '/groups/[id]': RouteRecordInfo<'/groups/[id]', '/groups/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/images/': RouteRecordInfo<'/images/', '/images', Record<never, never>, Record<never, never>>,
