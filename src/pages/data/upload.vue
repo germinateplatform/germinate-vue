@@ -13,7 +13,7 @@
                 {{ tab.text() }}
               </v-card-title>
 
-              <!-- <v-card-subtitle><a class="help-link" :href="tab.helpUrl" target="_blank"><v-icon icon="mdi-help-circle" /></a></v-card-subtitle> -->
+              <!-- <v-card-subtitle><a class="help-link" :href="tab.helpUrl" target="_blank"><v-icon :icon="mdiHelpCircle" /></a></v-card-subtitle> -->
             </div>
 
             <v-avatar
@@ -39,7 +39,7 @@
                     {{ tab.text() }}
                   </v-card-title>
 
-                  <!-- <v-card-subtitle><a class="help-link" :href="tab.helpUrl" target="_blank"><v-icon icon="mdi-help-circle" /></a></v-card-subtitle> -->
+                  <!-- <v-card-subtitle><a class="help-link" :href="tab.helpUrl" target="_blank"><v-icon :icon="mdiHelpCircle" /></a></v-card-subtitle> -->
                 </div>
 
                 <v-avatar
@@ -58,7 +58,7 @@
       <template v-if="selectedNestedTab">
         <v-alert
           color="info"
-          icon="mdi-help-circle"
+          :icon="mdiHelpCircle"
           density="compact"
           :text="$t('pageDataUploadHelpLink')"
           variant="tonal"
@@ -79,8 +79,8 @@
             mandatory
             variant="tonal"
           >
-            <v-btn value="import" prepend-icon="mdi-upload" :text="$t('pageDataUploadUpdateOptionInsert')" />
-            <v-btn value="update" prepend-icon="mdi-refresh" :text="$t('pageDataUploadUpdateOptionUpdate')" />
+            <v-btn value="import" :prepend-icon="mdiUpload" :text="$t('pageDataUploadUpdateOptionInsert')" />
+            <v-btn value="update" :prepend-icon="mdiRefresh" :text="$t('pageDataUploadUpdateOptionUpdate')" />
           </v-btn-toggle>
           <div class="v-input__details" role="alert" aria-live="polite">
             <div class="v-messages">
@@ -129,6 +129,7 @@
   import { UserType } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { type DatasetState, datasetStates, templateImportTypes, type TemplateImportType } from '@/plugins/util/types'
+  import { mdiHelpCircle, mdiRefresh, mdiUpload } from '@mdi/js'
 
   definePage({
     meta: {

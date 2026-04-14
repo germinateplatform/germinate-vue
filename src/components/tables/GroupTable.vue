@@ -11,12 +11,12 @@
       :show-details="false"
       item-key="groupId"
       table-key="groups"
-      header-icon="mdi-group"
+      :header-icon="mdiGroup"
       :header-title="$t('pageGroupsTitle')"
       v-bind="$attrs"
     >
       <template #header v-if="store.storeUserIsAuthenticated">
-        <v-btn variant="outlined" :text="$t('buttonAddGroup')" prepend-icon="mdi-plus" @click="addItem" />
+        <v-btn variant="outlined" :text="$t('buttonAddGroup')" :prepend-icon="mdiPlus" @click="addItem" />
       </template>
 
       <template #item.groupId="{ item }">
@@ -32,8 +32,8 @@
 
       <template #item.groupActions="{ item }">
         <template v-if="store.storeUserIsAdmin || (item.userId === store.storeToken?.id)">
-          <v-icon class="mx-1" color="info" icon="mdi-pencil" @click="editItem(item)" />
-          <v-icon class="mx-1" color="error" icon="mdi-delete" @click="deleteItem(item)" />
+          <v-icon class="mx-1" color="info" :icon="mdiPencil" @click="editItem(item)" />
+          <v-icon class="mx-1" color="error" :icon="mdiDelete" @click="deleteItem(item)" />
         </template>
       </template>
 
@@ -71,6 +71,7 @@
   import emitter from 'tiny-emitter/instance'
   import { apiDeleteGroup, apiGetGroupTypes, apiPatchGroup, apiPutGroup } from '@/plugins/api/group'
   import { Pages } from '@/plugins/pages'
+  import { mdiDelete, mdiGroup, mdiPencil, mdiPlus } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGroups[]>>> }

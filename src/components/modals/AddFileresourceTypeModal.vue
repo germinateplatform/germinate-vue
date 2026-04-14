@@ -6,14 +6,14 @@
           <v-text-field
             v-model="name"
             :label="$t('formLabelFileResourceTypeName')"
-            prepend-inner-icon="mdi-form-textbox"
+            :prepend-inner-icon="mdiFormTextbox"
             required
           />
 
           <v-textarea
             v-model="description"
             :label="$t('formLabelFileResourceTypeDescription')"
-            prepend-inner-icon="mdi-form-textarea"
+            :prepend-inner-icon="mdiFormTextarea"
           />
         </v-form>
       </v-card-text>
@@ -30,6 +30,7 @@
 <script setup lang="ts">
   import { apiPostFileresourceType } from '@/plugins/api/dataset'
   import { isAnyMissing } from '@/plugins/util/formatting'
+  import { mdiFormTextarea, mdiFormTextbox } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
 

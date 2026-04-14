@@ -12,7 +12,7 @@
     item-key="locationId"
     table-key="locations"
     marked-item-type="locations"
-    header-icon="mdi-map-marker"
+    :header-icon="mdiMapMarker"
     :header-title="$t('pageLocationsTitle')"
     v-bind="$attrs"
   >
@@ -47,6 +47,7 @@
   import { useI18n } from 'vue-i18n'
   import { locationTypes } from '@/plugins/util/types'
   import { columns } from '@/plugins/util/table-columns'
+  import { mdiMapMarker } from '@mdi/js'
 
   interface LocationTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableLocations[]>>> }

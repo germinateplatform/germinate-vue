@@ -14,16 +14,16 @@
       supports-grid-cards
       item-key="id"
       table-key="backups"
-      header-icon="mdi-database-import"
+      :header-icon="mdiDatabaseImport"
       :header-title="$t('pageBackupTitle')"
       v-bind="$attrs"
     >
       <template #item.filesize="{ item }">
-        <v-chip label prepend-icon="mdi-file-cabinet" :text="getNumberWithSuffix(item.filesize, 2, 1024)" />
+        <v-chip label :prepend-icon="mdiFileCabinet" :text="getNumberWithSuffix(item.filesize, 2, 1024)" />
       </template>
 
       <template #item.germinateVersion="{ item }">
-        <v-chip prepend-icon="mdi-tag" label :text="`v${item.germinateVersion}`" />
+        <v-chip :prepend-icon="mdiTag" label :text="`v${item.germinateVersion}`" />
       </template>
 
       <template #item.type="{ item }">
@@ -31,9 +31,9 @@
       </template>
 
       <template #item.actions="{ item }">
-        <v-btn class="mx-1" color="primary" prepend-icon="mdi-download" variant="tonal" :text="$t('buttonDownload')" :href="item.href" />
+        <v-btn class="mx-1" color="primary" :prepend-icon="mdiDownload" variant="tonal" :text="$t('buttonDownload')" :href="item.href" />
 
-        <v-btn class="mx-1" color="error" prepend-icon="mdi-delete" variant="tonal" :text="$t('buttonDelete')" @click="deleteBackup(item)" />
+        <v-btn class="mx-1" color="error" :prepend-icon="mdiDelete" variant="tonal" :text="$t('buttonDelete')" @click="deleteBackup(item)" />
       </template>
 
       <template #card-item="{ item }">
@@ -43,9 +43,9 @@
           </template>
           <div class="d-flex flex-column">
             <v-list>
-              <v-list-item prepend-icon="mdi-calendar" :title="new Date(item.timestamp).toLocaleDateString()" v-if="item.timestamp" />
-              <v-list-item prepend-icon="mdi-tag" :title="`v${item.germinateVersion}`" />
-              <v-list-item prepend-icon="mdi-file-cabinet" :title="getNumberWithSuffix(item.filesize, 2, 1024)" />
+              <v-list-item :prepend-icon="mdiCalendar" :title="new Date(item.timestamp).toLocaleDateString()" v-if="item.timestamp" />
+              <v-list-item :prepend-icon="mdiTag" :title="`v${item.germinateVersion}`" />
+              <v-list-item :prepend-icon="mdiFileCabinet" :title="getNumberWithSuffix(item.filesize, 2, 1024)" />
             </v-list>
           </div>
 
@@ -53,13 +53,13 @@
             <v-btn
               color="primary"
               :href="item.href"
-              prepend-icon="mdi-download"
+              :prepend-icon="mdiDownload"
               :text="$t('buttonDownload')"
             />
             <v-spacer />
             <v-btn
               color="error"
-              prepend-icon="mdi-delete"
+              :prepend-icon="mdiDelete"
               @click="deleteBackup(item)"
               :text="$t('buttonDelete')"
             />
@@ -88,6 +88,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import { apiDeleteBackup } from '@/plugins/api/misc'
+  import { mdiCalendar, mdiDatabaseClock, mdiDatabaseEdit, mdiDatabaseImport, mdiDatabaseSync, mdiDelete, mdiDownload, mdiFileCabinet, mdiTag } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<BackupResult[]>>> }
@@ -113,19 +114,19 @@
       PERIODICAL: {
         title: t('pageBackupTypePeriodicalTitle'),
         text: t('pageBackupTypePeriodicalText'),
-        icon: 'mdi-database-clock',
+        icon: mdiDatabaseClock,
         color: getTemplateColor(0),
       },
       UPDATE: {
         title: t('pageBackupTypeUpdateTitle'),
         text: t('pageBackupTypeUpdateText'),
-        icon: 'mdi-database-sync',
+        icon: mdiDatabaseSync,
         color: getTemplateColor(1),
       },
       MANUAL: {
         title: t('pageBackupTypeManualTitle'),
         text: t('pageBackupTypeManualText'),
-        icon: 'mdi-database-edit',
+        icon: mdiDatabaseEdit,
         color: getTemplateColor(2),
       },
     }

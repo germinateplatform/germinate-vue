@@ -7,7 +7,7 @@
         chart-type="d3.js"
         :filename="filename"
         :source-file="sourceFile"
-        header-icon="mdi-family-tree"
+        @header-icon="mdiFamilyTree"
         :header-icon-color="headerIconColor"
         :supports-svg-download="false"
         :supports-file-download="false"
@@ -25,7 +25,7 @@
         <template #card-actions v-if="hasPlotData">
           <div class="d-flex flex-column align-start">
             <v-btn prepend-icon="$helium" variant="tonal" :text="$t('buttonDownloadForHelium')" />
-            <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="Pages.aboutExportFormats.path" v-tooltip:top="$t('tooltipExportFormatLearnMore')"> <v-icon icon="mdi-information-outline" /></router-link> </p>
+            <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="Pages.aboutExportFormats.path" v-tooltip:top="$t('tooltipExportFormatLearnMore')"> <v-icon :icon="mdiInformationOutline" /></router-link> </p>
           </div>
         </template>
       </BaseChart>
@@ -48,6 +48,7 @@
   import { getDateTimeString } from '@/plugins/util/formatting'
 
   import emitter from 'tiny-emitter/instance'
+  import { mdiFamilyTree, mdiInformationOutline } from '@mdi/js'
 
   const compProps = defineProps<{
     germplasm: ViewTableGermplasm

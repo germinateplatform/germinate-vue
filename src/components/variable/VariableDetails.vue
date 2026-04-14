@@ -26,7 +26,7 @@
             label
             v-for="(synonym, index) in variable.traitSynonyms"
             :key="`marker-synonym-${index}`"
-            prepend-icon="mdi-label"
+            :prepend-icon="mdiLabel"
             :text="synonym"
             class="me-2"
           />
@@ -56,14 +56,14 @@
         </template>
         <template #text>
           <div v-if="variable.scaleDescription">{{ variable.scaleDescription }}</div>
-          <v-chip label prepend-icon="mdi-code-brackets" :text="variable.scaleUnit" v-if="variable.scaleUnit" />
+          <v-chip label :prepend-icon="mdiCodeBrackets" :text="variable.scaleUnit" v-if="variable.scaleUnit" />
           <template v-if="variable.scaleRestrictions">
             <h2>{{ $t('pageTraitDetailsRestrictionsTitle') }}</h2>
 
             <h4>
-              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.min !== undefined && variable.scaleRestrictions.min !== null" prepend-icon="mdi-greater-than-or-equal" :text="variable.scaleRestrictions.min" />
-              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.max !== undefined && variable.scaleRestrictions.max !== null" prepend-icon="mdi-less-than-or-equal" :text="variable.scaleRestrictions.max" />
-              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.categories" prepend-icon="mdi-code-brackets" :text="variable.scaleRestrictions.categories.map(c => c.join(', ')).join(', ')" />
+              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.min !== undefined && variable.scaleRestrictions.min !== null" :prepend-icon="mdiGreaterThanOrEqual" :text="variable.scaleRestrictions.min" />
+              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.max !== undefined && variable.scaleRestrictions.max !== null" :prepend-icon="mdiLessThanOrEqual" :text="variable.scaleRestrictions.max" />
+              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.categories" :prepend-icon="mdiCodeBrackets" :text="variable.scaleRestrictions.categories.map(c => c.join(', ')).join(', ')" />
             </h4>
           </template>
         </template>
@@ -77,6 +77,7 @@
   import { apiPostTraitTable } from '@/plugins/api/trait'
   import { FilterComparator, FilterOperator, type ViewTableTraits } from '@/plugins/types/germinate'
   import { dataTypes, methodClasses, traitClasses } from '@/plugins/util/types'
+  import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLabel, mdiLessThanOrEqual } from '@mdi/js'
 
   const compProps = defineProps<{
     variableId: number

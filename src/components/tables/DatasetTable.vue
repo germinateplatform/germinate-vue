@@ -14,19 +14,19 @@
       :disabled="compProps.disabled"
       item-key="datasetId"
       table-key="datasets"
-      header-icon="mdi-database"
+      :header-icon="mdiDatabase"
       :get-row-props="getRowProps"
       :header-title="$t('pageDatasetsTitle')"
       v-bind="$attrs"
     >
       <template #header>
-        <v-btn v-if="store.storeUserIsDataCurator" variant="outlined" prepend-icon="mdi-file-plus" @click="addItem">{{ $t('tableButtonAddDataset') }}</v-btn>
+        <v-btn v-if="store.storeUserIsDataCurator" variant="outlined" :prepend-icon="mdiFilePlus" @click="addItem">{{ $t('tableButtonAddDataset') }}</v-btn>
       </template>
 
       <template #header.dataObjectCount="{ column }">
         {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataObjects')">
           <template #activator="{ props }">
-            <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
+            <v-icon v-bind="props" size="small" color="muted" :icon="mdiHelpCircle" />
           </template>
         </v-tooltip>
       </template>
@@ -34,7 +34,7 @@
       <template #header.dataPointCount="{ column }">
         {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipDatasetDataPoints')">
           <template #activator="{ props }">
-            <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
+            <v-icon v-bind="props" size="small" color="muted" :icon="mdiHelpCircle" />
           </template>
         </v-tooltip>
       </template>
@@ -48,7 +48,7 @@
         <span :title="item.experimentName" v-if="item.experimentName">{{ truncateAfterWords(item.experimentName, 10) }}</span>
         <!-- Append a link that takes the user to the experiment details page -->
         &nbsp;<router-link :to="{ path: Pages.getPath(Pages.experimentDetails, `${item.experimentId}`) }" v-tooltip:top="$t('tableTooltipExperimentDetailsLink')">
-          <v-icon icon="mdi-information-outline" />
+          <v-icon :icon="mdiInformationOutline" />
         </router-link>
       </template>
 
@@ -60,9 +60,9 @@
       <template #item.data-table-expand="{ item, internalItem, toggleExpand }">
         <template v-if="item.locations !== undefined && item.locations !== null && item.locations.length > 0">
           <template v-if="item.locations[0].locationLatitude && item.locations[0].locationLongitude">
-            <v-chip label @click="toggleExpand(internalItem)" prepend-icon="mdi-map-marker">{{ item.locations.length }}</v-chip>
+            <v-chip label @click="toggleExpand(internalItem)" :prepend-icon="mdiMapMarker">{{ item.locations.length }}</v-chip>
           </template>
-          <v-chip label v-else prepend-icon="mdi-map-marker">{{ item.locations.length }}</v-chip>
+          <v-chip label v-else :prepend-icon="mdiMapMarker">{{ item.locations.length }}</v-chip>
         </template>
       </template>
 
@@ -76,14 +76,14 @@
             label
             @click.prevent="onLicenseClicked(item)"
             :color="isAccepted(item) ? 'success' : 'error'"
-            :prepend-icon="isAccepted(item) ? 'mdi-check' : 'mdi-new-box'"
+            :prepend-icon="isAccepted(item) ? mdiCheck : mdiNewBox"
           >
             {{ item.licenseName }}
           </v-chip>
           <v-chip
             v-else-if="store.storeUserIsAdmin"
             label
-            prepend-icon="mdi-plus-box"
+            :prepend-icon="mdiPlusBox"
             @click="editLicense(item)"
             :text="$t('buttonAssignLicense')"
             color="info"
@@ -94,19 +94,19 @@
 
       <!-- Show file resources -->
       <template #item.fileresourceIds="{ item }">
-        <v-btn @click="redirectToFileresources(item)" v-if="item.fileresourceIds && (item.fileresourceIds.length > 0) && isPageAvailable(Pages.dataResources.name) && (!item.licenseName || isAccepted(item))" prepend-icon="mdi-attachment">{{ $t('buttonShow') }}</v-btn>
+        <v-btn @click="redirectToFileresources(item)" v-if="item.fileresourceIds && (item.fileresourceIds.length > 0) && isPageAvailable(Pages.dataResources.name) && (!item.licenseName || isAccepted(item))" :prepend-icon="mdiAttachment">{{ $t('buttonShow') }}</v-btn>
       </template>
 
       <template #item.datasetDetails="{ item }">
         <div class="text-no-wrap">
-          <v-icon class="mx-1" color="primary" :icon="item.isExternal ? 'mdi-link-variant' : 'mdi-database-arrow-right'" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
+          <v-icon class="mx-1" color="primary" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
           <v-icon class="mx-1" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="datasetStates[item.datasetState].text()" />
-          <v-icon class="mx-1" color="primary" icon="mdi-account-multiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
-          <v-icon class="mx-1" icon="mdi-account-multiple" color="muted" v-else />
-          <v-icon class="mx-1" color="primary" icon="mdi-file-plus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
-          <v-icon class="mx-1" icon="mdi-file-plus" color="muted" v-else />
+          <v-icon class="mx-1" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
+          <v-icon class="mx-1" :icon="mdiAccountMultiple" color="muted" v-else />
+          <v-icon class="mx-1" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
+          <v-icon class="mx-1" :icon="mdiFilePlus" color="muted" v-else />
 
-          <v-icon class="mx-1" color="primary" icon="mdi-square-edit-outline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />
+          <v-icon class="mx-1" color="primary" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />
         </div>
       </template>
 
@@ -162,12 +162,12 @@
           :label="$t('tableColumnExperimentName')"
           item-value="experimentId"
           item-title="experimentName"
-          append-icon="mdi-square-edit-outline"
+          :append-icon="mdiSquareEditOutline"
           @click:append="editExperiment(item.experimentId)"
           v-if="experiments"
         />
 
-        <v-btn prepend-icon="mdi-plus-box" variant="tonal" @click="editExperiment(undefined)" color="success" :text="$t('buttonLicenseCreateNew')" />
+        <v-btn :prepend-icon="mdiPlusBox" variant="tonal" @click="editExperiment(undefined)" color="success" :text="$t('buttonLicenseCreateNew')" />
       </template>
     </GenericAddEditFormModal>
 
@@ -208,6 +208,7 @@
   import GenericAddEditFormModal from '@/components/modals/GenericAddEditFormModal.vue'
   import LicenseSelectModal from '@/components/modals/LicenseSelectModal.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiFilePlus, mdiHelpCircle, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>> }

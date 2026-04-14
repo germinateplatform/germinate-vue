@@ -87,7 +87,7 @@
           </template>
         </v-list-item>
       </v-list>
-      <v-btn prepend-icon="mdi-download" color="primary" @click="downloadAttributes" :text="$t('buttonDownload')" />
+      <v-btn :prepend-icon="mdiDownload" color="primary" @click="downloadAttributes" :text="$t('buttonDownload')" />
     </div>
   </template>
 </template>
@@ -97,6 +97,7 @@
   import { downloadBlob } from '@/plugins/util'
   import DatasetAttributeTable from '@/components/tables/DatasetAttributeTable.vue'
   import { apiPostDatasetAttributeTable, apiPostDatasetAttributeTableExport } from '@/plugins/api/dataset'
+  import { mdiDownload } from '@mdi/js'
 
   const compProps = defineProps<{
     dataset: ViewTableDatasets

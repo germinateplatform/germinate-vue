@@ -100,7 +100,7 @@
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
               prepend-icon=""
-              prepend-inner-icon="mdi-paperclip"
+              :prepend-inner-icon="mdiPaperclip"
               :accept="config.accepts"
             />
             <v-checkbox
@@ -131,6 +131,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
+  import { mdiPaperclip } from '@mdi/js'
   import Markdown from 'vue3-markdown-it'
   import { useDate } from 'vuetify'
 

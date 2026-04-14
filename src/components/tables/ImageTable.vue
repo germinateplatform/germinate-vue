@@ -14,7 +14,7 @@
       item-key="imageId"
       table-key="images"
       :display-type="compProps.displayType"
-      header-icon="mdi-image-multiple"
+      :header-icon="mdiImageMultiple"
       :header-title="$t('pageImagesTitle')"
       :supports-grid-cards="true"
       v-bind="$attrs"
@@ -26,8 +26,8 @@
 
       <!-- Show whether it's a trait reference image. -->
       <template #item.imageIsReference="{ item }">
-        <v-icon icon="mdi-book-information-variant" color="primary" v-tooltip:top="$t('tableTooltipImagesIsReference')" v-if="item.imageIsReference === true" />
-        <v-icon icon="mdi-book-information-variant" color="muted" v-else />
+        <v-icon :icon="mdiBookInformationVariant" color="primary" v-tooltip:top="$t('tableTooltipImagesIsReference')" v-if="item.imageIsReference === true" />
+        <v-icon :icon="mdiBookInformationVariant" color="muted" v-else />
       </template>
 
       <!-- Reference name -->
@@ -50,7 +50,7 @@
       <!-- EXIF -->
       <template #item.imageExif="{ item }">
         <template v-if="item.imageExif && Object.keys(item.imageExif).length > 0">
-          <v-btn @click="showExif(item)" prepend-icon="mdi-image-text" :text="$t('buttonShow')" />
+          <v-btn @click="showExif(item)" :prepend-icon="mdiImageText" :text="$t('buttonShow')" />
         </template>
       </template>
 
@@ -111,6 +111,7 @@
   import ExifInfo from '@/components/widgets/ExifInfo.vue'
   import { getImageUrl } from '@/plugins/util/image'
   import { coreStore } from '@/stores/app'
+  import { mdiBookInformationVariant, mdiImageMultiple, mdiImageText } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableImages[]>>> }

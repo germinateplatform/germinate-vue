@@ -14,7 +14,7 @@
       supports-grid-cards
       item-key="id"
       table-key="dataUpdates"
-      header-icon="mdi-database-import"
+      :header-icon="mdiDatabaseImport"
       :header-title="$t('pageNewsLatestDataUploadsTitle')"
       v-bind="$attrs"
     >
@@ -27,8 +27,8 @@
       </template>
 
       <template #item.isUpdate="{ item }">
-        <v-chip label class="mr-2" :text="$t('pageDataUploadUpdateOptionUpdate')" color="info" prepend-icon="mdi-refresh" v-if="item.isUpdate" />
-        <v-chip label class="mr-2" :text="$t('pageDataUploadUpdateOptionInsert')" color="success" prepend-icon="mdi-database-import" v-else />
+        <v-chip label class="mr-2" :text="$t('pageDataUploadUpdateOptionUpdate')" color="info" :prepend-icon="mdiRefresh" v-if="item.isUpdate" />
+        <v-chip label class="mr-2" :text="$t('pageDataUploadUpdateOptionInsert')" color="success" :prepend-icon="mdiDatabaseImport" v-else />
       </template>
 
       <template #item.stats="{ item }">
@@ -57,8 +57,8 @@
             <v-card-subtitle class="text-wrap" v-if="item.createdOn">{{ new Date(item.createdOn).toLocaleDateString() }}</v-card-subtitle>
             <v-card-text class="flex-grow-1">
               <div class="mb-2">
-                <v-chip label class="mr-2" :text="$t('pageDataUploadUpdateOptionUpdate')" color="info" prepend-icon="mdi-refresh" v-if="item.isUpdate" />
-                <v-chip label class="mr-2" :text="$t('pageDataUploadUpdateOptionInsert')" color="success" prepend-icon="mdi-database-import" v-else />
+                <v-chip label class="mr-2" :text="$t('pageDataUploadUpdateOptionUpdate')" color="info" :prepend-icon="mdiRefresh" v-if="item.isUpdate" />
+                <v-chip label class="mr-2" :text="$t('pageDataUploadUpdateOptionInsert')" color="success" :prepend-icon="mdiDatabaseImport" v-else />
               </div>
               <div class="mb-2">
                 <v-chip
@@ -105,6 +105,7 @@
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { isPageAvailable } from '@/plugins/util'
   import { Pages } from '@/plugins/pages'
+  import { mdiDatabaseImport, mdiRefresh } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableImportJobs[]>>> }

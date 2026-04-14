@@ -27,7 +27,7 @@
             </v-list-item>
             <v-list-item :title="$t('pageLoadingTitle')" class="my-5" v-else>
               <template #subtitle>
-                <p>{{ $t(`pageLoadingText${random}`) }}</p>
+                <p>{{ $t('pageLoadingText') }}</p>
               </template>
             </v-list-item>
           </v-skeleton-loader>
@@ -52,7 +52,6 @@
       const loaded = ref<boolean | undefined>()
       const error = ref<string | undefined>()
       const theme = useTheme()
-      const random = Math.round(Math.random() * 7) + 1
 
       // Set base URL based on environment
       let baseUrl = './api/'
@@ -63,7 +62,6 @@
       store.setBaseUrl(baseUrl)
 
       return {
-        random,
         store,
         loaded,
         error,
@@ -204,5 +202,19 @@ svg.g-svg {
   text-wrap: wrap;
   line-clamp: unset;
   -webkit-line-clamp: unset;
+}
+
+.v-theme--dark .leaflet-control-layers {
+  box-shadow: 0 1px 5px #00000066;
+  background-image: none;
+  background-color: #181a1b;
+  color: white;
+}
+
+.v-theme--dark .leaflet-draw,
+.v-theme--dark .leaflet-control-zoom-in,
+.v-theme--dark .leaflet-control-zoom-out,
+.v-theme--dark .leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
 </style>

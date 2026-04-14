@@ -6,12 +6,12 @@
           {{ $t('modalTitleLicense') }}
           <v-menu v-if="store.storeUserIsDataCurator">
             <template #activator="{ props }">
-              <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props" />
+              <v-btn :icon="mdiDotsVertical" variant="text" v-bind="props" />
             </template>
 
             <v-list>
-              <v-list-item prepend-icon="mdi-delete" :title="$t('buttonLicenseRemoveFromDataset')" @click="onDelete" />
-              <v-list-item prepend-icon="mdi-square-edit-outline" :title="$t('buttonEdit')" @click="onEdit" />
+              <v-list-item :prepend-icon="mdiDelete" :title="$t('buttonLicenseRemoveFromDataset')" @click="onDelete" />
+              <v-list-item :prepend-icon="mdiSquareEditOutline" :title="$t('buttonEdit')" @click="onEdit" />
             </v-list>
           </v-menu>
         </div>
@@ -22,12 +22,12 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn prepend-icon="mdi-download" @click="download">{{ $t('buttonDownload') }}</v-btn>
+        <v-btn :prepend-icon="mdiDownload" @click="download">{{ $t('buttonDownload') }}</v-btn>
         <!-- Close OR accept/decline -->
-        <v-btn color="primary" variant="flat" v-if="compProps.isAccepted" @click="hide" prepend-icon="mdi-cancel">{{ $t('buttonClose') }}</v-btn>
+        <v-btn color="primary" variant="flat" v-if="compProps.isAccepted" @click="hide" :prepend-icon="mdiCancel">{{ $t('buttonClose') }}</v-btn>
         <template v-else>
-          <v-btn color="error" variant="flat" @click="hide" prepend-icon="mdi-cancel">{{ $t('buttonDecline') }}</v-btn>
-          <v-btn color="success" variant="flat" @click="accept" prepend-icon="mdi-check">{{ $t('buttonAccept') }}</v-btn>
+          <v-btn color="error" variant="flat" @click="hide" :prepend-icon="mdiCancel">{{ $t('buttonDecline') }}</v-btn>
+          <v-btn color="success" variant="flat" @click="accept" :prepend-icon="mdiCheck">{{ $t('buttonAccept') }}</v-btn>
         </template>
       </v-card-actions>
     </v-card>
@@ -39,6 +39,7 @@
   import type { ViewTableDatasets, ViewTableLicenses } from '@/plugins/types/germinate'
   import { downloadBlob } from '@/plugins/util'
   import { coreStore } from '@/stores/app'
+  import { mdiCancel, mdiCheck, mdiDelete, mdiDotsVertical, mdiDownload, mdiSquareEditOutline } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
 

@@ -10,17 +10,17 @@
       <v-menu>
         <template #activator="{ props }">
           <v-badge v-if="compProps.badgeCount" location="bottom left" color="info" :content="getNumberWithSuffix(compProps.badgeCount, 1)" :offset-x="10" :offset-y="10">
-            <v-btn v-bind="props" icon="mdi-dots-vertical" />
+            <v-btn v-bind="props" :icon="mdiDotsVertical" />
           </v-badge>
-          <v-btn v-bind="props" icon="mdi-dots-vertical" v-else />
+          <v-btn v-bind="props" :icon="mdiDotsVertical" v-else />
         </template>
 
         <v-list>
           <slot name="list-prepend" />
-          <v-list-item @click="downloadChart('png')" :title="$t('buttonDownloadPng')" prepend-icon="mdi-file-image" v-if="compProps.supportsPngDownload" />
-          <v-list-item @click="downloadChart('svg')" :title="$t('buttonDownloadSvg')" prepend-icon="mdi-file-code" v-if="compProps.supportsSvgDownload" />
-          <v-list-item @click="downloadSource" :title="$t('buttonDownloadFile')" prepend-icon="mdi-file-document" v-if="compProps.supportsFileDownload" />
-          <v-list-item @click="bottomSheetVisible = true" :title="$t('buttonChangeChartColors')" prepend-icon="mdi-palette" v-if="compProps.canChangeColors" />
+          <v-list-item @click="downloadChart('png')" :title="$t('buttonDownloadPng')" :prepend-icon="mdiFileImage" v-if="compProps.supportsPngDownload" />
+          <v-list-item @click="downloadChart('svg')" :title="$t('buttonDownloadSvg')" :prepend-icon="mdiFileCode" v-if="compProps.supportsSvgDownload" />
+          <v-list-item @click="downloadSource" :title="$t('buttonDownloadFile')" :prepend-icon="mdiFileDocument" v-if="compProps.supportsFileDownload" />
+          <v-list-item @click="bottomSheetVisible = true" :title="$t('buttonChangeChartColors')" :prepend-icon="mdiPalette" v-if="compProps.canChangeColors" />
           <slot name="list-append" />
         </v-list>
       </v-menu>
@@ -48,13 +48,13 @@
         class="pb-10"
       >
         <v-card-text>
-          <v-btn class="mb-3" prepend-icon="mdi-undo-variant" :text="$t('buttonResetColorsToDefault')" @click="resetToDefault" />
+          <v-btn class="mb-3" :prepend-icon="mdiUndoVariant" :text="$t('buttonResetColorsToDefault')" @click="resetToDefault" />
           <v-row>
             <v-col cols="12" md="6">
               <VColorInput
                 hide-actions
                 v-model="newColor"
-                append-icon="mdi-plus"
+                :append-icon="mdiPlus"
                 @click:append="addColor"
               />
             </v-col>
@@ -88,6 +88,7 @@
   import { downloadBlob, downloadSvgsFromContainer, type DownloadBlob } from '@/plugins/util'
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
   import { coreStore } from '@/stores/app'
+  import { mdiChartAreaspline, mdiDotsVertical, mdiFileCode, mdiFileDocument, mdiFileImage, mdiPalette, mdiPlus, mdiUndoVariant } from '@mdi/js'
   import Plotly from 'plotly.js/lib/core'
   import { useI18n } from 'vue-i18n'
   import { VColorInput } from 'vuetify/labs/VColorInput'
@@ -124,7 +125,7 @@
     canChangeColors: true,
     toolbarColor: 'surface',
     headerIconColor: 'medium-emphasis',
-    headerIcon: 'mdi-chart-areaspline',
+    headerIcon: mdiChartAreaspline,
   })
 
   const store = coreStore()

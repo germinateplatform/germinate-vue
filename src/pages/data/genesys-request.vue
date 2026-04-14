@@ -26,7 +26,7 @@
                   <v-text-field :label="$t('formLabelEmail')" v-model="email" type="email" required />
                 </template>
                 <div class="mb-3" v-else>
-                  <v-chip :text="store.storeToken.username" prepend-icon="mdi-account" />
+                  <v-chip :text="store.storeToken.username" :prepend-icon="mdiAccount" />
                 </div>
               </v-form>
             </template>
@@ -43,12 +43,14 @@
 </template>
 
 <script setup lang="ts">
+  import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostGermplasmTable, apiPostGermplasmTableIds } from '@/plugins/api/germplasm'
   import { apiPostGenesysRequest, apiPostTableExport } from '@/plugins/api/misc'
   import { Pages } from '@/plugins/pages'
   import type { MaterialRequestResponse } from '@/plugins/types/genesys'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
+  import { mdiAccount } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
@@ -139,6 +141,6 @@
     return apiPostGermplasmTableIds(data)
   }
   function downloadGermplasm (data: PaginatedRequest) {
-    return apiPostTableExport({ filters: data.filters }, 'germplasm')
+    return apiPostTableExport({ filters: data.filters, limit: MAX_JAVA_INTEGER, page: 0 }, 'germplasm')
   }
 </script>

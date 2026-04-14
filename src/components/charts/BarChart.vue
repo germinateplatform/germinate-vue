@@ -31,6 +31,7 @@
   import { coreStore } from '@/stores/app'
   import { getColors } from '@/plugins/util/colors'
   import { useI18n } from 'vue-i18n'
+  import { mdiChartBar } from '@mdi/js'
 
   // Only register the chart types we're actually using to reduce the final bundle size
   Plotly.register([
@@ -60,7 +61,7 @@
   const compProps = withDefaults(defineProps<BarChartProps>(), {
     downloadName: 'bar-chart',
     mode: 'traces',
-    headerIcon: 'mdi-chart-bar',
+    headerIcon: mdiChartBar,
   })
 
   const store = coreStore()

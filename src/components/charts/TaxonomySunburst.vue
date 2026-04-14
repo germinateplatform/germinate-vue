@@ -4,7 +4,7 @@
     :chart-id="id"
     :filename="filename"
     :source-file="sourceFile"
-    header-icon="mdi-chart-donut-variant"
+    :header-icon="mdiChartDonutVariant"
     @force-redraw="redraw"
   >
     <template #chart-content>
@@ -28,6 +28,7 @@
   import { getColors } from '@/plugins/util/colors'
   import { FilterComparator, FilterOperator, type FilterGroup } from '@/plugins/types/germinate'
   import { apiGetStatsFile } from '@/plugins/api/stats'
+  import { mdiChartDonutVariant } from '@mdi/js'
 
   // Only register the chart types we're actually using to reduce the final bundle size
   Plotly.register([
@@ -165,6 +166,6 @@
   }
 
   onMounted(() => {
-    apiGetStatsFile('taxonomy', (result: Blob) => redraw(result))
+    apiGetStatsFile('taxonomy', result => redraw(result))
   })
 </script>

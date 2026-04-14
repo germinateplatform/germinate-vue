@@ -11,13 +11,13 @@
     :display-type="compProps.displayType"
     item-key="publicationId"
     table-key="publications"
-    header-icon="mdi-book-open-variant"
+    :header-icon="mdiBookOpenVariant"
     :header-title="$t('pagePublicationsTitle')"
     :supports-grid-cards="true"
     v-bind="$attrs"
   >
     <template #header v-if="store.storeUserIsAuthenticated">
-      <v-btn variant="outlined" :text="$t('buttonAddPublication')" prepend-icon="mdi-plus" @click="addItem" />
+      <v-btn variant="outlined" :text="$t('buttonAddPublication')" :prepend-icon="mdiPlus" @click="addItem" />
     </template>
 
     <template #item.publicationName="{ item }">
@@ -29,7 +29,7 @@
       <span v-if="item.publicationFallbackCache">{{ item.publicationFallbackCache['container-title'] }}</span>
     </template>
     <template #item.publicationDoi="{ item }">
-      <span><a rel="noopener noreferrer" :href="item.publicationDoi">{{ item.publicationDoi }}</a> <v-icon icon="mdi-open-in-new" /></span>
+      <span><a rel="noopener noreferrer" :href="item.publicationDoi">{{ item.publicationDoi }}</a> <v-icon :icon="mdiOpenInNew" /></span>
     </template>
     <template #item.publicationDetails="{ item }">
       <v-chip label class="me-2 mt-1" v-if="item.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path">{{ publicationTypes.database.text() }}</v-chip>
@@ -97,6 +97,7 @@
   import { useI18n } from 'vue-i18n'
   import { publicationTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
+  import { mdiBookOpenVariant, mdiOpenInNew, mdiPlus } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePublications[]>>> }

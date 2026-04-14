@@ -18,8 +18,8 @@
         :disabled="compProps.disabled"
         class="ms-3"
       >
-        <v-btn value="table" v-tooltip:top="$t('tooltipTableTypeSwitchTable')"><v-icon icon="mdi-table" /></v-btn>
-        <v-btn value="grid" v-tooltip:top="$t('tooltipTableTypeSwitchGrid')"><v-icon icon="mdi-view-grid" /></v-btn>
+        <v-btn value="table" v-tooltip:top="$t('tooltipTableTypeSwitchTable')"><v-icon :icon="mdiTable" /></v-btn>
+        <v-btn value="grid" v-tooltip:top="$t('tooltipTableTypeSwitchGrid')"><v-icon :icon="mdiViewGrid" /></v-btn>
       </v-btn-toggle>
     </div>
 
@@ -29,7 +29,7 @@
       <v-btn-group density="compact" :disabled="compProps.disabled">
         <v-menu :close-on-content-click="false" v-if="displayType === 'table'">
           <template #activator="{ props }">
-            <v-btn :disabled="compProps.disabled" v-tooltip:top="$t('tooltipTableColumnSelector')" v-bind="props" :append-icon="props['aria-expanded'] === 'true' ? 'mdi-menu-up' : 'mdi-menu-down'"><v-icon icon="mdi-view-column" /></v-btn>
+            <v-btn :disabled="compProps.disabled" v-tooltip:top="$t('tooltipTableColumnSelector')" v-bind="props" :append-icon="props['aria-expanded'] === 'true' ? mdiMenuUp : mdiMenuDown"><v-icon :icon="mdiViewColumn" /></v-btn>
           </template>
           <v-list max-height="75vh">
             <v-list-item v-for="header in dropdownHeaders" :key="`table-header-${compProps.tableKey}-${header.key}`">
@@ -42,12 +42,12 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        <v-btn :disabled="compProps.disabled" @click="emit('show-filter')" :color="filtered ? 'success' : undefined" v-tooltip:top="$t('tooltipTableFilter')"><v-icon icon="mdi-filter" /></v-btn>
-        <v-btn :disabled="compProps.disabled" v-if="filtered" color="error" v-tooltip:top="$t('tooltipTableClearFilter')" @click="emit('clear-filter')"><v-icon icon="mdi-delete" /></v-btn>
+        <v-btn :disabled="compProps.disabled" @click="emit('show-filter')" :color="filtered ? 'success' : undefined" v-tooltip:top="$t('tooltipTableFilter')"><v-icon :icon="mdiFilter" /></v-btn>
+        <v-btn :disabled="compProps.disabled" v-if="filtered" color="error" v-tooltip:top="$t('tooltipTableClearFilter')" @click="emit('clear-filter')"><v-icon :icon="mdiDelete" /></v-btn>
       </v-btn-group>
       <v-btn-group class="ms-2" density="compact" v-if="markedItemConfig" :disabled="compProps.disabled">
         <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, compProps.markedItemType || '')"><v-chip size="small" label>{{ getNumberWithSuffix(markedItemConfig.count, 1) }}</v-chip></v-btn>
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon icon="mdi-delete" /></v-btn>
+        <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
       </v-btn-group>
     </div>
   </v-toolbar>
@@ -60,6 +60,7 @@
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
   import type { DataTableHeader } from 'vuetify'
   import { Pages } from '@/plugins/pages'
+  import { mdiDelete, mdiFilter, mdiMenuDown, mdiMenuUp, mdiTable, mdiViewColumn, mdiViewGrid } from '@mdi/js'
 
   const store = coreStore()
 

@@ -11,7 +11,7 @@
     :show-details="false"
     item-key="collaboratorId"
     table-key="collaborators"
-    header-icon="mdi-account-multiple"
+    :header-icon="mdiAccountMultiple"
     :header-title="$t('modalTitleCollaborators')"
     v-bind="$attrs"
   >
@@ -40,6 +40,7 @@
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableCollaborators } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
+  import { mdiAccountMultiple } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableCollaborators[]>>> }

@@ -4,23 +4,19 @@
     <v-divider class="mb-3" />
     <p v-html="$t('pageImagesText')" />
 
-    <TraitTable :get-data="getData" :filter-on="localFilterOn" @filter-changed="updateLocalSelection">
-      <template #card-text>
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <TraitClassSelector v-model="selectedTraitClasses" />
-            </v-col>
-            <v-col>
-              <MethodClassSelector v-model="selectedMethodClasses" />
-            </v-col>
-            <v-col>
-              <ScaleDataTypeSelector v-model="selectedScaleDataTypes" />
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </template>
-    </TraitTable>
+    <v-row>
+      <v-col>
+        <TraitClassSelector v-model="selectedTraitClasses" />
+      </v-col>
+      <v-col>
+        <MethodClassSelector v-model="selectedMethodClasses" />
+      </v-col>
+      <v-col>
+        <ScaleDataTypeSelector v-model="selectedScaleDataTypes" />
+      </v-col>
+    </v-row>
+
+    <TraitTable class="mt-5" :get-data="getData" :filter-on="localFilterOn" @filter-changed="updateLocalSelection" />
   </v-container>
 </template>
 

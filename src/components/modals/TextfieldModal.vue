@@ -10,7 +10,7 @@
           readonly
         >
           <template #append-inner>
-            <v-icon icon="mdi-clipboard" v-tooltip:top="$t('tooltipCopyToClipboard')" v-if="copy" @click="copyToClipboard" />
+            <v-icon :icon="mdiClipboard" v-tooltip:top="$t('tooltipCopyToClipboard')" v-if="copy" @click="copyToClipboard" />
           </template>
         </v-text-field>
       </v-card-text>
@@ -24,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+  import { mdiClipboard } from '@mdi/js'
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
 

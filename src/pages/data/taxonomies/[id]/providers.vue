@@ -25,7 +25,7 @@
 
       <v-row v-if="taxonomy.taxonomyProviders && taxonomy.taxonomyProviders.length > 0">
         <v-col cols="12" sm="6" md="4" lg="3" class="mb-3" v-for="provider in taxonomy.taxonomyProviders" :key="`provider-${provider.providerName}`">
-          <v-card prepend-icon="mdi-identifier" :title="provider.providerName">
+          <v-card :prepend-icon="mdiIdentifier" :title="provider.providerName">
             <v-list>
               <v-list-item :title="$t('pageTaxonomyProviderUrl')" v-if="provider.providerHomepage">
                 <template #subtitle>
@@ -41,7 +41,7 @@
 
             <v-card-actions v-if="provider.providerName === 'NCBI'">
               <v-spacer />
-              <v-btn @click="showEbiOverview(provider)" prepend-icon="mdi-api" :text="$t('buttonReadMore')" />
+              <v-btn @click="showEbiOverview(provider)" :prepend-icon="mdiApi" :text="$t('buttonReadMore')" />
             </v-card-actions>
           </v-card>
         </v-col>
@@ -98,13 +98,16 @@
                 v-model="studySearch"
                 clearable
                 hide-details
-                prepend-inner-icon="mdi-magnify"
+                :prepend-inner-icon="mdiMagnify"
                 :placeholder="$t('inputPlaceholderSearch')"
                 variant="solo"
                 density="compact"
               />
               <v-spacer />
             </v-toolbar>
+          </template>
+          <template #item.study_description="{ item }">
+            <ShowFullCell :content="item.study_description" title="Study_description" v-if="item.study_description && item.study_description.length > 0" />
           </template>
           <template #item.study_accession="{ item }">
             <a :href="`https://www.ebi.ac.uk/ena/browser/view/${item.study_accession}`" rel="noopener noreferrer" target="_blank">{{ item.study_accession }}</a>
@@ -132,7 +135,7 @@
                 v-model="assemblySearch"
                 clearable
                 hide-details
-                prepend-inner-icon="mdi-magnify"
+                :prepend-inner-icon="mdiMagnify"
                 :placeholder="$t('inputPlaceholderSearch')"
                 variant="solo"
                 density="compact"
@@ -156,6 +159,7 @@
   import type { EbiStudy, EbiRecord, EbiGenomyAssembly } from '@/plugins/types/ebi'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { useI18n } from 'vue-i18n'
+  import { mdiApi, mdiIdentifier, mdiMagnify } from '@mdi/js'
 
   const { t } = useI18n()
   const route = useRoute('/data/taxonomies/[id]/providers')

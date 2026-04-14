@@ -1,4 +1,4 @@
-import type { UserSelection } from '@/components/widgets/selections/HighlightSelection.vue'
+import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
 
 import Plotly from 'plotly.js/lib/core'
 import { uuidv4 } from '@/plugins/util'

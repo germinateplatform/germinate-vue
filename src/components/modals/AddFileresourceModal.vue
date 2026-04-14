@@ -9,9 +9,9 @@
               :items="fileresourceTypes"
               :label="$t('formLabelFileResourceType')"
               required
-              prepend-inner-icon="mdi-tag"
+              :prepend-inner-icon="mdiTag"
               return-object
-              append-icon="mdi-plus"
+              :append-icon="mdiPlus"
               @click:append="fileresourceTypeModal?.show()"
               :item-title="(r: Fileresourcetypes) => r.name + (r.description ? (' - ' + r.description) : '')"
             />
@@ -19,20 +19,20 @@
             <v-text-field
               v-model="name"
               :label="$t('formLabelFileResourceName')"
-              prepend-inner-icon="mdi-form-textbox"
+              :prepend-inner-icon="mdiFormTextbox"
               required
             />
 
             <v-textarea
               v-model="description"
               :label="$t('formLabelFileResourceDescription')"
-              prepend-inner-icon="mdi-form-textarea"
+              :prepend-inner-icon="mdiFormTextarea"
             />
 
             <v-file-input
               v-model="file"
               prepend-icon=""
-              prepend-inner-icon="mdi-paperclip"
+              :prepend-inner-icon="mdiPaperclip"
               :label="$t('formLabelFileResourceFile')"
               required
             />
@@ -58,6 +58,7 @@
   import AddFileresourceTypeModal from '@/components/modals/AddFileresourceTypeModal.vue'
 
   import emitter from 'tiny-emitter/instance'
+  import { mdiFormTextarea, mdiFormTextbox, mdiPaperclip, mdiPlus, mdiTag } from '@mdi/js'
 
   const emit = defineEmits(['fileresource-added'])
 

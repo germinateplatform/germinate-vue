@@ -1,9 +1,9 @@
 <template>
   <v-container fluid v-if="marker">
     <h1 class="text-h4 my-3 d-flex justify-space-between align-center">
-      <span>{{ $t('pageMarkerDetailsTitle') }} - <small>{{ marker.markerName }}</small> - <v-chip label prepend-icon="mdi-label-variant" :text="marker.markerType" /></span>
+      <span>{{ $t('pageMarkerDetailsTitle') }} - <small>{{ marker.markerName }}</small> - <v-chip label :prepend-icon="mdiLabelVariant" :text="marker.markerType" /></span>
       <v-chip label v-tooltip:top="$t('tooltipMarkerMarkedItem')" @click="markItem" :color="isMarked ? 'primary' : undefined">
-        <v-icon :icon="isMarked ? 'mdi-bookmark-check' : 'mdi-bookmark-outline'" />
+        <v-icon :icon="isMarked ? mdiBookmarkCheck : mdiBookmarkOutline" />
       </v-chip>
     </h1>
     <v-divider class="mb-3" />
@@ -15,7 +15,7 @@
         label
         v-for="(synonym, index) in marker.markerSynonyms"
         :key="`marker-synonym-${index}`"
-        prepend-icon="mdi-label"
+        :prepend-icon="mdiLabel"
         :text="synonym"
         class="me-2"
       />
@@ -57,6 +57,7 @@
   import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMarkerDatasetTable, apiPostMarkerGroupTable, apiPostMarkerTable } from '@/plugins/api/genotype'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableMarkers } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
+  import { mdiBookmarkCheck, mdiBookmarkOutline, mdiLabel, mdiLabelVariant } from '@mdi/js'
 
   const route = useRoute('/data/genotypes/markers/[id]')
   const store = coreStore()

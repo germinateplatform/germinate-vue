@@ -13,8 +13,8 @@
         >
           <template #title="{ title }">
             <div class="d-flex justify-space-between mt-3">
-              <div class="mb-2"><v-icon size="large" color="primary" icon="mdi-tag" /> <span class="text-h5">v{{ title }}</span></div>
-              <v-chip color="muted" prepend-icon="mdi-calendar" label>{{ new Date(version.date).toLocaleDateString() }}</v-chip>
+              <div class="mb-2"><v-icon size="large" color="primary" :icon="mdiTag" /> <span class="text-h5">v{{ title }}</span></div>
+              <v-chip color="muted" :prepend-icon="mdiCalendar" label>{{ new Date(version.date).toLocaleDateString() }}</v-chip>
             </div>
           </template>
 
@@ -52,6 +52,7 @@
   import cd from '@/plugins/changelog/index.json'
   import type { ChangelogEntry } from '@/plugins/types/changelog'
   import { getTemplateColor } from '@/plugins/util/colors'
+  import { mdiCalendar, mdiTag } from '@mdi/js'
 
   import semver from 'semver'
   import { useI18n } from 'vue-i18n'

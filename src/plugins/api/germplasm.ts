@@ -1,6 +1,6 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { ExportRequest, GermplasmExportRequest, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, ViewTableGermplasm } from '@/plugins/types/germinate'
+import type { ExportRequest, GermplasmExportRequest, GermplasmStats, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, ViewTableGermplasm } from '@/plugins/types/germinate'
 
 function apiGetGermplasmMcpd<T> (germplasmId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/${germplasmId}/mcpd`, success: onSuccess, error: onError })
@@ -120,8 +120,8 @@ function apiPostExternalLinkIdentifiers<T> (queryData: number[], onSuccess?: Ger
   return authAxios({ url: 'germplasm/external/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiGetGermplasmStatsTraits<T> (germplasmId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
-  return authAxios({ url: `germplasm/${germplasmId}/stats/trait`, success: onSuccess, error: onError })
+function apiGetGermplasmStatsTraits (germplasmId: number, subsetReqest?: GermplasmExportRequest, onSuccess?: GerminateResponseHandler<GermplasmStats[]>, onError?: ErrorHandler) {
+  return authAxios<GermplasmStats[]>({ url: `germplasm/${germplasmId}/stats/trait`, data: subsetReqest, method: 'POST', success: onSuccess, error: onError })
 }
 
 function apiGetGermplasmDataWarnings<T> (germplasmId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {

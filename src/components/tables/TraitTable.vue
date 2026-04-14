@@ -11,14 +11,14 @@
       :show-details="false"
       item-key="traitId"
       table-key="traits"
-      header-icon="mdi-tag-multiple"
+      :header-icon="mdiTagMultiple"
       :header-title="$t('pageTraitsTitle')"
       v-bind="$attrs"
     >
       <template #header.methodSetSize="{ column }">
         {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipTraitSet')">
           <template #activator="{ props }">
-            <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
+            <v-icon v-bind="props" size="small" color="muted" :icon="mdiHelpCircle" />
           </template>
         </v-tooltip>
       </template>
@@ -63,11 +63,11 @@
       <template #item.scaleRestrictions="{ item }">
         <v-tooltip v-if="item.scaleRestrictions">
           <template #activator="{ props: activatorProps }">
-            <v-icon color="primary" v-bind="activatorProps" icon="mdi-code-brackets" />
+            <v-icon color="primary" v-bind="activatorProps" :icon="mdiCodeBrackets" />
           </template>
-          <div v-if="item.scaleRestrictions.min !== undefined && item.scaleRestrictions.min !== null"><v-icon size="small" icon="mdi-greater-than-or-equal" /> {{ item.scaleRestrictions.min }}</div>
-          <div v-if="item.scaleRestrictions.max !== undefined && item.scaleRestrictions.max !== null"><v-icon size="small" icon="mdi-less-than-or-equal" /> {{ item.scaleRestrictions.max }}</div>
-          <div v-if="item.scaleRestrictions.categories"><v-icon size="small" icon="mdi-code-brackets" /> {{ item.scaleRestrictions.categories.map((c: string[]) => c.join(', ')).join(', ') }}</div>
+          <div v-if="item.scaleRestrictions.min !== undefined && item.scaleRestrictions.min !== null"><v-icon size="small" :icon="mdiGreaterThanOrEqual" /> {{ item.scaleRestrictions.min }}</div>
+          <div v-if="item.scaleRestrictions.max !== undefined && item.scaleRestrictions.max !== null"><v-icon size="small" :icon="mdiLessThanOrEqual" /> {{ item.scaleRestrictions.max }}</div>
+          <div v-if="item.scaleRestrictions.categories"><v-icon size="small" :icon="mdiCodeBrackets" /> {{ item.scaleRestrictions.categories.map((c: string[]) => c.join(', ')).join(', ') }}</div>
         </v-tooltip>
       </template>
 
@@ -101,6 +101,7 @@
   import { dataTypes, methodClasses, traitClasses } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
   import { columns } from '@/plugins/util/table-columns'
+  import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiHelpCircle, mdiLessThanOrEqual, mdiTagMultiple } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTraits[]>>> }

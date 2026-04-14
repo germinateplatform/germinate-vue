@@ -1,10 +1,10 @@
 <template>
   <v-card v-if="mcpd" :title="$t('pagePassportMcpdTitle')">
     <template #prepend>
-      <v-icon icon="mdi-passport" color="primary" />
+      <v-icon :icon="mdiPassport" color="primary" />
     </template>
     <template #append>
-      <v-icon icon="mdi-help-circle" v-tooltip:top="'Multi-Crop Passport Descriptors'" />
+      <v-icon :icon="mdiHelpCircle" v-tooltip:top="'Multi-Crop Passport Descriptors'" />
     </template>
     <v-list>
       <v-list-item :title="$t('widgetMcpdPuid')" :subtitle="mcpd.puid || 'N/A'" />
@@ -33,6 +33,7 @@
 <script setup lang="ts">
   import { apiGetGermplasmMcpd } from '@/plugins/api/germplasm'
   import type { ViewMcpd, ViewTableGermplasm } from '@/plugins/types/germinate'
+  import { mdiHelpCircle, mdiPassport } from '@mdi/js'
   // @ts-ignore
   import * as countries from 'i18n-iso-countries'
   // @ts-ignore

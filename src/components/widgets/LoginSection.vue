@@ -8,7 +8,7 @@
     <v-text-field
       density="compact"
       :label="$t('formLabelUsername')"
-      prepend-inner-icon="mdi-email-outline"
+      :prepend-inner-icon="mdiEmailOutline"
       autofocus
       :readonly="loading"
       v-model="username"
@@ -27,12 +27,12 @@
     </div>
 
     <v-text-field
-      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+      :append-inner-icon="visible ? mdiEyeOff : mdiEye"
       :type="visible ? 'text' : 'password'"
       density="compact"
       :label="$t('formLabelPassword')"
       v-model="password"
-      prepend-inner-icon="mdi-lock-outline"
+      :prepend-inner-icon="mdiLockOutline"
       :readonly="loading"
       @click:append-inner="visible = !visible"
     />
@@ -52,7 +52,7 @@
       type="submit"
       :disabled="!valid || loading"
       class="mb-8"
-      prepend-icon="mdi-login-variant"
+      :prepend-icon="mdiLoginVariant"
       color="primary"
       size="large"
     >
@@ -69,6 +69,7 @@
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
+  import { mdiEmailOutline, mdiEye, mdiEyeOff, mdiLockOutline, mdiLoginVariant } from '@mdi/js'
 
   const visible = ref(false)
   const username = ref('')

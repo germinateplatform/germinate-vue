@@ -12,7 +12,7 @@
     item-key="markerId"
     table-key="markers"
     marked-item-type="markers"
-    header-icon="mdi-format-indent-increase"
+    :header-icon="mdiFormatIndentIncrease"
     :header-title="$t('pageMarkersTitle')"
     v-bind="$attrs"
   >
@@ -29,7 +29,7 @@
       <span v-if="item.markerSynonyms">{{ item.markerSynonyms.join(', ') }}</span>
     </template>
     <template #item.markerType="{ item }">
-      <v-chip label prepend-icon="mdi-label-variant" v-if="item.markerType">{{ item.markerType }}</v-chip>
+      <v-chip label :prepend-icon="mdiLabelVariant" v-if="item.markerType">{{ item.markerType }}</v-chip>
     </template>
 
     <!-- Pass on all named slots -->
@@ -48,6 +48,7 @@
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableMarkers } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
+  import { mdiFormatIndentIncrease, mdiLabelVariant } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMarkers[]>>> }

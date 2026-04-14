@@ -3,8 +3,7 @@
     <h4 v-if="heading" class="scale-heading d-flex align-center" :title="heading">
       <v-checkbox hide-details density="compact" v-if="selectable" v-model="localSelected">
         <template #label>
-          <router-link class="heading-text" v-if="to" :to="to">{{ heading }}</router-link>
-          <span class="heading-text" v-else>{{ heading }}</span>
+          <a class="heading-text" href="#" @click.prevent="emit('click')">{{ heading }}</a>
         </template>
       </v-checkbox>
     </h4>
@@ -13,19 +12,19 @@
       <div>
         <h4>{{ heading }}</h4>
         <div class="d-flex justify-content-between">
-          <span class="d-block"><v-icon icon="mdi-arrow-up-bold" /> {{ $t('widgetScaleMax') }} </span>
+          <span class="d-block"><v-icon :icon="mdiArrowUpBold" /> {{ $t('widgetScaleMax') }} </span>
           <span class="ml-2">{{ toFixed(max, 4) }}</span>
         </div>
         <div class="d-flex justify-content-between">
-          <span class="d-block" :style="{ color: 'var(--primary)' }"><v-icon icon="mdi-diameter-variant" /> {{ $t('widgetScaleAvg') }} </span>
+          <span class="d-block" :style="{ color: 'var(--primary)' }"><v-icon :icon="mdiDiameterVariant" /> {{ $t('widgetScaleAvg') }} </span>
           <span class="ml-2">{{ toFixed(marker, 4) }}</span>
         </div>
         <div class="d-flex justify-content-between">
-          <span class="d-block"><v-icon icon="mdi-arrow-down-bold" /> {{ $t('widgetScaleMin') }} </span>
+          <span class="d-block"><v-icon :icon="mdiArrowDownBold" /> {{ $t('widgetScaleMin') }} </span>
           <span class="ml-2">{{ toFixed(min, 4) }}</span>
         </div>
         <div class="d-flex justify-content-between">
-          <span class="d-block"><v-icon icon="mdi-numeric" /> {{ $t('widgetScaleCount') }} </span>
+          <span class="d-block"><v-icon :icon="mdiNumeric" /> {{ $t('widgetScaleCount') }} </span>
           <span class="ml-2">{{ getNumberWithSuffix(count) }}</span>
         </div>
       </div>
@@ -44,7 +43,7 @@
 <script setup lang="ts">
   import { uuidv4 } from '@/plugins/util'
   import { getNumberWithSuffix, toFixed } from '@/plugins/util/formatting'
-  import { coreStore } from '@/stores/app'
+  import { mdiArrowDownBold, mdiArrowUpBold, mdiDiameterVariant, mdiNumeric } from '@mdi/js'
 
   export interface ScaleProps {
     heading: string
@@ -54,7 +53,6 @@
     max?: number
     marker?: number
     count?: number
-    to?: string
   }
 
   const compProps = withDefaults(defineProps<ScaleProps>(), {
@@ -65,8 +63,7 @@
     count: 0,
   })
 
-  const store = coreStore()
-  const emit = defineEmits(['update:model-value'])
+  const emit = defineEmits(['update:model-value', 'click'])
 
   const id = ref<string>(uuidv4())
   const localSelected = ref<boolean>(false)

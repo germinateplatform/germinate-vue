@@ -7,7 +7,7 @@
       <!-- Table showing all datasets of the type -->
       <DatasetTable :get-data="getData" :get-ids="getIds" :filter-on="filterOn" :selection-type="selectionMode" class="mb-3" ref="datasetTable" @selection-changed="setSelection" />
       <!-- Continue button -->
-      <v-btn color="primary" @click="checkLicenses" :disabled="!canContinue" prepend-icon="mdi-arrow-right-box" :text="$t('buttonNext')" />
+      <v-btn color="primary" @click="checkLicenses" :disabled="!canContinue" :prepend-icon="mdiArrowRightBox" :text="$t('buttonNext')" />
     </div>
     <div v-else>
       <h1 class="text-h4 mb-3">{{ $t('pageDatasetSelectorInvalidTypeTitle') }}</h1>
@@ -34,6 +34,7 @@
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { datasetTypes, type DatasetType } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
+  import { mdiArrowRightBox } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'

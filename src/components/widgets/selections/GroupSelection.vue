@@ -15,8 +15,8 @@
       :items="allGroups"
     />
     <v-btn-toggle class="mt-2" color="primary" variant="outlined" v-model="groupSelection" v-if="multiple && type === 'export'">
-      <v-btn value="groups" :text="$t('pageExportGroupSelectModeSelect')" prepend-icon="mdi-arrow-up-box" />
-      <v-btn value="all" :text="$t('pageExportGroupSelectModeAll')" prepend-icon="mdi-select-all" />
+      <v-btn value="groups" :text="$t('pageExportGroupSelectModeSelect')" :prepend-icon="mdiArrowUpBox" />
+      <v-btn value="all" :text="$t('pageExportGroupSelectModeAll')" :prepend-icon="mdiSelectAll" />
     </v-btn-toggle>
   </div>
 </template>
@@ -24,6 +24,7 @@
 <script setup lang="ts">
   import type { ViewTableGroups } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
+  import { mdiArrowUpBox, mdiSelectAll } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 
   interface GroupSelectItem {

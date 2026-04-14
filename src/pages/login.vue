@@ -2,7 +2,7 @@
   <div class="login-bg d-flex flex-column align-center justify-center">
     <v-fab
       class="bg-attribution"
-      icon="mdi-information"
+      :icon="mdiInformation"
       variant="tonal"
       color="primary"
       size="sm"
@@ -55,6 +55,7 @@
 <script setup lang="ts">
   import LoginSection from '@/components/widgets/LoginSection.vue'
   import { coreStore } from '@/stores/app'
+  import { mdiInformation } from '@mdi/js'
 
   const store = coreStore()
   const loading = ref(false)

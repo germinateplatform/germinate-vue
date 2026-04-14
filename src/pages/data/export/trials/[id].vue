@@ -7,7 +7,7 @@
       <v-expansion-panels>
         <v-expansion-panel eager>
           <template #title>
-            <v-icon icon="mdi-database" class="me-2" /> {{ $t('widgetSelectedDatasetsTitle') }}
+            <v-icon :icon="mdiDatabase" class="me-2" /> {{ $t('widgetSelectedDatasetsTitle') }}
           </template>
           <template #text>
             <DatasetTable :get-data="getDatasetTableData" disabled />
@@ -24,7 +24,7 @@
                   {{ tab.text }}
                 </v-card-title>
 
-                <v-card-subtitle><v-icon icon="mdi-help-circle" v-tooltip:bottom="tab.help" /></v-card-subtitle>
+                <v-card-subtitle><v-icon :icon="mdiHelpCircle" v-tooltip:bottom="tab.help" /></v-card-subtitle>
               </div>
 
               <v-avatar
@@ -124,6 +124,7 @@
   import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest, ScalesDatatype, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { coreStore } from '@/stores/app'
+  import { mdiChartBellCurve, mdiCompare, mdiDatabase, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
@@ -157,27 +158,27 @@
     const result = [{
       key: 'overview',
       text: t('pageDataExportTabDataStatistics'),
-      path: 'mdi-eye',
+      path: mdiEye,
       help: t('pageDataExportTabHelpDataStatistics'),
     }, {
       key: 'matrix',
       text: t('pageDataExportTabDataMatrix'),
-      path: 'mdi-grid',
+      path: mdiGrid,
       help: t('pageDataExportTabHelpDataMatrix'),
     }, {
       key: 'comparison',
       text: t('pageDataExportTabComparison'),
-      path: 'mdi-compare',
+      path: mdiCompare,
       help: t('pageDataExportTabHelpComparison'),
     // }, {
     //   key: 'comparison',
     //   text: t('pageDataExportTabComparison'),
-    //   path: 'mdi-distribute-horizontal-center',
+    //   path: mdiDistributeHorizontalCenter,
     //   help: t('pageDataExportTabHelpComparison'),
     }, {
       key: 'table',
       text: t('pageDataExportTabDataTable'),
-      path: 'mdi-table-search',
+      path: mdiTableSearch,
       help: t('pageDataExportTabHelpDataTable'),
     }]
 
@@ -185,7 +186,7 @@
       result.push({
         key: 'locations',
         text: t('pageDataExportTabLocations'),
-        path: 'mdi-map-marker-path',
+        path: mdiMapMarkerPath,
         help: t('pageDataExportTabHelpLocations'),
       })
     }
@@ -194,7 +195,7 @@
       result.push({
         key: 'timeseries',
         text: t('pageDataExportTabTimeseries'),
-        path: 'mdi-chart-bell-curve',
+        path: mdiChartBellCurve,
         help: t('pageDataExportTabHelpTimeseries'),
       })
     }
@@ -202,7 +203,7 @@
     result.push({
       key: 'export',
       text: t('pageDataExportTabDataExport'),
-      path: 'mdi-file-download-outline',
+      path: mdiFileDownloadOutline,
       help: t('pageDataExportTabHelpDataExport'),
     })
 

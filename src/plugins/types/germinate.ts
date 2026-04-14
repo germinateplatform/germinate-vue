@@ -783,6 +783,20 @@ export interface Taxonomies {
     updatedOn: Date;
 }
 
+export interface BiologicalStatusCount {
+    id: number;
+    biologicalstatus: string;
+    count: number;
+}
+
+export interface CountryCount {
+    id: number;
+    countryName: string;
+    countryCode2: string;
+    countryCode3: string;
+    count: number;
+}
+
 export interface Treatments {
     id: number;
     name: string;
@@ -801,6 +815,14 @@ export interface Traits {
     synonyms: string[];
     createdOn: Date;
     updatedOn: Date;
+}
+
+export interface GermplasmMetaStats {
+    genus?: string;
+    species?: string;
+    taxonomy?: string;
+    sampstat?: string;
+    pdci?: number;
 }
 
 export const enum ViewTableTraitsMethodClass {

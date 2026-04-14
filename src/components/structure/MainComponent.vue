@@ -14,10 +14,12 @@
                   density="compact"
                   type="search"
                   hide-details
+                  clearable
                   single-line
-                  append-inner-icon="mdi-magnify"
+                  :append-inner-icon="mdiMagnify"
                   @keyup.exact.enter="runSearch"
                   @click:append-inner="runSearch"
+                  @update:focused="focus => { searchVisible = focus }"
                 />
               </v-col>
             </v-row>
@@ -44,27 +46,27 @@
 
         <v-spacer />
 
-        <v-btn icon="mdi-magnify" @click="searchVisible = !searchVisible" v-if="showElements" />
+        <v-btn :icon="mdiMagnify" @click="searchVisible = !searchVisible" v-if="showElements" />
 
         <v-badge class="pe-none" location="bottom" color="primary" :content="getNumberWithSuffix(store.storeSelectedProjects.length, 1)" :offset-x="10" :offset-y="10" v-if="showElements && store.storeSelectedProjects && store.storeSelectedProjects.length > 0">
-          <v-btn :to="Pages.projects.path" icon="mdi-clipboard-list" />
+          <v-btn :to="Pages.projects.path" :icon="mdiClipboardList" />
         </v-badge>
 
         <v-menu v-if="showElements">
           <template #activator="{ props }">
             <v-badge class="pe-none" location="bottom" color="primary" :content="totalMarkedItemCount" :offset-x="10" :offset-y="10" v-if="totalMarkedItemCount">
-              <v-btn v-bind="props" icon="mdi-bookmark-box-multiple" />
+              <v-btn v-bind="props" :icon="mdiBookmarkBoxMultiple" />
             </v-badge>
-            <v-btn v-bind="props" icon="mdi-bookmark-box-multiple" v-else />
+            <v-btn v-bind="props" :icon="mdiBookmarkBoxMultiple" v-else />
           </template>
-          <v-list>
+          <v-list slim>
             <v-list-subheader class="text-high-emphasis text-uppercase font-weight-black">{{ $t('pageMarkedItemsTitle') }}</v-list-subheader>
             <v-list-item
               v-for="(details, itemType) in markedItemTypes"
               :key="`marked-item-${itemType}`"
               :to="Pages.getPath(Pages.markedItemType, itemType as string)"
+              :title="details.text()"
             >
-              <v-list-item-title>{{ details.text() }}</v-list-item-title>
               <template #prepend>
                 <v-icon :color="details.color()" :icon="details.path" />
               </template>
@@ -77,17 +79,17 @@
 
         <v-menu>
           <template #activator="{ props }">
-            <v-btn v-bind="props" icon="mdi-translate" />
+            <v-btn v-bind="props" :icon="mdiTranslate" />
           </template>
-          <v-list>
+          <v-list slim>
             <v-list-subheader class="text-high-emphasis text-uppercase font-weight-black">{{ $t('dropdownLocales') }}</v-list-subheader>
             <v-list-item
               @click="changeLocale(language.locale)"
               v-for="language in locales"
               :key="`locale-${language.flag}`"
               :value="language.locale"
+              :title="language.name"
             >
-              <v-list-item-title>{{ language.name }}</v-list-item-title>
               <template #prepend>
                 <span class="me-3">{{ language.flag }}</span>
               </template>
@@ -104,11 +106,11 @@
               <v-icon>mdi-theme-light-dark</v-icon>
             </v-btn>
           </template>
-          <v-list>
+          <v-list slim>
             <v-list-subheader class="text-high-emphasis text-uppercase font-weight-black">{{ $t('dropdownTheme') }}</v-list-subheader>
-            <v-list-item prepend-icon="mdi-white-balance-sunny" :active="store.storeTheme === 'light'" @click="store.setTheme('light')" title="Light" />
-            <v-list-item prepend-icon="mdi-weather-night" :active="store.storeTheme === 'dark'" @click="store.setTheme('dark')" title="Dark" />
-            <v-list-item prepend-icon="mdi-desktop-tower-monitor" :active="store.storeTheme === 'system'" @click="store.setTheme('system')" title="System" />
+            <v-list-item :prepend-icon="mdiWhiteBalanceSunny" :active="store.storeTheme === 'light'" @click="store.setTheme('light')" title="Light" />
+            <v-list-item :prepend-icon="mdiWeatherNight" :active="store.storeTheme === 'dark'" @click="store.setTheme('dark')" title="Dark" />
+            <v-list-item :prepend-icon="mdiDesktopTowerMonitor" :active="store.storeTheme === 'system'" @click="store.setTheme('system')" title="System" />
           </v-list>
         </v-menu>
 
@@ -116,9 +118,9 @@
 
         <v-btn icon @click="emitter.emit('toggle-aside')">
           <v-badge location="bottom left" color="primary" :offset-x="-2" :offset-y="-2" :content="store.storeAsyncJobUuids.length" v-if="store.storeAsyncJobUuids.length > 0">
-            <v-icon icon="mdi-file-arrow-up-down" />
+            <v-icon :icon="mdiFileArrowUpDown" />
           </v-badge>
-          <v-icon icon="mdi-file-arrow-up-down" v-else />
+          <v-icon :icon="mdiFileArrowUpDown" v-else />
         </v-btn>
       </v-app-bar>
 
@@ -191,6 +193,7 @@
   import ChangelogInfo from '@/components/widgets/ChangelogInfo.vue'
   import { germinateVersion } from '@/plugins/util'
   import { useDark } from '@vueuse/core'
+  import { mdiBookmarkBoxMultiple, mdiClipboardList, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiMagnify, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
 
   // Composition
   const router = useRouter()
@@ -235,7 +238,7 @@
     const value = Object.keys(markedItemTypes).map(it => store.storeMarkedIds[it].length).reduce((a, b) => a + b, 0)
 
     if (value) {
-      return getNumberWithSuffix(value, 0)
+      return getNumberWithSuffix(value, 1)
     } else {
       return undefined
     }

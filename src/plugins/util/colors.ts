@@ -8,6 +8,8 @@ export interface RGB {
   b: number
 }
 
+const GRADIENT_VIRIDIS = ['#440154', '#48186a', '#472d7b', '#424086', '#3b528b', '#33638d', '#2c728e', '#26828e', '#21918c', '#1fa088', '#28ae80', '#3fbc73', '#5ec962', '#84d44b', '#addc30', '#d8e219', '#fde725']
+
 /**
      * Returns the chart colors
      */
@@ -82,6 +84,10 @@ const createColorGradient = (one: string, two: string, steps: number) => {
   }
 
   return result
+}
+
+const getGradientColor = (gradient: string[], min: number, max: number, value: number) => {
+  return gradient[Math.min(Math.floor((value - min) / (max - min) * gradient.length), gradient.length - 1)]
 }
 
 const createMultiColorGradient = (colors: string[], steps: number): string[] => {
@@ -198,4 +204,6 @@ export {
   brighten,
   getPrimaryColor,
   hexToRGBA,
+  getGradientColor,
+  GRADIENT_VIRIDIS,
 }

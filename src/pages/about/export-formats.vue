@@ -11,7 +11,7 @@
         :color="tag.color"
         filter
         label
-        append-icon="mdi-tag"
+        :append-icon="mdiTag"
         :value="name"
         :text="tag.title"
       />
@@ -59,7 +59,7 @@
           </div>
           <v-btn
             color="primary rounded-t-0"
-            :prepend-icon="format.linkType === 'download' ? 'mdi-download' : 'mdi-open-in-new'"
+            :prepend-icon="format.linkType === 'download' ? mdiDownload : mdiOpenInNew"
             :text="format.linkType === 'download' ? $t('buttonDownload') : $t('buttonShow')"
             :href="format.link"
             target="_blank"
@@ -74,6 +74,7 @@
 <script setup lang="ts">
   import { getTemplateColor } from '@/plugins/util/colors'
   import { exportFormats, type FormatState } from '@/plugins/util/types'
+  import { mdiCloud, mdiCloudDownload, mdiCloudUpload, mdiDownload, mdiOpenInNew, mdiTag } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 
   const { t } = useI18n()
@@ -90,27 +91,27 @@
   const tags: ComputedRef<{ [key: string]: TagType }> = computed(() => {
     return {
       all: {
-        icon: 'mdi-tag',
+        icon: mdiTag,
         title: t('exportFormatDataTypeAll'),
         color: getTemplateColor(0),
       },
       genotype: {
-        icon: 'mdi-tag',
+        icon: mdiTag,
         title: t('exportFormatDataTypeGenotype'),
         color: getTemplateColor(1),
       },
       phenotype: {
-        icon: 'mdi-tag',
+        icon: mdiTag,
         title: t('exportFormatDataTypePhenotype'),
         color: getTemplateColor(2),
       },
       pedigree: {
-        icon: 'mdi-tag',
+        icon: mdiTag,
         title: t('exportFormatDataTypePedigree'),
         color: getTemplateColor(3),
       },
       pca: {
-        icon: 'mdi-tag',
+        icon: mdiTag,
         title: t('exportFormatDataTypePca'),
         color: getTemplateColor(4),
       },
@@ -120,17 +121,17 @@
   const types: ComputedRef<{ [key: string]: TagType }> = computed(() => {
     return {
       all: {
-        icon: 'mdi-cloud',
+        icon: mdiCloud,
         title: t('exportFormatDataTypeAll'),
         color: getTemplateColor(0),
       },
       provider: {
-        icon: 'mdi-cloud-download',
+        icon: mdiCloudDownload,
         title: t('exportFormatTypeProvider'),
         color: getTemplateColor(1),
       },
       receiver: {
-        icon: 'mdi-cloud-upload',
+        icon: mdiCloudUpload,
         title: t('exportFormatTypeConsumer'),
         color: getTemplateColor(2),
       },

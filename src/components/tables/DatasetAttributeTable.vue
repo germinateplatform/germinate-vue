@@ -11,7 +11,7 @@
     :show-details="false"
     item-key="datasetId"
     table-key="datasetAttributes"
-    header-icon="mdi-file-document"
+    :header-icon="mdiFileDocument"
     :header-title="$t('modalTitleDatasetAttributes')"
     v-bind="$attrs"
   >
@@ -19,7 +19,7 @@
       <template v-if="item.attributeDescription && item.attributeDescription.length > 0">
         <span :title="value" v-if="value">{{ truncateAfterWords(value, 10) }}</span>
         <a href="#" class="ms-2 table-icon-link" @click.prevent="showDatasetAttributeModal(item)" v-if="isTruncatedAfterWords(value, 10)">
-          <v-icon icon="mdi-page-next" />
+          <v-icon :icon="mdiPageNext" />
         </a>
       </template>
     </template>
@@ -46,6 +46,7 @@
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import { dataTypes } from '@/plugins/util/types'
   import emitter from 'tiny-emitter/instance'
+  import { mdiFileDocument, mdiPageNext } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasetAttributes[]>>> }

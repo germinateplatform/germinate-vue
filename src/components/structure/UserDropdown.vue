@@ -2,13 +2,13 @@
   <div>
     <v-menu v-model="visible">
       <template #activator="{ props }">
-        <v-btn v-bind="props" icon="mdi-account" />
+        <v-btn v-bind="props" :icon="mdiAccount" />
       </template>
       <v-list>
         <v-list-subheader class="text-high-emphasis text-uppercase font-weight-black">{{ $t('dropdownUserSettings') }}</v-list-subheader>
         <template v-if="store.storeToken">
           <v-list-item
-            prepend-icon="mdi-account"
+            :prepend-icon="mdiAccount"
             :subtitle="store.storeToken.userType"
             :title="store.storeToken.username"
           />
@@ -92,6 +92,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import TextfieldModal from '@/components/modals/TextfieldModal.vue'
+  import { mdiAccount } from '@mdi/js'
 
   const store = coreStore()
   const router = useRouter()

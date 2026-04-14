@@ -35,7 +35,7 @@
       </v-col>
     </v-row>
 
-    <v-btn class="my-5" :disabled="!canContinue" color="primary" prepend-icon="mdi-arrow-right-box" :text="$t('buttonPlot')" @click="plot" />
+    <v-btn class="my-5" :disabled="!canContinue" color="primary" :prepend-icon="mdiArrowRightBox" :text="$t('buttonPlot')" @click="plot" />
 
     <template v-if="plotData">
       <p>{{ $t('pageTrialsExportComparisonChartText') }}</p>
@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableTrialsData, type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableTrialsData, type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
   import emitter from 'tiny-emitter/instance'
@@ -80,11 +80,10 @@
   import { getGermplasmDisplayName } from '@/plugins/util'
   import { useI18n } from 'vue-i18n'
   import { getColor } from '@/plugins/util/colors'
-  // import TraitComparisonChart from '@/components/charts/TraitComparisonChart.vue'
-  import { dataTypes } from '@/plugins/util/types'
   import GroupSelection from '@/components/widgets/selections/GroupSelection.vue'
   import GermplasmSelection from '@/components/widgets/selections/GermplasmSelection.vue'
   import TraitSelection from '@/components/widgets/selections/TraitSelection.vue'
+  import { mdiArrowRightBox } from '@mdi/js'
 
   export interface BoxPlotData {
     count: number

@@ -28,7 +28,7 @@
       </v-col>
     </v-row>
 
-    <!-- <v-btn :disabled="!canContinue" color="primary" prepend-icon="mdi-arrow-right-box" :text="$t('buttonExport')" @click="downloadWideFormat" /> -->
+    <!-- <v-btn :disabled="!canContinue" color="primary" :prepend-icon="mdiArrowRightBox" :text="$t('buttonExport')" @click="downloadWideFormat" /> -->
 
     <v-row>
       <v-col cols="12" lg="6">
@@ -36,11 +36,11 @@
           class="card-subtitle-wrap"
           :title="$t('pageTrialsExportTraitExportLongFormatTitle')"
           :subtitle="$t('pageTrialsExportTraitExportLongFormatSubtitle')"
-          prepend-icon="mdi-format-list-group"
+          :prepend-icon="mdiFormatListGroup"
         >
           <template #actions>
             <v-spacer />
-            <v-btn color="primary" variant="tonal" :disabled="!canContinue" prepend-icon="mdi-download" :text="$t('buttonExport')" @click="downloadLongFormat" />
+            <v-btn color="primary" variant="tonal" :disabled="!canContinue" :prepend-icon="mdiDownload" :text="$t('buttonExport')" @click="downloadLongFormat" />
           </template>
         </v-card>
       </v-col>
@@ -49,11 +49,11 @@
           class="card-subtitle-wrap"
           :title="$t('pageTrialsExportTraitExportWideFormatTitle')"
           :subtitle="$t('pageTrialsExportTraitExportWideFormatSubtitle')"
-          prepend-icon="mdi-table-column-width"
+          :prepend-icon="mdiTableColumnWidth"
         >
           <template #actions>
             <v-spacer />
-            <v-btn color="primary" variant="tonal" :disabled="!canContinue" prepend-icon="mdi-download" :text="$t('buttonExport')" @click="downloadWideFormat" />
+            <v-btn color="primary" variant="tonal" :disabled="!canContinue" :prepend-icon="mdiDownload" :text="$t('buttonExport')" @click="downloadWideFormat" />
           </template>
         </v-card>
       </v-col>
@@ -72,6 +72,7 @@
   import { downloadBlob } from '@/plugins/util'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import type { AxiosResponse } from 'axios'
+  import { mdiDownload, mdiFormatListGroup, mdiTableColumnWidth } from '@mdi/js'
 
   const compProps = defineProps<{
     datasetIds: number[]

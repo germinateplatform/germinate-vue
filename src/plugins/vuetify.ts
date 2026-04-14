@@ -9,12 +9,11 @@ import axios from 'axios'
 import helium from '@/assets/icons/helium.svg'
 
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 
 // Composables
 import { type IconAliases, createVuetify } from 'vuetify'
-import { aliases as defaultAliases } from 'vuetify/iconsets/mdi'
+import { aliases as defaultAliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
 import enGB from '@/plugins/i18n/en_GB.json'
 import deDE from '@/plugins/i18n/de_DE.json'
@@ -40,7 +39,7 @@ deDE.$vuetify = de
 
 type MessageType = typeof enGB | typeof deDE
 
-const protectedProperties = ['pageAboutGerminateTitle', 'pageAboutGerminateSubtitle', 'pageAboutGerminateText', 'pageAboutGerminateCardHomepageText', 'pageAboutGerminateCardGithubText', 'pageAboutGerminateCardPublicationText', 'pageAboutGerminateCardDocumentationText', 'pageAboutGerminateTeamTitle', 'pageAboutGerminateTeamSubtitle', 'pageAboutGerminateTeamOthersTitle', 'pageAboutGerminateTeamOthersSubtitle', 'pageAboutGerminateTeamOthersText', 'pageAboutGerminateLocationTitle', 'pageAboutGerminateLocationSubtitle', 'pageAboutGerminateFundersTitle', 'pageAboutGerminateFundersSubtitle', 'pageAboutGerminateFundersText', 'pageAboutGerminateTeamSebastian', 'pageAboutGerminateTeamJobSebastian', 'pageAboutGerminateTeamIain', 'pageAboutGerminateTeamJobIain', 'pageAboutGerminateTeamPaul', 'pageAboutGerminateTeamJobPaul']
+const protectedProperties = ['pageAboutGerminateTitle', 'pageAboutGerminateSubtitle', 'pageAboutGerminateText', 'pageAboutGerminateCardHomepageText', 'pageAboutGerminateCardGithubText', 'pageAboutGerminateCardPublicationText', 'pageAboutGerminateCardDocumentationText', 'pageAboutGerminateTeamTitle', 'pageAboutGerminateTeamSubtitle', 'pageAboutGerminateTeamOthersTitle', 'pageAboutGerminateTeamOthersSubtitle', 'pageAboutGerminateTeamOthersText', 'pageAboutGerminateLocationTitle', 'pageAboutGerminateLocationSubtitle', 'pageAboutGerminateFundersTitle', 'pageAboutGerminateFundersSubtitle', 'pageAboutGerminateFundersText', 'pageAboutGerminateFundersExtra', 'pageAboutGerminateTeamSebastian', 'pageAboutGerminateTeamJobSebastian', 'pageAboutGerminateTeamIain', 'pageAboutGerminateTeamJobIain', 'pageAboutGerminateTeamPaul', 'pageAboutGerminateTeamJobPaul']
 const loadedLanguages = [] as string[]
 const messages: { [key: string]: MessageType } = {
   en: enGB,
@@ -62,7 +61,11 @@ const vuetify = createVuetify({
     VFileUpload,
   },
   icons: {
+    defaultSet: 'mdi',
     aliases,
+    sets: {
+      mdi,
+    },
   },
   theme: {
     defaultTheme: 'system',

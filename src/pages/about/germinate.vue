@@ -13,10 +13,10 @@
                 <v-card-subtitle class="text-h6 pb-4 text-wrap">{{ $t('pageAboutGerminateSubtitle') }}</v-card-subtitle>
 
                 <v-card-text class="py-2">
-                  <v-icon icon="mdi-tag" /> {{ $t('pageFooterVersion', { version: germinateVersion }) }}
+                  <v-icon :icon="mdiTag" /> {{ $t('pageFooterVersion', { version: germinateVersion }) }}
                 </v-card-text>
                 <v-card-text class="py-2">
-                  <v-icon icon="mdi-information-outline" /> <a class="text-white" href="#" @click.prevent="emitter.emit('show-changelog')">{{ $t('pageAboutGerminateChangelog') }}</a>
+                  <v-icon :icon="mdiInformationOutline" /> <a class="text-white" href="#" @click.prevent="emitter.emit('show-changelog')">{{ $t('pageAboutGerminateChangelog') }}</a>
                 </v-card-text>
               </div>
               <v-avatar
@@ -71,7 +71,7 @@
               <v-col cols="12" lg="4">
                 <div class="d-flex flex-column align-center">
                   <v-avatar :image="`/img/${member.img}`" :size="lg ? 120 : 160" />
-                  <v-chip variant="tonal" label color="success" class="mt-3" prepend-icon="mdi-calendar">Since {{ member.since }}</v-chip>
+                  <v-chip variant="tonal" label color="success" class="mt-3" :prepend-icon="mdiCalendar">Since {{ member.since }}</v-chip>
                 </div>
               </v-col>
               <v-col cols="12" lg="8">
@@ -88,10 +88,10 @@
                 </div>
 
                 <div class="text-subtitle d-flex align-center my-2">
-                  <v-icon :color="getTemplateColor(1)" icon="mdi-briefcase-variant" class="me-2" /> {{ member.job() }}
+                  <v-icon :color="getTemplateColor(1)" :icon="mdiBriefcaseVariant" class="me-2" /> {{ member.job() }}
                 </div>
                 <div class="text-subtitle d-flex align-start my-2">
-                  <v-icon :color="getTemplateColor(2)" icon="mdi-information" class="me-2" /> {{ member.about() }}
+                  <v-icon :color="getTemplateColor(2)" :icon="mdiInformation" class="me-2" /> {{ member.about() }}
                 </div>
               </v-col>
             </v-row>
@@ -117,6 +117,7 @@
           </div>
         </v-col>
       </v-row>
+      <p v-html="$t('pageAboutGerminateFundersExtra')" />
     </div>
   </v-container>
 </template>
@@ -129,6 +130,7 @@
   import { useI18n } from 'vue-i18n'
   import emitter from 'tiny-emitter/instance'
   import { useDisplay } from 'vuetify'
+  import { mdiBriefcaseVariant, mdiCalendar, mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiInformation, mdiInformationOutline, mdiTag, mdiTwitter, mdiWeb } from '@mdi/js'
 
   const { t } = useI18n()
   const { lg } = useDisplay()
@@ -165,25 +167,25 @@
     {
       key: 'homepage',
       text: () => t('pageAboutGerminateCardHomepageText'),
-      path: 'mdi-web',
+      path: mdiWeb,
       link: 'https://ics.hutton.ac.uk/get-germinate',
     },
     {
       key: 'github',
       text: () => t('pageAboutGerminateCardGithubText'),
-      path: 'mdi-github',
+      path: mdiGithub,
       link: 'https://github.com/germinateplatform/germinate-vue',
     },
     {
       key: 'publication',
       text: () => t('pageAboutGerminateCardPublicationText'),
-      path: 'mdi-file-document',
+      path: mdiFileDocument,
       link: 'https://dl.sciencesocieties.org/publications/cs/articles/57/3/1259',
     },
     {
       key: 'documentation',
       text: () => t('pageAboutGerminateCardDocumentationText'),
-      path: 'mdi-glasses',
+      path: mdiGlasses,
       link: 'https://germinateplatform.github.io/germinate-server',
     },
   ])
@@ -336,11 +338,11 @@
         title: 'Bluesky',
         href: 'https://bsky.app/profile/bazraubach.bsky.social',
       }, {
-        path: 'mdi-twitter',
+        path: mdiTwitter,
         title: 'Twitter',
         href: 'https://twitter.com/BazRaubach',
       }, {
-        path: 'mdi-earth',
+        path: mdiEarth,
         title: 'Website',
         href: 'http://www.hutton.ac.uk/staff/sebastian-raubach',
       }],
@@ -352,7 +354,7 @@
       about: () => t('pageAboutGerminateTeamIain'),
       since: 2010,
       links: [{
-        path: 'mdi-earth',
+        path: mdiEarth,
         title: 'Website',
         href: 'http://www.hutton.ac.uk/staff/iain-milne',
       }],
@@ -368,11 +370,11 @@
         title: 'Bluesky',
         href: 'https://bsky.app/profile/cardinalb.bsky.social',
       }, {
-        path: 'mdi-twitter',
+        path: mdiTwitter,
         title: 'Twitter',
         href: 'https://twitter.com/cardinalb',
       }, {
-        path: 'mdi-earth',
+        path: mdiEarth,
         title: 'Website',
         href: 'http://www.hutton.ac.uk/staff/paul-shaw',
       }],

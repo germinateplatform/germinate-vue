@@ -14,11 +14,11 @@
 
           <div class="d-flex flex-row flex-wrap">
             <v-btn-group class="mx-3 mb-3" density="compact">
-              <v-btn :disabled="hasForcedFilter" :color="overallOperator === FilterOperator.and ? 'primary' : undefined" variant="tonal" @click="overallOperator = FilterOperator.and" prepend-icon="mdi-vector-intersection" :text="$t('widgetTableFilterOperatorAndAll')" />
-              <v-btn :disabled="hasForcedFilter" :color="overallOperator === FilterOperator.or ? 'primary' : undefined" variant="tonal" @click="overallOperator = FilterOperator.or" prepend-icon="mdi-vector-union" :text="$t('widgetTableFilterOperatorOrSome')" />
+              <v-btn :disabled="hasForcedFilter" :color="overallOperator === FilterOperator.and ? 'primary' : undefined" variant="tonal" @click="overallOperator = FilterOperator.and" :prepend-icon="mdiVectorIntersection" :text="$t('widgetTableFilterOperatorAndAll')" />
+              <v-btn :disabled="hasForcedFilter" :color="overallOperator === FilterOperator.or ? 'primary' : undefined" variant="tonal" @click="overallOperator = FilterOperator.or" :prepend-icon="mdiVectorUnion" :text="$t('widgetTableFilterOperatorOrSome')" />
             </v-btn-group>
 
-            <v-btn variant="tonal" color="success" prepend-icon="mdi-view-grid-plus" @click="addConditionGroup">{{ $t('widgetTableFilterAddConditionGroup') }}</v-btn>
+            <v-btn variant="tonal" color="success" :prepend-icon="mdiViewGridPlus" @click="addConditionGroup">{{ $t('widgetTableFilterAddConditionGroup') }}</v-btn>
           </div>
         </v-card>
         <v-row>
@@ -33,11 +33,11 @@
               <p class="mx-3 mt-3">{{ $t('widgetTableFilterGroupOperator') }}</p>
               <div class="d-flex flex-row flex-wrap">
                 <v-btn-group class="mx-3 mb-2" density="compact">
-                  <v-btn :disabled="groupHasForcedFilter(filterGroup)" :color="filterGroup.operator === FilterOperator.and ? 'primary' : undefined" variant="tonal" @click="filterGroup.operator = FilterOperator.and" prepend-icon="mdi-vector-intersection" :text="$t('widgetTableFilterOperatorAndAll')" />
-                  <v-btn :disabled="groupHasForcedFilter(filterGroup)" :color="filterGroup.operator === FilterOperator.or ? 'primary' : undefined" variant="tonal" @click="filterGroup.operator = FilterOperator.or" prepend-icon="mdi-vector-union" :text="$t('widgetTableFilterOperatorOrSome')" />
+                  <v-btn :disabled="groupHasForcedFilter(filterGroup)" :color="filterGroup.operator === FilterOperator.and ? 'primary' : undefined" variant="tonal" @click="filterGroup.operator = FilterOperator.and" :prepend-icon="mdiVectorIntersection" :text="$t('widgetTableFilterOperatorAndAll')" />
+                  <v-btn :disabled="groupHasForcedFilter(filterGroup)" :color="filterGroup.operator === FilterOperator.or ? 'primary' : undefined" variant="tonal" @click="filterGroup.operator = FilterOperator.or" :prepend-icon="mdiVectorUnion" :text="$t('widgetTableFilterOperatorOrSome')" />
                 </v-btn-group>
 
-                <v-btn :disabled="groupHasForcedFilter(filterGroup)" variant="tonal" color="success" prepend-icon="mdi-playlist-plus" @click="addCondition(filterGroup)">{{ $t('widgetTableFilterAddCondition') }}</v-btn>
+                <v-btn :disabled="groupHasForcedFilter(filterGroup)" variant="tonal" color="success" :prepend-icon="mdiPlaylistPlus" @click="addCondition(filterGroup)">{{ $t('widgetTableFilterAddCondition') }}</v-btn>
               </div>
 
               <v-list class="flex-grow-1">
@@ -209,7 +209,7 @@
                         :disabled="filter.filter.canBeChanged === false || filterGroup.internalFilters.length < 2"
                         class="ms-2"
                         color="error"
-                        icon="mdi-delete"
+                        :icon="mdiDelete"
                         variant="text"
                         @click="deleteFilterInGroup(groupIndex, index)"
                       />
@@ -221,7 +221,7 @@
               <v-divider />
 
               <template #actions>
-                <v-btn :disabled="filterGroups.length < 2 || filterGroup.internalFilters.some(ifi => ifi.filter.canBeChanged === false)" prepend-icon="mdi-delete" variant="tonal" color="error" :text="$t('widgetTableFilterDeleteGroup')" @click="deleteGroup(groupIndex)" />
+                <v-btn :disabled="filterGroups.length < 2 || filterGroup.internalFilters.some(ifi => ifi.filter.canBeChanged === false)" :prepend-icon="mdiDelete" variant="tonal" color="error" :text="$t('widgetTableFilterDeleteGroup')" @click="deleteGroup(groupIndex)" />
               </template>
             </v-card>
           </v-col>
@@ -252,6 +252,7 @@
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
   import { validCompsForType } from '@/plugins/util/table-columns'
   import { entityTypes, locationTypes, groupTypes, methodClasses, dataTypes, newsTypes, traitClasses } from '@/plugins/util/types'
+  import { mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
   import { useDate } from 'vuetify'
 
   const route = useRoute()
@@ -438,31 +439,31 @@
   function getIcon (dataType: string | undefined) {
     switch (dataType) {
       case 'string':
-        return 'mdi-form-textbox'
+        return mdiFormTextbox
       case 'json':
       case 'jsonObject':
-        return 'mdi-code-json'
+        return mdiCodeJson
       case 'entityType':
-        return 'mdi-file-tree'
+        return mdiFileTree
       case 'groupType':
-        return 'mdi-group'
+        return mdiGroup
       case 'methodClass':
-        return 'mdi-tape-measure'
+        return mdiTapeMeasure
       case 'traitClass':
-        return 'mdi-tag-text'
+        return mdiTagText
       case 'boolean':
-        return 'mdi-toggle-switch-off-outline'
+        return mdiToggleSwitchOffOutline
       case 'dataType':
-        return 'mdi-file-compare'
+        return mdiFileCompare
       case 'locationType':
-        return 'mdi-land-plots-marker'
+        return mdiLandPlotsMarker
       case 'newsType':
-        return 'mdi-newspaper'
+        return mdiNewspaper
       case 'integer':
       case 'float':
-        return 'mdi-numeric'
+        return mdiNumeric
       default:
-        return 'mdi-help-box'
+        return mdiHelpBox
     }
   }
 

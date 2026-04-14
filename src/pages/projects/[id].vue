@@ -79,6 +79,7 @@
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { getImageUrlById } from '@/plugins/util/image'
   import { coreStore } from '@/stores/app'
+  import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiDatabase, mdiGroup, mdiNewspaperVariant } from '@mdi/js'
   import Markdown from 'vue3-markdown-it'
 
   const route = useRoute('/projects/[id]')
@@ -105,15 +106,17 @@
 
       let i = 0
       if (project.value.projectStartDate) {
-        result.push({ index: i++, title: 'pageProjectsPublicationStartDate', icon: 'mdi-calendar-arrow-right', textValue: new Date(project.value.projectStartDate).toLocaleDateString() })
+        result.push({ index: i++, title: 'pageProjectsPublicationStartDate', icon: mdiCalendarArrowRight, textValue: new Date(project.value.projectStartDate).toLocaleDateString() })
       }
       if (project.value.projectEndDate) {
-        result.push({ index: i++, title: 'pageProjectsPublicationEndDate', icon: 'mdi-calendar-arrow-left', textValue: new Date(project.value.projectEndDate).toLocaleDateString() })
+        result.push({ index: i++, title: 'pageProjectsPublicationEndDate', icon: mdiCalendarArrowLeft, textValue: new Date(project.value.projectEndDate).toLocaleDateString() })
       }
-      result.push({ index: i++, title: 'pageProjectsDatasetsTitle', icon: 'mdi-database', numericValue: projectStats.value.datasetCount })
-      result.push({ index: i++, title: 'pageProjectsPublicationsTitle', icon: 'mdi-newspaper-variant', numericValue: projectStats.value.publicationCount })
-      result.push({ index: i++, title: 'pageProjectsGroupsTitle', icon: 'mdi-group', numericValue: projectStats.value.groupCount })
-      result.push({ index: i++, title: 'pageProjectsCollaboratorsTitle', icon: 'mdi-account-multiple', numericValue: projectStats.value.collaboratorCount })
+      result.push(
+        { index: i++, title: 'pageProjectsDatasetsTitle', icon: mdiDatabase, numericValue: projectStats.value.datasetCount },
+        { index: i++, title: 'pageProjectsPublicationsTitle', icon: mdiNewspaperVariant, numericValue: projectStats.value.publicationCount },
+        { index: i++, title: 'pageProjectsGroupsTitle', icon: mdiGroup, numericValue: projectStats.value.groupCount },
+        { index: i++, title: 'pageProjectsCollaboratorsTitle', icon: mdiAccountMultiple, numericValue: projectStats.value.collaboratorCount },
+      )
 
       return result
     } else {

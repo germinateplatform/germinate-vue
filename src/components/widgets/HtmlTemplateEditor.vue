@@ -5,7 +5,7 @@
     <template v-if="editingEnabled">
       <QuillEditor content-type="delta" :modules="modules" :toolbar="toolbar" @text-change="listenForImageRemoval" ref="quill" />
 
-      <v-btn class="mt-3" color="success" prepend-icon="mdi-content-save" :text="$t('buttonSave')" @click="save" />
+      <v-btn class="mt-3" color="success" :prepend-icon="mdiContentSave" :text="$t('buttonSave')" @click="save" />
     </template>
     <div v-html="$t(compProps.i18nKey)" v-else />
   </div>
@@ -21,6 +21,7 @@
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
+  import { mdiContentSave } from '@mdi/js'
 
   const { t, locale } = useI18n()
 

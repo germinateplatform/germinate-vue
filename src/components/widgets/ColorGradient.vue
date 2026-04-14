@@ -5,7 +5,7 @@
 
     <div class="d-flex justify-space-between">
       <div class="d-flex align-center">
-        <v-icon size="small" icon="mdi-arrow-collapse-left" class="me-2" />
+        <v-icon size="small" :icon="mdiArrowCollapseLeft" class="me-2" />
         <div class="text-left">
           <div>{{ $t('widgetGradientLow') }}</div>
           <div v-if="min !== undefined && min !== null">{{ formatMinMax(min) }}</div>
@@ -16,7 +16,7 @@
           <div>{{ $t('widgetGradientHigh') }} </div>
           <div v-if="max !== undefined && max !== null">{{ formatMinMax(max) }}</div>
         </div>
-        <v-icon size="small" icon="mdi-arrow-collapse-right" class="ms-2" />
+        <v-icon size="small" :icon="mdiArrowCollapseRight" class="ms-2" />
       </div>
     </div>
   </div>
@@ -24,15 +24,16 @@
 
 <script setup lang="ts">
   import { coreStore } from '@/stores/app'
+  import { mdiArrowCollapseLeft, mdiArrowCollapseRight } from '@mdi/js'
 
-  interface Props {
+  export interface ColorGradientProps {
     min?: number
     max?: number
     formatMinMax?: Function
     height?: number
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<ColorGradientProps>(), {
     height: 25,
     formatMinMax: (x: number) => x,
   })

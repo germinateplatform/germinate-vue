@@ -2,7 +2,7 @@
   <ul v-if="links && links.length > 0">
     <template v-for="(link, index) in links">
       <li :key="`link-widget-${index}`" v-if="link.hyperlink">
-        <a :href="link.hyperlink" target="_blank" rel="noopener noreferrer">{{ link.linktypeDescription }}</a> <v-icon icon="mdi-open-in-new" />
+        <a :href="link.hyperlink" target="_blank" rel="noopener noreferrer">{{ link.linktypeDescription }}</a> <v-icon :icon="mdiOpenInNew" />
       </li>
     </template>
   </ul>
@@ -11,6 +11,7 @@
 <script setup lang="ts">
   import { apiPostLinks } from '@/plugins/api/misc'
   import type { ViewTableLinks } from '@/plugins/types/germinate'
+  import { mdiOpenInNew } from '@mdi/js'
 
   const compProps = defineProps<{
     foreignId: number
@@ -19,7 +20,7 @@
 
   const links = ref<ViewTableLinks[]>()
 
-  watchEffect(() => {
+  onMounted(() => {
     // Set up the query
     const query = {
       targetTable: compProps.targetTable,

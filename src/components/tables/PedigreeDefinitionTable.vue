@@ -10,7 +10,7 @@
     :show-details="false"
     item-key="pedigreedefinitionId"
     table-key="pedigreedefinitions"
-    header-icon="mdi-family-tree"
+    :header-icon="mdiFamilyTree"
     :header-title="$t('pagePedigreeDefinitionsTitle')"
     v-bind="$attrs"
   >
@@ -34,6 +34,7 @@
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTablePedigreedefinitions } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
+  import { mdiFamilyTree } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePedigreedefinitions[]>>> }

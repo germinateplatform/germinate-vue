@@ -10,12 +10,12 @@
                   :items="licenses"
                   v-model="selectedLicense"
                   return-object
-                  append-icon="mdi-square-edit-outline"
+                  :append-icon="mdiSquareEditOutline"
                   item-title="licenseName"
                   @click:append="toggleDetails"
                 />
 
-                <v-btn prepend-icon="mdi-plus-box" variant="tonal" @click="addNewLicense" color="success" :text="$t('buttonLicenseCreateNew')" />
+                <v-btn :prepend-icon="mdiPlusBox" variant="tonal" @click="addNewLicense" color="success" :text="$t('buttonLicenseCreateNew')" />
               </v-col>
               <v-col cols="12" v-if="selectedLicense">
                 <v-expansion-panels
@@ -78,7 +78,7 @@
                         </v-col>
                       </v-row>
 
-                      <v-btn color="primary" @click="saveLicense" :disabled="!canSaveLicense" prepend-icon="mdi-content-save" :text="$t('buttonSave')" />
+                      <v-btn color="primary" @click="saveLicense" :disabled="!canSaveLicense" :prepend-icon="mdiContentSave" :text="$t('buttonSave')" />
                     </template>
                   </v-expansion-panel>
                 </v-expansion-panels>
@@ -102,6 +102,7 @@
   import { apiGetLocales } from '@/plugins/api/misc'
   import type { LocaleConfig, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
   import { isAnyMissing } from '@/plugins/util/formatting'
+  import { mdiContentSave, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 
   const compProps = defineProps<{

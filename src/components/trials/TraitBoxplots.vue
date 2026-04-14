@@ -28,7 +28,7 @@
       </v-col>
     </v-row>
 
-    <v-btn class="my-5" :disabled="!canContinue" color="primary" prepend-icon="mdi-arrow-right-box" :text="$t('buttonPlot')" @click="plot" />
+    <v-btn class="my-5" :disabled="!canContinue" color="primary" :prepend-icon="mdiArrowRightBox" :text="$t('buttonPlot')" @click="plot" />
 
     <TraitStatsChart
       :datasets="datasets || []"
@@ -40,7 +40,7 @@
       v-if="traitData || (catChartData && catChartData.size > 0)"
     />
     <!-- <template v-if="traitData || (catChartData && catChartData.size > 0)">
-      <HighlightSelection
+      <TraitHighlightSelection
         ref="highlightSelection"
         :groups="groups || []"
         :dataset-ids="datasetIds || []"
@@ -48,7 +48,7 @@
 
       <v-switch v-model="showIndividuals" color="primary" :label="$t('chartControlShowIndividualPoints')" />
 
-      <v-btn @click="forceRedraw" class="mb-5" prepend-icon="mdi-refresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
+      <v-btn @click="forceRedraw" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
     </template>
 
     <TraitBoxplotChart
@@ -85,6 +85,7 @@
   import emitter from 'tiny-emitter/instance'
   import { apiPostTraitStatsCategorical } from '@/plugins/api/dataset'
   import TraitStatsChart from '@/components/charts/TraitStatsChart.vue'
+  import { mdiArrowRightBox } from '@mdi/js'
 
   const compProps = defineProps<{
     traits: ViewTableTraits[]

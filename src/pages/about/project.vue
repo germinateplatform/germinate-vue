@@ -36,7 +36,7 @@
                 <div class="d-flex justify-space-between flex-column flex-grow-1">
                   <div>
                     <v-card-title class="text-h5 text-wrap d-flex">
-                      <v-icon class="drag-handle" icon="mdi-drag" v-if="store.storeUserIsAdmin" />
+                      <v-icon class="drag-handle" :icon="mdiDrag" v-if="store.storeUserIsAdmin" />
                       <v-text-field v-model="item.name" hide-details v-if="store.storeUserIsAdmin && item.isEditing === true" />
                       <span v-else>{{ item.name }}</span>
                     </v-card-title>
@@ -52,14 +52,14 @@
                       :text="$t('buttonVisit')"
                       variant="tonal"
                       color="primary"
-                      prepend-icon="mdi-open-in-new"
+                      :prepend-icon="mdiOpenInNew"
                       :href="item.url"
                     />
                     <v-btn
                       v-if="store.storeUserIsAdmin"
                       variant="tonal"
                       color="error"
-                      prepend-icon="mdi-delete"
+                      :prepend-icon="mdiDelete"
                       @click="deleteItem(groupIndex, itemIndex)"
                       :text="$t('buttonDelete')"
                     />
@@ -83,8 +83,8 @@
       </section>
 
       <div v-if="store.storeUserIsAdmin" class="mt-3">
-        <v-btn class="me-2" @click="save" variant="tonal" color="success" prepend-icon="mdi-content-save" :text="$t('buttonSubmit')" />
-        <v-btn class="me-2" @click="showAddModal" variant="tonal" color="info" prepend-icon="mdi-plus-box" :text="$t('genericAdd')" />
+        <v-btn class="me-2" @click="save" variant="tonal" color="success" :prepend-icon="mdiContentSave" :text="$t('buttonSubmit')" />
+        <v-btn class="me-2" @click="showAddModal" variant="tonal" color="info" :prepend-icon="mdiPlusBox" :text="$t('genericAdd')" />
       </div>
     </div>
 
@@ -108,6 +108,7 @@
   import type { AboutConfig, AboutInfo } from '@/plugins/types/germinate'
   import { uuidv4 } from '@/plugins/util'
   import { coreStore } from '@/stores/app'
+  import { mdiContentSave, mdiDelete, mdiDrag, mdiOpenInNew, mdiPlusBox } from '@mdi/js'
   import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
   const NO_GROUP = '--NO_GROUP--'

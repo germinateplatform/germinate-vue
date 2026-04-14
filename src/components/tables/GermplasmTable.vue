@@ -13,14 +13,14 @@
     item-key="germplasmId"
     table-key="germplasm"
     marked-item-type="germplasm"
-    header-icon="mdi-sprout"
+    :header-icon="mdiSprout"
     :show-details="true"
     :header-title="$t('pageGermplasmTitle')"
   >
     <template #header.pdci="{ column }">
       {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipGermplasmPdci')">
         <template #activator="{ props }">
-          <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
+          <v-icon v-bind="props" size="small" color="muted" :icon="mdiHelpCircle" />
         </template>
       </v-tooltip>
     </template>
@@ -66,7 +66,7 @@
       <template v-if="item.institutions && item.institutions.length > 0">
         <span :title="value" v-if="value">{{ truncateAfterWords(value, 6) }}</span>
         <a href="#" class="ms-2 table-icon-link" @click.prevent="showInstitutionModal(item)" v-if="isTruncatedAfterWords(value, 6)">
-          <v-icon icon="mdi-page-next" />
+          <v-icon :icon="mdiPageNext" />
         </a>
       </template>
     </template>
@@ -107,7 +107,7 @@
       <v-menu v-if="item.imageCount" location="bottom">
         <template #activator="{ props }">
           <v-icon
-            icon="mdi-camera"
+            :icon="mdiCamera"
             v-bind="props"
             v-tooltip:top="$t('tableTooltipGermplasmImage')"
           /> {{ item.imageCount }}
@@ -129,8 +129,8 @@
     </template>
 
     <template #item.data-table-expand="{ item, internalItem, toggleExpand }">
-      <v-chip label @click="toggleExpand(internalItem)" v-if="item.latitude && item.longitude" prepend-icon="mdi-map-marker" v-tooltip:top="$t('tableTooltipGermplasmLocation')" :text="item.location" />
-      <v-chip label v-else prepend-icon="mdi-map-marker" :text="item.location" />
+      <v-chip label @click="toggleExpand(internalItem)" v-if="item.latitude && item.longitude" :prepend-icon="mdiMapMarker" v-tooltip:top="$t('tableTooltipGermplasmLocation')" :text="item.location" />
+      <v-chip label v-else :prepend-icon="mdiMapMarker" :text="item.location" />
     </template>
 
     <template #expanded-row="{ columns, item }">
@@ -183,6 +183,7 @@
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/misc'
   import { columns } from '@/plugins/util/table-columns'
   import type { DataTableSortItem } from 'vuetify'
+  import { mdiCamera, mdiHelpCircle, mdiMapMarker, mdiPageNext, mdiSprout } from '@mdi/js'
 
   interface GermplasmTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasm[]>>> }

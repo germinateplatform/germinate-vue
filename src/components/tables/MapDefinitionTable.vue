@@ -12,7 +12,7 @@
     item-key="markerId"
     table-key="mapDefinitions"
     marked-item-type="markers"
-    header-icon="mdi-format-indent-increase"
+    :header-icon="mdiFormatIndentIncrease"
     :header-title="compProps.headerTitle || $t('pageMarkersTitle')"
     v-bind="$attrs"
   >
@@ -49,6 +49,7 @@
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
+  import { mdiFormatIndentIncrease } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMapdefinitions[]>>> }

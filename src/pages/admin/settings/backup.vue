@@ -6,11 +6,11 @@
     <p>{{ $t('pageBackupText') }}</p>
 
     <div class="mb-3" v-if="serverAdminSettings">
-      <v-chip label color="warning" prepend-icon="mdi-file-cabinet" :to="Pages.germinateSettings.path" class="me-2 mb-2" v-if="serverAdminSettings.databaseBackupMaxSizeGB" :text="`${$t('formLabelAdminSettingsBackupMaxSizeGb')}: ${serverAdminSettings.databaseBackupMaxSizeGB}GB`" />
-      <v-chip label color="warning" prepend-icon="mdi-calendar-clock" :to="Pages.germinateSettings.path" class="me-2 mb-2" v-if="serverAdminSettings.databaseBackupEveryDays" :text="`${$t('formLabelAdminSettingsBackupEveryDays')}: ${serverAdminSettings.databaseBackupEveryDays}`" />
+      <v-chip label color="warning" :prepend-icon="mdiFileCabinet" :to="Pages.germinateSettings.path" class="me-2 mb-2" v-if="serverAdminSettings.databaseBackupMaxSizeGB" :text="`${$t('formLabelAdminSettingsBackupMaxSizeGb')}: ${serverAdminSettings.databaseBackupMaxSizeGB}GB`" />
+      <v-chip label color="warning" :prepend-icon="mdiCalendarClock" :to="Pages.germinateSettings.path" class="me-2 mb-2" v-if="serverAdminSettings.databaseBackupEveryDays" :text="`${$t('formLabelAdminSettingsBackupEveryDays')}: ${serverAdminSettings.databaseBackupEveryDays}`" />
     </div>
 
-    <v-btn color="primary" class="mb-5" @click="createBackup" prepend-icon="mdi-database-arrow-right" :text="$t('buttonGenerateBackup')" />
+    <v-btn color="primary" class="mb-5" @click="createBackup" :prepend-icon="mdiDatabaseArrowRight" :text="$t('buttonGenerateBackup')" />
 
     <BackupTable :get-data="getBackups" ref="backupTable" />
   </v-container>
@@ -22,6 +22,7 @@
   import { Pages } from '@/plugins/pages'
   import { type BackupResult, type PaginatedResult, type ClientAdminConfiguration, type PaginatedRequest, UserType } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
+  import { mdiCalendarClock, mdiDatabaseArrowRight, mdiFileCabinet } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'

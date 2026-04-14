@@ -7,7 +7,7 @@
       :source-file="sourceFile"
       v-model:loading="loading"
       :badge-count="markedItemCount"
-      header-icon="mdi-chart-gantt"
+      :header-icon="mdiChartGantt"
       @force-redraw="redraw"
     >
       <template #card-text>
@@ -18,13 +18,13 @@
       <template #toolbar-append>
         <v-btn-group class="mx-2" density="compact" variant="tonal">
           <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, 'germplasm')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedGermplasm.length, 1) }}</v-chip></v-btn>
-          <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon icon="mdi-delete" /></v-btn>
+          <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
         </v-btn-group>
       </template>
       <template #list-append>
         <v-divider />
-        <v-list-item prepend-icon="mdi-checkbox-marked" :disabled="markedItemCount === 0" @click="toggleItems(true)">{{ $t('widgetChartMarkSelectedItems') }}</v-list-item>
-        <v-list-item prepend-icon="mdi-checkbox-blank-outline" :disabled="markedItemCount === 0" @click="toggleItems(false)">{{ $t('widgetChartUnmarkSelectedItems') }}</v-list-item>
+        <v-list-item :prepend-icon="mdiCheckboxMarked" :disabled="markedItemCount === 0" @click="toggleItems(true)">{{ $t('widgetChartMarkSelectedItems') }}</v-list-item>
+        <v-list-item :prepend-icon="mdiCheckboxBlankOutline" :disabled="markedItemCount === 0" @click="toggleItems(false)">{{ $t('widgetChartUnmarkSelectedItems') }}</v-list-item>
       </template>
       <template #chart-content>
         <v-switch v-model="swapAxes" v-if="isScatterChart" :label="$t('formLabelChartScatterSwapAxes')" color="primary" />
@@ -70,7 +70,8 @@
   import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import Passport from '@/components/widgets/Passport.vue'
-  import type { UserSelection } from '@/components/widgets/selections/HighlightSelection.vue'
+  import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
+  import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
   // Only register the chart types we're actually using to reduce the final bundle size
   Plotly.register([

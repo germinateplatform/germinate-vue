@@ -35,11 +35,12 @@
 
 <script setup lang="ts">
   import { bskyIcon } from '@/plugins/util'
+  import { mdiGithub, mdiTwitter, mdiWeb } from '@mdi/js'
 
   const items = [
     {
       title: 'Germinate website',
-      icon: 'mdi-web',
+      icon: mdiWeb,
       href: 'https://ics.hutton.ac.uk/get-germinate',
     },
     {
@@ -49,12 +50,12 @@
     },
     {
       title: 'Germinate on Twitter',
-      icon: 'mdi-twitter',
+      icon: mdiTwitter,
       href: 'https://twitter.com/GerminateHub',
     },
     {
       title: 'Germinate on GitHub',
-      icon: 'mdi-github',
+      icon: mdiGithub,
       href: 'https://github.com/germinateplatform',
     },
   ]

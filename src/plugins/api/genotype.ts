@@ -1,6 +1,6 @@
 import { MAX_JAVA_INTEGER, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AlleleFrequencyDatasetRequest, ExportRequest, MapExportRequest, PaginatedRequest, SubsettedGenotypeDatasetRequest } from '../types/germinate'
+import type { AlleleFrequencyDatasetRequest, ExportRequest, MapExportRequest, PaginatedRequest, PaginatedResult, SubsettedGenotypeDatasetRequest } from '../types/germinate'
 
 const apiPostMarkerTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
   queryData.page -= 1
@@ -54,10 +54,10 @@ const apiPostMapdefinitionTable = <T>(queryData: PaginatedRequest, onSuccess?: G
   return authAxios({ url: 'map/mapdefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostMapdefinitionTableIds = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+const apiPostMapdefinitionTableIds = (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) => {
   delete queryData.orderBy
   delete queryData.ascending
-  return authAxios({ url: 'map/mapdefinition/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<number[]>>({ url: 'map/mapdefinition/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiGetMap = <T>(mapId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `map/${mapId}`, success: onSuccess, error: onError })

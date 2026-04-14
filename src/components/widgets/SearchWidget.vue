@@ -10,7 +10,7 @@
             :label="$t('formLabelSearchTerm')"
             v-model="tempLocalSearchTerm"
             hide-details
-            append-inner-icon="mdi-magnify"
+            :append-inner-icon="mdiMagnify"
             @click:append-inner="initiateSearch"
           />
         </v-form>
@@ -75,12 +75,13 @@
   import { useI18n } from 'vue-i18n'
   import GermplasmTable from '@/components/tables/GermplasmTable.vue'
   import LocationTable from '@/components/tables/LocationTable.vue'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableGermplasm, type FilterGroup, type PaginatedRequest, type ViewTablePedigrees, type ViewTableDatasets } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedResult, type FilterGroup, type PaginatedRequest, type ViewTablePedigrees } from '@/plugins/types/germinate'
   import { columns, validCompsForType } from '@/plugins/util/table-columns'
   import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { apiPostLocationTable, apiPostLocationTableIds } from '@/plugins/api/location'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
+  import { mdiDatabase, mdiFamilyTree, mdiMagnify, mdiMapMarker, mdiSprout } from '@mdi/js'
 
   const compProps = defineProps<{
     searchTerm?: string
@@ -92,22 +93,22 @@
     return [{
       key: 'germplasm',
       title: t('pageSearchResultSectionGermplasm'),
-      icon: 'mdi-sprout',
+      icon: mdiSprout,
       color: getTemplateColor(0),
     }, {
       key: 'datasets',
       title: t('pageSearchResultSectionDatasets'),
-      icon: 'mdi-database',
+      icon: mdiDatabase,
       color: getTemplateColor(1),
     }, {
       key: 'pedigrees',
       title: t('pageSearchResultSectionPedigreeData'),
-      icon: 'mdi-family-tree',
+      icon: mdiFamilyTree,
       color: getTemplateColor(2),
     }, {
       key: 'locations',
       title: t('pageSearchResultSectionLocationData'),
-      icon: 'mdi-map-marker',
+      icon: mdiMapMarker,
       color: getTemplateColor(3),
     }]
   })

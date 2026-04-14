@@ -10,7 +10,7 @@
     :show-details="false"
     item-key="climateId"
     table-key="climates"
-    header-icon="mdi-weather-snowy-rainy"
+    :header-icon="mdiWeatherSnowyRainy"
     :header-title="$t('pageClimatesTitle')"
     v-bind="$attrs"
   >
@@ -51,7 +51,8 @@
   import { useI18n } from 'vue-i18n'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { dataTypes } from '@/plugins/util/types'
-import { Pages } from '@/plugins/pages'
+  import { Pages } from '@/plugins/pages'
+  import { mdiWeatherSnowyRainy } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableClimates[]>>> }

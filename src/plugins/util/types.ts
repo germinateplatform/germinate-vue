@@ -3,6 +3,7 @@ import { Pages } from '@/plugins/pages'
 import { getTemplateColor } from './colors'
 import type { Page } from '@/plugins/types/Page'
 import { MethodsMethodClass, TraitsTraitClass } from '@/plugins/types/germinate'
+import { mdiAlert, mdiAlertCircleOutline, mdiAllergy, mdiAlphabetical, mdiBasketFill, mdiBug, mdiBugOutline, mdiCalculator, mdiCalendar, mdiCancel, mdiCardBulletedSettings, mdiChartSankey, mdiCheckCircle, mdiClipboardList, mdiContentDuplicate, mdiCounter, mdiCrystalBall, mdiDatabase, mdiDesktopClassic, mdiDna, mdiEyedropper, mdiEyeOff, mdiFamilyTree, mdiFileDownload, mdiFileTree, mdiFlask, mdiFolderTable, mdiGift, mdiGrid, mdiGroup, mdiHammerWrench, mdiHelpBox, mdiHelpCircle, mdiHelpCircleOutline, mdiImageMarker, mdiImageMultiple, mdiLandFields, mdiLeaf, mdiLock, mdiLockOpenVariantOutline, mdiMagnifyExpand, mdiMapMarker, mdiMarker, mdiMessageTextFastOutline, mdiNewspaper, mdiNewspaperVariantOutline, mdiNumeric, mdiPassport, mdiPauseCircle, mdiProgressWrench, mdiPulse, mdiRefresh, mdiReorderVertical, mdiScale, mdiSeed, mdiShapeRectanglePlus, mdiShovel, mdiSpeedometer, mdiSpeedometerMedium, mdiSpeedometerSlow, mdiSprout, mdiTagText, mdiTagTextOutline, mdiTapeMeasure, mdiText, mdiWeatherPartlySnowyRainy, mdiWeatherSnowyRainy, mdiWrenchClock } from '@mdi/js'
 
 const mdiGerminate = 'M 11.999836,0 C 5.384778,0 -3.9999998e-7,5.38515 0,12.00026 -3.9999998e-7,18.61531 5.384778,24.00011 11.999836,24.00011 18.614894,24.00011 24,18.61531 24,12.00026 24,5.38515 18.614894,0 11.999836,0 Z m 0,2.09227 c 5.484271,0 9.907984,4.42367 9.907984,9.90799 0,5.48425 -4.423713,9.90754 -9.907984,9.90754 -5.4842703,0 -9.9076558,-4.42329 -9.9076558,-9.90754 0,-5.48432 4.4233855,-9.90799 9.9076558,-9.90799 z M 9.5003025,5.50579 c -2.4997191,0 -2.4997043,0 -3.7494633,2.16472 L 4.500991,9.83539 c -1.2498943,2.16476 -1.2498943,2.16487 0,4.32945 l 1.2498482,2.16476 c 1.261759,2.16476 1.2617442,2.16476 3.7494633,2.16476 2.4996545,0 2.4997185,0 3.7495455,-2.16476 h -8.1e-5 c 1.249812,-2.16476 1.249787,-2.16469 0,-4.32934 v -1.1e-4 H 10.750152 8.2505363 l 1.2497662,2.16469 H 12 L 10.750152,16.3296 H 8.2505363 L 7.0006881,14.16484 5.7508392,12.00015 7.0006881,9.83539 8.2505363,7.67051 h 2.4996157 2.499696 L 12,5.50579 Z m 4.9993125,0 1.249849,2.16472 1.249848,2.16488 h -2.499697 l -1.249767,2.16476 h 2.499616 l 1.249848,2.16469 -1.249848,2.16476 -1.249849,2.16476 h 2.499697 l 1.249849,-2.16476 1.249766,-2.16476 c 1.249826,-2.16476 1.249826,-2.16469 0,-4.32945 L 18.249161,7.67051 16.999312,5.50579 Z'
 
@@ -73,25 +74,25 @@ const newsTypes: { [key: string]: IdState & TextState & PathState & ColorState }
   Projects: {
     id: 4,
     text: () => i18n.global.t('widgetNewsTypeRelatedProject'),
-    path: 'mdi-newspaper-variant-outline',
+    path: mdiNewspaperVariantOutline,
     color: () => getTemplateColor(0),
   },
   Data: {
     id: 3,
     text: () => i18n.global.t('widgetNewsTypeDataChanges'),
-    path: 'mdi-database',
+    path: mdiDatabase,
     color: () => getTemplateColor(1),
   },
   Updates: {
     id: 2,
     text: () => i18n.global.t('widgetNewsTypeGeneralUpdates'),
-    path: 'mdi-refresh',
+    path: mdiRefresh,
     color: () => getTemplateColor(2),
   },
   General: {
     id: 1,
     text: () => i18n.global.t('widgetNewsTypeGeneralNews'),
-    path: 'mdi-newspaper',
+    path: mdiNewspaper,
     color: () => getTemplateColor(3),
   },
 }
@@ -105,27 +106,27 @@ export interface Status {
 const asyncJobStatus: { [key: string]: Status } = {
   running: {
     color: 'info',
-    path: 'mdi-progress-wrench',
+    path: mdiProgressWrench,
     text: () => i18n.global.t('asyncJobStatusRunning'),
   },
   failed: {
     color: 'error',
-    path: 'mdi-alert',
+    path: mdiAlert,
     text: () => i18n.global.t('asyncJobStatusFailed'),
   },
   completed: {
     color: 'success',
-    path: 'mdi-check-circle',
+    path: mdiCheckCircle,
     text: () => i18n.global.t('asyncJobStatusCompleted'),
   },
   waiting: {
     color: 'info',
-    path: 'mdi-pause-circle',
+    path: mdiPauseCircle,
     text: () => i18n.global.t('asyncJobStatusWaiting'),
   },
   cancelled: {
     color: 'warning',
-    path: 'mdi-cancel',
+    path: mdiCancel,
     text: () => i18n.global.t('asyncJobStatusCancelled'),
   },
 }
@@ -206,12 +207,12 @@ const exportFormats: { [key: string]: FormatState } = {
 
 const publicationTypes = {
   germplasm: {
-    path: 'mdi-sprout',
+    path: mdiSprout,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('publicationTypeGerminatebase'),
   },
   group: {
-    path: 'mdi-group',
+    path: mdiGroup,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('publicationTypeGroup'),
   },
@@ -221,12 +222,12 @@ const publicationTypes = {
     text: () => i18n.global.t('publicationTypeDatabase'),
   },
   dataset: {
-    path: 'mdi-database',
+    path: mdiDatabase,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('publicationTypeDataset'),
   },
   experiment: {
-    path: 'mdi-folder-table',
+    path: mdiFolderTable,
     color: () => getTemplateColor(4),
     text: () => i18n.global.t('publicationTypeExperiment'),
   },
@@ -235,22 +236,22 @@ const publicationTypes = {
 const dataTypes: { [key: string]: BaseType } = {
   numeric: {
     text: () => i18n.global.t('dataTypeNumeric'),
-    path: 'mdi-numeric',
+    path: mdiNumeric,
     color: () => getTemplateColor(0),
   },
   text: {
     text: () => i18n.global.t('dataTypeText'),
-    path: 'mdi-alphabetical',
+    path: mdiAlphabetical,
     color: () => getTemplateColor(1),
   },
   date: {
     text: () => i18n.global.t('dataTypeDate'),
-    path: 'mdi-calendar',
+    path: mdiCalendar,
     color: () => getTemplateColor(2),
   },
   categorical: {
     text: () => i18n.global.t('dataTypeCategorical'),
-    path: 'mdi-tag-text',
+    path: mdiTagText,
     color: () => getTemplateColor(3),
   },
 }
@@ -258,19 +259,19 @@ const dataTypes: { [key: string]: BaseType } = {
 const entityTypes: { [key: string]: BaseType } = {
   Accession: {
     shortName: 'accession',
-    path: 'mdi-sprout',
+    path: mdiSprout,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('entityTypeAccession'),
   },
   'Plant/Plot': {
     shortName: 'plantplot',
-    path: 'mdi-grid',
+    path: mdiGrid,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('entityTypePlantPlot'),
   },
   Sample: {
     shortName: 'sample',
-    path: 'mdi-leaf',
+    path: mdiLeaf,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('entityTypeSample'),
   },
@@ -278,61 +279,61 @@ const entityTypes: { [key: string]: BaseType } = {
 
 const traitClasses: { [key: string]: ColorState & PathState & TextState & ValueState } = {
   abiotic_tress: {
-    path: 'mdi-weather-partly-snowy-rainy',
+    path: mdiWeatherPartlySnowyRainy,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('traitClassAbioticStress'),
     value: TraitsTraitClass.abiotic_stress,
   },
   agronomic: {
-    path: 'mdi-land-fields',
+    path: mdiLandFields,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('traitClassAgronomic'),
     value: TraitsTraitClass.agronomic,
   },
   biochemical: {
-    path: 'mdi-flask',
+    path: mdiFlask,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('traitClassBiochemical'),
     value: TraitsTraitClass.biochemical,
   },
   biotic_stress: {
-    path: 'mdi-bug',
+    path: mdiBug,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('traitClassBioticStress'),
     value: TraitsTraitClass.biotic_stress,
   },
   fertility: {
-    path: 'mdi-seed',
+    path: mdiSeed,
     color: () => getTemplateColor(4),
     text: () => i18n.global.t('traitClassFertility'),
     value: TraitsTraitClass.fertility,
   },
   morphological: {
-    path: 'mdi-sprout',
+    path: mdiSprout,
     color: () => getTemplateColor(5),
     text: () => i18n.global.t('traitClassMorphological'),
     value: TraitsTraitClass.morphological,
   },
   phenological: {
-    path: 'mdi-magnify-expand',
+    path: mdiMagnifyExpand,
     color: () => getTemplateColor(6),
     text: () => i18n.global.t('traitClassPhenological'),
     value: TraitsTraitClass.phenological,
   },
   physiological: {
-    path: 'mdi-leaf',
+    path: mdiLeaf,
     color: () => getTemplateColor(7),
     text: () => i18n.global.t('traitClassPhysiological'),
     value: TraitsTraitClass.physiological,
   },
   quality: {
-    path: 'mdi-scale',
+    path: mdiScale,
     color: () => getTemplateColor(8),
     text: () => i18n.global.t('traitClassQuality'),
     value: TraitsTraitClass.quality,
   },
   other: {
-    path: 'mdi-help-circle',
+    path: mdiHelpCircle,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('traitClassOther'),
     value: TraitsTraitClass.other,
@@ -341,49 +342,49 @@ const traitClasses: { [key: string]: ColorState & PathState & TextState & ValueS
 
 const methodClasses: { [key: string]: ColorState & PathState & TextState & ValueState } = {
   measurement: {
-    path: 'mdi-tape-measure',
+    path: mdiTapeMeasure,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('methodClassMeasurement'),
     value: MethodsMethodClass.measurement,
   },
   estimation: {
-    path: 'mdi-calculator',
+    path: mdiCalculator,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('methodClassEstimation'),
     value: MethodsMethodClass.estimation,
   },
   counting: {
-    path: 'mdi-counter',
+    path: mdiCounter,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('methodClassCounting'),
     value: MethodsMethodClass.counting,
   },
   computation: {
-    path: 'mdi-desktop-classic',
+    path: mdiDesktopClassic,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('methodClassComputation'),
     value: MethodsMethodClass.computation,
   },
   prediction: {
-    path: 'mdi-crystal-ball',
+    path: mdiCrystalBall,
     color: () => getTemplateColor(4),
     text: () => i18n.global.t('methodClassPrediction'),
     value: MethodsMethodClass.prediction,
   },
   description: {
-    path: 'mdi-text',
+    path: mdiText,
     color: () => getTemplateColor(5),
     text: () => i18n.global.t('methodClassDescription'),
     value: MethodsMethodClass.description,
   },
   classification: {
-    path: 'mdi-file-tree',
+    path: mdiFileTree,
     color: () => getTemplateColor(6),
     text: () => i18n.global.t('methodClassClassification'),
     value: MethodsMethodClass.classification,
   },
   other: {
-    path: 'mdi-help-circle',
+    path: mdiHelpCircle,
     color: () => getTemplateColor(7),
     text: () => i18n.global.t('methodClassOther'),
     value: MethodsMethodClass.other,
@@ -393,7 +394,7 @@ const methodClasses: { [key: string]: ColorState & PathState & TextState & Value
 const groupTypes: { [key: string]: GroupType } = {
   germinatebase: {
     id: 'germinatebase',
-    path: 'mdi-sprout',
+    path: mdiSprout,
     apiName: 'germplasm',
     itemType: 'germplasm',
     idColumn: 'germplasmId',
@@ -403,7 +404,7 @@ const groupTypes: { [key: string]: GroupType } = {
   },
   markers: {
     id: 'markers',
-    path: 'mdi-dna',
+    path: mdiDna,
     apiName: 'marker',
     itemType: 'markers',
     idColumn: 'markerId',
@@ -413,7 +414,7 @@ const groupTypes: { [key: string]: GroupType } = {
   },
   locations: {
     id: 'locations',
-    path: 'mdi-map-marker',
+    path: mdiMapMarker,
     apiName: 'location',
     itemType: 'locations',
     idColumn: 'locationId',
@@ -425,17 +426,17 @@ const groupTypes: { [key: string]: GroupType } = {
 
 const markedItemTypes: { [key: string]: PathState & ColorState & TextState } = {
   germplasm: {
-    path: 'mdi-sprout',
+    path: mdiSprout,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('groupTypeGerminatebase'),
   },
   markers: {
-    path: 'mdi-dna',
+    path: mdiDna,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('groupTypeMarker'),
   },
   locations: {
-    path: 'mdi-map-marker',
+    path: mdiMapMarker,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('groupTypeLocation'),
   },
@@ -443,22 +444,22 @@ const markedItemTypes: { [key: string]: PathState & ColorState & TextState } = {
 
 const imageTypes: { [key: string]: PathState & ColorState & TextState } = {
   germinatebase: {
-    path: 'mdi-sprout',
+    path: mdiSprout,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('imageTypeGerminatebase'),
   },
   phenotypes: {
-    path: 'mdi-tag-text-outline',
+    path: mdiTagTextOutline,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('imageTypePhenotypes'),
   },
   projects: {
-    path: 'mdi-clipboard-list',
+    path: mdiClipboardList,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('imageTypeProjects'),
   },
   storysteps: {
-    path: 'mdi-card-bulleted-settings',
+    path: mdiCardBulletedSettings,
     color: () => getTemplateColor(4),
     text: () => i18n.global.t('imageTypeStorySteps'),
   },
@@ -466,17 +467,17 @@ const imageTypes: { [key: string]: PathState & ColorState & TextState } = {
 
 const locationTypes: { [key: string]: BaseType } = {
   trialsite: {
-    path: 'mdi-shovel',
+    path: mdiShovel,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('locationTypeTrialsite'),
   },
   collectingsites: {
-    path: 'mdi-basket-fill',
+    path: mdiBasketFill,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('locationTypeCollectingsite'),
   },
   datasets: {
-    path: 'mdi-database',
+    path: mdiDatabase,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('locationTypeDataset'),
   },
@@ -487,7 +488,7 @@ export type TemplateImportType = StringIdState & PathState & ColorState & TextSt
 const templateImportTypes: { [key: string]: TemplateImportType } = {
   mcpd: {
     id: 'mcpd',
-    path: 'mdi-passport',
+    path: mdiPassport,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('templateImportTypeMcpd'),
     accepts: '.xlsx',
@@ -496,7 +497,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
   climate: {
     id: 'climate',
-    path: 'mdi-weather-snowy-rainy',
+    path: mdiWeatherSnowyRainy,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('templateImportTypeClimate'),
     accepts: '.xlsx',
@@ -505,7 +506,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
   genotype: {
     id: 'genotype',
-    path: 'mdi-dna',
+    path: mdiDna,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('templateImportTypeGenotype'),
     accepts: '.xlsx, .txt, .hapmap',
@@ -514,7 +515,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
   trial: {
     id: 'trial',
-    path: 'mdi-shovel',
+    path: mdiShovel,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('templateImportTypeTrial'),
     accepts: '.xlsx',
@@ -523,7 +524,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
   shapefile: {
     id: 'shapefile',
-    path: 'mdi-shape-rectangle-plus',
+    path: mdiShapeRectanglePlus,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('templateImportTypeShapefile'),
     accepts: '.zip',
@@ -532,7 +533,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
   geotiff: {
     id: 'geotiff',
-    path: 'mdi-image-marker',
+    path: mdiImageMarker,
     color: () => getTemplateColor(7),
     text: () => i18n.global.t('templateImportTypeGeotiff'),
     accepts: '.zip',
@@ -541,7 +542,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
   pedigree: {
     id: 'pedigree',
-    path: 'mdi-family-tree',
+    path: mdiFamilyTree,
     color: () => getTemplateColor(4),
     text: () => i18n.global.t('templateImportTypePedigree'),
     accepts: '.xlsx',
@@ -550,7 +551,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
   images: {
     id: 'images',
-    path: 'mdi-image-multiple',
+    path: mdiImageMultiple,
     color: () => getTemplateColor(5),
     text: () => i18n.global.t('templateImportTypeImages'),
     accepts: '.zip',
@@ -559,7 +560,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
   groups: {
     id: 'groups',
-    path: 'mdi-group',
+    path: mdiGroup,
     color: () => getTemplateColor(6),
     text: () => i18n.global.t('templateImportTypeGroups'),
     accepts: '.xlsx',
@@ -570,12 +571,12 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
 
 const commentTypes = {
   germinatebase: {
-    path: 'mdi-sprout',
+    path: mdiSprout,
     color: () => getTemplateColor(0),
     text: () => 'Germplasm',
   },
   locations: {
-    path: 'mdi-marker',
+    path: mdiMarker,
     color: () => getTemplateColor(1),
     text: () => 'Location',
   },
@@ -586,19 +587,19 @@ export type DatasetState = IdState & PathState & TextState & HelpState
 const datasetStates: { [key: string]: DatasetState } = {
   public: {
     id: 1,
-    path: 'mdi-lock-open-variant-outline',
+    path: mdiLockOpenVariantOutline,
     text: () => i18n.global.t('datasetStatePublic'),
     help: () => i18n.global.t('datasetStateHelpPublic'),
   },
   private: {
     id: 2,
-    path: 'mdi-lock',
+    path: mdiLock,
     text: () => i18n.global.t('datasetStatePrivate'),
     help: () => i18n.global.t('datasetStateHelpPrivate'),
   },
   hidden: {
     id: 3,
-    path: 'mdi-eye-off',
+    path: mdiEyeOff,
     text: () => i18n.global.t('datasetStateHidden'),
     help: () => i18n.global.t('datasetStateHelpHidden'),
   },
@@ -636,126 +637,126 @@ const statCategories: { [id: string]: ValueState & TextState & PathState & LinkS
   germplasm: {
     value: 'germplasm',
     text: () => i18n.global.t('dashboardBannerGermplasm'),
-    path: 'mdi-sprout',
+    path: mdiSprout,
     link: Pages.germplasm.path,
     isCount: true,
   },
   markers: {
     value: 'markers',
     text: () => i18n.global.t('dashboardBannerMarkers'),
-    path: 'mdi-dna',
+    path: mdiDna,
     link: Pages.markers.path,
     isCount: true,
   },
   maps: {
     value: 'maps',
     text: () => i18n.global.t('dashboardBannerMaps'),
-    path: 'mdi-reorder-vertical',
+    path: mdiReorderVertical,
     link: Pages.maps.path,
     isCount: true,
   },
   traits: {
     value: 'traits',
     text: () => i18n.global.t('dashboardBannerTraits'),
-    path: 'mdi-tag-text-outline',
+    path: mdiTagTextOutline,
     link: Pages.traits.path,
     isCount: true,
   },
   locations: {
     value: 'locations',
     text: () => i18n.global.t('dashboardBannerLocations'),
-    path: 'mdi-map-marker',
+    path: mdiMapMarker,
     link: Pages.locations.path,
     isCount: true,
   },
   datasets: {
     value: 'datasets',
     text: () => i18n.global.t('dashboardBannerDatasets'),
-    path: 'mdi-database',
+    path: mdiDatabase,
     link: Pages.datasets.path,
     isCount: true,
   },
   datasetId: {
     value: 'datasets',
     text: () => i18n.global.t('dashboardBannerDatasets'),
-    path: 'mdi-database',
+    path: mdiDatabase,
     link: Pages.datasets.path,
     isCount: false,
   },
   experiments: {
     value: 'experiments',
     text: () => i18n.global.t('dashboardBannerExperiments'),
-    path: 'mdi-folder-table',
+    path: mdiFolderTable,
     link: Pages.experiments.path,
     isCount: true,
   },
   datasetsAllelefreq: {
     value: 'datasetsAllelefreq',
     text: () => i18n.global.t('dashboardBannerDatasetsAllelefreq'),
-    path: 'mdi-pulse',
+    path: mdiPulse,
     link: Pages.getPath(Pages.export, 'allelefreq'),
     isCount: false,
   },
   datasetsGenotype: {
     value: 'datasetsGenotype',
     text: () => i18n.global.t('dashboardBannerDatasetsGenotype'),
-    path: 'mdi-dna',
+    path: mdiDna,
     link: Pages.getPath(Pages.export, 'genotype'),
     isCount: false,
   },
   datasetsTrials: {
     value: 'datasetsTrials',
     text: () => i18n.global.t('dashboardBannerDatasetsTrials'),
-    path: 'mdi-shovel',
+    path: mdiShovel,
     link: Pages.getPath(Pages.export, 'trials'),
     isCount: false,
   },
   datasetsClimate: {
     value: 'datasetsClimate',
     text: () => i18n.global.t('dashboardBannerDatasetsClimate'),
-    path: 'mdi-chart-sankey',
+    path: mdiChartSankey,
     link: Pages.getPath(Pages.export, 'climate'),
     isCount: false,
   },
   datasetsPedigree: {
     value: 'datasetsPedigree',
     text: () => i18n.global.t('dashboardBannerDatasetsPedigree'),
-    path: 'mdi-family-tree',
+    path: mdiFamilyTree,
     link: Pages.getPath(Pages.export, 'pedigree'),
     isCount: false,
   },
   groups: {
     value: 'groups',
     text: () => i18n.global.t('dashboardBannerGroups'),
-    path: 'mdi-group',
+    path: mdiGroup,
     link: Pages.groups.path,
     isCount: true,
   },
   climates: {
     value: 'climates',
     text: () => i18n.global.t('dashboardBannerClimates'),
-    path: 'mdi-weather-snowy-rainy',
+    path: mdiWeatherSnowyRainy,
     link: Pages.climates.path,
     isCount: true,
   },
   images: {
     value: 'images',
     text: () => i18n.global.t('dashboardBannerImages'),
-    path: 'mdi-image-multiple',
+    path: mdiImageMultiple,
     link: Pages.images.path,
     isCount: true,
   },
   fileresources: {
     value: 'fileresources',
     text: () => i18n.global.t('dashboardBannerFileResources'),
-    path: 'mdi-file-download',
+    path: mdiFileDownload,
     link: Pages.dataResources.path,
     isCount: true,
   },
   fileResourceId: {
     value: 'fileresources',
     text: () => i18n.global.t('dashboardBannerFileResources'),
-    path: 'mdi-file-download',
+    path: mdiFileDownload,
     link: Pages.dataResources.path,
     isCount: false,
   },
@@ -763,27 +764,27 @@ const statCategories: { [id: string]: ValueState & TextState & PathState & LinkS
 
 const germplasmInstitutionTypes: { [key: string]: PathState & ColorState & TextState } = {
   maintenance: {
-    path: 'mdi-wrench-clock',
+    path: mdiWrenchClock,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('germplasmInstitutionTypesMaintenance'),
   },
   breeding: {
-    path: 'mdi-eyedropper',
+    path: mdiEyedropper,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('germplasmInstitutionTypesBreeding'),
   },
   collection: {
-    path: 'mdi-allergy',
+    path: mdiAllergy,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('germplasmInstitutionTypesCollection'),
   },
   duplicate: {
-    path: 'mdi-content-duplicate',
+    path: mdiContentDuplicate,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('germplasmInstitutionTypesDuplicate'),
   },
   donor: {
-    path: 'mdi-gift',
+    path: mdiGift,
     color: () => getTemplateColor(4),
     text: () => i18n.global.t('germplasmInstitutionTypesDonor'),
   },
@@ -797,41 +798,41 @@ export interface DatasetType extends BaseType {
 const datasetTypes: { [key: string]: DatasetType } = {
   allelefreq: {
     id: 4,
-    path: 'mdi-pulse',
+    path: mdiPulse,
     pageName: Pages.exportAlleleFrequency,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('datasetTypeAllelefreq'),
   },
   climate: {
     id: 5,
-    path: 'mdi-weather-snowy-rainy',
+    path: mdiWeatherSnowyRainy,
     pageName: Pages.exportClimates,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('datasetTypeClimate'),
   },
   genotype: {
     id: 1,
-    path: 'mdi-dna',
+    path: mdiDna,
     pageName: Pages.exportGenotypes,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('datasetTypeGenotype'),
   },
   trials: {
     id: 3,
-    path: 'mdi-shovel',
+    path: mdiShovel,
     pageName: Pages.exportTraits,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('datasetTypeTrials'),
   },
   pedigree: {
     id: 7,
-    path: 'mdi-family-tree',
+    path: mdiFamilyTree,
     color: () => getTemplateColor(4),
     text: () => i18n.global.t('datasetTypePedigree'),
   },
   unknown: {
     id: -1,
-    path: 'mdi-help-box',
+    path: mdiHelpBox,
     color: () => getTemplateColor(6),
     text: () => i18n.global.t('datasetTypeUnknown'),
   },
@@ -840,31 +841,31 @@ const datasetTypes: { [key: string]: DatasetType } = {
 const userFeedbackTypes = [
   {
     id: 'bug',
-    path: 'mdi-bug-outline',
+    path: mdiBugOutline,
     color: () => getTemplateColor(0),
     text: () => i18n.global.t('userFeedbackTypesBug'),
   },
   {
     id: 'data_error',
-    path: 'mdi-alert-circle-outline',
+    path: mdiAlertCircleOutline,
     color: () => getTemplateColor(1),
     text: () => i18n.global.t('userFeedbackTypesDataError'),
   },
   {
     id: 'feature_request',
-    path: 'mdi-hammer-wrench',
+    path: mdiHammerWrench,
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('userFeedbackTypesFeatureRequest'),
   },
   {
     id: 'general',
-    path: 'mdi-message-text-fast-outline',
+    path: mdiMessageTextFastOutline,
     color: () => getTemplateColor(3),
     text: () => i18n.global.t('userFeedbackTypesGeneral'),
   },
   {
     id: 'question',
-    path: 'mdi-help-circle-outline',
+    path: mdiHelpCircleOutline,
     color: () => getTemplateColor(4),
     text: () => i18n.global.t('userFeedbackTypesQuestion'),
   },
@@ -873,19 +874,19 @@ const userFeedbackTypes = [
 const userFeedbackSeverityTypes = {
   low: {
     id: 'low',
-    path: 'mdi-speedometer-slow',
+    path: mdiSpeedometerSlow,
     color: 'text-success',
     text: () => i18n.global.t('userFeedbackSeverityLow'),
   },
   medium: {
     id: 'medium',
-    path: 'mdi-speedometer-medium',
+    path: mdiSpeedometerMedium,
     color: 'text-warning',
     text: () => i18n.global.t('userFeedbackSeverityMedium'),
   },
   high: {
     id: 'high',
-    path: 'mdi-speedometer',
+    path: mdiSpeedometer,
     color: 'text-danger',
     text: () => i18n.global.t('userFeedbackSeverityHigh'),
   },

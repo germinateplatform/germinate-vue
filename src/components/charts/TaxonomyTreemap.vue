@@ -3,7 +3,7 @@
     title="pageStatisticsBiologicalStatusTreemapTitle"
     :chart-id="id"
     :filename="filename"
-    header-icon="mdi-chart-tree"
+    :header-icon="mdiChartTree"
     :source-file="sourceFile"
     @force-redraw="redraw"
   >
@@ -28,6 +28,7 @@
   import { getColors } from '@/plugins/util/colors'
   import { FilterComparator, FilterOperator, type FilterGroup } from '@/plugins/types/germinate'
   import { apiGetStatsFile } from '@/plugins/api/stats'
+  import { mdiChartTree } from '@mdi/js'
 
   // Only register the chart types we're actually using to reduce the final bundle size
   Plotly.register([
@@ -157,6 +158,6 @@
   }
 
   onMounted(() => {
-    apiGetStatsFile('taxonomy', (result: Blob) => redraw(result))
+    apiGetStatsFile('taxonomy', result => redraw(result))
   })
 </script>

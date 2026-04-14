@@ -10,14 +10,14 @@
     :show-details="false"
     item-key="pedigreeId"
     table-key="pedigrees"
-    header-icon="mdi-family-tree"
+    :header-icon="mdiFamilyTree"
     :header-title="$t('pagePedigreeTitle')"
     v-bind="$attrs"
   >
     <template #header.relationshipType="{ column }">
       {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipPedigreeRelationshipType')">
         <template #activator="{ props }">
-          <v-icon v-bind="props" size="small" color="muted" icon="mdi-help-circle" />
+          <v-icon v-bind="props" size="small" color="muted" :icon="mdiHelpCircle" />
         </template>
       </v-tooltip>
     </template>
@@ -68,6 +68,7 @@
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
   import { columns } from '@/plugins/util/table-columns'
+  import { mdiFamilyTree, mdiHelpCircle } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePedigreedefinitions[]>>> }

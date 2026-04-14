@@ -11,7 +11,7 @@
     :show-details="false"
     item-key="taxonomyId"
     table-key="taxonomies"
-    header-icon="mdi-graph"
+    :header-icon="mdiGraph"
     :header-title="$t('pageTaxonomiesTitle')"
     v-bind="$attrs"
   >
@@ -36,7 +36,7 @@
     </template>
 
     <template #item.taxonomyProviders="{ item }">
-      <v-btn @click="showProviders(item)" prepend-icon="mdi-identifier" :text="$t('buttonShow')" v-if="item.taxonomyProviders" />
+      <v-btn @click="showProviders(item)" :prepend-icon="mdiIdentifier" :text="$t('buttonShow')" v-if="item.taxonomyProviders" />
     </template>
 
     <!-- Pass on all named slots -->
@@ -57,6 +57,7 @@
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
   import { coreStore } from '@/stores/app'
+  import { mdiGraph, mdiIdentifier } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTaxonomies[]>>> }

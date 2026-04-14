@@ -26,9 +26,9 @@
             v-model="searchTerm"
             type="search"
             width="min(50vw, 250px)"
-            prepend-inner-icon="mdi-magnify"
+            :prepend-inner-icon="mdiMagnify"
             :placeholder="$t('inputPlaceholderSearch')"
-            append-inner-icon="mdi-arrow-right"
+            :append-inner-icon="mdiArrowRight"
             @click:append-inner="runSearch"
             @keyup.enter="runSearch"
             hide-details
@@ -63,7 +63,7 @@
           <template #footer.prepend>
             <v-btn-group density="compact" class="me-auto ms-2">
               <v-btn v-if="componentProps.download" size="small" @click="downloadTable" variant="tonal" v-tooltip:top="$t('buttonDownload')">
-                <v-icon icon="mdi-download" />
+                <v-icon :icon="mdiDownload" />
               </v-btn>
               <slot name="footer" />
             </v-btn-group>
@@ -120,10 +120,10 @@
                 v-model="searchTerm"
                 type="search"
                 width="min(50vw, 250px)"
-                prepend-inner-icon="mdi-magnify"
+                :prepend-inner-icon="mdiMagnify"
                 :placeholder="$t('inputPlaceholderSearch')"
                 clearable
-                append-inner-icon="mdi-arrow-right"
+                :append-inner-icon="mdiArrowRight"
                 @click:append-inner="runSearch"
                 @keyup.enter="runSearch"
                 hide-details
@@ -147,15 +147,15 @@
             <v-btn
               variant="tonal"
               v-bind="props"
-              prepend-icon="mdi-menu-left"
+              :prepend-icon="mdiMenuLeft"
             >
-              <v-icon icon="mdi-checkbox-multiple-outline" />
+              <v-icon :icon="mdiCheckboxMultipleOutline" />
             </v-btn>
           </template>
           <v-list>
-            <v-list-item :title="$t('tableItemMarkingCreateGroup')" prepend-icon="mdi-group" @click="addGroup" v-if="store.storeUserIsAuthenticated" :disabled="!markedItemConfig || markedItemConfig.count === 0" />
-            <v-list-item :title="$t('tableItemMarkingMarkAll')" prepend-icon="mdi-checkbox-multiple-marked" @click="markAllItems(true)" />
-            <v-list-item :title="$t('tableItemMarkingUnmarkAll')" prepend-icon="mdi-checkbox-multiple-blank-outline" @click="markAllItems(false)" />
+            <v-list-item :title="$t('tableItemMarkingCreateGroup')" :prepend-icon="mdiGroup" @click="addGroup" v-if="store.storeUserIsAuthenticated" :disabled="!markedItemConfig || markedItemConfig.count === 0" />
+            <v-list-item :title="$t('tableItemMarkingMarkAll')" :prepend-icon="mdiCheckboxMultipleMarked" @click="markAllItems(true)" />
+            <v-list-item :title="$t('tableItemMarkingUnmarkAll')" :prepend-icon="mdiCheckboxMultipleBlankOutline" @click="markAllItems(false)" />
           </v-list>
         </v-menu>
       </template>
@@ -173,7 +173,7 @@
           v-tooltip:top="isMarked(item[componentProps.itemKey]) ? $t('widgetTableMarkingRemoveItemFromList') : $t('widgetTableMarkingAddItemToList')"
         >
           <!-- @vue-ignore -->
-          <v-icon :icon="isMarked(item[componentProps.itemKey]) ? 'mdi-bookmark-check' : 'mdi-bookmark-outline'" />
+          <v-icon :icon="isMarked(item[componentProps.itemKey]) ? mdiBookmarkCheck : mdiBookmarkOutline" />
         </v-chip>
       </template>
 
@@ -185,7 +185,7 @@
       <template #body.append v-if="componentProps.selectionType !== undefined">
         <tr>
           <td :colspan="allHeaders.length + 1" class="py-2">
-            <v-icon class="px-4 pb-3" color="primary" icon="mdi-arrow-up-left-bold" /> {{ $t('widgetTableMultiSelectInfo') }}
+            <v-icon class="px-4 pb-3" color="primary" :icon="mdiArrowUpLeftBold" /> {{ $t('widgetTableMultiSelectInfo') }}
           </td>
         </tr>
       </template>
@@ -193,7 +193,7 @@
       <template #footer.prepend>
         <v-btn-group density="compact" class="me-auto ms-2">
           <v-btn v-if="componentProps.download" size="small" @click="downloadTable" variant="tonal" v-tooltip:top="$t('buttonDownload')">
-            <v-icon icon="mdi-download" />
+            <v-icon :icon="mdiDownload" />
           </v-btn>
           <slot name="footer" />
         </v-btn-group>
@@ -248,6 +248,7 @@
   import { groupTypes } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { mdiArrowRight, mdiArrowUpLeftBold, mdiBookmarkCheck, mdiBookmarkOutline, mdiCheckboxMultipleBlankOutline, mdiCheckboxMultipleMarked, mdiCheckboxMultipleOutline, mdiDownload, mdiGroup, mdiMagnify, mdiMenuLeft } from '@mdi/js'
 
   export type DisplayType = 'table' | 'grid'
 

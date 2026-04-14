@@ -11,8 +11,8 @@
         fixed-tabs
         grow
       >
-        <v-tab :value="1" prepend-icon="mdi-crosshairs-gps">{{ $t('pageGeographicSearchPointSearchTitle') }}</v-tab>
-        <v-tab :value="2" prepend-icon="mdi-vector-polygon">{{ $t('pageGeographicSearchPolygonSearchTitle') }}</v-tab>
+        <v-tab :value="1" :prepend-icon="mdiCrosshairsGps">{{ $t('pageGeographicSearchPointSearchTitle') }}</v-tab>
+        <v-tab :value="2" :prepend-icon="mdiVectorPolygon">{{ $t('pageGeographicSearchPolygonSearchTitle') }}</v-tab>
       </v-tabs>
 
       <v-tabs-window v-model="tab">
@@ -29,7 +29,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" variant="tonal" @click="run" prepend-icon="mdi-arrow-right-box" :text="$t('pageGeographicSearchButtonRun')" />
+        <v-btn color="primary" variant="tonal" @click="run" :prepend-icon="mdiArrowRightBox" :text="$t('pageGeographicSearchButtonRun')" />
       </v-card-actions>
     </v-card>
 
@@ -71,6 +71,7 @@
   import { apiPostGermplasmDistanceTable, apiPostGermplasmDistanceTableIds, apiPostGermplasmPolygonTable, apiPostGermplasmPolygonTableIds } from '@/plugins/api/germplasm'
   import { apiPostLocationDistanceTable, apiPostLocationDistanceTableIds, apiPostLocationPolygonTable, apiPostLocationPolygonTableIds } from '@/plugins/api/location'
   import type { PaginatedResult, ViewTableLocations, LatLng, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiArrowRightBox, mdiCrosshairsGps, mdiVectorPolygon } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'

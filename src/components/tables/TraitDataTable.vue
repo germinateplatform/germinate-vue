@@ -14,7 +14,7 @@
     :item-id="(item: ViewTableTrialsData) => `${item.germplasmId}-${item.traitId}`"
     table-key="trialsData"
     marked-item-type="germplasm"
-    header-icon="mdi-shovel"
+    :header-icon="mdiShovel"
     :show-details="false"
     :header-title="$t('pageDataExportTabDataTable')"
   >
@@ -43,7 +43,7 @@
     <template #item.variableName="{ item }">
       <span class="text-no-wrap">
         {{ item.variableName }}
-        &nbsp;<a href="#" @click.prevent="showVariableInfo(item.variableId)"><v-icon icon="mdi-information-outline" /></a>
+        &nbsp;<a href="#" @click.prevent="showVariableInfo(item.variableId)"><v-icon :icon="mdiInformationOutline" /></a>
       </span>
     </template>
 
@@ -80,6 +80,7 @@
   import { useI18n } from 'vue-i18n'
   import { columns } from '@/plugins/util/table-columns'
   import type { DataTableSortItem } from 'vuetify'
+  import { mdiInformationOutline, mdiShovel } from '@mdi/js'
 
   interface GermplasmTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTrialsData[]>>> }

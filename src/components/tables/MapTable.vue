@@ -11,7 +11,7 @@
     :show-details="false"
     item-key="mapId"
     table-key="maps"
-    header-icon="mdi-reorder-horizontal"
+    :header-icon="mdiReorderHorizontal"
     :header-title="$t('pageMapsTitle')"
     v-bind="$attrs"
   >
@@ -45,6 +45,7 @@
   import { useI18n } from 'vue-i18n'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
+  import { mdiReorderHorizontal } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMaps[]>>> }

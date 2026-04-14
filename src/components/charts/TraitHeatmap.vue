@@ -5,7 +5,7 @@
     filename="heatmap-chart"
     :source-file="sourceFile"
     v-model:loading="loading"
-    header-icon="mdi-chart-donut-variant"
+    :header-icon="mdiChartDonutVariant"
     @force-redraw="redraw"
   >
     <template #card-text>
@@ -29,6 +29,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import type { TraitComparisonChartTrace } from '@/components/trials/TraitComparison.vue'
+  import { mdiChartDonutVariant } from '@mdi/js'
 
   // Only register the chart types we're actually using to reduce the final bundle size
   Plotly.register([

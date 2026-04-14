@@ -2,13 +2,14 @@
   <template v-if="content && content.length > 0">
     <span :title="content" v-if="content">{{ truncateAfterWords(content, maxWords) }}</span>
     <a href="#" class="ms-2 table-icon-link" @click.prevent="showDetailsModal" v-if="isTruncatedAfterWords(content, maxWords)">
-      <v-icon icon="mdi-page-next" />
+      <v-icon :icon="mdiPageNext" />
     </a>
   </template>
 </template>
 
 <script setup lang="ts">
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
+  import { mdiPageNext } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'

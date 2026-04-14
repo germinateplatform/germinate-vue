@@ -8,7 +8,7 @@
         :icon="dataWarningTypes[warning.category]"
       >
         <template #text>
-          <v-chip class="me-2" label prepend-icon="mdi-calendar" v-if="warning.createdOn">{{ new Date(warning.createdOn).toLocaleDateString() }}</v-chip> {{ warning.description }}
+          <v-chip class="me-2" label :prepend-icon="mdiCalendar" v-if="warning.createdOn">{{ new Date(warning.createdOn).toLocaleDateString() }}</v-chip> {{ warning.description }}
         </template>
       </v-banner>
     </section>
@@ -28,15 +28,15 @@
         <v-col cols="12" md="6">
           <!-- PDCI -->
           <v-card class="mb-10" :title="$t('pagePassportPdciTitle')" id="pdci" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
-            <template #prepend><v-icon icon="mdi-chart-donut" color="primary" /></template>
-            <template #append><v-icon icon="mdi-help-circle" @click="showPdciInfo" /></template>
+            <template #prepend><v-icon :icon="mdiChartDonut" color="primary" /></template>
+            <template #append><v-icon :icon="mdiHelpCircle" @click="showPdciInfo" /></template>
             <template #text>
               <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasm.pdci.toFixed(2) }) }}</strong></p>
             </template>
           </v-card>
           <!-- Synonyms -->
           <v-card class="mb-10" :title="$t('pagePassportSynonymsTitle')" v-if="germplasm.synonyms" id="synonyms" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
-            <template #prepend><v-icon icon="mdi-tag-text-outline" color="primary" /></template>
+            <template #prepend><v-icon :icon="mdiTagTextOutline" color="primary" /></template>
             <template #text>
               <ul>
                 <li v-for="(synonym, index) in germplasm.synonyms" :key="`germplasm-synonym-${index}`">
@@ -47,14 +47,14 @@
           </v-card>
           <!-- Links -->
           <v-card class="mb-10" :title="$t('pagePassportLinksTitle')" id="links" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
-            <template #prepend><v-icon icon="mdi-link-variant" color="primary" /></template>
+            <template #prepend><v-icon :icon="mdiLinkVariant" color="primary" /></template>
             <template #text>
               <ExternalLinks :foreign-id="germplasm.germplasmId" target-table="germinatebase" />
             </template>
           </v-card>
 
           <v-card class="mb-10" title="Humbug" id="humbug">
-            <template #prepend><v-icon icon="mdi-barcode" color="primary" /></template>
+            <template #prepend><v-icon :icon="mdiBarcode" color="primary" /></template>
             <template #text>
               <v-btn :text="$t('pagePassportGenerateBarcode')" target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.germplasmName}`" />
             </template>
@@ -76,7 +76,7 @@
           flat
           density="compact"
         >
-          <v-toolbar-title class="ms-4"><v-icon size="x-small" start color="primary" icon="mdi-speedometer" /> {{ $t('pagePassportTraitStatsTitle') }}</v-toolbar-title>
+          <v-toolbar-title class="ms-4"><v-icon size="x-small" start color="primary" :icon="mdiSpeedometer" /> {{ $t('pagePassportTraitStatsTitle') }}</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <p>{{ $t('pagePassportTraitStatsText') }}</p>
@@ -88,7 +88,7 @@
               :title="$t('buttonToggle')"
             >
               <template #text>
-                <GermplasmTraitStats :germplasm-id="germplasm.germplasmId" @has-data="(count) => { performanceDataCount = count }" />
+                <GermplasmTraitStats :germplasm="germplasm" @has-data="(count) => { performanceDataCount = count }" />
               </template>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -118,7 +118,7 @@
           flat
           density="compact"
         >
-          <v-toolbar-title class="ms-4"><v-icon size="x-small" start color="primary" icon="mdi-speedometer" /> {{ $t('pagePassportLocationTitle') }}</v-toolbar-title>
+          <v-toolbar-title class="ms-4"><v-icon size="x-small" start color="primary" :icon="mdiSpeedometer" /> {{ $t('pagePassportLocationTitle') }}</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <p>{{ $t('pagePassportLocationText') }}</p>
@@ -159,6 +159,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
+  import { mdiAlert, mdiBarcode, mdiBookmarkCheck, mdiBookmarkOutline, mdiBookOpenVariant, mdiCalendar, mdiChartDonut, mdiDatabase, mdiFamilyTree, mdiFileCertificate, mdiFileDocumentAlert, mdiFileTree, mdiGroup, mdiHelpCircle, mdiHelpRhombus, mdiHistory, mdiImageMultiple, mdiInvoiceTextArrowRight, mdiLinkVariant, mdiMapMarker, mdiOfficeBuildingCog, mdiOpenInNew, mdiPassport, mdiPlaylistPlus, mdiSpeedometer, mdiTagTextOutline } from '@mdi/js'
 
   const compProps = defineProps<{
     germplasmId: number
@@ -169,7 +170,7 @@
 
   const store = coreStore()
   const scrollSpy = useTemplateRef('scrollSpy')
-  const performanceDataCount = ref(0)
+  const performanceDataCount = ref(1)
   const germplasm = ref<ViewTableGermplasm>()
   const dataWarnings = ref<Datawarnings[]>([])
   const groups = ref<ViewTableGroups[]>()
@@ -178,12 +179,12 @@
   let activeItem: string | undefined = undefined
 
   const dataWarningTypes: { [key: string]: string } = {
-    generic: 'mdi-alert',
-    quality: 'mdi-file-certificate',
-    source: 'mdi-invoice-text-arrow-right',
-    deprecated: 'mdi-history',
-    missing: 'mdi-help-rhombus',
-    inaccuracy: 'mdi-file-document-alert',
+    generic: mdiAlert,
+    quality: mdiFileCertificate,
+    source: mdiInvoiceTextArrowRight,
+    deprecated: mdiHistory,
+    missing: mdiHelpRhombus,
+    inaccuracy: mdiFileDocumentAlert,
   }
 
   const title = computed(() => {
@@ -211,19 +212,19 @@
   })
   const scrollSpyItems = computed(() => {
     return [
-      { href: '#', tooltip: 'tooltipGermplasmMarkedItem', icon: isMarked.value ? 'mdi-bookmark-check' : 'mdi-bookmark-outline', click: () => markItem() },
-      { href: '#mcpd', icon: 'mdi-passport', title: 'pagePassportMcpdTitle' },
-      { href: '#links', icon: 'mdi-open-in-new', title: 'pagePassportLinksTitle' },
-      { href: '#institutions', icon: 'mdi-office-building-cog', title: 'pagePassportInstitutionTitle' },
-      { href: '#publications', icon: 'mdi-book-open-variant', title: 'pagePassportPublicationsTitle' },
-      ...location.value ? [{ href: '#performance', icon: 'mdi-speedometer', title: 'pagePassportTraitStatsTitle' }] : [],
-      { href: '#datasets', icon: 'mdi-database', title: 'pagePassportDatasetTitle' },
-      { href: '#pedigree', icon: 'mdi-family-tree', title: 'pagePassportPedigreeTitle' },
-      ...germplasm.value?.latitude && germplasm.value?.longitude ? [{ href: '#location', icon: 'mdi-map-marker', title: 'pagePassportLocationTitle' }] : [],
-      { href: '#images', icon: 'mdi-image-multiple', title: 'pagePassportImageTitle' },
-      { href: '#groups', icon: 'mdi-group', title: 'pagePassportGroupTitle' },
-      { href: '#entity', icon: 'mdi-file-tree', title: 'pagePassportEntityTitle' },
-      { href: '#attributes', icon: 'mdi-playlist-plus', title: 'pagePassportAttributeTitle' },
+      { href: '#', tooltip: 'tooltipGermplasmMarkedItem', icon: isMarked.value ? mdiBookmarkCheck : mdiBookmarkOutline, click: () => markItem() },
+      { href: '#mcpd', icon: mdiPassport, title: 'pagePassportMcpdTitle' },
+      { href: '#links', icon: mdiOpenInNew, title: 'pagePassportLinksTitle' },
+      { href: '#institutions', icon: mdiOfficeBuildingCog, title: 'pagePassportInstitutionTitle' },
+      { href: '#publications', icon: mdiBookOpenVariant, title: 'pagePassportPublicationsTitle' },
+      ...location.value ? [{ href: '#performance', icon: mdiSpeedometer, title: 'pagePassportTraitStatsTitle' }] : [],
+      { href: '#datasets', icon: mdiDatabase, title: 'pagePassportDatasetTitle' },
+      { href: '#pedigree', icon: mdiFamilyTree, title: 'pagePassportPedigreeTitle' },
+      ...germplasm.value?.latitude && germplasm.value?.longitude ? [{ href: '#location', icon: mdiMapMarker, title: 'pagePassportLocationTitle' }] : [],
+      { href: '#images', icon: mdiImageMultiple, title: 'pagePassportImageTitle' },
+      { href: '#groups', icon: mdiGroup, title: 'pagePassportGroupTitle' },
+      { href: '#entity', icon: mdiFileTree, title: 'pagePassportEntityTitle' },
+      { href: '#attributes', icon: mdiPlaylistPlus, title: 'pagePassportAttributeTitle' },
     ]
   })
   const pedigreeDefinitionFilter: ComputedRef<FilterGroup[]> = computed(() => {

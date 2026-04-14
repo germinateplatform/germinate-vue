@@ -15,8 +15,8 @@
       color="primary"
       v-model="activeTab"
     >
-      <v-btn class="flex-grow-1" value="download" icon="mdi-download" />
-      <v-btn class="flex-grow-1" value="upload" icon="mdi-upload" v-if="store.storeUserIsDataCurator || store.storeUserIsAdmin" />
+      <v-btn class="flex-grow-1" value="download" :icon="mdiDownload" />
+      <v-btn class="flex-grow-1" value="upload" :icon="mdiUpload" v-if="store.storeUserIsDataCurator || store.storeUserIsAdmin" />
     </v-btn-toggle>
 
     <v-divider />
@@ -39,8 +39,8 @@
           </template>
 
           <template #append>
-            <v-btn icon="mdi-download" color="success" v-if="job.status === DataExportJobsStatus.completed" :href="`${store.storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateJobs" />
-            <v-btn disabled icon="mdi-alert" color="error" v-if="job.status === DataExportJobsStatus.failed" />
+            <v-btn :icon="mdiDownload" color="success" v-if="job.status === DataExportJobsStatus.completed" :href="`${store.storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateJobs" />
+            <v-btn disabled :icon="mdiAlert" color="error" v-if="job.status === DataExportJobsStatus.failed" />
           </template>
 
           <v-list-item-subtitle v-if="job.updatedOn">{{ new Date(job.updatedOn).toLocaleString() }}</v-list-item-subtitle>
@@ -48,7 +48,7 @@
             <v-progress-circular color="info" indeterminate size="18" width="3" v-if="job.status === DataExportJobsStatus.running" />
             <v-icon :icon="asyncJobStatus[job.status].path" v-else /> {{ asyncJobStatus[job.status].text() }}
           </v-list-item-subtitle>
-          <v-list-item-subtitle class="mt-2 text-caption" v-if="job.status === DataExportJobsStatus.completed"><v-icon icon="mdi-paperclip" /> {{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}</v-list-item-subtitle>
+          <v-list-item-subtitle class="mt-2 text-caption" v-if="job.status === DataExportJobsStatus.completed"><v-icon :icon="mdiPaperclip" /> {{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}</v-list-item-subtitle>
 
           <v-list-item-subtitle class="mt-2 text-caption" v-if="job.status === DataExportJobsStatus.completed && job.datatype === DataExportJobsDatatype.pedigree"><v-icon icon="$helium" />&nbsp;<a target="_blank" :href="`${heliumUrl}?germinateUrl=${encodeURIComponent(getHeliumExportUrl(job.uuid))}`" @click="updateJobs">{{ $t('buttonSendToHelium') }}</a></v-list-item-subtitle>
         </v-list-item>
@@ -73,26 +73,26 @@
           </template>
 
           <v-list-item-subtitle v-if="job.updatedOn">{{ new Date(job.updatedOn).toLocaleString() }}</v-list-item-subtitle>
-          <v-list-item-subtitle class="mt-2 text-caption" v-if="job.originalFilename"><v-icon icon="mdi-file" /> {{ job.originalFilename }}</v-list-item-subtitle>
+          <v-list-item-subtitle class="mt-2 text-caption" v-if="job.originalFilename"><v-icon :icon="mdiFile" /> {{ job.originalFilename }}</v-list-item-subtitle>
           <!-- Status -->
           <template v-if="job.status === DataImportJobsStatus.failed">
             <!-- If there is feedback -->
             <template v-if="job.feedback">
               <!-- Show a button to view the feedback -->
-              <v-list-item-subtitle class="mt-2 text-error"><v-icon icon="mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
+              <v-list-item-subtitle class="mt-2 text-error"><v-icon :icon="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
             </template>
-            <v-list-item-subtitle v-if="store.storeUserIsDataCurator" class="mt-2 text-info"><v-icon icon="mdi-document-alert" />&nbsp;<a href="#" @click.prevent="downloadImportJobLog(job)">{{ $t('widgetAsyncJobPanelDownloadLog') }}</a></v-list-item-subtitle>
+            <v-list-item-subtitle v-if="store.storeUserIsDataCurator" class="mt-2 text-info"><v-icon :icon="mdiFileDocumentAlert" />&nbsp;<a href="#" @click.prevent="downloadImportJobLog(job)">{{ $t('widgetAsyncJobPanelDownloadLog') }}</a></v-list-item-subtitle>
           </template>
           <template v-else-if="job.status === DataImportJobsStatus.completed">
             <!-- If there is feedback -->
             <template v-if="job.feedback">
-              <v-list-item-subtitle v-if="job.errorStatus === 'ERROR'" class="mt-2 text-error"><v-icon icon="mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
+              <v-list-item-subtitle v-if="job.errorStatus === 'ERROR'" class="mt-2 text-error"><v-icon :icon="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
               <template v-else>
-                <v-list-item-subtitle v-if="job.errorStatus === 'WARNING'" class="mt-2 text-warning"><v-icon icon="mdi-alert-circle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
+                <v-list-item-subtitle v-if="job.errorStatus === 'WARNING'" class="mt-2 text-warning"><v-icon :icon="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
                 <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
                 <template v-if="job.imported === false">
-                  <v-list-item-subtitle v-if="store.storeServerSettings?.dataImportMode === 'IMPORT'" class="mt-2 text-success"><v-icon icon="mdi-check-circle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></v-list-item-subtitle>
-                  <v-list-item-subtitle v-else class="mt-2 text-success"><v-icon icon="mdi-check-circle" /> {{ $t('widgetAsyncJobPanelImportDisabled') }}</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="store.storeServerSettings?.dataImportMode === 'IMPORT'" class="mt-2 text-success"><v-icon :icon="mdiCheckCircle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></v-list-item-subtitle>
+                  <v-list-item-subtitle v-else class="mt-2 text-success"><v-icon :icon="mdiCheckCircle" /> {{ $t('widgetAsyncJobPanelImportDisabled') }}</v-list-item-subtitle>
                 </template>
               </template>
             </template>
@@ -117,6 +117,7 @@
   import { useDisplay } from 'vuetify'
   import { useI18n } from 'vue-i18n'
   import { asyncJobStatus } from '@/plugins/util/types'
+  import { mdiAlert, mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiDna, mdiDownload, mdiFamilyTree, mdiFile, mdiFileDocumentAlert, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiShovel, mdiUpload } from '@mdi/js'
 
   const store = coreStore()
   const { name } = useDisplay()
@@ -139,37 +140,37 @@
   const dataExportTypes: { [key: string]: DataExportType } = {
     allelefreq: {
       text: () => t('datasetTypeAllelefreq'),
-      path: 'mdi-pulse',
+      path: mdiPulse,
       color: getTemplateColor(0),
     },
     climate: {
       text: () => t('datasetTypeClimate'),
-      path: 'mdi-chart-sankey',
+      path: mdiChartSankey,
       color: getTemplateColor(1),
     },
     genotype: {
       text: () => t('datasetTypeGenotype'),
-      path: 'mdi-dna',
+      path: mdiDna,
       color: getTemplateColor(2),
     },
     trial: {
       text: () => t('datasetTypeTrials'),
-      path: 'mdi-shovel',
+      path: mdiShovel,
       color: getTemplateColor(3),
     },
     pedigree: {
       text: () => t('datasetTypePedigree'),
-      path: 'mdi-family-tree',
+      path: mdiFamilyTree,
       color: getTemplateColor(4),
     },
     unknown: {
       text: () => t('datasetTypeUnknown'),
-      path: 'mdi-help-circle',
+      path: mdiHelpCircle,
       color: getTemplateColor(6),
     },
     images: {
       text: () => t('dataTypeImages'),
-      path: 'mdi-image-multiple',
+      path: mdiImageMultiple,
       color: getTemplateColor(5),
     },
   }

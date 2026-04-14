@@ -10,8 +10,8 @@
           grow
           v-if="germplasm && germplasm.entityParentId"
         >
-          <v-tab :value="1" prepend-icon="mdi-arrow-down-box">{{ germplasm.germplasmDisplayName }}</v-tab>
-          <v-tab :value="2" prepend-icon="mdi-arrow-up-box">{{ germplasm.entityParentName }}</v-tab>
+          <v-tab :value="1" :prepend-icon="mdiArrowDownBox">{{ germplasm.germplasmDisplayName }}</v-tab>
+          <v-tab :value="2" :prepend-icon="mdiArrowUpBox">{{ germplasm.entityParentName }}</v-tab>
         </v-tabs>
       </template>
     </v-toolbar>
@@ -34,7 +34,8 @@
 <script setup lang="ts">
   import Passport from '@/components/widgets/Passport.vue'
   import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
-  import { FilterComparator, FilterOperator, type ViewTableGermplasm, type PaginatedRequest, type PaginatedResult } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableGermplasm, type PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiArrowDownBox, mdiArrowUpBox } from '@mdi/js'
 
   const route = useRoute('/data/germplasm/[id]')
 

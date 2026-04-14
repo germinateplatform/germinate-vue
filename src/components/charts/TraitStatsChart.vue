@@ -1,6 +1,6 @@
 <template>
   <template v-if="traitData || (catChartData && catChartData.size > 0)">
-    <HighlightSelection
+    <TraitHighlightSelection
       ref="highlightSelection"
       :groups="groups || []"
       :dataset-ids="datasetIds || []"
@@ -8,7 +8,7 @@
 
     <v-switch v-model="showIndividuals" color="primary" :label="$t('chartControlShowIndividualPoints')" />
 
-    <v-btn @click="forceRedraw" class="mb-5" prepend-icon="mdi-refresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
+    <v-btn @click="forceRedraw" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
   </template>
 
   <template v-if="datasets">
@@ -38,7 +38,8 @@
 
 <script setup lang="ts">
   import { ViewTableTraitsScaleDatatype, type ViewTableDatasets, type ViewTableGroups, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
-  import type HighlightSelection from '@/components/widgets/selections/HighlightSelection.vue'
+  import type HighlightSelection from '@/components/widgets/selections/TraitHighlightSelection.vue'
+  import { mdiRefresh } from '@mdi/js'
 
   const compProps = defineProps<{
     variables: ViewTableTraits[]

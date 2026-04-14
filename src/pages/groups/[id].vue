@@ -24,12 +24,12 @@
     >
       <template #footer>
         <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonDeleteSelected')" :disabled="selectedIds.length === 0" @click="deleteSelection">
-          <v-icon icon="mdi-delete" />
+          <v-icon :icon="mdiDelete" />
           <v-chip size="small" label color="primary" v-if="selectedIds.length > 0">{{ getNumberWithSuffix(selectedIds.length, 1) }}</v-chip>
         </v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon icon="mdi-upload" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedGermplasm.length === 0" @click="editMarked(true)"><v-icon icon="mdi-expand-all-outline" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedGermplasm.length === 0" @click="editMarked(false)"><v-icon icon="mdi-collapse-all-outline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedGermplasm.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedGermplasm.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
       </template>
     </GermplasmTable>
 
@@ -44,12 +44,12 @@
     >
       <template #footer>
         <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonDeleteSelected')" :disabled="selectedIds.length === 0" @click="deleteSelection">
-          <v-icon icon="mdi-delete" />
+          <v-icon :icon="mdiDelete" />
           <v-chip size="small" label color="primary" v-if="selectedIds.length > 0">{{ getNumberWithSuffix(selectedIds.length, 1) }}</v-chip>
         </v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon icon="mdi-upload" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(true)"><v-icon icon="mdi-expand-all-outline" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(false)"><v-icon icon="mdi-collapse-all-outline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
       </template>
     </LocationTable>
 
@@ -64,12 +64,12 @@
     >
       <template #footer>
         <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonDeleteSelected')" :disabled="selectedIds.length === 0" @click="deleteSelection">
-          <v-icon icon="mdi-delete" />
+          <v-icon :icon="mdiDelete" />
           <v-chip size="small" label color="primary" v-if="selectedIds.length > 0">{{ getNumberWithSuffix(selectedIds.length, 1) }}</v-chip>
         </v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon icon="mdi-upload" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(true)"><v-icon icon="mdi-expand-all-outline" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(false)"><v-icon icon="mdi-collapse-all-outline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
       </template>
     </MarkerTable>
 
@@ -110,6 +110,7 @@
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { groupTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
+  import { mdiCollapseAllOutline, mdiDelete, mdiExpandAllOutline, mdiUpload } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
@@ -280,7 +281,7 @@
             operator: FilterOperator.and,
           }],
         }
-        apiPostGroupTable<PaginatedResult<ViewTableGroups[]>>(queryParams, result => {
+        apiPostGroupTable(queryParams, result => {
           if (result && result.data && result.data.length > 0) {
             group.value = result.data[0]
           }

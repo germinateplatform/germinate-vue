@@ -11,7 +11,7 @@
     :show-details="false"
     item-key="institutionId"
     table-key="institutions"
-    header-icon="mdi-office-building-cog"
+    :header-icon="mdiOfficeBuildingCog"
     :header-title="$t('modalTitleInstitutions')"
     v-bind="$attrs"
   >
@@ -60,6 +60,7 @@
   import { useI18n } from 'vue-i18n'
   import { germplasmInstitutionTypes } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
+  import { mdiOfficeBuildingCog } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableInstitutions[]>>> }

@@ -12,13 +12,13 @@
       :selection-type="TableSelectionType.all"
       item-key="projectId"
       table-key="projects"
-      header-icon="mdi-clipboard-list"
+      :header-icon="mdiClipboardList"
       :header-title="$t('pageProjectsTitle')"
       @selection-changed="selectionChanged"
       v-bind="$attrs"
     >
       <template #header v-if="store.storeUserIsDataCurator">
-        <v-btn variant="outlined" :text="$t('buttonAddProject')" prepend-icon="mdi-plus" @click="addItem" />
+        <v-btn variant="outlined" :text="$t('buttonAddProject')" :prepend-icon="mdiPlus" @click="addItem" />
       </template>
 
       <!-- Project id link -->
@@ -46,8 +46,8 @@
       </template>
 
       <template #item.projectActions="{ item }" v-if="store.storeUserIsDataCurator">
-        <v-icon class="mx-1" color="info" icon="mdi-pencil" @click="editItem(item)" />
-        <v-icon class="mx-1" color="error" icon="mdi-delete" @click="deleteItem(item)" />
+        <v-icon class="mx-1" color="info" :icon="mdiPencil" @click="editItem(item)" />
+        <v-icon class="mx-1" color="error" :icon="mdiDelete" @click="deleteItem(item)" />
       </template>
 
       <!-- Pass on all named slots -->
@@ -87,6 +87,7 @@
   import { getImageUrlById } from '@/plugins/util/image'
 
   import emitter from 'tiny-emitter/instance'
+  import { mdiClipboardList, mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableProjects[]>>> }

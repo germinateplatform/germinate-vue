@@ -13,12 +13,12 @@
       supports-grid-cards
       item-key="newsId"
       table-key="news"
-      header-icon="mdi-newspaper"
+      :header-icon="mdiNewspaper"
       :header-title="$t('pageNewsLatestNewsTitle')"
       v-bind="$attrs"
     >
       <template #header v-if="store.storeUserIsAuthenticated">
-        <v-btn variant="outlined" :text="$t('buttonAddNews')" prepend-icon="mdi-plus" @click="addItem" />
+        <v-btn variant="outlined" :text="$t('buttonAddNews')" :prepend-icon="mdiPlus" @click="addItem" />
       </template>
 
       <template #item.newstypeName="{ item }">
@@ -29,7 +29,7 @@
         <template v-if="item.newsContent && item.newsContent.length > 0">
           <span class="news-content" :title="value" v-if="value" v-html="truncateAfterWords(value, 20)" />
           <a href="#" class="ms-2 table-icon-link" @click.prevent="showNewsContent(item)" v-if="isTruncatedAfterWords(value, 20)">
-            <v-icon icon="mdi-page-next" />
+            <v-icon :icon="mdiPageNext" />
           </a>
         </template>
       </template>
@@ -40,7 +40,7 @@
       </template>
 
       <template #item.newsHyperlink="{ value }">
-        <v-btn :href="value" v-if="value" target="_blank" rel="noopener noreferrer" prepend-icon="mdi-open-in-new">{{ $t('buttonShow') }}</v-btn>
+        <v-btn :href="value" v-if="value" target="_blank" rel="noopener noreferrer" :prepend-icon="mdiOpenInNew">{{ $t('buttonShow') }}</v-btn>
       </template>
 
       <template #card-item="{ item }">
@@ -61,7 +61,7 @@
             <v-card-text class="text-wrap">
               <span class="g-trim-rows-5" v-html="item.newsContent" />
               <a href="#" class="table-icon-link" @click.prevent="showNewsContent(item)">
-                <v-icon icon="mdi-page-next" />
+                <v-icon :icon="mdiPageNext" />
               </a>
             </v-card-text>
           </div>
@@ -122,6 +122,7 @@
   import emitter from 'tiny-emitter/instance'
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import { apiDeleteNews, apiPostNews } from '@/plugins/api/misc'
+  import { mdiNewspaper, mdiOpenInNew, mdiPageNext, mdiPlus } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableNews[]>>> }

@@ -33,7 +33,7 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostLocationTable, apiPostLocationTableIds } from '@/plugins/api/location'
   import { apiPostTableExport } from '@/plugins/api/misc'
-  import type { ViewTableLocations, PaginatedResult, PaginatedRequest } from '@/plugins/types/germinate'
+  import type { ViewTableLocations, PaginatedRequest } from '@/plugins/types/germinate'
 
   const clusteredMap = ref()
   const heatmappedMap = ref()
@@ -54,7 +54,7 @@
   function getIds (data: PaginatedRequest) {
     return apiPostLocationTableIds(data)
   }
-  function downloadTable(data: PaginatedRequest) {
+  function downloadTable (data: PaginatedRequest) {
     return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'location')
   }
 

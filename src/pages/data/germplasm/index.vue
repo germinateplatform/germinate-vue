@@ -11,7 +11,7 @@
         @group:selected="showMap"
       >
         <template #title>
-          <v-icon icon="mdi-map-marker-multiple" class="me-2" /> {{ $t('widgetGermplasmMapTitle') }}
+          <v-icon :icon="mdiMapMarkerMultiple" class="me-2" /> {{ $t('widgetGermplasmMapTitle') }}
         </template>
 
         <template #text>
@@ -33,7 +33,7 @@
           class="d-flex flex-column justify-space-between"
         >
           <template #prepend>
-            <v-icon color="primary" icon="mdi-passport" />
+            <v-icon color="primary" :icon="mdiPassport" />
           </template>
           <v-card-text class="flex-grow-0">{{ $t('pageGermplasmDownloadTabGermplasmText') }}</v-card-text>
           <v-card-text class="flex-grow-1">
@@ -44,9 +44,14 @@
               mandatory
               v-model="passportSelection"
             >
-              <v-btn value="all" prepend-icon="mdi-playlist-check">{{ $t('pageGermplasmDownloadSelectAll') }}</v-btn>
-              <v-btn value="marked" :disabled="store.storeMarkedGermplasm.length === 0" prepend-icon="mdi-list-status">{{ $t('pageGermplasmDownloadSelectMarked', { count: store.storeMarkedGermplasm.length }) }}</v-btn>
-              <v-btn value="group" prepend-icon="mdi-group">{{ $t('pageGermplasmDownloadSelectGroup') }}</v-btn>
+              <v-btn value="all" :prepend-icon="mdiPlaylistCheck">{{ $t('pageGermplasmDownloadSelectAll') }}</v-btn>
+              <v-btn value="marked" :disabled="store.storeMarkedGermplasm.length === 0" :prepend-icon="mdiListStatus">
+                {{ $t('pageGermplasmDownloadSelectMarked') }}
+                <template #append>
+                  <v-chip size="small" :text="getNumberWithSuffix(store.storeMarkedGermplasm.length, 1)" />
+                </template>
+              </v-btn>
+              <v-btn value="group" :prepend-icon="mdiGroup">{{ $t('pageGermplasmDownloadSelectGroup') }}</v-btn>
             </v-btn-toggle>
 
             <v-select
@@ -66,7 +71,7 @@
 
           <template #actions>
             <v-spacer />
-            <v-btn color="primary" variant="tonal" prepend-icon="mdi-download" @click="downloadGermplasm">{{ $t('buttonDownload') }}</v-btn>
+            <v-btn color="primary" variant="tonal" :prepend-icon="mdiDownload" @click="downloadGermplasm">{{ $t('buttonDownload') }}</v-btn>
           </template>
         </v-card>
       </v-col>
@@ -77,7 +82,7 @@
           :subtitle="$t('pageGermplasmDownloadTabPedigreeSubtitle')"
         >
           <template #prepend>
-            <v-icon color="primary" icon="mdi-family-tree" />
+            <v-icon color="primary" :icon="mdiFamilyTree" />
           </template>
           <v-card-text>{{ $t('pageGermplasmDownloadTabPedigreeText') }}</v-card-text>
           <v-card-text>
@@ -88,9 +93,13 @@
               mandatory
               v-model="pedigreeSelection"
             >
-              <v-btn value="all" prepend-icon="mdi-playlist-check">{{ $t('pageGermplasmDownloadSelectAll') }}</v-btn>
-              <v-btn value="marked" :disabled="store.storeMarkedGermplasm.length === 0" prepend-icon="mdi-list-status">{{ $t('pageGermplasmDownloadSelectMarked', { count: store.storeMarkedGermplasm.length }) }}</v-btn>
-              <v-btn value="group" prepend-icon="mdi-group">{{ $t('pageGermplasmDownloadSelectGroup') }}</v-btn>
+              <v-btn value="all" :prepend-icon="mdiPlaylistCheck">{{ $t('pageGermplasmDownloadSelectAll') }}</v-btn>
+              <v-btn value="marked" :disabled="store.storeMarkedGermplasm.length === 0" :prepend-icon="mdiListStatus">{{ $t('pageGermplasmDownloadSelectMarked') }}
+                <template #append>
+                  <v-chip size="small" :text="getNumberWithSuffix(store.storeMarkedGermplasm.length, 1)" />
+                </template>
+              </v-btn>
+              <v-btn value="group" :prepend-icon="mdiGroup">{{ $t('pageGermplasmDownloadSelectGroup') }}</v-btn>
             </v-btn-toggle>
 
             <v-select
@@ -121,7 +130,7 @@
 
           <template #actions>
             <v-spacer />
-            <v-btn color="primary" variant="tonal" prepend-icon="mdi-download" @click="downloadPedigree" :disabled="!selectedPedigreeDataset">{{ $t('buttonDownload') }}</v-btn>
+            <v-btn color="primary" variant="tonal" :prepend-icon="mdiDownload" @click="downloadPedigree" :disabled="!selectedPedigreeDataset">{{ $t('buttonDownload') }}</v-btn>
           </template>
         </v-card>
       </v-col>
@@ -142,6 +151,7 @@
   import emitter from 'tiny-emitter/instance'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { mdiDownload, mdiFamilyTree, mdiGroup, mdiListStatus, mdiMapMarkerMultiple, mdiPassport, mdiPlaylistCheck } from '@mdi/js'
 
   const store = coreStore()
 
@@ -227,7 +237,7 @@
         }],
       }],
     }
-    apiPostGroupTable<PaginatedResult<ViewTableGroups[]>>(query, result => {
+    apiPostGroupTable(query, result => {
       groups.value = result.data
     })
 

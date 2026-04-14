@@ -35,7 +35,7 @@
       </v-col>
     </v-row>
 
-    <v-btn class="my-5" color="primary" :disabled="!canContinue" prepend-icon="mdi-arrow-right-box" :text="$t('buttonPlot')" @click="collectGermplasm" />
+    <v-btn class="my-5" color="primary" :disabled="!canContinue" :prepend-icon="mdiArrowRightBox" :text="$t('buttonPlot')" @click="collectGermplasm" />
 
     <div v-if="plotTraces && plotTraces.length > 0">
       <TraitRadarChart
@@ -80,6 +80,7 @@
   import { useI18n } from 'vue-i18n'
   import TraitBubbleChart from '@/components/charts/TraitBubbleChart.vue'
   import TraitHeatmap from '@/components/charts/TraitHeatmap.vue'
+  import { mdiArrowRightBox } from '@mdi/js'
 
   const compProps = defineProps<{
     datasetIds: number[]
@@ -345,8 +346,6 @@
       })
 
       plotTraces.value = result
-
-      console.log(result)
     } else {
       plotTraces.value = []
     }

@@ -28,16 +28,16 @@
       </v-col>
     </v-row>
 
-    <v-btn class="my-5" :disabled="!canContinue" color="primary" prepend-icon="mdi-arrow-right-box" :text="$t('buttonPlot')" @click="plot" />
+    <v-btn class="my-5" :disabled="!canContinue" color="primary" :prepend-icon="mdiArrowRightBox" :text="$t('buttonPlot')" @click="plot" />
 
     <template v-if="chartData">
-      <HighlightSelection
+      <TraitHighlightSelection
         ref="highlightSelection"
         :groups="groups"
         :dataset-ids="datasetIds"
       />
 
-      <v-btn @click="traitMatrixChart?.redraw()" class="mb-5" prepend-icon="mdi-refresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
+      <v-btn @click="traitMatrixChart?.redraw()" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
     </template>
 
     <TraitMatrixChart :user-selection="userSelection" :groups="groups || []" :plot-data="chartData" v-if="chartData" :dataset-ids="datasetIds" :traits="selectedTraits" :has-groups-data="hasGroupsData" ref="traitMatrixChart" />
@@ -53,7 +53,8 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { coreStore } from '@/stores/app'
   import TraitMatrixChart from '@/components/charts/TraitMatrixChart.vue'
-  import type HighlightSelection from '@/components/widgets/selections/HighlightSelection.vue'
+  import type HighlightSelection from '@/components/widgets/selections/TraitHighlightSelection.vue'
+  import { mdiArrowRightBox, mdiRefresh } from '@mdi/js'
 
   const compProps = defineProps<{
     datasetIds: number[]

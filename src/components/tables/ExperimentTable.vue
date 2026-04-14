@@ -10,7 +10,7 @@
     :show-details="false"
     item-key="experimentId"
     table-key="experiments"
-    header-icon="mdi-folder-table"
+    :header-icon="mdiFolderTable"
     :header-title="$t('pageExperimentsTitle')"
     v-bind="$attrs"
   >
@@ -68,6 +68,7 @@
   import { datasetTypes } from '@/plugins/util/types'
 
   import ShowFullCell from '@/components/tables/ShowFullCell.vue'
+  import { mdiFolderTable } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableExperiments[]>>> }

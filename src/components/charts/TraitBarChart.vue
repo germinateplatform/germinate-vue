@@ -5,7 +5,7 @@
       :chart-id="data.id"
       :filename="data.filename"
       :source-file="data.sourceFile"
-      header-icon="mdi-chart-bar"
+      :header-icon="mdiChartBar"
       @force-redraw="redraw(data)"
     >
       <template #chart-content>
@@ -30,7 +30,8 @@
   import { getColor, hexToRGBA } from '@/plugins/util/colors'
   import { useI18n } from 'vue-i18n'
   import { ViewTableTraitsScaleDatatype, type ViewTableDatasets, type ViewTableGroups, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
-  import type { UserSelection } from '@/components/widgets/selections/HighlightSelection.vue'
+  import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
+  import { mdiChartBar } from '@mdi/js'
 
   // Only register the chart types we're actually using to reduce the final bundle size
   Plotly.register([

@@ -1,10 +1,10 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { ExportRequest, PaginatedRequest } from '@/plugins/types/germinate'
+import type { CountryCount, ExportRequest, PaginatedRequest, PaginatedResult, ViewTableLocations } from '@/plugins/types/germinate'
 
-const apiPostLocationTable = (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) => {
+const apiPostLocationTable = (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableLocations[]>>, onError?: ErrorHandler) => {
   queryData.page -= 1
-  return authAxios<PaginatedResult<ViewTableGermplasm[]>>({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableLocations[]>>({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiPostLocationDistanceTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
@@ -52,7 +52,7 @@ const apiPostGroupLocationTableIds = <T>(groupId: number, queryData: PaginatedRe
   return authAxios({ url: `group/${groupId}/location/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiGetCountries = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'country', success: onSuccess, error: onError })
+const apiGetCountries = (onSuccess?: GerminateResponseHandler<CountryCount[]>, onError?: ErrorHandler) => authAxios<CountryCount[]>({ url: 'country', success: onSuccess, error: onError })
 
 export {
   apiPostLocationTable,

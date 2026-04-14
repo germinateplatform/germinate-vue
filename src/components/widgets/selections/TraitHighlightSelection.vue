@@ -7,24 +7,24 @@
       variant="tonal"
       class="d-flex mb-5"
     >
-      <v-btn class="flex-grow-1" value="dataset" prepend-icon="mdi-database" :text="$t('widgetHighlightSelectionDataset')" />
-      <v-btn class="flex-grow-1" value="germplasm" prepend-icon="mdi-sprout" :text="$t('widgetHighlightSelectionGermplasm')" />
-      <v-btn class="flex-grow-1" value="plot" prepend-icon="mdi-view-grid-plus" :disabled="!trialPlots || trialPlots.length === 0" :text="$t('widgetHighlightSelectionPlot')" v-if="allowCellSelect">
+      <v-btn class="flex-grow-1" value="dataset" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
+      <v-btn class="flex-grow-1" value="germplasm" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionGermplasm')" />
+      <v-btn class="flex-grow-1" value="plot" :prepend-icon="mdiViewGridPlus" :disabled="!trialPlots || trialPlots.length === 0" :text="$t('widgetHighlightSelectionPlot')" v-if="allowCellSelect">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialPlots || []).length, 0)" /></template>
       </v-btn>
-      <v-btn class="flex-grow-1" value="group" prepend-icon="mdi-group" :text="$t('widgetHighlightSelectionGroup')">
+      <v-btn class="flex-grow-1" value="group" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
         <template #append><v-badge inline :content="getNumberWithSuffix((groups|| []).length, 0)" /></template>
       </v-btn>
-      <v-btn class="flex-grow-1" value="year" prepend-icon="mdi-calendar-week" :disabled="!trialYears || trialYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
+      <v-btn class="flex-grow-1" value="year" :prepend-icon="mdiCalendarWeek" :disabled="!trialYears || trialYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialYears|| []).length, 0)" /></template>
       </v-btn>
-      <v-btn class="flex-grow-1" value="taxonomies" :disabled="!trialTaxonomies || trialTaxonomies.length === 0" prepend-icon="mdi-sitemap" :text="$t('widgetHighlightSelectionTaxonomy')">
+      <v-btn class="flex-grow-1" value="taxonomies" :disabled="!trialTaxonomies || trialTaxonomies.length === 0" :prepend-icon="mdiSitemap" :text="$t('widgetHighlightSelectionTaxonomy')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialTaxonomies|| []).length, 0)" /></template>
       </v-btn>
-      <v-btn class="flex-grow-1" value="reps" :disabled="!trialReps || trialReps.length === 0" prepend-icon="mdi-format-list-numbered" :text="$t('widgetHighlightSelectionRep')">
+      <v-btn class="flex-grow-1" value="reps" :disabled="!trialReps || trialReps.length === 0" :prepend-icon="mdiFormatListNumbered" :text="$t('widgetHighlightSelectionRep')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialReps|| []).length, 0)" /></template>
       </v-btn>
-      <v-btn class="flex-grow-1" value="treatments" :disabled="!trialTreatments || trialTreatments.length === 0" prepend-icon="mdi-sprinkler-fire" :text="$t('widgetHighlightSelectionTreatment')">
+      <v-btn class="flex-grow-1" value="treatments" :disabled="!trialTreatments || trialTreatments.length === 0" :prepend-icon="mdiSprinklerFire" :text="$t('widgetHighlightSelectionTreatment')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialTreatments|| []).length, 0)" /></template>
       </v-btn>
     </v-btn-toggle>
@@ -135,6 +135,7 @@
   import type { Taxonomies, PlotDetails, Treatments, ViewTableGermplasm, ViewTableGroups } from '@/plugins/types/germinate'
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
   import PlotSelection from '@/components/widgets/selections/PlotSelection.vue'
+  import { mdiCalendarWeek, mdiDatabase, mdiFormatListNumbered, mdiGroup, mdiSitemap, mdiSprinklerFire, mdiSprout, mdiViewGridPlus } from '@mdi/js'
 
   export interface UserSelection {
     type: 'group' | 'dataset' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'
@@ -236,7 +237,6 @@
   })
 
   function update () {
-    // TODO: Get reps, treatments, etc
     apiPostTrialSetupStats({
       datasetIds: compProps.datasetIds,
     }, result => {
