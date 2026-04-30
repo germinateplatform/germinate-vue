@@ -15,19 +15,19 @@
           <v-divider />
           <v-list-item @click="tokenModal?.show()" :title="$t('dropdownUserSettingsGetToken')">
             <template #prepend>
-              <v-icon color="info">mdi-circle-multiple</v-icon>
+              <v-icon color="info" :icon="mdiCircleMultiple" />
             </template>
           </v-list-item>
           <v-list-item @click="logout" :title="$t('dropdownUserSettingsLogout')">
             <template #prepend>
-              <v-icon color="error">mdi-logout-variant</v-icon>
+              <v-icon color="error" :icon="mdiLogoutVariant" />
             </template>
           </v-list-item>
         </template>
         <template v-else>
           <v-list-item @click="showLogin" :title="$t('dropdownUserSettingsLogin')">
             <template #prepend>
-              <v-icon color="success">mdi-login-variant</v-icon>
+              <v-icon color="success" :icon="mdiLoginVariant" />
             </template>
           </v-list-item>
         </template>
@@ -35,39 +35,39 @@
         <template v-if="store.storeUserIsAdmin">
           <v-list-item :to="Pages.germinateSettings.path" :title="$t('dropdownUserSettingsGerminateSettings')">
             <template #prepend>
-              <v-icon color="warning">mdi-cog</v-icon>
+              <v-icon color="warning" :icon="mdiCog" />
             </template>
           </v-list-item>
           <v-list-item :to="Pages.backup.path" :title="$t('dropdownUserSettingsBackup')">
             <template #prepend>
-              <v-icon color="warning">mdi-backup-restore</v-icon>
+              <v-icon color="warning" :icon="mdiBackupRestore" />
             </template>
           </v-list-item>
           <v-list-item :to="Pages.userPermissions.path" :title="$t('dropdownUserSettingsUserPermissions')">
             <template #prepend>
-              <v-icon color="warning">mdi-account-key</v-icon>
+              <v-icon color="warning" :icon="mdiAccountKey" />
             </template>
           </v-list-item>
           <v-list-item :to="Pages.userFeedback.path" :title="$t('dropdownUserSettingsUserFeedback')" v-if="store.storeServerSettings?.supportsFeedback">
             <template #prepend>
-              <v-icon color="warning">mdi-comment-quote-outline</v-icon>
+              <v-icon color="warning" :icon="mdiCommentQuoteOutline" />
             </template>
           </v-list-item>
         </template>
         <template v-if="store.storeUserIsDataCurator">
           <v-list-item :to="Pages.importUpload.path" :title="$t('dropdownUserSettingsDataUpload')">
             <template #prepend>
-              <v-icon color="warning">mdi-upload</v-icon>
+              <v-icon color="warning" :icon="mdiUpload" />
             </template>
           </v-list-item>
           <v-list-item :to="Pages.germplasmUnifier.path" :title="$t('dropdownUserSettingsGermplasmUnifier')">
             <template #prepend>
-              <v-icon color="warning">mdi-set-merge</v-icon>
+              <v-icon color="warning" :icon="mdiSetMerge" />
             </template>
           </v-list-item>
           <v-list-item :to="Pages.germplasmMatch.path" :title="$t('dropdownUserSettingsGermplasmMatchSearch')">
             <template #prepend>
-              <v-icon color="warning">mdi-text-search</v-icon>
+              <v-icon color="warning" :icon="mdiTextSearch" />
             </template>
           </v-list-item>
         </template>
@@ -92,7 +92,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import TextfieldModal from '@/components/modals/TextfieldModal.vue'
-  import { mdiAccount } from '@mdi/js'
+  import { mdiAccount, mdiAccountKey, mdiBackupRestore, mdiCircleMultiple, mdiCog, mdiCommentQuoteOutline, mdiLoginVariant, mdiLogoutVariant, mdiSetMerge, mdiTextSearch, mdiUpload } from '@mdi/js'
 
   const store = coreStore()
   const router = useRouter()

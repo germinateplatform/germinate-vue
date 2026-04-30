@@ -94,7 +94,7 @@
                 <span class="me-3">{{ language.flag }}</span>
               </template>
               <template #append>
-                <v-icon v-if="language.locale === store.storeLocale">mdi-check</v-icon>
+                <v-icon v-if="language.locale === store.storeLocale" :icon="mdiCheck" />
               </template>
             </v-list-item>
           </v-list>
@@ -103,7 +103,7 @@
         <v-menu>
           <template #activator="{ props }">
             <v-btn icon v-bind="props">
-              <v-icon>mdi-theme-light-dark</v-icon>
+              <v-icon :icon="mdiThemeLightDark" />
             </v-btn>
           </template>
           <v-list slim>
@@ -193,7 +193,7 @@
   import ChangelogInfo from '@/components/widgets/ChangelogInfo.vue'
   import { germinateVersion } from '@/plugins/util'
   import { useDark } from '@vueuse/core'
-  import { mdiBookmarkBoxMultiple, mdiClipboardList, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiMagnify, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
+  import { mdiBookmarkBoxMultiple, mdiCheck, mdiClipboardList, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiMagnify, mdiThemeLightDark, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
 
   // Composition
   const router = useRouter()

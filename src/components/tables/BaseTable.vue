@@ -114,7 +114,7 @@
           :disabled="componentProps.disabled"
         >
           <template #header>
-            <div>
+            <div class="d-flex flex-wrap ga-3">
               <v-text-field
                 v-if="searchVisible && componentProps.disabled !== true"
                 v-model="searchTerm"

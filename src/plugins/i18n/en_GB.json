@@ -1548,6 +1548,7 @@
   "tableColumnProjectImage": "Image/logo",
   "tableColumnProjectUrl": "External URL",
   "tableButtonAddFileresource": "Add data resource",
+  "tableButtonAddDataset": "Add dataset",
   "templateImportTypeMcpd": "MCPD",
   "templateImportTypeGenotype": "Genotype",
   "templateImportTypeGroups": "Groups",

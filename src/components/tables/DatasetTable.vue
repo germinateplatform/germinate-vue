@@ -156,7 +156,7 @@
       v-if="selectedDataset"
     >
       <template #additional-fields="{ item }">
-        <v-select
+        <v-autocomplete
           :items="experiments"
           v-model="item.experimentId"
           :label="$t('tableColumnExperimentName')"

@@ -27,9 +27,9 @@
           <v-icon :icon="mdiDelete" />
           <v-chip size="small" label color="primary" v-if="selectedIds.length > 0">{{ getNumberWithSuffix(selectedIds.length, 1) }}</v-chip>
         </v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedGermplasm.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedGermplasm.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" :disabled="!userCanEdit" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="!userCanEdit || store.storeMarkedGermplasm.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="!userCanEdit || store.storeMarkedGermplasm.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
       </template>
     </GermplasmTable>
 
@@ -47,9 +47,9 @@
           <v-icon :icon="mdiDelete" />
           <v-chip size="small" label color="primary" v-if="selectedIds.length > 0">{{ getNumberWithSuffix(selectedIds.length, 1) }}</v-chip>
         </v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" :disabled="!userCanEdit" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="!userCanEdit || store.storeMarkedLocations.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="!userCanEdit || store.storeMarkedLocations.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
       </template>
     </LocationTable>
 
@@ -67,9 +67,9 @@
           <v-icon :icon="mdiDelete" />
           <v-chip size="small" label color="primary" v-if="selectedIds.length > 0">{{ getNumberWithSuffix(selectedIds.length, 1) }}</v-chip>
         </v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
-        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="store.storeMarkedLocations.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonUpload')" :disabled="!userCanEdit" @click="uploadModalVisible = true"><v-icon :icon="mdiUpload" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonAddMarkedItems')" :disabled="!userCanEdit || store.storeMarkedLocations.length === 0" @click="editMarked(true)"><v-icon :icon="mdiExpandAllOutline" /></v-btn>
+        <v-btn size="small" variant="tonal" v-tooltip:top="$t('buttonRemoveMarkedItems')" :disabled="!userCanEdit || store.storeMarkedLocations.length === 0" @click="editMarked(false)"><v-icon :icon="mdiCollapseAllOutline" /></v-btn>
       </template>
     </MarkerTable>
 

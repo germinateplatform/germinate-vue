@@ -4,6 +4,28 @@
     <v-divider class="mb-3" />
     <p v-html="$t('pageGroupsText')" />
 
+    <v-btn-toggle
+      v-model="selectedGroupType"
+      class="mb-3"
+      variant="tonal"
+    >
+      <v-btn value="germinatebase" :color="groupTypes.germinatebase.color()" :text="groupTypes.germinatebase.text()">
+        <template #prepend>
+          <v-icon :icon="groupTypes.germinatebase.path" :color="groupTypes.germinatebase.color()" />
+        </template>
+      </v-btn>
+      <v-btn value="markers" :color="groupTypes.markers.color()" :text="groupTypes.markers.text()">
+        <template #prepend>
+          <v-icon :icon="groupTypes.markers.path" :color="groupTypes.markers.color()" />
+        </template>
+      </v-btn>
+      <v-btn value="locations" :color="groupTypes.locations.color()" :text="groupTypes.locations.text()">
+        <template #prepend>
+          <v-icon :icon="groupTypes.locations.path" :color="groupTypes.locations.color()" />
+        </template>
+      </v-btn>
+    </v-btn-toggle>
+
     <GroupTable :get-data="getData" :filter-on="filterOn" />
   </v-container>
 </template>
@@ -11,12 +33,12 @@
 <script setup lang="ts">
   import { apiPostGroupTable } from '@/plugins/api/group'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
-  import type { GroupType } from '@/plugins/util/types'
+  import { groupTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
 
   const store = coreStore()
 
-  const selectedGroupType = ref<GroupType>()
+  const selectedGroupType = ref<string>()
 
   const filterOn: ComputedRef<FilterGroup[]> = computed(() => {
     const filter = []
@@ -32,7 +54,7 @@
       filter.push({
         column: 'groupType',
         comparator: FilterComparator.equals,
-        values: [selectedGroupType.value.id],
+        values: [selectedGroupType.value],
         canBeChanged: false,
       })
     }

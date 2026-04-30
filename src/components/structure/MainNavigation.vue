@@ -20,7 +20,7 @@
         </template>
       </v-list-item>
       <v-list-item to="/" link :prepend-icon="mdiHome" :title="$t('menuHome')" />
-      <v-list-item link :to="Pages.projects.path" :prepend-icon="mdiClipboardList" v-if="Pages.isAvailable(Pages.projects)" :title="$t('menuProjects')"><template #append><v-chip size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge('projects')}` }}</v-chip></template></v-list-item>
+      <v-list-item link :to="Pages.projects.path" :prepend-icon="mdiClipboardList" v-if="Pages.isAvailable(Pages.projects) && (badgeCounts?.projects || 0) > 0" :title="$t('menuProjects')"><template #append><v-chip size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge('projects')}` }}</v-chip></template></v-list-item>
 
       <v-list-group value="data">
         <template #activator="{ props }">
