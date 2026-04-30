@@ -41,6 +41,7 @@ const defaultUserState: StoreContent = {
     news: [],
     backups: [],
     dataUpdate: [],
+    importFeedback: [],
     images: [],
     climates: [],
     climateData: [],

@@ -13,7 +13,7 @@
         >
           <template #title="{ title }">
             <div class="d-flex justify-space-between mt-3">
-              <div class="mb-2"><v-icon size="large" color="primary" :icon="mdiTag" /> <span class="text-h5">v{{ title }}</span></div>
+              <div class="mb-2"><v-icon size="large" color="primary" :icon="mdiTag" /> <span class="text-headline-small">v{{ title }}</span></div>
               <v-chip color="muted" :prepend-icon="mdiCalendar" label>{{ new Date(version.date).toLocaleDateString() }}</v-chip>
             </div>
           </template>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-subtitle-2 mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
+    <div class="text-title-small mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
     <v-btn-toggle
       v-model="selectionMode"
       color="primary"
@@ -74,7 +74,7 @@
       v-model="selectedTaxonomies"
       :items="trialTaxonomies"
     >
-      <template #selection="{ item }">
+      <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
     </v-select>
@@ -91,7 +91,7 @@
       v-model="selectedTreatments"
       :items="trialTreatments"
     >
-      <template #selection="{ item }">
+      <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
     </v-select>
@@ -106,7 +106,7 @@
       v-model="selectedReps"
       :items="trialReps"
     >
-      <template #selection="{ item }">
+      <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
     </v-select>
@@ -121,7 +121,7 @@
       v-model="selectedYears"
       :items="trialYears"
     >
-      <template #selection="{ item }">
+      <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
     </v-select>

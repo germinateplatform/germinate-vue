@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-3">{{ $t('pageTrialsExportTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageTrialsExportTitle') }}</h1>
     <v-divider class="mb-3" />
 
     <div v-if="datasets && datasets.length > 0">
@@ -20,7 +20,7 @@
           <v-card :color="selectedTab === tab.key ? getTemplateColor(index) : 'muted'" @click="selectedTab = tab.key">
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
-                <v-card-title class="text-h5">
+                <v-card-title class="text-headline-small">
                   {{ tab.text }}
                 </v-card-title>
 

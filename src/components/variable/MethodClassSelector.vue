@@ -1,6 +1,6 @@
 <template>
   <template v-if="availableMethodClasses && Object.keys(availableMethodClasses).length > 0">
-    <div class="text-subtitle-2 mt-3">{{ $t('widgetMethodClassSelectorTitle') }}</div>
+    <div class="text-title-small mt-3">{{ $t('widgetMethodClassSelectorTitle') }}</div>
     <v-chip-group
       v-model="model"
       multiple

@@ -1768,6 +1768,7 @@ export const enum DataExportJobsStatus {
 }
 
 export interface ImportResult {
+    id: number;
     status: ImportStatus;
     rowIndex: number;
     message: string;

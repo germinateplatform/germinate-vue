@@ -5,7 +5,7 @@
         <v-card :color="getTemplateColor(index)" :to="category.link">
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
-              <v-card-title class="text-h5">
+              <v-card-title class="text-headline-small">
                 {{ getNumberWithSuffix(stats[category.value], 1) }}
               </v-card-title>
 
@@ -26,7 +26,7 @@
 
     <ImageCarousel class="my-5" />
 
-    <h1 class="text-h4 mb-3">{{ $t('pageDashboardTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageDashboardTitle') }}</h1>
     <v-divider class="mb-3" />
 
     <HtmlTemplateEditor i18n-key="pageDashboardText" />

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-subtitle-2 mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
+    <div class="text-title-small mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
     <v-btn-toggle
       v-model="selectionMode"
       color="primary"
@@ -28,10 +28,10 @@
       v-model="selectedTaxonomies"
       :items="taxonomies"
     >
-      <template #selection="{ item, index }">
+      <template #selection="{ internalItem: item, index }">
         <v-chip size="small" v-if="index < 4" :text="item.title" />
 
-        <span v-if="index === 4" class="text-grey text-caption align-self-center">(+{{ (selectedTaxonomies || []).length - 4 }} others)</span>
+        <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedTaxonomies || []).length - 4 }} others)</span>
       </template>
     </v-select>
 
@@ -48,13 +48,13 @@
       v-model="selectedBiologicalStatus"
       :items="biologicalStatus"
     >
-      <template #selection="{ item, index }">
+      <template #selection="{ internalItem: item, index }">
         <v-chip size="small" v-if="index < 4" :text="item.title" />
 
-        <span v-if="index === 4" class="text-grey text-caption align-self-center">(+{{ (selectedBiologicalStatus || []).length - 4 }} others)</span>
+        <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedBiologicalStatus || []).length - 4 }} others)</span>
       </template>
 
-      <template #item="{ item, props: itemProps }">
+      <template #item="{ internalItem: item, props: itemProps }">
         <v-list-item v-bind="itemProps" :disabled="(item.raw.count || 0) === 0">
           <template #prepend="{ isActive }">
             <v-list-item-action start>

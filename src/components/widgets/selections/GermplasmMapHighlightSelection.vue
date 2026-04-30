@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-subtitle-2 mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
+    <div class="text-title-small mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
     <v-btn-toggle
       v-model="selectionMode"
       color="primary"
@@ -29,7 +29,7 @@
       v-model="selectedTaxonomies"
       :items="allTaxonomies"
     >
-      <template #selection="{ item }">
+      <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
     </v-select>
@@ -49,13 +49,13 @@
       v-model="selectedBiologicalStatus"
       :items="allBiologicalStatus"
     >
-      <template #selection="{ item, index }">
+      <template #selection="{ internalItem: item, index }">
         <v-chip size="small" variant="flat" v-if="index < 4" :text="item.title" />
 
-        <span v-if="index === 4" class="text-grey text-caption align-self-center">(+{{ (selectedBiologicalStatus || []).length - 4 }} others)</span>
+        <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedBiologicalStatus || []).length - 4 }} others)</span>
       </template>
 
-      <template #item="{ item, props: itemProps }">
+      <template #item="{ internalItem: item, props: itemProps }">
         <v-list-item v-bind="itemProps" :disabled="(item.raw.count || 0) === 0">
           <template #prepend="{ isActive }">
             <v-list-item-action start>
@@ -84,13 +84,13 @@
       v-model="selectedCountries"
       :items="allCountries"
     >
-      <template #selection="{ item, index }">
+      <template #selection="{ internalItem: item, index }">
         <v-chip size="small" variant="flat" v-if="index < 4" :text="item.title" />
 
-        <span v-if="index === 4" class="text-grey text-caption align-self-center">(+{{ (selectedCountries || []).length - 4 }} others)</span>
+        <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedCountries || []).length - 4 }} others)</span>
       </template>
 
-      <template #item="{ item, props: itemProps }">
+      <template #item="{ internalItem: item, props: itemProps }">
         <v-list-item v-bind="itemProps" :disabled="(item.raw.count || 0) === 0">
           <template #prepend="{ isActive }">
             <v-list-item-action start>

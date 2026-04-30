@@ -654,6 +654,7 @@ const validCompsForType: { [key: string]: FilterComparator[] } = {
   entityType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   newsType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   groupType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  importStatus: [FilterComparator.equals],
   methodClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
   traitClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
   json: [FilterComparator.jsonSearch, FilterComparator.isNull, FilterComparator.isNotNull],

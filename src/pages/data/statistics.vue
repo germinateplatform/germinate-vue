@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-3">{{ $t('pageStatisticsTitle') }}<small> - {{ $t('pageStatisticsSubtitle') }}</small></h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageStatisticsTitle') }}<small> - {{ $t('pageStatisticsSubtitle') }}</small></h1>
     <v-divider class="mb-3" />
 
-    <h2 class="text-h5 mb-3">{{ $t('pageStatisticsTaxonomyTitle') }}</h2>
+    <h2 class="text-headline-small mb-3">{{ $t('pageStatisticsTaxonomyTitle') }}</h2>
     <p>{{ $t('pageStatisticsTaxonomyText') }}</p>
 
     <v-row>

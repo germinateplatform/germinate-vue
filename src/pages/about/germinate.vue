@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div id="about-page">
-      <h1 class="text-h4 mb-3">{{ $t('pageAboutGerminateTitle') }}</h1>
+      <h1 class="text-headline-large mb-3">{{ $t('pageAboutGerminateTitle') }}</h1>
       <v-divider class="mb-3" />
 
       <v-row class="my-5">
@@ -9,8 +9,8 @@
           <v-card color="primary">
             <div class="d-flex flex-column flex-sm-row justify-space-between align-center pa-3">
               <div class="pb-2">
-                <v-card-title class="text-h3">{{ $t('pageAboutGerminateTitle') }}</v-card-title>
-                <v-card-subtitle class="text-h6 pb-4 text-wrap">{{ $t('pageAboutGerminateSubtitle') }}</v-card-subtitle>
+                <v-card-title class="text-display-medium">{{ $t('pageAboutGerminateTitle') }}</v-card-title>
+                <v-card-subtitle class="text-title-large pb-4 text-wrap">{{ $t('pageAboutGerminateSubtitle') }}</v-card-subtitle>
 
                 <v-card-text class="py-2">
                   <v-icon :icon="mdiTag" /> {{ $t('pageFooterVersion', { version: germinateVersion }) }}
@@ -35,7 +35,7 @@
               <v-card :color="getTemplateColor(index)" :href="banner.link">
                 <div class="d-flex flex-no-wrap align-center justify-space-between">
                   <div>
-                    <v-card-title class="text-h6">
+                    <v-card-title class="text-title-large text-white">
                       {{ banner.text() }}
                     </v-card-title>
                   </div>
@@ -75,7 +75,7 @@
                 </div>
               </v-col>
               <v-col cols="12" lg="8">
-                <div class="text-h5 mb-1 font-weight-bold d-flex align-center">
+                <div class="text-headline-small mb-1 font-weight-bold d-flex align-center">
                   <span class="me-3">{{ member.name }}</span>
                   <a
                     v-for="link in member.links"
@@ -200,11 +200,6 @@
       name: 'Crop Trust',
       href: 'https://www.croptrust.org/',
       logo: 'funders/crop-trust.svg',
-    },
-    {
-      name: 'Biodiversity for Opportunities, Livelihoods and Development',
-      href: 'https://bold.croptrust.org/',
-      logo: 'funders/bold.svg',
     },
     {
       name: 'The Crop Wild Relatives Project',

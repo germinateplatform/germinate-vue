@@ -1,6 +1,6 @@
 <template>
   <v-container fluid v-if="variable">
-    <h1 class="text-h4 my-3 ">{{ variable.variableName }}</h1>
+    <h1 class="text-headline-large my-3 ">{{ variable.variableName }}</h1>
     <v-divider class="mb-3" />
 
     <TraitDetails :variable="variable" />

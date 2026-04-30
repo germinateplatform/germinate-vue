@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div v-if="datasetType">
-      <h1 class="text-h4 mb-3">{{ datasetTypes[datasetType].text() }}</h1>
+      <h1 class="text-headline-large mb-3">{{ datasetTypes[datasetType].text() }}</h1>
       <v-divider class="mb-3" />
 
       <!-- Table showing all datasets of the type -->
@@ -10,7 +10,7 @@
       <v-btn color="primary" @click="checkLicenses" :disabled="!canContinue" :prepend-icon="mdiArrowRightBox" :text="$t('buttonNext')" />
     </div>
     <div v-else>
-      <h1 class="text-h4 mb-3">{{ $t('pageDatasetSelectorInvalidTypeTitle') }}</h1>
+      <h1 class="text-headline-large mb-3">{{ $t('pageDatasetSelectorInvalidTypeTitle') }}</h1>
       <v-divider class="mb-3" />
       <p>{{ $t('pageDatasetSelectorInvalidTypeText') }}</p>
       <v-chip

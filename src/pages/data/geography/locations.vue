@@ -1,13 +1,13 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-3">{{ $t('pageLocationsTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageLocationsTitle') }}</h1>
     <v-divider class="mb-3" />
     <p v-html="$t('pageLocationsText')" />
 
     <!-- All locations in a table -->
     <LocationTable :get-data="getData" :get-ids="getIds" :download="downloadTable" @data-changed="onDataChanged" />
 
-    <h2 class="text-h5 my-3">{{ $t('pageLocationsMapsTitle') }}</h2>
+    <h2 class="text-headline-small my-3">{{ $t('pageLocationsMapsTitle') }}</h2>
     <p class="text-info">{{ $t('pageLocationsMapsText') }}</p>
 
     <v-row v-if="locationsWithLatLng && locationsWithLatLng.length > 0">

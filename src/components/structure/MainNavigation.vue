@@ -1,8 +1,8 @@
 <template>
   <v-navigation-drawer
     class="main-nav"
-    color="#212121"
     permanent
+    theme="dark"
     :width="navbarWidth"
     :rail="$vuetify.display.mdAndDown || forcedRail"
     :expand-on-hover="$vuetify.display.mdAndDown || forcedRail"

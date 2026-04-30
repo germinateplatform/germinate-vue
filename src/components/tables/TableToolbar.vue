@@ -42,7 +42,7 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        <v-btn :disabled="compProps.disabled" @click="emit('show-filter')" :color="filtered ? 'success' : undefined" v-tooltip:top="$t('tooltipTableFilter')"><v-icon :icon="mdiFilter" /></v-btn>
+        <v-btn :disabled="compProps.disabled" @click="emit('show-filter')" :color="filtered ? 'success' : undefined" v-tooltip:top="$t('tooltipTableFilter')" v-if="compProps.canFilter !== false"><v-icon :icon="mdiFilter" /></v-btn>
         <v-btn :disabled="compProps.disabled" v-if="filtered" color="error" v-tooltip:top="$t('tooltipTableClearFilter')" @click="emit('clear-filter')"><v-icon :icon="mdiDelete" /></v-btn>
       </v-btn-group>
       <v-btn-group class="ms-2" density="compact" v-if="markedItemConfig" :disabled="compProps.disabled">
@@ -76,6 +76,7 @@
     supportsGridCards?: boolean
     headers: DataTableHeader[]
     disabled?: boolean
+    canFilter?: boolean
   }>()
 
   const emit = defineEmits([

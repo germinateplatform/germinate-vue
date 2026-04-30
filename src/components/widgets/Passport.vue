@@ -16,7 +16,7 @@
     <ScrollSpy :items="scrollSpyItems" :top-gap="topGap" ref="scrollSpy" />
 
     <template v-if="germplasm">
-      <h1 class="text-h4 my-3 d-flex justify-space-between align-center">{{ title }}<v-chip label :prepend-icon="entityTypes[germplasm.entityTypeName].path" :text="entityTypes[germplasm.entityTypeName].text()" :color="entityTypes[germplasm.entityTypeName].color()" /></h1>
+      <h1 class="text-headline-large my-3 d-flex justify-space-between align-center">{{ title }}<v-chip label :prepend-icon="entityTypes[germplasm.entityTypeName].path" :text="entityTypes[germplasm.entityTypeName].text()" :color="entityTypes[germplasm.entityTypeName].color()" /></h1>
       <v-divider class="mb-10" />
       <p>{{ $t('pagePassportText') }}</p>
 

@@ -146,6 +146,14 @@
                             v-model="filter.filter.values[vIndex]"
                           />
                           <v-select
+                            v-else-if="filter.column?.dataType === 'importStatus'"
+                            :items="dataImportStatus"
+                            density="compact"
+                            hide-details
+                            :disabled="filter.filter.canBeChanged === false"
+                            v-model="filter.filter.values[vIndex]"
+                          />
+                          <v-select
                             v-else-if="filter.column?.dataType === 'locationType'"
                             :items="locationTypeOptions"
                             density="compact"
@@ -248,15 +256,18 @@
 
 <script setup lang="ts">
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
-  import { type Filter, type FilterGroup, FilterComparator, FilterOperator } from '@/plugins/types/germinate'
+  import { type Filter, type FilterGroup, FilterComparator, FilterOperator, StatusType } from '@/plugins/types/germinate'
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
   import { validCompsForType } from '@/plugins/util/table-columns'
   import { entityTypes, locationTypes, groupTypes, methodClasses, dataTypes, newsTypes, traitClasses } from '@/plugins/util/types'
   import { mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
+  import { useI18n } from 'vue-i18n'
   import { useDate } from 'vuetify'
 
   const route = useRoute()
   const date = useDate()
+
+  const { t } = useI18n()
 
   const compProps = defineProps<{
     tableKey: string
@@ -309,6 +320,16 @@
         title: locationTypes[e].text(),
       }
     })
+  })
+
+  const dataImportStatus = computed(() => {
+    return [{
+      value: StatusType.ERROR,
+      title: t('widgetImportStatusTypeError'),
+    }, {
+      value: StatusType.WARNING,
+      title: t('widgetImportStatusTypeWarning'),
+    }]
   })
 
   const groupTypeOptions = computed(() => {
@@ -594,7 +615,7 @@
   function show () {
     if (filterGroups.value.length === 0) {
       const column = compProps.columns.find(c => c.preferredSortingColumn === true) || compProps.columns[0]
-      if (column.dataType) {
+      if (column && column.dataType) {
         const compString = validCompsForType[column.dataType].find(c => c === FilterComparator.contains) || validCompsForType[column.dataType][0]
         // @ts-ignore
         const comp = getComparatorConfig(compString)

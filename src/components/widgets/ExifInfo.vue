@@ -4,7 +4,7 @@
       <v-card :href="property.link" target="_blank">
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
-            <v-card-title class="text-h5">
+            <v-card-title class="text-headline-small">
               {{ property.text }}
             </v-card-title>
 

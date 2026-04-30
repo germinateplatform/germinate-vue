@@ -3,7 +3,7 @@
 
     <div class="text-heading-1 text-medium-emphasis">{{ $t('widgetSignInTitle') }}</div>
 
-    <div class="text-subtitle-1 text-medium-emphasis">{{ $t('formLabelUsername') }}</div>
+    <div class="text-body-large text-medium-emphasis">{{ $t('formLabelUsername') }}</div>
 
     <v-text-field
       density="compact"
@@ -14,11 +14,11 @@
       v-model="username"
     />
 
-    <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
+    <div class="text-body-large text-medium-emphasis d-flex align-center justify-space-between">
       {{ $t('formLabelPassword') }}
       <a
         v-if="store.storeServerSettings && store.storeServerSettings.gatekeeperUrl"
-        class="text-caption text-decoration-none"
+        class="text-body-small text-decoration-none"
         :href="store.storeServerSettings && store.storeServerSettings.gatekeeperUrl"
         rel="noopener noreferrer"
         target="_blank"
@@ -42,7 +42,7 @@
       class="mb-4"
       color="red-darken-1"
     >
-      <v-card-text class="text-caption text-white">
+      <v-card-text class="text-body-small text-white">
         {{ error }}
       </v-card-text>
     </v-card>

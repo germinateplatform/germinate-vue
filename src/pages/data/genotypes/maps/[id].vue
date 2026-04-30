@@ -1,6 +1,6 @@
 <template>
   <v-container fluid v-if="map">
-    <h1 class="text-h4 mb-3">{{ $t('pageMapsDetailsTitle') }} <small>{{ map.mapName }}</small></h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageMapsDetailsTitle') }} <small>{{ map.mapName }}</small></h1>
     <v-divider class="mb-3" />
     <p v-html="$t('pageMapsDetailsText')" />
 

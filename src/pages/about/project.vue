@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div id="about-page">
-      <h1 class="text-h4 mb-3">{{ $t('pageAboutProjectTitle') }}</h1>
+      <h1 class="text-headline-large mb-3">{{ $t('pageAboutProjectTitle') }}</h1>
       <v-divider class="mb-3" />
 
       <HtmlTemplateEditor i18n-key="pageAboutProjectText" />
@@ -35,7 +35,7 @@
               <div class="d-flex flex-no-wrap justify-space-between h-100">
                 <div class="d-flex justify-space-between flex-column flex-grow-1">
                   <div>
-                    <v-card-title class="text-h5 text-wrap d-flex">
+                    <v-card-title class="text-headline-small text-wrap d-flex">
                       <v-icon class="drag-handle" :icon="mdiDrag" v-if="store.storeUserIsAdmin" />
                       <v-text-field v-model="item.name" hide-details v-if="store.storeUserIsAdmin && item.isEditing === true" />
                       <span v-else>{{ item.name }}</span>

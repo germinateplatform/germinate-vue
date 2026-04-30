@@ -15,10 +15,10 @@
       item-value="traitId"
       :item-title="(item: ViewTableTraits) => item.scaleUnit ? `${item.traitName} [${item.scaleUnit}]` : item.traitName"
     >
-      <template #selection="{ item, index }">
+      <template #selection="{ internalItem: item, index }">
         <v-chip size="small" v-if="index < 4" :text="item.title" />
 
-        <span v-if="index === 4" class="text-grey text-caption align-self-center">(+{{ (selectedTraits || []).length - 4 }} others)</span>
+        <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedTraits || []).length - 4 }} others)</span>
       </template>
 
       <template #prepend-item v-if="canSelectAll">

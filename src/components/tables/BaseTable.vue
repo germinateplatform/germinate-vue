@@ -11,6 +11,7 @@
         @clear-filter="clearFilter"
         @show-filter="tableFilterModal?.show()"
         @toggle-header="toggleHeader"
+        :can-filter="canFilter"
         :filtered="filters && filters.length > 0"
         :marked-item-config="markedItemConfig"
         :table-key="componentProps.tableKey"
@@ -53,6 +54,7 @@
           :loading="loading"
           :search="search"
           :item-value="componentProps.itemKey"
+          :hide-footer="componentProps.hideFooter"
           @update:options="loadItems"
         >
           <!-- Pass on all named slots -->
@@ -86,6 +88,7 @@
       :items-length="totalItems"
       :loading="loading"
       :search="search"
+      :hide-default-footer="componentProps.hideFooter"
       :item-value="componentProps.itemId || componentProps.itemKey"
       :show-expand="showDetails"
       :disable-sort="componentProps.disabled"
@@ -105,6 +108,7 @@
           @show-filter="tableFilterModal?.show()"
           @toggle-header="toggleHeader"
           :filtered="filters !== undefined && filters.length > 0"
+          :can-filter="canFilter"
           :marked-item-config="markedItemConfig"
           :table-key="componentProps.tableKey"
           :header-icon="componentProps.headerIcon"
@@ -262,6 +266,7 @@
     showDetails: false,
     storeUrlParameters: true,
     displayType: 'table',
+    hideFooter: false,
   })
 
   const emit = defineEmits(['data-changed', 'selection-changed', 'update:bottomSheetVisible', 'filter-changed'])
@@ -323,6 +328,8 @@
     }]
   })
 
+  const canFilter = computed(() => filterColumns.value && filterColumns.value.length > 0)
+
   const perPageOptions = computed(() => {
     return [
       { value: 12, title: '12' },
@@ -355,7 +362,7 @@
   const allHeaders: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     let headers = ((componentProps.headers || []) as ExtendedDataTableHeader[]).concat().filter(h => h.visibleInTable !== false)
 
-    const hiddenColumns = store.storeHiddenColumns[componentProps.tableKey]
+    const hiddenColumns = store.storeHiddenColumns[componentProps.tableKey] || []
 
     if (componentProps.selectionType !== undefined) {
       headers.unshift({ title: '', key: 'item-selected', width: '1em', cellProps: { class: 'ma-0 pa-0' }, sortable: false, headerProps: { class: 'ma-0 pa-0' }, dataType: 'boolean', visibleInFilter: false })
@@ -493,7 +500,7 @@
       return
     }
 
-    const hiddenColumns = store.storeHiddenColumns[componentProps.tableKey]
+    const hiddenColumns = store.storeHiddenColumns[componentProps.tableKey] || []
 
     const index = hiddenColumns.indexOf(header.key)
     if (index !== -1) {

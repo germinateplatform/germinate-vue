@@ -14,10 +14,10 @@
       item-value="germplasmId"
       :item-title="(item: ViewTableGermplasm) => [item.germplasmDisplayName, item.germplasmName, item.germplasmNumber].filter(i => i !== undefined && i !== null && i.trim().length > 0).join(' | ')"
     >
-      <template #selection="{ item, index }">
+      <template #selection="{ internalItem: item, index }">
         <v-chip size="small" v-if="index < 5" :text="item.title" />
 
-        <span v-if="index === 5" class="text-grey text-caption align-self-center">(+{{ (selectedGermplasm || []).length - 5 }} others)</span>
+        <span v-if="index === 5" class="text-grey text-body-small align-self-center">(+{{ (selectedGermplasm || []).length - 5 }} others)</span>
       </template>
 
       <template #prepend-item v-if="canSelectAll">

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-3">{{ $t('pageImagesTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageImagesTitle') }}</h1>
     <v-divider class="mb-3" />
     <p v-html="$t('pageImagesText')" />
 

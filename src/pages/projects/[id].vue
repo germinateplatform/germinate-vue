@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-3">{{ $t('pageProjectsSelectedTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageProjectsSelectedTitle') }}</h1>
     <v-divider class="mb-3" />
 
     <template v-if="project">
@@ -24,7 +24,7 @@
               <v-card :color="getTemplateColor(banner.index)">
                 <div class="d-flex flex-no-wrap justify-space-between">
                   <div>
-                    <v-card-title class="text-h5">
+                    <v-card-title class="text-headline-small">
                       <template v-if="banner.numericValue !== undefined">{{ getNumberWithSuffix(banner.numericValue, 1) }}</template>
                       <template v-else-if="banner.textValue">{{ banner.textValue }}</template>
                     </v-card-title>

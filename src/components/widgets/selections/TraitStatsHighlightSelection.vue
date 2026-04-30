@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-subtitle-2 mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
+    <div class="text-title-small mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
 
     <p>{{ $t('widgetTraitStatsHighlightSelectionText') }}</p>
     <v-btn-toggle

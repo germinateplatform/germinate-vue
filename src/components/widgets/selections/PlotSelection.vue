@@ -15,10 +15,10 @@
       item-value="id"
       :item-title="(pd: PlotDetails) => $t('dropdownLabelPlotSearch', pd)"
     >
-      <template #selection="{ item, index }">
+      <template #selection="{ internalItem: item, index }">
         <v-chip size="small" v-if="index < 5" :text="item.title" />
 
-        <span v-if="index === 5" class="text-grey text-caption align-self-center">(+{{ (selectedPlots || []).length - 5 }} others)</span>
+        <span v-if="index === 5" class="text-grey text-body-small align-self-center">(+{{ (selectedPlots || []).length - 5 }} others)</span>
       </template>
 
       <template #prepend-item v-if="canSelectAll">

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-3">{{ $t('pageGermplasmTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageGermplasmTitle') }}</h1>
     <v-divider class="mb-3" />
     <p v-html="$t('pageGermplasmText')" />
 
@@ -22,7 +22,7 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <h2 class="text-h5 my-3">{{ $t('pageGermplasmDownloadTitle') }}</h2>
+    <h2 class="text-headline-small my-3">{{ $t('pageGermplasmDownloadTitle') }}</h2>
     <v-divider class="mb-3" />
 
     <v-row>
@@ -30,7 +30,7 @@
         <v-card
           :title="$t('pageGermplasmDownloadTabGermplasmTitle')"
           :subtitle="$t('pageGermplasmDownloadTabGermplasmSubtitle')"
-          class="d-flex flex-column justify-space-between"
+          class="d-flex flex-column justify-space-between w-100"
         >
           <template #prepend>
             <v-icon color="primary" :icon="mdiPassport" />
@@ -80,6 +80,7 @@
         <v-card
           :title="$t('pageGermplasmDownloadTabPedigreeTitle')"
           :subtitle="$t('pageGermplasmDownloadTabPedigreeSubtitle')"
+          class="w-100"
         >
           <template #prepend>
             <v-icon color="primary" :icon="mdiFamilyTree" />

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-3">{{ $t('pageDataUploadTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageDataUploadTitle') }}</h1>
     <v-divider class="mb-3" />
     <p v-html="$t('pageDataUploadText')" />
 
@@ -9,7 +9,7 @@
         <v-card :color="selectedTab?.id === tab.id ? getTemplateColor(index) : 'muted'" @click="selectedTab = tab">
           <div class="d-flex flex-no-wrap justify-space-between align-center">
             <div>
-              <v-card-title class="text-h5">
+              <v-card-title class="text-headline-small">
                 {{ tab.text() }}
               </v-card-title>
 
@@ -35,7 +35,7 @@
             <v-card :color="selectedSubTab?.id === tab.id ? getTemplateColor(index) : 'muted'" @click="selectedSubTab = tab">
               <div class="d-flex flex-no-wrap justify-space-between align-center">
                 <div>
-                  <v-card-title class="text-h5">
+                  <v-card-title class="text-headline-small">
                     {{ tab.text() }}
                   </v-card-title>
 

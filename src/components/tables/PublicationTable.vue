@@ -44,7 +44,7 @@
         <v-card-text>
           <div>{{ item.lookupDetails.container }}</div>
 
-          <p class="text-h5 font-weight-black">{{ item.lookupDetails.title }}</p>
+          <p class="text-headline-small font-weight-black">{{ item.lookupDetails.title }}</p>
 
           <p v-if="item.lookupDetails.date">
             {{ item.lookupDetails.date }}

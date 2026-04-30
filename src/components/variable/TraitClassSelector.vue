@@ -1,6 +1,6 @@
 <template>
   <template v-if="availableTraitClasses && Object.keys(availableTraitClasses).length > 0">
-    <div class="text-subtitle-2 mt-3">{{ $t('widgetTraitClassSelectorTitle') }}</div>
+    <div class="text-title-small mt-3">{{ $t('widgetTraitClassSelectorTitle') }}</div>
     <v-chip-group
       v-model="model"
       multiple

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid v-if="marker">
-    <h1 class="text-h4 my-3 d-flex justify-space-between align-center">
+    <h1 class="text-headline-large my-3 d-flex justify-space-between align-center">
       <span>{{ $t('pageMarkerDetailsTitle') }} - <small>{{ marker.markerName }}</small> - <v-chip label :prepend-icon="mdiLabelVariant" :text="marker.markerType" /></span>
       <v-chip label v-tooltip:top="$t('tooltipMarkerMarkedItem')" @click="markItem" :color="isMarked ? 'primary' : undefined">
         <v-icon :icon="isMarked ? mdiBookmarkCheck : mdiBookmarkOutline" />

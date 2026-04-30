@@ -1,6 +1,6 @@
 <template>
   <template v-if="availableScaleDataTypes && Object.keys(availableScaleDataTypes).length > 0">
-    <div class="text-subtitle-2 mt-3">{{ $t('widgetScaleDataTypeSelectorTitle') }}</div>
+    <div class="text-title-small mt-3">{{ $t('widgetScaleDataTypeSelectorTitle') }}</div>
     <v-chip-group
       v-model="model"
       multiple

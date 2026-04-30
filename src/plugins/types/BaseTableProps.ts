@@ -28,4 +28,5 @@ export interface BaseTableProps<T> {
   displayType?: DisplayType
   sortBy?: DataTableSortItem[]
   disabled?: boolean
+  hideFooter?: boolean
 }

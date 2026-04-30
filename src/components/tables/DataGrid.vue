@@ -32,7 +32,7 @@
       <div class="v-data-table-footer__info">
         {{ t('$vuetify.dataFooter.pageText', !itemsLength ? 0 : startIndex + 1, stopIndex, itemsLength) }}
       </div>
-      <v-pagination v-model="localPage" :length="totalPages" :total-visible="0" show-first-last-page />
+      <v-pagination v-model="localPage" :length="totalPages" :total-visible="0" show-first-last-page v-if="compProps.hideFooter !== true" />
     </div>
   </div>
 </template>
@@ -52,6 +52,7 @@
     loading: boolean
     itemValue: string
     search: string
+    hideFooter?: boolean
   }>()
 
   const emit = defineEmits([

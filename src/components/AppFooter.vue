@@ -4,16 +4,16 @@
     class="d-flex justify-space-between border-t border-primary border-opacity-100"
   >
     <div
-      class="text-caption text-disabled"
+      class="text-body-small text-disabled"
     >
       &copy; {{ new Date().getFullYear() }} Germinate: The James Hutton Institute
     </div>
     <div>
-      <a class="text-caption mx-2" v-if="$te('pageFooterImprintURL') && $t('pageFooterImprintURL')" :href="$t('pageFooterImprintURL')" target="_blank" rel="noopener noreferrer">{{ $t('pageFooterImprint') }}</a>
-      <a class="text-caption mx-2" v-if="$te('pageFooterDataProtectionURL') && $t('pageFooterDataProtectionURL')" :href="$t('pageFooterDataProtectionURL')" target="_blank" rel="noopener noreferrer">{{ $t('pageFooterDataProtection') }}</a>
+      <a class="text-body-small mx-2" v-if="$te('pageFooterImprintURL') && $t('pageFooterImprintURL')" :href="$t('pageFooterImprintURL')" target="_blank" rel="noopener noreferrer">{{ $t('pageFooterImprint') }}</a>
+      <a class="text-body-small mx-2" v-if="$te('pageFooterDataProtectionURL') && $t('pageFooterDataProtectionURL')" :href="$t('pageFooterDataProtectionURL')" target="_blank" rel="noopener noreferrer">{{ $t('pageFooterDataProtection') }}</a>
     </div>
     <div
-      class="text-caption text-disabled"
+      class="text-body-small text-disabled"
     >
       <a
         v-for="item in items"

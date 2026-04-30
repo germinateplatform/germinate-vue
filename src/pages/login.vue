@@ -21,7 +21,7 @@
         :src="store.storeBaseUrl + 'image/src-svg/logo-horizontal.svg'" id="logo-horizontal" onerror="this.onerror=null;this.src='null';" alt="Project partner logo"
       >
         <template #placeholder>
-          <div class="d-flex align-center justify-center fill-height">
+          <div class="d-flex align-center justify-center fill-height d-flex align-center flex-wrap">
             <v-progress-circular
               color="grey-lighten-4"
               indeterminate

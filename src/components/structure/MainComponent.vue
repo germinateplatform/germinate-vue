@@ -71,7 +71,7 @@
                 <v-icon :color="details.color()" :icon="details.path" />
               </template>
               <template #append>
-                <v-chip size="sm" class="ms-5 px-2">{{ getNumberWithSuffix(store.storeMarkedIds[itemType].length, 1) }}</v-chip>
+                <v-chip size="small" class="ms-5 px-2">{{ getNumberWithSuffix(store.storeMarkedIds[itemType].length, 1) }}</v-chip>
               </template>
             </v-list-item>
           </v-list>

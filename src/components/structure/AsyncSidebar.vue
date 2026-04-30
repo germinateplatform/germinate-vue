@@ -14,9 +14,10 @@
       mandatory
       color="primary"
       v-model="activeTab"
+      v-if="store.storeToken && (store.storeUserIsDataCurator || store.storeUserIsAdmin)"
     >
-      <v-btn class="flex-grow-1" value="download" :icon="mdiDownload" />
-      <v-btn class="flex-grow-1" value="upload" :icon="mdiUpload" v-if="store.storeUserIsDataCurator || store.storeUserIsAdmin" />
+      <v-btn class="flex-grow-1" value="download" :prepend-icon="mdiDownload" :text="$t('buttonExport')" />
+      <v-btn class="flex-grow-1" value="upload" :prepend-icon="mdiUpload" :text="$t('buttonImport')" />
     </v-btn-toggle>
 
     <v-divider />
@@ -28,9 +29,10 @@
         v-for="job in exportJobs"
         :key="`export-job-${job.uuid}`"
       >
-        <v-list-item
+        <v-card
           :class="`border-s-lg border-opacity-100 border-${asyncJobStatus[job.status].color}`"
-          :title="dataExportTypes[job.datatype].text()"
+          variant="flat"
+          :rounded="0"
         >
           <template #prepend>
             <v-avatar :color="dataExportTypes[job.datatype].color">
@@ -38,96 +40,165 @@
             </v-avatar>
           </template>
 
-          <template #append>
-            <v-btn :icon="mdiDownload" color="success" v-if="job.status === DataExportJobsStatus.completed" :href="`${store.storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateJobs" />
-            <v-btn disabled :icon="mdiAlert" color="error" v-if="job.status === DataExportJobsStatus.failed" />
+          <template #title>
+            <div class="text-title-medium">{{ dataExportTypes[job.datatype].text() }}</div>
           </template>
 
-          <v-list-item-subtitle v-if="job.updatedOn">{{ new Date(job.updatedOn).toLocaleString() }}</v-list-item-subtitle>
-          <v-list-item-subtitle :class="`mt-2 text-${asyncJobStatus[job.status].color}`">
-            <v-progress-circular color="info" indeterminate size="18" width="3" v-if="job.status === DataExportJobsStatus.running" />
-            <v-icon :icon="asyncJobStatus[job.status].path" v-else /> {{ asyncJobStatus[job.status].text() }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle class="mt-2 text-caption" v-if="job.status === DataExportJobsStatus.completed"><v-icon :icon="mdiPaperclip" /> {{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}</v-list-item-subtitle>
+          <template #append>
+            <v-btn size="x-small" variant="text" v-tooltip:top="$t('buttonDelete')" :icon="mdiClose" @click="deleteExportJob(job)" />
+          </template>
 
-          <v-list-item-subtitle class="mt-2 text-caption" v-if="job.status === DataExportJobsStatus.completed && job.datatype === DataExportJobsDatatype.pedigree"><v-icon icon="$helium" />&nbsp;<a target="_blank" :href="`${heliumUrl}?germinateUrl=${encodeURIComponent(getHeliumExportUrl(job.uuid))}`" @click="updateJobs">{{ $t('buttonSendToHelium') }}</a></v-list-item-subtitle>
-        </v-list-item>
+          <template #subtitle>
+            <div v-if="job.updatedOn">{{ new Date(job.updatedOn).toLocaleString() }}</div>
+          </template>
+
+          <template #text>
+            <div class="d-flex justify-space-between">
+              <div :class="`text-${asyncJobStatus[job.status].color}`">
+                <v-progress-circular color="info" indeterminate size="18" width="3" v-if="job.status === DataExportJobsStatus.running" />
+                <v-icon :icon="asyncJobStatus[job.status].path" v-else /> {{ asyncJobStatus[job.status].text() }}
+              </div>
+
+              <v-chip label size="small" v-if="job.status === DataExportJobsStatus.completed"><v-icon :icon="mdiPaperclip" /> {{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}</v-chip>
+            </div>
+
+            <div class="text-body-small" v-if="job.status === DataExportJobsStatus.completed && job.datatype === DataExportJobsDatatype.pedigree"><v-icon icon="$helium" />&nbsp;<a target="_blank" :href="`${heliumUrl}?germinateUrl=${encodeURIComponent(getHeliumExportUrl(job.uuid))}`" @click="updateJobs">{{ $t('buttonSendToHelium') }}</a></div>
+          </template>
+
+          <template #actions v-if="job.status === DataExportJobsStatus.completed">
+            <v-spacer />
+            <v-btn :prepend-icon="mdiDownload" :text="$t('buttonDownload')" color="success" :href="`${store.storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateJobs" />
+          </template>
+        </v-card>
         <v-divider />
       </template>
     </template>
     <template v-else>
       <v-list-item :title="$t('widgetAsyncImportJobPanelTitle')" />
       <v-divider />
+
       <template
         v-for="job in importJobs"
         :key="`import-job-${job.uuid}`"
       >
-        <v-list-item
-          :class="`border-s-lg border-opacity-100 border-${getJobVariant(job)} `"
-          :title="dataExportTypes[job.datatype].text()"
+        <v-card
+          :class="`border-s-lg border-opacity-100 border-${asyncJobStatus[job.status].color}`"
+          variant="flat"
+          :rounded="0"
         >
           <template #prepend>
-            <v-avatar :color="dataExportTypes[job.datatype].color">
-              <v-icon :icon="dataExportTypes[job.datatype].path" />
+            <v-avatar :color="templateImportTypes[job.datatype].color()">
+              <v-icon :icon="templateImportTypes[job.datatype].path" />
             </v-avatar>
           </template>
 
-          <v-list-item-subtitle v-if="job.updatedOn">{{ new Date(job.updatedOn).toLocaleString() }}</v-list-item-subtitle>
-          <v-list-item-subtitle class="mt-2 text-caption" v-if="job.originalFilename"><v-icon :icon="mdiFile" /> {{ job.originalFilename }}</v-list-item-subtitle>
-          <!-- Status -->
-          <template v-if="job.status === DataImportJobsStatus.failed">
-            <!-- If there is feedback -->
-            <template v-if="job.feedback">
-              <!-- Show a button to view the feedback -->
-              <v-list-item-subtitle class="mt-2 text-error"><v-icon :icon="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
-            </template>
-            <v-list-item-subtitle v-if="store.storeUserIsDataCurator" class="mt-2 text-info"><v-icon :icon="mdiFileDocumentAlert" />&nbsp;<a href="#" @click.prevent="downloadImportJobLog(job)">{{ $t('widgetAsyncJobPanelDownloadLog') }}</a></v-list-item-subtitle>
+          <template #append>
+            <v-btn size="x-small" variant="text" v-tooltip:top="$t('buttonDelete')" :icon="mdiClose" @click="deleteImportJob(job)" />
           </template>
-          <template v-else-if="job.status === DataImportJobsStatus.completed">
-            <!-- If there is feedback -->
-            <template v-if="job.feedback">
-              <v-list-item-subtitle v-if="job.errorStatus === 'ERROR'" class="mt-2 text-error"><v-icon :icon="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
-              <template v-else>
-                <v-list-item-subtitle v-if="job.errorStatus === 'WARNING'" class="mt-2 text-warning"><v-icon :icon="mdiAlertCircle" />&nbsp;<a href="#" @click.prevent="showFeedback(job)">{{ $t('widgetAsyncJobPanelFeedback') }}</a></v-list-item-subtitle>
-                <!-- If it's empty and the configuration allows import (rather than just checking) and it hasn't been imported yet, allow import -->
-                <template v-if="job.imported === false">
-                  <v-list-item-subtitle v-if="store.storeServerSettings?.dataImportMode === 'IMPORT'" class="mt-2 text-success"><v-icon :icon="mdiCheckCircle" />&nbsp;<a href="#" @click.prevent="startActualImport(job)">{{ $t('widgetAsyncJobPanelImport') }}</a></v-list-item-subtitle>
-                  <v-list-item-subtitle v-else class="mt-2 text-success"><v-icon :icon="mdiCheckCircle" /> {{ $t('widgetAsyncJobPanelImportDisabled') }}</v-list-item-subtitle>
-                </template>
-              </template>
+
+          <template #title>
+            <div class="text-title-medium">{{ templateImportTypes[job.datatype].text() }}</div>
+          </template>
+
+          <template #subtitle>
+            <div v-if="job.updatedOn">{{ new Date(job.updatedOn).toLocaleString() }}</div>
+          </template>
+
+          <template #text>
+            <v-chip label size="small" v-if="job.originalFilename"><v-icon :icon="mdiPaperclip" /> {{ job.originalFilename }}</v-chip>
+
+            <div :class="`mt-2 text-${asyncJobStatus[job.status].color}`" v-if="showStandardStatus(job)">
+              <v-icon :icon="asyncJobStatus[job.status].path" /> {{ asyncJobStatus[job.status].text() }}
+            </div>
+          </template>
+          <template #actions v-if="(job.status === DataImportJobsStatus.completed && job.imported === false) || job.status === DataImportJobsStatus.failed">
+            <v-btn
+              :prepend-icon="mdiAlertCircle"
+              :text="$t('widgetAsyncJobPanelFeedback')"
+              @click="showFeedback(job)"
+              variant="tonal"
+              :color="job.errorStatus === 'ERROR' ? 'error' : 'warning'"
+              v-if="job.feedback && job.status === DataImportJobsStatus.failed || (job.status === DataImportJobsStatus.completed && (job.errorStatus === 'ERROR' || job.errorStatus === 'WARNING'))"
+            />
+            <v-spacer />
+            <template v-if="job.status === DataImportJobsStatus.completed && job.imported === false && job.errorStatus !== 'ERROR'">
+              <v-btn
+                :prepend-icon="mdiCheckCircle"
+                :text="$t('widgetAsyncJobPanelImport')"
+                @click="startActualImport(job)"
+                variant="tonal"
+                color="success"
+                v-if="store.storeServerSettings?.dataImportMode === 'IMPORT'"
+              />
+              <v-btn
+                :prepend-icon="mdiCheckCircle"
+                :text="$t('widgetAsyncJobPanelImportDisabled')"
+                disabled
+                v-else
+              />
             </template>
           </template>
-          <v-list-item-subtitle :class="`mt-2 text-${asyncJobStatus[job.status].color}`" v-if="showStandardStatus(job)"><v-icon :icon="asyncJobStatus[job.status].path" /> {{ asyncJobStatus[job.status].text() }}</v-list-item-subtitle>
-        </v-list-item>
+        </v-card>
         <v-divider />
       </template>
     </template>
+
+    <v-dialog v-model="dialog" scrollable fullscreen v-if="selectedImportJob">
+      <v-card>
+        <template #title>
+          <div class="d-flex justify-space-between">
+            <span>{{ $t('widgetImportStatusTitle') }}</span>
+            <v-btn
+              size="small"
+              variant="flat"
+              :icon="mdiClose"
+              @click="dialog = false"
+            />
+          </div>
+        </template>
+        <template #text>
+          <p>{{ $t('widgetImportStatusText') }}</p>
+
+          <ImportStatusTable
+            :get-data="getImportJobs"
+            hide-footer
+          />
+        </template>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn :text="$t('buttonClose')" @click="dialog = false" />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
-  import { apiPostDatasetAsyncExport } from '@/plugins/api/dataset'
-  import { apiPostDataAsyncImport } from '@/plugins/api/misc'
-  import { DataExportJobsDatatype, DataExportJobsStatus, DataImportJobsStatus, type DataExportJobs, type DataImportJobs } from '@/plugins/types/germinate'
+  import { apiDeleteDatasetAsyncExport, apiPostDatasetAsyncExport } from '@/plugins/api/dataset'
+  import { apiDeleteDataAsyncImport, apiPostDataAsyncImport } from '@/plugins/api/misc'
+  import { DataExportJobsDatatype, DataExportJobsStatus, DataImportJobsStatus, type PaginatedResult, type DataExportJobs, type DataImportJobs, type ImportResult, type PaginatedRequest } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { coreStore } from '@/stores/app'
-  import type { AxiosError } from 'axios'
+  import type { AxiosError, AxiosResponse } from 'axios'
   import emitter from 'tiny-emitter/instance'
   import { useDisplay } from 'vuetify'
   import { useI18n } from 'vue-i18n'
-  import { asyncJobStatus } from '@/plugins/util/types'
-  import { mdiAlert, mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiDna, mdiDownload, mdiFamilyTree, mdiFile, mdiFileDocumentAlert, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiShovel, mdiUpload } from '@mdi/js'
+  import { asyncJobStatus, templateImportTypes } from '@/plugins/util/types'
+  import { mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiClose, mdiDna, mdiDownload, mdiFamilyTree, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiShovel, mdiUpload } from '@mdi/js'
 
   const store = coreStore()
   const { name } = useDisplay()
 
   const { t } = useI18n()
 
+  const dialog = ref(false)
   const visible = ref(false)
-  const activeTab = ref('download')
+  const activeTab = ref<'download' | 'upload'>('download')
   const importJobs = ref<DataImportJobs[]>([])
   const exportJobs = ref<DataExportJobs[]>([])
+  const selectedImportJob = ref<DataImportJobs>()
 
   let timeout: any | undefined = undefined
 
@@ -200,7 +271,91 @@
   })
 
   function showFeedback (job: DataImportJobs) {
-    // TODO
+    selectedImportJob.value = job
+
+    nextTick(() => {
+      dialog.value = true
+    })
+  }
+
+  function getImportJobs (data: PaginatedRequest) {
+    return new Promise<AxiosResponse<PaginatedResult<ImportResult[]>>>(resolve => {
+      const items = selectedImportJob.value?.feedback || []
+
+      if (data.orderBy) {
+        items.sort((a, b) => {
+          let result = 0
+          switch (data.orderBy) {
+            case 'rowIndex':
+              result = Math.sign(a.rowIndex - b.rowIndex)
+              break
+            case 'type':
+              result = a.type.localeCompare(b.type)
+              break
+            case 'status':
+              result = a.status.localeCompare(b.status)
+              break
+            case 'message':
+              result = a.message.localeCompare(b.message)
+              break
+          }
+
+          return data.ascending ? result : -result
+        })
+      }
+
+      resolve({
+        status: 200,
+        statusText: '',
+        headers: {},
+        // @ts-ignore
+        config: {},
+        data: {
+          count: items.length,
+          data: items,
+        },
+      })
+    })
+  }
+
+  function deleteExportJob (job: DataExportJobs) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleSure'),
+      message: t('modalTextDeleteAsyncJob'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'warning',
+      callback: (result: boolean) => {
+        if (result === true) {
+          // Delete from the database
+          apiDeleteDatasetAsyncExport(job.uuid, () => {
+            // Delete from the store
+            store.removeAsyncJobUuids([job.uuid])
+            updateJobs()
+          })
+        }
+      },
+    })
+  }
+
+  function deleteImportJob (job: DataImportJobs) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleSure'),
+      message: t('modalTextDeleteAsyncJob'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'warning',
+      callback: (result: boolean) => {
+        if (result === true) {
+          // Delete from the database
+          apiDeleteDataAsyncImport(job.uuid, () => {
+            // Delete from the store
+            store.removeAsyncJobUuids([job.uuid])
+            updateJobs()
+          })
+        }
+      },
+    })
   }
 
   function downloadImportJobLog (job: DataImportJobs) {
@@ -211,7 +366,7 @@
     // TODO
   }
 
-  function toggleSidebar (at: string | undefined) {
+  function toggleSidebar (at: 'upload' | 'download') {
     if (!visible.value) {
       visible.value = true
     }
@@ -270,12 +425,15 @@
       expJobs?.data.forEach((job: DataExportJobs) => {
         uuids.add(job.uuid)
       })
-      impJobs?.data.forEach((job: DataImportJobs) => {
+      impJobs?.data.forEach((job: DataImportJobs, index: number) => {
         uuids.add(job.uuid)
+        job.id = index
 
         const types: { [key: string]: number } = {}
 
-        if (job.feedback) {
+        if (job.status === DataImportJobsStatus.failed) {
+          job.errorStatus = 'ERROR'
+        } else if (job.feedback) {
           job.feedback.forEach(f => {
             if (!types[f.type]) {
               types[f.type] = 1

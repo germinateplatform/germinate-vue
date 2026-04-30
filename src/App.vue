@@ -104,7 +104,7 @@ p a, p a:visited,
 table a:not(.v-btn), table a:not(.v-btn):visited,
 footer a, footer a:visited,
 #about-page a, #about-page a:visited,
-.v-card-title a, .v-card-title a:visited,
+/* .v-card-title a, .v-card-title a:visited, */
 .scale-heading a, .scale-heading a:visited,
 .v-messages a, .v-messages a:visited,
 .v-list-item a, .v-list-item a:visited,

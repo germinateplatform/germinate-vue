@@ -3,7 +3,7 @@
     <v-card-text>
       <div>{{ displayData.container }}</div>
 
-      <p class="text-h5 font-weight-black">{{ displayData.title }}</p>
+      <p class="text-headline-small font-weight-black">{{ displayData.title }}</p>
 
       <p v-if="displayData.date">
         {{ displayData.date }}

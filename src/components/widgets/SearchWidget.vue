@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-h4 mb-3">{{ $t('pageSearchTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageSearchTitle') }}</h1>
     <v-divider class="mb-3" />
 
     <v-row>
@@ -40,7 +40,7 @@
         <v-card :color="visiblePanel === category.key ? category.color : 'muted'" @click="visiblePanel = category.key">
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
-              <v-card-title class="text-h5">
+              <v-card-title class="text-headline-small">
                 {{ getNumberWithSuffix(stats[category.key], 1) }}
               </v-card-title>
 
