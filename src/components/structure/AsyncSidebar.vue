@@ -8,23 +8,14 @@
   >
     <v-list-item :title="$t('widgetAsyncJobTitle')" />
     <v-divider />
-    <v-btn-toggle
-      class="d-flex align-stretch ma-3"
-      border
-      mandatory
-      color="primary"
-      v-model="activeTab"
-      v-if="store.storeToken && (store.storeUserIsDataCurator || store.storeUserIsAdmin)"
-    >
-      <v-btn class="flex-grow-1" value="download" :prepend-icon="mdiDownload" :text="$t('buttonExport')" />
-      <v-btn class="flex-grow-1" value="upload" :prepend-icon="mdiUpload" :text="$t('buttonImport')" />
-    </v-btn-toggle>
+    <v-tabs v-model="activeTab" color="primary" grow>
+      <v-tab value="download" :prepend-icon="mdiDownload">{{ $t('buttonExport') }}</v-tab>
+      <v-tab value="upload" :prepend-icon="mdiUpload" v-if="store.storeToken && (store.storeUserIsDataCurator || store.storeUserIsAdmin)">{{ $t('buttonImport') }}</v-tab>
+    </v-tabs>
 
     <v-divider />
 
     <template v-if="activeTab === 'download'">
-      <v-list-item :title="$t('widgetAsyncJobPanelTitle')" />
-      <v-divider />
       <template
         v-for="job in exportJobs"
         :key="`export-job-${job.uuid}`"
@@ -74,15 +65,12 @@
       </template>
     </template>
     <template v-else>
-      <v-list-item :title="$t('widgetAsyncImportJobPanelTitle')" />
-      <v-divider />
-
       <template
         v-for="job in importJobs"
         :key="`import-job-${job.uuid}`"
       >
         <v-card
-          :class="`border-s-lg border-opacity-100 border-${asyncJobStatus[job.status].color}`"
+          :class="`border-s-lg border-opacity-100 border-${getJobVariant(job)}`"
           variant="flat"
           :rounded="0"
         >
@@ -111,17 +99,26 @@
               <v-icon :icon="asyncJobStatus[job.status].path" /> {{ asyncJobStatus[job.status].text() }}
             </div>
           </template>
-          <template #actions v-if="(job.status === DataImportJobsStatus.completed && job.imported === false) || job.status === DataImportJobsStatus.failed">
+          <v-card-actions class="flex-wrap" v-if="(job.status === DataImportJobsStatus.completed && job.imported === false) || job.status === DataImportJobsStatus.failed">
             <v-btn
               :prepend-icon="mdiAlertCircle"
               :text="$t('widgetAsyncJobPanelFeedback')"
               @click="showFeedback(job)"
               variant="tonal"
-              :color="job.errorStatus === 'ERROR' ? 'error' : 'warning'"
-              v-if="job.feedback && job.status === DataImportJobsStatus.failed || (job.status === DataImportJobsStatus.completed && (job.errorStatus === 'ERROR' || job.errorStatus === 'WARNING'))"
+              :color="job.errorStatus"
+              v-if="job.feedback && job.status === DataImportJobsStatus.failed || (job.status === DataImportJobsStatus.completed && (job.errorStatus === 'error' || job.errorStatus === 'warning'))"
             />
             <v-spacer />
-            <template v-if="job.status === DataImportJobsStatus.completed && job.imported === false && job.errorStatus !== 'ERROR'">
+            <template v-if="job.status === DataImportJobsStatus.failed && store.storeUserIsDataCurator">
+              <v-btn
+                :prepend-icon="mdiFileDocumentAlert"
+                :text="$t('widgetAsyncJobPanelDownloadLog')"
+                @click="downloadImportJobLog(job)"
+                variant="tonal"
+                color="info"
+              />
+            </template>
+            <template v-else-if="job.status === DataImportJobsStatus.completed && job.imported === false && job.errorStatus !== 'error'">
               <v-btn
                 :prepend-icon="mdiCheckCircle"
                 :text="$t('widgetAsyncJobPanelImport')"
@@ -137,7 +134,7 @@
                 v-else
               />
             </template>
-          </template>
+          </v-card-actions>
         </v-card>
         <v-divider />
       </template>
@@ -176,7 +173,7 @@
 
 <script setup lang="ts">
   import { apiDeleteDatasetAsyncExport, apiPostDatasetAsyncExport } from '@/plugins/api/dataset'
-  import { apiDeleteDataAsyncImport, apiPostDataAsyncImport } from '@/plugins/api/misc'
+  import { apiDeleteDataAsyncImport, apiGetDataAsyncImportLog, apiGetDataAsyncImportStart, apiPostDataAsyncImport } from '@/plugins/api/misc'
   import { DataExportJobsDatatype, DataExportJobsStatus, DataImportJobsStatus, type PaginatedResult, type DataExportJobs, type DataImportJobs, type ImportResult, type PaginatedRequest } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -186,7 +183,8 @@
   import { useDisplay } from 'vuetify'
   import { useI18n } from 'vue-i18n'
   import { asyncJobStatus, templateImportTypes } from '@/plugins/util/types'
-  import { mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiClose, mdiDna, mdiDownload, mdiFamilyTree, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiShovel, mdiUpload } from '@mdi/js'
+  import { mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiClose, mdiDna, mdiDownload, mdiFamilyTree, mdiFileDocumentAlert, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiShovel, mdiUpload } from '@mdi/js'
+  import { downloadBlob } from '@/plugins/util'
 
   const store = coreStore()
   const { name } = useDisplay()
@@ -359,11 +357,23 @@
   }
 
   function downloadImportJobLog (job: DataImportJobs) {
-    // TODO
+    apiGetDataAsyncImportLog(job.uuid, result => {
+      downloadBlob({
+        blob: result,
+        filename: `log-${job.uuid}`,
+        extension: 'zip',
+      })
+    })
   }
 
   function startActualImport (job: DataImportJobs) {
-    // TODO
+    apiGetDataAsyncImportStart(job.uuid, result => {
+      if (result) {
+        store.addAsyncJobUuids(result.map(r => r.uuid))
+      }
+
+      updateJobs()
+    })
   }
 
   function toggleSidebar (at: 'upload' | 'download') {
@@ -432,7 +442,7 @@
         const types: { [key: string]: number } = {}
 
         if (job.status === DataImportJobsStatus.failed) {
-          job.errorStatus = 'ERROR'
+          job.errorStatus = 'error'
         } else if (job.feedback) {
           job.feedback.forEach(f => {
             if (!types[f.type]) {
@@ -443,14 +453,14 @@
           })
 
           if (types.ERROR > 0) {
-            job.errorStatus = 'ERROR'
+            job.errorStatus = 'error'
           } else if (types.WARNING > 0) {
-            job.errorStatus = 'WARNING'
+            job.errorStatus = 'warning'
           } else {
-            job.errorStatus = 'NONE'
+            job.errorStatus = 'success'
           }
         } else {
-          job.errorStatus = 'NONE'
+          job.errorStatus = 'success'
         }
 
         return job
@@ -475,9 +485,9 @@
   }
 
   function getJobVariant (job: DataImportJobs) {
-    if (job.errorStatus === 'ERROR') {
+    if (job.errorStatus === 'error') {
       return 'error'
-    } else if (job.errorStatus === 'WARNING') {
+    } else if (job.errorStatus === 'warning') {
       return 'warning'
     } else {
       return asyncJobStatus[job.status].color

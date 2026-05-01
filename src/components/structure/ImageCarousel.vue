@@ -4,6 +4,7 @@
     v-model="currentIndex"
     show-arrows="hover"
     progress="primary"
+    height="auto"
     hide-delimiters
     cycle
   >
@@ -12,6 +13,7 @@
       :key="`image-${index}`"
       :src="image.src"
       :cover="lgAndDown"
+      max-height="50vh"
       :contain="!lgAndDown"
     />
 

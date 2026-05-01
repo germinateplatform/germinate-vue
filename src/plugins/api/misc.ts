@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AboutConfig, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, Publicationdata, Publications, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableStories } from '@/plugins/types/germinate'
+import type { AboutConfig, AsyncExportResult, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, Publicationdata, Publications, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableStories } from '@/plugins/types/germinate'
 
 const apiGetSettings = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'settings', success: onSuccess, error: onError })
 
@@ -39,8 +39,8 @@ const apiGetGatekeeperInstitutions = <T>(queryData: PaginatedRequest, onSuccess?
 
 const apiPostFeedbackUpload = <T>(formData: FormData, uuid: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authForm({ url: `feedback/${uuid}`, formData, success: onSuccess, error: onError })
 
-const apiPostDataUpload = <T>(formData: FormData, templateType: string, isUpdate: boolean, dataOrientation: DataOrientation, datasetId: number, datasetStateId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
-  return authForm({ url: `import/template/file?type=${templateType}&update=${isUpdate}&dataOrientation=${dataOrientation}&datasetStateId=${datasetStateId}&datasetId=${datasetId || ''}`, formData, success: onSuccess, error: onError })
+const apiPostDataUpload = (formData: FormData, templateType: string, isUpdate: boolean, dataOrientation: DataOrientation | undefined, datasetId: number | undefined, datasetStateId: number | undefined, onSuccess?: GerminateResponseHandler<AsyncExportResult[]>, onError?: ErrorHandler) => {
+  return authForm<AsyncExportResult[]>({ url: `import/template/file?type=${templateType}&update=${isUpdate}&dataOrientation=${dataOrientation}&datasetStateId=${datasetStateId}&datasetId=${datasetId || ''}`, formData, success: onSuccess, error: onError })
 }
 
 const apiPostImages = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
@@ -115,9 +115,9 @@ const apiPostDataAsyncImport = <T>(uuids: string[], onSuccess?: GerminateRespons
 
 const apiDeleteDataAsyncImport = <T>(uuid: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `import/template/${uuid}`, method: 'DELETE', success: onSuccess, error: onError })
 
-const apiGetDataAsyncImportStart = <T>(uuid: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `import/template/${uuid}/import`, success: onSuccess, error: onError })
+const apiGetDataAsyncImportStart = (uuid: string, onSuccess?: GerminateResponseHandler<AsyncExportResult[]>, onError?: ErrorHandler) => authAxios<AsyncExportResult[]>({ url: `import/template/${uuid}/import`, success: onSuccess, error: onError })
 
-const apiGetDataAsyncImportLog = <T>(uuid: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `import/template/${uuid}/log`, dataType: 'blob', success: onSuccess, error: onError })
+const apiGetDataAsyncImportLog = (uuid: string, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) => authAxios<Blob>({ url: `import/template/${uuid}/log`, dataType: 'blob', success: onSuccess, error: onError })
 
 const apiGetPublicationById = <T>(publicationId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `publication/${publicationId}`, success: onSuccess, error: onError })
 
