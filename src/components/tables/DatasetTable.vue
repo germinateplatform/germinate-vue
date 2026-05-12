@@ -45,11 +45,13 @@
 
       <!-- Experiment name -->
       <template #item.experimentName="{ item }">
-        <span :title="item.experimentName" v-if="item.experimentName">{{ truncateAfterWords(item.experimentName, 10) }}</span>
-        <!-- Append a link that takes the user to the experiment details page -->
-        &nbsp;<router-link :to="{ path: Pages.getPath(Pages.experimentDetails, `${item.experimentId}`) }" v-tooltip:top="$t('tableTooltipExperimentDetailsLink')">
-          <v-icon :icon="mdiInformationOutline" />
-        </router-link>
+        <div class="d-flex align-center ga-2">
+          <!-- Append a link that takes the user to the experiment details page -->
+          <router-link :to="{ path: Pages.getPath(Pages.experimentDetails, `${item.experimentId}`) }" v-tooltip:top="$t('tableTooltipExperimentDetailsLink')">
+            <v-icon :icon="mdiInformationOutline" />
+          </router-link>
+          <span :title="item.experimentName" v-if="item.experimentName">{{ truncateAfterWords(item.experimentName, 10) }}</span>
+        </div>
       </template>
 
       <!-- Dataset type icon -->
@@ -495,7 +497,7 @@
 
   function licenseAccepted () {
     emit('license-accepted')
-    baseTable.value?.refresh()
+    baseTable.value?.refresh({ resetSelection: false })
   }
 
   function updateExperiments () {
@@ -510,7 +512,7 @@
   }
 
   defineExpose({
-    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
     getSelection: () => baseTable.value?.getSelection(),
   })
 

@@ -79,16 +79,22 @@
 
   const { t } = useI18n()
 
-  const selectedTag = ref('all')
-  const selectedType = ref('all')
+  const route = useRoute('/about/export-formats')
+  const router = useRouter()
 
-  interface TagType {
+  type TagType = 'all' | 'genotype' | 'phenotype' | 'pedigree' | 'pca'
+  type Type = 'all' | 'provider' | 'receiver'
+
+  const selectedTag = ref<TagType>('all')
+  const selectedType = ref<Type>('all')
+
+  interface TagTypeDetails {
     icon: string
     title: string
     color: string
   }
 
-  const tags: ComputedRef<{ [key: string]: TagType }> = computed(() => {
+  const tags: ComputedRef<{ [key: string]: TagTypeDetails }> = computed(() => {
     return {
       all: {
         icon: mdiTag,
@@ -118,7 +124,7 @@
     }
   })
 
-  const types: ComputedRef<{ [key: string]: TagType }> = computed(() => {
+  const types: ComputedRef<{ [key: string]: TagTypeDetails }> = computed(() => {
     return {
       all: {
         icon: mdiCloud,
@@ -145,6 +151,26 @@
         .map(f => exportFormats[f])
     } else {
       return Object.values(exportFormats)
+    }
+  })
+
+  watchEffect(async () => {
+    const query = Object.assign({}, route.query)
+
+    query.tag = selectedTag.value
+    query.type = selectedType.value
+
+    await router.replace({ query })
+  })
+
+  onMounted(() => {
+    if (route && route.query) {
+      if (route.query.tag) {
+        selectedTag.value = route.query.tag as TagType
+      }
+      if (route.query.type) {
+        selectedType.value = route.query.type as Type
+      }
     }
   })
 </script>

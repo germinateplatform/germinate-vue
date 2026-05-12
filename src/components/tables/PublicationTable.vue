@@ -123,11 +123,13 @@
       key: 'germplasmIds',
       dataType: 'json',
       visibleInTable: false,
+      visibleInFilter: true,
       title: t('tableColumnGermplasmId'),
     }, {
       key: 'groupIds',
       dataType: 'json',
       visibleInTable: false,
+      visibleInFilter: true,
       title: t('tableColumnGroupId'),
     }, {
       key: 'isDatabasePub',
@@ -172,7 +174,7 @@
   }
 
   defineExpose({
-    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
     getSelection: () => baseTable.value?.getSelection(),
   })
 </script>

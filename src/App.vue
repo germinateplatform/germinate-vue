@@ -101,10 +101,11 @@ ol:not([class]) li:not([class])
 }
 
 p a, p a:visited,
-table a:not(.v-btn), table a:not(.v-btn):visited,
+table a:not(.v-btn, .v-chip), table a:not(.v-btn, .v-chip):visited,
 footer a, footer a:visited,
 #about-page a, #about-page a:visited,
 /* .v-card-title a, .v-card-title a:visited, */
+.v-card-text a, .v-card-text a:visited,
 .scale-heading a, .scale-heading a:visited,
 .v-messages a, .v-messages a:visited,
 .v-list-item a, .v-list-item a:visited,
@@ -113,8 +114,14 @@ a.table-icon-link, a.table-icon-link:visited,
 form a, form a:visited {
   color: rgb(var(--v-theme-primary));
 }
-#async-status-bar a, #async-status-bar a:visited {
-  color: inherit;
+// #async-status-bar a, #async-status-bar a:visited {
+//   color: inherit;
+// }
+.text-inherit {
+  color: inherit !important;
+}
+.text-unset {
+  color: unset !important;
 }
 a:not(:hover) {
   text-decoration: none;
@@ -134,6 +141,14 @@ p {
 
 .flex-unset {
   flex: unset;
+}
+
+.text-white-important {
+  color: white !important;
+}
+
+.card-icon-avatar .v-avatar--variant-elevated, .card-icon-avatar .v-avatar--variant-flat {
+  background: unset;
 }
 
 .mdi-rotate-90 {
@@ -192,10 +207,6 @@ svg.g-svg {
 .plotly > .svg-container {
   margin-left: auto !important;
   margin-right: auto !important;
-}
-
-.v-avatar--variant-elevated, .v-avatar--variant-flat {
-  background: unset;
 }
 
 .v-card-subtitle {

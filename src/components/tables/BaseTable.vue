@@ -256,6 +256,11 @@
 
   export type DisplayType = 'table' | 'grid'
 
+  export interface RefreshParams {
+    readFilter?: boolean
+    resetSelection?: boolean
+  }
+
   export interface MarkedItemConfig {
     type: string
     count: number
@@ -526,12 +531,14 @@
     emit('filter-changed', JSON.parse(JSON.stringify(newFilters)))
   }
 
-  function refresh (readFilter = false) {
-    if (readFilter) {
+  function refresh (params?: RefreshParams) {
+    if (params?.readFilter) {
       tableFilterModal.value?.loadFilters()
     } else {
       isResetCall.value = true
-      selected.value = []
+      if (params?.resetSelection !== false) {
+        selected.value = []
+      }
       search.value = `${Date.now()}`
     }
   }

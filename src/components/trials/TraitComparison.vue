@@ -22,9 +22,7 @@
           marked-item-type="germplasm"
           :multiple="false"
         >
-          <template #text>
-            <p>{{ $t('pageTrialsExportSelectGroupChartText') }}</p>
-          </template>
+          <template #text>{{ $t('pageTrialsExportSelectGroupChartText') }}</template>
         </GroupSelection>
 
         <GermplasmSelection

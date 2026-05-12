@@ -4,17 +4,18 @@
     <v-divider class="mb-3" />
 
     <template v-if="project">
-      <v-row class="mb-3">
+      <v-row class="mb-3 card-icon-avatar">
         <v-col cols="12" lg="6">
           <v-card>
             <v-img
               height="200px"
+              class="ma-5"
               :src="projectSrc"
               contain
               v-if="project.projectImageId"
             />
             <v-card-title>{{ project.projectName }}</v-card-title>
-            <v-card-subtitle v-if="project.projectDescription">{{ project.projectDescription }}</v-card-subtitle>
+            <v-card-text v-if="project.projectDescription">{{ project.projectDescription }}</v-card-text>
           </v-card>
         </v-col>
         <v-col cols="12" lg="6">

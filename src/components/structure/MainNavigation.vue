@@ -46,6 +46,7 @@
 
           <v-list-item link :to="Pages.markers.path" :prepend-icon="mdiFormatIndentIncrease" v-if="Pages.isAvailable(Pages.markers)" :title="$t('menuGenotypicMarkers')"><template #append><v-chip size="small">{{ formatBadge('markers') }}</v-chip></template></v-list-item>
           <v-list-item link :to="Pages.maps.path" :prepend-icon="mdiReorderHorizontal" v-if="Pages.isAvailable(Pages.maps)" :title="$t('menuGenotypicMaps')"><template #append><v-chip size="small">{{ formatBadge('maps') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.getPath(Pages.export, 'genotype')" :prepend-icon="mdiDna" v-if="Pages.isAvailable(Pages.exportGenotypes)" :title="$t('menuGenotypicDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsGenotype') }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="geography">
@@ -63,6 +64,7 @@
           </template>
 
           <v-list-item link :to="Pages.climates.path" :prepend-icon="mdiWeatherSnowyRainy" v-if="Pages.isAvailable(Pages.climates)" :title="$t('menuClimateClimates')"><template #append><v-chip size="small">{{ formatBadge('climates') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.getPath(Pages.export, 'climate')" :prepend-icon="mdiChartSankey" v-if="Pages.isAvailable(Pages.exportClimates)" :title="$t('menuClimateDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsClimate') }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-item link :to="Pages.datasets.path" :prepend-icon="mdiDatabase" v-if="Pages.isAvailable(Pages.datasets)" :title="$t('menuDatasets')"><template #append><v-chip size="small">{{ formatBadge('datasets') }}</v-chip></template></v-list-item>
@@ -91,7 +93,7 @@
     </v-list>
 
     <template #append v-if="$vuetify.display.lgAndUp">
-      <v-list-item active-color="muted" active @click="forcedRail = !forcedRail" :prepend-icon="logoVisible ? undefined : forceRailIcon">
+      <v-list-item base-color="muted" active @click="forcedRail = !forcedRail" :prepend-icon="logoVisible ? undefined : forceRailIcon">
         <div class="d-flex justify-center align-center" v-if="logoVisible">
           <v-icon :icon="forceRailIcon" />
         </div>
@@ -110,7 +112,7 @@
   import type { OverviewStats } from '@/plugins/types/OverviewStats'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMap, mdiMapSearch, mdiReorderHorizontal, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy } from '@mdi/js'
+  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMap, mdiMapSearch, mdiReorderHorizontal, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy } from '@mdi/js'
 
   const { name, lgAndUp } = useDisplay()
   const store = coreStore()

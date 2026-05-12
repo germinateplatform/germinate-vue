@@ -1,6 +1,6 @@
 <template>
-  <template v-if="traitData || (catChartData && catChartData.size > 0)">
-    <TraitHighlightSelection
+  <template v-if="climateData || (catChartData && catChartData.size > 0)">
+    <ClimateHighlightSelection
       ref="highlightSelection"
       :groups="groups || []"
       :dataset-ids="datasetIds || []"
@@ -12,50 +12,50 @@
   </template>
 
   <template v-if="datasets">
-    <TraitBoxplotChart
-      :plot-data="traitData"
+    <ClimateBoxplotChart
+      :plot-data="climateData"
       :groups="groups || []"
       :user-selection="userSelection"
       :dataset-ids="datasetIds || []"
-      :traits="numericTraits"
+      :climates="numericClimates"
       :datasets="datasets || []"
       :show-individuals="showIndividuals"
-      ref="traitBoxPlot"
-      v-if="traitData && numericTraits && numericTraits.length > 0"
+      ref="climateBoxPlot"
+      v-if="climateData && numericClimates && numericClimates.length > 0"
     />
 
-    <TraitBarChart
-      :traits="categoricalTraits"
+    <!-- <TraitBarChart
+      :traits="categoricalClimates"
       :trait-data="traitData"
       :groups="groups || []"
       :datasets="datasets || []"
       :user-selection="userSelection"
       ref="traitBarChart"
-      v-if="traitData && categoricalTraits && categoricalTraits.length > 0"
-    />
+      v-if="traitData && categoricalClimates && categoricalClimates.length > 0"
+    /> -->
   </template>
 </template>
 
 <script setup lang="ts">
-  import { ViewTableTraitsScaleDatatype, type ViewTableDatasets, type ViewTableGroups, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
-  import type HighlightSelection from '@/components/widgets/selections/TraitHighlightSelection.vue'
+  import { ViewTableClimatesDataType, type ViewTableClimateData, type ViewTableClimates, type ViewTableDatasets, type ViewTableGroups } from '@/plugins/types/germinate'
+  import type HighlightSelection from '@/components/widgets/selections/ClimateHighlightSelection.vue'
   import { mdiRefresh } from '@mdi/js'
 
   const compProps = defineProps<{
-    variables: ViewTableTraits[]
+    climates: ViewTableClimates[]
     datasets: ViewTableDatasets[]
     groups?: ViewTableGroups[]
-    traitData: ViewTableTrialsData[]
+    climateData: ViewTableClimateData[]
     catChartData: Map<number, Blob>
   }>()
 
-  const traitBoxPlot = useTemplateRef('traitBoxPlot')
-  const traitBarChart = useTemplateRef('traitBarChart')
+  const climateBoxPlot = useTemplateRef('climateBoxPlot')
+  // const climateBarChart = useTemplateRef('climateBarChart')
 
   const datasetIds = computed(() => compProps.datasets.map(ds => ds.datasetId || -1) || [])
 
-  const numericTraits = computed(() => (compProps.variables || []).filter(t => t.scaleDatatype === ViewTableTraitsScaleDatatype.numeric))
-  const categoricalTraits = computed(() => (compProps.variables || []).filter(t => t.scaleDatatype !== ViewTableTraitsScaleDatatype.numeric))
+  const numericClimates = computed(() => (compProps.climates || []).filter(t => t.dataType === ViewTableClimatesDataType.numeric))
+  const categoricalClimates = computed(() => (compProps.climates || []).filter(t => t.dataType !== ViewTableClimatesDataType.numeric))
 
   const showIndividuals = ref(false)
   const highlightSelection = ref<InstanceType<typeof HighlightSelection>>()
@@ -63,8 +63,8 @@
   const userSelectionValid = computed(() => highlightSelection.value?.valid || false)
 
   function forceRedraw () {
-    traitBoxPlot.value?.redraw()
-    traitBarChart.value?.redrawAll()
+    climateBoxPlot.value?.redraw()
+    // climateBarChart.value?.redrawAll()
     highlightSelection.value?.update()
   }
 

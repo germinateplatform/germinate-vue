@@ -15,7 +15,7 @@
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <v-row class="my-5">
+      <v-row class="my-5 card-icon-avatar">
         <v-col v-for="(tab, index) in tabs" :key="`trait-tab-${tab.key}`">
           <v-card :color="selectedTab === tab.key ? getTemplateColor(index) : 'muted'" @click="selectedTab = tab.key">
             <div class="d-flex flex-no-wrap justify-space-between">
@@ -122,6 +122,7 @@
   import { apiPostDatasetTraits, apiPostTrialLocationCount, apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTrialsDataTimepoints } from '@/plugins/api/trait'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest, ScalesDatatype, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
+  import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { coreStore } from '@/stores/app'
   import { mdiChartBellCurve, mdiCompare, mdiDatabase, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
@@ -213,7 +214,7 @@
   watch(datasetIds, async newValue => {
     emitter.emit('show-loading', true)
 
-    apiPostDatasetTraits<ViewTableTraits[]>(newValue || [], result => {
+    apiPostDatasetTraits(newValue || [], result => {
       traits.value = result
 
       getDatasets()
@@ -318,17 +319,9 @@
       datasetType: 'trials',
     }
     // Get groups
-    apiPostDatasetGroups<ViewTableGroups[]>(request, result => {
+    apiPostDatasetGroups(request, result => {
       groups.value = result
     })
-  }
-
-  function isAccepted (dataset: ViewTableDatasets) {
-    if (store.storeToken) {
-      return dataset.acceptedBy && dataset.acceptedBy.includes(store.storeToken.id)
-    } else {
-      return dataset.acceptedBy && dataset.acceptedBy.includes(-1000)
-    }
   }
 
   watch(selectedTab, async newValue => {

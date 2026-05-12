@@ -16,22 +16,22 @@
     v-bind="$attrs"
   >
     <template #item.taxonomyId="{ item }">
-      <a href="#" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomyId }}</a>
+      <router-link to="/data/germplasm" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomyId }}</router-link>
       <span v-else>{{ item.taxonomyId }}</span>
     </template>
 
     <template #item.taxonomyGenus="{ item }">
-      <a href="#" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomyGenus }}</a>
+      <router-link to="/data/germplasm" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomyGenus }}</router-link>
       <span v-else>{{ item.taxonomyGenus }}</span>
     </template>
 
     <template #item.taxonomySpecies="{ item }">
-      <a href="#" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomySpecies }}</a>
+      <router-link to="/data/germplasm" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomySpecies }}</router-link>
       <span v-else>{{ item.taxonomySpecies }}</span>
     </template>
 
     <template #item.taxonomySubtaxa="{ item }">
-      <a href="#" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomySubtaxa }}</a>
+      <router-link to="/data/germplasm" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomySubtaxa }}</router-link>
       <span v-else>{{ item.taxonomySubtaxa }}</span>
     </template>
 
@@ -153,7 +153,7 @@
   }
 
   defineExpose({
-    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
     getSelection: () => baseTable.value?.getSelection(),
   })
 </script>

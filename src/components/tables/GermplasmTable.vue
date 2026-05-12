@@ -63,12 +63,12 @@
 
     <!-- Institutions -->
     <template #item.institutions="{ item, value }">
-      <template v-if="item.institutions && item.institutions.length > 0">
+      <div class="d-flex align-center pa-2" v-if="item.institutions && item.institutions.length > 0">
         <span :title="value" v-if="value">{{ truncateAfterWords(value, 6) }}</span>
         <a href="#" class="ms-2 table-icon-link" @click.prevent="showInstitutionModal(item)" v-if="isTruncatedAfterWords(value, 6)">
           <v-icon :icon="mdiPageNext" />
         </a>
-      </template>
+      </div>
     </template>
 
     <!-- Biological status popover -->
@@ -245,7 +245,7 @@
   }
 
   defineExpose({
-    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
     getSelection: () => baseTable.value?.getSelection(),
   })
 </script>

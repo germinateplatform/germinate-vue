@@ -462,12 +462,17 @@ export interface ViewTableLicenses {
     acceptedBy: number[];
 }
 
-export interface SubsettedGenotypeDatasetRequest extends SubsettedDatasetRequest {
+export interface GenotypeSubsetDatasetRequest extends PaginatedRequest {
+    markerIds?: number[];
+    germplasmIds?: number[];
+    markerGroupIds?: number[];
+    germplasmGroupIds?: number[];
+    datasetIds: number[];
     mapId: number;
     generateFlapjackProject: boolean;
     generateHapMap: boolean;
     generateFlatFile: boolean;
-    fileTypes: AdditionalExportFormat[];
+    fileTypes?: AdditionalExportFormat[];
 }
 
 export interface MapExportRequest {
@@ -479,7 +484,7 @@ export interface MapExportRequest {
     radius?: Radius;
 }
 
-export interface AlleleFrequencyDatasetRequest extends SubsettedGenotypeDatasetRequest {
+export interface AlleleFrequencyDatasetRequest extends GenotypeSubsetDatasetRequest {
     config: BinningConfig;
 }
 
@@ -1207,6 +1212,10 @@ export interface ViewTableMaps {
     markerCount: number;
 }
 
+export interface ViewTableDatasetMaps extends ViewTableMaps {
+    mapCoverageCount: number;
+}
+
 export interface DublinCore {
     title: string[];
     creator: string[];
@@ -1437,7 +1446,44 @@ export interface ViewTableClimates {
     unitDescription: string;
     overlays: number;
     unitAbbreviation: string;
+    datasetIds: number[];
     count: number;
+}
+
+export interface ViewTableClimateData {
+    locationId: number;
+    locationName: string;
+    locationRegion: string;
+    locationState: string;
+    locationType: string;
+    locationLatitude: number;
+    locationLongitude: number;
+    locationElevation: number;
+    countryName: string;
+    countryCode2: string;
+    countryCode3: string;
+    datasetId: number;
+    datasetName: string;
+    datasetDescription: string;
+    climateId: number;
+    climateName: string;
+    climateNameShort: string;
+    climateDataType: ViewTableClimateDataClimateDataType;
+    groups: Groups[];
+    unitName: string;
+    recordingDate: Date;
+    climateValue: string;
+}
+
+export const enum ViewTableClimateDataClimateDataType {
+    categorical = 'categorical',
+    numeric = 'numeric',
+    text = 'text',
+    date = 'date',
+}
+
+export interface ViewTableClimateDataWithGroups extends ViewTableClimateData {
+    groups: Groups[];
 }
 
 export const enum ViewTableClimatesDataType {
@@ -1559,14 +1605,6 @@ export interface ViewTableTrialsData {
     traitValue: string;
 }
 
-export interface SubsettedDatasetRequest extends PaginatedRequest {
-    datasetIds: number[];
-    xIds?: number[];
-    yIds?: number[];
-    yGroupIds?: number[];
-    xGroupIds?: number[];
-}
-
 export interface ExperimentRequest extends DatasetRequest {
     experimentId: number;
 }
@@ -1575,6 +1613,13 @@ export interface GermplasmUnificationRequest {
     preferredGermplasmId: number;
     otherGermplasmIds: number[];
     explanation: string;
+}
+
+export interface ClimateExportDatasetRequest extends PaginatedRequest {
+    climateIds: number[];
+    locationIds?: number[];
+    locationGroupIds?: number[];
+    datasetIds: number[];
 }
 
 export interface SgoneGermplasmUnificationRequest {

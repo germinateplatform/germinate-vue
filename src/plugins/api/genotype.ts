@@ -1,60 +1,60 @@
 import { MAX_JAVA_INTEGER, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AlleleFrequencyDatasetRequest, ExportRequest, MapExportRequest, PaginatedRequest, PaginatedResult, SubsettedGenotypeDatasetRequest } from '../types/germinate'
+import type { AlleleFrequencyDatasetRequest, AsyncExportResult, ExportRequest, MapExportRequest, PaginatedRequest, PaginatedResult, GenotypeSubsetDatasetRequest, ViewTableDatasetMaps, ViewTableDatasets } from '@/plugins/types/germinate'
 
-const apiPostMarkerTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostMarkerTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'marker/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostMarkerTableIds = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostMarkerTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'marker/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostGroupMarkerTable = <T>(groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostGroupMarkerTable<T> (groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `group/${groupId}/marker`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostGroupMarkerTableIds = <T>(groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostGroupMarkerTableIds<T> (groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: `group/${groupId}/marker/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostGenotypeDatasetSummary = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostGenotypeDatasetSummary (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) {
   queryData.page = 0
   queryData.limit = MAX_JAVA_INTEGER
-  return authAxios({ url: 'dataset/export/genotype/summary', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableDatasets[]>>({ url: 'dataset/export/genotype/summary', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostGenotypeDatasetExport = <T>(queryData: SubsettedGenotypeDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
+const apiPostGenotypeDatasetExport = (queryData: GenotypeSubsetDatasetRequest, onSuccess?: GerminateResponseHandler<AsyncExportResult[]>, onError?: ErrorHandler) => authAxios<AsyncExportResult[]>({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 const apiPostGroupMarkerTableExport = <T>(groupId: number, queryData: ExportRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `group/${groupId}/marker/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
 
-const apiPostMarkerGroupTable = <T>(markerId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostMarkerGroupTable<T> (markerId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `marker/${markerId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostMapsTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostMapsTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'map/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDatasetMapTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostDatasetMapTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<ViewTableDatasetMaps[]>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'dataset/map', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<ViewTableDatasetMaps[]>({ url: 'dataset/map', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostMapdefinitionTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostMapdefinitionTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'map/mapdefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostMapdefinitionTableIds = (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) => {
+function apiPostMapdefinitionTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios<PaginatedResult<number[]>>({ url: 'map/mapdefinition/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -68,7 +68,7 @@ const apiPostMapExport = <T>(mapId: number, queryData: MapExportRequest, onSucce
 
 const apiPostAlleleFrequencyDatasetExport = <T>(queryData: AlleleFrequencyDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/export/allelefreq', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
-const apiPostMarkerDatasetTable = <T>(markerId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostMarkerDatasetTable<T> (markerId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `marker/${markerId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }

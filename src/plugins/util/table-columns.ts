@@ -1,4 +1,4 @@
-import { FilterComparator, type ViewTableDatasets, type ViewTableGermplasm, type ViewTableLocations } from '@/plugins/types/germinate'
+import { FilterComparator, type ViewTableClimateData, type ViewTableDatasets, type ViewTableGermplasm, type ViewTableLocations } from '@/plugins/types/germinate'
 import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
 import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
@@ -167,6 +167,85 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   dataType: 'float',
   align: 'center' as 'start' | 'end' | 'center',
   title: 'tableColumnPdci',
+}]
+
+const climateDataColumns: ExtendedDataTableHeader[] = [{
+  key: 'locationId',
+  dataType: 'integer',
+  title: 'tableColumnLocationId',
+}, {
+  key: 'locationName',
+  dataType: 'string',
+  title: 'tableColumnLocationName',
+}, {
+  key: 'locationRegion',
+  dataType: 'string',
+  title: 'tableColumnLocationRegion',
+}, {
+  key: 'locationState',
+  dataType: 'string',
+  title: 'tableColumnLocationState',
+}, {
+  key: 'locationType',
+  dataType: 'locationType',
+  title: 'tableColumnLocationType',
+}, {
+  key: 'locationLatitude',
+  dataType: 'float',
+  cellProps: { class: 'text-end' },
+  headerProps: { class: 'text-end' },
+  title: 'tableColumnLocationLatitude',
+  // @ts-ignore
+  value: (value: ViewTableClimateData) => value.locationLatitude ? value.locationLatitude.toFixed(2) : undefined,
+}, {
+  key: 'locationLongitude',
+  dataType: 'float',
+  cellProps: { class: 'text-end' },
+  headerProps: { class: 'text-end' },
+  title: 'tableColumnLocationLongitude',
+  // @ts-ignore
+  value: (value: ViewTableClimateData) => value.locationLongitude ? value.locationLongitude.toFixed(2) : undefined,
+}, {
+  key: 'locationElevation',
+  dataType: 'float',
+  cellProps: { class: 'text-end' },
+  headerProps: { class: 'text-end' },
+  title: 'tableColumnLocationElevation',
+  // @ts-ignore
+  value: (value: ViewTableClimateData) => value.locationElevation ? value.locationElevation.toFixed(2) : undefined,
+}, {
+  key: 'countryName',
+  dataType: 'string',
+  title: 'tableColumnLocationCountryName',
+}, {
+  key: 'climateId',
+  dataType: 'integer',
+  cellProps: { class: 'text-end' },
+  headerProps: { class: 'text-end' },
+  title: 'tableColumnClimateId',
+}, {
+  key: 'climateName',
+  dataType: 'string',
+  title: 'tableColumnClimateName',
+  preferredSortingColumn: true,
+}, {
+  key: 'climateDataType',
+  dataType: 'dataType',
+  title: 'tableColumnTraitDataType',
+}, {
+  key: 'unitName',
+  dataType: 'string',
+  title: 'tableColumnClimateUnitName',
+}, {
+  key: 'recordingDate',
+  dataType: 'date',
+  title: 'tableColumnClimateDataRecordingDate',
+  // @ts-ignore
+  value: (value: ViewTableClimateData) => value.recordingDate ? new Date(value.recordingDate).toLocaleDateString() : undefined,
+}, {
+  key: 'climateValue',
+  dataType: 'string',
+  title: 'tableColumnClimateDataClimateValue',
 }]
 
 const traitDataColumns: ExtendedDataTableHeader[] = [{
@@ -643,6 +722,7 @@ const columns: { [key: string]: ExtendedDataTableHeader[] } = {
   pedigrees: pedigreeColumns,
   datasets: datasetColumns,
   traitData: traitDataColumns,
+  climateData: climateDataColumns,
   traits: traitColumns,
 }
 

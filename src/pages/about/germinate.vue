@@ -4,7 +4,7 @@
       <h1 class="text-headline-large mb-3">{{ $t('pageAboutGerminateTitle') }}</h1>
       <v-divider class="mb-3" />
 
-      <v-row class="my-5">
+      <v-row class="my-5 card-icon-avatar">
         <v-col>
           <v-card color="primary">
             <div class="d-flex flex-column flex-sm-row justify-space-between align-center pa-3">
@@ -16,7 +16,7 @@
                   <v-icon :icon="mdiTag" /> {{ $t('pageFooterVersion', { version: germinateVersion }) }}
                 </v-card-text>
                 <v-card-text class="py-2">
-                  <v-icon :icon="mdiInformationOutline" /> <a class="text-white" href="#" @click.prevent="emitter.emit('show-changelog')">{{ $t('pageAboutGerminateChangelog') }}</a>
+                  <v-icon :icon="mdiInformationOutline" /> <a class="text-white-important" href="#" @click.prevent="emitter.emit('show-changelog')">{{ $t('pageAboutGerminateChangelog') }}</a>
                 </v-card-text>
               </div>
               <v-avatar
@@ -29,7 +29,7 @@
             </div>
           </v-card>
         </v-col>
-        <v-col>
+        <v-col class="card-icon-avatar">
           <v-row>
             <v-col v-for="(banner, index) in banners" :key="'banner-' + banner.key">
               <v-card :color="getTemplateColor(index)" :href="banner.link">

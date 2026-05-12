@@ -1,7 +1,7 @@
 <template>
   <div>
-    <slot name="title"><h3>{{ $t('pageTrialsExportSelectGroupTitle') }}</h3></slot>
-    <slot name="text" />
+    <h3><slot name="title">{{ $t('pageTrialsExportSelectGroupTitle') }}</slot></h3>
+    <p><slot name="text" /></p>
     <v-autocomplete
       v-model="selectedGroups"
       autocomplete="off"
@@ -15,7 +15,7 @@
       :items="allGroups"
     />
     <v-btn-toggle class="mt-2" color="primary" variant="outlined" v-model="groupSelection" v-if="multiple && type === 'export'">
-      <v-btn value="groups" :text="$t('pageExportGroupSelectModeSelect')" :prepend-icon="mdiArrowUpBox" />
+      <v-btn value="groups" :text="$t('pageExportGroupSelectModeSelect')" :prepend-icon="mdiFormatListChecks" />
       <v-btn value="all" :text="$t('pageExportGroupSelectModeAll')" :prepend-icon="mdiSelectAll" />
     </v-btn-toggle>
   </div>
@@ -24,7 +24,7 @@
 <script setup lang="ts">
   import type { ViewTableGroups } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
-  import { mdiArrowUpBox, mdiSelectAll } from '@mdi/js'
+  import { mdiFormatListChecks, mdiSelectAll } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 
   interface GroupSelectItem {

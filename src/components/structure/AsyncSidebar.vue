@@ -58,7 +58,7 @@
 
           <template #actions v-if="job.status === DataExportJobsStatus.completed">
             <v-spacer />
-            <v-btn :prepend-icon="mdiDownload" :text="$t('buttonDownload')" color="success" :href="`${store.storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateJobs" />
+            <v-btn :prepend-icon="mdiDownload" :text="$t('buttonDownload')" variant="elevated" color="success" :href="`${store.storeBaseUrl}dataset/export/async/${job.uuid}/download`" @click="updateJobs" />
           </template>
         </v-card>
         <v-divider />

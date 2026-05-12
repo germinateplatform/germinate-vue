@@ -61,46 +61,42 @@
       multiple
     />
 
-    <v-select
+    <SelectAllBox
       v-else-if="selectionMode === 'taxonomies'"
       :label="$t('formLabelHighlightTaxonomies')"
       :hint="$t('formDescriptionHighlightTaxonomies')"
-      persistent-hint
       multiple
       clearable
       item-value="id"
       :item-title="(tax: Taxonomies) => concat(' ', [tax.genus, tax.species, tax.subtaxa])"
-      return-object
       v-model="selectedTaxonomies"
       :items="trialTaxonomies"
     >
       <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
-    </v-select>
+    </SelectAllBox>
 
-    <v-select
+    <SelectAllBox
       v-else-if="selectionMode === 'treatments'"
       :label="$t('formLabelHighlightTreatments')"
       :hint="$t('formDescriptionHighlightTreatments')"
-      persistent-hint
       multiple
       clearable
+      item-key="id"
       item-title="name"
-      return-object
       v-model="selectedTreatments"
       :items="trialTreatments"
     >
       <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
-    </v-select>
+    </SelectAllBox>
 
-    <v-select
+    <SelectAllBox
       v-else-if="selectionMode === 'reps'"
       :label="$t('formLabelHighlightReps')"
       :hint="$t('formDescriptionHighlightReps')"
-      persistent-hint
       multiple
       clearable
       v-model="selectedReps"
@@ -109,13 +105,12 @@
       <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
-    </v-select>
+    </SelectAllBox>
 
-    <v-select
+    <SelectAllBox
       v-else-if="selectionMode === 'year'"
       :label="$t('formLabelHighlightYears')"
       :hint="$t('formDescriptionHighlightYears')"
-      persistent-hint
       multiple
       clearable
       v-model="selectedYears"
@@ -124,7 +119,7 @@
       <template #selection="{ internalItem: item }">
         <v-chip density="compact" :text="item.title" variant="flat" />
       </template>
-    </v-select>
+    </SelectAllBox>
   </div>
 </template>
 
@@ -265,5 +260,6 @@
   defineExpose({
     userSelection,
     valid,
+    update,
   })
 </script>

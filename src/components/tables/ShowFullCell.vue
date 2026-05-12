@@ -1,10 +1,10 @@
 <template>
-  <template v-if="content && content.length > 0">
+  <div class="d-flex align-center ga-2" v-if="content && content.length > 0">
     <span :title="content" v-if="content">{{ truncateAfterWords(content, maxWords) }}</span>
     <a href="#" class="ms-2 table-icon-link" @click.prevent="showDetailsModal" v-if="isTruncatedAfterWords(content, maxWords)">
       <v-icon :icon="mdiPageNext" />
     </a>
-  </template>
+  </div>
 </template>
 
 <script setup lang="ts">

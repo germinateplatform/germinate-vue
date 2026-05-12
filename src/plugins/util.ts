@@ -1,5 +1,5 @@
 import { coreStore } from '@/stores/app'
-import type { PublicationDoiLookupDetails, ViewTableGermplasm, ViewTablePublications, ViewTableTrialsData } from '@/plugins/types/germinate'
+import type { PublicationDoiLookupDetails, ViewTableDatasets, ViewTableGermplasm, ViewTablePublications, ViewTableTrialsData } from '@/plugins/types/germinate'
 
 // @ts-ignore
 import { Cite } from '@citation-js/core'
@@ -130,6 +130,16 @@ export interface DownloadBlob {
   blob: Blob
   filename: string
   extension?: string
+}
+
+function isAccepted (dataset: ViewTableDatasets) {
+  const store = coreStore()
+
+  if (store.storeToken) {
+    return dataset.acceptedBy && dataset.acceptedBy.includes(store.storeToken.id)
+  } else {
+    return dataset.acceptedBy && dataset.acceptedBy.includes(-1000)
+  }
 }
 
 /**
@@ -280,6 +290,7 @@ export {
   mcpdDateToJsDate,
   isNumber,
   getGermplasmDisplayName,
+  isAccepted,
   bskyIcon,
   genesysIcon,
   lookupDoiInformation,

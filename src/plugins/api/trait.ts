@@ -1,7 +1,7 @@
 import { authAxios } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
 import type { ErrorHandler } from '@/plugins/api/base'
-import type { PaginatedResult, ViewTableTraits, DatasetRequest, PaginatedDatasetRequest, PaginatedRequest, Phenotypes, TraitDatasetRequest, TraitTimelineRequest, TraitUnificationRequest, TrialCreationDetails, TrialsExportDatasetRequest, UnacceptedLicenseRequest, TrialSetupStats, ViewTableTrialsData, TraitStats } from '@/plugins/types/germinate'
+import type { PaginatedResult, ViewTableTraits, DatasetRequest, PaginatedDatasetRequest, PaginatedRequest, Phenotypes, TraitDatasetRequest, TraitTimelineRequest, TraitUnificationRequest, TrialCreationDetails, TrialsExportDatasetRequest, UnacceptedLicenseRequest, TrialSetupStats, ViewTableTrialsData, TraitStats, ViewTableDatasets } from '@/plugins/types/germinate'
 
 function apiPostTrialsDataTable (queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableTrialsData[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -29,16 +29,16 @@ function apiPostTraitTableIds<T> (queryData: PaginatedRequest, onSuccess?: Germi
   return authAxios({ url: 'trait/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostDatasetTraits<T> (datasetIds: number[], onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostDatasetTraits (datasetIds: number[], onSuccess?: GerminateResponseHandler<ViewTableTraits[]>, onError?: ErrorHandler) {
   const queryData = {
     datasetIds,
   }
-  return authAxios({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<ViewTableTraits[]>({ url: 'dataset/trait', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostTraitDatasetTable<T> (traitId: number, queryData: UnacceptedLicenseRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostTraitDatasetTable (traitId: number, queryData: UnacceptedLicenseRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: `trait/${traitId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableDatasets[]>>({ url: `trait/${traitId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 function apiPostTraitAttributeTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {

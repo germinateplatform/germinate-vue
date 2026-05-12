@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section v-if="dataWarnings && dataWarnings.length > 0" class="mb-10 g-no-gutters">
+    <section v-if="dataWarnings && dataWarnings.length > 0" class="mb-10 g-no-gutters card-icon-avatar">
       <v-banner
         v-for="(warning, index) in dataWarnings"
         :key="`data-warning-${index}`"
@@ -387,3 +387,4 @@
     })
   })
 </script>
+

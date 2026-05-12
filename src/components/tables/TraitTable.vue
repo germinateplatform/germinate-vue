@@ -42,16 +42,16 @@
         <ShowFullCell :content="item.traitDescription" title="tableColumnTraitDescription" v-if="item.traitDescription && item.traitDescription.length > 0" />
       </template>
       <template #item.traitClass="{ item }">
-        <v-chip label :color="traitClasses[item.traitClass].color()" :prepend-icon="traitClasses[item.traitClass].path">{{ traitClasses[item.traitClass].text() }}</v-chip>
+        <v-chip label :color="traitClasses[item.traitClass].color()" :prepend-icon="traitClasses[item.traitClass].path" v-if="item.traitClass">{{ traitClasses[item.traitClass].text() }}</v-chip>
       </template>
       <template #item.methodClass="{ item }">
-        <v-chip label :color="methodClasses[item.methodClass].color()" :prepend-icon="methodClasses[item.methodClass].path">{{ methodClasses[item.methodClass].text() }}</v-chip>
+        <v-chip label :color="methodClasses[item.methodClass].color()" :prepend-icon="methodClasses[item.methodClass].path" v-if="item.methodClass">{{ methodClasses[item.methodClass].text() }}</v-chip>
       </template>
       <template #item.methodDescription="{ item }">
         <ShowFullCell :content="item.methodDescription" title="tableColumnMethodDescription" v-if="item.methodDescription && item.methodDescription.length > 0" />
       </template>
       <template #item.scaleDatatype="{ item }">
-        <v-chip label :color="dataTypes[item.scaleDatatype].color()" :prepend-icon="dataTypes[item.scaleDatatype].path">{{ dataTypes[item.scaleDatatype].text() }}</v-chip>
+        <v-chip label :color="dataTypes[item.scaleDatatype].color()" :prepend-icon="dataTypes[item.scaleDatatype].path" v-if="item.scaleDatatype">{{ dataTypes[item.scaleDatatype].text() }}</v-chip>
       </template>
       <template #item.scaleDescription="{ item }">
         <ShowFullCell :content="item.scaleDescription" title="tableColumnScaleDescription" v-if="item.scaleDescription && item.scaleDescription.length > 0" />
@@ -124,6 +124,6 @@
   })
 
   defineExpose({
-    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
   })
 </script>

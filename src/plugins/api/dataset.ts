@@ -1,19 +1,19 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { PaginatedResult, DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, SubsettedDatasetRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
+import type { PaginatedResult, DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions, ClimateExportDatasetRequest } from '@/plugins/types/germinate'
 
-const apiPostPublicationDatasetTable = <T>(publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostPublicationDatasetTable<T> (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `publication/${publicationId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostCollaboratorsTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostCollaboratorsTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'collaborator/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDatasetCollaboratorsTable = <T>(datasetId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostDatasetCollaboratorsTable<T> (datasetId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `dataset/${datasetId}/collaborator`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
@@ -26,12 +26,12 @@ const apiPostDatasetAttributeExport = <T>(queryData: ExperimentRequest, onSucces
 
 const apiGetDatasetSourceFile = <T>(datasetId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/${datasetId}/download-source?random=${uuidv4()}`, dataType: 'blob', success: onSuccess, error: onError })
 
-const apiPostExperimentTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostExperimentTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'experiment/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDatasetTable = (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) => {
+function apiPostDatasetTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios<PaginatedResult<ViewTableDatasets[]>>({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
@@ -40,18 +40,18 @@ const apiDeleteDataset = <T>(datasetId: number, onSuccess?: GerminateResponseHan
 
 const apiDeleteExperiment = <T>(experimentId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `experiment/${experimentId}`, method: 'DELETE', success: onSuccess, error: onError })
 
-const apiPostDatasetTableIds = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostDatasetTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'dataset/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDatasetAttributeTableExport = <T>(datasetId: number, queryData: ExportRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostDatasetAttributeTableExport<T> (datasetId: number, queryData: ExportRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   const url = datasetId !== null ? `dataset/${datasetId}/attribute/export` : 'dataset/attribute/table/export'
   return authAxios({ url, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDatasetAsyncExport = <T>(uuids: string[], onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostDatasetAsyncExport<T> (uuids: string[], onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   const queryData = {
     uuids,
   }
@@ -60,19 +60,19 @@ const apiPostDatasetAsyncExport = <T>(uuids: string[], onSuccess?: GerminateResp
 
 const apiDeleteDatasetAsyncExport = <T>(uuid: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/export/async/${uuid}`, method: 'DELETE', success: onSuccess, error: onError })
 
-const apiPostDatasetAttributeTable = <T>(datasetId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostDatasetAttributeTable<T> (datasetId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   const url = datasetId !== null ? `dataset/${datasetId}/attribute` : 'dataset/attribute/table'
   return authAxios({ url, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostTraitStats = <T>(statsType: string, queryData: SubsettedDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+const apiPostTraitStats = <T>(statsType: string, queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 const apiPostTraitStatsCategorical = <T>(queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/categorical/trial', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
-const apiPostClimateStatsCategorical = <T>(queryData: SubsettedDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/categorical/climate', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+const apiPostClimateStatsCategorical = <T>(queryData: ClimateExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/categorical/climate', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
-const apiPostLicenseTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostLicenseTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'license/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
@@ -89,12 +89,12 @@ const apiPatchLicense = <T>(licenseId: number, data: ViewTableLicenseDefinitions
 
 const apiGetAcceptLicense = <T>(licenseId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `license/${licenseId}/accept`, success: onSuccess, error: onError })
 
-const apiPostFileResourceTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostFileResourceTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'fileresource/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostDatasetfileresource = <T>(queryData: PaginatedDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostDatasetfileresource<T> (queryData: PaginatedDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'dataset/fileresource', data: queryData, method: 'POST', success: onSuccess, error: onError })
 }
@@ -111,7 +111,7 @@ const apiDeleteFileresource = <T>(id: number, onSuccess?: GerminateResponseHandl
 
 const apiGetDataResource = <T>(id: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `fileresource/${id}`, dataType: 'blob', success: onSuccess, error: onError })
 
-const apiPostFileresourceDatasetTable = <T>(fileresourceId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostFileresourceDatasetTable<T> (fileresourceId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `fileresource/${fileresourceId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }

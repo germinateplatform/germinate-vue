@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row v-if="stats">
+    <v-row v-if="stats" class="card-icon-avatar">
       <v-col v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.value">
         <v-card :color="getTemplateColor(index)" :to="category.link">
           <div class="d-flex flex-no-wrap justify-space-between">

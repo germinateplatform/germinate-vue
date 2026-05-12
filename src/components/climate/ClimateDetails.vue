@@ -1,15 +1,17 @@
 <template>
-  <div v-if="localVariable">
-    <VariableDetails :variable-id="localVariable.variableId" />
+  <div v-if="localClimate">
+    {{ localClimate }}
+
+    <!-- <VariableDetails :variable-id="localClimate.climateId" /> -->
 
     <Images class="mt-3" :filter-on="imageFilter" @data-changed="setImageVisibility" v-if="imagesVisible" />
 
-    <TraitDataTable
+    <ClimateDataTable
       class="mt-5"
-      :get-data="getTrialsData"
-      :get-ids="getTrialsIds"
+      :get-data="getClimateData"
+      :get-ids="getClimateIds"
       :download="downloadTable"
-      ref="traitDataTable"
+      ref="climateDataTable"
     />
 
     <DatasetTable
@@ -21,17 +23,17 @@
     <v-expansion-panels class="mt-5">
       <v-expansion-panel>
         <template #title>
-          <v-icon :icon="mdiChartTimeline" class="me-2" /> {{ $t('pageTraitDetailsStatsTitle') }}
+          <v-icon :icon="mdiChartTimeline" class="me-2" /> {{ $t('pageClimateDetailsStatsTitle') }}
         </template>
-        <template #text v-if="localVariable && (traitData || (catChartData && catChartData.size > 0))">
-          <p>{{ $t('pageTraitDetailsStatsText') }}</p>
+        <template #text v-if="localClimate && (climateData || (catChartData && catChartData.size > 0))">
+          <p>{{ $t('pageClimateDetailsStatsText') }}</p>
 
-          <TraitStatsChart
+          <ClimateStatsChart
             :datasets="datasets || []"
-            :groups="groups || []"
-            :variables="[localVariable]"
+            :climates="[localClimate]"
+            :groups="groups"
             :cat-chart-data="catChartData"
-            :trait-data="traitData || []"
+            :climate-data="climateData || []"
             ref="traitStatsChart"
           />
         </template>
@@ -41,30 +43,29 @@
 </template>
 
 <script setup lang="ts">
-  import Images from '@/components/widgets/Images.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostDatasetTable, apiPostTraitStatsCategorical } from '@/plugins/api/dataset'
+  import { apiPostClimateDatasetTable, apiPostClimateDataTable, apiPostClimateDataTableIds, apiPostClimateTable } from '@/plugins/api/climate'
+  import { apiPostClimateStatsCategorical, apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostTableExport } from '@/plugins/api/misc'
-  import { apiPostTraitDatasetTable, apiPostTraitTable, apiPostTrialsDataTable, apiPostTrialsDataTableIds } from '@/plugins/api/trait'
-  import { FilterComparator, FilterOperator, type ViewTableDatasets, ViewTableTraitsScaleDatatype, type FilterGroup, type PaginatedRequest, type PaginatedResult, type TrialsExportDatasetRequest, type UnacceptedLicenseRequest, type ViewTableImages, type ViewTableTraits, type ViewTableTrialsData, type ViewTableGroups } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableDatasets, type PaginatedRequest, type UnacceptedLicenseRequest, type ViewTableClimates, type ClimateExportDatasetRequest, ViewTableClimatesDataType, type ViewTableClimateDataWithGroups, type FilterGroup, type ViewTableImages, type PaginatedResult, type ViewTableGroups } from '@/plugins/types/germinate'
   import { mdiChartTimeline } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
 
-  const traitDataTable = useTemplateRef('traitDataTable')
+  const climateDataTable = useTemplateRef('climateDataTable')
   const traitStatsChart = useTemplateRef('traitStatsChart')
 
   const compProps = defineProps<{
-    variable?: ViewTableTraits
-    variableId?: number
+    climate?: ViewTableClimates
+    climateId?: number
   }>()
 
-  const localVariable = ref<ViewTableTraits>()
+  const localClimate = ref<ViewTableClimates>()
   const datasets = ref<ViewTableDatasets[]>()
   // TODO: Fetch
   const groups = ref<ViewTableGroups[]>()
   const imagesVisible = ref(true)
-  const traitData = shallowRef<ViewTableTrialsData[]>()
+  const climateData = shallowRef<ViewTableClimateDataWithGroups[]>()
   const catChartData = shallowRef<Map<number, Blob>>(new Map())
 
   const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
@@ -72,12 +73,12 @@
       filters: [{
         column: 'imageForeignId',
         comparator: FilterComparator.equals,
-        values: [`${localVariable.value?.variableId}`],
+        values: [`${localClimate.value?.climateId}`],
         canBeChanged: false,
       }, {
         column: 'imageRefTable',
         comparator: FilterComparator.equals,
-        values: ['phenotypes'],
+        values: ['climates'],
         canBeChanged: false,
       }],
       operator: FilterOperator.and,
@@ -86,8 +87,7 @@
 
   function update () {
     nextTick(() => {
-      traitDataTable.value?.refresh()
-      // traitStatsChart.value?.forceRedraw()
+      climateDataTable.value?.refresh()
       plot()
     })
   }
@@ -97,7 +97,7 @@
   }
 
   function plot () {
-    const v = localVariable.value
+    const v = localClimate.value
 
     if (!v) {
       return
@@ -105,48 +105,48 @@
 
     emitter.emit('show-loading', true)
 
-    const query: TrialsExportDatasetRequest = {
+    const query: ClimateExportDatasetRequest = {
       page: 1,
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
       datasetIds: v.datasetIds,
-      traitIds: [v.variableId || -1],
-      germplasmIds: undefined,
-      germplasmGroupIds: undefined,
+      climateIds: [v.climateId || -1],
+      locationIds: undefined,
+      locationGroupIds: undefined,
       minimal: true,
     }
 
-    if (v.scaleDatatype === ViewTableTraitsScaleDatatype.numeric) {
-      apiPostTrialsDataTable(query, result => {
-        traitData.value = result.data
+    if (v.dataType === ViewTableClimatesDataType.numeric) {
+      apiPostClimateDataTable(query, result => {
+        climateData.value = result.data
         emitter.emit('show-loading', false)
 
         nextTick(() => traitStatsChart.value?.update())
       })
     } else {
-      const q = Object.assign(query, { traitIds: [v.variableId] })
+      const q = Object.assign(query, { climateIds: [v.climateId] })
 
-      apiPostTraitStatsCategorical<Blob>(q, result => {
-        catChartData.value.set(v.variableId, result)
+      apiPostClimateStatsCategorical<Blob>(q, result => {
+        catChartData.value.set(v.climateId, result)
       })
     }
   }
 
   function getDatasetData (data: PaginatedRequest) {
     const request = data as UnacceptedLicenseRequest
-    return apiPostTraitDatasetTable(localVariable.value?.variableId || -1, request)
+    return apiPostClimateDatasetTable(localClimate.value?.climateId || -1, request)
   }
 
-  function getTrialsData (data: PaginatedRequest) {
-    const request = data as TrialsExportDatasetRequest
-    request.traitIds = [localVariable.value?.variableId || -1]
-    return apiPostTrialsDataTable(request)
+  function getClimateData (data: PaginatedRequest) {
+    const request = data as ClimateExportDatasetRequest
+    request.climateIds = [localClimate.value?.climateId || -1]
+    return apiPostClimateDataTable(request)
   }
 
-  function getTrialsIds (data: PaginatedRequest) {
-    const request = data as TrialsExportDatasetRequest
-    request.traitIds = [localVariable.value?.variableId || -1]
-    return apiPostTrialsDataTableIds(request)
+  function getClimateIds (data: PaginatedRequest) {
+    const request = data as ClimateExportDatasetRequest
+    request.climateIds = [localClimate.value?.climateId || -1]
+    return apiPostClimateDataTableIds(request)
   }
 
   function downloadTable (data: PaginatedRequest) {
@@ -166,7 +166,7 @@
         filters: [{
           column: 'datasetId',
           comparator: FilterComparator.inSet,
-          values: localVariable.value?.datasetIds.map(String) || [],
+          values: localClimate.value?.datasetIds.map(String) || [],
         }],
         operator: FilterOperator.and,
       }],
@@ -181,30 +181,30 @@
     })
   }
 
-  watch(localVariable, async newValue => {
+  watch(localClimate, async newValue => {
     if (newValue && newValue.datasetIds && newValue.datasetIds.length > 0) {
       getDatasets()
     }
   })
 
   onMounted(() => {
-    if (compProps.variable) {
-      localVariable.value = compProps.variable
-    } else if (compProps.variableId) {
-      apiPostTraitTable({
+    if (compProps.climate) {
+      localClimate.value = compProps.climate
+    } else if (compProps.climateId) {
+      apiPostClimateTable({
         page: 1,
         limit: 1,
         filters: [{
           filters: [{
             column: 'traitId',
             comparator: FilterComparator.equals,
-            values: [`${compProps.variableId}`],
+            values: [`${compProps.climateId}`],
           }],
           operator: FilterOperator.and,
         }],
       }, result => {
         if (result && result.data && result.data.length > 0) {
-          localVariable.value = result.data[0]
+          localClimate.value = result.data[0]
         }
       })
     }

@@ -2,24 +2,24 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="673.24872"
    height="693.42731"
    viewBox="0 0 178.13038 183.46932"
    version="1.1"
    id="svg4951"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    sodipodi:docname="germinate-square-name.svg"
-   inkscape:export-filename="D:\workspaces\web-vscode\germinate\germinate\public\img\germinate-square-name.png"
-   inkscape:export-xdpi="111.61"
-   inkscape:export-ydpi="111.61">
+   inkscape:export-filename="germinate-square-name.png"
+   inkscape:export-xdpi="146.01439"
+   inkscape:export-ydpi="146.01439"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -28,26 +28,32 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.1767767"
-     inkscape:cx="-2713.0476"
-     inkscape:cy="246.90776"
+     inkscape:cx="-2715.29"
+     inkscape:cy="251.73001"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     inkscape:window-width="3440"
-     inkscape:window-height="1377"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="4309"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0">
+     fit-margin-bottom="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
        id="grid5751"
        originx="16.054719"
-       originy="48.002629" />
+       originy="48.002629"
+       spacingy="1"
+       spacingx="1"
+       units="px" />
   </sodipodi:namedview>
   <defs
      id="defs4945">
@@ -82,7 +88,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

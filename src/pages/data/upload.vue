@@ -4,7 +4,7 @@
     <v-divider class="mb-3" />
     <p v-html="$t('pageDataUploadText')" />
 
-    <v-row class="my-5">
+    <v-row class="my-5 card-icon-avatar">
       <v-col v-for="(tab, index) in tabs" :key="`upload-tab-${tab.id}`">
         <v-card :color="selectedTab?.id === tab.id ? getTemplateColor(index) : 'muted'" @click="selectedTab = tab">
           <div class="d-flex flex-no-wrap justify-space-between align-center">

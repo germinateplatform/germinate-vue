@@ -106,7 +106,7 @@
   })
 
   defineExpose({
-    refresh: (readFilter?: boolean) => baseTable.value?.refresh(readFilter),
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
     getSelection: () => baseTable.value?.getSelection(),
     setOverallOperator: (operator: FilterOperator) => baseTable.value?.setOverallOperator(operator),
   })

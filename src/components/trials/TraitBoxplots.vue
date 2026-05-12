@@ -21,9 +21,7 @@
           :groups="groups || []"
           marked-item-type="germplasm"
         >
-          <template #text>
-            <p>{{ $t('pageTrialsExportSelectGroupChartText') }}</p>
-          </template>
+          <template #text>{{ $t('pageTrialsExportSelectGroupChartText') }}</template>
         </GroupSelection>
       </v-col>
     </v-row>

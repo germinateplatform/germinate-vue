@@ -1,6 +1,6 @@
 <template>
   <BaseChart
-    title="pageTrialsExportTraitBoxplotTitle"
+    title="pageTrialsExportClimateBoxplotTitle"
     :chart-id="id"
     :filename="filename"
     :source-file="sourceFile"
@@ -11,12 +11,12 @@
   >
     <template #card-text>
       <v-card-text>
-        <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
+        <p>{{ $t('pageTrialsExportClimateBoxplotText') }}</p>
       </v-card-text>
     </template>
     <template #toolbar-append>
       <v-btn-group class="mx-2" density="compact" variant="tonal">
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, 'germplasm')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedGermplasm.length, 1) }}</v-chip></v-btn>
+        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, 'locations')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedLocations.length, 1) }}</v-chip></v-btn>
         <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
       </v-btn-group>
     </template>
@@ -33,18 +33,18 @@
 
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
-  import { getGermplasmDisplayName, uuidv4, type DownloadBlob } from '@/plugins/util'
+  import { uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import Plotly from 'plotly.js/lib/core'
   import box from 'plotly.js/lib/box'
   import { coreStore } from '@/stores/app'
-  import type { ViewTableDatasets, ViewTableGroups, ViewTableTraits, ViewTableTrialsData } from '@/plugins/types/germinate'
+  import type { ViewTableDatasets, ViewTableGroups, ViewTableClimates, ViewTableClimateData } from '@/plugins/types/germinate'
   import { getColor } from '@/plugins/util/colors'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
   import emitter from 'tiny-emitter/instance'
-  import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
+  import type { UserSelection } from '@/components/widgets/selections/ClimateHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
   // Only register the chart types we're actually using to reduce the final bundle size
@@ -54,8 +54,8 @@
 
   const compProps = defineProps<{
     datasetIds: number[]
-    traits: ViewTableTraits[]
-    plotData: ViewTableTrialsData[]
+    climates: ViewTableClimates[]
+    plotData: ViewTableClimateData[]
     groups: ViewTableGroups[]
     datasets: ViewTableDatasets[]
     userSelection?: UserSelection
@@ -69,7 +69,7 @@
   const id = ref('boxplot-' + uuidv4())
   const loading = ref(false)
   const selectedIds = ref<number[]>([])
-  const selectedGermplasmId = ref<number>()
+  const selectedLocationId = ref<number>()
 
   const filename = computed(() => {
     let name = 'trait-boxplot'
@@ -78,10 +78,10 @@
     } else {
       name += '-all-datasets'
     }
-    if (compProps.traits) {
-      name += `-${compProps.traits.map(t => t.variableId).join('-')}`
+    if (compProps.climates) {
+      name += `-${compProps.climates.map(t => t.climateId).join('-')}`
     } else {
-      name += '-all-traits'
+      name += '-all-climates'
     }
 
     return name
@@ -91,12 +91,12 @@
     if (compProps.userSelection) {
       switch (compProps.userSelection.type) {
         case 'dataset':
-          return Math.max(300, (compProps.traits.length + compProps.datasetIds.length + 1) * 100)
+          return Math.max(300, (compProps.climates.length + compProps.datasetIds.length + 1) * 150)
         default:
-          return Math.max(300, (compProps.traits.length + compProps.userSelection.selectedItems.length + 1) * 100)
+          return Math.max(300, (compProps.climates.length + compProps.userSelection.selectedItems.length + 1) * 150)
       }
     } else {
-      return Math.max(300, compProps.traits.length * 100)
+      return Math.max(300, compProps.climates.length * 150)
     }
   }
 
@@ -106,9 +106,9 @@
     emitter.emit('show-loading', true)
 
     loading.value = true
-    const traitIdSet = new Set<number>(compProps.traits.map(t => t.variableId))
-    const data = compProps.plotData.filter(pd => traitIdSet.has(pd.traitId)).concat()
-    data.sort((a, b) => b.traitName.localeCompare(a.traitName) || (b.traitId - a.traitId))
+    const climateIdSet = new Set<number>(compProps.climates.map(t => t.climateId))
+    const data = compProps.plotData.filter(pd => climateIdSet.has(pd.climateId)).concat()
+    data.sort((a, b) => b.climateName.localeCompare(a.climateName) || (b.climateId - a.climateId))
 
     if (data) {
       sourceFile.value = {
@@ -127,10 +127,10 @@
       const text: string[] = []
 
       data.forEach(dp => {
-        x.push(+dp.traitValue)
-        y.push(dp.traitName)
-        ids.push(`${dp.germplasmId}-${uuidv4()}`)
-        text.push(getGermplasmDisplayName(dp))
+        x.push(+dp.climateValue)
+        y.push(dp.climateName)
+        ids.push(`${dp.locationId}-${uuidv4()}`)
+        text.push(`${dp.countryName} | ${dp.locationName}`)
       })
 
       const traces = [{
@@ -154,20 +154,9 @@
               return getData(data, dp => dp.datasetId === dataset.datasetId, index, dataset.datasetName || 'N/A')
             }))
             break
-          case 'germplasm':
-            traces.push(...compProps.userSelection.selectedItems.map((germplasm, index) => {
-              return getData(data, dp => dp.germplasmDisplayName === germplasm, index, germplasm)
-            }))
-            break
-          case 'taxonomies':
-            traces.push(...compProps.userSelection.selectedItems.map((taxonomy, index) => {
-              return getData(data, dp => dp.taxonomyFull === taxonomy, index, taxonomy)
-            }))
-            break
-          case 'plot':
-            traces.push(...compProps.userSelection.selectedItems.map((plot, index) => {
-              const [row, column] = plot.split('|').map(Number)
-              return getData(data, dp => dp.trialRow === row && dp.trialColumn === column, index, plot)
+          case 'location':
+            traces.push(...compProps.userSelection.selectedItems.map((location, index) => {
+              return getData(data, dp => `${dp.countryName} | ${dp.locationName}` === location, index, location)
             }))
             break
           case 'year':
@@ -182,11 +171,6 @@
               }, index, `&nbsp;${year}`)
             }))
             break
-          case 'reps':
-            traces.push(...compProps.userSelection.selectedItems.map((rep, index) => {
-              return getData(data, dp => dp.rep === rep, index, `&nbsp;${rep}`)
-            }))
-            break
           case 'group':
             const groupNames: { [index: number]: string } = {}
 
@@ -196,11 +180,6 @@
 
             traces.push(...compProps.userSelection.selectedItems.map((groupId, index) => {
               return getData(data, dp => dp.groups !== undefined && dp.groups.some(g => `${g.id}` === groupId), index, groupNames[+groupId] || `${groupId}`)
-            }))
-            break
-          case 'treatments':
-            traces.push(...compProps.userSelection.selectedItems.map((treatment, index) => {
-              return getData(data, dp => dp.treatment === treatment, index, treatment)
             }))
             break
         }
@@ -231,6 +210,7 @@
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h' as const,
           x: 0,
+          y: 1.1,
           font: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
       }
@@ -242,7 +222,7 @@
       }
 
       if (traces) {
-        if (compProps.traits.length < 2) {
+        if (compProps.climates.length < 2) {
           // @ts-ignore
           layout.boxgap = 0
         }
@@ -265,12 +245,12 @@
             // @ts-ignore
             boxplotChart.value.on('plotly_click', (data: any) => {
               if (data.points.length > 0) {
-                selectedGermplasmId.value = Number.parseInt(data.points[0].id.split('-')[0])
+                selectedLocationId.value = Number.parseInt(data.points[0].id.split('-')[0])
 
                 // nextTick(() => this.$refs.passportModal.show())
                 // TODO: Show passport popup?
               } else {
-                selectedGermplasmId.value = undefined
+                selectedLocationId.value = undefined
               }
             })
           })
@@ -280,13 +260,13 @@
     loading.value = false
   }
 
-  function getData (data: ViewTableTrialsData[], filter: (dp: ViewTableTrialsData) => boolean, index: number, name: string) {
+  function getData (data: ViewTableClimateData[], filter: (dp: ViewTableClimateData) => boolean, index: number, name: string) {
     const dps = data.filter(filter)
     return {
-      y: dps.map(dp => dp.traitName),
-      x: dps.map(dp => +dp.traitValue),
-      ids: dps.map(dp => `${dp.germplasmId}-${uuidv4()}`),
-      text: dps.map(dp => getGermplasmDisplayName(dp)),
+      y: dps.map(dp => dp.climateName),
+      x: dps.map(dp => +dp.climateValue),
+      ids: dps.map(dp => `${dp.locationId}-${uuidv4()}`),
+      text: dps.map(dp => `${dp.countryName} | ${dp.locationName}`),
       marker: { color: getColor(index + 1), size: 4 },
       name: name,
       type: 'box' as const,
