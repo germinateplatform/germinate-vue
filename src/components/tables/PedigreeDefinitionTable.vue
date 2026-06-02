@@ -71,10 +71,12 @@
         key: 'germplasmName',
         dataType: 'string',
         title: t('tableColumnGermplasmName'),
+        quickSearchable: true,
       }, {
         key: 'pedigreeNotationName',
         dataType: 'string',
         title: t('tableColumnPedigreeNotationName'),
+        quickSearchable: true,
       }, {
         key: 'pedigreeNotationDescription',
         dataType: 'string',
@@ -87,6 +89,7 @@
         key: 'definition',
         dataType: 'string',
         title: t('tableColumnPedigreeDefinition'),
+        quickSearchable: true,
       }, {
         key: 'pedigreeDescriptionName',
         dataType: 'string',

@@ -131,6 +131,13 @@
       maxNativeZoom: 19,
     })
 
+    const topo = L.tileLayer('//{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      id: 'OpenTopoMap',
+      attribution: 'Kartendaten: &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: &copy; <a href="http://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)</code>',
+      maxZoom: 19,
+      maxNativeZoom: 17,
+    })
+
     switch (store.storeMapLayer) {
       case 'theme': {
         map.addLayer(themeLayer)
@@ -138,6 +145,10 @@
       }
       case 'satellite': {
         map.addLayer(satellite)
+        break
+      }
+      case 'topo': {
+        map.addLayer(topo)
         break
       }
       default: {
@@ -150,6 +161,7 @@
       'Theme-based': themeLayer,
       OpenStreetMap: openstreetmap,
       'Esri WorldImagery': satellite,
+      OpenTopoMap: topo,
     }
 
     map.on('baselayerchange', e => {
@@ -164,6 +176,10 @@
         }
         case 'Esri WorldImagery': {
           store.setMapLayer('satellite')
+          break
+        }
+        case 'OpenTopoMap': {
+          store.setMapLayer('topo')
           break
         }
       }

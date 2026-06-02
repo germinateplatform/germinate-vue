@@ -141,7 +141,7 @@
         <slot name="card-text" />
       </template>
 
-      <template #header.data-table-select="{ allSelected, someSelected }">
+      <template #header.data-table-select="{ allSelected, someSelected }" v-if="componentProps.selectionType === 'all'">
         <v-checkbox-btn :indeterminate="!allSelected && someSelected" :model-value="allSelected" @update:model-value="manuallySelectAll(allSelected)" />
       </template>
 

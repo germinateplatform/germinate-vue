@@ -16,6 +16,7 @@ export default vuetify({
     'unicorn/no-array-callback-reference': 'off',
     'unicorn/catch-error-name': 'off',
     'unicorn/no-document-cookie': 'off',
+    'unicorn/no-array-sort': 'off',
     'unicorn/prefer-at': 'off',
     'unicorn/no-static-only-class': 'off',
     'unicorn/prefer-dom-node-append': 'off',

@@ -1,6 +1,6 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { ExportRequest, GermplasmExportRequest, GermplasmStats, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, ViewTableGermplasm } from '@/plugins/types/germinate'
+import type { ExportRequest, GermplasmExportRequest, GermplasmStats, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, ViewTableGermplasm, ViewTablePedigrees } from '@/plugins/types/germinate'
 
 function apiGetGermplasmMcpd<T> (germplasmId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/${germplasmId}/mcpd`, success: onSuccess, error: onError })
@@ -106,9 +106,9 @@ function apiPostEntityIds<T> (ids: number[], direction: string, onSuccess?: Germ
   return authAxios({ url: `germplasm/entity?direction=${direction}`, method: 'POST', data: ids, success: onSuccess, error: onError })
 }
 
-function apiPostPedigreeTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostPedigreeTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTablePedigrees[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'pedigree/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTablePedigrees[]>>({ url: 'pedigree/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 function apiPostEntityTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {

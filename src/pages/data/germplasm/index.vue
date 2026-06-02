@@ -247,7 +247,7 @@
       page: 1,
       limit: 1,
     }
-    apiPostPedigreeTable<PaginatedResult<ViewTablePedigrees>>(pedigreeQuery, result => {
+    apiPostPedigreeTable(pedigreeQuery, result => {
       if (result && result.count) {
         hasPedigreeData.value = result.count > 0
       }

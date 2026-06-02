@@ -245,8 +245,6 @@
   function exportData () {
     emitter.emit('show-loading', true)
 
-    emitter.emit('show-loading', true)
-
     const params = JSON.parse(JSON.stringify(queryParams.value))
     params.datasetIds = selectedDatasets.value.map(ds => ds.datasetId)
 

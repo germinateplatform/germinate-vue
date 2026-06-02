@@ -333,6 +333,32 @@ export interface ClientAdminConfiguration extends ClientConfiguration {
     databaseBackupMaxSizeGB: number;
 }
 
+export type OverviewStatsField = 'germplasm' | 'markers' | 'maps' | 'traits' | 'climates' | 'locations' | 'pedigreeDefinitions' | 'datasets' | 'datasetsGenotype' | 'datasetsTrials' | 'datasetsAllelefreq' | 'datasetsClimate' | 'datasetsPedigree' | 'experiments' | 'groups' | 'images' | 'fileresources' | 'publications' | 'dataStories' | 'projects' | 'taxonomies'
+
+export interface OverviewStats {
+    germplasm?: number;
+    markers?: number;
+    maps?: number;
+    traits?: number;
+    climates?: number;
+    locations?: number;
+    pedigreeDefinitions?: number;
+    datasets?: number;
+    datasetsGenotype?: number;
+    datasetsTrials?: number;
+    datasetsAllelefreq?: number;
+    datasetsClimate?: number;
+    datasetsPedigree?: number;
+    experiments?: number;
+    groups?: number;
+    images?: number;
+    fileresources?: number;
+    publications?: number;
+    dataStories?: number;
+    projects?: number;
+    taxonomies?: number;
+}
+
 export interface ClientConfiguration {
     authMode: AuthenticationMode;
     colorsTemplate: string[];
@@ -1448,6 +1474,18 @@ export interface ViewTableClimates {
     unitAbbreviation: string;
     datasetIds: number[];
     count: number;
+}
+
+export interface TrialStats {
+    dataPointsByYear: { [index: string]: number };
+    trialsDatasetsPerYear: { [index: string]: number };
+    traitsPerYear: { [index: string]: number };
+}
+
+export interface GenotypeStats {
+    dataPointsByYear: { [index: string]: number };
+    genotypeDatasetsPerYear: { [index: string]: number };
+    markersPerYear: { [index: string]: number };
 }
 
 export interface ViewTableClimateData {

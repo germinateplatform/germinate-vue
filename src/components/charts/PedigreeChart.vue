@@ -233,7 +233,7 @@
       }],
     }
 
-    apiPostPedigreeTable<PaginatedResult<ViewTablePedigrees[]>>(query, result => {
+    apiPostPedigreeTable(query, result => {
       if (result && result.data && result.data.length > 0) {
         plotData = result.data
         hasPlotData.value = true

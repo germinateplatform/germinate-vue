@@ -1,6 +1,6 @@
 import { MAX_JAVA_INTEGER, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AlleleFrequencyDatasetRequest, AsyncExportResult, ExportRequest, MapExportRequest, PaginatedRequest, PaginatedResult, GenotypeSubsetDatasetRequest, ViewTableDatasetMaps, ViewTableDatasets } from '@/plugins/types/germinate'
+import type { AlleleFrequencyDatasetRequest, AsyncExportResult, ExportRequest, MapExportRequest, PaginatedRequest, PaginatedResult, GenotypeSubsetDatasetRequest, ViewTableDatasetMaps, ViewTableDatasets, GenotypeStats } from '@/plugins/types/germinate'
 
 function apiPostMarkerTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -28,6 +28,10 @@ function apiPostGenotypeDatasetSummary (queryData: PaginatedRequest, onSuccess?:
   queryData.page = 0
   queryData.limit = MAX_JAVA_INTEGER
   return authAxios<PaginatedResult<ViewTableDatasets[]>>({ url: 'dataset/export/genotype/summary', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+function apiGetGenotypeStats (onSuccess?: GerminateResponseHandler<GenotypeStats>, onError?: ErrorHandler) {
+  return authAxios<GenotypeStats>({ url: 'genotype/stats', success: onSuccess, error: onError })
 }
 
 const apiPostGenotypeDatasetExport = (queryData: GenotypeSubsetDatasetRequest, onSuccess?: GerminateResponseHandler<AsyncExportResult[]>, onError?: ErrorHandler) => authAxios<AsyncExportResult[]>({ url: 'dataset/export/genotype', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -91,4 +95,5 @@ export {
   apiPostMapExport,
   apiPostAlleleFrequencyDatasetExport,
   apiPostMarkerDatasetTable,
+  apiGetGenotypeStats,
 }

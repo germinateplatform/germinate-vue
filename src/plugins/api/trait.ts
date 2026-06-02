@@ -1,7 +1,7 @@
 import { authAxios } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
 import type { ErrorHandler } from '@/plugins/api/base'
-import type { PaginatedResult, ViewTableTraits, DatasetRequest, PaginatedDatasetRequest, PaginatedRequest, Phenotypes, TraitDatasetRequest, TraitTimelineRequest, TraitUnificationRequest, TrialCreationDetails, TrialsExportDatasetRequest, UnacceptedLicenseRequest, TrialSetupStats, ViewTableTrialsData, TraitStats, ViewTableDatasets } from '@/plugins/types/germinate'
+import type { PaginatedResult, ViewTableTraits, DatasetRequest, PaginatedDatasetRequest, PaginatedRequest, Phenotypes, TraitDatasetRequest, TraitTimelineRequest, TraitUnificationRequest, TrialCreationDetails, TrialsExportDatasetRequest, UnacceptedLicenseRequest, TrialSetupStats, ViewTableTrialsData, TraitStats, ViewTableDatasets, TrialStats } from '@/plugins/types/germinate'
 
 function apiPostTrialsDataTable (queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableTrialsData[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -67,6 +67,10 @@ function apiPostTrialLocations<T> (queryData: DatasetRequest, onSuccess?: Germin
   return authAxios({ url: 'dataset/data/trial/location', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+function apiGetTrialStats (onSuccess?: GerminateResponseHandler<TrialStats>, onError?: ErrorHandler) {
+  return authAxios<TrialStats>({ url: 'trial/stats', success: onSuccess, error: onError })
+}
+
 function apiPostTrialLocationCount<T> (queryData: DatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   return authAxios({ url: 'dataset/data/trial/location/count', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
@@ -106,4 +110,5 @@ export {
   apiPostTraitDatasetStats,
   apiGetTraitCategories,
   apiPostTrialSetupStats,
+  apiGetTrialStats,
 }

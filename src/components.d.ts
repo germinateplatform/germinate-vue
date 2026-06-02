@@ -31,6 +31,7 @@ declare module 'vue' {
     DatasetAttributeTable: typeof import('./components/tables/DatasetAttributeTable.vue')['default']
     Datasets: typeof import('./components/widgets/Datasets.vue')['default']
     DatasetTable: typeof import('./components/tables/DatasetTable.vue')['default']
+    DataStatsCard: typeof import('./components/widgets/DataStatsCard.vue')['default']
     DataUpdateTable: typeof import('./components/tables/DataUpdateTable.vue')['default']
     DropFilePreview: typeof import('./components/widgets/DropFilePreview.vue')['default']
     ExifInfo: typeof import('./components/widgets/ExifInfo.vue')['default']

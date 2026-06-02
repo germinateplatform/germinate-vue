@@ -440,6 +440,7 @@ const pedigreeColumns: ExtendedDataTableHeader[] = [
     key: 'datasetName',
     dataType: 'string',
     title: 'tableColumnPedigreeDatasetName',
+    quickSearchable: true,
   },
   {
     key: 'parentId',
@@ -454,6 +455,7 @@ const pedigreeColumns: ExtendedDataTableHeader[] = [
     key: 'parentName',
     dataType: 'string',
     title: 'tableColumnPedigreeParentName',
+    quickSearchable: true,
     searchable: true,
   }, {
     key: 'childId',
@@ -468,6 +470,7 @@ const pedigreeColumns: ExtendedDataTableHeader[] = [
     key: 'childName',
     dataType: 'string',
     title: 'tableColumnPedigreeChildName',
+    quickSearchable: true,
     searchable: true,
   }, {
     key: 'relationshipType',

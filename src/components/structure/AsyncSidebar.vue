@@ -379,6 +379,8 @@
   function toggleSidebar (at: 'upload' | 'download') {
     if (!visible.value) {
       visible.value = true
+    } else if (!at) {
+      visible.value = false
     }
 
     if (at) {

@@ -77,7 +77,7 @@
   })
 
   const canContinue = computed(() => selectedDatasets.value && selectedDatasets.value.length > 0)
-  const selectionMode = computed(() => datasetType.value === 'allelefreq' ? TableSelectionType.single : TableSelectionType.all)
+  const selectionMode = computed(() => (datasetType.value === 'allelefreq' || datasetType.value === 'pedigree') ? TableSelectionType.single : TableSelectionType.all)
   const allDatasetType = computed(() => {
     const result: { [key: string]: DatasetType } = {}
 
@@ -159,6 +159,9 @@
         break
       case 'climate':
         router.push(Pages.getPath(Pages.exportClimates, selectedDatasets.value.join(',')))
+        break
+      case 'pedigree':
+        router.push(Pages.getPath(Pages.exportPedigrees, selectedDatasets.value.join(',')))
         break
     }
   }

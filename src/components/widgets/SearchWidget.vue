@@ -41,7 +41,7 @@
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title class="text-headline-small">
-                {{ getNumberWithSuffix(stats[category.key], 1) }}
+                {{ getNumberWithSuffix(stats[category.key] || 0, 1) }}
               </v-card-title>
 
               <v-card-subtitle>{{ category.title }}</v-card-subtitle>
@@ -69,13 +69,12 @@
 </template>
 
 <script setup lang="ts">
-  import type { OverviewStats } from '@/plugins/types/OverviewStats'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { useI18n } from 'vue-i18n'
   import GermplasmTable from '@/components/tables/GermplasmTable.vue'
   import LocationTable from '@/components/tables/LocationTable.vue'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type FilterGroup, type PaginatedRequest, type ViewTablePedigrees } from '@/plugins/types/germinate'
+  import { FilterComparator, type OverviewStats, FilterOperator, type PaginatedResult, type FilterGroup, type PaginatedRequest, type ViewTablePedigrees, type OverviewStatsField } from '@/plugins/types/germinate'
   import { columns, validCompsForType } from '@/plugins/util/table-columns'
   import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import { apiPostTableExport } from '@/plugins/api/misc'
@@ -91,22 +90,22 @@
 
   const allCategories = computed(() => {
     return [{
-      key: 'germplasm',
+      key: 'germplasm' as OverviewStatsField,
       title: t('pageSearchResultSectionGermplasm'),
       icon: mdiSprout,
       color: getTemplateColor(0),
     }, {
-      key: 'datasets',
+      key: 'datasets' as OverviewStatsField,
       title: t('pageSearchResultSectionDatasets'),
       icon: mdiDatabase,
       color: getTemplateColor(1),
     }, {
-      key: 'pedigrees',
+      key: 'pedigreeDefinitions' as OverviewStatsField,
       title: t('pageSearchResultSectionPedigreeData'),
       icon: mdiFamilyTree,
       color: getTemplateColor(2),
     }, {
-      key: 'locations',
+      key: 'locations' as OverviewStatsField,
       title: t('pageSearchResultSectionLocationData'),
       icon: mdiMapMarker,
       color: getTemplateColor(3),
@@ -169,8 +168,8 @@
     return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'germplasm')
   }
   function getPedigreeData (data: PaginatedRequest) {
-    return apiPostPedigreeTable<PaginatedResult<ViewTablePedigrees[]>>(data, result => {
-      stats.value.pedigrees = result.count
+    return apiPostPedigreeTable(data, result => {
+      stats.value.pedigreeDefinitions = result.count
     })
   }
   function getDatasetData (data: PaginatedRequest) {

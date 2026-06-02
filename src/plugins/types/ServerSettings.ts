@@ -1,4 +1,4 @@
-import type { HiddenColumns } from '@/plugins/types/germinate'
+import type { HiddenColumns, OverviewStatsField } from '@/plugins/types/germinate'
 
 export interface ServerSettings {
   authMode: string
@@ -7,7 +7,7 @@ export interface ServerSettings {
   colorsGradient?: string[]
   colorPrimary?: string
   commentsEnabled: boolean
-  dashboardCategories?: string[]
+  dashboardCategories?: OverviewStatsField[]
   dashboardSections?: string[]
   dataImportMode: string
   externalLinkIdentifier?: string

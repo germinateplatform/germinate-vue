@@ -28,13 +28,26 @@
         </template>
 
         <v-list-item link :to="Pages.germplasm.path" :prepend-icon="mdiSprout" v-if="Pages.isAvailable(Pages.germplasm)" :title="$t('menuGermplasm')"><template #append><v-chip size="small">{{ formatBadge('germplasm') }}</v-chip></template></v-list-item>
-        <v-list-item link :to="Pages.taxonomies.path" :prepend-icon="mdiGraph" v-if="Pages.isAvailable(Pages.taxonomies)" :title="$t('menuTaxonomies')"><template #append><v-chip size="small">{{ formatBadge('taxonomies') }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.taxonomies.path" :prepend-icon="mdiLan" v-if="Pages.isAvailable(Pages.taxonomies)" :title="$t('menuTaxonomies')"><template #append><v-chip size="small">{{ formatBadge('taxonomies') }}</v-chip></template></v-list-item>
+
+        <v-list-group value="pedigrees">
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" link :prepend-icon="mdiGraph" :title="$t('menuPedigreeData')" />
+          </template>
+
+          <v-list-item link :to="Pages.pedigrees.path" v-if="Pages.isAvailable(Pages.pedigrees)" :title="$t('menuPedigrees')">
+            <template #prepend><v-icon :icon="mdiPeriodicTable" class="mdi-rotate-90" /></template>
+            <template #append><v-chip size="small">{{ formatBadge('pedigreeDefinitions') }}</v-chip></template>
+          </v-list-item>
+          <v-list-item link :to="Pages.getPath(Pages.export, 'pedigree')" :prepend-icon="mdiFamilyTree" v-if="Pages.isAvailable(Pages.exportPedigrees)" :title="$t('menuPedigreeDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsPedigree') }}</v-chip></template></v-list-item>
+        </v-list-group>
 
         <v-list-group value="trials">
           <template #activator="{ props }">
             <v-list-item v-bind="props" link :prepend-icon="mdiTagMultiple" :title="$t('menuTrialsData')" />
           </template>
 
+          <v-list-item link :to="Pages.trialsOverview.path" :prepend-icon="mdiLandFields" v-if="Pages.isAvailable(Pages.trialsOverview)" :title="$t('menuTrialsOverview')" />
           <v-list-item link :to="Pages.traits.path" :prepend-icon="mdiTagTextOutline" v-if="Pages.isAvailable(Pages.traits)" :title="$t('menuTrialsTraits')"><template #append><v-chip size="small">{{ formatBadge('traits') }}</v-chip></template></v-list-item>
           <v-list-item link :to="Pages.getPath(Pages.export, 'trials')" :prepend-icon="mdiShovel" v-if="Pages.isAvailable(Pages.exportTraits)" :title="$t('menuTrialsDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsTrials') }}</v-chip></template></v-list-item>
         </v-list-group>
@@ -44,6 +57,7 @@
             <v-list-item v-bind="props" link :prepend-icon="mdiDna" :title="$t('menuGenotypicData')" />
           </template>
 
+          <v-list-item link :to="Pages.genotypeOverview.path" :prepend-icon="mdiViewDashboard" v-if="Pages.isAvailable(Pages.genotypeOverview)" :title="$t('menuGenotypicOverview')" />
           <v-list-item link :to="Pages.markers.path" :prepend-icon="mdiFormatIndentIncrease" v-if="Pages.isAvailable(Pages.markers)" :title="$t('menuGenotypicMarkers')"><template #append><v-chip size="small">{{ formatBadge('markers') }}</v-chip></template></v-list-item>
           <v-list-item link :to="Pages.maps.path" :prepend-icon="mdiReorderHorizontal" v-if="Pages.isAvailable(Pages.maps)" :title="$t('menuGenotypicMaps')"><template #append><v-chip size="small">{{ formatBadge('maps') }}</v-chip></template></v-list-item>
           <v-list-item link :to="Pages.getPath(Pages.export, 'genotype')" :prepend-icon="mdiDna" v-if="Pages.isAvailable(Pages.exportGenotypes)" :title="$t('menuGenotypicDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsGenotype') }}</v-chip></template></v-list-item>
@@ -109,10 +123,10 @@
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { germinateVersion } from '@/plugins/util'
   import { useDisplay } from 'vuetify'
-  import type { OverviewStats } from '@/plugins/types/OverviewStats'
+  import type { OverviewStats, OverviewStatsField } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiMap, mdiMapSearch, mdiReorderHorizontal, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiWeatherSnowyRainy } from '@mdi/js'
+  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiPeriodicTable, mdiReorderHorizontal, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy } from '@mdi/js'
 
   const { name, lgAndUp } = useDisplay()
   const store = coreStore()
@@ -121,7 +135,7 @@
 
   const badgeCounts = ref<OverviewStats>()
 
-  function formatBadge (key: string) {
+  function formatBadge (key: OverviewStatsField) {
     let value = null
 
     if (badgeCounts.value && badgeCounts.value[key]) {
@@ -162,10 +176,12 @@
   onBeforeMount(() => updateStats())
 
   function updateStats () {
-    apiGetOverviewStats<OverviewStats>((result: OverviewStats) => {
+    apiGetOverviewStats(store.storeSelectedProjects, (result: OverviewStats) => {
       badgeCounts.value = result
     })
   }
+
+  watch(() => store.storeSelectedProjects, async () => updateStats())
 
   onMounted(() => emitter.on('update-sidebar-menu', updateStats))
   onBeforeUnmount(() => emitter.off('update-sidebar-menu', updateStats))

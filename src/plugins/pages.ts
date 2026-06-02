@@ -74,6 +74,11 @@ export class Pages {
     path: '/data/climate/climates/:id',
   }
 
+  static trialsOverview: Page = {
+    name: 'trials',
+    path: '/data/trials',
+  }
+
   static traits: Page = {
     name: 'traits',
     path: '/data/trials/traits',
@@ -87,6 +92,11 @@ export class Pages {
   static trialCreation: Page = {
     name: 'trialCreation',
     path: '/data/trials/create',
+  }
+
+  static genotypeOverview: Page = {
+    name: 'genotypes',
+    path: '/data/genotypes',
   }
 
   static markers: Page = {
@@ -109,6 +119,11 @@ export class Pages {
     path: '/data/genotypes/maps/:id',
   }
 
+  static pedigrees: Page = {
+    name: 'pedigrees',
+    path: '/data/pedigrees',
+  }
+
   static exportCrossComparison: Page = {
     name: 'exportCrossComparison',
     path: '/data/export/cross',
@@ -127,6 +142,11 @@ export class Pages {
   static exportClimates: Page = {
     name: 'exportClimates',
     path: '/data/export/climate/:id',
+  }
+
+  static exportPedigrees: Page = {
+    name: 'exportPedigrees',
+    path: '/data/export/pedigree/:id',
   }
 
   static exportTraits: Page = {

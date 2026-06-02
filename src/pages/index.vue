@@ -6,7 +6,7 @@
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title class="text-headline-small">
-                {{ getNumberWithSuffix(stats[category.value], 1) }}
+                {{ getNumberWithSuffix(stats[category.value] || 0, 1) }}
               </v-card-title>
 
               <v-card-subtitle>{{ category.text() }}</v-card-subtitle>
@@ -51,7 +51,6 @@
 
 <script lang="ts" setup>
   import { apiGetOverviewStats } from '@/plugins/api/stats'
-  import type { OverviewStats } from '@/plugins/types/OverviewStats'
   import { coreStore } from '@/stores/app'
   import { statCategories } from '@/plugins/util/types'
   import { getTemplateColor } from '@/plugins/util/colors'
@@ -59,7 +58,7 @@
   import ImageCarousel from '@/components/structure/ImageCarousel.vue'
   import PublicationTable from '@/components/tables/PublicationTable.vue'
   import { apiPostDataImportStats, apiPostNewsTable, apiPostPublicationsTable } from '@/plugins/api/misc'
-  import { FilterComparator, FilterOperator, type ViewTableNews, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications, type ViewTableImportJobs } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableNews, type OverviewStats, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications, type ViewTableImportJobs } from '@/plugins/types/germinate'
   import { lookupDoiInformation } from '@/plugins/util'
   import HtmlTemplateEditor from '@/components/widgets/HtmlTemplateEditor.vue'
   import NewsTable from '@/components/tables/NewsTable.vue'
@@ -149,9 +148,13 @@
     })
   }
 
-  onBeforeMount(() => {
-    apiGetOverviewStats<OverviewStats>((result: OverviewStats) => {
+  function updateStats () {
+    apiGetOverviewStats(store.storeSelectedProjects, (result: OverviewStats) => {
       stats.value = result
     })
-  })
+  }
+
+  watch(() => store.storeSelectedProjects, async () => updateStats())
+
+  onBeforeMount(() => updateStats())
 </script>
