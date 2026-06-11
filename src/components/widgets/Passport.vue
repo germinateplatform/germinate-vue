@@ -63,7 +63,7 @@
       </v-row>
 
       <InstitutionTable class="mb-10" header-icon-color="primary" :get-data="getInstitutionData" id="institutions" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
-      <PublicationTable class="mb-10" header-icon-color="primary" :get-data="getPublicationData" :filter-on="publicationFilter" id="publications" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <PublicationTable class="mb-10" header-icon-color="primary" :publication-reference-type="PublicationdataReferenceType.germplasm" :publication-reference-id="germplasmId" :get-data="getPublicationData" :filter-on="publicationFilter" id="publications" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportPublicationsText')" />
@@ -143,7 +143,7 @@
 <script setup lang="ts">
   import ScrollSpy from '@/components/widgets/ScrollSpy.vue'
   import { apiGetGermplasmDataWarnings, apiPostGermplasmDatasetTable, apiPostGermplasmGroupTable, apiPostGermplasmTable, apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
-  import { type Datawarnings, FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations, type ViewTablePublications } from '@/plugins/types/germinate'
+  import { type Datawarnings, FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, type PaginatedResult, PublicationdataReferenceType, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations, type ViewTablePublications } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
   import McpdInfo from '@/components/germplasm/McpdInfo.vue'
   import ExternalLinks from '@/components/widgets/ExternalLinks.vue'
@@ -387,4 +387,3 @@
     })
   })
 </script>
-

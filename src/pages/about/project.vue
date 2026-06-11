@@ -91,7 +91,7 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').AboutInfo} -->
     <GenericAddEditFormModal
       title="modalTitleAddAboutPartner"
-      :item="selectedInfo"
+      v-model="selectedInfo"
       :notify="onSendInfo"
       :fields="infoFields"
       @items-changed="update"

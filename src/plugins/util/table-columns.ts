@@ -11,7 +11,7 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   key: 'germplasmName',
   title: 'tableColumnGermplasmName',
   dataType: 'string',
-  preferredSortingColumn: true,
+  preferredSearchColumn: true,
   searchable: true,
   quickSearchable: true,
 }, {
@@ -227,7 +227,7 @@ const climateDataColumns: ExtendedDataTableHeader[] = [{
   key: 'climateName',
   dataType: 'string',
   title: 'tableColumnClimateName',
-  preferredSortingColumn: true,
+  preferredSearchColumn: true,
 }, {
   key: 'climateDataType',
   dataType: 'dataType',
@@ -257,7 +257,7 @@ const traitDataColumns: ExtendedDataTableHeader[] = [{
   key: 'germplasmName',
   title: 'tableColumnGermplasmName',
   dataType: 'string',
-  preferredSortingColumn: true,
+  preferredSearchColumn: true,
   searchable: true,
   quickSearchable: true,
 }, {

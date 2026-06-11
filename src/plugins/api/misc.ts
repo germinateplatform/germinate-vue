@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AboutConfig, AsyncExportResult, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, Publicationdata, Publications, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableStories } from '@/plugins/types/germinate'
+import type { AboutConfig, AsyncExportResult, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GatekeeperInstitution, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, PaginatedResult, Publicationdata, Publications, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableStories } from '@/plugins/types/germinate'
 
 const apiGetSettings = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'settings', success: onSuccess, error: onError })
 
@@ -32,9 +32,9 @@ const apiPostGermplasmInstitutionTable = <T>(germplasmId: number, queryData: Pag
   return authAxios({ url: `germplasm/${germplasmId}/institution/table`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiGetGatekeeperInstitutions = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiGetGatekeeperInstitutions (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<GatekeeperInstitution[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'gatekeeper/institution', method: 'GET', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<GatekeeperInstitution[]>>({ url: 'gatekeeper/institution', method: 'GET', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiPostFeedbackUpload = <T>(formData: FormData, uuid: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authForm({ url: `feedback/${uuid}`, formData, success: onSuccess, error: onError })
@@ -128,9 +128,9 @@ const apiPostPublicationsTable = <T>(queryData: PaginatedRequest, onSuccess?: Ge
 
 const apiGetPublications = <T>(type: string, id?: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `publicationtype/${type}/${id || ''}`, method: 'GET', success: onSuccess, error: onError })
 
-const apiPutPublication = <T>(data: Publications, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'publication', method: 'PUT', data, success: onSuccess, error: onError })
+const apiPutPublication = (data: Publications, onSuccess?: GerminateResponseHandler<number>, onError?: ErrorHandler) => authAxios<number>({ url: 'publication', method: 'PUT', data, success: onSuccess, error: onError })
 
-const apiPutPublicationReference = <T>(publicationId: number, data: Publicationdata, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `publication/${publicationId}/reference`, method: 'PUT', data, success: onSuccess, error: onError })
+const apiPutPublicationReference = (publicationId: number, data: Publicationdata, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) => authAxios<boolean>({ url: `publication/${publicationId}/reference`, method: 'PUT', data, success: onSuccess, error: onError })
 
 const apiDeletePublicationReference = <T>(publicationId: number, referenceType: string, referenceId?: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `publication/${publicationId}/reference/${referenceType}/${referenceId || ''}`, method: 'DELETE', success: onSuccess, error: onError })
 

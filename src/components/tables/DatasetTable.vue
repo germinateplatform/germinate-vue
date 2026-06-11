@@ -150,7 +150,7 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableDatasets} -->
     <GenericAddEditFormModal
       title="modalTitleAddDataset"
-      :item="selectedDataset"
+      v-model="selectedDataset"
       :fields="datasetFields"
       :notify="sendDataset"
       @items-changed="baseTable?.refresh()"
@@ -176,7 +176,7 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableExperiments} -->
     <GenericAddEditFormModal
       title="modalTitleExperimentCreation"
-      :item="selectedExperiment"
+      v-model="selectedExperiment"
       :fields="experimentFields"
       :notify="sendExperiment"
       @items-changed="updateExperiments"

@@ -1,63 +1,46 @@
 <template>
-  <div class="login-bg d-flex flex-column align-center justify-center">
+  <div class="login-bg d-flex align-center justify-center">
     <v-fab
       class="bg-attribution"
       :icon="mdiInformation"
       variant="tonal"
       color="primary"
       size="sm"
-      location="bottom left"
+      location="bottom right"
       v-tooltip.top="'\'Large Triangles\' by SVGBackgrounds.com'"
     />
-
-    <v-card
-      class="mb-10"
-      elevation="8"
-    >
+    <v-container max-width="640">
       <v-img
         max-height="300"
-        min-width="max(33vw, 300px)"
         max-width="640"
-        :src="store.storeBaseUrl + 'image/src-svg/logo-horizontal.svg'" id="logo-horizontal" onerror="this.onerror=null;this.src='null';" alt="Project partner logo"
-      >
-        <template #placeholder>
-          <div class="d-flex align-center justify-center fill-height d-flex align-center flex-wrap">
-            <v-progress-circular
-              color="grey-lighten-4"
-              indeterminate
-            />
-          </div>
-        </template>
-      </v-img>
-    </v-card>
+        :cover="false"
+        src="/img/germinate-square-name-white.svg"
+      />
 
-    <v-card
-      class="mx-auto pa-12 pb-8"
-      elevation="8"
-      min-width="max(33vw, 300px)"
-      max-width="640"
-      rounded="lg"
-      :loading="loading"
-    >
-      <template #loader="{ isActive }">
-        <v-progress-linear
-          :active="isActive"
-          color="primary"
-          height="4"
-          indeterminate
-        />
-      </template>
-      <LoginSection @loading="setLoading" />
-    </v-card>
+      <v-card
+        class="mt-5"
+        :loading="loading"
+      >
+        <template #loader="{ isActive }">
+          <v-progress-linear
+            :active="isActive"
+            color="primary"
+            height="4"
+            indeterminate
+          />
+        </template>
+        <v-card-text class="pa-5">
+          <LoginSection @loading="setLoading" />
+        </v-card-text>
+      </v-card>
+    </v-container>
   </div>
 </template>
 
 <script setup lang="ts">
   import LoginSection from '@/components/widgets/LoginSection.vue'
-  import { coreStore } from '@/stores/app'
   import { mdiInformation } from '@mdi/js'
 
-  const store = coreStore()
   const loading = ref(false)
 
   function setLoading (ld: boolean) {
@@ -73,8 +56,8 @@
 }
 .bg-attribution {
   position: absolute;
-  bottom: 3em;
-  left: 1.5em;
+  bottom: 1.5em;
+  right: 1.5em;
   height: unset !important;
 }
 </style>

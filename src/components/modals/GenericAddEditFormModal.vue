@@ -14,7 +14,7 @@
             :md="6 * config.width"
           >
             <v-text-field
-              v-model="formModel[config.key]"
+              v-model="modelRecord[config.key]"
               :list="(config.inputDatalist && config.inputDatalist.length > 0) ? config.key : undefined"
               :label="$t(config.title)"
               :hint="config.hint ? $t(config.hint) : undefined"
@@ -27,7 +27,7 @@
               <option v-for="option in config.inputDatalist" :key="`item-${option}`">{{ option }}</option>
             </datalist>
             <v-select
-              v-model="formModel[config.key]"
+              v-model="modelRecord[config.key]"
               :label="$t(config.title)"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
@@ -37,7 +37,7 @@
               v-else-if="config.type === 'select'"
             />
             <v-textarea
-              v-model="formModel[config.key]"
+              v-model="modelRecord[config.key]"
               :label="$t(config.title)"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
@@ -47,7 +47,7 @@
             <v-row v-else-if="config.type === 'markdown'">
               <v-col cols="12" md="6">
                 <v-textarea
-                  v-model="formModel[config.key]"
+                  v-model="modelRecord[config.key]"
                   :label="$t(config.title)"
                   :required="config.required"
                   :hint="config.hint ? $t(config.hint) : undefined"
@@ -64,7 +64,7 @@
                 <div class="v-textarea v-field__input v-input--density-default v-field--variant-filled markdown-area">
                   <div class="v-field__overlay" />
                   <label class="mx-4 v-label v-field-label v-field-label--floating" aria-hidden="false">{{ $t('formLabelGenericMarkdownPreview') }}</label>
-                  <Markdown class="mx-4 pt-8" :source="formModel[config.key]" />
+                  <Markdown class="mx-4 pt-8" :source="modelRecord[config.key]" />
                 </div>
               </v-col>
             </v-row>
@@ -78,8 +78,8 @@
               :clearable="!config.required"
               prepend-icon=""
               prepend-inner-icon="$calendar"
-              :model-value="formModel[config.key] ? date.toJsDate(formModel[config.key]) : undefined"
-              @update:model-value="v => { formModel[config.key] = date.toISO(v) }"
+              :model-value="modelRecord[config.key] ? date.toJsDate(modelRecord[config.key]) : undefined"
+              @update:model-value="v => { modelRecord[config.key] = date.toISO(v) }"
             />
             <v-date-input
               v-else-if="config.type === 'dateobject'"
@@ -91,12 +91,13 @@
               :clearable="!config.required"
               prepend-icon=""
               prepend-inner-icon="$calendar"
-              v-model="formModel[config.key]"
+              v-model="modelRecord[config.key]"
             />
+            <!-- @vue-ignore -->
             <v-file-input
               v-else-if="config.type === 'file'"
               :label="$t(config.title)"
-              v-model="formModel[config.key]"
+              v-model="modelRecord[config.key]"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
               prepend-icon=""
@@ -105,7 +106,7 @@
             />
             <v-checkbox
               v-else-if="config.type === 'boolean'"
-              v-model="formModel[config.key]"
+              v-model="modelRecord[config.key]"
               :label="$t(config.title)"
               :disabled="config.disabled === true"
               :hint="config.hint ? $t(config.hint) : undefined"
@@ -114,23 +115,23 @@
           </v-col>
         </v-row>
 
-        <slot name="additional-fields" v-bind="{ item: formModel }" />
+        <slot name="additional-fields" v-bind="{ item: item }" />
       </template>
 
       <v-divider />
 
       <v-card-actions class="bg-surface-light">
-        <v-btn :text="$t('buttonCancel')" variant="plain" @click="dialog = false" />
+        <v-btn :text="$t('buttonCancel')" variant="plain" @click="hide()" />
 
         <v-spacer />
 
-        <v-btn :text="$t('buttonSave')" :disabled="!valid" @click="save" />
+        <v-btn :text="$t('buttonSave')" :disabled="!valid || disableSave === true" @click="save" />
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script setup lang="ts" generic="T">
+<script setup lang="ts" generic="T extends Partial<Record<keyof T, unknown>>">
   import { mdiPaperclip } from '@mdi/js'
   import Markdown from 'vue3-markdown-it'
   import { useDate } from 'vuetify'
@@ -156,50 +157,61 @@
     visible?: (item: T) => boolean
   }
 
+  const modelRecord = computed({
+    get: () => item.value as Record<string, unknown>,
+    set: v => {
+      item.value = v as T
+    }
+  })
+
   const compProps = defineProps<{
     title: string
     text?: string
-    item: T
+    disableSave?: boolean
     fields: FieldConfig<T>[]
     notify: (args: T) => Promise<boolean>
   }>()
 
+  const item = defineModel<T>({
+    default: {},
+  })
+
   const date = useDate()
   const dialog = ref(false)
-  // @ts-ignore
-  const formModel = ref<T>({})
-  const emit = defineEmits(['items-changed'])
+  const emit = defineEmits(['items-changed', 'hide'])
 
   const visibleFields = computed(() => {
     if (compProps.fields) {
-      return compProps.fields.filter(f => !f.visible || (f.visible(formModel.value) === true))
+      return compProps.fields.filter(f => !f.visible || (f.visible(item.value) === true))
     } else {
       return []
     }
   })
 
   const valid = computed(() => {
-    return !compProps.fields.some(f => (f.valid && !f.valid(formModel.value[f.key])) || (f.required && formModel.value[f.key] === undefined))
+    return !compProps.fields.some(f => (f.valid && !f.valid(modelRecord.value[f.key])) || (f.required && modelRecord.value[f.key] === undefined))
   })
 
   function show () {
-    if (compProps.item) {
-      formModel.value = JSON.parse(JSON.stringify(compProps.item))
+    if (item.value) {
+      item.value = JSON.parse(JSON.stringify(item.value))
     } else {
-      formModel.value = {}
+      // @ts-ignore
+      item.value = {}
     }
 
     dialog.value = true
   }
   function hide () {
     dialog.value = false
+    emit('hide')
   }
   function save () {
     if (!valid.value) {
       return
     }
 
-    compProps.notify(formModel.value)
+    compProps.notify(item.value)
       .then((result: boolean) => {
         if (result === true) {
           emit('items-changed')

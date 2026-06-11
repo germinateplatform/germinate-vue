@@ -31,7 +31,7 @@ const gatekeeperErrors: { [key: string]: string } = {
 /**
  * Returns the current authentication token
  */
-const getToken = () => {
+function getToken () {
   const store = coreStore()
   let t = store.storeToken
 
@@ -44,15 +44,15 @@ const getToken = () => {
   return t ? t.token : null
 }
 
-const handleError = (error: AxiosResponse) => {
+function handleError (error: AxiosResponse) {
   const store = coreStore()
   emitter.emit('show-loading', false)
-  const variant = 'danger'
+  const variant = 'error'
   const title = i18n.global.t('genericError')
   let message = error.statusText
 
-  if (error.data && error.data.reasonPhrase && gatekeeperErrors[error.data.reasonPhrase]) {
-    message = i18n.global.t(gatekeeperErrors[error.data.reasonPhrase])
+  if (error.data && error.data && gatekeeperErrors[error.data]) {
+    message = i18n.global.t(gatekeeperErrors[error.data])
   } else {
     const authMode = store.storeServerSettings?.authMode
     switch (error.status) {
@@ -101,13 +101,14 @@ const handleError = (error: AxiosResponse) => {
     }
   }
 
-  emitter.emit('toast', {
-    message,
+  emitter.emit('show-snackbar', {
+    text: message,
     title,
-    variant,
-    autoHideDelay: 5000,
-    appendToast: true,
+    color: variant,
+    timeout: 5000,
   })
+
+  return message
 }
 
 export interface ErrorHandler {
@@ -119,7 +120,7 @@ export interface ErrorHandler {
  * Sends a FORM to the given URL using authentication
  * @param {Object} param0 `{ url: String, formData: Object, method: String, success: Callback, error: { codes: [], callback: Callback } }`
  */
-const authForm = <T>({ url = undefined, formData, method = 'post', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, formData?: any | undefined, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) => {
+function authForm<T> ({ url = undefined, formData, method = 'post', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, formData?: any | undefined, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
   const store = coreStore()
   const promise = axios({
     baseURL: store.storeBaseUrl,

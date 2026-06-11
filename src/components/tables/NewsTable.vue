@@ -96,7 +96,7 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableNews} -->
     <GenericAddEditFormModal
       title="modalTitleEditNews"
-      :item="newNews"
+      v-model="newNews"
       :notify="onSendNews"
       :fields="newsFields"
       @items-changed="baseTable?.refresh()"

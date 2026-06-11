@@ -5,7 +5,7 @@
       scrollable
     >
       <v-card
-        class="mx-auto pa-12 pb-8"
+        class="mx-auto"
         elevation="8"
         min-width="400"
         max-width="640"
@@ -21,7 +21,9 @@
           />
         </template>
 
-        <LoginSection @close="hide" @loading="setLoading" />
+        <v-card-text class="pa-5">
+          <LoginSection @close="hide" @loading="setLoading" />
+        </v-card-text>
 
         <v-card-actions>
           <v-spacer />

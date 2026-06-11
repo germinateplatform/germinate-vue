@@ -1,7 +1,7 @@
 import type { DataTableHeader } from 'vuetify'
 
 export interface ExtendedDataTableHeader extends DataTableHeader {
-  preferredSortingColumn?: boolean
+  preferredSearchColumn?: boolean
   visibleInTable?: boolean
   visibleInFilter?: boolean
   dataType?: string

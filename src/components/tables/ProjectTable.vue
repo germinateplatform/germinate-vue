@@ -59,7 +59,7 @@
     <!-- @vue-generic {typeof import('@/plugins/types/ExtendedViewTableProjects')} -->
     <GenericAddEditFormModal
       title="modalTitleAddProject"
-      :item="selectedProject"
+      v-model="selectedProject"
       :notify="onSendProject"
       :fields="projectFields"
       @items-changed="baseTable?.refresh()"

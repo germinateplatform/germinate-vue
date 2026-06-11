@@ -205,6 +205,10 @@ function downloadSvgsFromContainer (container: Element, isPlotly: boolean, filen
   document.body.removeChild(downloadLink)
 }
 
+function isSet (input: string | undefined | null): boolean {
+  return input !== undefined && input !== null && input.trim().length > 0
+}
+
 function getFromCache (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
   if (!publication) {
     return undefined
@@ -246,19 +250,21 @@ function lookupDoiInformation (publication: ViewTablePublications): PublicationD
       result = getFromCache(publication)
     } else {
       try {
-        const citation = Cite.async(publication.publicationDoi.trim())
-        if (citation && citation.data && citation.data.length > 0) {
-          const temp = citation.format('data', { format: 'object' })[0]
-          result = {
-            title: temp.title,
-            container: temp['container-title'],
-            fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
-            URL: temp.URL,
-            date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
-          }
-        } else {
-          result = getFromCache(publication)
-        }
+        Cite.async(publication.publicationDoi.trim())
+          .then((citation: any) => {
+            if (citation && citation.data && citation.data.length > 0) {
+              const temp = citation.format('data', { format: 'object' })[0]
+              result = {
+                title: temp.title,
+                container: temp['container-title'],
+                fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
+                URL: temp.URL,
+                date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
+              }
+            } else {
+              result = getFromCache(publication)
+            }
+          })
       } catch {
         result = getFromCache(publication)
       }
@@ -293,6 +299,7 @@ export {
   isAccepted,
   bskyIcon,
   genesysIcon,
+  isSet,
   lookupDoiInformation,
   isUrl,
 }

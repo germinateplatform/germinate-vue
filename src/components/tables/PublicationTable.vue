@@ -11,6 +11,7 @@
     :display-type="compProps.displayType"
     item-key="publicationId"
     table-key="publications"
+    :sort-by="[{ key: 'createdOn', order: 'desc' }]"
     :header-icon="mdiBookOpenVariant"
     :header-title="$t('pagePublicationsTitle')"
     :supports-grid-cards="true"
@@ -26,7 +27,7 @@
       </template>
     </template>
     <template #item.publicationJournal="{ item }">
-      <span v-if="item.publicationFallbackCache">{{ item.publicationFallbackCache['container-title'] }}</span>
+      <v-chip label color="muted" variant="tonal" :prepend-icon="mdiNewspaper" v-if="item.publicationFallbackCache">{{ item.publicationFallbackCache['container-title'] }}</v-chip>
     </template>
     <template #item.publicationDoi="{ item }">
       <span><a rel="noopener noreferrer" :href="item.publicationDoi">{{ item.publicationDoi }}</a> <v-icon :icon="mdiOpenInNew" /></span>
@@ -42,9 +43,9 @@
     <template #card-item="{ item }">
       <v-card v-if="item.lookupDetails" class="d-flex flex-column">
         <v-card-text>
-          <div>{{ item.lookupDetails.container }}</div>
+          <v-chip label color="muted" variant="tonal" :prepend-icon="mdiNewspaper">{{ item.lookupDetails.container }}</v-chip>
 
-          <p class="text-headline-small font-weight-black">{{ item.lookupDetails.title }}</p>
+          <p class="text-headline-small font-weight-black mt-2">{{ item.lookupDetails.title }}</p>
 
           <p v-if="item.lookupDetails.date">
             {{ item.lookupDetails.date }}
@@ -85,19 +86,52 @@
       <slot :name="slot" v-bind="slotProps" />
     </template>
   </BaseTable>
+
+  <!-- @vue-generic {PublicationDoi} -->
+  <GenericAddEditFormModal
+    title="modalTitlePublicationAddNew"
+    v-model="newPublication"
+    :disable-save="!newPublication.previewHtml"
+    :fields="publicationFields"
+    :notify="sendNewPublication"
+    ref="addPublicationModal"
+  >
+    <template #additional-fields="{ item }">
+      <v-btn @click="checkDoi" :prepend-icon="mdiMagnify" :text="$t('buttonUpdate')" />
+      <div class="mt-5" v-if="item.previewHtml">
+        <div v-html="item.previewHtml" />
+        <v-chip class="mt-2" v-if="item.date" label :prepend-icon="mdiCalendar" :text="item.date.toLocaleDateString()" />
+      </div>
+
+      <v-alert class="mt-5" variant="tonal" :icon="mdiAlarm" color="warning" :text="item.error" v-if="item.error" />
+    </template>
+  </GenericAddEditFormModal>
 </template>
 
 <script setup lang="ts">
   import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
 
+  // @ts-ignore
+  import { Cite } from '@citation-js/core'
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
   import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTablePublications } from '@/plugins/types/germinate'
+  import { PublicationdataReferenceType, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { publicationTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
-  import { mdiBookOpenVariant, mdiOpenInNew, mdiPlus } from '@mdi/js'
+  import { mdiAlarm, mdiBookOpenVariant, mdiCalendar, mdiMagnify, mdiNewspaper, mdiOpenInNew, mdiPlus } from '@mdi/js'
+  import { apiPutPublication, apiPutPublicationReference } from '@/plugins/api/misc'
+
+  export interface PublicationDoi {
+    doi?: string
+    previewHtml?: string
+    json?: string
+    date?: Date
+    error?: string
+  }
+
+  const newPublication = ref<PublicationDoi>({})
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePublications[]>>> }
@@ -106,11 +140,68 @@
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
     displayType?: DisplayType
+    publicationReferenceType?: PublicationdataReferenceType
+    publicationReferenceId?: number
   }>()
 
   const store = coreStore()
+  const addPublicationModal = useTemplateRef('addPublicationModal')
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
+
+  const publicationFields = computed(() => {
+    return [{
+      key: 'doi',
+      title: 'formLabelPublicationDOI',
+      type: 'text' as const,
+      required: true,
+      width: 2,
+    }]
+  })
+
+  function checkDoi () {
+    Cite.async((newPublication.value.doi || '').trim())
+      .then((citation: any) => {
+        if (citation && citation.data && citation.data.length > 0) {
+          const html = citation.format('bibliography', { format: 'html', template: 'apa' })
+
+          let date: Date | undefined
+
+          if (citation.data[0].created && citation.data[0].created['date-time']) {
+            date = new Date(citation.data[0].created['date-time'])
+          }
+
+          newPublication.value.date = date
+          newPublication.value.previewHtml = html
+          newPublication.value.json = JSON.stringify(citation.data[0])
+          newPublication.value.error = undefined
+        } else {
+          newPublication.value.error = t('errorMessagePublicationNotFound')
+        }
+      })
+      .catch(() => {
+        newPublication.value.error = t('errorMessagePublicationNotFound')
+      })
+  }
+
+  function sendNewPublication (newPublication: PublicationDoi) {
+    return new Promise<boolean>(resolve => {
+      apiPutPublication({
+        doi: newPublication.doi || '',
+        fallbackCache: newPublication.json,
+        createdOn: newPublication.date,
+      }, publicationId => {
+        apiPutPublicationReference(publicationId, {
+          publicationId: publicationId,
+          referenceType: compProps.publicationReferenceType || PublicationdataReferenceType.database,
+          foreignId: compProps.publicationReferenceId,
+        }, () => {
+          resolve(true)
+          baseTable.value?.refresh()
+        }).catch(() => resolve(false))
+      }).catch(() => resolve(false))
+    })
+  }
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
@@ -170,7 +261,10 @@
   })
 
   function addItem () {
-    // TODO
+    newPublication.value = {}
+    nextTick(() => {
+      addPublicationModal.value?.show()
+    })
   }
 
   defineExpose({

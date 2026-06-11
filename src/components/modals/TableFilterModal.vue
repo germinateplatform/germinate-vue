@@ -413,7 +413,7 @@
   }
 
   function addConditionGroup () {
-    const column = compProps.columns.find(c => c.preferredSortingColumn === true) || compProps.columns[0]
+    const column = compProps.columns.find(c => c.preferredSearchColumn === true) || compProps.columns[0]
 
     if (!column.dataType) {
       return
@@ -437,7 +437,7 @@
   }
 
   function addCondition (group: InternalFilterGroup) {
-    const column = compProps.columns.find(c => c.preferredSortingColumn === true) || compProps.columns[0]
+    const column = compProps.columns.find(c => c.preferredSearchColumn === true) || compProps.columns[0]
 
     if (!column.dataType) {
       return
@@ -526,9 +526,11 @@
 
   function forceFilters (f: FilterGroup[]) {
     if (f) {
+      const presetFilters = loadPresetFilters()
+
       const internal = f as InternalFilterGroup[]
 
-      filterGroups.value = internal.map(fg => {
+      const forced = internal.map(fg => {
         if (fg.filters) {
           fg.internalFilters = fg.filters.map(f => {
             const existingColumn = compProps.columns.find(c => c.key === f.column)
@@ -542,11 +544,13 @@
         return fg
       })
 
+      filterGroups.value = presetFilters?.concat(forced)
+
       checkFilter()
     }
   }
 
-  function loadFilters () {
+  function loadPresetFilters () {
     let presetFilters: InternalFilterGroup[] | undefined = []
 
     if (compProps.filterOn) {
@@ -565,6 +569,12 @@
         return fg
       })
     }
+
+    return presetFilters
+  }
+
+  function loadFilters () {
+    let presetFilters = loadPresetFilters()
 
     // Read URL parameters
     if (route.query && route.query[`${compProps.tableKey}-filter`]) {
@@ -614,7 +624,7 @@
 
   function show () {
     if (filterGroups.value.length === 0) {
-      const column = compProps.columns.find(c => c.preferredSortingColumn === true) || compProps.columns[0]
+      const column = compProps.columns.find(c => c.preferredSearchColumn === true) || compProps.columns[0]
       if (column && column.dataType) {
         const compString = validCompsForType[column.dataType].find(c => c === FilterComparator.contains) || validCompsForType[column.dataType][0]
         // @ts-ignore

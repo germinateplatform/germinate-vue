@@ -21,6 +21,8 @@
     "@turf/helpers": "^7.3.4",
     "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^13.9.0",
+    "@zxcvbn-ts/core": "^3.0.4",
+    "@zxcvbn-ts/language-common": "^3.0.4",
     "axios": "^1.11.0",
     "d3-dsv": "^3.0.1",
     "d3-selection": "^3.0.0",

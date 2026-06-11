@@ -3,8 +3,6 @@
 
     <div class="text-heading-1 text-medium-emphasis">{{ $t('widgetSignInTitle') }}</div>
 
-    <div class="text-body-large text-medium-emphasis">{{ $t('formLabelUsername') }}</div>
-
     <v-text-field
       density="compact"
       :label="$t('formLabelUsername')"
@@ -14,8 +12,7 @@
       v-model="username"
     />
 
-    <div class="text-body-large text-medium-emphasis d-flex align-center justify-space-between">
-      {{ $t('formLabelPassword') }}
+    <div class="text-body-large text-medium-emphasis d-flex justify-end">
       <a
         v-if="store.storeServerSettings && store.storeServerSettings.gatekeeperUrl"
         class="text-body-small text-decoration-none"
@@ -58,6 +55,23 @@
     >
       {{ $t('buttonSignIn') }}
     </v-btn>
+
+    <template v-if="store.storeServerSettings?.registrationEnabled">
+      <v-btn
+        block
+        :disabled="loading"
+        :prepend-icon="mdiNewBox"
+        color="primary"
+        size="large"
+        variant="outlined"
+        @click="registrationModal?.show()"
+      >
+        {{ $t('buttonRegister') }}
+      </v-btn>
+      <p class="text-muted text-label-medium">{{ $t('widgetRegisterText') }}</p>
+    </template>
+
+    <RegistrationModal ref="registrationModal" v-if="store.storeServerSettings?.registrationEnabled" />
   </v-form>
 </template>
 
@@ -69,13 +83,15 @@
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiEmailOutline, mdiEye, mdiEyeOff, mdiLockOutline, mdiLoginVariant } from '@mdi/js'
+  import { mdiEmailOutline, mdiEye, mdiEyeOff, mdiLockOutline, mdiLoginVariant, mdiNewBox } from '@mdi/js'
 
   const visible = ref(false)
   const username = ref('')
   const password = ref('')
   const loading = ref(false)
   const error = ref()
+
+  const registrationModal = useTemplateRef('registrationModal')
 
   const store = coreStore()
   const router = useRouter()
@@ -122,7 +138,7 @@
             error.value = t('errorLoginFourOThree')
             break
           }
-          case 504: {
+          case 503: {
             error.value = t('errorLoginFiveOThree')
             break
           }

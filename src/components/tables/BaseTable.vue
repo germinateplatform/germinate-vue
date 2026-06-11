@@ -224,7 +224,7 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGroups} -->
     <GenericAddEditFormModal
       title="modalTitleEditGroup"
-      :item="newGroup"
+      v-model="newGroup"
       :notify="onSendGroup"
       :fields="groupFields"
       @items-changed="redirectToGroup"

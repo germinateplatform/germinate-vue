@@ -46,7 +46,7 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGroups} -->
     <GenericAddEditFormModal
       title="modalTitleEditGroup"
-      :item="selectedGroup"
+      v-model="selectedGroup"
       :notify="onSendGroup"
       :fields="groupFields"
       @items-changed="baseTable?.refresh()"

@@ -104,11 +104,11 @@ export interface ViewTableLocations {
 }
 
 export interface Publications {
-    id: number;
+    id?: number;
     doi: string;
-    fallbackCache: string;
-    createdOn: Date;
-    updatedOn: Date;
+    fallbackCache?: string;
+    createdOn?: Date;
+    updatedOn?: Date;
 }
 
 export interface BackupResult {
@@ -271,24 +271,30 @@ export interface NewUnapprovedUserRequest {
 }
 
 export interface NewUserAccessRequest {
-    username: string;
-    password: string;
+    username?: string;
+    password?: string;
     locale: string;
 }
 
-export interface NewUnapprovedUser extends LocaleRequest {
+export interface GatekeeperInstitution {
     id: number;
-    userUsername: string;
-    userPassword: string;
-    userFullName: string;
-    userEmailAddress: string;
-    institutionId: number;
-    institutionName: string;
-    institutionAcronym: string;
-    institutionAddress: string;
-    databaseSystemId: number;
-    needsApproval: number;
-    unapprovedUser: UnapprovedUsers;
+    name: string;
+    acronym: string;
+    address: string;
+}
+
+export interface NewUnapprovedUser extends LocaleRequest {
+    id?: number;
+    userUsername?: string;
+    userPassword?: string;
+    userFullName?: string;
+    userEmailAddress?: string;
+    institutionId?: number;
+    institutionName?: string;
+    institutionAcronym?: string;
+    institutionAddress?: string;
+    databaseSystemId?: number;
+    needsApproval?: number;
 }
 
 export interface UnapprovedUsers {
@@ -426,12 +432,12 @@ export const enum AuthenticationMode {
 }
 
 export interface Publicationdata {
-    id: number;
-    foreignId: number;
+    id?: number;
+    foreignId?: number;
     publicationId: number;
-    referenceType: PublicationdataReferenceType;
-    createdOn: Date;
-    updatedOn: Date;
+    referenceType?: PublicationdataReferenceType;
+    createdOn?: Date;
+    updatedOn?: Date;
 }
 
 export const enum PublicationdataReferenceType {
