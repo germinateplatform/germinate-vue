@@ -85,6 +85,10 @@
   import emitter from 'tiny-emitter/instance'
   import { mdiEmailOutline, mdiEye, mdiEyeOff, mdiLockOutline, mdiLoginVariant, mdiNewBox } from '@mdi/js'
 
+  const compProps = defineProps<{
+    targetUrl?: string
+  }>()
+
   const visible = ref(false)
   const username = ref('')
   const password = ref('')
@@ -120,7 +124,7 @@
         text: t('pageLoginToastSuccessful'),
         color: 'success',
       })
-      router.push('/')
+      router.push(compProps.targetUrl || '/')
 
       username.value = ''
       password.value = ''

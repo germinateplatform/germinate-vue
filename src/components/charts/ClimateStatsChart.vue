@@ -2,6 +2,7 @@
   <template v-if="climateData || (catChartData && catChartData.size > 0)">
     <ClimateHighlightSelection
       ref="highlightSelection"
+      :climates="climates"
       :groups="groups || []"
       :dataset-ids="datasetIds || []"
     />

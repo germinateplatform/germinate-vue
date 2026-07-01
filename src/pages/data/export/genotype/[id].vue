@@ -144,6 +144,11 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+meta:
+  navGroup: genotype
+</route>
+
 <script setup lang="ts">
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'

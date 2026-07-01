@@ -126,7 +126,7 @@
     } else {
       const q = Object.assign(query, { climateIds: [v.climateId] })
 
-      apiPostClimateStatsCategorical<Blob>(q, result => {
+      apiPostClimateStatsCategorical(q, result => {
         catChartData.value.set(v.climateId, result)
       })
     }

@@ -22,7 +22,11 @@
         </template>
 
         <v-card-text class="pa-5">
-          <LoginSection @close="hide" @loading="setLoading" />
+          <LoginSection
+            @close="hide"
+            @loading="setLoading"
+            :target-url="targetUrl"
+          />
         </v-card-text>
 
         <v-card-actions>
@@ -41,11 +45,17 @@
 <script setup lang="ts">
   import LoginSection from '@/components/widgets/LoginSection.vue'
 
+  const route = useRoute()
+
   const dialog = ref(false)
   const loading = ref(false)
 
+  const targetUrl = ref<string>()
+
   function show () {
     dialog.value = true
+
+    targetUrl.value = route.fullPath
   }
   function hide () {
     dialog.value = false

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageTrialsExportTitle') }}</h1>
+    <h1 class="text-headline-large mb-3">{{ $t('pageClimatesExportTitle') }}</h1>
     <v-chip-group class="mb-3" v-if="datasets">
       <v-chip :ripple="false" label size="small" class="pe-none" :prepend-icon="mdiDatabase" v-for="dataset in datasets" :key="`dataset-chip-${dataset.datasetId}`" :text="dataset.datasetName" />
     </v-chip-group>
@@ -19,7 +19,7 @@
       </v-expansion-panels>
 
       <v-row class="my-5 card-icon-avatar">
-        <v-col v-for="(tab, index) in tabs" :key="`trait-tab-${tab.key}`">
+        <v-col v-for="(tab, index) in tabs" :key="`climate-tab-${tab.key}`">
           <v-card :color="selectedTab === tab.key ? getTemplateColor(index) : 'muted'" @click="selectedTab = tab.key">
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
@@ -46,8 +46,8 @@
         v-show="selectedTab === 'overview'"
         :showing="selectedTab === 'overview'"
       >
-        <TraitBoxplots
-          :traits="traits"
+        <ClimateBoxplots
+          :climates="climates"
           :datasets="datasets || []"
           :groups="groups || []"
           :dataset-ids="datasetIds"
@@ -58,19 +58,8 @@
         v-show="selectedTab === 'matrix'"
         :showing="selectedTab === 'matrix'"
       >
-        <TraitMatrix
-          :traits="traits"
-          :groups="groups || []"
-          :dataset-ids="datasetIds"
-        />
-      </RevealOnShowPanel>
-
-      <RevealOnShowPanel
-        v-show="selectedTab === 'comparison'"
-        :showing="selectedTab === 'comparison'"
-      >
-        <TraitComparison
-          :traits="traits"
+        <ClimateMatrix
+          :climates="climates"
           :groups="groups || []"
           :dataset-ids="datasetIds"
         />
@@ -80,7 +69,7 @@
         v-show="selectedTab === 'table'"
         :showing="selectedTab === 'table'"
       >
-        <TraitDataTable
+        <ClimateDataTable
           :get-data="getTableData"
           :get-ids="getTableIds"
           :download="downloadTable"
@@ -91,11 +80,9 @@
         v-show="selectedTab === 'locations'"
         :showing="selectedTab === 'locations'"
       >
-        <TrialLocationMap
-          :datasets="datasets"
-          ref="trialLocationMap"
-          :traits="traits"
-          :has-layout="trialLayoutAvailable"
+        <ClimateLocationMap
+          :dataset-ids="datasetIds"
+          ref="climateLocationMap"
         />
       </RevealOnShowPanel>
 
@@ -103,11 +90,11 @@
         v-show="selectedTab === 'export'"
         :showing="selectedTab === 'export'"
       >
-        <TraitDataDownload
-          :traits="traits"
+        <!-- <ClimateDataDownload
+          :climates="climates"
           :groups="groups || []"
           :dataset-ids="datasetIds"
-        />
+        /> -->
       </RevealOnShowPanel>
     </div>
   </v-container>
@@ -115,31 +102,27 @@
 
 <route lang="yaml">
 meta:
-  navGroup: trials
+  navGroup: climate
 </route>
 
 <script setup lang="ts">
-  import TrialLocationMap from '@/components/map/TrialLocationMap.vue'
   import DatasetTable from '@/components/tables/DatasetTable.vue'
-  import TraitDataTable from '@/components/tables/TraitDataTable.vue'
-  import TraitBoxplots from '@/components/trials/TraitBoxplots.vue'
-  import TraitDataDownload from '@/components/trials/TraitDataDownload.vue'
   import RevealOnShowPanel from '@/components/widgets/RevealOnShowPanel.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostDatasetGroups } from '@/plugins/api/group'
   import { apiPostTableExport } from '@/plugins/api/misc'
-  import { apiPostDatasetTraits, apiPostTrialLayoutCount, apiPostTrialLocationCount, apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTrialsDataTimepoints } from '@/plugins/api/trait'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest, ScalesDatatype, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest, type ViewTableClimates } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { coreStore } from '@/stores/app'
-  import { mdiChartBellCurve, mdiCompare, mdiDatabase, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
+  import { mdiDatabase, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
+  import { apiPostClimateDataTable, apiPostDatasetClimates, apiPostClimateDataTableIds } from '@/plugins/api/climate'
 
   interface Tab {
     key: string
@@ -151,20 +134,16 @@ meta:
   const { t } = useI18n()
 
   const router = useRouter()
-  const route = useRoute('/data/export/trials/[id]')
+  const route = useRoute('/data/export/climate/[id]')
   const store = coreStore()
 
-  const trialLocationMap = useTemplateRef('trialLocationMap')
+  const climateLocationMap = useTemplateRef('climateLocationMap')
 
   const selectedTab = ref<string>('overview')
   const datasetIds = ref<number[]>([])
   const datasets = ref<ViewTableDatasets[]>()
-  const traits = ref<ViewTableTraits[]>([])
+  const climates = ref<ViewTableClimates[]>([])
   const groups = ref<ViewTableGroups[]>([])
-
-  const trialLocationsAvailable = ref(false)
-  const trialLayoutAvailable = ref<boolean[]>()
-  const trialTimepointsAvailable = ref(false)
 
   const tabs: ComputedRef<Tab[]> = computed(() => {
     const result = [{
@@ -178,46 +157,21 @@ meta:
       path: mdiGrid,
       help: t('pageDataExportTabHelpDataMatrix'),
     }, {
-      key: 'comparison',
-      text: t('pageDataExportTabComparison'),
-      path: mdiCompare,
-      help: t('pageDataExportTabHelpComparison'),
-    // }, {
-    //   key: 'comparison',
-    //   text: t('pageDataExportTabComparison'),
-    //   path: mdiDistributeHorizontalCenter,
-    //   help: t('pageDataExportTabHelpComparison'),
-    }, {
       key: 'table',
       text: t('pageDataExportTabDataTable'),
       path: mdiTableSearch,
       help: t('pageDataExportTabHelpDataTable'),
-    }]
-
-    if (trialLocationsAvailable.value || (trialLayoutAvailable.value && trialLayoutAvailable.value.some(v => v))) {
-      result.push({
-        key: 'locations',
-        text: t('pageDataExportTabLocations'),
-        path: mdiMapMarkerPath,
-        help: t('pageDataExportTabHelpLocations'),
-      })
-    }
-
-    if (trialTimepointsAvailable.value) {
-      result.push({
-        key: 'timeseries',
-        text: t('pageDataExportTabTimeseries'),
-        path: mdiChartBellCurve,
-        help: t('pageDataExportTabHelpTimeseries'),
-      })
-    }
-
-    result.push({
+    }, {
+      key: 'locations',
+      text: t('pageDataExportTabLocations'),
+      path: mdiMapMarkerPath,
+      help: t('pageDataExportTabHelpLocations'),
+    }, {
       key: 'export',
       text: t('pageDataExportTabDataExport'),
       path: mdiFileDownloadOutline,
       help: t('pageDataExportTabHelpDataExport'),
-    })
+    }]
 
     return result
   })
@@ -225,8 +179,8 @@ meta:
   watch(datasetIds, async newValue => {
     emitter.emit('show-loading', true)
 
-    apiPostDatasetTraits(newValue || [], result => {
-      traits.value = result
+    apiPostDatasetClimates(newValue || [], result => {
+      climates.value = result
 
       getDatasets()
       updateGroups()
@@ -237,13 +191,13 @@ meta:
   function getTableData (data: PaginatedRequest) {
     const request = data as TrialsExportDatasetRequest
     request.datasetIds = datasetIds.value
-    return apiPostTrialsDataTable(request)
+    return apiPostClimateDataTable(request)
   }
 
   function getTableIds (data: PaginatedRequest) {
     const request = data as TrialsExportDatasetRequest
     request.datasetIds = datasetIds.value
-    return apiPostTrialsDataTableIds(request)
+    return apiPostClimateDataTableIds(request)
   }
 
   function downloadTable (data: PaginatedRequest) {
@@ -252,7 +206,7 @@ meta:
       datasetIds: datasetIds.value,
       limit: MAX_JAVA_INTEGER,
       filters: data.filters,
-    }, 'dataset/data/trial')
+    }, 'dataset/data/climate')
   }
 
   function getDatasetTableData () {
@@ -276,7 +230,7 @@ meta:
         filters: [{
           column: 'datasetType',
           comparator: FilterComparator.equals,
-          values: ['trials'],
+          values: ['climate'],
         }, {
           column: 'isExternal',
           comparator: FilterComparator.equals,
@@ -310,7 +264,7 @@ meta:
   function redirectBack () {
     // Navigate to the germplasm page
     router.push({
-      path: Pages.getPath(Pages.export, 'trials'),
+      path: Pages.getPath(Pages.export, 'climate'),
       query: {
         'datasets-filter': JSON.stringify([{
           filters: [{
@@ -326,8 +280,8 @@ meta:
   function updateGroups () {
     const request = {
       datasetIds: datasetIds.value || [],
-      groupType: 'germinatebase',
-      datasetType: 'trials',
+      groupType: 'locations',
+      datasetType: 'climate',
     }
     // Get groups
     apiPostDatasetGroups(request, result => {
@@ -343,7 +297,7 @@ meta:
 
     if (newValue === 'locations') {
       nextTick(() => {
-        trialLocationMap.value?.invalidateSize()
+        climateLocationMap.value?.invalidateSize()
       })
     }
   })
@@ -358,30 +312,6 @@ meta:
     if (route && route.params && route.params.id) {
       try {
         datasetIds.value = route.params.id.split(',').map(Number)
-
-        apiPostTrialLocationCount({
-          datasetIds: datasetIds.value,
-        }, result => {
-          if (result) {
-            trialLocationsAvailable.value = result > 0
-          }
-        })
-
-        apiPostTrialLayoutCount({
-          datasetIds: datasetIds.value,
-        }, result => {
-          if (result) {
-            trialLayoutAvailable.value = datasetIds.value.map(ds => result[ds] !== undefined && result[ds] > 0)
-          }
-        })
-
-        apiPostTrialsDataTimepoints<string[]>({
-          datasetIds: datasetIds.value,
-        }, result => {
-          if (result && result.length > 1) {
-            trialTimepointsAvailable.value = true
-          }
-        })
       } catch {
         datasetIds.value = []
       }

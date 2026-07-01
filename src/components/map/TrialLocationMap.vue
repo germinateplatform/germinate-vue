@@ -11,6 +11,15 @@
       v-if="shapefiles"
     />
 
+    <template v-if="datasetsWithLayout">
+      <TrialLayout
+        v-for="dataset in datasetsWithLayout"
+        :key="`trial-layout-${dataset.datasetId}`"
+        :dataset="dataset"
+        :traits="traits"
+      />
+    </template>
+
     <LocationMap map-type="cluster" :shapefile-id="selectedShapefile?.fileresourceId" :locations="locations" ref="map" />
   </div>
 </template>
@@ -20,12 +29,14 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetfileresource } from '@/plugins/api/dataset'
   import { apiPostTrialLocations } from '@/plugins/api/trait'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableFileresources, type ViewTableLocations } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableFileresources, type ViewTableLocations, type ViewTableTraits } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
 
   const compProps = defineProps<{
-    datasetIds: number[]
+    datasets: ViewTableDatasets[]
+    traits: ViewTableTraits[]
+    hasLayout?: boolean[]
   }>()
 
   const locations = ref<ViewTableLocations[]>([])
@@ -33,17 +44,26 @@
   const selectedShapefile = ref<ViewTableFileresources>()
   const map = useTemplateRef('map')
 
+  const datasetsWithLayout = computed(() => {
+    if (compProps.datasets && compProps.hasLayout && compProps.datasets.length === compProps.hasLayout.length) {
+      return compProps.datasets.filter((ds, index) => compProps.hasLayout?.[index] === true)
+    } else {
+      return []
+    }
+  })
+
   function update () {
-    if (!compProps.datasetIds || compProps.datasetIds.length === 0) {
+    if (!compProps.datasets || compProps.datasets.length === 0) {
       return
     }
 
     const query = {
-      datasetIds: compProps.datasetIds,
+      datasetIds: compProps.datasets.map(ds => ds.datasetId || -1),
     }
 
     emitter.emit('show-loading', true)
-    apiPostTrialLocations<ViewTableLocations[]>(query, result => {
+
+    apiPostTrialLocations(query, result => {
       if (result) {
         locations.value = result
       } else {
@@ -60,7 +80,7 @@
     })
 
     apiPostDatasetfileresource<PaginatedResult<ViewTableFileresources[]>>({
-      datasetIds: compProps.datasetIds,
+      datasetIds: compProps.datasets.map(ds => ds.datasetId || -1),
       page: 1,
       limit: MAX_JAVA_INTEGER,
       filters: [{

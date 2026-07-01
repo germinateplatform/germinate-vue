@@ -30,7 +30,7 @@
 
     <template v-if="selectedTab">
       <template v-if="(tabGroups.get(selectedTab.group)?.length || 0) > 1">
-        <v-row class="my-5">
+        <v-row class="my-5 card-icon-avatar">
           <v-col v-for="(tab, index) in tabGroups.get(selectedTab.group)" :key="`upload-tab-${tab.id}`">
             <v-card :color="selectedSubTab?.id === tab.id ? getTemplateColor(index) : 'muted'" @click="selectedSubTab = tab">
               <div class="d-flex flex-no-wrap justify-space-between align-center">

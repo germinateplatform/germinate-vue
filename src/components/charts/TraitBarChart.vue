@@ -1,7 +1,7 @@
 <template>
   <div class="mt-5" v-for="(data, i) in traitBarChartData" :key="`trait-bar-chart-${i}`">
     <BaseChart
-      :title="data.trait.traitName"
+      :title="data.trait.variableName"
       :chart-id="data.id"
       :filename="data.filename"
       :source-file="data.sourceFile"
@@ -235,7 +235,7 @@
         trait: t,
         id: `trait-bar-chart-${uuidv4()}`,
         filename: t.variableName,
-        data: compProps.traitData.filter(d => d.traitId === t.variableId),
+        data: compProps.traitData.filter(d => d.variableId === t.variableId),
         sourceFile: undefined, // TODO
       }
     })

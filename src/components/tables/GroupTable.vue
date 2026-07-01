@@ -137,14 +137,17 @@
       key: 'groupName',
       title: t('tableColumnGroupName'),
       dataType: 'string',
+      quickSearchable: true,
     }, {
       key: 'groupDescription',
       title: t('tableColumnGroupDescription'),
       dataType: 'string',
+      quickSearchable: true,
     }, {
       key: 'groupType',
       dataType: 'groupType',
       title: t('tableColumnGroupType'),
+      quickSearchable: true,
     }, {
       key: 'userId',
       dataType: 'string',

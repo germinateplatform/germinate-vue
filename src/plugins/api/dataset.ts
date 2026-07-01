@@ -18,7 +18,9 @@ function apiPostDatasetCollaboratorsTable<T> (datasetId: number, queryData: Pagi
   return authAxios({ url: `dataset/${datasetId}/collaborator`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostTrialDatasetExport = <T>(queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/export/trial?format=tab', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+const apiPostTrialDatasetExport = (queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) => authAxios<Blob>({ url: 'dataset/export/trial?format=tab', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+
+const apiPostClimateDatasetExport = (queryData: ClimateExportDatasetRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) => authAxios<Blob>({ url: 'dataset/export/climate', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 const apiPostDatasetExport = <T>(datasetType: string, queryData: any, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/export/${datasetType}`, dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
@@ -68,9 +70,9 @@ function apiPostDatasetAttributeTable<T> (datasetId: number, queryData: Paginate
 
 const apiPostTraitStats = <T>(statsType: string, queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 
-const apiPostTraitStatsCategorical = <T>(queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/categorical/trial', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+const apiPostTraitStatsCategorical = (queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) => authAxios<Blob>({ url: 'dataset/categorical/trial', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
-const apiPostClimateStatsCategorical = <T>(queryData: ClimateExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'dataset/categorical/climate', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
+const apiPostClimateStatsCategorical = (queryData: ClimateExportDatasetRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) => authAxios<Blob>({ url: 'dataset/categorical/climate', dataType: 'blob', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
 function apiPostLicenseTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -127,6 +129,7 @@ export {
   apiPostDatasetCollaboratorsTable,
   apiPostDatasetExport,
   apiPostTrialDatasetExport,
+  apiPostClimateDatasetExport,
   apiPostDatasetAttributeExport,
   apiGetDatasetSourceFile,
   apiPostExperimentTable,

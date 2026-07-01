@@ -106,9 +106,9 @@
     emitter.emit('show-loading', true)
 
     loading.value = true
-    const traitIdSet = new Set<number>(compProps.traits.map(t => t.variableId))
-    const data = compProps.plotData.filter(pd => traitIdSet.has(pd.traitId)).concat()
-    data.sort((a, b) => b.traitName.localeCompare(a.traitName) || (b.traitId - a.traitId))
+    const variableIdSet = new Set<number>(compProps.traits.map(t => t.variableId))
+    const data = compProps.plotData.filter(pd => variableIdSet.has(pd.variableId)).concat()
+    data.sort((a, b) => b.variableName.localeCompare(a.variableName) || (b.variableId - a.variableId))
 
     if (data) {
       sourceFile.value = {
@@ -128,7 +128,7 @@
 
       data.forEach(dp => {
         x.push(+dp.traitValue)
-        y.push(dp.traitName)
+        y.push(dp.variableName)
         ids.push(`${dp.germplasmId}-${uuidv4()}`)
         text.push(getGermplasmDisplayName(dp))
       })
@@ -283,7 +283,7 @@
   function getData (data: ViewTableTrialsData[], filter: (dp: ViewTableTrialsData) => boolean, index: number, name: string) {
     const dps = data.filter(filter)
     return {
-      y: dps.map(dp => dp.traitName),
+      y: dps.map(dp => dp.variableName),
       x: dps.map(dp => +dp.traitValue),
       ids: dps.map(dp => `${dp.germplasmId}-${uuidv4()}`),
       text: dps.map(dp => getGermplasmDisplayName(dp)),

@@ -1,10 +1,14 @@
-import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
-
 import Plotly from 'plotly.js/lib/core'
 import { uuidv4 } from '@/plugins/util'
+import { DEFAULT_CHART_COLORS } from '@/plugins/util/colors'
 
 export type ClickHandler = (dbId: number) => void
 export type SelectionHandler = (dbIds: number[]) => void
+
+export interface UserSelection {
+  type: string
+  selectedItems: string[]
+}
 
 export interface ScatterPlotConfig {
   swapAxes: boolean
@@ -65,11 +69,13 @@ export class ScatterPlot {
 
   constructor (config: ScatterPlotParams) {
     this.config = Object.assign({
-      colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'],
+      colors: DEFAULT_CHART_COLORS,
       width: Math.min(window.innerHeight, Math.min(config.element.offsetWidth, window.innerWidth)),
       height: Math.min(window.innerHeight, Math.min(config.element.offsetWidth, window.innerWidth)),
       swapAxes: false,
     }, config)
+
+    console.log(this.config.colors, config)
   }
 
   create (rows: any[]) {
@@ -125,22 +131,34 @@ export class ScatterPlot {
     if (this.config.userSelection && type) {
       const selectedItems = [...this.config.userSelection.selectedItems]
 
-      let ids = rows.filter(row => highlightOppositeFilter[type](row, selectedItems)).map(r => this.extractValue(r, 'dbId'))
+      const filtered = rows.filter(row => highlightOppositeFilter[type](row, selectedItems))
+
+      let ids = filtered.map(r => this.extractValue(r, 'dbId'))
       ids = ids.map(i => `${i}-${uuidv4()}`)
-      const names = rows.filter(row => highlightOppositeFilter[type](row, selectedItems)).map(r => this.extractValue(r, 'name'))
-      const x = rows.filter(row => highlightOppositeFilter[type](row, selectedItems)).map(r => this.extractValue(r, this.config.xColumn))
-      const y = rows.filter(row => highlightOppositeFilter[type](row, selectedItems)).map(r => this.extractValue(r, this.config.yColumn))
+      const names = filtered.map(r => this.extractValue(r, 'name'))
+      const x = filtered.map(r => this.extractValue(r, this.config.xColumn))
+      const y = filtered.map(r => this.extractValue(r, this.config.yColumn))
 
       this.addData(data, ids, names, x, y, 0, 'N/A')
 
       selectedItems.forEach((item, index) => {
-        let ids = rows.filter(row => highlightFilter[type](row, item)).map(r => this.extractValue(r, 'dbId'))
-        ids = ids.map(i => `${i}-${uuidv4()}`)
-        const names = rows.filter(row => highlightFilter[type](row, item)).map(r => this.extractValue(r, 'name'))
-        const x = rows.filter(row => highlightFilter[type](row, item)).map(r => this.extractValue(r, this.config.xColumn))
-        const y = rows.filter(row => highlightFilter[type](row, item)).map(r => this.extractValue(r, this.config.yColumn))
+        const filtered = rows.filter(row => highlightFilter[type](row, item))
 
-        this.addData(data, ids, names, x, y, index + 1, item)
+        let name = `&nbsp;${item || 'N/A'}`
+
+        if (type === 'group') {
+          name = this.config.groups?.[item] || 'N/A'
+        } else if (type === 'dataset' && filtered.length > 0) {
+          name = filtered[0].dataset_name || 'N/A'
+        }
+
+        let ids = filtered.map(r => this.extractValue(r, 'dbId'))
+        ids = ids.map(i => `${i}-${uuidv4()}`)
+        const names = filtered.map(r => this.extractValue(r, 'name'))
+        const x = filtered.map(r => this.extractValue(r, this.config.xColumn))
+        const y = filtered.map(r => this.extractValue(r, this.config.yColumn))
+
+        this.addData(data, ids, names, x, y, index + 1, name)
       })
     } else {
       let ids = this.unpack(rows, 'dbId')
@@ -227,11 +245,13 @@ export class ScatterPlot {
   }
 
   addData (data: any[], ids: string[], names: string[], x: string[], y: string[], index: number, traceName: string | undefined) {
+    const color = this.config.colors[index % this.config.colors.length]
+
     data.push({
       x,
       y,
       marker: {
-        color: this.config.colors[index % this.config.colors.length],
+        color,
         symbol: symbolList[index % symbolList.length],
         size: 6,
         opacity: 0.7,
@@ -250,7 +270,7 @@ export class ScatterPlot {
     }, {
       x,
       marker: {
-        color: this.config.colors[index % this.config.colors.length],
+        color,
       },
       opacity: 0.5,
       name: traceName,
@@ -260,7 +280,7 @@ export class ScatterPlot {
     }, {
       y,
       marker: {
-        color: this.config.colors[index % this.config.colors.length],
+        color,
       },
       opacity: 0.5,
       name: traceName,

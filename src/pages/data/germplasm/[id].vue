@@ -59,15 +59,15 @@
           filters: [{
             column: 'germplasmName',
             comparator: FilterComparator.equals,
-            values: [requestedIdentifier.value],
+            values: [requestedIdentifier.value || ''],
           }, {
             column: 'germplasmDisplayName',
             comparator: FilterComparator.equals,
-            values: [requestedIdentifier.value],
+            values: [requestedIdentifier.value || ''],
           }, {
             column: 'germplasmPuid',
             comparator: FilterComparator.equals,
-            values: [requestedIdentifier.value],
+            values: [requestedIdentifier.value || ''],
           }],
           operator: FilterOperator.or,
         }]
@@ -76,7 +76,7 @@
           filters: [{
             column: 'germplasmId',
             comparator: FilterComparator.equals,
-            values: [requestedIdentifier.value],
+            values: [requestedIdentifier.value || ''],
           }],
           operator: FilterOperator.and,
         }]

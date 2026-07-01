@@ -3,9 +3,11 @@ import vuetify from 'eslint-config-vuetify'
 export default vuetify({
   rules: {
     '@stylistic/quote-props': 'off',
+    '@typescript-eslint/member-ordering': 'off',
     'perfectionist/sort-imports': 'off',
     'perfectionist/sort-named-exports': 'off',
     'perfectionist/sort-named-imports': 'off',
+    'unicorn/prefer-native-coercion-functions': 'off',
     'unicorn/no-array-for-each': 'off',
     'unicorn/switch-case-braces': 'off',
     'unicorn/prefer-ternary': 'off',
@@ -17,6 +19,7 @@ export default vuetify({
     'unicorn/catch-error-name': 'off',
     'unicorn/no-document-cookie': 'off',
     'unicorn/no-array-sort': 'off',
+    'unicorn/prefer-modern-math-apis': 'off',
     'unicorn/prefer-at': 'off',
     'unicorn/no-static-only-class': 'off',
     'unicorn/prefer-dom-node-append': 'off',

@@ -1,10 +1,14 @@
-import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
-
 import Plotly from 'plotly.js/lib/core'
 import { uuidv4 } from '@/plugins/util'
+import { DEFAULT_CHART_COLORS } from '@/plugins/util/colors'
 
 export type ClickHandler = (dbId: number) => void
 export type SelectionHandler = (dbIds: number[]) => void
+
+export interface UserSelection {
+  type: string
+  selectedItems: string[]
+}
 
 export interface ScatterMatrixConfig {
   colors: string[]
@@ -61,7 +65,7 @@ export class ScatterMatrix {
 
   constructor (config: ScatterMatrixParams) {
     this.config = Object.assign({
-      colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'],
+      colors: DEFAULT_CHART_COLORS,
       width: config.element.offsetWidth,
       height: config.element.offsetWidth,
     }, config)
@@ -91,6 +95,8 @@ export class ScatterMatrix {
       Object.keys(r).forEach(k => allDims.add(k))
     })
     const visibleDims = [...allDims].filter(d => !this.config.columnsToIgnore.includes(d) && this.hasData(rows, d))
+
+    console.log(allDims, visibleDims)
 
     visibleDims.forEach((d, i) => {
       const id = i === 0 ? '' : ('' + (i + 1))
@@ -157,15 +163,25 @@ export class ScatterMatrix {
       })
 
       selectedItems.forEach((item, index) => {
-        let ids = rows.filter(row => highlightFilter[type || ''](row, item)).map(r => this.extractValue(r, 'dbId'))
+        const filtered = rows.filter(row => highlightFilter[type || ''](row, item))
+
+        let name = `&nbsp;${item || 'N/A'}`
+
+        if (type === 'group') {
+          name = this.config.groups?.[item] || 'N/A'
+        } else if (type === 'dataset' && filtered.length > 0) {
+          name = filtered[0].dataset_name || 'N/A'
+        }
+
+        let ids = filtered.map(r => this.extractValue(r, 'dbId'))
         ids = ids.map(i => `${i}-${uuidv4()}`)
-        const names = rows.filter(row => highlightFilter[type || ''](row, item)).map(r => this.extractValue(r, 'name'))
+        const names = filtered.map(r => this.extractValue(r, 'name'))
         data.push({
           type: 'splom',
           showupperhalf: false,
           diagonal: { visible: true },
           dimensions: visibleDims.map((k, kIndex) => {
-            const values = rows.filter(row => highlightFilter[type || ''](row, item)).map(r => this.extractValue(r, k))
+            const values = filtered.map(r => this.extractValue(r, k))
             dimHasData[kIndex] ||= values.some(v => v !== null)
 
             return {
@@ -173,7 +189,7 @@ export class ScatterMatrix {
               values,
             }
           }),
-          name: type === 'group' ? (this.config.groups?.[item] || 'N/A') : `&nbsp;${item || 'N/A'}`,
+          name,
           text: names,
           ids,
           customdata: names,

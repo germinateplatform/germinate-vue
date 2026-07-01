@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AboutConfig, AsyncExportResult, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GatekeeperInstitution, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, PaginatedResult, Publicationdata, Publications, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableStories } from '@/plugins/types/germinate'
+import type { AboutConfig, AsyncExportResult, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GatekeeperInstitution, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, PaginatedResult, Publicationdata, Publications, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableMapoverlays, ViewTableStories } from '@/plugins/types/germinate'
 
 const apiGetSettings = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'settings', success: onSuccess, error: onError })
 
@@ -81,9 +81,9 @@ const apiPostNewsTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateR
   return authAxios({ url: 'news/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiPostMapOverlayTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostMapOverlayTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableMapoverlays[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'mapoverlay/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableMapoverlays[]>>({ url: 'mapoverlay/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiPostNews = <T>(newsItem: News, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'news', method: 'POST', data: newsItem, success: onSuccess, error: onError })

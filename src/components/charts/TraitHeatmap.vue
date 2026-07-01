@@ -132,7 +132,7 @@
         l: 10,
         t: 0,
         r: 10,
-        b: 30,
+        b: 80,
       },
       height: Math.max(500, compProps.traces.length * 175),
       xaxis: {

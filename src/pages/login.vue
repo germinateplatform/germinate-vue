@@ -30,7 +30,10 @@
           />
         </template>
         <v-card-text class="pa-5">
-          <LoginSection @loading="setLoading" />
+          <LoginSection
+            @loading="setLoading"
+            :target-url="targetUrl"
+          />
         </v-card-text>
       </v-card>
     </v-container>
@@ -41,11 +44,28 @@
   import LoginSection from '@/components/widgets/LoginSection.vue'
   import { mdiInformation } from '@mdi/js'
 
+  const route = useRoute()
+
   const loading = ref(false)
+  const targetUrl = ref<string>()
 
   function setLoading (ld: boolean) {
     loading.value = ld
   }
+
+  function getSafeRedirect (redirect: string | undefined) {
+    // Only allow relative paths (no protocol, no external domains)
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
+      return redirect
+    }
+    return '/'
+  }
+
+  onMounted(() => {
+    targetUrl.value = getSafeRedirect(route.query?.redirect as string)
+
+    console.log(targetUrl.value)
+  })
 </script>
 
 <style scoped>

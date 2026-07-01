@@ -120,7 +120,7 @@
       store.setToken(undefined)
 
       if (store.storeServerSettings?.authMode === 'FULL') {
-        router.push(Pages.login.path)
+        router.push({ path: Pages.login.path, query: { redirect: router.currentRoute?.value?.fullPath || '/' } })
       } else {
         router.push('/')
       }

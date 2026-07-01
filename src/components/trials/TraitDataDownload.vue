@@ -125,13 +125,13 @@
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
       datasetIds: compProps.datasetIds,
-      traitIds: selectedTraits.value.map(t => t.traitId),
+      traitIds: selectedTraits.value.map(t => t.variableId),
       germplasmIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedGermplasm : undefined,
       germplasmGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
       minimal: true,
     }
 
-    apiPostTrialDatasetExport<Blob>(query, result => {
+    apiPostTrialDatasetExport(query, result => {
       const downloadRequest = {
         blob: result,
         filename: 'trials-wide-dataset-' + compProps.datasetIds.join('-'),

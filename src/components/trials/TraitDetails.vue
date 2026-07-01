@@ -126,7 +126,7 @@
     } else {
       const q = Object.assign(query, { traitIds: [v.variableId] })
 
-      apiPostTraitStatsCategorical<Blob>(q, result => {
+      apiPostTraitStatsCategorical(q, result => {
         catChartData.value.set(v.variableId, result)
       })
     }

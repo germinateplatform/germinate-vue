@@ -117,7 +117,7 @@
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
       datasetIds: compProps.datasetIds,
-      traitIds: selectedTraits.value.map(t => t.traitId),
+      traitIds: selectedTraits.value.map(t => t.variableId),
       germplasmIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedGermplasm : undefined,
       germplasmGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
       minimal: true,
@@ -129,10 +129,10 @@
     })
 
     categoricalTraits.value.forEach(t => {
-      const q = Object.assign(query, { traitIds: [t.traitId] })
+      const q = Object.assign(query, { traitIds: [t.variableId] })
 
-      apiPostTraitStatsCategorical<Blob>(q, result => {
-        catChartData.value.set(t.traitId, result)
+      apiPostTraitStatsCategorical(q, result => {
+        catChartData.value.set(t.variableId, result)
       })
     })
   }

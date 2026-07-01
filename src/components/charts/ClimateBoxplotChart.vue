@@ -1,6 +1,6 @@
 <template>
   <BaseChart
-    title="pageTrialsExportClimateBoxplotTitle"
+    title="pageClimateExportClimateBoxplotTitle"
     :chart-id="id"
     :filename="filename"
     :source-file="sourceFile"
@@ -11,7 +11,7 @@
   >
     <template #card-text>
       <v-card-text>
-        <p>{{ $t('pageTrialsExportClimateBoxplotText') }}</p>
+        <p>{{ $t('pageClimateExportClimateBoxplotText') }}</p>
       </v-card-text>
     </template>
     <template #toolbar-append>

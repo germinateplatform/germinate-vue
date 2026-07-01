@@ -20,6 +20,37 @@
 
     <!-- Add color gradient for heatmapping -->
     <ColorGradient v-if="props.mapType === 'heatmap'" ref="gradient" />
+
+    <ClimateOverlaySelectModal
+      v-model="selectedClimate"
+      v-model:opacity="climateOverlayOpacity"
+      :climates="climates"
+      v-if="climates && climates.length > 0"
+      @select="updateOverlays"
+      ref="climateOverlaySelectModal"
+    />
+
+    <v-bottom-sheet
+      v-model="bottomSheetVisible"
+      inset
+      persistent
+      :scrim="false"
+      :capture-focus="false"
+      :close-on-back="false"
+      :close-on-content-click="false"
+      disabled
+      no-click-animation
+      max-height="50vh"
+      width="auto"
+    >
+      <v-card class="pb-10">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div>{{ $t('modalTitleClimateOverlayLegend') }}</div>
+          <v-btn :icon="mdiClose" variant="text" @click="bottomSheetVisible = false" />
+        </v-card-title>
+        <v-img class="pa-5" :src="legendUrl" contain width="fit-content" />
+      </v-card>
+    </v-bottom-sheet>
   </div>
 </template>
 
@@ -27,27 +58,35 @@
   import { coreStore } from '@/stores/app'
 
   import shp from 'shpjs'
-  import L, { type TileLayer, type Map, type Marker, type FeatureGroup, type Layer } from 'leaflet'
+  import L, { type TileLayer, type Map, type Marker, type FeatureGroup, type Layer, type ImageOverlay, type Control } from 'leaflet'
   import 'leaflet/dist/leaflet.css'
   import 'leaflet.markercluster/dist/MarkerCluster.css'
   import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
   import 'leaflet-draw/dist/leaflet.draw.css'
+  import 'leaflet-easybutton/src/easy-button.css'
 
   import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
   import iconUrl from 'leaflet/dist/images/marker-icon.png'
   import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
   import type { ExtendedViewTableLocations } from '@/plugins/types/ExtendedViewTableLocations'
   import { getColor } from '@/plugins/util/colors'
+  import { apiPostMapOverlayTable } from '@/plugins/api/misc'
   import ColorGradient from '@/components/widgets/ColorGradient.vue'
 
   import 'leaflet.heat'
   import 'leaflet.sync'
   import 'leaflet.markercluster'
   import 'leaflet-draw'
+  import 'leaflet-easybutton'
 
   import { uuidv4 } from '@/plugins/util'
   import { addShapefileToMap } from '@/plugins/util/geo'
   import { apiGetDataResource } from '@/plugins/api/dataset'
+  import { FilterComparator, FilterOperator, type ViewTableClimates, type PaginatedRequest } from '@/plugins/types/germinate'
+  import { apiPostClimateTable } from '@/plugins/api/climate'
+  import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { toUrlString } from '@/plugins/util/formatting'
+  import { mdiClose, mdiMapLegend, mdiWeatherPartlySnowyRainy } from '@mdi/js'
 
   // Set the leaflet marker icon
   // @ts-ignore
@@ -68,11 +107,13 @@
     showClimateOverlays?: boolean
     rounded?: boolean
     shapefileId?: number
+    climateOverlaysDisabled?: boolean
   }
 
   const props = withDefaults(defineProps<MapProps>(), {
     showLinks: true,
     rounded: true,
+    climateOverlaysDisabled: false,
   })
 
   const emit = defineEmits(['map-loaded'])
@@ -80,17 +121,27 @@
   // Refs
   const id = ref(uuidv4())
   const mapElement = useTemplateRef('mapElement')
+  const climateOverlaySelectModal = useTemplateRef('climateOverlaySelectModal')
   const popupContent = ref('')
   const internalLocations = ref<ExtendedViewTableLocations[]>([])
   const currentLocation = ref<ExtendedViewTableLocations>()
   const loading = ref<boolean>(false)
   const loadingProgress = ref<number>(0)
+  const bottomSheetVisible = ref(false)
+  const legendUrl = ref<string>()
+
+  const climates = ref<ViewTableClimates[]>([])
+  const selectedClimate = ref<ViewTableClimates>()
+  const climateOverlayOpacity = ref(1)
 
   let themeLayer: TileLayer
   let map: Map
   let markerClusterer: any
   let heat: any
   const markers: Marker[] = []
+  const imageOverlays: ImageOverlay[] = []
+  let legendButton: Control | undefined = undefined
+  let overlayButton: Control | undefined = undefined
   let gradientColors: string[] = []
   let editableLayers: FeatureGroup
   let shapefileLayers: { [key: string]: Layer[] } = {}
@@ -257,6 +308,77 @@
     }
 
     emit('map-loaded', map)
+  }
+
+  function updateOverlays () {
+    if (!map) {
+      return
+    }
+
+    legendUrl.value = undefined
+    if (imageOverlays) {
+      imageOverlays.forEach(io => map.removeLayer(io))
+    }
+
+    if (legendButton) {
+      map.removeControl(legendButton)
+    }
+
+    if (selectedClimate.value) {
+      const queryData: PaginatedRequest = {
+        filters: [{
+          filters: [{
+            column: 'referenceTable',
+            comparator: FilterComparator.equals,
+            values: ['climates'],
+          }, {
+            column: 'foreignId',
+            comparator: FilterComparator.equals,
+            values: [`${selectedClimate.value.climateId}`],
+          }],
+          operator: FilterOperator.and,
+        }],
+        page: 1,
+        limit: MAX_JAVA_INTEGER,
+      }
+      apiPostMapOverlayTable(queryData, result => {
+        if (result && result.data && result.data.length > 0) {
+          result.data.forEach(mo => {
+            let path = ''
+
+            const params = {
+              token: store.storeToken ? store.storeToken.imageToken : undefined,
+            }
+            const paramString = toUrlString(params)
+
+            path = store.storeBaseUrl + `mapoverlay/${mo.mapoverlayId}/src?` + paramString
+
+            if (mo.mapoverlaysIsLegend) {
+              legendUrl.value = path
+            } else {
+              const overlay = L.imageOverlay(path, [[mo.mapoverlayBottomLeftLat, mo.mapoverlayBottomLeftLng], [mo.mapoverlayTopRightLat, mo.mapoverlayTopRightLng]], {
+                opacity: climateOverlayOpacity.value || 1,
+              })
+
+              overlay.addTo(map)
+              imageOverlays.push(overlay)
+            }
+          })
+
+          if (legendUrl.value) {
+            legendButton = L.easyButton(`
+              <svg viewBox="0 0 24 24" width="18" height="18" class="legend-control__icon">
+                <path d="${mdiMapLegend}" fill="currentColor" />
+              </svg>
+            `, function () {
+              bottomSheetVisible.value = !bottomSheetVisible.value
+            // @ts-expect-error
+            }, '', { position: 'bottomleft' })
+            legendButton.addTo(map)
+          }
+        }
+      })
+    }
   }
 
   function updateMarkers () {
@@ -448,6 +570,39 @@
     }
 
     initMap()
+
+    if (props.climateOverlaysDisabled === false) {
+      const queryData: PaginatedRequest = {
+        page: 1,
+        limit: MAX_JAVA_INTEGER,
+        filters: [{
+          filters: [{
+            column: 'overlays',
+            comparator: FilterComparator.greaterThan,
+            values: ['0'],
+          }],
+          operator: FilterOperator.and,
+        }],
+      }
+
+      apiPostClimateTable(queryData, result => {
+        if (result && result.data) {
+          climates.value = result.data
+
+          if (climates.value.length > 1) {
+            overlayButton = L.easyButton(`
+              <svg viewBox="0 0 24 24" width="18" height="18" class="legend-control__icon">
+                <path d="${mdiWeatherPartlySnowyRainy}" fill="currentColor" />
+              </svg>
+            `, function () {
+              climateOverlaySelectModal.value?.show()
+            // @ts-expect-error
+            }, '', { position: 'topright' })
+            overlayButton.addTo(map)
+          }
+        }
+      })
+    }
   })
 
   defineExpose({
@@ -517,5 +672,58 @@
 }
 .marker-cluster-large div, .prunecluster-large div {
   background-color: rgba(var(--v-theme-primary), 0.8);
+}
+
+.location-map .legend-control {
+  position: relative;
+  background: white;
+}
+
+.location-map .legend-control__button {
+  display: block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+
+.location-map .legend-control__image {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  max-width: 260px;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  background: white;
+}
+
+.location-map .legend-control:hover .legend-control__image {
+  display: block;
+}
+
+.location-map .legend-control__icon {
+  vertical-align: middle;
+  pointer-events: none;
+}
+
+.location-map .legend-control__image {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  background: white;
+
+  max-width: 50vw;
+  max-height: 50vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.location-map .legend-control:hover .legend-control__image {
+  display: block;
 }
 </style>

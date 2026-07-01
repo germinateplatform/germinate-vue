@@ -95,7 +95,7 @@
       margin: {
         l: 10,
         t: 0,
-        b: 30,
+        b: 80,
         r: 10,
       },
       height: Math.max(500, compProps.traces.length * 175),

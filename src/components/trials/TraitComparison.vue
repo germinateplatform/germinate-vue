@@ -6,7 +6,7 @@
       <v-col cols="12" md="6">
         <TraitSelection
           v-model="selectedTraits"
-          :traits="traits"
+          :traits="numericOrCategoricalTraits"
           can-select-all
         >
           <template #text>
@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-  import { type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm, type TrialsExportDatasetRequest, type ViewTableTrialsData, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
+  import { type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm, type TrialsExportDatasetRequest, type ViewTableTrialsData, ViewTableTraitsScaleDatatype, ScalesDatatype } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
   import { apiPostGermplasmTable, apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
@@ -110,6 +110,8 @@
   const { t } = useI18n()
 
   const canContinue = computed(() => selectedTraits.value.length > 0 && (selectedGroups.value.length > 0 || selectedGermplasm.value.length > 0))
+
+  const numericOrCategoricalTraits = computed(() => compProps.traits.filter(t => t.scaleDatatype === ViewTableTraitsScaleDatatype.numeric || t.scaleDatatype === ViewTableTraitsScaleDatatype.categorical))
 
   // User selections
   const groupSelection = ref<GroupSelectionType>('groups')
@@ -165,16 +167,14 @@
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
       datasetIds: compProps.datasetIds,
-      traitIds: selectedTraits.value.map(t => t.traitId),
+      traitIds: selectedTraits.value.map(t => t.variableId),
       germplasmIds: germplasmIds,
       minimal: true,
     }
 
     apiPostTrialsDataTable(query, result => {
       traitData.value = result?.data || []
-
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
 
     apiPostTraitDatasetStats({
       datasetIds: compProps.datasetIds,
@@ -212,7 +212,7 @@
       }
 
       updateChartData()
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function findTraitValueIndex (value: string, trait: ViewTableTraits) {
@@ -303,7 +303,7 @@
         const dataPoints = traitData.value?.filter(td => td.germplasmId === g.germplasmId) || []
 
         selectedTraitStats.value.forEach(trait => {
-          const traitDataPoints = dataPoints?.filter(dp => dp.traitId === trait.variableId)
+          const traitDataPoints = dataPoints?.filter(dp => dp.variableId === trait.variableId)
 
           if (!traitDataPoints || traitDataPoints.length === 0) {
             germplasmData.dimensions.push(trait.variableName)

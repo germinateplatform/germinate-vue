@@ -37,14 +37,14 @@
       v-model="bottomSheetVisible"
       inset
       max-height="75vh"
-      v-if="selectedGermplasmId"
+      v-if="selectedLocationsId"
     >
       <v-card
         :title="$t('pagePassportTitle')"
         class="pb-10"
       >
         <v-card-text>
-          <Passport :top-gap="false" :germplasm-id="selectedGermplasmId" />
+          <Passport :top-gap="false" :germplasm-id="selectedLocationsId" />
         </v-card-text>
       </v-card>
     </v-bottom-sheet>
@@ -66,9 +66,9 @@
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { tsvParse } from 'd3-dsv'
-  import type { ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
+  import type { ViewTableGroups, ViewTableClimates } from '@/plugins/types/germinate'
   import Passport from '@/components/widgets/Passport.vue'
-  import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
+  import type { UserSelection } from '@/components/widgets/selections/ClimateHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
   // Only register the chart types we're actually using to reduce the final bundle size
@@ -80,7 +80,7 @@
 
   const compProps = defineProps<{
     datasetIds: number[]
-    traits: ViewTableTraits[]
+    climates: ViewTableClimates[]
     plotData: Blob
     groups: ViewTableGroups[]
     hasGroupsData: boolean
@@ -94,23 +94,23 @@
   const id = ref('scattermatrixplot-' + uuidv4())
   const loading = ref(false)
   const selectedIds = ref<number[]>([])
-  const selectedGermplasmId = ref<number>()
+  const selectedLocationsId = ref<number>()
   const bottomSheetVisible = ref(false)
   const swapAxes = ref(false)
 
-  const isScatterChart = computed(() => compProps.traits.length < 3)
+  const isScatterChart = computed(() => compProps.climates.length < 3)
 
   const filename = computed(() => {
-    let name = 'trait-matrix'
+    let name = 'climate-matrix'
     if (compProps.datasetIds) {
       name += `-${compProps.datasetIds.join('-')}`
     } else {
       name += '-all-datasets'
     }
-    if (compProps.traits) {
-      name += `-${compProps.traits.map(t => t.variableId).join('-')}`
+    if (compProps.climates) {
+      name += `-${compProps.climates.map(t => t.climateId).join('-')}`
     } else {
-      name += '-all-traits'
+      name += '-all-climates'
     }
 
     return name
@@ -144,16 +144,14 @@
       loading.value = true
 
       const dirtyTsv = await sourceFile.value?.blob.text() || ''
-      const firstEOL = dirtyTsv.indexOf('\r\n')
-      const tsv = dirtyTsv.slice(firstEOL + 2)
-      const tsvData = tsvParse(tsv)
+      const tsvData = tsvParse(dirtyTsv)
 
       if (isScatterChart.value) {
-        const one = compProps.traits[0]
-        const two = compProps.traits[1]
+        const one = compProps.climates[0]
+        const two = compProps.climates[1]
 
-        const oneName = one.scaleUnit ? `${one.variableName} [${one.scaleUnit}]` : one.variableName
-        const twoName = two.scaleUnit ? `${two.variableName} [${two.scaleUnit}]` : two.variableName
+        const oneName = one.unitName ? `${one.climateName} [${one.unitName}]` : one.climateName
+        const twoName = two.unitName ? `${two.climateName} [${two.unitName}]` : two.climateName
 
         new ScatterPlot({
           userSelection: compProps.userSelection,
@@ -164,13 +162,6 @@
           darkMode: store.storeIsDarkMode,
           colors: getColors(),
           groups: groupsMapped.value,
-          clickHandler: (dbId: number) => {
-            // For trials we show the passport page on click
-            selectedGermplasmId.value = dbId
-            nextTick(() => {
-              bottomSheetVisible.value = true
-            })
-          },
           selectionHandler: (dbIds: number[]) => {
             selectedIds.value = dbIds
           },
@@ -182,14 +173,7 @@
           darkMode: store.storeIsDarkMode,
           colors: getColors(),
           groups: groupsMapped.value,
-          columnsToIgnore: ['name', 'puid', 'taxonomy', 'latitude', 'longitude', 'elevation', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'block', 'trial_row', 'trial_column', 'dbId', 'general_identifier', 'dataset_id', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'location', 'trial_site', 'Site', 'treatments_description', 'year', 'groups'],
-          clickHandler: (dbId: number) => {
-            // For trials we show the passport page on click
-            selectedGermplasmId.value = dbId
-            nextTick(() => {
-              bottomSheetVisible.value = true
-            })
-          },
+          columnsToIgnore: ['name', 'dbId', 'dataset_name', 'dataset_version', 'latitude', 'longitude', 'elevation', 'license_name', 'year', 'groups'],
           selectionHandler: (dbIds: number[]) => {
             selectedIds.value = dbIds
           },

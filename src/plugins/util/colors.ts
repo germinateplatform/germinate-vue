@@ -9,17 +9,26 @@ export interface RGB {
 }
 
 const GRADIENT_VIRIDIS = ['#440154', '#48186a', '#472d7b', '#424086', '#3b528b', '#33638d', '#2c728e', '#26828e', '#21918c', '#1fa088', '#28ae80', '#3fbc73', '#5ec962', '#84d44b', '#addc30', '#d8e219', '#fde725']
+const DEFAULT_CHART_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
 
 /**
      * Returns the chart colors
      */
 const getColors = (): string[] | undefined => {
   const store = coreStore()
+
+  let colors: string[]
   if (store.storeCustomChartColors && store.storeCustomChartColors.length > 0) {
-    return store.storeCustomChartColors
+    colors = store.storeCustomChartColors
   } else {
-    return store.storeServerSettings?.colorsCharts
+    colors = store.storeServerSettings?.colorsCharts || []
   }
+
+  if (!colors || colors.length < 1) {
+    colors = DEFAULT_CHART_COLORS.concat()
+  }
+
+  return colors
 }
 
 const getPrimaryColor = (): string => {
@@ -206,4 +215,5 @@ export {
   hexToRGBA,
   getGradientColor,
   GRADIENT_VIRIDIS,
+  DEFAULT_CHART_COLORS,
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4 v-if="heading" class="scale-heading d-flex align-center" :title="heading">
+    <h4 v-if="heading" class="scale-heading d-flex align-center my-0" :title="heading">
       <v-checkbox hide-details density="compact" v-if="selectable" v-model="localSelected">
         <template #label>
           <a class="heading-text" href="#" @click.prevent="emit('click')">{{ heading }}</a>

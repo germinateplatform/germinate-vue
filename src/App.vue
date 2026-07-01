@@ -200,6 +200,10 @@ p {
   -webkit-box-orient: vertical;
 }
 
+.pe-none {
+  pointer-events: none;
+}
+
 svg.g-svg {
   color: rgb(var(--v-theme-primary));
 }

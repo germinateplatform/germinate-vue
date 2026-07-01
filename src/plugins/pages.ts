@@ -64,6 +64,11 @@ export class Pages {
     path: '/data/germplasm/:id',
   }
 
+  static climateOverview: Page = {
+    name: 'climate',
+    path: '/data/climate/overview',
+  }
+
   static climates: Page = {
     name: 'climates',
     path: '/data/climate/climates',
@@ -76,7 +81,7 @@ export class Pages {
 
   static trialsOverview: Page = {
     name: 'trials',
-    path: '/data/trials',
+    path: '/data/trials/overview',
   }
 
   static traits: Page = {
@@ -96,7 +101,7 @@ export class Pages {
 
   static genotypeOverview: Page = {
     name: 'genotypes',
-    path: '/data/genotypes',
+    path: '/data/genotypes/overview',
   }
 
   static markers: Page = {

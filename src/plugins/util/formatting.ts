@@ -78,7 +78,7 @@ function isTruncatedAfterWords (str: string, words: number) {
     return false
   }
 
-  const parts = str.split(' ')
+  const parts = str.split(/\s+/g)
 
   return parts.length > words
 }
@@ -88,7 +88,7 @@ function truncateAfterWords (str: string, words: number) {
     return str
   }
 
-  const parts = str.split(' ')
+  const parts = str.split(/\s+/g)
 
   if (parts.length > words) {
     return parts.splice(0, words).join(' ') + '...'

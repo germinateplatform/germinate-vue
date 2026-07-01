@@ -1,17 +1,21 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { PaginatedRequest, PaginatedResult, ViewTableClimateDataWithGroups, ViewTableClimates, ViewTableDatasets } from '@/plugins/types/germinate'
+import type { ClimateDatasetRequest, ClimateStats, DatasetRequest, PaginatedRequest, PaginatedResult, ViewTableClimateDataWithGroups, ViewTableClimates, ViewTableDatasets, ViewTableLocations } from '@/plugins/types/germinate'
 
-function apiPostDatasetClimates<T> (datasetIds: number[], onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostDatasetClimates (datasetIds: number[], onSuccess?: GerminateResponseHandler<ViewTableClimates[]>, onError?: ErrorHandler) {
   const queryData = {
     datasetIds,
   }
-  return authAxios({ url: 'dataset/climate', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<ViewTableClimates[]>({ url: 'dataset/climate', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 function apiPostClimateTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableClimates[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios<PaginatedResult<ViewTableClimates[]>>({ url: 'climate/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+function apiPostClimateLocations (queryData: DatasetRequest, onSuccess?: GerminateResponseHandler<ViewTableLocations[]>, onError?: ErrorHandler) {
+  return authAxios<ViewTableLocations[]>({ url: 'dataset/data/climate/location', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 function apiPostClimateDataTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableClimateDataWithGroups[]>>, onError?: ErrorHandler) {
@@ -30,10 +34,21 @@ function apiPostClimateDatasetTable (climateId: number, queryData: PaginatedRequ
   return authAxios<PaginatedResult<ViewTableDatasets[]>>({ url: `climate/${climateId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+function apiGetClimateStats (onSuccess?: GerminateResponseHandler<ClimateStats>, onError?: ErrorHandler) {
+  return authAxios<ClimateStats>({ url: 'climate/stats', success: onSuccess, error: onError })
+}
+
+function apiPostClimateYears (data: ClimateDatasetRequest, onSuccess?: GerminateResponseHandler<number[]>, onError?: ErrorHandler) {
+  return authAxios<number[]>({ url: 'climate/stats/year', data, method: 'POST', success: onSuccess, error: onError })
+}
+
 export {
   apiPostDatasetClimates,
   apiPostClimateTable,
   apiPostClimateDataTable,
   apiPostClimateDataTableIds,
   apiPostClimateDatasetTable,
+  apiGetClimateStats,
+  apiPostClimateLocations,
+  apiPostClimateYears,
 }

@@ -40,11 +40,16 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+meta:
+  navGroup: pedigree
+</route>
+
 <script setup lang="ts">
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
-import { apiPostPedigreeDatasetExport } from '@/plugins/api/germplasm'
+  import { apiPostPedigreeDatasetExport } from '@/plugins/api/germplasm'
   import { apiPostDatasetGroups } from '@/plugins/api/group'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type PedigreeRequest, type AsyncExportResult } from '@/plugins/types/germinate'

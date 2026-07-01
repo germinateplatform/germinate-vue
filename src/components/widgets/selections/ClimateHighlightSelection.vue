@@ -57,10 +57,11 @@
 
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import type { ViewTableLocations, ViewTableGroups } from '@/plugins/types/germinate'
+  import type { ViewTableLocations, ViewTableGroups, ViewTableClimates } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { mdiCalendarWeek, mdiDatabase, mdiGroup, mdiSprout } from '@mdi/js'
   import { apiPostLocationTable } from '@/plugins/api/location'
+  import { apiPostClimateYears } from '@/plugins/api/climate'
 
   export interface UserSelection {
     type: 'group' | 'dataset' | 'location' | 'year'
@@ -70,6 +71,7 @@
   export interface HighlightSelectionProps {
     datasetIds: number[]
     groups: ViewTableGroups[]
+    climates: ViewTableClimates[]
   }
 
   const compProps = withDefaults(defineProps<HighlightSelectionProps>(), {})
@@ -137,6 +139,13 @@
       } else {
         climateLocations.value = []
       }
+    })
+
+    apiPostClimateYears({
+      datasetIds: compProps.datasetIds,
+      climateIds: compProps.climates.map(c => c.climateId),
+    }, result => {
+      climateYears.value = result || []
     })
   }
 

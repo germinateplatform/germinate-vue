@@ -7,17 +7,7 @@
       variant="tonal"
       class="d-flex mb-5"
     >
-      <v-btn class="flex-grow-1" value="dataset" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
       <v-btn class="flex-grow-1" value="germplasm" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionGermplasm')" />
-      <v-btn class="flex-grow-1" value="plot" :prepend-icon="mdiViewGridPlus" :disabled="!trialPlots || trialPlots.length === 0" :text="$t('widgetHighlightSelectionPlot')" v-if="allowCellSelect">
-        <template #append><v-badge inline :content="getNumberWithSuffix((trialPlots || []).length, 0)" /></template>
-      </v-btn>
-      <v-btn class="flex-grow-1" value="group" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
-        <template #append><v-badge inline :content="getNumberWithSuffix((groups|| []).length, 0)" /></template>
-      </v-btn>
-      <v-btn class="flex-grow-1" value="year" :prepend-icon="mdiCalendarWeek" :disabled="!trialYears || trialYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
-        <template #append><v-badge inline :content="getNumberWithSuffix((trialYears|| []).length, 0)" /></template>
-      </v-btn>
       <v-btn class="flex-grow-1" value="taxonomies" :disabled="!trialTaxonomies || trialTaxonomies.length === 0" :prepend-icon="mdiSitemap" :text="$t('widgetHighlightSelectionTaxonomy')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialTaxonomies|| []).length, 0)" /></template>
       </v-btn>
@@ -26,6 +16,9 @@
       </v-btn>
       <v-btn class="flex-grow-1" value="treatments" :disabled="!trialTreatments || trialTreatments.length === 0" :prepend-icon="mdiSprinklerFire" :text="$t('widgetHighlightSelectionTreatment')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialTreatments|| []).length, 0)" /></template>
+      </v-btn>
+      <v-btn class="flex-grow-1" value="trait" :disabled="!traits || traits.length === 0" :prepend-icon="mdiTag" :text="$t('widgetHighlightSelectionTraitData')">
+        <template #append><v-badge inline :content="getNumberWithSuffix((traits|| []).length, 0)" /></template>
       </v-btn>
     </v-btn-toggle>
 
@@ -39,35 +32,13 @@
       multiple
     />
 
-    <PlotSelection
-      v-else-if="selectionMode === 'plot'"
-      v-model="selectedPlots"
-      :plots="trialPlots"
-      :label="$t('formLabelHighlightPlots')"
-      :hint="$t('formDescriptionHighlightPlots')"
-      persistent-hint
-      multiple
-    />
-
-    <GroupSelection
-      v-else-if="selectionMode === 'group'"
-      v-model="selectedGroups"
-      :groups="compProps.groups"
-      marked-item-type="germplasm"
-      :label="$t('formLabelHighlightGroups')"
-      :hint="$t('formDescriptionHighlightGroups')"
-      type="groups"
-      persistent-hint
-      multiple
-    />
-
     <SelectAllBox
       v-else-if="selectionMode === 'taxonomies'"
       :label="$t('formLabelHighlightTaxonomies')"
       :hint="$t('formDescriptionHighlightTaxonomies')"
       multiple
       clearable
-      item-value="id"
+      item-key="id"
       :item-title="(tax: Taxonomies) => concat(' ', [tax.genus, tax.species, tax.subtaxa])"
       v-model="selectedTaxonomies"
       :items="trialTaxonomies"
@@ -107,19 +78,17 @@
       </template>
     </SelectAllBox>
 
-    <SelectAllBox
-      v-else-if="selectionMode === 'year'"
-      :label="$t('formLabelHighlightYears')"
-      :hint="$t('formDescriptionHighlightYears')"
-      multiple
-      clearable
-      v-model="selectedYears"
-      :items="trialYears"
+    <TraitSelection
+      v-else-if="selectionMode === 'trait'"
+      :traits="traits"
+      :label="$t('formDescriptionHighlightTraitValues')"
+      :hint="$t('formDescriptionHighlightTraitValues')"
+      v-model="selectedTrait"
+      :can-select-all="false"
+      :can-select-multiple="false"
     >
-      <template #selection="{ internalItem: item }">
-        <v-chip density="compact" :text="item.title" variant="flat" />
-      </template>
-    </SelectAllBox>
+      <template #title><span /></template>
+    </TraitSelection>
   </div>
 </template>
 
@@ -127,41 +96,35 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
   import { apiPostTrialSetupStats } from '@/plugins/api/trait'
-  import type { Taxonomies, PlotDetails, Treatments, ViewTableGermplasm, ViewTableGroups } from '@/plugins/types/germinate'
+  import type { Taxonomies, Treatments, ViewTableGermplasm, ViewTableTraits } from '@/plugins/types/germinate'
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
-  import PlotSelection from '@/components/widgets/selections/PlotSelection.vue'
-  import { mdiCalendarWeek, mdiDatabase, mdiFormatListNumbered, mdiGroup, mdiSitemap, mdiSprinklerFire, mdiSprout, mdiViewGridPlus } from '@mdi/js'
+  import { mdiFormatListNumbered, mdiSitemap, mdiSprinklerFire, mdiSprout, mdiTag } from '@mdi/js'
 
   export interface UserSelection {
-    type: 'group' | 'dataset' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'
+    type: 'germplasm' | 'reps' | 'treatments' | 'taxonomies' | 'trait'
     selectedItems: string[]
   }
 
   export interface HighlightSelectionProps {
-    allowCellSelect?: boolean
-    datasetIds: number[]
-    groups: ViewTableGroups[]
+    datasetId: number
+    traits: ViewTableTraits[]
   }
 
-  const compProps = withDefaults(defineProps<HighlightSelectionProps>(), {
-    allowCellSelect: true,
-  })
+  const compProps = defineProps<HighlightSelectionProps>()
 
-  const selectionMode = ref<'group' | 'dataset' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'>()
+  const selectionMode = ref<'germplasm' | 'reps' | 'treatments' | 'taxonomies' | 'trait'>()
 
   const selectedGermplasm = ref<ViewTableGermplasm[]>([])
-  const selectedPlots = ref<PlotDetails[]>([])
   const selectedReps = ref<string[]>([])
   const selectedTreatments = ref<Treatments[]>([])
-  const selectedGroups = ref<ViewTableGroups[]>([])
-  const selectedYears = ref<number[]>([])
-  const selectedTaxonomies = ref<Taxonomies[]>([])
+  const selectedTrait = ref<ViewTableTraits[]>([])
+  const selectedTaxonomies = defineModel<Taxonomies[]>('taxonomies', {
+    default: [],
+  })
 
   const trialReps = ref<string[]>([])
   const trialTreatments = ref<Treatments[]>([])
-  const trialPlots = ref<PlotDetails[]>([])
   const trialGermplasm = ref<ViewTableGermplasm[]>([])
-  const trialYears = ref<number[]>([])
   const trialTaxonomies = ref<Taxonomies[]>([])
 
   const valid = computed(() => {
@@ -174,21 +137,6 @@
 
   const userSelection: ComputedRef<UserSelection | undefined> = computed(() => {
     switch (selectionMode.value) {
-      case 'dataset':
-        return {
-          type: selectionMode.value,
-          selectedItems: (compProps.datasetIds || []).map(ds => `${ds}`),
-        }
-      case 'group':
-        return {
-          type: selectionMode.value,
-          selectedItems: (selectedGroups.value || []).map(g => `${g.groupId}`),
-        }
-      case 'plot':
-        return {
-          type: selectionMode.value,
-          selectedItems: (selectedPlots.value || []).map(c => `${c.row}|${c.column}`),
-        }
       case 'germplasm':
         return {
           type: selectionMode.value,
@@ -197,7 +145,7 @@
       case 'taxonomies':
         return {
           type: selectionMode.value,
-          selectedItems: (selectedTaxonomies.value || []).map(g => concat(' ', [g.genus, g.species, g.subtaxa])),
+          selectedItems: (selectedTaxonomies.value || []).map(g => `${g.id}`),
         }
       case 'reps':
         return {
@@ -209,10 +157,10 @@
           type: selectionMode.value,
           selectedItems: (selectedTreatments.value || []).map(t => t.name),
         }
-      case 'year':
+      case 'trait':
         return {
           type: selectionMode.value,
-          selectedItems: (selectedYears.value || []).map(y => `${y}`),
+          selectedItems: (selectedTrait.value && selectedTrait.value[0]) ? [`${selectedTrait.value[0].variableId}`] : [],
         }
       default:
         return undefined
@@ -220,21 +168,18 @@
   })
 
   watch(selectionMode, async () => {
-    selectedPlots.value = []
     selectedReps.value = []
     selectedTreatments.value = []
-    selectedYears.value = []
     selectedTaxonomies.value = []
+    selectedTrait.value = []
   })
 
   function update () {
     apiPostTrialSetupStats({
-      datasetIds: compProps.datasetIds,
+      datasetIds: [compProps.datasetId],
     }, result => {
       trialTreatments.value = result.treatments || []
       trialReps.value = result.reps || []
-      trialPlots.value = result.plots || []
-      trialYears.value = result.years || []
       trialTaxonomies.value = result.taxonomies || []
     })
 

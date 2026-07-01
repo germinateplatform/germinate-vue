@@ -541,6 +541,31 @@ export interface Radius {
     right: number;
 }
 
+export const enum ViewTableMapoverlaysReferenceTable {
+    phenotypes = 'phenotypes',
+    climates = 'climates',
+}
+
+export interface ViewTableMapoverlays {
+    mapoverlayId: number;
+    mapoverlayName: string;
+    mapoverlayDescription: string;
+    mapoverlayBottomLeftLat: number;
+    mapoverlayBottomLeftLng: number;
+    mapoverlayTopRightLat: number;
+    mapoverlayTopRightLng: number;
+    mapoverlaysIsLegend: boolean;
+    referenceTable: ViewTableMapoverlaysReferenceTable;
+    foreignId: number;
+    datasetId: number;
+    datasetName: string;
+    datasetDescription: string;
+    datasetType: string;
+    recordingDate: Date;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
 export interface FilterGroup {
     filters?: Filter[];
     filterGroups?: FilterGroup[];
@@ -1482,6 +1507,16 @@ export interface ViewTableClimates {
     count: number;
 }
 
+export interface ClimateDatasetRequest extends DatasetRequest {
+    climateIds: number[];
+}
+
+export interface ClimateStats {
+    dataPointsByYear: { [index: string]: number };
+    climateDatasetsPerYear: { [index: string]: number };
+    climatesPerYear: { [index: string]: number };
+}
+
 export interface TrialStats {
     dataPointsByYear: { [index: string]: number };
     trialsDatasetsPerYear: { [index: string]: number };
@@ -1629,12 +1664,15 @@ export interface ViewTableTrialsData {
     locationName: string;
     countryName: string;
     countryCode2: string;
+    variableId: number;
+    variableName: string;
+    variableDescription: string;
     traitId: number;
     traitName: string;
-    traitNameShort: string;
-    traitRestrictions: TraitRestrictions;
-    traitDataType: PhenotypesDatatype;
-    unitName: string;
+    traitAbbreviation: string;
+    scaleRestrictions: TraitRestrictions;
+    scaleDatatype: ScalesDatatype;
+    scaleUnit: string;
     treatment: string;
     trialsetupId: number;
     rep: string;
@@ -1647,6 +1685,23 @@ export interface ViewTableTrialsData {
     elevation: number;
     recordingDate: Date;
     traitValue: string;
+}
+
+export interface ViewTableTrialLayouts {
+    germplasmId: number;
+    germplasmName: string;
+    germplasmGid: string;
+    germplasmDisplayName: string;
+    rep: string;
+    block: string;
+    treatment: string;
+    setupId: number;
+    row: number;
+    column: number;
+    datasetId: number;
+    taxonomyId: number;
+    genus: string;
+    species: string;
 }
 
 export interface ExperimentRequest extends DatasetRequest {

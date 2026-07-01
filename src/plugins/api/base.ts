@@ -63,14 +63,16 @@ function handleError (error: AxiosResponse) {
         message = i18n.global.t('httpErrorFourOOne')
         store.setToken(undefined)
         if (authMode === 'FULL' || authMode === 'SELECTIVE') {
-          router.push(Pages.login.path)
+          console.log(router.currentRoute)
+          router.push({ path: Pages.login.path, query: { redirect: router.currentRoute?.value?.fullPath || '/' } })
         }
         return
       case 403: {
         message = i18n.global.t('httpErrorFourOThree')
         store.setToken(undefined)
         if (authMode === 'FULL' || authMode === 'SELECTIVE') {
-          router.push(Pages.login.path)
+          console.log(router.currentRoute)
+          router.push({ path: Pages.login.path, query: { redirect: router.currentRoute?.value?.fullPath || '/' } })
         }
         return
       }
@@ -159,7 +161,8 @@ function authForm<T> ({ url = undefined, formData, method = 'post', success = un
           store.setToken(undefined)
           const authMode = store.storeServerSettings?.authMode
           if (authMode === 'FULL' || authMode === 'SELECTIVE') {
-            router.push(Pages.login.path)
+            console.log(router.currentRoute)
+            router.push({ path: Pages.login.path, query: { redirect: router.currentRoute?.value?.fullPath || '/' } })
           }
         } else if (process.env.NODE_ENV === 'development') {
           console.error(err)
@@ -265,7 +268,8 @@ const authAxios = <T>({ url = undefined, method = 'GET', data = null, dataType =
           store.setToken(undefined)
           const authMode = store.storeServerSettings?.authMode
           if (authMode === 'FULL' || authMode === 'SELECTIVE') {
-            router.push(Pages.login.path)
+            console.log(router.currentRoute)
+            router.push({ path: Pages.login.path, query: { redirect: router.currentRoute?.value?.fullPath || '/' } })
           }
         } else if (process.env.NODE_ENV === 'development') {
           console.error(err)

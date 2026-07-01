@@ -11,7 +11,7 @@
     :sort-by="compProps.sortBy"
     :selection-type="selectionType"
     item-key="germplasmId"
-    :item-id="(item: ViewTableTrialsData) => `${item.germplasmId}-${item.traitId}`"
+    :item-id="(item: ViewTableTrialsData) => `${item.germplasmId}-${item.variableId}`"
     table-key="trialsData"
     marked-item-type="germplasm"
     :header-icon="mdiShovel"
@@ -32,6 +32,9 @@
     </template>
     <template #item.germplasmNumber="{ item }">
       <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmNumber }}</router-link>
+    </template>
+    <template #item.germplasmSynonyms="{ item }">
+      <span v-if="item.germplasmSynonyms">{{ item.germplasmSynonyms.join(', ') }}</span>
     </template>
     <template #item.entityType="{ item }">
       <v-chip label :color="entityTypes[item.entityType].color()" :prepend-icon="entityTypes[item.entityType].path">{{ entityTypes[item.entityType].text() }}</v-chip>

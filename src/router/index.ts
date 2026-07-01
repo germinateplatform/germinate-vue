@@ -35,10 +35,10 @@ router.beforeEach((to, from, next) => {
 
   if (store.storeServerSettings) {
     if (store.storeServerSettings.authMode === 'FULL' && !store.storeToken && (to.path !== Pages.login.path)) {
-      next('/login')
+      router.push({ path: Pages.login.path, query: { redirect: to.fullPath || '/' } })
     // @ts-ignore
     } else if (to.meta && to.meta.requiredUserType && !userIsAtLeast(store.storeToken?.userType || UserType.REGULAR_USER, to.meta.requiredUserType)) {
-      next('/login')
+      router.push({ path: Pages.login.path, query: { redirect: to.fullPath || '/' } })
     } else {
       next()
     }
