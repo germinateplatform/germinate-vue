@@ -101,6 +101,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: aboutProject
+</route>
+
 <script setup lang="ts">
   import GenericAddEditFormModal from '@/components/modals/GenericAddEditFormModal.vue'
   import HtmlTemplateEditor from '@/components/widgets/HtmlTemplateEditor.vue'
@@ -193,28 +197,24 @@
     })
   }
 
-  function onSendInfo (item: AboutInfo) {
+  function onSendInfo () {
     const formData = new FormData()
 
-    if (!item.name || !item.url || !item.image) {
+    if (!selectedInfo.value.name || !selectedInfo.value.url || !selectedInfo.value.image) {
       return new Promise<boolean>((resolve, reject) => reject(false))
     }
 
-    formData.append('name', item.name)
-    if (item.description) {
-      formData.append('description', item.description)
+    formData.append('name', selectedInfo.value.name)
+    if (selectedInfo.value.description) {
+      formData.append('description', selectedInfo.value.description)
     }
-    if (item.group) {
-      formData.append('group', item.group)
+    if (selectedInfo.value.group) {
+      formData.append('group', selectedInfo.value.group)
     }
-    formData.append('url', item.url)
-    formData.append('imageFile', item.image)
+    formData.append('url', selectedInfo.value.url)
+    formData.append('imageFile', selectedInfo.value.image)
 
-    return new Promise<boolean>(resolve => {
-      apiPostAboutPartner(formData, () => {
-        resolve(true)
-      })
-    })
+    return new Promise<boolean>(resolve => apiPostAboutPartner(formData, () => resolve(true)))
   }
 
   function showAddModal () {

@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AboutConfig, AsyncExportResult, BackupResult, CarouselConfig, ClientAdminConfiguration, Comments, DataOrientation, ExportRequest, GatekeeperInstitution, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, PaginatedResult, Publicationdata, Publications, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableMapoverlays, ViewTableStories } from '@/plugins/types/germinate'
+import type { AboutConfig, AsyncExportResult, BackupResult, CarouselConfig, ClientAdminConfiguration, ClimateExportDatasetRequest, Comments, DataOrientation, ExportRequest, GatekeeperInstitution, GenesysRequestDetails, LinkRequest, News, NewUnapprovedUserRequest, NewUserAccessRequest, PaginatedRequest, PaginatedResult, Publicationdata, Publications, Storysteps, TemplateI18n, TrialsExportDatasetRequest, ViewTableImages, ViewTableMapoverlays, ViewTablePublications, ViewTableStories, ViewTableStoriesEnriched } from '@/plugins/types/germinate'
 
 const apiGetSettings = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'settings', success: onSuccess, error: onError })
 
@@ -15,7 +15,7 @@ const apiPostGatekeeperNew = <T>(queryData: NewUnapprovedUserRequest, onSuccess?
 
 const apiGetLocales = <T>(onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `clientlocale?random=${uuidv4()}`, success: onSuccess, error: onError })
 
-const apiPostTableExport = <T>(queryData: TrialsExportDatasetRequest, tableType: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `${tableType}/table/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
+const apiPostTableExport = <T>(queryData: TrialsExportDatasetRequest | ClimateExportDatasetRequest, tableType: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `${tableType}/table/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
 
 const apiPostInstitutionTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
   queryData.page -= 1
@@ -121,9 +121,9 @@ const apiGetDataAsyncImportLog = (uuid: string, onSuccess?: GerminateResponseHan
 
 const apiGetPublicationById = <T>(publicationId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `publication/${publicationId}`, success: onSuccess, error: onError })
 
-const apiPostPublicationsTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostPublicationsTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTablePublications[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'publication/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTablePublications[]>>({ url: 'publication/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiGetPublications = <T>(type: string, id?: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `publicationtype/${type}/${id || ''}`, method: 'GET', success: onSuccess, error: onError })
@@ -154,18 +154,22 @@ const apiGetUserFeedbackMarkAsRead = <T>(id: number, onSuccess?: GerminateRespon
 
 const apiDeleteUserFeedback = <T>(id: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `feedback/${id}`, method: 'DELETE', success: onSuccess, error: onError })
 
-const apiPostStoryTable = <T>(queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostStoryTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableStoriesEnriched[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'story/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableStoriesEnriched[]>>({ url: 'story/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiDeleteStoryById = <T>(storyId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `story/${storyId}`, method: 'DELETE', success: onSuccess, error: onError })
 
-const apiPatchStory = <T>(storyId: number, data: ViewTableStories, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `story/${storyId}`, method: 'PATCH', data, success: onSuccess, error: onError })
+const apiPatchStory = (storyId: number, data: ViewTableStories, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) => authAxios<boolean>({ url: `story/${storyId}`, method: 'PATCH', data, success: onSuccess, error: onError })
 
-const apiPostStoryUpload = <T>(formData: FormData, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authForm({ url: 'story', formData, success: onSuccess, error: onError })
+function apiPatchStorySteps (storyId: number, data: Storysteps[], onSuccess?: GerminateResponseHandler<void>, onError?: ErrorHandler) {
+  return authAxios({ url: `story/${storyId}/step`, method: 'PATCH', data, success: onSuccess, error: onError })
+}
 
-const apiPostStoryStepUpload = <T>(storyId: number, formData: FormData, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authForm({ url: `story/${storyId}/step`, formData, success: onSuccess, error: onError })
+const apiPostStoryUpload = (formData: FormData, onSuccess?: GerminateResponseHandler<void>, onError?: ErrorHandler) => authForm<void>({ url: 'story', formData, success: onSuccess, error: onError })
+
+const apiPostStoryStepUpload = (storyId: number, formData: FormData, onSuccess?: GerminateResponseHandler<void>, onError?: ErrorHandler) => authForm<void>({ url: `story/${storyId}/step`, formData, success: onSuccess, error: onError })
 
 const apiPostTemplateImage = <T>(formData: FormData, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authForm({ url: 'image/upload/template', formData, success: onSuccess, error: onError })
 
@@ -229,6 +233,7 @@ export {
   apiPostStoryStepUpload,
   apiPatchStory,
   apiDeleteStoryStep,
+  apiPatchStorySteps,
   apiPatchTemplateI18n,
   apiPostTemplateImage,
   apiPostGenesysRequest,

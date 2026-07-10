@@ -9,6 +9,7 @@
       location="bottom right"
       v-tooltip.top="'\'Large Triangles\' by SVGBackgrounds.com'"
     />
+
     <v-container max-width="640">
       <v-img
         max-height="300"
@@ -39,6 +40,10 @@
     </v-container>
   </div>
 </template>
+
+<route lang="yaml">
+name: login
+</route>
 
 <script setup lang="ts">
   import LoginSection from '@/components/widgets/LoginSection.vue'

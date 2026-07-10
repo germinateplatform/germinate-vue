@@ -114,7 +114,7 @@
   // @ts-ignore
   import { Cite } from '@citation-js/core'
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import { PublicationdataReferenceType, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
@@ -184,12 +184,12 @@
       })
   }
 
-  function sendNewPublication (newPublication: PublicationDoi) {
+  function sendNewPublication () {
     return new Promise<boolean>(resolve => {
       apiPutPublication({
-        doi: newPublication.doi || '',
-        fallbackCache: newPublication.json,
-        createdOn: newPublication.date,
+        doi: newPublication.value.doi || '',
+        fallbackCache: newPublication.value.json,
+        createdOn: newPublication.value.date,
       }, publicationId => {
         apiPutPublicationReference(publicationId, {
           publicationId: publicationId,

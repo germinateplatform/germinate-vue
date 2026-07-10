@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
   import { Pages } from '@/plugins/pages'
-  import type { ExtendedViewTableLocations } from '@/plugins/types/ExtendedViewTableLocations'
+  import type { ExtendedViewTableLocations } from '@/plugins/types/client'
   import { FilterComparator, FilterOperator, type FilterGroup } from '@/plugins/types/germinate'
   import { locationTypes } from '@/plugins/util/types'
 

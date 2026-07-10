@@ -73,22 +73,17 @@
         <v-divider class="my-5" />
 
         <div v-if="selectedNestedTab.id === 'mcpd'">
-          <v-btn-toggle
-            v-model="mcpdImportUpdate"
-            color="primary"
-            mandatory
-            variant="tonal"
-          >
-            <v-btn value="import" :prepend-icon="mdiUpload" :text="$t('pageDataUploadUpdateOptionInsert')" />
-            <v-btn value="update" :prepend-icon="mdiRefresh" :text="$t('pageDataUploadUpdateOptionUpdate')" />
-          </v-btn-toggle>
-          <div class="v-input__details" role="alert" aria-live="polite">
-            <div class="v-messages">
-              <div class="v-messages__message">
-                {{ $t(mcpdImportUpdate === 'update' ? 'pageDataUploadUpdateExplanationUpdate' : 'pageDataUploadUpdateExplanationInsert') }}
-              </div>
-            </div>
-          </div>
+          <HintContainer :text="mcpdImportUpdate === 'update' ? 'pageDataUploadUpdateExplanationUpdate' : 'pageDataUploadUpdateExplanationInsert'">
+            <v-btn-toggle
+              v-model="mcpdImportUpdate"
+              color="primary"
+              mandatory
+              variant="tonal"
+            >
+              <v-btn value="import" :prepend-icon="mdiUpload" :text="$t('pageDataUploadUpdateOptionInsert')" />
+              <v-btn value="update" :prepend-icon="mdiRefresh" :text="$t('pageDataUploadUpdateOptionUpdate')" />
+            </v-btn-toggle>
+          </HintContainer>
         </div>
 
         <div v-if="selectedNestedTab.id === 'genotype'">
@@ -122,27 +117,22 @@
         <div v-if="selectedNestedTab.group === 'genotype' || selectedNestedTab.group === 'trial' || selectedNestedTab.group === 'climate' || selectedNestedTab.group === 'pedigree'">
           <h4 class="mt-3 mb-0">{{ $t('pageDataUploadDatasetStateTitle') }}</h4>
 
-          <v-btn-toggle
-            v-model="datasetState"
-            color="primary"
-            mandatory
-            variant="tonal"
-          >
-            <v-btn
-              v-for="state in datasetStates"
-              :key="`dataset-state-${state.id}`"
-              :value="state"
-              :text="state.text()"
-              :prepend-icon="state.path"
-            />
-          </v-btn-toggle>
-          <div class="v-input__details" role="alert" aria-live="polite">
-            <div class="v-messages">
-              <div class="v-messages__message">
-                {{ datasetState.help() }}
-              </div>
-            </div>
-          </div>
+          <HintContainer :text="datasetState.help()">
+            <v-btn-toggle
+              v-model="datasetState"
+              color="primary"
+              mandatory
+              variant="tonal"
+            >
+              <v-btn
+                v-for="state in datasetStates"
+                :key="`dataset-state-${state.id}`"
+                :value="state"
+                :text="state.text()"
+                :prepend-icon="state.path"
+              />
+            </v-btn-toggle>
+          </HintContainer>
         </div>
 
         <v-file-upload
@@ -165,6 +155,10 @@
     </template>
   </v-container>
 </template>
+
+<route lang="yaml">
+name: importUpload
+</route>
 
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'

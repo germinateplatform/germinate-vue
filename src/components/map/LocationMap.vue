@@ -35,6 +35,7 @@
       inset
       persistent
       :scrim="false"
+      scroll-strategy="none"
       :capture-focus="false"
       :close-on-back="false"
       :close-on-content-click="false"
@@ -68,7 +69,7 @@
   import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
   import iconUrl from 'leaflet/dist/images/marker-icon.png'
   import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
-  import type { ExtendedViewTableLocations } from '@/plugins/types/ExtendedViewTableLocations'
+  import type { ExtendedViewTableLocations } from '@/plugins/types/client'
   import { getColor } from '@/plugins/util/colors'
   import { apiPostMapOverlayTable } from '@/plugins/api/misc'
   import ColorGradient from '@/components/widgets/ColorGradient.vue'

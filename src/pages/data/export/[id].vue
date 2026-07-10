@@ -26,6 +26,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: export
+</route>
+
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetTable, apiPostDatasetTableIds, apiPostLicenseTable } from '@/plugins/api/dataset'
@@ -42,7 +46,7 @@
   const { t } = useI18n()
 
   const router = useRouter()
-  const route = useRoute('/data/export/[id]')
+  const route = useRoute('export')
   const store = coreStore()
 
   const selectedDatasets = ref<number[]>([])
@@ -167,8 +171,8 @@
   }
 
   onMounted(() => {
-    if (route && route.params && route.params.id && datasetTypes[route.params.id]) {
-      datasetType.value = route.params.id
+    if (route && route.params && route.params.id && datasetTypes[`${route.params.id}`]) {
+      datasetType.value = `${route.params.id}`
     }
   })
 </script>

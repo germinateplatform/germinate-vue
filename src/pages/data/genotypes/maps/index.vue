@@ -8,6 +8,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: maps
+</route>
+
 <script setup lang="ts">
   import MapTable from '@/components/tables/MapTable.vue'
   import { apiPostMapsTable } from '@/plugins/api/genotype'

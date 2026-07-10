@@ -8,6 +8,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: experiments
+</route>
+
 <script setup lang="ts">
   import ExperimentTable from '@/components/tables/ExperimentTable.vue'
   import { apiPostExperimentTable } from '@/plugins/api/dataset'

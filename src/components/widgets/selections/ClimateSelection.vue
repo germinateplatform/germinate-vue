@@ -15,7 +15,7 @@
       v-model:search="searchTerm"
       :items="compProps.climates"
       item-value="variableId"
-      :item-title="(item: ViewTableClimates) => item.unitName ? `${item.climateName} [${item.unitName}]` : item.climateName"
+      :item-title="(item: ViewTableClimates) => item.unitAbbreviation ? `${item.climateName} [${item.unitAbbreviation}]` : item.climateName"
     >
       <template #selection="{ internalItem: item, index }">
         <v-chip size="small" v-if="index < 4" :text="item.title" />

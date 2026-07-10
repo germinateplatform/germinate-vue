@@ -43,13 +43,13 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, FilterOperator, PaginatedRequest, PaginatedResult, ViewTableMapdefinitions } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
-  import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { mdiFormatIndentIncrease } from '@mdi/js'
+  import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMapdefinitions[]>>> }
@@ -65,44 +65,10 @@
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers = [{
-      key: 'markerId',
-      title: t('tableColumnMarkerId'),
-      dataType: 'integer',
-    }, {
-      key: 'markerName',
-      title: t('tableColumnMarkerName'),
-      dataType: 'string',
-    }, {
-      key: 'markerSynonyms',
-      dataType: 'json',
-      title: t('tableColumnMarkerSynonyms'),
-    }, {
-      key: 'mapFeatureType',
-      dataType: 'string',
-      title: t('tableColumnMapFeatureType'),
-    }, {
-      key: 'mapId',
-      dataType: 'integer',
-      class: 'text-right',
-      title: t('tableColumnMarkerMapId'),
-    }, {
-      key: 'mapName',
-      dataType: 'string',
-      title: t('tableColumnMapName'),
-    }, {
-      key: 'chromosome',
-      dataType: 'string',
-      title: t('tableColumnMapChromosome'),
-    }, {
-      key: 'position',
-      dataType: 'integer',
-      class: 'text-right',
-      title: t('tableColumnMapPosition'),
-      value: (item: ViewTableMapdefinitions) => (item.position !== undefined && item.position !== null) ? getNumberWithSuffix(item.position, 2) : null,
-    }]
-
-    return headers
+    return columns.mapdefinitions.map(c => {
+      c.title = t(c.title || '')
+      return c
+    })
   })
 
   defineExpose({

@@ -119,7 +119,7 @@
   const selectedTreatments = ref<Treatments[]>([])
   const selectedTrait = ref<ViewTableTraits[]>([])
   const selectedTaxonomies = defineModel<Taxonomies[]>('taxonomies', {
-    default: [],
+    default: () => [],
   })
 
   const trialReps = ref<string[]>([])

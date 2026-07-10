@@ -39,7 +39,7 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableDatasetAttributes } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
@@ -47,6 +47,7 @@
   import { dataTypes } from '@/plugins/util/types'
   import emitter from 'tiny-emitter/instance'
   import { mdiFileDocument, mdiPageNext } from '@mdi/js'
+import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasetAttributes[]>>> }
@@ -61,37 +62,10 @@
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers = [{
-      key: 'datasetId',
-      dataType: undefined,
-      title: t('tableColumnAttributeDatasetId'),
-    }, {
-      key: 'datasetName',
-      dataType: undefined,
-      title: t('tableColumnAttributeDatasetName'),
-    }, {
-      key: 'datasetDescription',
-      dataType: undefined,
-      title: t('tableColumnAttributeDatasetDescription'),
-    }, {
-      key: 'attributeName',
-      dataType: 'string',
-      title: t('tableColumnAttributeName'),
-    }, {
-      key: 'attributeDescription',
-      dataType: 'string',
-      title: t('tableColumnAttributeDescription'),
-    }, {
-      key: 'attributeType',
-      dataType: 'dataType',
-      title: t('tableColumnAttributeDataType'),
-    }, {
-      key: 'attributeValue',
-      dataType: 'string',
-      title: t('tableColumnAttributeValue'),
-    }]
-
-    return headers
+    return columns.datasetAttributes.map(c => {
+      c.title = t(c.title || '')
+      return c
+    })
   })
 
   function showDatasetAttributeModal (dataset: ViewTableDatasetAttributes) {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseChart
-      title="pageTrialsExportChartTitle"
+      title="pageClimateExportChartTitle"
       :chart-id="id"
       :filename="filename"
       :source-file="sourceFile"
@@ -12,7 +12,7 @@
     >
       <template #card-text>
         <v-card-text>
-          <p class="text-info">{{ $t('pageTrialsExportChartText') }}</p>
+          <p class="text-info">{{ $t('pageClimateExportChartText') }}</p>
         </v-card-text>
       </template>
       <template #toolbar-append>
@@ -150,8 +150,8 @@
         const one = compProps.climates[0]
         const two = compProps.climates[1]
 
-        const oneName = one.unitName ? `${one.climateName} [${one.unitName}]` : one.climateName
-        const twoName = two.unitName ? `${two.climateName} [${two.unitName}]` : two.climateName
+        const oneName = one.unitAbbreviation ? `${one.climateName} [${one.unitAbbreviation}]` : one.climateName
+        const twoName = two.unitAbbreviation ? `${two.climateName} [${two.unitAbbreviation}]` : two.climateName
 
         new ScatterPlot({
           userSelection: compProps.userSelection,

@@ -37,7 +37,7 @@
 <script setup lang="ts">
   import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
 
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, ImportResult, PaginatedRequest, PaginatedResult } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'

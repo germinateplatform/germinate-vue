@@ -40,6 +40,29 @@ export interface ViewTableGermplasm {
     hasPedigreeData: number;
 }
 
+export interface ViewTableGermplasmAttributes {
+    attributeValueId: number;
+    germplasmId: number;
+    germplasmGid: string;
+    germplasmName: string;
+    germplasmDisplayName: string;
+    attributeId: number;
+    attributeName: string;
+    attributeDescription: string;
+    attributeType: ViewTableGermplasmAttributesAttributeType;
+    targetTable: string;
+    foreignId: number;
+    createdOn: Date;
+    attributeValue: string;
+}
+
+export const enum ViewTableGermplasmAttributesAttributeType {
+    categorical = 'categorical',
+    numeric = 'numeric',
+    text = 'text',
+    date = 'date',
+}
+
 export interface ViewTablePedigreedefinitions {
     germplasmId: number;
     germplasmName: string;
@@ -130,32 +153,32 @@ export interface ViewTableStories {
     storyId: number;
     storyName: string;
     storyDescription: string;
-    storyRequirements: StoryRequirements;
-    storyImageId: number;
-    storyImageName: string;
-    projectId: number;
-    projectName: string;
-    projectDescription: string;
-    storyFeatured: boolean;
-    storyVisibility: boolean;
-    storyUserId: number;
-    publicationId: number;
-    publicationDoi: string;
+    storyRequirements?: StoryRequirements;
+    storyImageId?: number;
+    storyImageName?: string;
+    projectId?: number;
+    projectName?: string;
+    projectDescription?: string;
+    storyFeatured?: boolean;
+    storyVisibility?: boolean;
+    storyUserId?: number;
+    publicationId?: number;
+    publicationDoi?: string;
     storySteps: Storysteps[];
-    storyCreatedOn: Date;
-    storyUpdatedOn: Date;
+    storyCreatedOn?: Date;
+    storyUpdatedOn?: Date;
 }
 
 export interface Storysteps {
-    id: number;
-    storyId: number;
+    id?: number;
+    storyId?: number;
     storyIndex: number;
-    pageConfig: StoryStepConfig;
+    pageConfig?: StoryStepConfig;
     name: string;
     description: string;
-    imageId: number;
-    createdOn: Date;
-    updatedOn: Date;
+    imageId?: number;
+    createdOn?: Date;
+    updatedOn?: Date;
 }
 
 export interface StoryStepConfig {
@@ -216,8 +239,8 @@ export interface JsonNull extends JsonElement {
 }
 
 export interface StoryRequirements {
-    datasetIds: number[];
-    groupIds: number[];
+    datasetIds?: number[];
+    groupIds?: number[];
 }
 
 export interface ViewTableCollaborators {
@@ -451,7 +474,7 @@ export const enum PublicationdataReferenceType {
 export interface ViewTablePublications {
     publicationId: number;
     publicationDoi: string;
-    publicationFallbackCache?: string;
+    publicationFallbackCache?: string | any;
     isDatabasePub?: number;
     datasetIds?: number[];
     germplasmIds?: number[];
@@ -1645,6 +1668,10 @@ export interface TrialsExportDatasetRequest extends PaginatedRequest {
     germplasmIds?: number[];
     germplasmGroupIds?: number[];
     datasetIds?: number[];
+}
+
+export interface ViewTableStoriesEnriched extends ViewTableStories {
+    canAccess?: boolean;
 }
 
 export interface ViewTableTrialsData {

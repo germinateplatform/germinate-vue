@@ -30,6 +30,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: groups
+</route>
+
 <script setup lang="ts">
   import { apiPostGroupTable } from '@/plugins/api/group'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'

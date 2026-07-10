@@ -329,7 +329,7 @@
     return apiPostGermplasmInstitutionTable(germplasm.value?.germplasmId || -1, data)
   }
   function getPublicationData (data: PaginatedRequest) {
-    return apiPostPublicationsTable<PaginatedResult<ViewTablePublications[]>>(data, result => {
+    return apiPostPublicationsTable(data, result => {
       if (result && result.data && result.data.length > 0) {
         result.data.forEach(p => {
           p.lookupDetails = lookupDoiInformation(p)

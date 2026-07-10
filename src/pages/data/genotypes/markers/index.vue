@@ -8,6 +8,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: markers
+</route>
+
 <script setup lang="ts">
   import MarkerTable from '@/components/tables/MarkerTable.vue'
   import { apiPostMarkerTable, apiPostMarkerTableIds } from '@/plugins/api/genotype'

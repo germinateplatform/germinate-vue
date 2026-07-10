@@ -93,6 +93,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: groupDetails
+</route>
+
 <script setup lang="ts">
   import GermplasmTable from '@/components/tables/GermplasmTable.vue'
   import LocationTable from '@/components/tables/LocationTable.vue'
@@ -122,7 +126,7 @@
   const { t } = useI18n()
   const store = coreStore()
   const router = useRouter()
-  const route = useRoute('/groups/[id]')
+  const route = useRoute('groupDetails')
   const groupId = ref<number>()
   const group = ref<ViewTableGroups>()
   const selectedIds = ref<number[]>([])

@@ -798,14 +798,9 @@ export interface DatasetType extends BaseType {
   pageName?: Page
 }
 
-const datasetTypes: { [key: string]: DatasetType } = {
-  allelefreq: {
-    id: 4,
-    path: mdiPulse,
-    pageName: Pages.exportAlleleFrequency,
-    color: () => getTemplateColor(0),
-    text: () => i18n.global.t('datasetTypeAllelefreq'),
-  },
+type DatasetTypeKey = 'climate' | 'genotype' | 'trials' | 'pedigree' | 'unknown'
+
+const datasetTypes: Record<DatasetTypeKey, DatasetType> & { [key: string]: DatasetType } = {
   climate: {
     id: 5,
     path: mdiWeatherSnowyRainy,

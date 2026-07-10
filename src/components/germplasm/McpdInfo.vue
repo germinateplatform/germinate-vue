@@ -6,7 +6,7 @@
     <template #append>
       <v-icon :icon="mdiHelpCircle" v-tooltip:top="'Multi-Crop Passport Descriptors'" />
     </template>
-    <v-list>
+    <v-list class="text-wrap">
       <v-list-item :title="$t('widgetMcpdPuid')" :subtitle="mcpd.puid || 'N/A'" />
       <v-list-item :title="$t('widgetMcpdGid')" :subtitle="mcpd.accenumb || 'N/A'" />
       <v-list-item :title="$t('widgetMcpdAccessionName')" :subtitle="mcpd.accename || 'N/A'" />

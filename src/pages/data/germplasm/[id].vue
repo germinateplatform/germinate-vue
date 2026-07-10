@@ -31,13 +31,17 @@
   </div>
 </template>
 
+<route lang="yaml">
+name: passport
+</route>
+
 <script setup lang="ts">
   import Passport from '@/components/widgets/Passport.vue'
   import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
   import { FilterComparator, FilterOperator, type ViewTableGermplasm, type PaginatedRequest } from '@/plugins/types/germinate'
   import { mdiArrowDownBox, mdiArrowUpBox } from '@mdi/js'
 
-  const route = useRoute('/data/germplasm/[id]')
+  const route = useRoute('passport')
 
   const tab = ref<number>(1)
   const noGermplasmFound = ref(false)
@@ -46,7 +50,7 @@
 
   onBeforeMount(() => {
     if (route.params && route.params.id) {
-      requestedIdentifier.value = route.params.id
+      requestedIdentifier.value = `${route.params.id}`
 
       const query: PaginatedRequest = {
         filters: [],

@@ -99,6 +99,7 @@
 
   const store = coreStore()
   const router = useRouter()
+  const route = useRoute()
   const { t } = useI18n()
 
   const valid = computed(() => {
@@ -124,7 +125,12 @@
         text: t('pageLoginToastSuccessful'),
         color: 'success',
       })
-      router.push(compProps.targetUrl || '/')
+
+      if (compProps.targetUrl === route.path) {
+        window.location.reload()
+      } else {
+        router.push(compProps.targetUrl || '/')
+      }
 
       username.value = ''
       password.value = ''

@@ -72,6 +72,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: trials
+</route>
+
 <script setup lang="ts">
   import { apiGetTrialStats } from '@/plugins/api/trait'
   import type { TrialStats } from '@/plugins/types/germinate'

@@ -1,10 +1,7 @@
 <template>
   <v-dialog v-model="dialog" :max-width="`min(90vw, ${internalWidth || 400}px)`">
-    <v-card>
-      <v-toolbar dark dense flat>
-        <v-toolbar-title class="white--text">{{ internalTitle }}</v-toolbar-title>
-      </v-toolbar>
-      <v-card-text v-show="!!internalMessage" class="pa-4"><span v-html="internalMessage" /></v-card-text>
+    <v-card :title="internalTitle">
+      <v-card-text v-show="!!internalMessage"><span v-html="internalMessage" /></v-card-text>
 
       <v-checkbox v-if="internalNeedsConfirmation" v-model="internalConfirmed">{{ $t('modalConfirmMessageConfirm') }}</v-checkbox>
       <v-card-actions class="pt-0">

@@ -52,7 +52,7 @@
   const someSelected = computed(() => selection.value.length > 0)
 
   const selection = defineModel<T[]>({
-    default: [],
+    default: () => [],
   })
 
   function toggle () {

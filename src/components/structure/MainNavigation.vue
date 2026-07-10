@@ -85,7 +85,7 @@
         <v-list-item link :to="Pages.datasets.path" :prepend-icon="mdiDatabase" v-if="Pages.isAvailable(Pages.datasets)" :title="$t('menuDatasets')"><template #append><v-chip size="small">{{ formatBadge('datasets') }}</v-chip></template></v-list-item>
         <v-list-item link :to="Pages.experiments.path" :prepend-icon="mdiFolderTable" v-if="Pages.isAvailable(Pages.experiments)" :title="$t('menuExperiments')"><template #append><v-chip size="small">{{ formatBadge('experiments') }}</v-chip></template></v-list-item>
         <v-list-item link :to="Pages.dataResources.path" :prepend-icon="mdiFileDownload" v-if="Pages.isAvailable(Pages.dataResources)" :title="$t('menuDataResources')"><template #append><v-chip size="small">{{ formatBadge('fileresources') }}</v-chip></template></v-list-item>
-        <v-list-item link :prepend-icon="mdiBookOpenPageVariant" v-if="Pages.isAvailable(Pages.stories)" :title="$t('menuDataStories')" />
+        <v-list-item link :to="Pages.stories.path" :prepend-icon="mdiBookOpenPageVariant" v-if="Pages.isAvailable(Pages.stories)" :title="$t('menuDataStories')"><template #append><v-chip size="small">{{ formatBadge('dataStories') }}</v-chip></template></v-list-item>
         <v-list-item link :to="Pages.statistics.path" :prepend-icon="mdiChartAreaspline" v-if="Pages.isAvailable(Pages.statistics)" :title="$t('menuDataStatistics')" />
       </v-list-group>
 

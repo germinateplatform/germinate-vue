@@ -16,6 +16,7 @@
     :header-icon="mdiSprout"
     :show-details="true"
     :header-title="$t('pageGermplasmTitle')"
+    @filter-cleared="emit('filter-cleared')"
   >
     <template #header.pdci="{ column }">
       {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipGermplasmPdci')">
@@ -32,10 +33,6 @@
     <!-- HEAD: Genotypic data -->
     <template #header.hasGenotypicData>
       <v-icon :icon="datasetTypes.genotype.path" v-tooltip:bottom="$t('tableColumnHasGenotypicData')" />
-    </template>
-    <!-- HEAD: Allelefreq data -->
-    <template #header.hasAllelefreqData>
-      <v-icon :icon="datasetTypes.allelefreq.path" v-tooltip:bottom="$t('tableColumnHasAllelefreqData')" />
     </template>
     <!-- HEAD: Allelefreq data -->
     <template #header.hasPedigreeData>
@@ -95,9 +92,6 @@
     </template>
     <template #item.hasGenotypicData="{ item }">
       <v-icon v-if="item.hasGenotypicData" :color="datasetTypes.genotype.color()" v-tooltip:top="datasetTypes.genotype.text()" :icon="datasetTypes.genotype.path" />
-    </template>
-    <template #item.hasAllelefreqData="{ item }">
-      <v-icon v-if="item.hasAllelefreqData" :color="datasetTypes.allelefreq.color()" v-tooltip:top="datasetTypes.allelefreq.text()" :icon="datasetTypes.allelefreq.path" />
     </template>
     <template #item.hasPedigreeData="{ item }">
       <v-icon v-if="item.hasPedigreeData" :color="datasetTypes.pedigree.color()" v-tooltip:top="datasetTypes.pedigree.text()" :icon="datasetTypes.pedigree.path" />
@@ -171,7 +165,7 @@
   import LocationMap from '@/components/map/LocationMap.vue'
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { Pages } from '@/plugins/pages'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import { datasetTypes, entityTypes } from '@/plugins/util/types'
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGermplasm } from '@/plugins/types/germinate'
@@ -247,7 +241,10 @@
   defineExpose({
     refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
     getSelection: () => baseTable.value?.getSelection(),
+    forceFilter: (filters: FilterGroup[]) => baseTable.value?.forceFilters(filters),
   })
+
+  const emit = defineEmits(['filter-cleared'])
 </script>
 
 <style scoped>

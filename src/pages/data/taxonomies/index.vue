@@ -8,6 +8,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: taxonomies
+</route>
+
 <script setup lang="ts">
   import TaxonomyTable from '@/components/tables/TaxonomyTable.vue'
   import { apiPostTaxonomyTable } from '@/plugins/api/germplasm'

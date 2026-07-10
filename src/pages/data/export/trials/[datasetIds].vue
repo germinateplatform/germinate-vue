@@ -1,9 +1,7 @@
 <template>
   <v-container fluid>
     <h1 class="text-headline-large mb-3">{{ $t('pageTrialsExportTitle') }}</h1>
-    <v-chip-group class="mb-3" v-if="datasets">
-      <v-chip :ripple="false" label size="small" class="pe-none" :prepend-icon="mdiDatabase" v-for="dataset in datasets" :key="`dataset-chip-${dataset.datasetId}`" :text="dataset.datasetName" />
-    </v-chip-group>
+    <DatasetList :datasets="datasets" v-if="datasets" />
     <v-divider class="mb-3" />
 
     <div v-if="datasets && datasets.length > 0">
@@ -18,29 +16,25 @@
         </v-expansion-panel>
       </v-expansion-panels>
 
-      <v-row class="my-5 card-icon-avatar">
-        <v-col v-for="(tab, index) in tabs" :key="`trait-tab-${tab.key}`">
-          <v-card :color="selectedTab === tab.key ? getTemplateColor(index) : 'muted'" @click="selectedTab = tab.key">
-            <div class="d-flex flex-no-wrap justify-space-between">
-              <div>
-                <v-card-title class="text-headline-small">
-                  {{ tab.text }}
-                </v-card-title>
-
-                <v-card-subtitle><v-icon :icon="mdiHelpCircle" v-tooltip:bottom="tab.help" /></v-card-subtitle>
-              </div>
-
-              <v-avatar
-                class="ma-3"
-                rounded="0"
-                size="64"
-              >
-                <v-icon size="64">{{ tab.path }}</v-icon>
-              </v-avatar>
-            </div>
-          </v-card>
-        </v-col>
-      </v-row>
+      <v-tabs
+        center-active
+        scroll-to-active
+        grow
+        class="my-5"
+      >
+        <v-tab
+          v-for="(tab, index) in tabs" :key="`trait-tab-${tab.key}`"
+          :text="tab.text"
+          :prepend-icon="tab.path"
+          :base-color="selectedTab === tab.key ? getTemplateColor(index) : 'muted'"
+          variant="tonal"
+          @click="selectedTab = tab.key"
+        >
+          <template #append>
+            <v-icon :icon="mdiHelpCircle" v-tooltip:bottom="tab.help" color="muted" />
+          </template>
+        </v-tab>
+      </v-tabs>
 
       <RevealOnShowPanel
         v-show="selectedTab === 'overview'"
@@ -116,6 +110,7 @@
 <route lang="yaml">
 meta:
   navGroup: trials
+name: exporTrials
 </route>
 
 <script setup lang="ts">
@@ -151,7 +146,7 @@ meta:
   const { t } = useI18n()
 
   const router = useRouter()
-  const route = useRoute('/data/export/trials/[id]')
+  const route = useRoute('exporTrials')
   const store = coreStore()
 
   const trialLocationMap = useTemplateRef('trialLocationMap')
@@ -355,9 +350,10 @@ meta:
   })
 
   onMounted(() => {
-    if (route && route.params && route.params.id) {
+    if (route && route.params && route.params.datasetIds) {
+      console.log(route)
       try {
-        datasetIds.value = route.params.id.split(',').map(Number)
+        datasetIds.value = (route.params.datasetIds as string).split(',').map(Number)
 
         apiPostTrialLocationCount({
           datasetIds: datasetIds.value,

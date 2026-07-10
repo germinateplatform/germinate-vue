@@ -60,7 +60,7 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import type { Grouptypes, FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGroups } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
@@ -220,34 +220,38 @@
     })
   }
 
-  function onSendGroup (item: ViewTableGroups) {
+  function onSendGroup () {
     return new Promise<boolean>(resolve => {
-      if (item.groupId) {
-        apiPatchGroup({
-          id: item.groupId,
-          grouptypeId: item.groupTypeId,
-          name: item.groupName,
-          description: item.groupDescription,
-          visibility: item.groupVisibility,
-          createdBy: item.userId,
-          createdOn: item.createdOn,
-          updatedOn: item.updatedOn,
-        }, () => {
-          resolve(true)
-        })
+      if (selectedGroup.value) {
+        if (selectedGroup.value.groupId) {
+          apiPatchGroup({
+            id: selectedGroup.value.groupId,
+            grouptypeId: selectedGroup.value.groupTypeId,
+            name: selectedGroup.value.groupName,
+            description: selectedGroup.value.groupDescription,
+            visibility: selectedGroup.value.groupVisibility,
+            createdBy: selectedGroup.value.userId,
+            createdOn: selectedGroup.value.createdOn,
+            updatedOn: selectedGroup.value.updatedOn,
+          }, () => {
+            resolve(true)
+          })
+        } else {
+          apiPutGroup({
+            id: selectedGroup.value.groupId,
+            grouptypeId: selectedGroup.value.groupTypeId,
+            name: selectedGroup.value.groupName,
+            description: selectedGroup.value.groupDescription,
+            visibility: selectedGroup.value.groupVisibility,
+            createdBy: store.storeToken?.id,
+            createdOn: selectedGroup.value.createdOn,
+            updatedOn: selectedGroup.value.updatedOn,
+          }, () => {
+            resolve(true)
+          })
+        }
       } else {
-        apiPutGroup({
-          id: item.groupId,
-          grouptypeId: item.groupTypeId,
-          name: item.groupName,
-          description: item.groupDescription,
-          visibility: item.groupVisibility,
-          createdBy: store.storeToken?.id,
-          createdOn: item.createdOn,
-          updatedOn: item.updatedOn,
-        }, () => {
-          resolve(true)
-        })
+        resolve(false)
       }
     })
   }

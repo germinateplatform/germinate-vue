@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <h1 class="text-headline-large mb-3">{{ $t('pagePedigreeExportTitle') }}</h1>
+    <DatasetList :datasets="datasets" v-if="datasets" />
     <v-divider class="mb-3" />
 
     <div v-if="datasets && datasets.length > 0">
@@ -43,6 +44,7 @@
 <route lang="yaml">
 meta:
   navGroup: pedigree
+name: exportPedigrees
 </route>
 
 <script setup lang="ts">
@@ -62,7 +64,7 @@ meta:
 
   const store = coreStore()
   const router = useRouter()
-  const route = useRoute('/data/export/genotype/[id]')
+  const route = useRoute('exportPedigrees')
 
   const includeAttributes = ref(false)
 
@@ -215,9 +217,9 @@ meta:
   })
 
   onMounted(() => {
-    if (route && route.params && route.params.id) {
+    if (route && route.params && route.params.datasetIds) {
       try {
-        datasetIds.value = route.params.id.split(',').map(Number)
+        datasetIds.value = (route.params.datasetIds as string).split(',').map(Number)
       } catch {
         datasetIds.value = []
       }

@@ -125,6 +125,7 @@
                             :disabled="filter.filter.canBeChanged === false"
                             :label="filter.filter.values[vIndex] === '1' ? $t('genericYes') : $t('genericNo')"
                             :value="filter.filter.values[vIndex] === '1'"
+                            color="primary"
                             @update:model-value="v => { filter.filter.values[vIndex] = `${v}` }"
                           />
                           <v-date-input
@@ -255,7 +256,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import { type Filter, type FilterGroup, FilterComparator, FilterOperator, StatusType } from '@/plugins/types/germinate'
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
   import { validCompsForType } from '@/plugins/util/table-columns'
@@ -264,6 +265,7 @@
   import { useI18n } from 'vue-i18n'
   import { useDate } from 'vuetify'
 
+  const router = useRouter()
   const route = useRoute()
   const date = useDate()
 
@@ -275,10 +277,14 @@
     filterOn?: FilterGroup[]
   }>()
 
-  const emit = defineEmits(['filter-changed'])
+  const emit = defineEmits(['filter-changed', 'filter-cleared'])
 
   interface InternalFilterGroup extends FilterGroup {
     internalFilters: InternalFilter[]
+  }
+
+  interface UrlFilterGroup extends FilterGroup {
+    internalFilters?: InternalFilter[]
   }
 
   interface InternalFilter {
@@ -492,6 +498,8 @@
     filterGroups.value = filterGroups.value.filter(fg => fg.internalFilters.some(f => f.filter.canBeChanged === false))
 
     checkFilter()
+
+    emit('filter-cleared')
   }
 
   function checkFilter () {
@@ -573,11 +581,32 @@
     return presetFilters
   }
 
-  function loadFilters () {
+  async function updateUrl () {
+    const query = Object.assign({}, route.query)
+    if (filterGroups.value && filterGroups.value.length > 0) {
+      const copy = JSON.parse(JSON.stringify(filterGroups.value)) as UrlFilterGroup[]
+
+      const filters = copy.map(ig => {
+        ig.filters = (ig.internalFilters?.map(f => {
+          f.filter.column = f.column?.key || f.filter.column
+          return f.filter
+        }) || [])
+        delete ig.internalFilters
+        return ig as FilterGroup
+      })
+
+      query[`${compProps.tableKey}-filter`] = JSON.stringify(filters)
+    } else {
+      delete query[`${compProps.tableKey}-filter`]
+    }
+    await router.replace({ query }).catch(() => true)
+  }
+
+  function loadFilters (readUrl = true) {
     let presetFilters = loadPresetFilters()
 
     // Read URL parameters
-    if (route.query && route.query[`${compProps.tableKey}-filter`]) {
+    if (readUrl && route.query && route.query[`${compProps.tableKey}-filter`]) {
       try {
         // @ts-ignore
         let urlFilter: InternalFilterGroup[] = JSON.parse(route.query[`${compProps.tableKey}-filter`])
@@ -585,7 +614,7 @@
         urlFilter = urlFilter?.map(fg => {
           if (fg.filters) {
             fg.internalFilters = fg.filters.filter(f => {
-              const existingColumn = compProps.columns.find(c => c.key === f.column)
+              const existingColumn = compProps.columns.some(c => c.key === f.column)
               const existingFilter = compProps.filterOn ? compProps.filterOn.find(ofg => ofg.filters?.some(of => of.column === f.column)) : undefined
 
               if (existingColumn) {
@@ -662,6 +691,7 @@
   })
 
   watch(() => compProps.filterOn, () => loadFilters())
+  watch(() => filterGroups, () => updateUrl(), { deep: true })
 </script>
 
 <style>

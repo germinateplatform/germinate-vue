@@ -50,6 +50,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: statistics
+</route>
+
 <script setup lang="ts">
   import type { BarClickEvent } from '@/components/charts/StatsBarChart.vue'
   import StatsChart from '@/components/charts/StatsChart.vue'

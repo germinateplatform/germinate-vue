@@ -189,7 +189,7 @@
       <template #body.append v-if="componentProps.selectionType !== undefined">
         <tr>
           <td :colspan="allHeaders.length + 1" class="py-2">
-            <v-icon class="px-4 pb-3" color="primary" :icon="mdiArrowUpLeftBold" /> {{ $t('widgetTableMultiSelectInfo') }}
+            <v-icon class="ms-2 mb-3" color="primary" :icon="mdiArrowUpLeftBold" /> {{ $t('widgetTableMultiSelectInfo') }}
           </td>
         </tr>
       </template>
@@ -241,7 +241,7 @@
   import { useI18n } from 'vue-i18n'
   import { coreStore } from '@/stores/app'
   import { getDateTimeString } from '@/plugins/util/formatting'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import TableFilterModal from '@/components/modals/TableFilterModal.vue'
 
   import emitter from 'tiny-emitter/instance'
@@ -274,7 +274,7 @@
     hideFooter: false,
   })
 
-  const emit = defineEmits(['data-changed', 'selection-changed', 'update:bottomSheetVisible', 'filter-changed'])
+  const emit = defineEmits(['data-changed', 'selection-changed', 'update:bottomSheetVisible', 'filter-changed', 'filter-cleared'])
 
   const router = useRouter()
   const route = useRoute()
@@ -519,6 +519,8 @@
 
   function clearFilter () {
     tableFilterModal.value?.clear()
+
+    nextTick(() => emit('filter-cleared'))
   }
 
   function updateFilters (newFilters: FilterGroup[]) {
@@ -533,7 +535,7 @@
 
   function refresh (params?: RefreshParams) {
     if (params?.readFilter) {
-      tableFilterModal.value?.loadFilters()
+      tableFilterModal.value?.loadFilters(false)
     } else {
       isResetCall.value = true
       if (params?.resetSelection !== false) {
@@ -673,17 +675,17 @@
     }
   }
 
-  function onSendGroup (item: ViewTableGroups) {
+  function onSendGroup () {
     return new Promise<boolean>(resolve => {
       apiPutGroup({
-        id: item.groupId,
-        grouptypeId: item.groupTypeId,
-        name: item.groupName,
-        description: item.groupDescription,
-        visibility: item.groupVisibility,
+        id: newGroup.value.groupId,
+        grouptypeId: newGroup.value.groupTypeId,
+        name: newGroup.value.groupName,
+        description: newGroup.value.groupDescription,
+        visibility: newGroup.value.groupVisibility,
         createdBy: store.storeToken?.id,
-        createdOn: item.createdOn,
-        updatedOn: item.updatedOn,
+        createdOn: newGroup.value.createdOn,
+        updatedOn: newGroup.value.updatedOn,
       }, (id: number) => {
         newGroup.value.groupId = id
 
@@ -756,6 +758,7 @@
     setSelection,
     getSelection,
     setOverallOperator,
+    forceFilters: (filters: FilterGroup[]) => tableFilterModal.value?.forceFilters(filters),
   })
 </script>
 

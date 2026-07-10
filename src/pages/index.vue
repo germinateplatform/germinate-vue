@@ -39,6 +39,14 @@
       </PublicationTable>
     </div>
 
+    <div v-if="showDataStoriesSection && hasStoriesData" class="my-5">
+      <StoryTable
+        :get-data="getStories"
+        :filter-on="storiesFilter"
+        display-type="grid"
+      />
+    </div>
+
     <div v-if="showDataUpdateSection && showDataUpdates" class="my-5">
       <DataUpdateTable display-type="table" :get-data="getDataUpdateData" />
     </div>
@@ -49,6 +57,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: home
+</route>
+
 <script lang="ts" setup>
   import { apiGetOverviewStats } from '@/plugins/api/stats'
   import { coreStore } from '@/stores/app'
@@ -57,7 +69,7 @@
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import ImageCarousel from '@/components/structure/ImageCarousel.vue'
   import PublicationTable from '@/components/tables/PublicationTable.vue'
-  import { apiPostDataImportStats, apiPostNewsTable, apiPostPublicationsTable } from '@/plugins/api/misc'
+  import { apiPostDataImportStats, apiPostNewsTable, apiPostPublicationsTable, apiPostStoryTable } from '@/plugins/api/misc'
   import { FilterComparator, FilterOperator, type ViewTableNews, type OverviewStats, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications, type ViewTableImportJobs } from '@/plugins/types/germinate'
   import { lookupDoiInformation } from '@/plugins/util'
   import HtmlTemplateEditor from '@/components/widgets/HtmlTemplateEditor.vue'
@@ -69,6 +81,7 @@
   const showPublications = ref<boolean>(true)
   const showNews = ref<boolean>(true)
   const showDataUpdates = ref<boolean>(true)
+  const hasStoriesData = ref<boolean>(true)
 
   const showPublicationSection = computed(() => {
     if (store.storeServerSettings && store.storeServerSettings.dashboardSections) {
@@ -87,6 +100,13 @@
   const showDataUpdateSection = computed(() => {
     if (store.storeServerSettings && store.storeServerSettings.dashboardSections) {
       return store.storeServerSettings.dashboardSections.includes('dataupdates')
+    } else {
+      return true
+    }
+  })
+  const showDataStoriesSection = computed(() => {
+    if (store.storeServerSettings && store.storeServerSettings.dashboardSections) {
+      return store.storeServerSettings.dashboardSections.includes('datastories')
     } else {
       return true
     }
@@ -113,8 +133,28 @@
     return result
   })
 
+  const storiesFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    const result = [{
+      filters: [{
+        column: 'storyFeatured',
+        comparator: FilterComparator.equals,
+        values: ['1'],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.or,
+    }]
+
+    return result
+  })
+
+  function getStories (data: PaginatedRequest) {
+    return apiPostStoryTable(data, result => {
+      hasStoriesData.value = result.count > 0
+    })
+  }
+
   function getPublicationData (data: PaginatedRequest) {
-    return apiPostPublicationsTable<PaginatedResult<ViewTablePublications[]>>(data, result => {
+    return apiPostPublicationsTable(data, result => {
       if (result && result.data && result.data.length > 0) {
         result.data.forEach(p => {
           p.lookupDetails = lookupDoiInformation(p)

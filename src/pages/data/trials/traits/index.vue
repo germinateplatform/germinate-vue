@@ -20,6 +20,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: traits
+</route>
+
 <script setup lang="ts">
   import TraitTable from '@/components/tables/TraitTable.vue'
   import { apiPostTraitTable } from '@/plugins/api/trait'

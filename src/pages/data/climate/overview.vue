@@ -72,6 +72,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: climateOverview
+</route>
+
 <script setup lang="ts">
   import { apiGetClimateStats } from '@/plugins/api/climate'
   import type { ClimateStats } from '@/plugins/types/germinate'

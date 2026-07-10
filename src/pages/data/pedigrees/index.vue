@@ -16,6 +16,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: pedigrees
+</route>
+
 <script setup lang="ts">
   import { apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import type { PaginatedRequest } from '@/plugins/types/germinate'

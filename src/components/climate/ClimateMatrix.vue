@@ -19,7 +19,7 @@
           v-model="selectedLocations"
           v-model:group-selection="groupSelection"
           :groups="groups"
-          marked-item-type="germplasm"
+          marked-item-type="locations"
         >
           <template #text>{{ $t('pageClimateExportSelectGroupChartText') }}</template>
         </GroupSelection>

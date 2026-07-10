@@ -5,7 +5,7 @@
  */
 
 // Composables
-import { createRouter, createWebHashHistory } from 'vue-router/auto'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 import emitter from 'tiny-emitter/instance'
@@ -28,7 +28,7 @@ const router = createRouter({
   },
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(to => {
   emitter.emit('show-loading', false)
 
   const store = coreStore()
@@ -40,11 +40,13 @@ router.beforeEach((to, from, next) => {
     } else if (to.meta && to.meta.requiredUserType && !userIsAtLeast(store.storeToken?.userType || UserType.REGULAR_USER, to.meta.requiredUserType)) {
       router.push({ path: Pages.login.path, query: { redirect: to.fullPath || '/' } })
     } else {
-      next()
+      return true
     }
   } else {
-    next()
+    return true
   }
+
+  return false
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

@@ -17,6 +17,7 @@
               v-model="modelRecord[config.key]"
               :list="(config.inputDatalist && config.inputDatalist.length > 0) ? config.key : undefined"
               :label="$t(config.title)"
+              :hide-details="config.hint === undefined"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
               :type="config.inputType || 'text'"
@@ -29,6 +30,7 @@
             <v-select
               v-model="modelRecord[config.key]"
               :label="$t(config.title)"
+              :hide-details="config.hint === undefined"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
               :items="config.selectOptions"
@@ -39,6 +41,7 @@
             <v-textarea
               v-model="modelRecord[config.key]"
               :label="$t(config.title)"
+              :hide-details="config.hint === undefined"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
               :required="config.required"
@@ -49,6 +52,7 @@
                 <v-textarea
                   v-model="modelRecord[config.key]"
                   :label="$t(config.title)"
+                  :hide-details="config.hint === undefined"
                   :required="config.required"
                   :hint="config.hint ? $t(config.hint) : undefined"
                   :messages="['f']"
@@ -70,12 +74,13 @@
             </v-row>
             <v-date-input
               v-else-if="config.type === 'date'"
-              hide-details
+              :hide-details="config.hint === undefined"
               :label="$t(config.title)"
               :display-format="(d: any) => d ? d.toLocaleDateString() : ''"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
               :clearable="!config.required"
+              autocomplete="off"
               prepend-icon=""
               prepend-inner-icon="$calendar"
               :model-value="modelRecord[config.key] ? date.toJsDate(modelRecord[config.key]) : undefined"
@@ -83,8 +88,9 @@
             />
             <v-date-input
               v-else-if="config.type === 'dateobject'"
-              hide-details
+              :hide-details="config.hint === undefined"
               :label="$t(config.title)"
+              autocomplete="off"
               :display-format="(d: any) => d ? d.toLocaleDateString() : ''"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
@@ -97,6 +103,7 @@
             <v-file-input
               v-else-if="config.type === 'file'"
               :label="$t(config.title)"
+              :hide-details="config.hint === undefined"
               v-model="modelRecord[config.key]"
               :hint="config.hint ? $t(config.hint) : undefined"
               :persistent-hint="config.hint !== undefined"
@@ -107,6 +114,7 @@
             <v-checkbox
               v-else-if="config.type === 'boolean'"
               v-model="modelRecord[config.key]"
+              :hide-details="config.hint === undefined"
               :label="$t(config.title)"
               :disabled="config.disabled === true"
               :hint="config.hint ? $t(config.hint) : undefined"
@@ -118,14 +126,10 @@
         <slot name="additional-fields" v-bind="{ item: item }" />
       </template>
 
-      <v-divider />
-
-      <v-card-actions class="bg-surface-light">
-        <v-btn :text="$t('buttonCancel')" variant="plain" @click="hide()" />
-
+      <v-card-actions>
         <v-spacer />
-
-        <v-btn :text="$t('buttonSave')" :disabled="!valid || disableSave === true" @click="save" />
+        <v-btn :text="$t('buttonCancel')" variant="plain" @click="hide()" />
+        <v-btn :text="$t('buttonSave')" :disabled="!valid || disableSave === true" color="primary" @click="save" />
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -161,7 +165,7 @@
     get: () => item.value as Record<string, unknown>,
     set: v => {
       item.value = v as T
-    }
+    },
   })
 
   const compProps = defineProps<{
@@ -173,7 +177,9 @@
   }>()
 
   const item = defineModel<T>({
-    default: {},
+    default: () => {
+      return {} as T
+    },
   })
 
   const date = useDate()

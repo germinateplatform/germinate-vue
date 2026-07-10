@@ -49,7 +49,7 @@
         <v-btn :icon="mdiMagnify" @click="searchVisible = !searchVisible" v-if="showElements" />
 
         <v-badge class="pe-none" location="bottom" color="primary" :content="getNumberWithSuffix(store.storeSelectedProjects.length, 1)" :offset-x="10" :offset-y="10" v-if="showElements && store.storeSelectedProjects && store.storeSelectedProjects.length > 0">
-          <v-btn :to="Pages.projects.path" :icon="mdiClipboardList" />
+          <v-btn :to="Pages.projects.path" :icon="mdiClipboardList" color="info" variant="tonal" />
         </v-badge>
 
         <v-menu v-if="showElements">
@@ -102,9 +102,7 @@
 
         <v-menu>
           <template #activator="{ props }">
-            <v-btn icon v-bind="props">
-              <v-icon :icon="mdiThemeLightDark" />
-            </v-btn>
+            <v-btn v-bind="props" :icon="mdiThemeLightDark" id="theme-button" />
           </template>
           <v-list slim>
             <v-list-subheader class="text-high-emphasis text-uppercase font-weight-black">{{ $t('dropdownTheme') }}</v-list-subheader>
@@ -128,6 +126,8 @@
       <AsyncSidebar />
 
       <div class="h-100">
+        <StoryBanner v-if="store.storeActiveStory" />
+
         <router-view :key="$route.path" class="h-100" />
       </div>
 
@@ -221,7 +221,8 @@
   // Listen for theme changes in the store
   watchEffect(() => {
     const str = isDark.value ? 'dark' : 'light'
-    theme.change(store.storeTheme === 'system' ? str : store.storeTheme)
+    theme.setTransitionOrigin(document.querySelector('#theme-button'))
+    theme.change(store.storeTheme === 'system' ? str : store.storeTheme, true)
     store.setSystemTheme(str)
   })
 

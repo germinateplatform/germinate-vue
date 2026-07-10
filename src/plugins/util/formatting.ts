@@ -117,6 +117,10 @@ function concat(separator: string, parts: (string | undefined)[]) {
   return parts.filter(p => p !== undefined && p.trim().length > 0).join(separator)
 }
 
+function toParagraphs (input: string, separator = '\n') {
+  return (input || '').split(separator).map(p => p.trim()).filter(p => p.length > 0).map(p => `<p>${p}</p>`).join('')
+}
+
 /**
  * Formats the given decimal number with the given number of decimal places
  * @param {Number} number The number to format
@@ -136,4 +140,5 @@ export {
   toFixed,
   isAnyMissing,
   concat,
+  toParagraphs,
 }

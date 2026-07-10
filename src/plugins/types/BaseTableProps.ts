@@ -4,7 +4,7 @@ import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
 import type { DataTableSortItem } from 'vuetify'
 import type { RowPropsFunction } from 'vuetify/lib/components/VDataTable/types.mjs'
 import type { DisplayType } from '@/components/tables/BaseTable.vue'
-import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+import type { ExtendedDataTableHeader } from '@/plugins/types/client'
 
 export interface BaseTableProps<T> {
   getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<T[]>>> }

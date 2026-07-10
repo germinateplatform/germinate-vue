@@ -72,6 +72,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: genotypes
+</route>
+
 <script setup lang="ts">
   import { apiGetGenotypeStats } from '@/plugins/api/genotype'
   import type { GenotypeStats } from '@/plugins/types/germinate'

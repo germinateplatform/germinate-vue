@@ -16,6 +16,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: backup
+</route>
+
 <script setup lang="ts">
   import BackupTable from '@/components/tables/BackupTable.vue'
   import { apiGetAdminSettings, apiPostBackupTable, apiPutBackup } from '@/plugins/api/misc'

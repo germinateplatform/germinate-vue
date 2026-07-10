@@ -200,10 +200,6 @@ p {
   -webkit-box-orient: vertical;
 }
 
-.pe-none {
-  pointer-events: none;
-}
-
 svg.g-svg {
   color: rgb(var(--v-theme-primary));
 }
@@ -213,7 +209,8 @@ svg.g-svg {
   margin-right: auto !important;
 }
 
-.v-card-subtitle {
+.text-wrap .v-card-subtitle,
+.text-wrap .v-list-item-subtitle {
   text-wrap: wrap;
   line-clamp: unset;
   -webkit-line-clamp: unset;

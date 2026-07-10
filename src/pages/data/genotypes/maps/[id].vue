@@ -11,13 +11,17 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: mapDetails
+</route>
+
 <script setup lang="ts">
   import MapChart from '@/components/charts/MapChart.vue'
   import MapDefinitionTable from '@/components/tables/MapDefinitionTable.vue'
   import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMapsTable } from '@/plugins/api/genotype'
   import { FilterComparator, FilterOperator, type PaginatedResult, type PaginatedRequest, type ViewTableMaps, type FilterGroup } from '@/plugins/types/germinate'
 
-  const route = useRoute('/data/genotypes/maps/[id]')
+  const route = useRoute('mapDetails')
 
   interface MapSelection {
     chromosome: string

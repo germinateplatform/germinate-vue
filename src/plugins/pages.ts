@@ -19,7 +19,7 @@ export class Pages {
 
   static projectDetails: Page = {
     name: 'projectDetails',
-    path: '/projects/:id',
+    path: '/projects/[id]',
   }
 
   // ADMIN
@@ -61,7 +61,7 @@ export class Pages {
 
   static passport: Page = {
     name: 'passport',
-    path: '/data/germplasm/:id',
+    path: '/data/germplasm/[id]',
   }
 
   static climateOverview: Page = {
@@ -76,7 +76,7 @@ export class Pages {
 
   static climateDetails: Page = {
     name: 'climateDetails',
-    path: '/data/climate/climates/:id',
+    path: '/data/climate/climates/[id]',
   }
 
   static trialsOverview: Page = {
@@ -91,7 +91,7 @@ export class Pages {
 
   static traitDetails: Page = {
     name: 'traitDetails',
-    path: '/data/trials/traits/:id',
+    path: '/data/trials/traits/[id]',
   }
 
   static trialCreation: Page = {
@@ -111,7 +111,7 @@ export class Pages {
 
   static markerDetails: Page = {
     name: 'markerDetails',
-    path: '/data/genotypes/markers/:id',
+    path: '/data/genotypes/markers/[id]',
   }
 
   static maps: Page = {
@@ -121,7 +121,7 @@ export class Pages {
 
   static mapDetails: Page = {
     name: 'mapDetails',
-    path: '/data/genotypes/maps/:id',
+    path: '/data/genotypes/maps/[id]',
   }
 
   static pedigrees: Page = {
@@ -136,28 +136,28 @@ export class Pages {
 
   static export: Page = {
     name: 'export',
-    path: '/data/export/:id',
+    path: '/data/export/[id]',
   }
 
   static exportGenotypes: Page = {
     name: 'exportGenotypes',
-    path: '/data/export/genotype/:id',
+    path: '/data/export/genotype/[datasetIds]',
   }
 
   static exportClimates: Page = {
     name: 'exportClimates',
-    path: '/data/export/climate/:id',
+    path: '/data/export/climate/[datasetIds]',
   }
 
   static exportPedigrees: Page = {
     name: 'exportPedigrees',
-    path: '/data/export/pedigree/:id',
+    path: '/data/export/pedigree/[datasetIds]',
   }
 
   static exportTraits: Page = {
     name: 'exportTraits',
     identifiers: ['export-trials'],
-    path: '/data/export/trials/:id',
+    path: '/data/export/trials/[datasetIds]',
   }
 
   static taxonomies: Page = {
@@ -167,12 +167,7 @@ export class Pages {
 
   static taxonomyProviderDetails: Page = {
     name: 'taxonomyProviderDetails',
-    path: '/data/taxonomies/:id/providers',
-  }
-
-  static exportAlleleFrequency: Page = {
-    name: 'exportAlleleFrequency',
-    path: '/data/export/allelefreq/:id',
+    path: '/data/taxonomies/[id]/providers',
   }
 
   static locations: Page = {
@@ -192,17 +187,12 @@ export class Pages {
 
   static datasetDetails: Page = {
     name: 'datasetDetails',
-    path: '/data/datasets/:id',
+    path: '/data/datasets/[id]',
   }
 
   static experiments: Page = {
     name: 'experiments',
     path: '/data/experiments',
-  }
-
-  static experimentDetails: Page = {
-    name: 'experimentDetails',
-    path: '/data/experiment/:id',
   }
 
   static genesysRequest: Page = {
@@ -232,7 +222,7 @@ export class Pages {
 
   static markedItemType: Page = {
     name: 'markedItemType',
-    path: '/marked-items/:id',
+    path: '/marked-items/[id]',
   }
 
   // IMPORT
@@ -253,7 +243,7 @@ export class Pages {
 
   static searchQuery: Page = {
     name: 'searchQuery',
-    path: '/search/:id',
+    path: '/search/[id]',
   }
 
   static publications: Page = {
@@ -263,12 +253,12 @@ export class Pages {
 
   static publicationDetails: Page = {
     name: 'publicationDetails',
-    path: '/publications/:id',
+    path: '/publications/[id]',
   }
 
   static stories: Page = {
     name: 'stories',
-    path: '/stories',
+    path: '/data/stories',
   }
 
   static groups: Page = {
@@ -278,12 +268,12 @@ export class Pages {
 
   static groupDetails: Page = {
     name: 'groupDetails',
-    path: '/groups/:id',
+    path: '/groups/[id]',
   }
 
   static groupUpload: Page = {
     name: 'groupUpload',
-    path: '/groups/upload/:id',
+    path: '/groups/upload/[id]',
   }
 
   static aboutGerminate: Page = {
@@ -301,16 +291,51 @@ export class Pages {
     path: '/about/export-formats',
   }
 
-  static aboutExportFormatsType: Page = {
-    name: 'aboutExportFormatsType',
-    path: '/about/export-formats/:id',
+  static getPath (page: Page, param: string): string {
+    return page.path.replace('[id]', param)
+      .replace('[datasetId]', param)
+      .replace('[datasetIds]', param)
   }
 
-  static getPath(page: Page, param: string): string {
-    return page.path.replace(':id', param)
+  private static _byName: Map<string, Page> | null = null
+  private static _byPath: Map<string, Page> | null = null
+
+  private static buildIndexName (): Map<string, Page> {
+    const map = new Map<string, Page>()
+    for (const value of Object.values(Pages)) {
+      if (value && typeof value === 'object' && 'name' in value && 'path' in value) {
+        map.set((value as Page).name, value as Page)
+      }
+    }
+    return map
   }
 
-  static isAvailable(page: Page): boolean {
+  private static buildIndexPath (): Map<string, Page> {
+    const map = new Map<string, Page>()
+    for (const value of Object.values(Pages)) {
+      if (value && typeof value === 'object' && 'name' in value && 'path' in value) {
+        map.set((value as Page).path, value as Page)
+        map.set((value as Page).path + '/', value as Page)
+      }
+    }
+    return map
+  }
+
+  static getByName (name: string): Page | undefined {
+    if (!Pages._byName) {
+      Pages._byName = Pages.buildIndexName()
+    }
+    if (!Pages._byPath) {
+      Pages._byPath = Pages.buildIndexPath()
+    }
+
+    console.log(name, Pages._byName, Pages._byPath)
+    console.log(Pages._byName.get(name), Pages._byPath.get(name))
+
+    return Pages._byName.get(name) || Pages._byPath.get(name)
+  }
+
+  static isAvailable (page: Page): boolean {
     const store = coreStore()
 
     if (store.serverSettings && store.serverSettings.hiddenPages) {

@@ -1,5 +1,5 @@
-import { FilterComparator, type ViewTableClimateData, type ViewTableDatasets, type ViewTableGermplasm, type ViewTableLocations } from '@/plugins/types/germinate'
-import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+import { FilterComparator, type ViewTableClimateData, type ViewTableDatasets, type ViewTableGermplasm, type ViewTableLocations, type ViewTableMapdefinitions } from '@/plugins/types/germinate'
+import type { ExtendedDataTableHeader } from '@/plugins/types/client'
 import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
 const germplasmColumns: ExtendedDataTableHeader[] = [{
@@ -152,12 +152,6 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   cellProps: { class: 'px-1 mx-0' },
   headerProps: { class: 'px-1 mx-0' },
 }, {
-  key: 'hasAllelefreqData',
-  dataType: 'boolean',
-  title: 'tableColumnHasAllelefreqData',
-  cellProps: { class: 'px-1 mx-0' },
-  headerProps: { class: 'px-1 mx-0' },
-}, {
   key: 'imageCount',
   dataType: 'integer',
   align: 'end' as 'start' | 'end' | 'center',
@@ -169,6 +163,87 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnPdci',
 }]
 
+const germplasmAttributeColumns: ExtendedDataTableHeader[] = [{
+  key: 'germplasmId',
+  title: 'tableColumnGermplasmId',
+  dataType: 'integer',
+  searchable: true,
+}, {
+  key: 'germplasmName',
+  title: 'tableColumnGermplasmName',
+  dataType: 'string',
+  preferredSearchColumn: true,
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmDisplayName',
+  title: 'tableColumnGermplasmDisplayName',
+  dataType: 'string',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmGid',
+  dataType: 'string',
+  title: 'tableColumnGermplasmGeneralIdentifier',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'attributeName',
+  dataType: 'string',
+  title: 'tableColumnAttributeName',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'attributeDescription',
+  dataType: 'string',
+  title: 'tableColumnAttributeDescription',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'attributeType',
+  dataType: 'dataType',
+  title: 'tableColumnAttributeDataType',
+}, {
+  key: 'attributeValue',
+  dataType: 'string',
+  title: 'tableColumnAttributeValue',
+}]
+
+const datasetAttributeColumns: ExtendedDataTableHeader[] = [{
+  key: 'datasetId',
+  dataType: undefined,
+  title: 'tableColumnAttributeDatasetId',
+}, {
+  key: 'datasetName',
+  dataType: 'string',
+  title: 'tableColumnAttributeDatasetName',
+  searchable: true,
+}, {
+  key: 'datasetDescription',
+  dataType: 'string',
+  title: 'tableColumnAttributeDatasetDescription',
+  searchable: true,
+}, {
+  key: 'attributeName',
+  dataType: 'string',
+  title: 'tableColumnAttributeName',
+  searchable: true,
+}, {
+  key: 'attributeDescription',
+  dataType: 'string',
+  title: 'tableColumnAttributeDescription',
+  searchable: true,
+}, {
+  key: 'attributeType',
+  dataType: 'dataType',
+  title: 'tableColumnAttributeDataType',
+}, {
+  key: 'attributeValue',
+  dataType: 'string',
+  title: 'tableColumnAttributeValue',
+  searchable: true,
+}]
+
 const climateDataColumns: ExtendedDataTableHeader[] = [{
   key: 'locationId',
   dataType: 'integer',
@@ -177,6 +252,7 @@ const climateDataColumns: ExtendedDataTableHeader[] = [{
   key: 'locationName',
   dataType: 'string',
   title: 'tableColumnLocationName',
+  searchable: true,
 }, {
   key: 'locationRegion',
   dataType: 'string',
@@ -217,6 +293,7 @@ const climateDataColumns: ExtendedDataTableHeader[] = [{
   key: 'countryName',
   dataType: 'string',
   title: 'tableColumnLocationCountryName',
+  searchable: true,
 }, {
   key: 'climateId',
   dataType: 'integer',
@@ -228,6 +305,7 @@ const climateDataColumns: ExtendedDataTableHeader[] = [{
   dataType: 'string',
   title: 'tableColumnClimateName',
   preferredSearchColumn: true,
+  searchable: true,
 }, {
   key: 'climateDataType',
   dataType: 'dataType',
@@ -236,6 +314,7 @@ const climateDataColumns: ExtendedDataTableHeader[] = [{
   key: 'unitName',
   dataType: 'string',
   title: 'tableColumnClimateUnitName',
+  searchable: true,
 }, {
   key: 'recordingDate',
   dataType: 'date',
@@ -246,6 +325,7 @@ const climateDataColumns: ExtendedDataTableHeader[] = [{
   key: 'climateValue',
   dataType: 'string',
   title: 'tableColumnClimateDataClimateValue',
+  searchable: true,
 }]
 
 const traitDataColumns: ExtendedDataTableHeader[] = [{
@@ -717,16 +797,60 @@ const datasetColumns: ExtendedDataTableHeader[] = [
     sortable: false,
     visibleInTable: false,
     title: 'tableColumnDatasetExternal',
-  }]
+  },
+]
+
+const mapdefinitionColumns: ExtendedDataTableHeader[] = [{
+  key: 'markerId',
+  title: 'tableColumnMarkerId',
+  dataType: 'integer',
+}, {
+  key: 'markerName',
+  title: 'tableColumnMarkerName',
+  dataType: 'string',
+  searchable: true,
+}, {
+  key: 'markerSynonyms',
+  dataType: 'json',
+  title: 'tableColumnMarkerSynonyms',
+  searchable: true,
+}, {
+  key: 'mapFeatureType',
+  dataType: 'string',
+  title: 'tableColumnMapFeatureType',
+  searchable: true,
+}, {
+  key: 'mapId',
+  dataType: 'integer',
+  title: 'tableColumnMarkerMapId',
+}, {
+  key: 'mapName',
+  dataType: 'string',
+  title: 'tableColumnMapName',
+  searchable: true,
+}, {
+  key: 'chromosome',
+  dataType: 'string',
+  title: 'tableColumnMapChromosome',
+}, {
+  key: 'position',
+  dataType: 'integer',
+  title: 'tableColumnMapPosition',
+  // @ts-ignore
+  value: (item: ViewTableMapdefinitions) => (item.position !== undefined && item.position !== null) ? getNumberWithSuffix(item.position, 2) : null,
+}]
 
 const columns: { [key: string]: ExtendedDataTableHeader[] } = {
   germplasm: germplasmColumns,
+  germplasmAttributes: germplasmAttributeColumns,
   locations: locationColumns,
   pedigrees: pedigreeColumns,
   datasets: datasetColumns,
+  datasetAttributes: datasetAttributeColumns,
   traitData: traitDataColumns,
   climateData: climateDataColumns,
   traits: traitColumns,
+  mapdefinitions: mapdefinitionColumns,
 }
 
 const validCompsForType: { [key: string]: FilterComparator[] } = {

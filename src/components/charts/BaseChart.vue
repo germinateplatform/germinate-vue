@@ -50,7 +50,7 @@
           <v-btn class="mb-3" :prepend-icon="mdiUndoVariant" :text="$t('buttonResetColorsToDefault')" @click="resetToDefault" />
           <v-row>
             <v-col cols="12" md="6">
-              <VColorInput
+              <v-color-input
                 hide-actions
                 v-model="newColor"
                 :append-icon="mdiPlus"
@@ -90,7 +90,6 @@
   import { mdiChartAreaspline, mdiDotsVertical, mdiFileCode, mdiFileDocument, mdiFileImage, mdiPalette, mdiPlus, mdiUndoVariant } from '@mdi/js'
   import Plotly from 'plotly.js/lib/core'
   import { useI18n } from 'vue-i18n'
-  import { VColorInput } from 'vuetify/labs/VColorInput'
 
   const emit = defineEmits(['update:loading', 'force-redraw', 'download-png-manually'])
 

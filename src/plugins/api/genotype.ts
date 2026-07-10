@@ -1,6 +1,6 @@
 import { MAX_JAVA_INTEGER, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AlleleFrequencyDatasetRequest, AsyncExportResult, ExportRequest, MapExportRequest, PaginatedRequest, PaginatedResult, GenotypeSubsetDatasetRequest, ViewTableDatasetMaps, ViewTableDatasets, GenotypeStats } from '@/plugins/types/germinate'
+import type { AlleleFrequencyDatasetRequest, AsyncExportResult, ExportRequest, MapExportRequest, PaginatedRequest, PaginatedResult, GenotypeSubsetDatasetRequest, ViewTableDatasetMaps, ViewTableDatasets, GenotypeStats, ViewTableMapdefinitions } from '@/plugins/types/germinate'
 
 function apiPostMarkerTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -53,9 +53,9 @@ function apiPostDatasetMapTable (queryData: PaginatedRequest, onSuccess?: Germin
   return authAxios<ViewTableDatasetMaps[]>({ url: 'dataset/map', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostMapdefinitionTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostMapdefinitionTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableMapdefinitions[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'map/mapdefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableMapdefinitions[]>>({ url: 'map/mapdefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 function apiPostMapdefinitionTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {

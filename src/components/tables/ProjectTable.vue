@@ -56,7 +56,7 @@
       </template>
     </BaseTable>
 
-    <!-- @vue-generic {typeof import('@/plugins/types/ExtendedViewTableProjects')} -->
+    <!-- @vue-generic {import('@/plugins/types/client').ExtendedViewTableProjects} -->
     <GenericAddEditFormModal
       title="modalTitleAddProject"
       v-model="selectedProject"
@@ -73,14 +73,13 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader, ExtendedViewTableProjects } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableProjects } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   // import AddEditProjectModal from '@/components/modals/AddEditProjectModal.vue'
   import GenericAddEditFormModal from '@/components/modals/GenericAddEditFormModal.vue'
   import { coreStore } from '@/stores/app'
-  import type { ExtendedViewTableProjects } from '@/plugins/types/ExtendedViewTableProjects'
   import { apiPatchProject, apiPostProject, apiDeleteProject } from '@/plugins/api/project'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -100,7 +99,7 @@
   const store = coreStore()
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
-  const selectedProject = ref<ViewTableProjects>()
+  const selectedProject = ref<ExtendedViewTableProjects>()
   const projectModal = useTemplateRef('projectModal')
 
   const projectFields = [{
@@ -248,38 +247,38 @@
     store.setSelectedProjects(ids)
   }
 
-  function onSendProject (item: ExtendedViewTableProjects) {
-    const formData = new FormData()
-    formData.append('name', item.projectName || '')
-    if (item.projectDescription && item.projectDescription !== '') {
-      formData.append('description', item.projectDescription)
-    }
-    if (item.projectPageContent && item.projectPageContent !== '') {
-      formData.append('pageContent', item.projectPageContent)
-    }
-    if (item.projectStartDate) {
-      formData.append('startDate', item.projectStartDate)
-    }
-    if (item.projectEndDate) {
-      formData.append('endDate', item.projectEndDate)
-    }
-    if (item.projectExternalUrl && item.projectExternalUrl !== '') {
-      formData.append('externalUrl', item.projectExternalUrl)
-    }
-
-    if (item.file) {
-      formData.append('image', item.file)
-    }
-
+  function onSendProject () {
     return new Promise<boolean>(resolve => {
-      if (selectedProject.value?.projectId) {
-        apiPatchProject(selectedProject.value?.projectId, formData, () => {
-          resolve(true)
-        })
+      if (selectedProject.value) {
+        const formData = new FormData()
+        formData.append('name', selectedProject.value.projectName || '')
+        if (selectedProject.value.projectDescription && selectedProject.value.projectDescription !== '') {
+          formData.append('description', selectedProject.value.projectDescription)
+        }
+        if (selectedProject.value.projectPageContent && selectedProject.value.projectPageContent !== '') {
+          formData.append('pageContent', selectedProject.value.projectPageContent)
+        }
+        if (selectedProject.value.projectStartDate) {
+          formData.append('startDate', selectedProject.value.projectStartDate)
+        }
+        if (selectedProject.value.projectEndDate) {
+          formData.append('endDate', selectedProject.value.projectEndDate)
+        }
+        if (selectedProject.value.projectExternalUrl && selectedProject.value.projectExternalUrl !== '') {
+          formData.append('externalUrl', selectedProject.value.projectExternalUrl)
+        }
+
+        if (selectedProject.value.file) {
+          formData.append('image', selectedProject.value.file)
+        }
+
+        if (selectedProject.value?.projectId) {
+          apiPatchProject(selectedProject.value?.projectId, formData, () => resolve(true))
+        } else {
+          apiPostProject(formData, () => resolve(true))
+        }
       } else {
-        apiPostProject(formData, () => {
-          resolve(true)
-        })
+        resolve(false)
       }
     })
   }

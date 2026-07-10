@@ -42,7 +42,7 @@
       <Teleport to="body">
         <div
           v-if="tooltipVisible && hoveredPlot"
-          class="field-plan-tooltip"
+          class="field-plan-tooltip text-wrap"
           :style="{ left: `${tooltipX + 14}px`, top: `${tooltipY - 8}px` }"
         >
           <slot name="tooltip" v-bind="hoveredPlot">

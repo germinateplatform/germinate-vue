@@ -7,11 +7,15 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: climateDetails
+</route>
+
 <script setup lang="ts">
   import { apiPostClimateTable } from '@/plugins/api/climate'
   import { FilterComparator, FilterOperator, type ViewTableClimates } from '@/plugins/types/germinate'
 
-  const route = useRoute('/data/climate/climates/[id]')
+  const route = useRoute('climateDetails')
 
   const climate = ref<ViewTableClimates>()
   const climateId = ref<number>()

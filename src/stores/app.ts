@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 
 import emitter from 'tiny-emitter/instance'
 import { USER_TYPE_ADMINISTRATOR, USER_TYPE_DATA_CURATOR, USER_TYPE_REGULAR_USER, userIsAtLeast } from '@/plugins/api/auth'
+import type { IndexedViewTableStoriesEnriched } from '@/plugins/types/client'
 
 let name = import.meta.env.VUE_APP_INSTANCE_NAME
 
@@ -24,6 +25,7 @@ export interface StoreContent {
   tablePerPage: number
   selectedProjects: number[]
   changelogVersionNumber: string | undefined
+  activeStory: IndexedViewTableStoriesEnriched | undefined
 }
 
 type MarkedItems = { [key: string]: number[] }
@@ -64,6 +66,7 @@ const defaultUserState: StoreContent = {
     traits: [],
     traitAttributes: [],
     trialsData: [],
+    stories: [],
     collaborators: [],
     publications: [],
     projects: [],
@@ -77,6 +80,7 @@ const defaultUserState: StoreContent = {
   asyncJobUuids: [],
   selectedProjects: [],
   changelogVersionNumber: undefined,
+  activeStory: undefined,
 }
 
 export const coreStore = defineStore('germinate', {
@@ -128,6 +132,9 @@ export const coreStore = defineStore('germinate', {
     },
     storeMapLayer (): string {
       return this.userStates[this.storeUserId].mapLayer
+    },
+    storeActiveStory (): IndexedViewTableStoriesEnriched | undefined {
+      return this.userStates[this.storeUserId].activeStory
     },
     storeSelectedProjects (): number[] {
       return this.userStates[this.storeUserId].selectedProjects
@@ -235,6 +242,15 @@ export const coreStore = defineStore('germinate', {
     },
     clearMarkedIds (type: string) {
       this.userStates[this.storeUserId].markedIds[type] = []
+    },
+    setActiveStory (newActiveStory: IndexedViewTableStoriesEnriched | undefined) {
+      this.userStates[this.storeUserId].activeStory = newActiveStory
+    },
+    setActiveStoryStep (index: number) {
+      if (this.userStates[this.storeUserId].activeStory) {
+        // @ts-expect-error
+        this.userStates[this.storeUserId].activeStory.index = index
+      }
     },
     setAsyncJobUuids (ids: string[]) {
       this.userStates[this.storeUserId].asyncJobUuids = ids

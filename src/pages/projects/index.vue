@@ -8,6 +8,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: projects
+</route>
+
 <script setup lang="ts">
   import ProjectTable from '@/components/tables/ProjectTable.vue'
   import { apiPostProjectTable, apiPostProjectTableIds } from '@/plugins/api/project'

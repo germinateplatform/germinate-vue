@@ -74,8 +74,6 @@ export class ScatterPlot {
       height: Math.min(window.innerHeight, Math.min(config.element.offsetWidth, window.innerWidth)),
       swapAxes: false,
     }, config)
-
-    console.log(this.config.colors, config)
   }
 
   create (rows: any[]) {

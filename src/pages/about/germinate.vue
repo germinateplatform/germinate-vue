@@ -122,6 +122,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: aboutGerminate
+</route>
+
 <script setup lang="ts">
   import LocationMap from '@/components/map/LocationMap.vue'
   import type { ViewTableLocations } from '@/plugins/types/germinate'

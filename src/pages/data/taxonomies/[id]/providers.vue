@@ -152,6 +152,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: taxonomyProviderDetails
+</route>
+
 <script setup lang="ts">
   import { apiPostTaxonomyTable } from '@/plugins/api/germplasm'
   import { ebiGetGenomeAssemblies, ebiGetRecords, ebiGetStudies } from '@/plugins/api/ebi'
@@ -162,7 +166,7 @@
   import { mdiApi, mdiIdentifier, mdiMagnify } from '@mdi/js'
 
   const { t } = useI18n()
-  const route = useRoute('/data/taxonomies/[id]/providers')
+  const route = useRoute('taxonomyProviderDetails')
 
   const taxonomyId = ref<number>()
   const taxonomy = ref<ViewTableTaxonomies>()

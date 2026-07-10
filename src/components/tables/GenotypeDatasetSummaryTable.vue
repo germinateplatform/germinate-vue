@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
   import { apiPostGenotypeDatasetSummary } from '@/plugins/api/genotype'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { ViewTableDatasets, GenotypeSubsetDatasetRequest } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'

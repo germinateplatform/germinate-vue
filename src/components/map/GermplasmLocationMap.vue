@@ -37,6 +37,7 @@
         >
           <template #prepend v-if="selectedGermplasm">
             <v-list-item
+              class="text-wrap"
               base-color="primary"
               :title="$t('tableColumnGermplasmName')"
               :subtitle="selectedGermplasm.germplasm.germplasmDisplayName"

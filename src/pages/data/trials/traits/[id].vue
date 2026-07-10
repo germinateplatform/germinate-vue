@@ -7,12 +7,16 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: traitDetails
+</route>
+
 <script setup lang="ts">
   import TraitDetails from '@/components/trials/TraitDetails.vue'
   import { apiPostTraitTable } from '@/plugins/api/trait'
   import { FilterComparator, FilterOperator, type ViewTableTraits } from '@/plugins/types/germinate'
 
-  const route = useRoute('/data/trials/traits/[id]')
+  const route = useRoute('traitDetails')
 
   const variable = ref<ViewTableTraits>()
   const traitId = ref<number>()

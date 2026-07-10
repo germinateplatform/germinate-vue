@@ -31,7 +31,7 @@
     <v-row>
       <v-col cols="12" lg="6">
         <v-card
-          class="card-subtitle-wrap"
+          class="text-wrap"
           :title="$t('pageTrialsExportTraitExportLongFormatTitle')"
           :subtitle="$t('pageTrialsExportTraitExportLongFormatSubtitle')"
           :prepend-icon="mdiFormatListGroup"
@@ -44,7 +44,7 @@
       </v-col>
       <v-col cols="12" lg="6">
         <v-card
-          class="card-subtitle-wrap"
+          class="text-wrap"
           :title="$t('pageTrialsExportTraitExportWideFormatTitle')"
           :subtitle="$t('pageTrialsExportTraitExportWideFormatSubtitle')"
           :prepend-icon="mdiTableColumnWidth"

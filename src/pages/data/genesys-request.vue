@@ -42,6 +42,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: genesysRequest
+</route>
+
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostGermplasmTable, apiPostGermplasmTableIds } from '@/plugins/api/germplasm'

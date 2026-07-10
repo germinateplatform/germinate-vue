@@ -111,7 +111,7 @@
   import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
 
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, News, PaginatedRequest, PaginatedResult, ViewTableNews } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
@@ -268,16 +268,16 @@
     })
   }
 
-  function onSendNews (item: News) {
+  function onSendNews () {
     return new Promise<boolean>(async resolve => {
-      if (item.newstypeId !== newsTypes.Projects.id) {
-        delete item.image
-        delete item.imageFit
-      } else if (item.image) {
-        item.image = await toBase64(item.image as File)
+      if (newNews.value.newstypeId !== newsTypes.Projects.id) {
+        delete newNews.value.image
+        delete newNews.value.imageFit
+      } else if (newNews.value.image) {
+        newNews.value.image = await toBase64(newNews.value.image as File)
       }
 
-      apiPostNews(item, () => {
+      apiPostNews(newNews.value, () => {
         resolve(true)
       })
     })

@@ -37,7 +37,7 @@
       </template>
 
       <template #card-item="{ item }">
-        <v-card class="flex-grow-1 d-flex justify-space-between flex-column" :title="backupTypes[item.type].title" :subtitle="backupTypes[item.type].text">
+        <v-card class="flex-grow-1 d-flex justify-space-between flex-column text-wrap" :title="backupTypes[item.type].title" :subtitle="backupTypes[item.type].text">
           <template #prepend>
             <v-icon :icon="backupTypes[item.type].icon" :color="backupTypes[item.type].color" />
           </template>
@@ -79,7 +79,7 @@
   import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
 
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, PaginatedRequest, PaginatedResult, BackupResult } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'

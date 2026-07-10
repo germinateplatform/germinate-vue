@@ -25,8 +25,10 @@ export default vuetify({
     'unicorn/prefer-dom-node-append': 'off',
     'unicorn/prefer-dom-node-remove': 'off',
     'unicorn/prefer-query-selector': 'off',
+    'unicorn/no-this-outside-of-class': 'off',
     'vue/attributes-order': 'off',
     'vue/max-attributes-per-line': 'off',
     'vue/order-in-components': 'off',
+    'vue/padding-line-between-tags': 'off',
   },
 })

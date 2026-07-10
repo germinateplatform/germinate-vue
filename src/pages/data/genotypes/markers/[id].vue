@@ -50,6 +50,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: markerDetails
+</route>
+
 <script setup lang="ts">
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import GroupTable from '@/components/tables/GroupTable.vue'
@@ -59,7 +63,7 @@
   import { coreStore } from '@/stores/app'
   import { mdiBookmarkCheck, mdiBookmarkOutline, mdiLabel, mdiLabelVariant } from '@mdi/js'
 
-  const route = useRoute('/data/genotypes/markers/[id]')
+  const route = useRoute('markerDetails')
   const store = coreStore()
 
   const marker = ref<ViewTableMarkers>()

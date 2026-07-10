@@ -22,8 +22,6 @@ import { coreStore } from '@/stores/app'
 import { createI18n, useI18n } from 'vue-i18n'
 import { en, de } from 'vuetify/locale'
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'
-import { VDateInput } from 'vuetify/labs/VDateInput'
-import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import { VImg } from 'vuetify/components'
 
 // 1. Define your custom icon component
@@ -69,10 +67,7 @@ const i18n = createI18n({
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 const vuetify = createVuetify({
-  components: {
-    VDateInput,
-    VFileUpload,
-  },
+  components: {},
   icons: {
     defaultSet: 'mdi',
     aliases,
@@ -88,6 +83,10 @@ const vuetify = createVuetify({
         colors: {
           primary: '#2d98da',
           muted: '#868e96',
+          info: '#2980b9',
+          success: '#27ae60',
+          error: '#c0392b',
+          warning: '#f39c12',
         },
       },
       dark: {
@@ -95,6 +94,10 @@ const vuetify = createVuetify({
         colors: {
           primary: '#41a2cf',
           muted: '#868e96',
+          info: '#3498db',
+          success: '#2ecc71',
+          error: '#e74c3c',
+          warning: '#f1c40f',
         },
       },
     },

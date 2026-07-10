@@ -71,6 +71,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: aboutExportFormats
+</route>
+
 <script setup lang="ts">
   import { getTemplateColor } from '@/plugins/util/colors'
   import { exportFormats, type FormatState } from '@/plugins/util/types'
@@ -79,7 +83,7 @@
 
   const { t } = useI18n()
 
-  const route = useRoute('/about/export-formats')
+  const route = useRoute('aboutExportFormats')
   const router = useRouter()
 
   type TagType = 'all' | 'genotype' | 'phenotype' | 'pedigree' | 'pca'

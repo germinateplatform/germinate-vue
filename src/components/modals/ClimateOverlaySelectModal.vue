@@ -4,7 +4,7 @@
       <v-card-text>
         <p>{{ $t('pageLocationsMapsClimateOverlaysText') }}</p>
 
-        <v-list>
+        <v-list class="text-wrap">
           <v-list-item
             v-for="climate in climates"
             :key="`climate-select-${climate.climateId}`"

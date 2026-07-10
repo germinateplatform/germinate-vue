@@ -39,6 +39,12 @@
         </v-tooltip>
       </template>
 
+      <template #item.datasetName="{ item }">
+        <span class="text-no-wrap" v-if="item.isExternal && item.hyperlink"><a target="_blank" rel="noopener noreferrer" :href="item.hyperlink">{{ truncateAfterWords(item.datasetName, 10) }}</a> <v-icon size="small" color="muted" :icon="mdiOpenInNew" /></span>
+        <router-link to="." @click="navigateToExportPage(item)" v-else-if="!item.isExternal && isPageAvailable(item.datasetType) && (!item.licenseName || isAccepted(item)) && datasetTypes[item.datasetType].pageName">{{ truncateAfterWords(item.datasetName, 10) }}</router-link>
+        <span v-else>{{ truncateAfterWords(item.datasetName, 10) }}</span>
+      </template>
+
       <template #item.datasetDescription="{ item }">
         <ShowFullCell :content="item.datasetDescription" title="tableColumnDatasetDescription" v-if="item.datasetDescription && item.datasetDescription.length > 0" />
       </template>
@@ -47,7 +53,7 @@
       <template #item.experimentName="{ item }">
         <div class="d-flex align-center ga-2">
           <!-- Append a link that takes the user to the experiment details page -->
-          <router-link :to="{ path: Pages.getPath(Pages.experimentDetails, `${item.experimentId}`) }" v-tooltip:top="$t('tableTooltipExperimentDetailsLink')">
+          <router-link :to="{ path: Pages.experiments.path, query: { 'experiments-filter': JSON.stringify([{ operator: FilterOperator.and, filters: [{ column: 'experimentId', comparator: FilterComparator.equals, values: [`${item.experimentId}`] }] }]) }}" v-tooltip:top="$t('tableTooltipExperimentDetailsLink')">
             <v-icon :icon="mdiInformationOutline" />
           </router-link>
           <span :title="item.experimentName" v-if="item.experimentName">{{ truncateAfterWords(item.experimentName, 10) }}</span>
@@ -100,16 +106,17 @@
       </template>
 
       <template #item.datasetDetails="{ item }">
-        <div class="text-no-wrap">
-          <v-icon class="mx-1" color="primary" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
-          <v-icon class="mx-1" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="datasetStates[item.datasetState].text()" />
-          <v-icon class="mx-1" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
-          <v-icon class="mx-1" :icon="mdiAccountMultiple" color="muted" v-else />
-          <v-icon class="mx-1" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
-          <v-icon class="mx-1" :icon="mdiFilePlus" color="muted" v-else />
+        <v-btn-group variant="tonal">
+          <v-btn size="x-small" color="primary" target="_blank" :href="item.hyperlink" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
+          <v-btn size="x-small" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="datasetStates[item.datasetState].text()" />
+          <v-btn size="x-small" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
+          <v-btn size="x-small" :icon="mdiAccountMultiple" color="muted" disabled v-else />
+          <v-btn size="x-small" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
+          <v-btn size="x-small" :icon="mdiFilePlus" color="muted" disabled v-else />
 
-          <v-icon class="mx-1" color="primary" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />
-        </div>
+          <v-btn size="x-small" color="primary" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />
+          <v-btn size="x-small" color="error" :icon="mdiDelete" v-tooltip:top="$t('tableTooltipDatasetDelete')" @click="deleteDataset(item)" v-if="store.storeUserIsDataCurator" />
+        </v-btn-group>
       </template>
 
       <template #expanded-row="{ columns, item }">
@@ -169,7 +176,7 @@
           v-if="experiments"
         />
 
-        <v-btn :prepend-icon="mdiPlusBox" variant="tonal" @click="editExperiment(undefined)" color="success" :text="$t('buttonLicenseCreateNew')" />
+        <v-btn :prepend-icon="mdiPlusBox" variant="tonal" @click="editExperiment()" color="success" :text="$t('buttonLicenseCreateNew')" />
       </template>
     </GenericAddEditFormModal>
 
@@ -187,10 +194,8 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable from '@/components/tables/BaseTable.vue'
-
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
-  import type { ExtendedDataTableHeader } from '@/plugins/types/ExtendedDataTableHeader'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
   import { FilterComparator, FilterOperator, type ViewTableLicenses, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableExperiments } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
@@ -200,17 +205,12 @@
   import { Pages } from '@/plugins/pages'
   import { datasetStates, datasetTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
-  import LicenseModal from '@/components/modals/LicenseModal.vue'
-  import { apiPatchDataset, apiPatchExperiment, apiPostDatasetCollaboratorsTable, apiPostExperimentTable, apiPostLicenseTable, apiPutExperiment } from '@/plugins/api/dataset'
+  import { apiDeleteDataset, apiPatchDataset, apiPatchExperiment, apiPostDatasetCollaboratorsTable, apiPostExperimentTable, apiPostLicenseTable, apiPutExperiment } from '@/plugins/api/dataset'
   import type { ItemKeySlot } from 'vuetify/lib/components/VDataTable/types.mjs'
   import { isPageAvailable } from '@/plugins/util'
-  import AttributeDetails from '@/components/widgets/AttributeDetails.vue'
-  import CollaboratorTable from '@/components/tables/CollaboratorTable.vue'
   import { columns } from '@/plugins/util/table-columns'
-  import GenericAddEditFormModal from '@/components/modals/GenericAddEditFormModal.vue'
-  import LicenseSelectModal from '@/components/modals/LicenseSelectModal.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiFilePlus, mdiHelpCircle, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
+  import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiDelete, mdiFilePlus, mdiHelpCircle, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiOpenInNew, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>> }
@@ -350,46 +350,91 @@
     nextTick(() => datasetEditModal.value?.show())
   }
 
+  function deleteDataset (dataset: ViewTableDatasets) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTextDatasetDelete'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          apiDeleteDataset(dataset.datasetId || -1, () => {
+            baseTable.value?.refresh()
+          }, {
+            codes: [404],
+            callback: () => {
+              // Do nothing here, it just means there is nothing to delete
+            },
+          })
+        }
+      },
+    })
+  }
+
   function getCollaboratorData (data: PaginatedRequest) {
     return apiPostDatasetCollaboratorsTable(selectedDataset.value?.datasetId || -1, data)
   }
 
-  function editExperiment (id: number | undefined) {
+  function editExperiment (id?: number) {
     selectedExperiment.value = experiments.value.find(e => e.experimentId === id) || {}
 
     nextTick(() => experimentEditModal.value?.show())
   }
 
-  function sendExperiment (experiment: ViewTableExperiments) {
+  function sendExperiment () {
     return new Promise<boolean>(resolve => {
-      if (experiment.experimentId) {
-        // Update the experiment on the server
-        apiPatchExperiment<boolean>(experiment.experimentId, experiment, () => {
-          resolve(true)
-        })
+      if (selectedExperiment.value) {
+        if (selectedExperiment.value.experimentId) {
+          // Update the experiment on the server
+          apiPatchExperiment<boolean>(selectedExperiment.value.experimentId, selectedExperiment.value, () => {
+            resolve(true)
+          })
+        } else {
+          // Create a new experiment
+          apiPutExperiment<number>(selectedExperiment.value, () => resolve(true))
+        }
       } else {
-        // Create a new experiment
-        apiPutExperiment<number>(experiment, result => {
-          resolve(true)
-        })
+        resolve(false)
       }
     })
   }
 
-  function sendDataset (dataset: ViewTableDatasets) {
+  function sendDataset () {
     return new Promise<boolean>(resolve => {
-      apiPatchDataset(dataset.datasetId || -1, {
-        id: dataset.datasetId || -1,
-        name: dataset.datasetName || '',
-        description: dataset.datasetDescription || '',
-        licenseId: dataset.licenseId,
-        experimentId: dataset.experimentId,
-        dateStart: dataset.startDate,
-        dateEnd: dataset.endDate,
-        datasetStateId: datasetStates[dataset.datasetState].id,
-        hyperlink: dataset.hyperlink,
-      }, () => resolve(true))
+      if (selectedDataset.value) {
+        apiPatchDataset(selectedDataset.value.datasetId || -1, {
+          id: selectedDataset.value.datasetId || -1,
+          name: selectedDataset.value.datasetName || '',
+          description: selectedDataset.value.datasetDescription || '',
+          licenseId: selectedDataset.value.licenseId,
+          experimentId: selectedDataset.value.experimentId,
+          dateStart: selectedDataset.value.startDate,
+          dateEnd: selectedDataset.value.endDate,
+          datasetStateId: datasetStates[selectedDataset.value.datasetState].id,
+          hyperlink: selectedDataset.value.hyperlink,
+        }, () => resolve(true))
+      } else {
+        resolve(false)
+      }
     })
+  }
+
+  function navigateToExportPage (dataset: ViewTableDatasets) {
+    switch (dataset.datasetType) {
+      case 'trials':
+        router.push(Pages.getPath(Pages.exportTraits, `${dataset.datasetId}`))
+        break
+      case 'genotype':
+        router.push(Pages.getPath(Pages.exportGenotypes, `${dataset.datasetId}`))
+        break
+      case 'climate':
+        router.push(Pages.getPath(Pages.exportClimates, `${dataset.datasetId}`))
+        break
+      case 'pedigree':
+        router.push(Pages.getPath(Pages.exportPedigrees, `${dataset.datasetId}`))
+        break
+    }
   }
 
   function updateDatasetLicense (licenseId?: number, dataset?: ViewTableDatasets) {

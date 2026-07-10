@@ -68,6 +68,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: projectDetails
+</route>
+
 <script setup lang="ts">
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import GroupTable from '@/components/tables/GroupTable.vue'
@@ -83,7 +87,7 @@
   import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiDatabase, mdiGroup, mdiNewspaperVariant } from '@mdi/js'
   import Markdown from 'vue3-markdown-it'
 
-  const route = useRoute('/projects/[id]')
+  const route = useRoute('projectDetails')
   const router = useRouter()
   const store = coreStore()
 

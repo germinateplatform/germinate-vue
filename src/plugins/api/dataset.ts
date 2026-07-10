@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { PaginatedResult, DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions, ClimateExportDatasetRequest } from '@/plugins/types/germinate'
+import type { PaginatedResult, DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions, ClimateExportDatasetRequest, ViewTableDatasetAttributes } from '@/plugins/types/germinate'
 
 function apiPostPublicationDatasetTable<T> (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -38,7 +38,7 @@ function apiPostDatasetTable (queryData: PaginatedRequest, onSuccess?: Germinate
   return authAxios<PaginatedResult<ViewTableDatasets[]>>({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-const apiDeleteDataset = <T>(datasetId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/${datasetId}`, method: 'DELETE', success: onSuccess, error: onError })
+const apiDeleteDataset = (datasetId: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) => authAxios<boolean>({ url: `dataset/${datasetId}`, method: 'DELETE', success: onSuccess, error: onError })
 
 const apiDeleteExperiment = <T>(experimentId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `experiment/${experimentId}`, method: 'DELETE', success: onSuccess, error: onError })
 
@@ -62,10 +62,10 @@ function apiPostDatasetAsyncExport<T> (uuids: string[], onSuccess?: GerminateRes
 
 const apiDeleteDatasetAsyncExport = <T>(uuid: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/export/async/${uuid}`, method: 'DELETE', success: onSuccess, error: onError })
 
-function apiPostDatasetAttributeTable<T> (datasetId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostDatasetAttributeTable (datasetId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasetAttributes[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   const url = datasetId !== null ? `dataset/${datasetId}/attribute` : 'dataset/attribute/table'
-  return authAxios({ url, method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableDatasetAttributes[]>>({ url, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 const apiPostTraitStats = <T>(statsType: string, queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: `dataset/stats/${statsType}`, method: 'POST', data: queryData, success: onSuccess, error: onError })

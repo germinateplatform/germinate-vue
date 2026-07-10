@@ -4,21 +4,42 @@
     <v-divider class="mb-3" />
     <p v-html="$t('pageGermplasmText')" />
 
-    <GermplasmTable :get-data="getData" :get-ids="getIds" :download="downloadTable" />
+    <v-expansion-panels class="my-5">
+      <v-expansion-panel>
+        <v-expansion-panel-title class="px-4">
+          <v-icon size="small" :icon="mdiFilter" color="medium-emphasis" class="me-2" /> {{ $t('widgetGermplasmTableFilterToggle') }}
+        </v-expansion-panel-title>
+
+        <v-expansion-panel-text>
+          <GermplasmTableFilter
+            v-model="customFilter"
+          />
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
+    <GermplasmTable
+      :get-data="getData"
+      :get-ids="getIds"
+      :download="downloadTable"
+      :filter-on="tableFilter"
+      @filter-cleared="resetFilter"
+      ref="germplasmTable"
+    />
 
     <v-expansion-panels class="my-5">
       <v-expansion-panel
         @group:selected="showMap"
       >
-        <template #title>
-          <v-icon :icon="mdiMapMarkerMultiple" class="me-2" /> {{ $t('widgetGermplasmMapTitle') }}
-        </template>
+        <v-expansion-panel-title class="px-4">
+          <v-icon size="small" :icon="mdiMapMarkerMultiple" color="medium-emphasis" class="me-2" /> {{ $t('widgetGermplasmMapTitle') }}
+        </v-expansion-panel-title>
 
-        <template #text>
+        <v-expansion-panel-text>
           <p>{{ $t('widgetGermplasmMapText') }}</p>
 
           <GermplasmLocationMap ref="germplasmLocationMap" />
-        </template>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -139,11 +160,15 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: germplasm
+</route>
+
 <script setup lang="ts">
   import GermplasmTable from '@/components/tables/GermplasmTable.vue'
   import { apiExportPassport, apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostPedigreeDatasetExport, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import { apiPostGroupTable } from '@/plugins/api/group'
-  import { FilterComparator, FilterOperator, type AsyncExportResult, type GermplasmExportRequest, type PaginatedRequest, type PaginatedResult, type PedigreeRequest, type ViewTableDatasets, type ViewTableGroups, type ViewTablePedigrees } from '@/plugins/types/germinate'
+  import { FilterComparator, type FilterGroup, FilterOperator, type AsyncExportResult, type GermplasmExportRequest, type PaginatedRequest, type PedigreeRequest, type ViewTableDatasets, type ViewTableGroups } from '@/plugins/types/germinate'
   import { downloadBlob } from '@/plugins/util'
   import { coreStore } from '@/stores/app'
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -152,11 +177,16 @@
   import emitter from 'tiny-emitter/instance'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { mdiDownload, mdiFamilyTree, mdiGroup, mdiListStatus, mdiMapMarkerMultiple, mdiPassport, mdiPlaylistCheck } from '@mdi/js'
+  import { mdiDownload, mdiFamilyTree, mdiFilter, mdiGroup, mdiListStatus, mdiMapMarkerMultiple, mdiPassport, mdiPlaylistCheck } from '@mdi/js'
+  import { watchIgnorable } from '@vueuse/core'
 
   const store = coreStore()
 
   const germplasmLocationMap = useTemplateRef('germplasmLocationMap')
+  const germplasmTable = useTemplateRef('germplasmTable')
+
+  const customFilter = ref<FilterGroup[]>([])
+  const tableFilter = ref<FilterGroup[]>([])
 
   const passportIncludeAttributes = ref(false)
   const pedigreeIncludeAttributes = ref(false)
@@ -181,6 +211,10 @@
   }
   function showMap () {
     setTimeout(() => germplasmLocationMap.value?.invalidateSize(), 500)
+  }
+
+  function resetFilter () {
+    customFilter.value = []
   }
 
   function downloadPedigree () {
@@ -223,6 +257,24 @@
       emitter.emit('show-loading', false)
     })
   }
+
+  const { ignoreUpdates: ignoreCustomFilter } = watchIgnorable(customFilter, async newValue => {
+    if (!newValue || newValue.length === 0) {
+      tableFilter.value = []
+      nextTick(() => germplasmTable.value?.refresh(true))
+      return
+    }
+
+    const copy = JSON.parse(JSON.stringify(newValue)) as FilterGroup[]
+
+    tableFilter.value.push(...copy)
+
+    nextTick(() => germplasmTable.value?.refresh(true))
+
+    ignoreCustomFilter(() => {
+      customFilter.value = []
+    })
+  })
 
   onMounted(() => {
     // Get germplasm groups

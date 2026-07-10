@@ -27,6 +27,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: locations
+</route>
+
 <script setup lang="ts">
   import LocationMap from '@/components/map/LocationMap.vue'
   import LocationTable from '@/components/tables/LocationTable.vue'
