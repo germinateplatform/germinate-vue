@@ -1,9 +1,17 @@
 <template>
-  <v-card variant="tonal" v-if="displayData">
-    <v-card-text>
-      <div>{{ displayData.container }}</div>
+  <v-card variant="tonal" v-if="displayData && publication" class="d-flex flex-column">
+    <v-card-text class="flex-grow-1">
+      <v-chip label color="muted" variant="tonal" :prepend-icon="mdiNewspaper">{{ displayData['container-title'] }}</v-chip>
 
-      <p class="text-headline-small font-weight-black">{{ displayData.title }}</p>
+      <p class="text-headline-small font-weight-black">
+        <router-link
+          v-if="route.name !== Pages.publicationDetails.name"
+          :to="{ name: Pages.publicationDetails.name, params: { id: `${publication.publicationId}` } }"
+        >
+          <span v-html="displayData.title" />
+        </router-link>
+        <span v-html="displayData.title" v-else />
+      </p>
 
       <p v-if="displayData.date">
         {{ displayData.date }}
@@ -12,13 +20,20 @@
       <div class="text-medium-emphasis limit-rows">
         <span v-html="displayData.fullReference" />
       </div>
+
+      <v-chip label class="me-2 mt-1" v-if="publication.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path">{{ publicationTypes.database.text() }}</v-chip>
+      <v-chip label class="me-2 mt-1" v-if="publication.germplasmIds && publication.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path">{{ publicationTypes.germplasm.text() }} ({{ publication.germplasmIds.length }})</v-chip>
+      <v-chip label class="me-2 mt-1" v-if="publication.datasetIds && publication.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path">{{ publicationTypes.dataset.text() }} ({{ publication.datasetIds.length }})</v-chip>
+      <v-chip label class="me-2 mt-1" v-if="publication.experimentIds && publication.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path">{{ publicationTypes.experiment.text() }} ({{ publication.experimentIds.length }})</v-chip>
+      <v-chip label class="me-2 mt-1" v-if="publication.groupIds && publication.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path">{{ publicationTypes.group.text() }} ({{ publication.groupIds.length }})</v-chip>
     </v-card-text>
 
     <v-card-actions v-if="displayData.URL">
       <v-btn
+        icon="$doi"
         color="primary"
         :href="displayData.URL"
-        :text="$t('buttonReadMore')"
+        v-tooltip:top="$t('buttonReadMore')"
       />
 
       <v-spacer />
@@ -40,8 +55,12 @@
   import '@citation-js/plugin-doi'
   import '@citation-js/plugin-csl'
   import { coreStore } from '@/stores/app'
+  import { publicationTypes } from '@/plugins/util/types'
+  import { mdiNewspaper } from '@mdi/js'
+import { Pages } from '@/plugins/pages'
 
   const store = coreStore()
+  const route = useRoute()
 
   const {
     canDelete = true,
@@ -97,6 +116,7 @@
               fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
               URL: temp.URL,
               date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
+              'container-title': temp['container-title'],
             }
           } else {
             result = getFromCache()

@@ -12,7 +12,7 @@ const USER_TYPE_REGULAR_USER = 'Regular User'
  * @param {String} userType The user type to check
  * @param {String} atLeast The user type to check against
  */
-const userIsAtLeast = (userType: string, atLeast: string) => {
+function userIsAtLeast (userType: string, atLeast: string) {
   switch (atLeast) {
     case USER_TYPE_ADMINISTRATOR:
       return userType === USER_TYPE_ADMINISTRATOR

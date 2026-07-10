@@ -15,7 +15,7 @@
       :header-title="$t('pageGroupsTitle')"
       v-bind="$attrs"
     >
-      <template #header v-if="store.storeUserIsAuthenticated">
+      <template #header v-if="canCreateNew && store.storeUserIsAuthenticated">
         <v-btn variant="outlined" :text="$t('buttonAddGroup')" :prepend-icon="mdiPlus" @click="addItem" />
       </template>
 
@@ -73,13 +73,16 @@
   import { Pages } from '@/plugins/pages'
   import { mdiDelete, mdiGroup, mdiPencil, mdiPlus } from '@mdi/js'
 
-  const compProps = defineProps<{
+  const compProps = withDefaults(defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGroups[]>>> }
     getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
-  }>()
+    canCreateNew?: boolean
+  }>(), {
+    canCreateNew: true,
+  })
 
   const store = coreStore()
   const baseTable = useTemplateRef('baseTable')

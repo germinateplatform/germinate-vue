@@ -103,7 +103,7 @@ export interface ViewTablePedigrees {
 
 export interface PublicationDoiLookupDetails {
     title: string;
-    container?: string;
+    'container-title'?: string;
     fullReference: string;
     URL: string;
     date?: string

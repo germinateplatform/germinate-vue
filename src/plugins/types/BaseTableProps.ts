@@ -1,4 +1,4 @@
-import type { FilterGroup, PaginatedRequest, PaginatedResult } from '@/plugins/types/germinate'
+import type { FilterComparator, FilterGroup, PaginatedRequest, PaginatedResult } from '@/plugins/types/germinate'
 import type { AxiosResponse } from 'axios'
 import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
 import type { DataTableSortItem } from 'vuetify'
@@ -29,4 +29,5 @@ export interface BaseTableProps<T> {
   sortBy?: DataTableSortItem[]
   disabled?: boolean
   hideFooter?: boolean
+  quickSearchComparator?: FilterComparator
 }

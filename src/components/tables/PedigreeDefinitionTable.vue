@@ -12,6 +12,7 @@
     table-key="pedigreedefinitions"
     :header-icon="mdiFamilyTree"
     :header-title="$t('pagePedigreeDefinitionsTitle')"
+    :quick-search-comparator="FilterComparator.equals"
     v-bind="$attrs"
   >
     <template #item.pedigreeNotationUrl="{ item }">
@@ -32,7 +33,7 @@
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTablePedigreedefinitions } from '@/plugins/types/germinate'
+  import { FilterComparator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePedigreedefinitions } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { mdiFamilyTree } from '@mdi/js'
 

@@ -19,7 +19,7 @@
       :header-title="$t('pageDatasetsTitle')"
       v-bind="$attrs"
     >
-      <template #header>
+      <template #header v-if="canCreateNew">
         <v-btn v-if="store.storeUserIsDataCurator" variant="outlined" :prepend-icon="mdiFilePlus" @click="addItem">{{ $t('tableButtonAddDataset') }}</v-btn>
       </template>
 
@@ -41,7 +41,7 @@
 
       <template #item.datasetName="{ item }">
         <span class="text-no-wrap" v-if="item.isExternal && item.hyperlink"><a target="_blank" rel="noopener noreferrer" :href="item.hyperlink">{{ truncateAfterWords(item.datasetName, 10) }}</a> <v-icon size="small" color="muted" :icon="mdiOpenInNew" /></span>
-        <router-link to="." @click="navigateToExportPage(item)" v-else-if="!item.isExternal && isPageAvailable(item.datasetType) && (!item.licenseName || isAccepted(item)) && datasetTypes[item.datasetType].pageName">{{ truncateAfterWords(item.datasetName, 10) }}</router-link>
+        <router-link :to="getTo(item) || '.'" @click="navigateToExportPage(item)" v-else-if="!item.isExternal && isPageAvailable(item.datasetType) && (!item.licenseName || isAccepted(item)) && datasetTypes[item.datasetType].pageName">{{ truncateAfterWords(item.datasetName, 10) }}</router-link>
         <span v-else>{{ truncateAfterWords(item.datasetName, 10) }}</span>
       </template>
 
@@ -212,14 +212,17 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiDelete, mdiFilePlus, mdiHelpCircle, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiOpenInNew, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
 
-  const compProps = defineProps<{
+  const compProps = withDefaults(defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>> }
     getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
     disabled?: boolean
-  }>()
+    canCreateNew?: boolean
+  }>(), {
+    canCreateNew: true,
+  })
 
   const router = useRouter()
   const emit = defineEmits(['license-accepted'])
@@ -420,20 +423,26 @@
     })
   }
 
-  function navigateToExportPage (dataset: ViewTableDatasets) {
+  function getTo (dataset: ViewTableDatasets) {
     switch (dataset.datasetType) {
       case 'trials':
-        router.push(Pages.getPath(Pages.exportTraits, `${dataset.datasetId}`))
-        break
+        return Pages.getPath(Pages.exportTraits, `${dataset.datasetId}`)
       case 'genotype':
-        router.push(Pages.getPath(Pages.exportGenotypes, `${dataset.datasetId}`))
-        break
+        return Pages.getPath(Pages.exportGenotypes, `${dataset.datasetId}`)
       case 'climate':
-        router.push(Pages.getPath(Pages.exportClimates, `${dataset.datasetId}`))
-        break
+        return Pages.getPath(Pages.exportClimates, `${dataset.datasetId}`)
       case 'pedigree':
-        router.push(Pages.getPath(Pages.exportPedigrees, `${dataset.datasetId}`))
-        break
+        return Pages.getPath(Pages.exportPedigrees, `${dataset.datasetId}`)
+    }
+
+    return undefined
+  }
+
+  function navigateToExportPage (dataset: ViewTableDatasets) {
+    const to = getTo(dataset)
+
+    if (to) {
+      router.push(to)
     }
   }
 

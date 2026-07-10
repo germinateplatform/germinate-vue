@@ -20,6 +20,7 @@
         </template>
       </v-list-item>
       <v-list-item to="/" link :prepend-icon="mdiHome" :title="$t('menuHome')" />
+      <v-list-item :to="Pages.search.path" link :prepend-icon="mdiMagnify" :title="$t('menuSearch')" />
       <v-list-item link :active="isActive(Pages.projects.path)" :to="Pages.projects.path" :prepend-icon="mdiClipboardList" v-if="Pages.isAvailable(Pages.projects) && (badgeCounts?.projects || 0) > 0" :title="$t('menuProjects')"><template #append><v-chip size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge('projects')}` }}</v-chip></template></v-list-item>
 
       <v-list-group value="data">
@@ -89,6 +90,7 @@
         <v-list-item link :to="Pages.statistics.path" :prepend-icon="mdiChartAreaspline" v-if="Pages.isAvailable(Pages.statistics)" :title="$t('menuDataStatistics')" />
       </v-list-group>
 
+      <v-list-item link :to="Pages.publications.path" :prepend-icon="mdiNewspaperVariant" v-if="Pages.isAvailable(Pages.publications)" :title="$t('menuPublications')"><template #append><v-chip size="small">{{ formatBadge('publications') }}</v-chip></template></v-list-item>
       <v-list-item link :to="Pages.images.path" :prepend-icon="mdiImageMultiple" v-if="Pages.isAvailable(Pages.images)" :title="$t('menuImages')"><template #append><v-chip size="small">{{ formatBadge('images') }}</v-chip></template></v-list-item>
       <v-list-item link :to="Pages.groups.path" :prepend-icon="mdiGroup" v-if="Pages.isAvailable(Pages.groups)" :title="$t('menuGroups')"><template #append><v-chip size="small">{{ formatBadge('groups') }}</v-chip></template></v-list-item>
 
@@ -127,7 +129,7 @@
   import type { OverviewStats, OverviewStatsField } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiPeriodicTable, mdiReorderHorizontal, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy } from '@mdi/js'
+  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderHorizontal, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy } from '@mdi/js'
 
   const { name, lgAndUp } = useDisplay()
   const store = coreStore()

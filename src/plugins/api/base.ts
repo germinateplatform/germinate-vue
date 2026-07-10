@@ -63,18 +63,16 @@ function handleError (error: AxiosResponse) {
         message = i18n.global.t('httpErrorFourOOne')
         store.setToken(undefined)
         if (authMode === 'FULL' || authMode === 'SELECTIVE') {
-          console.log(router.currentRoute)
           router.push({ path: Pages.login.path, query: { redirect: router.currentRoute?.value?.fullPath || '/' } })
         }
-        return
+        break
       case 403: {
         message = i18n.global.t('httpErrorFourOThree')
         store.setToken(undefined)
         if (authMode === 'FULL' || authMode === 'SELECTIVE') {
-          console.log(router.currentRoute)
           router.push({ path: Pages.login.path, query: { redirect: router.currentRoute?.value?.fullPath || '/' } })
         }
-        return
+        break
       }
       case 404:
         message = i18n.global.t('httpErrorFourOFour')
@@ -202,7 +200,7 @@ function authForm<T> ({ url = undefined, formData, method = 'post', success = un
  * Sends an Axios request to the server using authentication
  * @param {Object} param0 `{ url: String, method: String, data: Object, formData: Object, dataType: String, contentType: String, success: Callback, error: { codes: [], callback: Callback } }`
  */
-const authAxios = <T>({ url = undefined, method = 'GET', data = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, data?: any, dataType?: ResponseType, contentType?: string, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) => {
+function authAxios<T> ({ url = undefined, method = 'GET', data = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, data?: any, dataType?: ResponseType, contentType?: string, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
   const store = coreStore()
 
   let requestData = null

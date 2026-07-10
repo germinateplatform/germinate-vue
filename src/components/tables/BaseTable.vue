@@ -253,6 +253,7 @@
   import { Pages } from '@/plugins/pages'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { mdiArrowRight, mdiArrowUpLeftBold, mdiBookmarkCheck, mdiBookmarkOutline, mdiCheckboxMultipleBlankOutline, mdiCheckboxMultipleMarked, mdiCheckboxMultipleOutline, mdiDownload, mdiGroup, mdiMagnify, mdiMenuLeft } from '@mdi/js'
+  import { validCompsForType } from '@/plugins/util/table-columns'
 
   export type DisplayType = 'table' | 'grid'
 
@@ -274,7 +275,7 @@
     hideFooter: false,
   })
 
-  const emit = defineEmits(['data-changed', 'selection-changed', 'update:bottomSheetVisible', 'filter-changed', 'filter-cleared'])
+  const emit = defineEmits(['data-changed', 'selection-changed', 'update:bottom-sheet-visible', 'filter-changed', 'filter-cleared'])
 
   const router = useRouter()
   const route = useRoute()
@@ -392,7 +393,7 @@
   })
 
   function notifyBottomSheet (value: boolean) {
-    emit('update:bottomSheetVisible', value)
+    emit('update:bottom-sheet-visible', value)
   }
 
   function isMarked (id: number) {
@@ -441,18 +442,24 @@
         filters: quickSearchable.map(qs => {
           let comp: FilterComparator
 
-          switch (qs.dataType) {
-            case 'string':
-            case 'integer':
-            case 'float':
-              comp = FilterComparator.contains
-              break
-            case 'json':
-              comp = FilterComparator.jsonSearch
-              break
-            default:
-              comp = FilterComparator.equals
-              break
+          const validTypes = validCompsForType[qs.dataType || '']
+
+          if (validTypes && componentProps.quickSearchComparator && validTypes.includes(componentProps.quickSearchComparator)) {
+            comp = componentProps.quickSearchComparator
+          } else {
+            switch (qs.dataType) {
+              case 'string':
+              case 'integer':
+              case 'float':
+                comp = FilterComparator.contains
+                break
+              case 'json':
+                comp = FilterComparator.jsonSearch
+                break
+              default:
+                comp = FilterComparator.equals
+                break
+            }
           }
 
           return {

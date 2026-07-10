@@ -19,9 +19,9 @@ const apiPostGroupTable = <T>(queryData: PaginatedRequest, onSuccess?: Germinate
 
 const apiPostDatasetGroups = (queryData: DatasetGroupRequest, onSuccess?: GerminateResponseHandler<ViewTableGroups[]>, onError?: ErrorHandler) => authAxios<ViewTableGroups[]>({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
 
-const apiPostPublicationGroupTable = <T>(publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => {
+function apiPostPublicationGroupTable (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGroups[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: `publication/${publicationId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios<PaginatedResult<ViewTableGroups[]>>({ url: `publication/${publicationId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 export {

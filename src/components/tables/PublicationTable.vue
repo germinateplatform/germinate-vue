@@ -23,7 +23,7 @@
 
     <template #item.publicationName="{ item }">
       <template v-if="item.publicationFallbackCache">
-        <span v-html="item.publicationFallbackCache.title" />
+        <router-link :to="{ name: Pages.publicationDetails.name, params: { id: `${item.publicationId}` } }"><span v-html="item.publicationFallbackCache.title" /></router-link>
       </template>
     </template>
     <template #item.publicationJournal="{ item }">
@@ -41,44 +41,7 @@
     </template>
 
     <template #card-item="{ item }">
-      <v-card v-if="item.lookupDetails" class="d-flex flex-column">
-        <v-card-text>
-          <v-chip label color="muted" variant="tonal" :prepend-icon="mdiNewspaper">{{ item.lookupDetails.container }}</v-chip>
-
-          <p class="text-headline-small font-weight-black mt-2">{{ item.lookupDetails.title }}</p>
-
-          <p v-if="item.lookupDetails.date">
-            {{ item.lookupDetails.date }}
-          </p>
-
-          <div class="text-medium-emphasis">
-            <span v-html="item.lookupDetails.fullReference" />
-          </div>
-
-          <v-chip label class="me-2 mt-1" v-if="item.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path">{{ publicationTypes.database.text() }}</v-chip>
-          <v-chip label class="me-2 mt-1" v-if="item.germplasmIds && item.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path">{{ publicationTypes.germplasm.text() }} ({{ item.germplasmIds.length }})</v-chip>
-          <v-chip label class="me-2 mt-1" v-if="item.datasetIds && item.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path">{{ publicationTypes.dataset.text() }} ({{ item.datasetIds.length }})</v-chip>
-          <v-chip label class="me-2 mt-1" v-if="item.experimentIds && item.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path">{{ publicationTypes.experiment.text() }} ({{ item.experimentIds.length }})</v-chip>
-          <v-chip label class="me-2 mt-1" v-if="item.groupIds && item.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path">{{ publicationTypes.group.text() }} ({{ item.groupIds.length }})</v-chip>
-        </v-card-text>
-
-        <v-card-actions v-if="item.lookupDetails.URL">
-          <v-btn
-            color="primary"
-            :href="item.lookupDetails.URL"
-            :text="$t('buttonReadMore')"
-          />
-
-          <!-- <v-spacer />
-
-          <v-btn
-            v-if="canDelete && store.storeUserIsDataCurator"
-            @click="emit('delete')"
-            color="error"
-            :text="$t('buttonDelete')"
-          /> -->
-        </v-card-actions>
-      </v-card>
+      <PublicationCard :publication="item" @delete="baseTable?.refresh()" />
     </template>
 
     <!-- Pass on all named slots -->
@@ -122,6 +85,7 @@
   import { coreStore } from '@/stores/app'
   import { mdiAlarm, mdiBookOpenVariant, mdiCalendar, mdiMagnify, mdiNewspaper, mdiOpenInNew, mdiPlus } from '@mdi/js'
   import { apiPutPublication, apiPutPublicationReference } from '@/plugins/api/misc'
+  import { Pages } from '@/plugins/pages'
 
   export interface PublicationDoi {
     doi?: string
