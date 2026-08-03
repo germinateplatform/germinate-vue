@@ -38,7 +38,7 @@ name: publicationDetails
   import { apiPostPublicationDatasetTable } from '@/plugins/api/dataset'
   import { apiPostPublicationGermplasmTable, apiPostPublicationGermplasmTableIds } from '@/plugins/api/germplasm'
   import { apiPostPublicationGroupTable } from '@/plugins/api/group'
-  import { apiPostPublicationsTable } from '@/plugins/api/misc'
+  import { apiPostPublicationsTable } from '@/plugins/api/publication'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedRequest, type ViewTablePublications } from '@/plugins/types/germinate'
 

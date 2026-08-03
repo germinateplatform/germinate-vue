@@ -154,7 +154,7 @@ name: geographicSearch
       const allData = JSON.parse(JSON.stringify(data))
       allData.page = 1
       allData.limit = MAX_JAVA_INTEGER
-      apiPostLocationPolygonTable<PaginatedResult<ViewTableLocations[]>>(allData, result => {
+      apiPostLocationPolygonTable(allData, result => {
         polygonLocations.value = result.data
       })
 

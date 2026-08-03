@@ -79,7 +79,7 @@
       },
     })
 
-    apiPostDatasetfileresource<PaginatedResult<ViewTableFileresources[]>>({
+    apiPostDatasetfileresource({
       datasetIds: compProps.datasets.map(ds => ds.datasetId || -1),
       page: 1,
       limit: MAX_JAVA_INTEGER,

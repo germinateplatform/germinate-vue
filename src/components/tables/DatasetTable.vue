@@ -390,12 +390,12 @@
       if (selectedExperiment.value) {
         if (selectedExperiment.value.experimentId) {
           // Update the experiment on the server
-          apiPatchExperiment<boolean>(selectedExperiment.value.experimentId, selectedExperiment.value, () => {
+          apiPatchExperiment(selectedExperiment.value.experimentId, selectedExperiment.value, () => {
             resolve(true)
           })
         } else {
           // Create a new experiment
-          apiPutExperiment<number>(selectedExperiment.value, () => resolve(true))
+          apiPutExperiment(selectedExperiment.value, () => resolve(true))
         }
       } else {
         resolve(false)
@@ -540,7 +540,7 @@
           operator: FilterOperator.and,
         }],
       }
-      apiPostLicenseTable<PaginatedResult<ViewTableLicenses[]>>(query, (result: PaginatedResult<ViewTableLicenses[]>) => {
+      apiPostLicenseTable(query, (result: PaginatedResult<ViewTableLicenses[]>) => {
         if (result && result.data && result.data.length > 0) {
           selectedLicense.value = result.data[0]
           licenseModal.value?.show()
@@ -555,7 +555,7 @@
   }
 
   function updateExperiments () {
-    apiPostExperimentTable<PaginatedResult<ViewTableExperiments[]>>({
+    apiPostExperimentTable({
       page: 1,
       limit: MAX_JAVA_INTEGER,
       orderBy: 'experimentName',

@@ -6,18 +6,18 @@
       <p class="text-headline-small font-weight-black">
         <router-link
           v-if="route.name !== Pages.publicationDetails.name"
-          :to="{ name: Pages.publicationDetails.name, params: { id: `${publication.publicationId}` } }"
+          :to="Pages.getPath(Pages.publicationDetails, `${publication.publicationId}`)"
         >
-          <span v-html="displayData.title" />
+          <span v-html="displayData.title" class="g-trim-rows-3" />
         </router-link>
-        <span v-html="displayData.title" v-else />
+        <span v-html="displayData.title" class="g-trim-rows-3" v-else />
       </p>
 
       <p v-if="displayData.date">
         {{ displayData.date }}
       </p>
 
-      <div class="text-medium-emphasis limit-rows">
+      <div class="text-medium-emphasis g-trim-rows-2">
         <span v-html="displayData.fullReference" />
       </div>
 
@@ -57,7 +57,7 @@
   import { coreStore } from '@/stores/app'
   import { publicationTypes } from '@/plugins/util/types'
   import { mdiNewspaper } from '@mdi/js'
-import { Pages } from '@/plugins/pages'
+  import { Pages } from '@/plugins/pages'
 
   const store = coreStore()
   const route = useRoute()
@@ -131,13 +131,3 @@ import { Pages } from '@/plugins/pages'
     }
   })
 </script>
-
-<style scoped>
-.limit-rows {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* number of lines to show */
-  -webkit-box-orient: vertical;
-}
-</style>

@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
 
-    <div class="v-data-table-footer d-flex justify-end flex-wrap">
+    <div class="v-data-table-footer d-flex justify-end flex-wrap" v-if="!compProps.hideFooter">
       <slot name="footer.prepend" />
       <v-spacer />
       <div class="d-flex align-center g-items-per-page">
@@ -32,7 +32,7 @@
       <div class="v-data-table-footer__info">
         {{ t('$vuetify.dataFooter.pageText', !itemsLength ? 0 : startIndex + 1, stopIndex, itemsLength) }}
       </div>
-      <v-pagination v-model="localPage" :length="totalPages" :total-visible="0" show-first-last-page v-if="compProps.hideFooter !== true" />
+      <v-pagination v-model="localPage" :length="totalPages" :total-visible="0" show-first-last-page />
     </div>
   </div>
 </template>

@@ -41,7 +41,7 @@
           <v-list-item
             class="pa-2 px-6 text-wrap"
           >
-            <v-list-item-subtitle class="text-wrap" v-text="currentItem.text" />
+            <v-list-item-subtitle class="text-wrap">{{ currentItem.text }}</v-list-item-subtitle>
           </v-list-item>
         </v-sheet>
       </v-scroll-x-transition>
@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-  import { apiGetTemplateCarouselConfig } from '@/plugins/api/misc'
+  import { apiGetTemplateCarouselConfig } from '@/plugins/api/setting'
   import { getImageUrl } from '@/plugins/util/image'
   import { coreStore } from '@/stores/app'
   import { useDisplay } from 'vuetify'

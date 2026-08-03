@@ -185,7 +185,7 @@
 
     const topo = L.tileLayer('//{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
       id: 'OpenTopoMap',
-      attribution: 'Kartendaten: &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: &copy; <a href="http://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)</code>',
+      attribution: 'Kartendaten: &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)</code>',
       maxZoom: 19,
       maxNativeZoom: 17,
     })
@@ -546,7 +546,7 @@
     }
 
     if (props.shapefileId) {
-      apiGetDataResource<Blob>(props.shapefileId, async result => {
+      apiGetDataResource(props.shapefileId, async result => {
         const content = await result.arrayBuffer()
         const shape = await shp(content)
 

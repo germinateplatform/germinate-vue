@@ -690,7 +690,7 @@
     forceFilters,
   })
 
-  watch(() => compProps.filterOn, () => loadFilters())
+  watch(() => compProps.filterOn, () => loadFilters(false))
   watch(() => filterGroups, () => updateUrl(), { deep: true })
 </script>
 

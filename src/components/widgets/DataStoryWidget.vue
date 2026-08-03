@@ -19,7 +19,7 @@
 <script setup lang="ts">
   import { userIsAtLeast } from '@/plugins/api/auth'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostStoryTable } from '@/plugins/api/misc'
+  import { apiPostStoryTable } from '@/plugins/api/story'
   import { UserType, type FilterGroup, type ViewTableStoriesEnriched } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
   import { useI18n } from 'vue-i18n'

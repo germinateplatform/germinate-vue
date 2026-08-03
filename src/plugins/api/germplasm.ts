@@ -1,76 +1,65 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { ExportRequest, GermplasmExportRequest, GermplasmStats, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, ViewTableGermplasm, ViewTableGermplasmAttributes, ViewTablePedigrees, ViewTableTaxonomies } from '@/plugins/types/germinate'
+import type { AsyncExportResult, Datawarnings, DbObjectCount, ExportRequest, GermplasmDistance, GermplasmExportRequest, GermplasmStats, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, TaxonCount, ViewMcpd, ViewTableDatasets, ViewTableEntities, ViewTableGermplasm, ViewTableGermplasmAttributes, ViewTableGroupGermplasm, ViewTableGroups, ViewTablePedigreedefinitions, ViewTablePedigrees, ViewTableTaxonomies } from '@/plugins/types/germinate'
 
-function apiGetGermplasmMcpd<T> (germplasmId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiGetGermplasmMcpd (germplasmId: number, onSuccess?: GerminateResponseHandler<ViewMcpd>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/${germplasmId}/mcpd`, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) {
+export function apiPostGermplasmTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios<PaginatedResult<ViewTableGermplasm[]>>({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostTaxonomyTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableTaxonomies[]>>, onError?: ErrorHandler) {
+export function apiPostTaxonomyTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableTaxonomies[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios<PaginatedResult<ViewTableTaxonomies[]>>({ url: 'taxonomy/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios({ url: 'taxonomy/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmTableCW<T> (queryData: PaginatedRequest, namesFromFile?: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
-  queryData.page -= 1
-  return authAxios({ url: `germplasm/table?namesFromFile=${namesFromFile}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
-}
-
-function apiPostGermplasmTableCWIds<T> (queryData: PaginatedRequest, namesFromFile?: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
-  delete queryData.orderBy
-  delete queryData.ascending
-  return authAxios({ url: `germplasm/table/ids?namesFromFile=${namesFromFile}`, method: 'POST', data: queryData, success: onSuccess, error: onError })
-}
-
-function apiPostGermplasmTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'germplasm/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostPublicationGermplasmTable (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) {
+export function apiPostPublicationGermplasmTable (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios<PaginatedResult<ViewTableGermplasm[]>>({ url: `publication/${publicationId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios({ url: `publication/${publicationId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostPublicationGermplasmTableIds (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
+export function apiPostPublicationGermplasmTableIds (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
-  return authAxios<PaginatedResult<number[]>>({ url: `publication/${publicationId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios({ url: `publication/${publicationId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGroupGermplasmTable<T> (groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGroupGermplasmTable (groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGroupGermplasm[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `group/${groupId}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGroupGermplasmTableExport<T> (groupId: number, queryData: ExportRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGroupGermplasmTableExport (groupId: number, queryData: ExportRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) {
   return authAxios({ url: `group/${groupId}/germplasm/export`, method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGroupGermplasmTableIds (groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
+export function apiPostGroupGermplasmTableIds (groupId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
-  return authAxios<PaginatedResult<number[]>>({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios({ url: `group/${groupId}/germplasm/ids`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmDistanceTable<T> (queryData: PaginatedLocationRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmDistanceTable (queryData: PaginatedLocationRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<GermplasmDistance[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'germplasm/distance/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmDistanceTableIds<T> (queryData: PaginatedLocationRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmDistanceTableIds (queryData: PaginatedLocationRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'germplasm/distance/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmPolygonTable<T> (queryData: PaginatedPolygonRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmPolygonTable (queryData: PaginatedPolygonRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   if (queryData.orderBy === 'distance') {
     delete queryData.orderBy
@@ -79,132 +68,94 @@ function apiPostGermplasmPolygonTable<T> (queryData: PaginatedPolygonRequest, on
   return authAxios({ url: 'germplasm/polygon/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmPolygonTableIds<T> (queryData: PaginatedPolygonRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmPolygonTableIds (queryData: PaginatedPolygonRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'germplasm/polygon/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmAttributeTableExport<T> (queryData: ExportRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmAttributeTableExport (queryData: ExportRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/attribute/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiExportPassport<T> (queryData: GermplasmExportRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiExportPassport (queryData: GermplasmExportRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/export', method: 'POST', dataType: 'blob', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmGroupTable<T> (germplasmId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmGroupTable (germplasmId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGroups[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `germplasm/${germplasmId}/group`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmDatasetTable<T> (germplasmId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmDatasetTable (germplasmId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `germplasm/${germplasmId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmAttributeTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasmAttributes[]>>, onError?: ErrorHandler) {
+export function apiPostGermplasmAttributeTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasmAttributes[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios<PaginatedResult<ViewTableGermplasmAttributes[]>>({ url: 'germplasm/attribute', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios({ url: 'germplasm/attribute', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostEntityIds<T> (ids: number[], direction: string, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostEntityIds (ids: number[], direction: string, onSuccess?: GerminateResponseHandler<number[]>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/entity?direction=${direction}`, method: 'POST', data: ids, success: onSuccess, error: onError })
 }
 
-function apiPostPedigreeTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTablePedigrees[]>>, onError?: ErrorHandler) {
+export function apiPostPedigreeTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTablePedigrees[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios<PaginatedResult<ViewTablePedigrees[]>>({ url: 'pedigree/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  return authAxios({ url: 'pedigree/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostEntityTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostEntityTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableEntities[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'entity/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostExternalLinkIdentifiers<T> (queryData: number[], onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostExternalLinkIdentifiers (queryData: number[], onSuccess?: GerminateResponseHandler<string[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/external/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiGetGermplasmStatsTraits (germplasmId: number, subsetReqest?: GermplasmExportRequest, onSuccess?: GerminateResponseHandler<GermplasmStats[]>, onError?: ErrorHandler) {
-  return authAxios<GermplasmStats[]>({ url: `germplasm/${germplasmId}/stats/trait`, data: subsetReqest, method: 'POST', success: onSuccess, error: onError })
+export function apiGetGermplasmStatsTraits (germplasmId: number, subsetReqest?: GermplasmExportRequest, onSuccess?: GerminateResponseHandler<GermplasmStats[]>, onError?: ErrorHandler) {
+  return authAxios({ url: `germplasm/${germplasmId}/stats/trait`, data: subsetReqest, method: 'POST', success: onSuccess, error: onError })
 }
 
-function apiGetGermplasmDataWarnings<T> (germplasmId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiGetGermplasmDataWarnings (germplasmId: number, onSuccess?: GerminateResponseHandler<Datawarnings[]>, onError?: ErrorHandler) {
   return authAxios({ url: `datawarning/germplasm/${germplasmId}`, success: onSuccess, error: onError })
 }
 
-function apiGetTaxonomyData<T> (onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiGetTaxonomyData (onSuccess?: GerminateResponseHandler<TaxonCount>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/taxonomy', success: onSuccess, error: onError })
 }
 
-function apiGetLocationData<T> (onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiGetLocationData (onSuccess?: GerminateResponseHandler<DbObjectCount[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/location', success: onSuccess, error: onError })
 }
 
-function apiGetBiologicalStatusData<T> (onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiGetBiologicalStatusData (onSuccess?: GerminateResponseHandler<DbObjectCount[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/biologicalstatus', success: onSuccess, error: onError })
 }
 
-function apiGetGermplasmTableColumns<T> (onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiGetGermplasmTableColumns (onSuccess?: GerminateResponseHandler<string[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/table/columns', success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmUnification<T> (queryData: GermplasmUnificationRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmUnification (queryData: GermplasmUnificationRequest, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
 }
 
-function apiPostGermplasmUnificationSgone<T> (queryData: SgoneGermplasmUnificationRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostGermplasmUnificationSgone (queryData: SgoneGermplasmUnificationRequest, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/unify/sgone', data: queryData, method: 'POST', success: onSuccess, error: onError })
 }
 
-function apiPatchGermplasmLocation<T> (germplasmId: number, location: Locations, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPatchGermplasmLocation (germplasmId: number, location: Locations, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/${germplasmId}/location`, data: location, method: 'PATCH', success: onSuccess, error: onError })
 }
 
-function apiPostPedigreedefinitionTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostPedigreedefinitionTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTablePedigreedefinitions[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'pedigreedefinition/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostPedigreeDatasetExport<T> (queryData: PedigreeRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+export function apiPostPedigreeDatasetExport (queryData: PedigreeRequest, onSuccess?: GerminateResponseHandler<AsyncExportResult[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'dataset/export/pedigree-async', method: 'POST', data: queryData, success: onSuccess, error: onError })
-}
-
-export {
-  apiGetGermplasmMcpd,
-  apiPostGermplasmTable,
-  apiPostGermplasmTableCW,
-  apiPostGermplasmTableCWIds,
-  apiPostGermplasmTableIds,
-  apiPostPublicationGermplasmTable,
-  apiPostPublicationGermplasmTableIds,
-  apiPostGroupGermplasmTable,
-  apiPostGroupGermplasmTableExport,
-  apiPostGroupGermplasmTableIds,
-  apiPostGermplasmDistanceTable,
-  apiPostGermplasmDistanceTableIds,
-  apiPostGermplasmPolygonTable,
-  apiPostGermplasmPolygonTableIds,
-  apiPostGermplasmAttributeTableExport,
-  apiExportPassport,
-  apiPostGermplasmGroupTable,
-  apiPostGermplasmDatasetTable,
-  apiPostGermplasmAttributeTable,
-  apiPostEntityIds,
-  apiPostPedigreeTable,
-  apiPostEntityTable,
-  apiPostExternalLinkIdentifiers,
-  apiGetGermplasmStatsTraits,
-  apiGetTaxonomyData,
-  apiGetLocationData,
-  apiGetBiologicalStatusData,
-  apiGetGermplasmTableColumns,
-  apiPostGermplasmUnification,
-  apiPostGermplasmUnificationSgone,
-  apiPatchGermplasmLocation,
-  apiPostPedigreedefinitionTable,
-  apiPostPedigreeDatasetExport,
-  apiGetGermplasmDataWarnings,
-  apiPostTaxonomyTable,
 }

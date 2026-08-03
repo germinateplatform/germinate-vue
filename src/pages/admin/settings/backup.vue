@@ -22,9 +22,10 @@ name: backup
 
 <script setup lang="ts">
   import BackupTable from '@/components/tables/BackupTable.vue'
-  import { apiGetAdminSettings, apiPostBackupTable, apiPutBackup } from '@/plugins/api/misc'
+  import { apiPostBackupTable, apiPutBackup } from '@/plugins/api/backup'
+  import { apiGetAdminSettings } from '@/plugins/api/setting'
   import { Pages } from '@/plugins/pages'
-  import { type BackupResult, type PaginatedResult, type ClientAdminConfiguration, type PaginatedRequest, UserType } from '@/plugins/types/germinate'
+  import { type ClientAdminConfiguration, type PaginatedRequest, UserType } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
   import { mdiCalendarClock, mdiDatabaseArrowRight, mdiFileCabinet } from '@mdi/js'
 
@@ -70,7 +71,7 @@ name: backup
   }
 
   function getBackups (data: PaginatedRequest) {
-    return apiPostBackupTable<PaginatedResult<BackupResult[]>>(data, result => {
+    return apiPostBackupTable(data, result => {
       if (result && result.data) {
         result.data.forEach(b => {
           b.href = `${store.storeBaseUrl}backup/download?token=${store.storeToken ? store.storeToken.token : null}&filename=${encodeURIComponent(b.filename)}`
@@ -80,7 +81,7 @@ name: backup
   }
 
   onMounted(() => {
-    apiGetAdminSettings<ClientAdminConfiguration>(result => {
+    apiGetAdminSettings(result => {
       serverAdminSettings.value = result
     })
   })

@@ -47,7 +47,7 @@
   import { dataTypes } from '@/plugins/util/types'
   import emitter from 'tiny-emitter/instance'
   import { mdiFileDocument, mdiPageNext } from '@mdi/js'
-import { columns } from '@/plugins/util/table-columns'
+  import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasetAttributes[]>>> }

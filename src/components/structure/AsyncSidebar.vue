@@ -173,7 +173,6 @@
 
 <script setup lang="ts">
   import { apiDeleteDatasetAsyncExport, apiPostDatasetAsyncExport } from '@/plugins/api/dataset'
-  import { apiDeleteDataAsyncImport, apiGetDataAsyncImportLog, apiGetDataAsyncImportStart, apiPostDataAsyncImport } from '@/plugins/api/misc'
   import { DataExportJobsDatatype, DataExportJobsStatus, DataImportJobsStatus, type PaginatedResult, type DataExportJobs, type DataImportJobs, type ImportResult, type PaginatedRequest } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -185,6 +184,7 @@
   import { asyncJobStatus, templateImportTypes } from '@/plugins/util/types'
   import { mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiClose, mdiDna, mdiDownload, mdiFamilyTree, mdiFileDocumentAlert, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiShovel, mdiUpload } from '@mdi/js'
   import { downloadBlob } from '@/plugins/util'
+  import { apiDeleteDataAsyncImport, apiGetDataAsyncImportLog, apiGetDataAsyncImportStart, apiPostDataAsyncImport } from '@/plugins/api/dataimport'
 
   const store = coreStore()
   const { name } = useDisplay()
@@ -416,7 +416,7 @@
 
   function updateJobs () {
     nextTick(async () => {
-      const expJobs = await apiPostDatasetAsyncExport<DataExportJobs[]>(store.storeAsyncJobUuids, undefined, {
+      const expJobs = await apiPostDatasetAsyncExport(store.storeAsyncJobUuids, undefined, {
         codes: [],
         callback: (error: AxiosError) => {
           if (error && error.status === 403) {
@@ -425,7 +425,7 @@
           }
         },
       }).catch(() => null)
-      const impJobs = await apiPostDataAsyncImport<DataImportJobs[]>(store.storeAsyncJobUuids, undefined, {
+      const impJobs = await apiPostDataAsyncImport(store.storeAsyncJobUuids, undefined, {
         codes: [],
         callback: () => {
           // We do nothing here. It either works or it doesn't.
@@ -523,9 +523,11 @@
 
   onBeforeMount(() => {
     emitter.on('toggle-aside', toggleSidebar)
+    emitter.on('update-async-jobs', toggleSidebar)
   })
   onBeforeUnmount(() => {
     emitter.off('toggle-aside', toggleSidebar)
+    emitter.off('update-async-jobs', toggleSidebar)
 
     if (timeout) {
       clearInterval(timeout)

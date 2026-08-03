@@ -121,6 +121,14 @@ function toParagraphs (input: string, separator = '\n') {
   return (input || '').split(separator).map(p => p.trim()).filter(p => p.length > 0).map(p => `<p>${p}</p>`).join('')
 }
 
+function isNumeric (str: string): boolean {
+  if (typeof str !== 'string') {
+    return false
+  }
+
+  return !Number.isNaN(Number(str)) && str.trim() !== ''
+}
+
 /**
  * Formats the given decimal number with the given number of decimal places
  * @param {Number} number The number to format
@@ -141,4 +149,5 @@ export {
   isAnyMissing,
   concat,
   toParagraphs,
+  isNumeric,
 }

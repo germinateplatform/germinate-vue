@@ -7,7 +7,7 @@
       variant="tonal"
       class="d-flex mb-5"
     >
-      <v-btn class="flex-grow-1" value="dataset" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
+      <v-btn class="flex-grow-1" value="datasets" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
       <v-btn class="flex-grow-1" value="germplasm" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionGermplasm')" />
       <v-btn class="flex-grow-1" value="plot" :prepend-icon="mdiViewGridPlus" :disabled="!trialPlots || trialPlots.length === 0" :text="$t('widgetHighlightSelectionPlot')" v-if="allowCellSelect">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialPlots || []).length, 0)" /></template>
@@ -67,6 +67,7 @@
       :hint="$t('formDescriptionHighlightTaxonomies')"
       multiple
       clearable
+      item-key="id"
       item-value="id"
       :item-title="(tax: Taxonomies) => concat(' ', [tax.genus, tax.species, tax.subtaxa])"
       v-model="selectedTaxonomies"
@@ -133,7 +134,7 @@
   import { mdiCalendarWeek, mdiDatabase, mdiFormatListNumbered, mdiGroup, mdiSitemap, mdiSprinklerFire, mdiSprout, mdiViewGridPlus } from '@mdi/js'
 
   export interface UserSelection {
-    type: 'group' | 'dataset' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'
+    type: 'group' | 'datasets' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'
     selectedItems: string[]
   }
 
@@ -147,7 +148,7 @@
     allowCellSelect: true,
   })
 
-  const selectionMode = ref<'group' | 'dataset' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'>()
+  const selectionMode = ref<'group' | 'datasets' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'>()
 
   const selectedGermplasm = ref<ViewTableGermplasm[]>([])
   const selectedPlots = ref<PlotDetails[]>([])
@@ -174,7 +175,7 @@
 
   const userSelection: ComputedRef<UserSelection | undefined> = computed(() => {
     switch (selectionMode.value) {
-      case 'dataset':
+      case 'datasets':
         return {
           type: selectionMode.value,
           selectedItems: (compProps.datasetIds || []).map(ds => `${ds}`),

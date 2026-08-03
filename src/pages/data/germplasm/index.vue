@@ -168,7 +168,7 @@ name: germplasm
   import GermplasmTable from '@/components/tables/GermplasmTable.vue'
   import { apiExportPassport, apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostPedigreeDatasetExport, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import { apiPostGroupTable } from '@/plugins/api/group'
-  import { FilterComparator, type FilterGroup, FilterOperator, type AsyncExportResult, type GermplasmExportRequest, type PaginatedRequest, type PedigreeRequest, type ViewTableDatasets, type ViewTableGroups } from '@/plugins/types/germinate'
+  import { FilterComparator, type FilterGroup, FilterOperator, type GermplasmExportRequest, type PaginatedRequest, type PedigreeRequest, type ViewTableDatasets, type ViewTableGroups } from '@/plugins/types/germinate'
   import { downloadBlob } from '@/plugins/util'
   import { coreStore } from '@/stores/app'
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -231,7 +231,7 @@ name: germplasm
 
     emitter.emit('show-loading', true)
     // this.$gtag.event('export', 'async', 'pedigree', request.datasetIds.join('-'))
-    apiPostPedigreeDatasetExport<AsyncExportResult[]>(request, result => {
+    apiPostPedigreeDatasetExport(request, result => {
       store.addAsyncJobUuids(result.map(r => r.uuid))
 
       // Show the sidebar

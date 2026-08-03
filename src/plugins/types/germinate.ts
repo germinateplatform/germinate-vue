@@ -40,6 +40,63 @@ export interface ViewTableGermplasm {
     hasPedigreeData: number;
 }
 
+export interface Token {
+    token: string;
+    imageToken: string;
+    id: number;
+    username: string;
+    fullName: string;
+    email: string;
+    userType: string;
+    lifetime: number;
+    createdOn: number;
+}
+
+export interface ViewTableGroupGermplasm extends ViewTableGermplasm {
+    groupId: number;
+}
+
+export interface GermplasmDistance extends ViewTableGermplasm {
+    distance: number;
+}
+
+export interface LocationDistance extends ViewTableLocations {
+    distance: number;
+}
+
+export interface ViewTableGroupLocations extends ViewTableLocations {
+    groupId: number;
+}
+
+export interface TaxonCount {
+    genus: LevelCount[];
+    species: LevelCount[];
+    subtaxa: LevelCount[];
+}
+
+export interface LevelCount {
+    taxonomy: string;
+    count: number;
+}
+
+export interface DbObjectCount {
+    key: string;
+    count: number;
+}
+
+export interface ViewTableEntities {
+    entityParentId: number;
+    entityParentGid: string;
+    entityParentName: string;
+    entityParentDisplayName: string;
+    entityParentType: string;
+    entityChildId: number;
+    entityChildGid: string;
+    entityChildName: string;
+    entityChildDisplayName: string;
+    entityChildType: string;
+}
+
 export interface ViewTableGermplasmAttributes {
     attributeValueId: number;
     germplasmId: number;
@@ -104,6 +161,7 @@ export interface ViewTablePedigrees {
 export interface PublicationDoiLookupDetails {
     title: string;
     'container-title'?: string;
+    container?: string;
     fullReference: string;
     URL: string;
     date?: string
@@ -388,6 +446,64 @@ export interface OverviewStats {
     taxonomies?: number;
 }
 
+export interface Userfeedback {
+    id: number;
+    content: string;
+    image: any;
+    pageUrl: string;
+    userId: number;
+    contactEmail: string;
+    feedbackType: UserfeedbackFeedbackType;
+    severity: UserfeedbackSeverity;
+    isNew: boolean;
+    createdOn: Date;
+    updatedOn: Date;
+}
+
+export const enum UserfeedbackFeedbackType {
+    question = 'question',
+    data_error = 'data_error',
+    general = 'general',
+    bug = 'bug',
+    feature_request = 'feature_request',
+}
+
+export const enum UserfeedbackSeverity {
+    low = 'low',
+    medium = 'medium',
+    high = 'high',
+}
+
+export interface ViewTableComments {
+    commentId: number;
+    commentTypeId: number;
+    commentType: string;
+    commentForeignId: number;
+    userId: number;
+    userName: string;
+    commentContent: string;
+    updatedOn: Date;
+}
+
+export interface ViewTableInstitutionDatasets {
+    institutionId: number;
+    institutionCode: string;
+    institutionName: string;
+    institutionAcronym: string;
+    countryName: string;
+    countryCode2: string;
+    countryCode3: string;
+    institutionContact: string;
+    institutionPhone: string;
+    institutionEmail: string;
+    institutionAddress: string;
+    allDatasetIds: number[];
+    trialsDatasetIds: number[];
+    genotypeDatasetIds: number[];
+    climateDatasetIds: number[];
+    pedigreeDatasetIds: number[];
+}
+
 export interface ClientConfiguration {
     authMode: AuthenticationMode;
     colorsTemplate: string[];
@@ -401,6 +517,7 @@ export interface ClientConfiguration {
     externalLinkIdentifier: string;
     externalLinkTemplate: string;
     googleAnalyticsKey: string;
+    genesysAvailable: boolean;
     plausibleDomain: string;
     plausibleHashMode: boolean;
     plausibleApiHost: string;
@@ -1335,6 +1452,15 @@ export interface ViewTableLicenseDefinitions {
     licenseDescription?: string;
     createdOn?: Date;
     licenseData?: { [index: string]: string };
+}
+
+export interface ViewTableFileresourcetypes {
+    id: number;
+    name: string;
+    description: string;
+    createdOn: Date;
+    updatedOn: Date;
+    count: number;
 }
 
 export interface ViewTableFileresources {

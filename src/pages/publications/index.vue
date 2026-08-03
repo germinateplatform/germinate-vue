@@ -13,7 +13,7 @@ name: publications
 </route>
 
 <script setup lang="ts">
-  import { apiPostPublicationsTable } from '@/plugins/api/misc'
+  import { apiPostPublicationsTable } from '@/plugins/api/publication'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
 
   function getData (data: PaginatedRequest) {

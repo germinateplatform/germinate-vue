@@ -23,6 +23,7 @@ export interface ScatterPlotConfig {
   clickHandler?: ClickHandler
   selectionHandler?: SelectionHandler
   groups?: { [index: string]: string }
+  datasets?: { [index: string]: string }
 }
 
 export interface ScatterPlotParams {
@@ -38,29 +39,30 @@ export interface ScatterPlotParams {
   clickHandler?: ClickHandler
   selectionHandler?: SelectionHandler
   groups?: { [index: string]: string }
+  datasets?: { [index: string]: string }
 }
 
 const symbolList = ['circle', 'square', 'diamond', 'cross', 'x', 'triangle-up', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-ne', 'triangle-se', 'triangle-sw', 'triangle-nw', 'pentagon', 'hexagon', 'hexagon2', 'octagon', 'star', 'hexagram', 'star-triangle-up', 'star-triangle-down', 'star-square', 'star-diamond', 'diamond-tall', 'diamond-wide', 'hourglass', 'bowtie']
 
 const highlightFilter: { [index: string]: (dp: any, value: string) => boolean } = {
   'group': (dp: any, value: string) => dp.groups ? JSON.parse(dp.groups).includes(value) : false,
-  'dataset': (dp: any, value: string) => dp.dataset_id === value,
+  'datasets': (dp: any, value: string) => dp.dataset_ids ? JSON.parse(dp.dataset_ids).includes(+value) : false,
   'plot': (dp: any, value: string) => `${dp.trial_row}|${dp.trial_column}` === value,
   'taxonomies': (dp: any, value: string) => dp.taxonomy === value,
   'germplasm': (dp: any, value: string) => dp.name === value,
   'reps': (dp: any, value: string) => dp.rep === value,
-  'treatments': (dp: any, value: string) => dp.treatments_description === value,
+  'treatments': (dp: any, value: string) => dp.treatment === value,
   'year': (dp: any, value: string) => dp.year === value,
 }
 
 const highlightOppositeFilter: { [index: string]: (dp: any, nonMatchValues: string[]) => boolean } = {
   'group': (dp: any, nonMatchValues: string[]) => dp.groups ? !JSON.parse(dp.groups).some((g: string) => nonMatchValues.includes(g)) : true,
-  'dataset': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.dataset_id),
+  'datasets': (dp: any, nonMatchValues: string[]) => dp.dataset_ids ? !JSON.parse(dp.dataset_ids).some((g: string) => nonMatchValues.includes(g)) : true,
   'plot': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(`${dp.trial_row}|${dp.trial_column}`),
   'taxonomies': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.taxonomy),
   'germplasm': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.name),
   'reps': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.rep),
-  'treatments': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.treatments_description),
+  'treatments': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.treatment),
   'year': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.year),
 }
 
@@ -146,8 +148,8 @@ export class ScatterPlot {
 
         if (type === 'group') {
           name = this.config.groups?.[item] || 'N/A'
-        } else if (type === 'dataset' && filtered.length > 0) {
-          name = filtered[0].dataset_name || 'N/A'
+        } else if (type === 'datasets' && filtered.length > 0) {
+          name = this.config.datasets?.[item] || 'N/A'
         }
 
         let ids = filtered.map(r => this.extractValue(r, 'dbId'))

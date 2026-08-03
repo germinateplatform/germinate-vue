@@ -122,7 +122,7 @@ name: mapDetails
   }
 
   function updateMap () {
-    apiPostMapsTable<PaginatedResult<ViewTableMaps[]>>({
+    apiPostMapsTable({
       page: 1,
       limit: 1,
       filters: [{

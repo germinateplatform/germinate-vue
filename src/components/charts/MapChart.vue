@@ -89,7 +89,7 @@
     }
 
     if (!sourceFile.value) {
-      apiPostMapExport<Blob>(compProps.mapId, { format: 'flapjack' })
+      apiPostMapExport(compProps.mapId, { format: 'flapjack' })
         .then(result => {
           sourceFile.value = {
             blob: result.data,

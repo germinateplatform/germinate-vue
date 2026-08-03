@@ -38,6 +38,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/about/cookie': RouteRecordInfo<
+      '/about/cookie',
+      '/about/cookie',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     'aboutExportFormats': RouteRecordInfo<
       'aboutExportFormats',
       '/about/export-formats',
@@ -62,6 +69,13 @@ declare module 'vue-router/auto-routes' {
     'backup': RouteRecordInfo<
       'backup',
       '/admin/settings/backup',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/admin/settings/germinate': RouteRecordInfo<
+      '/admin/settings/germinate',
+      '/admin/settings/germinate',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -218,6 +232,20 @@ declare module 'vue-router/auto-routes' {
       '/data/germplasm/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | never
+    >,
+    '/data/germplasm/germplasm-match': RouteRecordInfo<
+      '/data/germplasm/germplasm-match',
+      '/data/germplasm/germplasm-match',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/data/germplasm/germplasm-unifier': RouteRecordInfo<
+      '/data/germplasm/germplasm-unifier',
+      '/data/germplasm/germplasm-unifier',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
     'pedigrees': RouteRecordInfo<
@@ -388,6 +416,14 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
+    'src/pages/about/cookie.vue': {
+      routes:
+        | '/about/cookie'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
     'src/pages/about/export-formats.vue': {
       routes:
         | 'aboutExportFormats'
@@ -415,6 +451,14 @@ declare module 'vue-router/auto-routes' {
     'src/pages/admin/settings/backup.vue': {
       routes:
         | 'backup'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/admin/settings/germinate.vue': {
+      routes:
+        | '/admin/settings/germinate'
       views:
         | never
       pathParamNames:
@@ -595,6 +639,22 @@ declare module 'vue-router/auto-routes' {
         | never
       pathParamNames:
         | 'id'
+    }
+    'src/pages/data/germplasm/germplasm-match.vue': {
+      routes:
+        | '/data/germplasm/germplasm-match'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/data/germplasm/germplasm-unifier.vue': {
+      routes:
+        | '/data/germplasm/germplasm-unifier'
+      views:
+        | never
+      pathParamNames:
+        | never
     }
     'src/pages/data/pedigrees/index.vue': {
       routes:

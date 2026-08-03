@@ -28,7 +28,7 @@
     }
 
     // Query the API
-    apiPostLinks<ViewTableLinks[]>(query, result => {
+    apiPostLinks(query, result => {
       links.value = result
     })
   })

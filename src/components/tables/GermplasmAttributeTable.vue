@@ -42,7 +42,6 @@
   import type { AxiosResponse } from 'axios'
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGermplasmAttributes } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
-  import { coreStore } from '@/stores/app'
   import { columns } from '@/plugins/util/table-columns'
   import type { DataTableSortItem } from 'vuetify'
   import { mdiPlaylistPlus } from '@mdi/js'
@@ -60,7 +59,6 @@
   })
 
   const baseTable = useTemplateRef('baseTable')
-  const store = coreStore()
   const { t } = useI18n()
   const bottomVisible = ref(false)
 

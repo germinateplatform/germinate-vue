@@ -117,7 +117,7 @@ name: export
       }],
     }
 
-    apiPostLicenseTable<PaginatedResult<ViewTableLicenses[]>>(query, result => {
+    apiPostLicenseTable(query, result => {
       if (result && result.data && result.data.length > 0) {
         const toAccept = result.data.filter(l => {
           let result = true
@@ -158,9 +158,9 @@ name: export
       case 'genotype':
         router.push(Pages.getPath(Pages.exportGenotypes, selectedDatasets.value.join(',')))
         break
-      case 'allelefreq':
-        router.push(Pages.getPath(Pages.exportAlleleFrequency, selectedDatasets.value.join(',')))
-        break
+      // case 'allelefreq':
+      //   router.push(Pages.getPath(Pages.exportAlleleFrequency, selectedDatasets.value.join(',')))
+      //   break
       case 'climate':
         router.push(Pages.getPath(Pages.exportClimates, selectedDatasets.value.join(',')))
         break

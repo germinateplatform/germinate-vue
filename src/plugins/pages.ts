@@ -30,7 +30,7 @@ export class Pages {
 
   static germinateSettings: Page = {
     name: 'germinateSettings',
-    path: '/admin/settings/germinate-settings',
+    path: '/admin/settings/germinate',
   }
 
   static userFeedback: Page = {

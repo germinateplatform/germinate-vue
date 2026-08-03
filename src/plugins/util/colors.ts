@@ -14,7 +14,7 @@ const DEFAULT_CHART_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467
 /**
      * Returns the chart colors
      */
-const getColors = (): string[] | undefined => {
+export function getColors (): string[] | undefined {
   const store = coreStore()
 
   let colors: string[]
@@ -24,19 +24,19 @@ const getColors = (): string[] | undefined => {
     colors = store.storeServerSettings?.colorsCharts || []
   }
 
-  if (!colors || colors.length < 1) {
+  if (!colors || colors.length === 0) {
     colors = DEFAULT_CHART_COLORS.concat()
   }
 
   return colors
 }
 
-const getPrimaryColor = (): string => {
+export function getPrimaryColor (): string {
   const rgb = getComputedStyle(document.documentElement).getPropertyValue('--v-theme-primary').split(',').map(s => +s.trim())
   return rgbToHex(rgb[0], rgb[1], rgb[2])
 }
 
-const getTemplateColors = () => {
+export function getTemplateColors () {
   const store = coreStore()
   if (store.storeServerSettings && store.storeServerSettings.colorsTemplate && store.storeServerSettings.colorsTemplate.length > 0) {
     return store.storeServerSettings.colorsTemplate
@@ -45,7 +45,7 @@ const getTemplateColors = () => {
   }
 }
 
-const getTemplateColor = (index: number): string => {
+export function getTemplateColor (index: number): string {
   const colors = getTemplateColors()
 
   if (colors) {
@@ -59,7 +59,7 @@ const getTemplateColor = (index: number): string => {
  * Returns the chart color at the given index
  * @param {Number} index The index
  */
-const getColor = (index: number): string => {
+export function getColor (index: number): string {
   const colors = getColors()
 
   if (colors) {
@@ -75,7 +75,7 @@ const getColor = (index: number): string => {
  * @param {String} two The second color in HEX
  * @param {Number} steps The number of steps between the two colors
  */
-const createColorGradient = (one: string, two: string, steps: number) => {
+export function createColorGradient (one: string, two: string, steps: number) {
   const oneRgb = hexToRgb(one)
   const twoRgb = hexToRgb(two)
 
@@ -95,11 +95,11 @@ const createColorGradient = (one: string, two: string, steps: number) => {
   return result
 }
 
-const getGradientColor = (gradient: string[], min: number, max: number, value: number) => {
+export function getGradientColor (gradient: string[], min: number, max: number, value: number) {
   return gradient[Math.min(Math.floor((value - min) / (max - min) * gradient.length), gradient.length - 1)]
 }
 
-const createMultiColorGradient = (colors: string[], steps: number): string[] => {
+export function createMultiColorGradient (colors: string[], steps: number): string[] {
   const sections = colors.length - 1
 
   let result: string[] = []
@@ -119,7 +119,7 @@ const createMultiColorGradient = (colors: string[], steps: number): string[] => 
  * Converts a HEX value into an RGB object
  * @param {String} hex The hex color
  */
-const hexToRgb = (hex: string): RGB | undefined => {
+export function hexToRgb (hex: string): RGB | undefined {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result
     ? {
@@ -136,15 +136,19 @@ const hexToRgb = (hex: string): RGB | undefined => {
  * @param {Number} g The green color component
  * @param {Number} b The blue color component
  */
-const rgbToHex = (r: number, g: number, b: number): string => `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
+export function rgbToHex (r: number, g: number, b: number): string {
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
+}
 
-const rgbColorToHex = (c: RGB): string => rgbToHex(c.r, c.g, c.b)
+export function rgbColorToHex (c: RGB): string {
+  return rgbToHex(c.r, c.g, c.b)
+}
 
 /**
  * Determines the best text color (either white or black) given the background color
  * @param {String} backgroundColor The background color in HEX
  */
-const getHighContrastTextColor = (backgroundColor: string): string => {
+export function getHighContrastTextColor (backgroundColor: string): string {
   if (backgroundColor) {
     const rgb = hexToRgb(backgroundColor)
     if (!rgb) {
@@ -157,7 +161,7 @@ const getHighContrastTextColor = (backgroundColor: string): string => {
   }
 }
 
-const brighten = (c: RGB): RGB => {
+export function brighten (c: RGB): RGB {
   let r = c.r
   let g = c.g
   let b = c.b
@@ -187,7 +191,7 @@ const brighten = (c: RGB): RGB => {
   }
 }
 
-const hexToRGBA = (hex: string, alpha: number) => {
+export function hexToRGBA (hex: string, alpha: number) {
   const r = Number.parseInt(hex.slice(1, 3), 16)
   const g = Number.parseInt(hex.slice(3, 5), 16)
   const b = Number.parseInt(hex.slice(5, 7), 16)
@@ -200,20 +204,6 @@ const hexToRGBA = (hex: string, alpha: number) => {
 }
 
 export {
-  getColors,
-  getColor,
-  getTemplateColors,
-  getTemplateColor,
-  createMultiColorGradient,
-  createColorGradient,
-  hexToRgb,
-  rgbToHex,
-  rgbColorToHex,
-  getHighContrastTextColor,
-  brighten,
-  getPrimaryColor,
-  hexToRGBA,
-  getGradientColor,
   GRADIENT_VIRIDIS,
   DEFAULT_CHART_COLORS,
 }

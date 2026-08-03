@@ -207,12 +207,12 @@
   import { useI18n } from 'vue-i18n'
   import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
   import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
-  import { apiGetGatekeeperInstitutions, apiPostGatekeeperExisting, apiPostGatekeeperNew } from '@/plugins/api/misc'
   import { gatekeeperErrors, handleError, MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { isSet } from '@/plugins/util'
 
   import emitter from 'tiny-emitter/instance'
   import type { AxiosResponse } from 'axios'
+  import { apiGetGatekeeperInstitutions, apiPostGatekeeperExisting, apiPostGatekeeperNew } from '@/plugins/api/gatekeeper'
 
   zxcvbnOptions.setOptions({
     graphs: zxcvbnCommonPackage.adjacencyGraphs,

@@ -125,12 +125,13 @@
   import { useI18n } from 'vue-i18n'
   import { coreStore } from '@/stores/app'
   import { mdiBookOpenPageVariant, mdiDelete, mdiFormatListNumbered, mdiSquareEditOutline, mdiFileEye, mdiPlus } from '@mdi/js'
-  import { apiDeleteStoryById, apiPatchStory, apiPostPublicationsTable, apiPostStoryUpload } from '@/plugins/api/misc'
 
   import emitter from 'tiny-emitter/instance'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { lookupDoiInformation } from '@/plugins/util'
   import type { FieldConfig } from '@/components/modals/GenericAddEditFormModal.vue'
+  import { apiDeleteStoryById, apiPatchStory, apiPostStoryUpload } from '@/plugins/api/story'
+  import { apiPostPublicationsTable } from '@/plugins/api/publication'
 
   const newStory = ref<ExtendedViewTableStoriesEnriched>({
     storyId: -1,

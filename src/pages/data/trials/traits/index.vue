@@ -78,6 +78,9 @@ name: traits
       if (selectedTraitClasses.value.length > 0) {
         selectedTraitClasses.value = []
       }
+      if (selectedScaleDataTypes.value.length > 0) {
+        selectedScaleDataTypes.value = []
+      }
     }
   }
 

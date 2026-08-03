@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-  import { apiDeleteTemplateImageByName, apiPatchTemplateI18n, apiPostTemplateImage } from '@/plugins/api/misc'
   import { getImageUrl } from '@/plugins/util/image'
   import { coreStore } from '@/stores/app'
   import { QuillEditor } from '@vueup/vue-quill'
@@ -22,6 +21,8 @@
 
   import emitter from 'tiny-emitter/instance'
   import { mdiContentSave } from '@mdi/js'
+  import { apiDeleteTemplateImageByName, apiPostTemplateImage } from '@/plugins/api/image'
+  import { apiPatchTemplateI18n } from '@/plugins/api/setting'
 
   const { t, locale } = useI18n()
 
@@ -121,8 +122,9 @@
       okVariant: 'warning',
       callback: (result: boolean) => {
         if (result === true) {
-          const payload: { [key: string]: string } = {}
-          payload[compProps.i18nKey] = quill.value.getHTML()
+          const payload: { [key: string]: string } = {
+            [compProps.i18nKey]: quill.value.getHTML(),
+          }
 
           apiPatchTemplateI18n(payload, store.storeLocale, () => {
             router.go(0)

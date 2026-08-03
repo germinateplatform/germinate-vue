@@ -54,7 +54,7 @@
           :loading="loading"
           :search="search"
           :item-value="componentProps.itemKey"
-          :hide-footer="componentProps.hideFooter"
+          :hide-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12)"
           @update:options="loadItems"
         >
           <!-- Pass on all named slots -->
@@ -88,7 +88,7 @@
       :items-length="totalItems"
       :loading="loading"
       :search="search"
-      :hide-default-footer="componentProps.hideFooter"
+      :hide-default-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12)"
       :item-value="componentProps.itemId || componentProps.itemKey"
       :show-expand="showDetails"
       :disable-sort="componentProps.disabled"
@@ -712,7 +712,7 @@
   function addGroup () {
     newGroup.value = {}
     if (!localGroupTypes.value || localGroupTypes.value.length === 0) {
-      apiGetGroupTypes<PaginatedResult<Grouptypes[]>>(result => {
+      apiGetGroupTypes(result => {
         localGroupTypes.value = result.data
         const tableGroupType = Object.values(groupTypes).find(gt => gt.itemType === componentProps.markedItemType)
         const match = localGroupTypes.value.find(gt => groupTypes[gt.targetTable].id === tableGroupType?.id)

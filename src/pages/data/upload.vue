@@ -162,8 +162,8 @@ name: importUpload
 
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { apiPostDataUpload } from '@/plugins/api/dataimport'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
-  import { apiPostDataUpload } from '@/plugins/api/misc'
   import { DataOrientation, FilterComparator, FilterOperator, UserType, type ViewTableDatasets } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { type DatasetState, datasetStates, templateImportTypes, type TemplateImportType } from '@/plugins/util/types'

@@ -25,7 +25,7 @@ name: dataStories
 </route>
 
 <script setup lang="ts">
-  import { apiPostStoryTable } from '@/plugins/api/misc'
+  import { apiPostStoryTable } from '@/plugins/api/story'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
   import { useI18n } from 'vue-i18n'

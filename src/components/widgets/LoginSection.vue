@@ -77,13 +77,13 @@
 
 <script setup lang="ts">
   import { apiPostToken } from '@/plugins/api/auth'
-  import type { Token } from '@/plugins/types/Token'
   import { coreStore } from '@/stores/app'
   import type { AxiosResponse } from 'axios'
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
   import { mdiEmailOutline, mdiEye, mdiEyeOff, mdiLockOutline, mdiLoginVariant, mdiNewBox } from '@mdi/js'
+  import type { Token } from '@/plugins/types/germinate'
 
   const compProps = defineProps<{
     targetUrl?: string
@@ -139,6 +139,7 @@
       emit('close')
 
       emitter.emit('update-sidebar-menu')
+      emitter.emit('update-async-jobs')
     }, {
       codes: [403, 503],
       callback: (e: AxiosResponse) => {

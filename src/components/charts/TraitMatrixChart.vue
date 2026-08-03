@@ -66,7 +66,7 @@
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { tsvParse } from 'd3-dsv'
-  import type { ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
+  import type { ViewTableDatasets, ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
   import Passport from '@/components/widgets/Passport.vue'
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
@@ -79,7 +79,7 @@
   ])
 
   const compProps = defineProps<{
-    datasetIds: number[]
+    datasets: ViewTableDatasets[]
     traits: ViewTableTraits[]
     plotData: Blob
     groups: ViewTableGroups[]
@@ -102,8 +102,8 @@
 
   const filename = computed(() => {
     let name = 'trait-matrix'
-    if (compProps.datasetIds) {
-      name += `-${compProps.datasetIds.join('-')}`
+    if (compProps.datasets) {
+      name += `-${compProps.datasets.map(ds => ds.datasetId).join('-')}`
     } else {
       name += '-all-datasets'
     }
@@ -119,8 +119,18 @@
   const groupsMapped = computed(() => {
     const result: { [index: string]: string } = {}
 
-    compProps.groups.forEach(g => {
+    compProps.groups?.forEach(g => {
       result[`${g.groupId}`] = g.groupName || 'N/A'
+    })
+
+    return result
+  })
+
+  const datasetsMapped = computed(() => {
+    const result: { [index: string]: string } = {}
+
+    compProps.datasets?.forEach(d => {
+      result[`${d.datasetId}`] = d.datasetName || 'N/A'
     })
 
     return result
@@ -164,6 +174,7 @@
           darkMode: store.storeIsDarkMode,
           colors: getColors(),
           groups: groupsMapped.value,
+          datasets: datasetsMapped.value,
           clickHandler: (dbId: number) => {
             // For trials we show the passport page on click
             selectedGermplasmId.value = dbId
@@ -182,7 +193,8 @@
           darkMode: store.storeIsDarkMode,
           colors: getColors(),
           groups: groupsMapped.value,
-          columnsToIgnore: ['name', 'puid', 'taxonomy', 'latitude', 'longitude', 'elevation', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'block', 'trial_row', 'trial_column', 'dbId', 'general_identifier', 'dataset_id', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'location', 'trial_site', 'Site', 'treatments_description', 'year', 'groups'],
+          datasets: datasetsMapped.value,
+          columnsToIgnore: ['name', 'puid', 'taxonomy', 'latitude', 'longitude', 'elevation', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'block', 'trial_row', 'trial_column', 'dbId', 'general_identifier', 'dataset_ids', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'location', 'trial_site', 'Site', 'treatment', 'year', 'groups'],
           clickHandler: (dbId: number) => {
             // For trials we show the passport page on click
             selectedGermplasmId.value = dbId

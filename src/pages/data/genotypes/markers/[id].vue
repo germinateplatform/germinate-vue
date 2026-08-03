@@ -59,7 +59,8 @@ name: markerDetails
   import GroupTable from '@/components/tables/GroupTable.vue'
   import MapDefinitionTable from '@/components/tables/MapDefinitionTable.vue'
   import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMarkerDatasetTable, apiPostMarkerGroupTable, apiPostMarkerTable } from '@/plugins/api/genotype'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableMarkers } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type ViewTableMarkers } from '@/plugins/types/germinate'
+  import { isNumeric } from '@/plugins/util/formatting'
   import { coreStore } from '@/stores/app'
   import { mdiBookmarkCheck, mdiBookmarkOutline, mdiLabel, mdiLabelVariant } from '@mdi/js'
 
@@ -108,22 +109,38 @@ name: markerDetails
 
   onMounted(() => {
     if (route.params && route.params.id) {
-      markerId.value = +route.params.id
+      const requestedIdentifier = route.params.id
 
-      apiPostMarkerTable<PaginatedResult<ViewTableMarkers[]>>({
+      const query: PaginatedRequest = {
         limit: 1,
         page: 1,
-        filters: [{
+        filters: [],
+      }
+
+      if (isNumeric(requestedIdentifier)) {
+        query.filters = [{
           filters: [{
             column: 'markerId',
             comparator: FilterComparator.equals,
-            values: [`${markerId.value}`],
+            values: [`${+route.params.id}`],
           }],
           operator: FilterOperator.and,
-        }],
-      }, result => {
+        }]
+      } else {
+        query.filters = [{
+          filters: [{
+            column: 'markerName',
+            comparator: FilterComparator.contains,
+            values: [route.params.id],
+          }],
+          operator: FilterOperator.and,
+        }]
+      }
+
+      apiPostMarkerTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           marker.value = result.data[0]
+          markerId.value = marker.value.markerId
         }
       })
     }

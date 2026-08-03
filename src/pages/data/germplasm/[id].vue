@@ -39,6 +39,7 @@ name: passport
   import Passport from '@/components/widgets/Passport.vue'
   import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
   import { FilterComparator, FilterOperator, type ViewTableGermplasm, type PaginatedRequest } from '@/plugins/types/germinate'
+  import { isNumeric } from '@/plugins/util/formatting'
   import { mdiArrowDownBox, mdiArrowUpBox } from '@mdi/js'
 
   const route = useRoute('passport')
@@ -58,7 +59,16 @@ name: passport
         limit: 1,
       }
 
-      if (Number.isNaN(requestedIdentifier.value)) {
+      if (isNumeric(requestedIdentifier.value)) {
+        query.filters = [{
+          filters: [{
+            column: 'germplasmId',
+            comparator: FilterComparator.equals,
+            values: [requestedIdentifier.value || ''],
+          }],
+          operator: FilterOperator.and,
+        }]
+      } else {
         query.filters = [{
           filters: [{
             column: 'germplasmName',
@@ -74,15 +84,6 @@ name: passport
             values: [requestedIdentifier.value || ''],
           }],
           operator: FilterOperator.or,
-        }]
-      } else {
-        query.filters = [{
-          filters: [{
-            column: 'germplasmId',
-            comparator: FilterComparator.equals,
-            values: [requestedIdentifier.value || ''],
-          }],
-          operator: FilterOperator.and,
         }]
       }
 

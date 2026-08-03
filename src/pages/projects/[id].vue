@@ -187,13 +187,13 @@ name: projectDetails
             operator: FilterOperator.and,
           }],
         }
-        apiPostProjectTable<PaginatedResult<ViewTableProjects[]>>(queryParams, result => {
+        apiPostProjectTable(queryParams, result => {
           if (result && result.data && result.data.length > 0) {
             project.value = result.data[0]
           }
         })
 
-        apiGetProjectStats<ProjectStats>(projectId.value, result => {
+        apiGetProjectStats(projectId.value, result => {
           projectStats.value = result
         })
       } else {

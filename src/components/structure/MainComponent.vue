@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-app-bar :extension-height="60" class="border-b border-primary border-opacity-100">
+      <v-app-bar :extension-height="60" expan class="border-b border-primary border-opacity-100">
         <template #extension v-if="searchVisible">
           <v-container>
             <v-row justify="end">
@@ -19,7 +19,10 @@
                   :append-inner-icon="mdiMagnify"
                   @keyup.exact.enter="runSearch"
                   @click:append-inner="runSearch"
-                  @update:focused="focus => { searchVisible = focus }"
+                  @keydown.escape.exact="searchVisible = false"
+                  v-click-outside="{
+                    handler: () => { searchVisible = false },
+                  }"
                 />
               </v-col>
             </v-row>
@@ -126,6 +129,8 @@
       <AsyncSidebar />
 
       <div class="h-100">
+        <CookieBanner sticky />
+
         <StoryBanner v-if="store.storeActiveStory" />
 
         <router-view :key="$route.path" class="h-100" />
@@ -178,7 +183,6 @@
   import ConfirmModal from '@/components/modals/ConfirmModal.vue'
   import AppFooter from '@/components/AppFooter.vue'
 
-  import { apiGetLocales } from '@/plugins/api/misc'
   import { useDisplay, useTheme, type SnackbarQueueMessage } from 'vuetify'
   import { coreStore } from '@/stores/app'
   import type { Locale } from '@/plugins/types/Locale'
@@ -191,9 +195,14 @@
 
   import emitter from 'tiny-emitter/instance'
   import ChangelogInfo from '@/components/widgets/ChangelogInfo.vue'
-  import { germinateVersion } from '@/plugins/util'
+  import { germinateVersion, getId } from '@/plugins/util'
   import { useDark } from '@vueuse/core'
   import { mdiBookmarkBoxMultiple, mdiCheck, mdiClipboardList, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiMagnify, mdiThemeLightDark, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
+  import { apiGetLocales } from '@/plugins/api/setting'
+  import { UAParser } from 'ua-parser-js'
+
+  import { init as initPlausible, track } from '@plausible-analytics/tracker'
+  import axios from 'axios'
 
   // Composition
   const router = useRouter()
@@ -273,6 +282,83 @@
     loading.value = visible
   }
 
+  function enablePlausible () {
+    if (store.storeCoookiesAccepted === true && store.serverSettings?.plausibleDomain && store.serverSettings?.plausibleApiHost) {
+      // Remove trailing slashes
+      const host = store.serverSettings.plausibleApiHost.replace(/\/+$/, '')
+
+      initPlausible({
+        domain: store.serverSettings.plausibleDomain,
+        endpoint: `${host}/api/event`,
+        captureOnLocalhost: false,
+        hashBasedRouting: store.serverSettings.plausibleHashMode || true,
+        autoCapturePageviews: true,
+      })
+
+      let pwaMode = null
+      try {
+        if (document.referrer.startsWith('android-app://'))
+          pwaMode = 'twa'
+        if (window.matchMedia('(display-mode: browser)').matches)
+          pwaMode = 'browser'
+        // @ts-ignore
+        if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone)
+          pwaMode = 'standalone'
+        if (window.matchMedia('(display-mode: minimal-ui)').matches)
+          pwaMode = 'minimal-ui'
+        if (window.matchMedia('(display-mode: fullscreen)').matches)
+          pwaMode = 'fullscreen'
+        if (window.matchMedia('(display-mode: window-controls-overlay)').matches)
+          pwaMode = 'window-controls-overlay'
+      } catch (e) {
+        console.error(e)
+      }
+
+      track('app-load', { props: { version: germinateVersion, pwaMode: pwaMode || 'N/A' } })
+    }
+  }
+
+  function isLocalhost () {
+    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
+  }
+
+  function logRun () {
+    const config = new UAParser().getResult()
+    store.setDeviceConfig(config)
+
+    // Log the run
+    if (!isLocalhost()) {
+      let id = store.storeUniqueClientId
+      if (!id) {
+        id = getId()
+
+        store.setUniqueClientId(id)
+      }
+
+      if (config.os !== undefined && config.os !== null && config.os.name !== undefined && config.os.name !== null && config.os.name !== 'Search Bot') {
+        const data = {
+          application: 'Germinate',
+          runCount: store.storeRunCount + 1,
+          id,
+          version: `${germinateVersion}`,
+          locale: store.storeLocale,
+          os: `${config.os.name} ${config.os.version}`,
+        }
+        axios({
+          url: 'https://ics.hutton.ac.uk/app-logger/log',
+          method: 'get',
+          params: data,
+        }).then(() => {
+          // If the call succeeds, reset the run count
+          store.setRunCount(0)
+        }).catch(() => {
+          // If this call fails (e.g. no internet), remember the run
+          store.setRunCount(store.storeRunCount + 1)
+        })
+      }
+    }
+  }
+
   onBeforeMount(() => {
     loadLanguageAsync(store.storeLocale)
 
@@ -280,12 +366,14 @@
     emitter.on('show-changelog', showChangelog)
     emitter.on('show-snackbar', showSnackbar)
     emitter.on('show-loading', showLoading)
+    emitter.on('init-plausible', enablePlausible)
   })
   onBeforeUnmount(() => {
     emitter.off('show-login', showLogin)
     emitter.off('show-changelog', showChangelog)
     emitter.off('show-snackbar', showSnackbar)
     emitter.off('show-loading', showLoading)
+    emitter.off('init-plausible', enablePlausible)
   })
   onMounted(() => {
     changelogVersionNumber.value = store.storeChangelogVersionNumber
@@ -294,6 +382,11 @@
       bottomSheetVisible.value = true
       store.setChangelogVersionNumber(germinateVersion)
     }
+
+    enablePlausible()
+    logRun()
+
+    emitter.emit('update-async-jobs')
   })
 </script>
 
@@ -307,5 +400,9 @@ body.print .v-overlay-container {
 }
 .v-navigation-drawer--top.v-navigation-drawer--active  {
   height: auto !important;
+}
+.cookie-banner {
+  top: 64px;
+  z-index: 1002;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTablePedigreedefinitions} -->
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTablePedigrees} -->
   <BaseTable
     ref="baseTable"
     :get-data="compProps.getData"
@@ -65,14 +65,14 @@
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
-  import { FilterComparator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePedigreedefinitions } from '@/plugins/types/germinate'
+  import { FilterComparator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePedigrees } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
   import { columns } from '@/plugins/util/table-columns'
   import { mdiFamilyTree, mdiHelpCircle } from '@mdi/js'
 
   const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePedigreedefinitions[]>>> }
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePedigrees[]>>> }
     getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]

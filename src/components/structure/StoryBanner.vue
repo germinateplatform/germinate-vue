@@ -96,8 +96,8 @@
   import { coreStore } from '@/stores/app'
   import { mdiArrowLeft, mdiArrowLeftBottom, mdiArrowRight, mdiBookOpenPageVariant, mdiCheck, mdiCircleMedium, mdiClose, mdiMenuDown, mdiMenuUp, mdiPlus } from '@mdi/js'
   import type { FieldConfig } from '@/components/modals/GenericAddEditFormModal.vue'
-  import { apiPostStoryStepUpload, apiPostStoryTable } from '@/plugins/api/misc'
   import { FilterComparator, FilterOperator, type StoryStepConfig } from '@/plugins/types/germinate'
+  import { apiPostStoryStepUpload, apiPostStoryTable } from '@/plugins/api/story'
 
   const router = useRouter()
   const route = useRoute()

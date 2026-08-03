@@ -62,7 +62,7 @@
     text: string
   }
 
-  const sorting = (a: ChangelogEntry, b: ChangelogEntry) => {
+  function sorting (a: ChangelogEntry, b: ChangelogEntry) {
     if (semver.eq(a.version, b.version)) {
       return 0
     } else if (semver.gt(a.version, b.version)) {

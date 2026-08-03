@@ -34,7 +34,7 @@ declare module 'vue' {
     CollaboratorTable: typeof import('./components/tables/CollaboratorTable.vue')['default']
     ColorGradient: typeof import('./components/widgets/ColorGradient.vue')['default']
     ConfirmModal: typeof import('./components/modals/ConfirmModal.vue')['default']
-    copy: typeof import('./components/tables/GermplasmAttributeTable.vue/index.js')['default']
+    CookieBanner: typeof import('./components/structure/CookieBanner.vue')['default']
     DataGrid: typeof import('./components/tables/DataGrid.vue')['default']
     DatasetAcceptLicenseModal: typeof import('./components/modals/DatasetAcceptLicenseModal.vue')['default']
     DatasetAttributeTable: typeof import('./components/tables/DatasetAttributeTable.vue')['default']

@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
   import ImageTags from '@/components/widgets/ImageTags.vue'
-  import { apiPostImages } from '@/plugins/api/misc'
+  import { apiPostImages } from '@/plugins/api/image'
   import { FilterComparator, FilterOperator, type FilterGroup, type ImageTag, type PaginatedRequest, type PaginatedResult, type ViewTableImages } from '@/plugins/types/germinate'
 
   const compProps = defineProps<{

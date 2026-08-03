@@ -38,7 +38,7 @@
           class="me-2 mb-1"
           label
           :prepend-icon="statCategories[key].path"
-          :text="`${statCategories[key].text()}: ${statCategories[key].isCount ? getNumberWithSuffix(value, 1) : 1}`"
+          :text="`${$t(statCategories[key].text)}: ${statCategories[key].isCount ? getNumberWithSuffix(value, 1) : 1}`"
         />
       </template>
 
@@ -67,7 +67,7 @@
                   class="me-2 mb-1"
                   label
                   :prepend-icon="statCategories[key].path"
-                  :text="`${statCategories[key].text()}: ${statCategories[key].isCount ? getNumberWithSuffix(value, 1) : 1}`"
+                  :text="`${$t(statCategories[key].text)}: ${statCategories[key].isCount ? getNumberWithSuffix(value, 1) : 1}`"
                 />
               </div>
             </v-card-text>
@@ -166,8 +166,8 @@
     router.push({
       path: Pages.dataResources.path,
       query: {
-        'fileresources-filter': JSON.stringify(filter)
-      }
+        'fileresources-filter': JSON.stringify(filter),
+      },
     })
   }
 

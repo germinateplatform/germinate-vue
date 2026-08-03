@@ -23,7 +23,7 @@
 
     <template #item.publicationName="{ item }">
       <template v-if="item.publicationFallbackCache">
-        <router-link :to="{ name: Pages.publicationDetails.name, params: { id: `${item.publicationId}` } }"><span v-html="item.publicationFallbackCache.title" /></router-link>
+        <router-link :to="Pages.getPath(Pages.publicationDetails, item.publicationId)"><span v-html="item.publicationFallbackCache.title" /></router-link>
       </template>
     </template>
     <template #item.publicationJournal="{ item }">
@@ -84,8 +84,8 @@
   import { publicationTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
   import { mdiAlarm, mdiBookOpenVariant, mdiCalendar, mdiMagnify, mdiNewspaper, mdiOpenInNew, mdiPlus } from '@mdi/js'
-  import { apiPutPublication, apiPutPublicationReference } from '@/plugins/api/misc'
   import { Pages } from '@/plugins/pages'
+  import { apiPutPublication, apiPutPublicationReference } from '@/plugins/api/publication'
 
   export interface PublicationDoi {
     doi?: string

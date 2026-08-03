@@ -51,7 +51,7 @@
                               :value="localeIndex + 1"
                             >
                               <template #prepend>
-                                <v-icon><i :class="'fi fi-' + locale.flag"/></v-icon>
+                                <v-icon><i :class="'fi fi-' + locale.flag" /></v-icon>
                               </template> <span>{{ locale.name || locale.locale }}</span>
                             </v-tab>
                           </v-tabs>
@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
   import { apiGetLicenses, apiPatchLicense, apiPutLicense } from '@/plugins/api/dataset'
-  import { apiGetLocales } from '@/plugins/api/misc'
+  import { apiGetLocales } from '@/plugins/api/setting'
   import type { LocaleConfig, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
   import { isAnyMissing } from '@/plugins/util/formatting'
   import { mdiContentSave, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
@@ -150,7 +150,7 @@
     if (locales.value && locales.value.length > 0) {
       updateLicenses(compProps.licenseId)
     } else {
-      apiGetLocales<LocaleConfig[]>(result => {
+      apiGetLocales(result => {
         locales.value = result || [{
           name: 'British English',
           locale: 'en_GB',
@@ -176,7 +176,7 @@
     }
 
     if (selectedLicense.value.licenseId) {
-      apiPatchLicense<boolean>(selectedLicense.value.licenseId, selectedLicense.value, result => {
+      apiPatchLicense(selectedLicense.value.licenseId, selectedLicense.value, result => {
         if (result) {
           detailsVisible.value = undefined
           updateLicenses(selectedLicense.value?.licenseId)
@@ -184,7 +184,7 @@
       })
     } else {
       // Create a new license
-      apiPutLicense<number>(selectedLicense.value, result => {
+      apiPutLicense(selectedLicense.value, result => {
         if (result) {
           detailsVisible.value = undefined
           updateLicenses(result)
@@ -207,7 +207,7 @@
   })
 
   function updateLicenses (toSelect?: number) {
-    apiGetLicenses<ViewTableLicenseDefinitions[]>(result => {
+    apiGetLicenses(result => {
       licenses.value = result || []
 
       if (toSelect) {

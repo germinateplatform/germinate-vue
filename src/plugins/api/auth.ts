@@ -1,7 +1,7 @@
 import { authAxios } from '@/plugins/api/base'
-import type { GerminateResponseHandler } from '../types/GerminateResponseHandler'
-import type { ErrorHandler } from './base'
-import type { DatabaseConfig, GatekeeperConfig, LoginDetails, ServerSetupConfig } from '../types/germinate'
+import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
+import type { ErrorHandler } from '@/plugins/api/base'
+import type { DatabaseConfig, GatekeeperConfig, LoginDetails, ServerSetupConfig, Token } from '@/plugins/types/germinate'
 
 const USER_TYPE_ADMINISTRATOR = 'Administrator'
 const USER_TYPE_DATA_CURATOR = 'Data Curator'
@@ -12,7 +12,7 @@ const USER_TYPE_REGULAR_USER = 'Regular User'
  * @param {String} userType The user type to check
  * @param {String} atLeast The user type to check against
  */
-function userIsAtLeast (userType: string, atLeast: string) {
+export function userIsAtLeast (userType: string, atLeast: string) {
   switch (atLeast) {
     case USER_TYPE_ADMINISTRATOR:
       return userType === USER_TYPE_ADMINISTRATOR
@@ -33,7 +33,9 @@ function userIsAtLeast (userType: string, atLeast: string) {
  * @param {function=} onError Called on failure
  * @returns A Promise
  */
-const apiDeleteToken = <T>(user: LoginDetails, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'token', method: 'DELETE', data: user, success: onSuccess, error: onError })
+export function apiDeleteToken (user: LoginDetails, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: 'token', method: 'DELETE', data: user, success: onSuccess, error: onError })
+}
 
 /**
  * Requests a token given the user details
@@ -43,21 +45,23 @@ const apiDeleteToken = <T>(user: LoginDetails, onSuccess?: GerminateResponseHand
  * @param {function=} onError Called on failure
  * @returns A Promise
  */
-const apiPostToken = <T>(user: LoginDetails, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'token', method: 'POST', data: user, success: onSuccess, error: onError })
+export function apiPostToken (user: LoginDetails, onSuccess?: GerminateResponseHandler<Token>, onError?: ErrorHandler) {
+  return authAxios({ url: 'token', method: 'POST', data: user, success: onSuccess, error: onError })
+}
 
-const apiSetupCheckGatekeeper = <T>(gkConfig: GatekeeperConfig, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'setup/check/gatekeeper', method: 'POST', data: gkConfig, success: onSuccess, error: onError })
+export function apiSetupCheckGatekeeper (gkConfig: GatekeeperConfig, onSuccess?: GerminateResponseHandler<void>, onError?: ErrorHandler) {
+  return authAxios({ url: 'setup/check/gatekeeper', method: 'POST', data: gkConfig, success: onSuccess, error: onError })
+}
 
-const apiSetupCheckDatabase = <T>(dbConfig: DatabaseConfig, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'setup/check/database', method: 'POST', data: dbConfig, success: onSuccess, error: onError })
+export function apiSetupCheckDatabase (dbConfig: DatabaseConfig, onSuccess?: GerminateResponseHandler<void>, onError?: ErrorHandler) {
+  return authAxios({ url: 'setup/check/database', method: 'POST', data: dbConfig, success: onSuccess, error: onError })
+}
 
-const apiSetupStore = <T>(data: ServerSetupConfig, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) => authAxios({ url: 'setup/store', method: 'POST', data: data, success: onSuccess, error: onError })
+export function apiSetupStore (data: ServerSetupConfig, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: 'setup/store', method: 'POST', data, success: onSuccess, error: onError })
+}
 
 export {
-  userIsAtLeast,
-  apiDeleteToken,
-  apiPostToken,
-  apiSetupCheckGatekeeper,
-  apiSetupCheckDatabase,
-  apiSetupStore,
   USER_TYPE_ADMINISTRATOR,
   USER_TYPE_DATA_CURATOR,
   USER_TYPE_REGULAR_USER,

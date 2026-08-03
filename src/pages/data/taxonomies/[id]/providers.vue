@@ -159,7 +159,7 @@ name: taxonomyProviderDetails
 <script setup lang="ts">
   import { apiPostTaxonomyTable } from '@/plugins/api/germplasm'
   import { ebiGetGenomeAssemblies, ebiGetRecords, ebiGetStudies } from '@/plugins/api/ebi'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableTaxonomies, type PaginatedRequest, type TaxonomyProviderInfo } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableTaxonomies, type PaginatedRequest, type TaxonomyProviderInfo } from '@/plugins/types/germinate'
   import type { EbiStudy, EbiRecord, EbiGenomyAssembly } from '@/plugins/types/ebi'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { useI18n } from 'vue-i18n'
@@ -205,7 +205,7 @@ name: taxonomyProviderDetails
     if (!ebiOverview.value) {
       ebiOverview.value = []
       ebiOverviewLoading.value = true
-      ebiGetRecords<EbiRecord[]>(provider.externalId)
+      ebiGetRecords(provider.externalId)
         .then(response => {
           if (response && response.data) {
             ebiOverviewLoading.value = false
@@ -219,7 +219,7 @@ name: taxonomyProviderDetails
     if (!ebiStudies.value && ebiProvider.value) {
       ebiStudies.value = []
       ebiStudiesLoading.value = true
-      ebiGetStudies<EbiStudy[]>(`${ebiProvider.value.externalId}`)
+      ebiGetStudies(`${ebiProvider.value.externalId}`)
         .then(response => {
           if (response && response.data) {
             ebiStudies.value = response.data
@@ -233,7 +233,7 @@ name: taxonomyProviderDetails
     if (!ebiAssemblies.value && ebiProvider.value) {
       ebiAssemblies.value = []
       ebiAssembliesLoading.value = true
-      ebiGetGenomeAssemblies<EbiGenomyAssembly[]>(`${ebiProvider.value.externalId}`)
+      ebiGetGenomeAssemblies(`${ebiProvider.value.externalId}`)
         .then(response => {
           if (response && response.data) {
             ebiAssemblies.value = response.data
@@ -260,7 +260,7 @@ name: taxonomyProviderDetails
         }],
       }
 
-      apiPostTaxonomyTable<PaginatedResult<ViewTableTaxonomies[]>>(query, result => {
+      apiPostTaxonomyTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           taxonomy.value = result.data[0]
         }

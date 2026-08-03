@@ -12,7 +12,7 @@ const operators = {
   },
 }
 
-const getComparatorConfig = (comparator: FilterComparator) => {
+function getComparatorConfig (comparator: FilterComparator) {
   switch (comparator) {
     case FilterComparator.contains:
       return {

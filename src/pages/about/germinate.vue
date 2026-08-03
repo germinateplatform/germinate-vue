@@ -197,7 +197,7 @@ name: aboutGerminate
   const funders = ref<Funder[]>([
     {
       name: 'The James Hutton Institute',
-      href: 'http://www.hutton.ac.uk/',
+      href: 'https://www.hutton.ac.uk/',
       logo: 'funders/hutton.svg',
     },
     {
@@ -272,7 +272,7 @@ name: aboutGerminate
     },
     {
       name: 'International Barley Hub',
-      href: 'http://www.barleyhub.org/',
+      href: 'https://www.barleyhub.org/',
       logo: 'funders/ibh.svg',
     },
     {
@@ -343,7 +343,7 @@ name: aboutGerminate
       }, {
         path: mdiEarth,
         title: 'Website',
-        href: 'http://www.hutton.ac.uk/staff/sebastian-raubach',
+        href: 'https://www.hutton.ac.uk/staff/sebastian-raubach',
       }],
     },
     {
@@ -355,7 +355,7 @@ name: aboutGerminate
       links: [{
         path: mdiEarth,
         title: 'Website',
-        href: 'http://www.hutton.ac.uk/staff/iain-milne',
+        href: 'https://www.hutton.ac.uk/staff/iain-milne',
       }],
     },
     {
@@ -375,7 +375,7 @@ name: aboutGerminate
       }, {
         path: mdiEarth,
         title: 'Website',
-        href: 'http://www.hutton.ac.uk/staff/paul-shaw',
+        href: 'https://www.hutton.ac.uk/staff/paul-shaw',
       }],
     },
   ])

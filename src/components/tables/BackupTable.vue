@@ -42,7 +42,7 @@
             <v-icon :icon="backupTypes[item.type].icon" :color="backupTypes[item.type].color" />
           </template>
           <div class="d-flex flex-column">
-            <v-list>
+            <v-list slim>
               <v-list-item :prepend-icon="mdiCalendar" :title="new Date(item.timestamp).toLocaleDateString()" v-if="item.timestamp" />
               <v-list-item :prepend-icon="mdiTag" :title="`v${item.germinateVersion}`" />
               <v-list-item :prepend-icon="mdiFileCabinet" :title="getNumberWithSuffix(item.filesize, 2, 1024)" />
@@ -87,8 +87,8 @@
   import { getTemplateColor } from '@/plugins/util/colors'
 
   import emitter from 'tiny-emitter/instance'
-  import { apiDeleteBackup } from '@/plugins/api/misc'
   import { mdiCalendar, mdiDatabaseClock, mdiDatabaseEdit, mdiDatabaseImport, mdiDatabaseSync, mdiDelete, mdiDownload, mdiFileCabinet, mdiTag } from '@mdi/js'
+  import { apiDeleteBackup } from '@/plugins/api/backup'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<BackupResult[]>>> }
@@ -180,7 +180,7 @@
             codes: [404],
             callback: () => {
               // Do nothing here, it just means there is nothing to delete
-            }
+            },
           })
         }
       },

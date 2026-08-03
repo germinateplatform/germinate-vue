@@ -25,7 +25,7 @@
 
       <v-list-group value="data">
         <template #activator="{ props }">
-          <v-list-item v-bind="props" link :prepend-icon="mdiHarddisk" :title="$t('menuData')" />
+          <v-list-item v-bind="props" link :prepend-icon="mdiDatabaseSearch" :title="$t('menuExplore')" />
         </template>
 
         <v-list-item link :active="isActive(Pages.germplasm.path)" :to="Pages.germplasm.path" :prepend-icon="mdiSprout" v-if="Pages.isAvailable(Pages.germplasm)" :title="$t('menuGermplasm')"><template #append><v-chip size="small">{{ formatBadge('germplasm') }}</v-chip></template></v-list-item>
@@ -59,8 +59,14 @@
           </template>
 
           <v-list-item link :to="Pages.genotypeOverview.path" :prepend-icon="mdiViewDashboard" v-if="Pages.isAvailable(Pages.genotypeOverview)" :title="$t('menuGenotypicOverview')" />
-          <v-list-item link :to="Pages.markers.path" :prepend-icon="mdiFormatIndentIncrease" v-if="Pages.isAvailable(Pages.markers)" :title="$t('menuGenotypicMarkers')"><template #append><v-chip size="small">{{ formatBadge('markers') }}</v-chip></template></v-list-item>
-          <v-list-item link :to="Pages.maps.path" :prepend-icon="mdiReorderHorizontal" v-if="Pages.isAvailable(Pages.maps)" :title="$t('menuGenotypicMaps')"><template #append><v-chip size="small">{{ formatBadge('maps') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.markers.path" v-if="Pages.isAvailable(Pages.markers)" :title="$t('menuGenotypicMarkers')">
+            <template #prepend><v-icon :icon="mdiFormatIndentIncrease" class="mdi-rotate-90" /></template>
+            <template #append><v-chip size="small">{{ formatBadge('markers') }}</v-chip></template>
+          </v-list-item>
+          <v-list-item link :to="Pages.maps.path" v-if="Pages.isAvailable(Pages.maps)" :title="$t('menuGenotypicMaps')">
+            <template #prepend><v-icon :icon="mdiReorderHorizontal" class="mdi-rotate-90" /></template>
+            <template #append><v-chip size="small">{{ formatBadge('maps') }}</v-chip></template>
+          </v-list-item>
           <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'genotype') || route.meta.navGroup === 'genotype'" :to="Pages.getPath(Pages.export, 'genotype')" :prepend-icon="mdiDna" v-if="Pages.isAvailable(Pages.exportGenotypes)" :title="$t('menuGenotypicDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsGenotype') }}</v-chip></template></v-list-item>
         </v-list-group>
 
@@ -129,7 +135,7 @@
   import type { OverviewStats, OverviewStatsField } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiHarddisk, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderHorizontal, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy } from '@mdi/js'
+  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderHorizontal, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy } from '@mdi/js'
 
   const { name, lgAndUp } = useDisplay()
   const store = coreStore()

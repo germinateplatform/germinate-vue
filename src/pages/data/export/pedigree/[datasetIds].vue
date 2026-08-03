@@ -117,7 +117,7 @@ name: exportPedigrees
     const params = JSON.parse(JSON.stringify(queryParams.value))
     params.datasetIds = selectedDatasets.value.map(ds => ds.datasetId)
 
-    apiPostPedigreeDatasetExport<AsyncExportResult[]>(params, result => {
+    apiPostPedigreeDatasetExport(params, result => {
       store.addAsyncJobUuids(result.map(r => r.uuid))
 
       // Show the sidebar

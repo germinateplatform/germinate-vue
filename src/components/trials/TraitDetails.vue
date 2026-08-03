@@ -23,17 +23,19 @@
         <template #title>
           <v-icon :icon="mdiChartTimeline" class="me-2" /> {{ $t('pageTraitDetailsStatsTitle') }}
         </template>
-        <template #text v-if="localVariable && (traitData || (catChartData && catChartData.size > 0))">
-          <p>{{ $t('pageTraitDetailsStatsText') }}</p>
+        <template #text>
+          <template v-if="localVariable && (traitData || (catChartData && catChartData.size > 0))">
+            <p>{{ $t('pageTraitDetailsStatsText') }}</p>
 
-          <TraitStatsChart
-            :datasets="datasets || []"
-            :groups="groups || []"
-            :variables="[localVariable]"
-            :cat-chart-data="catChartData"
-            :trait-data="traitData || []"
-            ref="traitStatsChart"
-          />
+            <TraitStatsChart
+              :datasets="datasets || []"
+              :groups="groups || []"
+              :variables="[localVariable]"
+              :cat-chart-data="catChartData"
+              :trait-data="traitData || []"
+              ref="traitStatsChart"
+            />
+          </template>
         </template>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -116,20 +118,22 @@
       minimal: true,
     }
 
-    if (v.scaleDatatype === ViewTableTraitsScaleDatatype.numeric) {
-      apiPostTrialsDataTable(query, result => {
-        traitData.value = result.data
-        emitter.emit('show-loading', false)
+    // if (v.scaleDatatype === ViewTableTraitsScaleDatatype.numeric) {
+    apiPostTrialsDataTable(query, result => {
+      traitData.value = result.data
+      emitter.emit('show-loading', false)
 
-        nextTick(() => traitStatsChart.value?.update())
-      })
-    } else {
-      const q = Object.assign(query, { traitIds: [v.variableId] })
+      nextTick(() => traitStatsChart.value?.update())
+    })
+    // } else {
+    //   const q = Object.assign(query, { traitIds: [v.variableId] })
 
-      apiPostTraitStatsCategorical(q, result => {
-        catChartData.value.set(v.variableId, result)
-      })
-    }
+    //   apiPostTraitStatsCategorical(q, result => {
+    //     emitter.emit('show-loading', false)
+
+    //     catChartData.value.set(v.variableId, result)
+    //   })
+    // }
   }
 
   function getDatasetData (data: PaginatedRequest) {

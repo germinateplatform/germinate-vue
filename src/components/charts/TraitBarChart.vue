@@ -87,7 +87,7 @@
 
       if (compProps.userSelection) {
         switch (compProps.userSelection.type) {
-          case 'dataset':
+          case 'datasets':
             compProps.datasets.forEach((dataset, index) => {
               data.push(returnData(traitData.data, td => td.datasetId === dataset.datasetId, x, dataset.datasetName || '', index))
             })
@@ -155,6 +155,7 @@
           tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
           automargin: true,
           fixedrange: true,
+          type: 'category',
         },
         yaxis: {
           title: { text: t('genericCount'), font: { color: store.storeIsDarkMode ? 'white' : 'black' } },

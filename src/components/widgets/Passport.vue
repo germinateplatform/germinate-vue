@@ -143,12 +143,11 @@
 <script setup lang="ts">
   import ScrollSpy from '@/components/widgets/ScrollSpy.vue'
   import { apiGetGermplasmDataWarnings, apiPostGermplasmDatasetTable, apiPostGermplasmGroupTable, apiPostGermplasmTable, apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
-  import { type Datawarnings, FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, type PaginatedResult, PublicationdataReferenceType, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations, type ViewTablePublications } from '@/plugins/types/germinate'
+  import { type Datawarnings, FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, PublicationdataReferenceType, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations, type ViewTablePublications } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
   import McpdInfo from '@/components/germplasm/McpdInfo.vue'
   import ExternalLinks from '@/components/widgets/ExternalLinks.vue'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
-  import { apiPostGermplasmInstitutionTable, apiPostPublicationsTable } from '@/plugins/api/misc'
   import { entityTypes } from '@/plugins/util/types'
   import PublicationTable from '@/components/tables/PublicationTable.vue'
   import { lookupDoiInformation } from '@/plugins/util'
@@ -160,6 +159,8 @@
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
   import { mdiAlert, mdiBarcode, mdiBookmarkCheck, mdiBookmarkOutline, mdiBookOpenVariant, mdiCalendar, mdiChartDonut, mdiDatabase, mdiFamilyTree, mdiFileCertificate, mdiFileDocumentAlert, mdiFileTree, mdiGroup, mdiHelpCircle, mdiHelpRhombus, mdiHistory, mdiImageMultiple, mdiInvoiceTextArrowRight, mdiLinkVariant, mdiMapMarker, mdiOfficeBuildingCog, mdiOpenInNew, mdiPassport, mdiPlaylistPlus, mdiSpeedometer, mdiTagTextOutline } from '@mdi/js'
+  import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
+  import { apiPostPublicationsTable } from '@/plugins/api/publication'
 
   const compProps = defineProps<{
     germplasmId: number
@@ -343,7 +344,7 @@
     })
   }
   function getGroupData (data: PaginatedRequest) {
-    return apiPostGermplasmGroupTable<PaginatedResult<ViewTableGroups[]>>(germplasm.value?.germplasmId || -1, data, result => {
+    return apiPostGermplasmGroupTable(germplasm.value?.germplasmId || -1, data, result => {
       if (result && result.data) {
         groups.value = result.data
       } else {
@@ -382,7 +383,7 @@
       }
     })
 
-    apiGetGermplasmDataWarnings<Datawarnings[]>(compProps.germplasmId, result => {
+    apiGetGermplasmDataWarnings(compProps.germplasmId, result => {
       dataWarnings.value = result
     })
   })

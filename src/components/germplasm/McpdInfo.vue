@@ -65,7 +65,7 @@
     423: 'Other genetic stocks (e.g. mapping populations)',
     500: 'Advanced or improved cultivar (conventional breeding methods)',
     600: 'GMO (by genetic engineering)',
-    999: 'Other (Elaborate in REMARKS field)'
+    999: 'Other (Elaborate in REMARKS field)',
   }
   const collsrc: { [key: number]: string } = {
     10: 'Wild habitat',
@@ -89,7 +89,7 @@
     60: 'Weedy, disturbed or ruderal habitat',
     61: 'Roadside',
     62: 'Field margin',
-    99: 'Other (Elaborate in REMARKS field)'
+    99: 'Other (Elaborate in REMARKS field)',
   }
 
   function getFlag (code3: string | undefined) {
@@ -108,7 +108,7 @@
   }
 
   onMounted(() => {
-    apiGetGermplasmMcpd<ViewMcpd>(compProps.germplasm.germplasmId, result => {
+    apiGetGermplasmMcpd(compProps.germplasm.germplasmId, result => {
       mcpd.value = result
     })
   })

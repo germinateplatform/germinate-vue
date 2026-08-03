@@ -34,7 +34,7 @@
   const datasets = ref<ViewTableDatasets[]>([])
 
   const selection = defineModel<ViewTableDatasets[]>({
-    default: [],
+    default: () => [],
   })
 
   const selectedIds = computed(() => selection.value.map(ds => ds.datasetId))

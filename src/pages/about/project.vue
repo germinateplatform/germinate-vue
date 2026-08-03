@@ -108,8 +108,8 @@ name: aboutProject
 <script setup lang="ts">
   import GenericAddEditFormModal from '@/components/modals/GenericAddEditFormModal.vue'
   import HtmlTemplateEditor from '@/components/widgets/HtmlTemplateEditor.vue'
-  import { apiGetTemplateAboutConfig, apiPatchTemplateAboutConfig, apiPostAboutPartner } from '@/plugins/api/misc'
-  import type { AboutConfig, AboutInfo } from '@/plugins/types/germinate'
+  import { apiGetTemplateAboutConfig, apiPatchTemplateAboutConfig, apiPostAboutPartner } from '@/plugins/api/setting'
+  import type { AboutInfo } from '@/plugins/types/germinate'
   import { uuidv4 } from '@/plugins/util'
   import { coreStore } from '@/stores/app'
   import { mdiContentSave, mdiDelete, mdiDrag, mdiOpenInNew, mdiPlusBox } from '@mdi/js'
@@ -228,7 +228,7 @@ name: aboutProject
   }
 
   function update () {
-    apiGetTemplateAboutConfig<AboutConfig>(result => {
+    apiGetTemplateAboutConfig(result => {
       if (result && result.length > 0) {
         const groups: AboutGroup[] = [{
           name: NO_GROUP,

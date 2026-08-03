@@ -265,7 +265,7 @@
   })
 
   onMounted(() => {
-    apiGetGroupTypes<PaginatedResult<Grouptypes[]>>(result => {
+    apiGetGroupTypes(result => {
       localGroupTypes.value = result.data
     })
   })

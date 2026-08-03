@@ -121,8 +121,8 @@
 
   import emitter from 'tiny-emitter/instance'
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
-  import { apiDeleteNews, apiPostNews } from '@/plugins/api/misc'
   import { mdiNewspaper, mdiOpenInNew, mdiPageNext, mdiPlus } from '@mdi/js'
+  import { apiDeleteNews, apiPostNews } from '@/plugins/api/news'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableNews[]>>> }

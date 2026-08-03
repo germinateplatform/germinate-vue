@@ -38,12 +38,9 @@
 </template>
 
 <script lang="ts">
-  import MainComponent from '@/components/structure/MainComponent.vue'
-
   import { coreStore } from '@/stores/app'
-  import { apiGetSettings } from '@/plugins/api/misc'
-  import type { ServerSettings } from './plugins/types/ServerSettings'
   import { useTheme } from 'vuetify'
+  import { apiGetSettings } from '@/plugins/api/setting'
 
   export default {
     setup () {
@@ -69,7 +66,7 @@
       }
     },
     beforeCreate () {
-      apiGetSettings((result: ServerSettings) => {
+      apiGetSettings(result => {
         this.store.setServerSettings(result)
         this.loaded = true
 

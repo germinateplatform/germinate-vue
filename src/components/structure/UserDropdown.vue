@@ -126,6 +126,7 @@
       }
 
       emitter.emit('update-sidebar-menu')
+      emitter.emit('update-async-jobs')
     }, {
       codes: [],
       callback: () => {
@@ -133,17 +134,8 @@
         store.setToken(undefined)
 
         emitter.emit('update-sidebar-menu')
+        emitter.emit('update-async-jobs')
       },
     })
   }
-
-  // function showMenu () {
-  //   visible.value = true
-  // }
-  // onBeforeMount(() => {
-  //   emitter.on('logged-in', showMenu)
-  // })
-  // onBeforeUnmount(() => {
-  //   emitter.off('logged-in', showMenu)
-  // })
 </script>

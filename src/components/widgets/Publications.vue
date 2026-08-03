@@ -18,12 +18,12 @@
 </template>
 
 <script setup lang="ts">
-  import { apiDeletePublicationReference, apiGetPublications } from '@/plugins/api/misc'
   import type { ViewTablePublications } from '@/plugins/types/germinate'
   import PublicationCard from '@/components/cards/PublicationCard.vue'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
+  import { apiDeletePublicationReference, apiGetPublications } from '@/plugins/api/publication'
 
   const props = defineProps<{
     referenceType: string

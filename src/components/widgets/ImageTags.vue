@@ -21,8 +21,8 @@
 </template>
 
 <script setup lang="ts">
-  import { apiGetImageTags, apiGetImageTagsForId } from '@/plugins/api/misc'
-  import type { ImageTag, PaginatedResult } from '@/plugins/types/germinate'
+  import { apiGetImageTags, apiGetImageTagsForId } from '@/plugins/api/image'
+  import type { ImageTag } from '@/plugins/types/germinate'
 
   const compProps = defineProps<{
     foreignId?: number
@@ -41,13 +41,13 @@
 
   function update () {
     if (compProps.referenceTable && compProps.foreignId) {
-      apiGetImageTagsForId<PaginatedResult<ImageTag[]>>(compProps.referenceTable, compProps.foreignId, result => {
+      apiGetImageTagsForId(compProps.referenceTable, compProps.foreignId, result => {
         if (result) {
           imageTags.value = result.data
         }
       })
     } else {
-      apiGetImageTags<PaginatedResult<ImageTag[]>>(result => {
+      apiGetImageTags(result => {
         if (result) {
           imageTags.value = result.data
         }

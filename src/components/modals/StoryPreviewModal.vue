@@ -87,7 +87,6 @@
 </template>
 
 <script setup lang="ts">
-  import { apiPatchStorySteps } from '@/plugins/api/misc'
   import type { IndexedViewTableStoriesEnriched } from '@/plugins/types/client'
   import type { Storysteps, ViewTableStoriesEnriched } from '@/plugins/types/germinate'
   import { toParagraphs, truncateAfterChars } from '@/plugins/util/formatting'
@@ -98,6 +97,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
+  import { apiPatchStorySteps } from '@/plugins/api/story'
 
   const compProps = defineProps<{
     story: ViewTableStoriesEnriched

@@ -8,7 +8,7 @@ function apiPostTrialsDataTable (queryData: TrialsExportDatasetRequest, onSucces
   return authAxios<PaginatedResult<ViewTableTrialsData[]>>({ url: 'dataset/data/trial/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostTrialsDataTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostTrialsDataTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'dataset/data/trial/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })

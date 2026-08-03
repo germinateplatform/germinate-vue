@@ -174,10 +174,10 @@
   import { coreStore } from '@/stores/app'
   import { getImageUrl } from '@/plugins/util/image'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
-  import { apiPostGermplasmInstitutionTable } from '@/plugins/api/misc'
   import { columns } from '@/plugins/util/table-columns'
   import type { DataTableSortItem } from 'vuetify'
   import { mdiCamera, mdiHelpCircle, mdiMapMarker, mdiPageNext, mdiSprout } from '@mdi/js'
+  import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
 
   interface GermplasmTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasm[]>>> }

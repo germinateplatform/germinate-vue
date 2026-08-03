@@ -17,14 +17,14 @@
 
     <StatsChart
       class="mb-5"
-      :data="germplasmMetaData"
+      :data="germplasmMetadata"
       :title="$t('pageStatisticsBiologicalStatusTitle')"
       x-value="sampstat"
       filename="biological-status"
       :selection-modes="['taxonomies']"
       sort-by-x
       @bar-clicked="biologicalStatusClicked"
-      v-if="germplasmMetaData"
+      v-if="germplasmMetadata"
     >
       <template #text>
         <span v-html="$t('pageStatisticsBiologicalStatusText')" />
@@ -33,14 +33,14 @@
 
     <StatsChart
       class="mb-5"
-      :data="germplasmMetaData"
+      :data="germplasmMetadata"
       :title="$t('pageStatisticsPdciTitle')"
       x-value="pdci"
       filename="pdci"
       :x-values="[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"
       :x-labels="['0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10']"
       @bar-clicked="pdciClicked"
-      v-if="germplasmMetaData"
+      v-if="germplasmMetadata"
     >
       <template #text>
         <span v-html="$t('pagePassportPdciModal')" />
@@ -63,7 +63,7 @@ name: statistics
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type GermplasmMetaStats, type FilterGroup } from '@/plugins/types/germinate'
 
-  const germplasmMetaData = ref<GermplasmMetaStats[]>()
+  const germplasmMetadata = ref<GermplasmMetaStats[]>()
 
   const router = useRouter()
 
@@ -141,7 +141,7 @@ name: statistics
 
   onMounted(() => {
     apiGetMetaStats(result => {
-      germplasmMetaData.value = result
+      germplasmMetadata.value = result
     })
   })
 </script>

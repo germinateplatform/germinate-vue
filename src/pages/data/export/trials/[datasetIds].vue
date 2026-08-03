@@ -55,7 +55,7 @@
         <TraitMatrix
           :traits="traits"
           :groups="groups || []"
-          :dataset-ids="datasetIds"
+          :datasets="datasets"
         />
       </RevealOnShowPanel>
 
@@ -126,10 +126,9 @@ name: exporTrials
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { apiPostDatasetTraits, apiPostTrialLayoutCount, apiPostTrialLocationCount, apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTrialsDataTimepoints } from '@/plugins/api/trait'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest, ScalesDatatype, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { coreStore } from '@/stores/app'
   import { mdiChartBellCurve, mdiCompare, mdiDatabase, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
@@ -147,7 +146,6 @@ name: exporTrials
 
   const router = useRouter()
   const route = useRoute('exporTrials')
-  const store = coreStore()
 
   const trialLocationMap = useTemplateRef('trialLocationMap')
 
@@ -351,7 +349,6 @@ name: exporTrials
 
   onMounted(() => {
     if (route && route.params && route.params.datasetIds) {
-      console.log(route)
       try {
         datasetIds.value = (route.params.datasetIds as string).split(',').map(Number)
 

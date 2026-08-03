@@ -245,7 +245,7 @@
 
   function init () {
     if (compProps.germplasm) {
-      apiPostGermplasmDatasetTable<PaginatedResult<ViewTableDatasets[]>>(compProps.germplasm.germplasmId, {
+      apiPostGermplasmDatasetTable(compProps.germplasm.germplasmId, {
         filters: [{
           filters: [{
             column: 'datasetType',

@@ -90,7 +90,7 @@
   function getHeight () {
     if (compProps.userSelection) {
       switch (compProps.userSelection.type) {
-        case 'dataset':
+        case 'datasets':
           return Math.max(300, (compProps.traits.length + compProps.datasetIds.length + 1) * 100)
         default:
           return Math.max(300, (compProps.traits.length + compProps.userSelection.selectedItems.length + 1) * 100)
@@ -149,7 +149,7 @@
 
       if (compProps.userSelection) {
         switch (compProps.userSelection.type) {
-          case 'dataset':
+          case 'datasets':
             traces.push(...compProps.datasets.map((dataset, index) => {
               return getData(data, dp => dp.datasetId === dataset.datasetId, index, dataset.datasetName || 'N/A')
             }))

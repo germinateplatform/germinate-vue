@@ -31,7 +31,7 @@ const gatekeeperErrors: { [key: string]: string } = {
 /**
  * Returns the current authentication token
  */
-function getToken () {
+export function getToken () {
   const store = coreStore()
   let t = store.storeToken
 
@@ -44,7 +44,7 @@ function getToken () {
   return t ? t.token : null
 }
 
-function handleError (error: AxiosResponse) {
+export function handleError (error: AxiosResponse) {
   const store = coreStore()
   emitter.emit('show-loading', false)
   const variant = 'error'
@@ -120,9 +120,9 @@ export interface ErrorHandler {
  * Sends a FORM to the given URL using authentication
  * @param {Object} param0 `{ url: String, formData: Object, method: String, success: Callback, error: { codes: [], callback: Callback } }`
  */
-function authForm<T> ({ url = undefined, formData, method = 'post', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, formData?: any | undefined, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
+export function authForm<T> ({ url = undefined, formData, method = 'post', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, formData?: any | undefined, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
   const store = coreStore()
-  const promise = axios({
+  const promise = axios<T>({
     baseURL: store.storeBaseUrl,
     url,
     method: method || 'post',
@@ -200,7 +200,7 @@ function authForm<T> ({ url = undefined, formData, method = 'post', success = un
  * Sends an Axios request to the server using authentication
  * @param {Object} param0 `{ url: String, method: String, data: Object, formData: Object, dataType: String, contentType: String, success: Callback, error: { codes: [], callback: Callback } }`
  */
-function authAxios<T> ({ url = undefined, method = 'GET', data = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, data?: any, dataType?: ResponseType, contentType?: string, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
+export function authAxios<T> ({ url = undefined, method = 'GET', data = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, data?: any, dataType?: ResponseType, contentType?: string, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
   const store = coreStore()
 
   let requestData = null
@@ -215,7 +215,7 @@ function authAxios<T> ({ url = undefined, method = 'GET', data = null, dataType 
     }
   }
 
-  const promise = axios({
+  const promise = axios<T>({
     baseURL: store.storeBaseUrl,
     url,
     method,
@@ -248,6 +248,7 @@ function authAxios<T> ({ url = undefined, method = 'GET', data = null, dataType 
           .map((p: string) => p.replace('filename=', ''))
 
         if (filename && filename.length > 0) {
+          // @ts-expect-error
           result.data.filename = filename[0]
         }
       }
@@ -310,8 +311,4 @@ function authAxios<T> ({ url = undefined, method = 'GET', data = null, dataType 
 export {
   MAX_JAVA_INTEGER,
   gatekeeperErrors,
-  getToken,
-  handleError,
-  authAxios,
-  authForm,
 }

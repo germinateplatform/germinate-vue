@@ -38,12 +38,12 @@
       <v-btn @click="traitMatrixChart?.redraw()" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
     </template>
 
-    <TraitMatrixChart :user-selection="userSelection" :groups="groups || []" :plot-data="chartData" v-if="chartData" :dataset-ids="datasetIds" :traits="selectedTraits" :has-groups-data="hasGroupsData" ref="traitMatrixChart" />
+    <TraitMatrixChart :user-selection="userSelection" :groups="groups || []" :plot-data="chartData" v-if="chartData" :datasets="datasets" :traits="selectedTraits" :has-groups-data="hasGroupsData" ref="traitMatrixChart" />
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { TrialsExportDatasetRequest, ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
+  import type { TrialsExportDatasetRequest, ViewTableDatasets, ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
   import emitter from 'tiny-emitter/instance'
@@ -55,13 +55,15 @@
   import { mdiArrowRightBox, mdiRefresh } from '@mdi/js'
 
   const compProps = defineProps<{
-    datasetIds: number[]
+    datasets: ViewTableDatasets[]
     traits: ViewTableTraits[]
     groups: ViewTableGroups[]
     max?: number
   }>()
 
   const store = coreStore()
+
+  const datasetIds = computed(() => (compProps.datasets ?? []).map(ds => ds.datasetId || -1))
 
   const selectedTraits = ref<ViewTableTraits[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])
@@ -86,7 +88,7 @@
       page: 1,
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
-      datasetIds: compProps.datasetIds,
+      datasetIds: compProps.datasets.map(ds => ds.datasetId || -1),
       traitIds: selectedTraits.value.map(t => t.variableId),
       germplasmIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedGermplasm : undefined,
       germplasmGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
