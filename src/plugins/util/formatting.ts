@@ -129,6 +129,26 @@ function isNumeric (str: string): boolean {
   return !Number.isNaN(Number(str)) && str.trim() !== ''
 }
 
+function getServerBaseUrl (storeBaseUrl: string) {
+  // Resolve relative paths (prod) or pass through absolute ones (dev)
+  const resolved = new URL(storeBaseUrl, window.location.href)
+
+  let path = resolved.pathname.replace(/\/+$/, '') // strip trailing slash
+  const segments = path.split('/')
+  const lastSegment = segments[segments.length - 1]
+
+  if (lastSegment === 'api') {
+    segments.pop()
+  }
+
+  path = segments.join('/')
+  if (!path.endsWith('/')) {
+    path += '/'
+  }
+
+  return `${resolved.protocol}//${resolved.host}${path}`
+}
+
 /**
  * Formats the given decimal number with the given number of decimal places
  * @param {Number} number The number to format
@@ -150,4 +170,5 @@ export {
   concat,
   toParagraphs,
   isNumeric,
+  getServerBaseUrl,
 }

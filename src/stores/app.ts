@@ -71,6 +71,8 @@ const defaultUserState: UserStateContent = {
     experiments: [],
     entities: [],
     groups: [],
+    userGroups: [],
+    users: [],
     institutions: [],
     institutiondatasets: [],
     locations: [],

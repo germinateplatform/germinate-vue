@@ -25,7 +25,7 @@ export class Pages {
   // ADMIN
   static userPermissions: Page = {
     name: 'userPermissions',
-    path: '/admin/settings/user-permissions',
+    path: '/admin/user/permissions',
   }
 
   static germinateSettings: Page = {
@@ -56,7 +56,7 @@ export class Pages {
 
   static germplasmUnifier: Page = {
     name: 'germplasmUnifier',
-    path: '/data/germplasm/germplasm-unifier',
+    path: '/data/germplasm/unify',
   }
 
   static passport: Page = {

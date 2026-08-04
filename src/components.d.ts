@@ -39,6 +39,7 @@ declare module 'vue' {
     DatasetAcceptLicenseModal: typeof import('./components/modals/DatasetAcceptLicenseModal.vue')['default']
     DatasetAttributeTable: typeof import('./components/tables/DatasetAttributeTable.vue')['default']
     DatasetList: typeof import('./components/widgets/DatasetList.vue')['default']
+    DatasetPermissions: typeof import('./components/user/DatasetPermissions.vue')['default']
     Datasets: typeof import('./components/widgets/Datasets.vue')['default']
     DatasetTable: typeof import('./components/tables/DatasetTable.vue')['default']
     DataStatsCard: typeof import('./components/widgets/DataStatsCard.vue')['default']
@@ -142,6 +143,9 @@ declare module 'vue' {
     TrialLayout: typeof import('./components/map/TrialLayout.vue')['default']
     TrialLocationMap: typeof import('./components/map/TrialLocationMap.vue')['default']
     UserDropdown: typeof import('./components/structure/UserDropdown.vue')['default']
+    UserGroupTable: typeof import('./components/tables/UserGroupTable.vue')['default']
+    UserPermissions: typeof import('./components/user/UserPermissions.vue')['default']
+    UserTable: typeof import('./components/tables/UserTable.vue')['default']
     VariableDetails: typeof import('./components/variable/VariableDetails.vue')['default']
   }
 }

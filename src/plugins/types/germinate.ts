@@ -972,6 +972,52 @@ export interface TrialSetupStats {
     years: number[];
 }
 
+export interface ViewTableUsergroups {
+    userGroupId?: number;
+    userGroupName?: string;
+    userGroupDescription?: string;
+    createdOn?: Date;
+    count?: number;
+}
+
+export interface ViewUserDetails {
+    id: number;
+    username: string;
+    fullName?: string;
+    emailAddress?: string;
+    lastLogin?: Date;
+    createdOn?: Date;
+    gatekeeperAccess?: number;
+    name?: string;
+    acronym?: string;
+    address?: string;
+}
+
+export interface ViewUserDetailsType extends ViewUserDetails {
+    userType: UserType;
+    userTypeString: string;
+}
+
+export interface DatasetUserModificationRequest {
+    datasetId: number;
+    userIds: number[];
+    addOperation: boolean;
+}
+
+export interface DatasetGroupModificationRequest {
+    datasetId: number;
+    groupIds: number[];
+    addOperation: boolean;
+}
+
+export interface Usergroups {
+    id?: number;
+    name?: string;
+    description?: string;
+    createdOn?: Date;
+    updatedOn?: Date;
+}
+
 export interface Taxonomies {
     id: number;
     genus: string;
@@ -1904,6 +1950,12 @@ export interface SgoneGermplasmUnification {
 export interface SgonePojo {
     id: string;
     name: string;
+}
+
+export interface UserGroupModificationRequest {
+    userGroupId: number;
+    userIds: number[];
+    addOperation: boolean;
 }
 
 export interface ExportJobDetails {

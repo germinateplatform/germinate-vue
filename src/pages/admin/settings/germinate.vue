@@ -349,6 +349,10 @@
   </v-container>
 </template>
 
+<route lang="yaml">
+name: germinateSettings
+</route>
+
 <script setup lang="ts">
   import { apiGetAdminSettings, apiPostAdminSettings } from '@/plugins/api/setting'
   import { AuthenticationMode, DataImportMode, type ClientAdminConfiguration } from '@/plugins/types/germinate'

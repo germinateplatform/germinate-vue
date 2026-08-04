@@ -6,11 +6,19 @@
     :width="navbarWidth"
     v-model="visible"
   >
-    <v-list-item :title="$t('widgetAsyncJobTitle')" />
+    <v-list-item class="my-2" :title="$t('widgetAsyncJobTitle')">
+      <template #append>
+        <v-btn size="x-small" :icon="mdiReload" @click="updateJobs" />
+      </template>
+    </v-list-item>
     <v-divider />
     <v-tabs v-model="activeTab" color="primary" grow>
-      <v-tab value="download" :prepend-icon="mdiDownload">{{ $t('buttonExport') }}</v-tab>
-      <v-tab value="upload" :prepend-icon="mdiUpload" v-if="store.storeToken && (store.storeUserIsDataCurator || store.storeUserIsAdmin)">{{ $t('buttonImport') }}</v-tab>
+      <v-tab value="download" :prepend-icon="mdiDownload" variant="tonal" :text="$t('buttonDownload')">
+        <template #append><v-chip size="small" :text="exportJobs.length" /></template>
+      </v-tab>
+      <v-tab value="upload" :prepend-icon="mdiUpload" variant="tonal" :text="$t('buttonUpload')" v-if="store.storeToken && (store.storeUserIsDataCurator || store.storeUserIsAdmin)">
+        <template #append><v-chip size="small" :text="importJobs.length" /></template>
+      </v-tab>
     </v-tabs>
 
     <v-divider />
@@ -182,7 +190,7 @@
   import { useDisplay } from 'vuetify'
   import { useI18n } from 'vue-i18n'
   import { asyncJobStatus, templateImportTypes } from '@/plugins/util/types'
-  import { mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiClose, mdiDna, mdiDownload, mdiFamilyTree, mdiFileDocumentAlert, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiShovel, mdiUpload } from '@mdi/js'
+  import { mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiClose, mdiDna, mdiDownload, mdiFamilyTree, mdiFileDocumentAlert, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiReload, mdiShovel, mdiUpload } from '@mdi/js'
   import { downloadBlob } from '@/plugins/util'
   import { apiDeleteDataAsyncImport, apiGetDataAsyncImportLog, apiGetDataAsyncImportStart, apiPostDataAsyncImport } from '@/plugins/api/dataimport'
 

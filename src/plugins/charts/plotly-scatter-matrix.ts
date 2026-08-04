@@ -259,7 +259,6 @@ export class ScatterMatrix {
     // @ts-ignore
     Plotly.react(this.config.element, data, layout, config)
       .then(element => {
-        console.log('element', element)
         element.on('plotly_selected', eventData => {
           if (!eventData || (eventData.points.length === 0)) {
             Plotly.restyle(element, { selectedpoints: null })

@@ -54,7 +54,7 @@
           :loading="loading"
           :search="search"
           :item-value="componentProps.itemKey"
-          :hide-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12)"
+          :hide-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12 && !$slots.footer)"
           @update:options="loadItems"
         >
           <!-- Pass on all named slots -->
@@ -88,7 +88,7 @@
       :items-length="totalItems"
       :loading="loading"
       :search="search"
-      :hide-default-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12)"
+      :hide-default-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12 && !$slots.footer)"
       :item-value="componentProps.itemId || componentProps.itemKey"
       :show-expand="showDetails"
       :disable-sort="componentProps.disabled"
@@ -189,7 +189,7 @@
       <template #body.append v-if="componentProps.selectionType !== undefined">
         <tr>
           <td :colspan="allHeaders.length + 1" class="py-2">
-            <v-icon class="ms-2 mb-3" color="primary" :icon="mdiArrowUpLeftBold" /> {{ $t('widgetTableMultiSelectInfo') }}
+            <v-icon class="ms-2 mb-3" color="primary" :icon="mdiArrowUpLeftBold" /> {{ $t(componentProps.selectionType === TableSelectionType.all ? 'widgetTableMultiSelectInfo' : 'widgetTableSingleSelectInfo') }}
           </td>
         </tr>
       </template>
@@ -254,6 +254,7 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { mdiArrowRight, mdiArrowUpLeftBold, mdiBookmarkCheck, mdiBookmarkOutline, mdiCheckboxMultipleBlankOutline, mdiCheckboxMultipleMarked, mdiCheckboxMultipleOutline, mdiDownload, mdiGroup, mdiMagnify, mdiMenuLeft } from '@mdi/js'
   import { validCompsForType } from '@/plugins/util/table-columns'
+import { TableSelectionType } from '@/plugins/types/TableSelectionType'
 
   export type DisplayType = 'table' | 'grid'
 

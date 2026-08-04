@@ -73,9 +73,16 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/admin/settings/germinate': RouteRecordInfo<
+    'germinateSettings': RouteRecordInfo<
+      'germinateSettings',
       '/admin/settings/germinate',
-      '/admin/settings/germinate',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    'userPermissions': RouteRecordInfo<
+      'userPermissions',
+      '/admin/user/permissions',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -241,9 +248,9 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/data/germplasm/germplasm-unifier': RouteRecordInfo<
-      '/data/germplasm/germplasm-unifier',
-      '/data/germplasm/germplasm-unifier',
+    'germplasmUnifier': RouteRecordInfo<
+      'germplasmUnifier',
+      '/data/germplasm/unify',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -458,7 +465,15 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/admin/settings/germinate.vue': {
       routes:
-        | '/admin/settings/germinate'
+        | 'germinateSettings'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/admin/user/permissions.vue': {
+      routes:
+        | 'userPermissions'
       views:
         | never
       pathParamNames:
@@ -648,9 +663,9 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
-    'src/pages/data/germplasm/germplasm-unifier.vue': {
+    'src/pages/data/germplasm/unify.vue': {
       routes:
-        | '/data/germplasm/germplasm-unifier'
+        | 'germplasmUnifier'
       views:
         | never
       pathParamNames:
