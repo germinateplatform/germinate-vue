@@ -311,6 +311,13 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | never
     >,
+    'traitUnifier': RouteRecordInfo<
+      'traitUnifier',
+      '/data/trials/traits/unify',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     'importUpload': RouteRecordInfo<
       'importUpload',
       '/data/upload',
@@ -734,6 +741,14 @@ declare module 'vue-router/auto-routes' {
         | never
       pathParamNames:
         | 'id'
+    }
+    'src/pages/data/trials/traits/unify.vue': {
+      routes:
+        | 'traitUnifier'
+      views:
+        | never
+      pathParamNames:
+        | never
     }
     'src/pages/data/upload.vue': {
       routes:

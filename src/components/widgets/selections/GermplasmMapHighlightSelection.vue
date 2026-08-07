@@ -34,7 +34,7 @@
       </template>
     </v-select>
 
-    <v-autocomplete
+    <SelectAllBox
       v-else-if="selectionMode === 'biologicalstatus'"
       :label="$t('formLabelHighlightBiologicalStatus')"
       :hint="$t('formDescriptionHighlightBiologicalStatus')"
@@ -44,32 +44,25 @@
       autocomplete="off"
       item-value="id"
       :item-title="(bs: BiologicalStatusCount) => bs.biologicalstatus || 'N/A'"
+      :is-disabled="(bs: BiologicalStatusCount) => bs.count < 1"
       return-object
       class="mb-3"
       v-model="selectedBiologicalStatus"
       :items="allBiologicalStatus"
     >
-      <template #selection="{ internalItem: item, index }">
-        <v-chip size="small" variant="flat" v-if="index < 4" :text="item.title" />
-
-        <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedBiologicalStatus || []).length - 4 }} others)</span>
-      </template>
-
       <template #item="{ internalItem: item, props: itemProps }">
         <v-list-item v-bind="itemProps" :disabled="(item.raw.count || 0) === 0">
           <template #prepend="{ isActive }">
-            <v-list-item-action start>
-              <v-checkbox-btn :model-value="isActive" />
-            </v-list-item-action>
+            <v-checkbox-btn :model-value="isActive" />
           </template>
           <template #append>
             <v-chip size="small" :text="getNumberWithSuffix(item.raw.count || 0, 0)" />
           </template>
         </v-list-item>
       </template>
-    </v-autocomplete>
+    </SelectAllBox>
 
-    <v-autocomplete
+    <SelectAllBox
       v-else-if="selectionMode === 'country'"
       :label="$t('formLabelHighlightCountry')"
       :hint="$t('formDescriptionHighlightCountry')"
@@ -79,30 +72,23 @@
       autocomplete="off"
       item-value="id"
       :item-title="(bs: CountryCount) => bs.countryName || 'N/A'"
+      :is-disabled="(bs: CountryCount) => bs.count < 1"
       return-object
       class="mb-3"
       v-model="selectedCountries"
       :items="allCountries"
     >
-      <template #selection="{ internalItem: item, index }">
-        <v-chip size="small" variant="flat" v-if="index < 4" :text="item.title" />
-
-        <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedCountries || []).length - 4 }} others)</span>
-      </template>
-
       <template #item="{ internalItem: item, props: itemProps }">
         <v-list-item v-bind="itemProps" :disabled="(item.raw.count || 0) === 0">
           <template #prepend="{ isActive }">
-            <v-list-item-action start>
-              <v-checkbox-btn :model-value="isActive" />
-            </v-list-item-action>
+            <v-checkbox-btn :model-value="isActive" />
           </template>
           <template #append>
             <v-chip size="small" :text="getNumberWithSuffix(item.raw.count || 0, 0)" />
           </template>
         </v-list-item>
       </template>
-    </v-autocomplete>
+    </SelectAllBox>
   </div>
 </template>
 

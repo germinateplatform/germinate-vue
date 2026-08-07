@@ -819,11 +819,6 @@ export interface UnacceptedLicenseRequest extends PaginatedRequest {
     justUnacceptedLicenses: boolean;
 }
 
-export interface TraitUnificationRequest {
-    preferredTraitId: number;
-    otherTraitIds: number[];
-}
-
 export interface TrialCreationDetails {
     datasetId: number;
     plots: PlotDetails[];
@@ -859,6 +854,7 @@ export interface ViewTableTraits {
     variableId: number;
     variableName: string;
     variableDescription: string;
+    variableSynonyms: string[];
     traitId: number;
     traitName: string;
     traitDescription: string;
@@ -1907,10 +1903,10 @@ export interface ExperimentRequest extends DatasetRequest {
     experimentId: number;
 }
 
-export interface GermplasmUnificationRequest {
-    preferredGermplasmId: number;
-    otherGermplasmIds: number[];
-    explanation: string;
+export interface UnificationRequest {
+    preferredId: number;
+    otherIds: number[];
+    explanation?: string;
 }
 
 export interface ClimateExportDatasetRequest extends PaginatedRequest {
@@ -1920,8 +1916,8 @@ export interface ClimateExportDatasetRequest extends PaginatedRequest {
     datasetIds: number[];
 }
 
-export interface SgoneGermplasmUnificationRequest {
-    unifications: SgoneGermplasmUnification[];
+export interface SgoneUnificationRequest {
+    unifications: SgoneUnification[];
 }
 
 export interface Locations {
@@ -1942,7 +1938,7 @@ export interface Locations {
     updatedOn: Date;
 }
 
-export interface SgoneGermplasmUnification {
+export interface SgoneUnification {
     preferred: SgonePojo;
     others: SgonePojo[];
 }

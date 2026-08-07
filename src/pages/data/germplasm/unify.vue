@@ -28,6 +28,7 @@
         :get-ids="getGermplasmIds"
         :selection-type="TableSelectionType.all"
         @selection-changed="setGermplasmSelection"
+        ref="germplasmTable"
       />
 
       <v-card-text>
@@ -53,12 +54,20 @@
               </template>
             </v-list-item>
           </v-list>
+
+          <h2 class="mt-5">{{ $t('pageGermplasmUnifierExplanationTitle') }}</h2>
+          <v-textarea
+            v-model="mergeReason"
+            :label="$t('pageGermplasmUnifierExplanationTitle')"
+            :hint="$t('pageGermplasmUnifierExplanationText')"
+            persistent-hint
+          />
         </template>
       </v-card-text>
 
       <template #actions>
         <v-spacer />
-        <v-btn @click="mergeList" color="primary" variant="flat" :prepend-icon="mdiSetMerge" :text="$t('buttonMerge')" :disabled="!primaryGermplasm" />
+        <v-btn @click="mergeList" color="primary" variant="flat" :prepend-icon="mdiSetMerge" :text="$t('buttonMerge')" :disabled="!primaryGermplasm || !mergeReason || mergeReason.trim().length === 0" />
       </template>
     </v-card>
     <v-card
@@ -72,7 +81,8 @@
       <template #text>
         <v-btn @click="sendToSgone" class="mb-5" target="_blank" prepend-icon="$sgone" :text="$t('buttonSendToSgone')" color="primary" />
 
-        <v-textarea
+        <FileTextareaInput
+          :accepted-extensions="['json']"
           :label="$t('formLabelGermplasmUnifierSgoneInput')"
           :hint="sgoneOutputStats?.successful ? $t('pageGermplasmUnifierSgoneStats', { source: getNumberWithSuffix(sgoneOutputStats.total || 0, 0), target: getNumberWithSuffix(sgoneOutputStats.final || 0, 0) }) : undefined"
           :persistent-hint="sgoneOutputStats?.successful"
@@ -96,8 +106,8 @@ name: germplasmUnifier
 </route>
 
 <script setup lang="ts">
-  import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostGermplasmUnificationSgone } from '@/plugins/api/germplasm'
-  import { FilterComparator, FilterOperator, type ViewTableGermplasm, type PaginatedRequest, type SgoneGermplasmUnification } from '@/plugins/types/germinate'
+  import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostGermplasmUnification, apiPostGermplasmUnificationSgone } from '@/plugins/api/germplasm'
+  import { FilterComparator, FilterOperator, type ViewTableGermplasm, type PaginatedRequest, type SgoneUnification, UserType } from '@/plugins/types/germinate'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { getNumberWithSuffix, getServerBaseUrl } from '@/plugins/util/formatting'
   import { entityTypes } from '@/plugins/util/types'
@@ -106,7 +116,15 @@ name: germplasmUnifier
 
   import emitter from 'tiny-emitter/instance'
 
+  definePage({
+    meta: {
+      requiredUserType: UserType.DATA_CURATOR,
+    },
+  })
+
   const store = coreStore()
+
+  const germplasmTable = useTemplateRef('germplasmTable')
 
   const selectedMode = ref<'manual' | 'sgone'>('manual')
   const sgoneOutput = ref<string>()
@@ -114,13 +132,14 @@ name: germplasmUnifier
   const selectedGermplasmIds = ref<number[]>([])
   const selectedGermplasm = ref<ViewTableGermplasm[]>([])
   const primaryGermplasm = ref<ViewTableGermplasm>()
+  const mergeReason = ref<string>()
 
   const sgoneOutputStats = computed(() => {
     if (!sgoneOutput.value || sgoneOutput.value.trim().length === 0) {
       return undefined
     } else {
       try {
-        const unification = JSON.parse(sgoneOutput.value) as SgoneGermplasmUnification[]
+        const unification = JSON.parse(sgoneOutput.value) as SgoneUnification[]
 
         const allIds = new Set<string>()
 
@@ -150,7 +169,7 @@ name: germplasmUnifier
   }
 
   function sendToSgone () {
-    window.open(`https://cropgeeks.github.io/sgone/#/?germinateUrl=${encodeURIComponent(getServerBaseUrl(store.storeBaseUrl || ''))}`, '_blank', 'noopener,noreferrer')
+    window.open(`https://cropgeeks.github.io/sgone/#/?type=germplasm&version=v5&germinateUrl=${encodeURIComponent(getServerBaseUrl(store.storeBaseUrl || ''))}`, '_blank', 'noopener,noreferrer')
   }
 
   function fetchGermplasm () {
@@ -171,11 +190,27 @@ name: germplasmUnifier
   }
 
   function mergeList () {
-    // TODO
+    emitter.emit('show-loading', true)
+    const others = selectedGermplasmIds.value.filter(id => id !== primaryGermplasm.value?.germplasmId)
+
+    apiPostGermplasmUnification({
+      preferredId: primaryGermplasm.value?.germplasmId || -1,
+      otherIds: others,
+      explanation: mergeReason.value || '',
+    }, () => {
+      selectedGermplasmIds.value = []
+      selectedGermplasm.value = []
+      primaryGermplasm.value = undefined
+      mergeReason.value = undefined
+
+      germplasmTable.value?.refresh()
+    }).finally(() => {
+      emitter.emit('show-loading', false)
+    })
   }
 
   function mergeSgone () {
-    const unifications = JSON.parse(sgoneOutput.value || '') as SgoneGermplasmUnification[]
+    const unifications = JSON.parse(sgoneOutput.value || '') as SgoneUnification[]
 
     emitter.emit('show-loading', true)
     apiPostGermplasmUnificationSgone({
@@ -198,5 +233,6 @@ name: germplasmUnifier
     selectedGermplasmIds.value = []
     selectedGermplasm.value = []
     primaryGermplasm.value = undefined
+    mergeReason.value = undefined
   })
 </script>

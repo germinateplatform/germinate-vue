@@ -34,9 +34,7 @@
           <v-list max-height="75vh">
             <v-list-item v-for="header in dropdownHeaders" :key="`table-header-${compProps.tableKey}-${header.key}`">
               <template #prepend>
-                <v-list-item-action start>
-                  <v-checkbox-btn :model-value="selectedHeaderKeys.has(header.key || '')" @update:model-value="emit('toggle-header', header)" />
-                </v-list-item-action>
+                <v-checkbox-btn :model-value="selectedHeaderKeys.has(header.key || '')" @update:model-value="emit('toggle-header', header)" />
               </template>
               {{ header.title }}
             </v-list-item>

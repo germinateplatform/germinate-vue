@@ -47,11 +47,7 @@
       clearable
       v-model="selectedYears"
       :items="climateYears"
-    >
-      <template #selection="{ internalItem: item }">
-        <v-chip density="compact" :text="item.title" variant="flat" />
-      </template>
-    </SelectAllBox>
+    />
   </div>
 </template>
 

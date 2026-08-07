@@ -1,6 +1,6 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AsyncExportResult, Datawarnings, DbObjectCount, ExportRequest, GermplasmDistance, GermplasmExportRequest, GermplasmStats, GermplasmUnificationRequest, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, TaxonCount, ViewMcpd, ViewTableDatasets, ViewTableEntities, ViewTableGermplasm, ViewTableGermplasmAttributes, ViewTableGroupGermplasm, ViewTableGroups, ViewTablePedigreedefinitions, ViewTablePedigrees, ViewTableTaxonomies } from '@/plugins/types/germinate'
+import type { AsyncExportResult, Datawarnings, DbObjectCount, ExportRequest, GermplasmDistance, GermplasmExportRequest, GermplasmStats, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, SgoneUnificationRequest, TaxonCount, UnificationRequest, ViewMcpd, ViewTableDatasets, ViewTableEntities, ViewTableGermplasm, ViewTableGermplasmAttributes, ViewTableGroupGermplasm, ViewTableGroups, ViewTablePedigreedefinitions, ViewTablePedigrees, ViewTableTaxonomies } from '@/plugins/types/germinate'
 
 export function apiGetGermplasmMcpd (germplasmId: number, onSuccess?: GerminateResponseHandler<ViewMcpd>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/${germplasmId}/mcpd`, success: onSuccess, error: onError })
@@ -139,11 +139,11 @@ export function apiGetGermplasmTableColumns (onSuccess?: GerminateResponseHandle
   return authAxios({ url: 'germplasm/table/columns', success: onSuccess, error: onError })
 }
 
-export function apiPostGermplasmUnification (queryData: GermplasmUnificationRequest, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+export function apiPostGermplasmUnification (queryData: UnificationRequest, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
 }
 
-export function apiPostGermplasmUnificationSgone (queryData: SgoneGermplasmUnificationRequest, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+export function apiPostGermplasmUnificationSgone (queryData: SgoneUnificationRequest, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
   return authAxios({ url: 'germplasm/unify/sgone', data: queryData, method: 'POST', success: onSuccess, error: onError })
 }
 

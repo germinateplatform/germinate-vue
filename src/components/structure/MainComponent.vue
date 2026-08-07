@@ -204,6 +204,13 @@
   import { init as initPlausible, track } from '@plausible-analytics/tracker'
   import axios from 'axios'
 
+  export interface SnackbarContent {
+    title?: string
+    text?: string
+    color?: string
+    timeout?: number
+  }
+
   // Composition
   const router = useRouter()
   const theme = useTheme()
@@ -219,7 +226,7 @@
   const changelogVersionNumber = ref()
   const searchVisible = ref(false)
   const searchTerm = ref<string>()
-  const snackbarQueue = ref<SnackbarQueueMessage[]>([])
+  const snackbarQueue = ref<SnackbarContent[]>([])
   const loading = ref(false)
 
   // Methods
@@ -274,8 +281,10 @@
     bottomSheetVisible.value = true
   }
 
-  function showSnackbar (message: SnackbarQueueMessage) {
-    snackbarQueue.value.push(message)
+  function showSnackbar (message: SnackbarContent) {
+    if (!snackbarQueue.value.some(m => m.title === message.title && m.text === message.text && m.color === message.color && m.timeout === message.timeout)) {
+      snackbarQueue.value.push(message)
+    }
   }
 
   function showLoading (visible: boolean) {

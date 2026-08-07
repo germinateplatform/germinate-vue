@@ -42,11 +42,7 @@
       :item-title="(tax: Taxonomies) => concat(' ', [tax.genus, tax.species, tax.subtaxa])"
       v-model="selectedTaxonomies"
       :items="trialTaxonomies"
-    >
-      <template #selection="{ internalItem: item }">
-        <v-chip density="compact" :text="item.title" variant="flat" />
-      </template>
-    </SelectAllBox>
+    />
 
     <SelectAllBox
       v-else-if="selectionMode === 'treatments'"
@@ -58,11 +54,7 @@
       item-title="name"
       v-model="selectedTreatments"
       :items="trialTreatments"
-    >
-      <template #selection="{ internalItem: item }">
-        <v-chip density="compact" :text="item.title" variant="flat" />
-      </template>
-    </SelectAllBox>
+    />
 
     <SelectAllBox
       v-else-if="selectionMode === 'reps'"
@@ -72,11 +64,7 @@
       clearable
       v-model="selectedReps"
       :items="trialReps"
-    >
-      <template #selection="{ internalItem: item }">
-        <v-chip density="compact" :text="item.title" variant="flat" />
-      </template>
-    </SelectAllBox>
+    />
 
     <TraitSelection
       v-else-if="selectionMode === 'trait'"

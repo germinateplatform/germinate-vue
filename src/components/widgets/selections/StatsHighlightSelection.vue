@@ -57,9 +57,7 @@
       <template #item="{ internalItem: item, props: itemProps }">
         <v-list-item v-bind="itemProps" :disabled="(item.raw.count || 0) === 0">
           <template #prepend="{ isActive }">
-            <v-list-item-action start>
-              <v-checkbox-btn :model-value="isActive" />
-            </v-list-item-action>
+            <v-checkbox-btn :model-value="isActive" />
           </template>
           <template #append>
             <v-chip size="small" :text="getNumberWithSuffix(item.raw.count || 0, 0)" />

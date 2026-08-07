@@ -254,7 +254,7 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { mdiArrowRight, mdiArrowUpLeftBold, mdiBookmarkCheck, mdiBookmarkOutline, mdiCheckboxMultipleBlankOutline, mdiCheckboxMultipleMarked, mdiCheckboxMultipleOutline, mdiDownload, mdiGroup, mdiMagnify, mdiMenuLeft } from '@mdi/js'
   import { validCompsForType } from '@/plugins/util/table-columns'
-import { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import { TableSelectionType } from '@/plugins/types/TableSelectionType'
 
   export type DisplayType = 'table' | 'grid'
 
@@ -758,7 +758,9 @@ import { TableSelectionType } from '@/plugins/types/TableSelectionType'
 
   onMounted(() => {
     localDisplayType.value = componentProps.displayType
-    localSortByColumns.value = componentProps.sortBy || []
+    if (!localSortByColumns.value || localSortByColumns.value.length === 0) {
+      localSortByColumns.value = componentProps.sortBy || []
+    }
   })
 
   defineExpose({

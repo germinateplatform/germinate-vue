@@ -590,6 +590,11 @@ const traitColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnVariableDescription',
   quickSearchable: true,
 }, {
+  key: 'variableSynonyms',
+  dataType: 'json',
+  title: 'tableColumnVariableSynonyms',
+  quickSearchable: true,
+}, {
   key: 'traitId',
   dataType: 'integer',
   title: 'tableColumnTraitId',

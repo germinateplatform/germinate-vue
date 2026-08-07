@@ -9,7 +9,7 @@
       :headers="headers"
       :filter-on="filterOn"
       :show-details="false"
-      item-key="traitId"
+      item-key="variableId"
       table-key="traits"
       :header-icon="mdiTagMultiple"
       :header-title="$t('pageTraitsTitle')"
@@ -36,6 +36,9 @@
         <router-link :to="Pages.getPath(Pages.traitDetails, item.variableId)" v-if="item.variableDescription && item.variableDescription.length > 0">
           <ShowFullCell :content="item.variableDescription" title="tableColumnVariableDescription" />
         </router-link>
+      </template>
+      <template #item.variableSynonyms="{ item }">
+        <span v-if="item.variableSynonyms">{{ item.variableSynonyms.join(', ') }}</span>
       </template>
 
       <template #item.traitDescription="{ item }">

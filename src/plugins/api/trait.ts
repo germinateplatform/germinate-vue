@@ -1,7 +1,7 @@
 import { authAxios } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
 import type { ErrorHandler } from '@/plugins/api/base'
-import type { PaginatedResult, ViewTableTraits, DatasetRequest, PaginatedDatasetRequest, PaginatedRequest, Phenotypes, TraitDatasetRequest, TraitTimelineRequest, TraitUnificationRequest, TrialCreationDetails, TrialsExportDatasetRequest, UnacceptedLicenseRequest, TrialSetupStats, ViewTableTrialsData, TraitStats, ViewTableDatasets, TrialStats, ViewTableLocations, ViewTableTrialLayouts } from '@/plugins/types/germinate'
+import type { PaginatedResult, ViewTableTraits, DatasetRequest, PaginatedDatasetRequest, PaginatedRequest, Phenotypes, TraitDatasetRequest, TraitTimelineRequest, TrialCreationDetails, TrialsExportDatasetRequest, UnacceptedLicenseRequest, TrialSetupStats, ViewTableTrialsData, TraitStats, ViewTableDatasets, TrialStats, ViewTableLocations, ViewTableTrialLayouts, UnificationRequest, SgoneUnificationRequest } from '@/plugins/types/germinate'
 
 function apiPostTrialsDataTable (queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableTrialsData[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -23,7 +23,7 @@ function apiPostTraitTable (queryData: PaginatedRequest, onSuccess?: GerminateRe
   return authAxios<PaginatedResult<ViewTableTraits[]>>({ url: 'trait/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostTraitTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostTraitTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'trait/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
@@ -53,10 +53,6 @@ function apiPostTrialGermplasm<T> (queryData: PaginatedDatasetRequest, isGermpla
 
 function apiPatchTrait<T> (id: number, data: Phenotypes, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   return authAxios({ url: `trait/${id}`, method: 'PATCH', data, success: onSuccess, error: onError })
-}
-
-function apiPostTraitUnification<T> (queryData: TraitUnificationRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
-  return authAxios({ url: 'trait/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
 }
 
 function apiGetTraitDistinctValues<T> (traitId: number, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
@@ -99,6 +95,14 @@ function apiPostTrialSetupStats (data: DatasetRequest, onSuccess?: GerminateResp
   return authAxios<TrialSetupStats>({ url: 'dataset/data/trial/setup', data, method: 'POST', success: onSuccess, error: onError })
 }
 
+export function apiPostVariableUnification (queryData: UnificationRequest, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: 'trait/unify', data: queryData, method: 'POST', success: onSuccess, error: onError })
+}
+
+export function apiPostVariableUnificationSgone (queryData: SgoneUnificationRequest, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: 'trait/unify/sgone', data: queryData, method: 'POST', success: onSuccess, error: onError })
+}
+
 export {
   apiPostTrialsDataTable,
   apiPostTrialsDataTableIds,
@@ -107,7 +111,6 @@ export {
   apiPostDatasetTraits,
   apiPostTraitDatasetTable,
   apiPatchTrait,
-  apiPostTraitUnification,
   apiGetTraitDistinctValues,
   apiPostTrialLocations,
   apiPostTrialLocationCount,
