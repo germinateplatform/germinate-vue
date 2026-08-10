@@ -4,7 +4,7 @@
     <v-divider class="mb-3" />
     <p v-html="$t('pageProjectsText')" />
 
-    <ProjectTable :get-data="getData" :get-ids="getIds" />
+    <ProjectTable :get-data="getData" :get-ids="getIds" display-type="grid" />
   </v-container>
 </template>
 

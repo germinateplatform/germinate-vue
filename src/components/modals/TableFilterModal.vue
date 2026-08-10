@@ -261,7 +261,7 @@
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
   import { validCompsForType } from '@/plugins/util/table-columns'
   import { entityTypes, locationTypes, groupTypes, methodClasses, dataTypes, newsTypes, traitClasses } from '@/plugins/util/types'
-  import { mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
+  import { mdiCalendar, mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
   import { useDate } from 'vuetify'
 
@@ -489,6 +489,8 @@
       case 'integer':
       case 'float':
         return mdiNumeric
+      case 'date':
+        return mdiCalendar
       default:
         return mdiHelpBox
     }
@@ -498,6 +500,8 @@
     filterGroups.value = filterGroups.value.filter(fg => fg.internalFilters.some(f => f.filter.canBeChanged === false))
 
     checkFilter()
+
+    updateUrl()
 
     emit('filter-cleared')
   }
@@ -523,6 +527,8 @@
       }]
     }
 
+    updateUrl()
+
     emit('filter-changed', mapped)
 
     dialog.value = false
@@ -530,6 +536,7 @@
 
   onMounted(() => {
     loadFilters()
+    updateUrl()
   })
 
   function forceFilters (f: FilterGroup[]) {
@@ -691,7 +698,7 @@
   })
 
   watch(() => compProps.filterOn, () => loadFilters(false))
-  watch(() => filterGroups, () => updateUrl(), { deep: true })
+  // watch(() => filterGroups, () => updateUrl(), { deep: true })
 </script>
 
 <style>

@@ -1059,6 +1059,7 @@
   "pagePassportTraitStatsTitle": "Trait performance",
   "pagePassportTraitStatsText": "This section shows the performance of the selected germplasm compared to all other germplasm in the database per trait. For this, the average value for this germplasm per trait is shown against the minimum and maximum across all the data.",
   "pagePublicationsTitle": "Publications",
+  "pagePublicationsText": "On this page you can find all publications that are in any way related to this database. This could include references to germplasm, groups or datasets contained in Germinate.",
   "pagePublicationDetailsTitle": "Publication details",
   "pagePedigreeDefinitionsTitle": "Pedigree definitions",
   "pagePedigreeTitle": "Pedigree relationships",

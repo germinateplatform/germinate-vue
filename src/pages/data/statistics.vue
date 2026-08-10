@@ -47,6 +47,12 @@
       </template>
     </StatsChart>
 
+    <GermplasmDensityChoropleth />
+
+    <InstitutionDatasetTable
+      class="mt-5"
+      :get-data="getInstitutionDatasets"
+    />
   </v-container>
 </template>
 
@@ -59,9 +65,10 @@ name: statistics
   import StatsChart from '@/components/charts/StatsChart.vue'
   import TaxonomySunburst from '@/components/charts/TaxonomySunburst.vue'
   import TaxonomyTreemap from '@/components/charts/TaxonomyTreemap.vue'
+import { apiPostInstitutionDatasetTable } from '@/plugins/api/institution'
   import { apiGetMetaStats } from '@/plugins/api/stats'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type GermplasmMetaStats, type FilterGroup } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type GermplasmMetaStats, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
 
   const germplasmMetadata = ref<GermplasmMetaStats[]>()
 
@@ -137,6 +144,10 @@ name: statistics
         'germplasm-filter': JSON.stringify(filter),
       },
     })
+  }
+
+  function getInstitutionDatasets (query: PaginatedRequest) {
+    return apiPostInstitutionDatasetTable(query)
   }
 
   onMounted(() => {

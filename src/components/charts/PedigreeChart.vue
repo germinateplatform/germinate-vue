@@ -22,7 +22,7 @@
           <div :id="id" ref="graph" class="pedigree-chart" v-if="hasPlotData" />
         </template>
 
-        <template #card-actions v-if="hasPlotData">
+        <template #actions v-if="hasPlotData">
           <div class="d-flex flex-column align-start">
             <v-btn prepend-icon="$helium" variant="tonal" :text="$t('buttonDownloadForHelium')" />
             <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="Pages.aboutExportFormats.path" v-tooltip:top="$t('tooltipExportFormatLearnMore')"> <v-icon :icon="mdiInformationOutline" /></router-link> </p>
@@ -41,7 +41,7 @@
 
   import { coreStore } from '@/stores/app'
   import { getColor, getHighContrastTextColor } from '@/plugins/util/colors'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTablePedigrees, type PaginatedRequest, type ViewTableDatasets, type ViewTableGermplasm } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTablePedigrees, type PaginatedRequest, type ViewTableDatasets, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostGermplasmDatasetTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import { Pages } from '@/plugins/pages'

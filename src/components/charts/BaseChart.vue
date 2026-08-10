@@ -32,9 +32,10 @@
       <slot name="chart-content" ref="chart" />
     </v-card-text>
 
-    <v-card-actions>
-      <slot name="card-actions" />
-    </v-card-actions>
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
 
     <v-bottom-sheet
       v-model="bottomSheetVisible"

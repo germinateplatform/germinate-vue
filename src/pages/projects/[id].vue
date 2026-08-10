@@ -47,22 +47,18 @@
         </v-col>
       </v-row>
 
-      <v-card class="mb-3" v-if="project.projectPageContent">
+      <v-card class="mb-5" v-if="project.projectPageContent">
         <template #text>
           <Markdown :source="project.projectPageContent" />
         </template>
       </v-card>
 
-      <v-card :title="$t('pageProjectsDatasetsTitle')" :subtitle="$t('pageProjectsDatasetsSubtitle')">
-        <template #text>
-          <DatasetTable :get-data="getDatasetData" :filter-on="datasetFilter" />
-        </template>
+      <v-card class="mb-5" :title="$t('pageProjectsDatasetsTitle')" :subtitle="$t('pageProjectsDatasetsSubtitle')">
+        <DatasetTable :get-data="getDatasetData" :filter-on="datasetFilter" />
       </v-card>
 
       <v-card :title="$t('pageProjectsGroupsTitle')" :subtitle="$t('pageProjectsGroupsSubtitle')">
-        <template #text>
-          <GroupTable :get-data="getGroupData" :filter-on="genericFilter" />
-        </template>
+        <GroupTable :get-data="getGroupData" :filter-on="genericFilter" />
       </v-card>
     </template>
   </v-container>

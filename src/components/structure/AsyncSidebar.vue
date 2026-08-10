@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
     id="async-status-bar"
-    location="right"
+    location="end"
     temporary
     :width="navbarWidth"
     v-model="visible"

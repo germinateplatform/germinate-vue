@@ -14,7 +14,9 @@
       table-key="projects"
       :header-icon="mdiClipboardList"
       :header-title="$t('pageProjectsTitle')"
+      :display-type="compProps.displayType"
       @selection-changed="selectionChanged"
+      :supports-grid-cards="true"
       v-bind="$attrs"
     >
       <template #header v-if="store.storeUserIsDataCurator">
@@ -42,12 +44,48 @@
       </template>
       <!-- Project image/logo -->
       <template #item.projectImageId="{ item }">
-        <v-img :src="getSrc(item, 'small')" class="table-image py-2" alt="Image" />
+        <v-img :src="getSrc(item, 'small')" class="table-image py-2" alt="Image" v-if="item.projectImageId" />
       </template>
 
       <template #item.projectActions="{ item }" v-if="store.storeUserIsDataCurator">
         <v-icon class="mx-1" color="info" :icon="mdiPencil" @click="editItem(item)" />
         <v-icon class="mx-1" color="error" :icon="mdiDelete" @click="deleteItem(item)" />
+      </template>
+
+      <template #card-item="{ item }">
+        <v-card class="flex-grow-1">
+          <v-img height="200" contain class="ma-2" :src="getSrc(item, 'small')" v-if="item.projectImageId" />
+          <v-card-title>
+            <!-- Germplasm -->
+            <router-link :to="Pages.getPath(Pages.projectDetails, item.projectId)">{{ item.projectName }}</router-link>
+          </v-card-title>
+          <v-card-subtitle class="text-wrap" v-if="item.projectStartDate || item.projectEndDate" v-tooltip:top="getProjectDateRange(item)">{{ getYearRange(item) }}</v-card-subtitle>
+          <!-- <v-card-text>
+            <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
+          </v-card-text> -->
+          <v-card-text>{{ item.projectDescription }}</v-card-text>
+
+          <v-card-text v-if="item.datasets && item.datasets.length > 0">
+            <v-chip label variant="tonal" size="small" color="primary" :text="$t('tableColumnProjectDatasets')">
+              <template #append><v-avatar class="ms-2" :text="item.datasets.length" /></template>
+            </v-chip>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-menu v-if="store.storeUserIsDataCurator">
+              <template #activator="{ props }">
+                <v-btn variant="tonal" :append-icon="mdiMenuDown" v-bind="props"><v-icon :icon="mdiCog" /></v-btn>
+              </template>
+
+              <v-list slim>
+                <v-list-item :prepend-icon="mdiPencil" @click="editItem(item)" :title="$t('buttonEdit')" />
+                <v-list-item base-color="error" :prepend-icon="mdiDelete" @click="deleteItem(item)" :title="$t('buttonDelete')" />
+              </v-list>
+            </v-menu>
+            <v-spacer />
+            <v-btn v-if="item.projectExternalUrl" variant="tonal" :href="item.projectExternalUrl" target="_blank" :text="$t('formLabelProjectExternalUrl')" :prepend-icon="mdiOpenInNew" />
+          </v-card-actions>
+        </v-card>
       </template>
 
       <!-- Pass on all named slots -->
@@ -70,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable from '@/components/tables/BaseTable.vue'
+  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
 
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader, ExtendedViewTableProjects } from '@/plugins/types/client'
@@ -86,7 +124,7 @@
   import { getImageUrlById } from '@/plugins/util/image'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiClipboardList, mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
+  import { mdiClipboardList, mdiCog, mdiDelete, mdiMenuDown, mdiOpenInNew, mdiPencil, mdiPlus } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableProjects[]>>> }
@@ -94,6 +132,7 @@
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
+    displayType?: DisplayType
   }>()
 
   const store = coreStore()
@@ -151,7 +190,7 @@
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers = [{
+    const headers: ExtendedDataTableHeader[] = [{
       key: 'projectId',
       title: t('tableColumnProjectId'),
       dataType: 'integer',
@@ -176,7 +215,7 @@
       key: 'datasets',
       dataType: undefined,
       sortable: false,
-      class: 'text-right',
+      align: 'end' as 'start' | 'end' | 'center',
       title: t('tableColumnProjectDatasets'),
     }, {
       key: 'projectStartDate',
@@ -188,13 +227,17 @@
       dataType: 'date',
       title: t('tableColumnProjectEndDate'),
       value: (item: ViewTableProjects) => (item && item.projectEndDate) ? new Date(item.projectEndDate).toLocaleDateString() : '',
-    }, {
-      key: 'projectActions',
-      title: '',
-      align: 'end' as 'start' | 'end' | 'center',
-      visibleInFilter: false,
-      dataType: undefined,
     }]
+
+    if (store.storeUserIsDataCurator) {
+      headers.push({
+        key: 'projectActions',
+        title: '',
+        align: 'end' as 'start' | 'end' | 'center',
+        visibleInFilter: false,
+        dataType: undefined,
+      })
+    }
 
     return headers
   })
@@ -209,6 +252,18 @@
       size: size,
       token: store.storeToken ? store.storeToken.imageToken : '',
     })
+  }
+
+  function getProjectDateRange (item: ViewTableProjects) {
+    const candidates = [item.projectStartDate ? new Date(item.projectStartDate).toLocaleDateString() : undefined, item.projectEndDate ? new Date(item.projectEndDate).toLocaleDateString() : undefined]
+
+    return candidates[0] === candidates[1] ? candidates[0] : candidates.filter(y => y !== undefined).join(' - ')
+  }
+
+  function getYearRange (item: ViewTableProjects) {
+    const candidates = [item.projectStartDate ? new Date(item.projectStartDate).getFullYear() : undefined, item.projectEndDate ? new Date(item.projectEndDate).getFullYear() : undefined]
+
+    return candidates[0] === candidates[1] ? candidates[0] : candidates.filter(y => y !== undefined).join(' - ')
   }
 
   function addItem () {

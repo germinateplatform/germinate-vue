@@ -4,12 +4,12 @@
       <v-col v-for="(category, index) in dashboardCategories" :key="'dashboard-stats-' + category.value">
         <v-card :color="getTemplateColor(index)" :to="category.link">
           <div class="d-flex flex-no-wrap justify-space-between">
-            <div>
+            <div class="d-flex flex-column justify-space-between">
               <v-card-title class="text-headline-small">
                 {{ getNumberWithSuffix(stats[category.value] || 0, 1) }}
               </v-card-title>
 
-              <v-card-subtitle>{{ $t(category.text) }}</v-card-subtitle>
+              <v-card-subtitle class="mb-2">{{ $t(category.text) }}</v-card-subtitle>
             </div>
 
             <v-avatar
