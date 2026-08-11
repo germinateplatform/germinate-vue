@@ -40,8 +40,14 @@
       <v-chip label class="me-2 mt-1" v-if="item.groupIds && item.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path">{{ publicationTypes.group.text() }} ({{ item.groupIds.length }})</v-chip>
     </template>
 
+    <template #item.actions="{ item }">
+      <v-btn-group variant="tonal">
+        <v-btn size="x-small" color="error" :icon="mdiDelete" v-tooltip:top="$t('buttonDelete')" @click="deletePublication(item)" v-if="store.storeUserIsDataCurator" />
+      </v-btn-group>
+    </template>
+
     <template #card-item="{ item }">
-      <PublicationCard :publication="item" @delete="baseTable?.refresh()" />
+      <PublicationCard :publication="item" @delete="deletePublication(item)" />
     </template>
 
     <!-- Pass on all named slots -->
@@ -60,7 +66,7 @@
     ref="addPublicationModal"
   >
     <template #additional-fields="{ item }">
-      <v-btn @click="checkDoi" :prepend-icon="mdiMagnify" :text="$t('buttonUpdate')" />
+      <v-btn class="mt-3" @click="checkDoi" :prepend-icon="mdiMagnify" :text="$t('buttonUpdate')" />
       <div class="mt-5" v-if="item.previewHtml">
         <div v-html="item.previewHtml" />
         <v-chip class="mt-2" v-if="item.date" label :prepend-icon="mdiCalendar" :text="item.date.toLocaleDateString()" />
@@ -83,9 +89,11 @@
   import { useI18n } from 'vue-i18n'
   import { publicationTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
-  import { mdiAlarm, mdiBookOpenVariant, mdiCalendar, mdiMagnify, mdiNewspaper, mdiOpenInNew, mdiPlus } from '@mdi/js'
+  import { mdiAlarm, mdiBookOpenVariant, mdiCalendar, mdiDelete, mdiMagnify, mdiNewspaper, mdiOpenInNew, mdiPlus } from '@mdi/js'
   import { Pages } from '@/plugins/pages'
-  import { apiPutPublication, apiPutPublicationReference } from '@/plugins/api/publication'
+  import { apiDeletePublicationReference, apiPutPublication, apiPutPublicationReference } from '@/plugins/api/publication'
+
+  import emitter from 'tiny-emitter/instance'
 
   export interface PublicationDoi {
     doi?: string
@@ -148,6 +156,23 @@
       })
   }
 
+  function deletePublication (publication: ViewTablePublications) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTitleSure'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          apiDeletePublicationReference(publication.publicationId, compProps.publicationReferenceType || PublicationdataReferenceType.database, compProps.publicationReferenceId, result => {
+            baseTable.value?.refresh()
+          })
+        }
+      },
+    })
+  }
+
   function sendNewPublication () {
     return new Promise<boolean>(resolve => {
       apiPutPublication({
@@ -169,7 +194,7 @@
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
-    const headers = [{
+    const headers: ExtendedDataTableHeader[] = [{
       key: 'projectIds',
       dataType: 'json',
       visibleInTable: false,
@@ -218,8 +243,17 @@
       key: 'createdOn',
       dataType: 'date',
       title: t('tableColumnPublicationCreatedOn'),
+      // @ts-expect-error
       value: (value: ViewTablePublications) => value.createdOn ? new Date(value.createdOn).toLocaleDateString() : undefined,
     }]
+
+    if (store.storeUserIsDataCurator) {
+      headers.push({
+        key: 'actions',
+        dataType: undefined,
+        title: '',
+      })
+    }
 
     return headers
   })

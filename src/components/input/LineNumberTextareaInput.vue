@@ -49,7 +49,7 @@
     return lines.value.map((_, i) => `${i + 1}`).join('\n')
   })
 
-  const gutterWidth = computed(() => `${lines.value.length}`.length)
+  const gutterWidth = computed(() => Math.max(2, `${lines.value.length}`.length))
 
   watch(y, async newValue => {
     if (gutter.value) {
@@ -61,6 +61,7 @@
 <style scoped>
 .line-number-comp {
   overflow: hidden;
+  pointer-events: none;
 }
 
 .line-number-comp :deep(.v-field__input) {

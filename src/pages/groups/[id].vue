@@ -73,6 +73,14 @@
       </template>
     </MarkerTable>
 
+    <template v-if="showPublications || store.storeUserIsDataCurator">
+      <PublicationTable class="mt-5" display-type="grid" :get-data="getPublicationData" :publication-reference-id="groupId" publication-reference-type="group">
+        <template #card-text>
+          <v-card-text>{{ $t('pageGroupsPublicationsText') }}</v-card-text>
+        </template>
+      </PublicationTable>
+    </template>
+
     <v-dialog v-model="uploadModalVisible" max-width="min(90vw, 1024px)">
       <v-card :title="$t('modalTitleGroupUpload')">
         <template #text>
@@ -107,10 +115,12 @@ name: groupDetails
   import { apiPostGermplasmTableIds, apiPostGroupGermplasmTable, apiPostGroupGermplasmTableExport, apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
   import { apiPatchGroup, apiPatchGroupMembers, apiPostGroupTable } from '@/plugins/api/group'
   import { apiPostGroupLocationTable, apiPostGroupLocationTableExport, apiPostGroupLocationTableIds, apiPostLocationTableIds } from '@/plugins/api/location'
+  import { apiPostPublicationsTable } from '@/plugins/api/publication'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type GroupModificationRequest, type PaginatedRequest, type PaginatedResult, type ViewTableGroups } from '@/plugins/types/germinate'
   import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import { lookupDoiInformation } from '@/plugins/util'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { groupTypes } from '@/plugins/util/types'
   import { coreStore } from '@/stores/app'
@@ -133,6 +143,8 @@ name: groupDetails
   const uploadModalVisible = ref(false)
   const groupmembersTable = useTemplateRef('groupmembersTable')
   const uploadContent = ref('')
+
+  const showPublications = ref(true)
 
   const userCanEdit = computed(() => {
     return store.token && (store.token.id === group.value?.userId || store.storeUserIsAdmin) && store.storeServerSettings?.authMode !== 'NONE'
@@ -167,6 +179,22 @@ name: groupDetails
   }
   function getLocationIds (data: PaginatedRequest) {
     return apiPostGroupLocationTableIds(group.value?.groupId || -1, data)
+  }
+  function getPublicationData (data: PaginatedRequest) {
+    return apiPostPublicationsTable(data, result => {
+      if (result && result.data && result.data.length > 0) {
+        result.data.forEach(p => {
+          p.lookupDetails = lookupDoiInformation(p)
+          try {
+            p.publicationFallbackCache = JSON.parse(p.publicationFallbackCache || '')
+          } catch {
+            //
+          }
+        })
+      } else {
+        showPublications.value = false
+      }
+    })
   }
   function deleteSelection () {
     emitter.emit('show-confirm', {

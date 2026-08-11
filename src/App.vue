@@ -102,7 +102,7 @@ table a:not(.v-btn, .v-chip), table a:not(.v-btn, .v-chip):visited,
 footer a, footer a:visited,
 #about-page a, #about-page a:visited,
 /* .v-card-title a, .v-card-title a:visited, */
-.v-card-text a, .v-card-text a:visited,
+.v-card-text a:not(.v-chip), .v-card-text a:not(.v-chip):visited,
 .scale-heading a, .scale-heading a:visited,
 .v-messages a, .v-messages a:visited,
 .v-list-item a, .v-list-item a:visited,

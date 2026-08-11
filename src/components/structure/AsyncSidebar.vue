@@ -531,11 +531,11 @@
 
   onBeforeMount(() => {
     emitter.on('toggle-aside', toggleSidebar)
-    emitter.on('update-async-jobs', updateAsyncJobs)
+    emitter.on('update-async-jobs', updateJobs)
   })
   onBeforeUnmount(() => {
     emitter.off('toggle-aside', toggleSidebar)
-    emitter.off('update-async-jobs', updateAsyncJobs)
+    emitter.off('update-async-jobs', updateJobs)
 
     if (timeout) {
       clearInterval(timeout)

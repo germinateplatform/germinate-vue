@@ -27,7 +27,7 @@
     </template>
 
     <template #item.storyDescription="{ item }">
-      <ShowFullCell :content="item.storyDescription" title="tableColumnStoryDescription" v-if="item.storyDescription && item.storyDescription.length > 0" />
+      <ShowFullCell :content="item.storyDescription" title="tableColumnStoryDesciption" v-if="item.storyDescription && item.storyDescription.length > 0" />
     </template>
 
     <template #item.actions="{ item }">
