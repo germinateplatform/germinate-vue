@@ -11,7 +11,7 @@ export function apiGetAdminSettings (onSuccess?: GerminateResponseHandler<Client
   return authAxios({ url: 'settings/admin', success: onSuccess, error: onError })
 }
 
-export function apiPostAdminSettings (queryData: ClientAdminConfiguration, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+export function apiPostAdminSettings (queryData: ClientAdminConfiguration, onSuccess?: GerminateResponseHandler<ClientAdminConfiguration>, onError?: ErrorHandler) {
   return authAxios({ url: 'settings/admin', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 

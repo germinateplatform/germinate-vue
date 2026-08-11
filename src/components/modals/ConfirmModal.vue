@@ -3,7 +3,9 @@
     <v-card :title="internalTitle">
       <v-card-text v-show="!!internalMessage"><span v-html="internalMessage" /></v-card-text>
 
-      <v-checkbox v-if="internalNeedsConfirmation" v-model="internalConfirmed">{{ $t('modalConfirmMessageConfirm') }}</v-checkbox>
+      <v-card-text v-if="internalNeedsConfirmation" class="my-0 py-0">
+        <v-checkbox v-model="internalConfirmed" hide-details :label="$t('modalConfirmMessageConfirm')" />
+      </v-card-text>
       <v-card-actions class="pt-0">
         <v-spacer />
         <v-btn color="grey" text @click="emitCancel" v-if="!internalOkOnly">{{ internalCancelTitle }}</v-btn>

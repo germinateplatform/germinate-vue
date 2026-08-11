@@ -51,6 +51,8 @@
           v-model:page="currentPage"
           :items="serverItems"
           :items-length="totalItems"
+          :item-id="itemId"
+          :item-key="itemKey"
           :loading="loading"
           :search="search"
           :item-value="componentProps.itemKey"

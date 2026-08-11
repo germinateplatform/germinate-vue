@@ -51,7 +51,7 @@ export class Pages {
 
   static germplasmMatch: Page = {
     name: 'germplasmMatch',
-    path: '/data/germplasm/germplasm-match',
+    path: '/data/germplasm/search',
   }
 
   static germplasmUnifier: Page = {

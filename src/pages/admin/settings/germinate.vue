@@ -360,7 +360,7 @@ name: germinateSettings
   import { dashboardSections, statCategories, type IsCountState, type LinkState, type OverviewStatsState, type PathState, type TextState, type ValueState } from '@/plugins/util/types'
   import { mdiCookieLock, mdiCalculatorVariant, mdiCommentTextMultiple, mdiTune, mdiViewDashboardVariant, mdiBackupRestore, mdiLockOpenVariant, mdiLockOpen, mdiLock, mdiCancel, mdiFormatListChecks, mdiDatabaseImport, mdiAccountLockOpen, mdiShieldAlert, mdiChevronDoubleLeft, mdiChevronDoubleRight, mdiEyedropperPlus, mdiContentSaveAlert } from '@mdi/js'
   import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-  import { useDisplay } from 'vuetify'
+  import { useDisplay, useTheme } from 'vuetify'
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
@@ -370,6 +370,7 @@ name: germinateSettings
   const { t } = useI18n()
   const store = coreStore()
   const router = useRouter()
+  const theme = useTheme()
 
   const { name, mdAndUp, xs } = useDisplay()
   const columnCount = computed(() => {
@@ -485,16 +486,17 @@ name: germinateSettings
           if (result === true) {
             apiPostAdminSettings(s, result => {
               if (result) {
-                apiGetAdminSettings(result => {
-                  store.setServerSettings(result)
-                  store.setToken(undefined)
+                store.setServerSettings(result)
+                theme.themes.value.light.colors.primary = result.colorPrimary
+                theme.themes.value.dark.colors.primary = result.colorPrimary
 
-                  if (result.authMode === AuthenticationMode.FULL) {
-                    router.push(Pages.login.path)
-                  } else {
-                    router.push(Pages.home.path)
-                  }
-                })
+                if (result.authMode === AuthenticationMode.FULL) {
+                  router.push(Pages.login.path)
+                } else {
+                  router.push(Pages.home.path)
+                }
+
+                store.setToken(undefined)
               }
             })
           }

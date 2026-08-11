@@ -241,9 +241,9 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | never
     >,
-    '/data/germplasm/germplasm-match': RouteRecordInfo<
-      '/data/germplasm/germplasm-match',
-      '/data/germplasm/germplasm-match',
+    '/data/germplasm/search': RouteRecordInfo<
+      '/data/germplasm/search',
+      '/data/germplasm/search',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -662,9 +662,9 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | 'id'
     }
-    'src/pages/data/germplasm/germplasm-match.vue': {
+    'src/pages/data/germplasm/search.vue': {
       routes:
-        | '/data/germplasm/germplasm-match'
+        | '/data/germplasm/search'
       views:
         | never
       pathParamNames:

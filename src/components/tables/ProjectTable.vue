@@ -52,8 +52,8 @@
         <v-icon class="mx-1" color="error" :icon="mdiDelete" @click="deleteItem(item)" />
       </template>
 
-      <template #card-item="{ item }">
-        <v-card class="flex-grow-1">
+      <template #card-item="{ item, isSelected, toggleItem }">
+        <v-card :class="`flex-grow-1 ${isSelected ? 'border-t-lg border-primary border-opacity-100' : ''}`">
           <v-img height="200" contain class="ma-2" :src="getSrc(item, 'small')" v-if="item.projectImageId" />
           <v-card-title>
             <!-- Germplasm -->
@@ -65,10 +65,24 @@
           </v-card-text> -->
           <v-card-text>{{ item.projectDescription }}</v-card-text>
 
-          <v-card-text v-if="item.datasets && item.datasets.length > 0">
-            <v-chip label variant="tonal" size="small" color="primary" :text="$t('tableColumnProjectDatasets')">
-              <template #append><v-avatar class="ms-2" :text="item.datasets.length" /></template>
-            </v-chip>
+          <v-card-text>
+            <div>
+              <v-chip label variant="tonal" size="small" color="primary" :text="$t('tableColumnProjectDatasets')" v-if="item.datasets && item.datasets.length > 0">
+                <template #append><v-avatar class="ms-2" :text="`${item.datasets.length}`" /></template>
+              </v-chip>
+            </div>
+
+            <div class="mt-3">
+              <v-chip
+                label
+                size="small"
+                :variant="isSelected ? 'flat' : 'tonal'"
+                :color="isSelected ? 'primary' : 'muted'"
+                :text="$t(isSelected ? 'buttonSelectedItem' : 'buttonSelectItem')"
+                :prepend-icon="isSelected ? mdiCheckboxMarked : mdiCheckboxBlankOutline"
+                @click="toggleItem(item)"
+              />
+            </div>
           </v-card-text>
 
           <v-card-actions>
@@ -124,7 +138,7 @@
   import { getImageUrlById } from '@/plugins/util/image'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiClipboardList, mdiCog, mdiDelete, mdiMenuDown, mdiOpenInNew, mdiPencil, mdiPlus } from '@mdi/js'
+  import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiClipboardList, mdiCog, mdiDelete, mdiMenuDown, mdiOpenInNew, mdiPencil, mdiPlus } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableProjects[]>>> }

@@ -6,6 +6,7 @@
     :get-data="compProps.getData"
     :get-ids="compProps.getIds"
     :download="compProps.download"
+    :disabled="compProps.disabled"
     :headers="headers"
     :filter-on="filterOn"
     :sort-by="compProps.sortBy"
@@ -187,6 +188,7 @@
     sortBy?: DataTableSortItem[]
     selectionType?: TableSelectionType
     tableMode?: 'base' | 'distance'
+    disabled?: boolean
   }
 
   const compProps = withDefaults(defineProps<GermplasmTableProps>(), {

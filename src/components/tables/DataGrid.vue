@@ -11,7 +11,8 @@
         lg="3"
         class="d-flex"
       >
-        <slot name="card-item" v-bind="{ item }" />
+        <!-- @vue-ignore -->
+        <slot name="card-item" v-bind="{ item, isSelected: selectedIds.has(itemId ? itemId(item) : item[itemKey]), toggleItem }" />
       </v-col>
     </v-row>
 
@@ -41,10 +42,10 @@
   import { useLocale, type DataTableSortItem } from 'vuetify'
 
   const compProps = defineProps<{
-    // v-model stuff
-    modelValue: T[]
     itemsPerPage: number
     page: number
+    itemId?: (item: T) => string
+    itemKey: string
     sortBy: DataTableSortItem[] | undefined
     // Other things
     items: T[]
@@ -61,6 +62,18 @@
     'update:options',
   ])
 
+  const model = defineModel<number[]>({
+    default: () => [],
+  })
+
+  const selectedIds = computed(() => {
+    let ids = new Set<number>()
+    if (model.value) {
+      ids = new Set(model.value)
+    }
+    return ids
+  })
+
   const { t } = useLocale()
   const localPage = ref(1)
   const localItemsPerPage = ref(12)
@@ -76,6 +89,21 @@
   })
   const startIndex = computed(() => (localPage.value - 1) * localItemsPerPage.value)
   const stopIndex = computed(() => Math.min(startIndex.value + localItemsPerPage.value, compProps.itemsLength))
+
+  function toggleItem (item: T) {
+    // @ts-expect-error
+    const id = item ? (compProps.itemId ? compProps.itemId(item) : item[compProps.itemKey]) : undefined
+
+    if (id === undefined) {
+      return
+    }
+
+    if (selectedIds.value.has(id)) {
+      model.value = model.value.filter(mv => mv !== id)
+    } else {
+      model.value = [...model.value, id]
+    }
+  }
 
   watch(() => compProps.page, async (newValue: number) => {
     localPage.value = newValue
