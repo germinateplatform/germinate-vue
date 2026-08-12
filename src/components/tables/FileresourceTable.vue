@@ -8,6 +8,7 @@
       :download="compProps.download"
       :headers="headers"
       :filter-on="filterOn"
+      :forced-filters="forcedFilters"
       :show-details="false"
       item-key="fileresourceId"
       table-key="fileresources"
@@ -121,6 +122,22 @@
     selectionType?: TableSelectionType
   }>()
 
+  const forcedFilters = computed(() => {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+      return [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'projectId',
+          comparator: FilterComparator.inSet,
+          values: store.storeSelectedProjects.map(id => `${id}`),
+          canBeChanged: false,
+        }],
+      }]
+    } else {
+      return []
+    }
+  })
+
   const addFileresourceModal = useTemplateRef('addFileresourceModal')
   const baseTable = useTemplateRef('baseTable')
   const router = useRouter()
@@ -130,6 +147,12 @@
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     const headers: ExtendedDataTableHeader[] = [{
+      key: 'projectId',
+      dataType: 'integer',
+      sortable: false,
+      visibleInTable: false,
+      title: t('tableColumnProjectId'),
+    }, {
       key: 'fileresourceId',
       title: t('tableColumnFileresourceId'),
       dataType: 'integer',

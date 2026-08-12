@@ -33,8 +33,8 @@
     </v-card-text>
 
     <!-- Pass on all named slots -->
-    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
-      <slot :name="slot" v-bind="slotProps" />
+    <template #actions v-if="$slots.actions">
+      <slot name="actions" />
     </template>
 
     <v-bottom-sheet

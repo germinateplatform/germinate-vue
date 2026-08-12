@@ -12,6 +12,7 @@
         @show-filter="tableFilterModal?.show()"
         @toggle-header="toggleHeader"
         :can-filter="canFilter"
+        :total-count="totalItems"
         :filtered="filters && filters.length > 0"
         :marked-item-config="markedItemConfig"
         :table-key="componentProps.tableKey"
@@ -110,6 +111,7 @@
           @show-filter="tableFilterModal?.show()"
           @toggle-header="toggleHeader"
           :filtered="filters !== undefined && filters.length > 0"
+          :total-count="totalItems"
           :can-filter="canFilter"
           :marked-item-config="markedItemConfig"
           :table-key="componentProps.tableKey"
@@ -206,7 +208,7 @@
       </template>
     </v-data-table-server>
 
-    <TableFilterModal :columns="filterColumns" :filter-on="componentProps.filterOn" :table-key="componentProps.tableKey" ref="tableFilterModal" @filter-changed="updateFilters" />
+    <TableFilterModal :columns="filterColumns" :filter-on="componentProps.filterOn" :forced-filters="componentProps.forcedFilters" :table-key="componentProps.tableKey" ref="tableFilterModal" @filter-changed="updateFilters" />
 
     <v-bottom-sheet
       :model-value="localBottomSheetVisible"
@@ -237,7 +239,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
-  import { type ViewTableGroups, type FilterGroup, type PaginatedResult, type Grouptypes, FilterOperator, FilterComparator } from '@/plugins/types/germinate'
+  import { type ViewTableGroups, type FilterGroup, type PaginatedResult, type Grouptypes, FilterOperator, FilterComparator, type PaginatedRequest } from '@/plugins/types/germinate'
   import type { AxiosResponse } from 'axios'
   import type { DataTableHeader, DataTableSortItem } from 'vuetify'
   import { useI18n } from 'vue-i18n'
@@ -610,13 +612,14 @@
   }
 
   function loadItems ({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy?: DataTableSortItem[] }) {
-    const request = {
+    const request: PaginatedRequest = {
       page: page,
       limit: itemsPerPage,
       prevCount: isResetCall ? -1 : totalItems.value,
       orderBy: (sortBy && sortBy.length > 0) ? sortBy[0].key : undefined,
       ascending: +((sortBy && sortBy.length > 0) ? sortBy[0].order === 'asc' : false),
       filters: filters.value || [],
+      projectIds: store.storeSelectedProjects,
     }
 
     loading.value = true

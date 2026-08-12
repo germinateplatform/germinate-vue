@@ -89,6 +89,11 @@ export class Pages {
     path: '/data/trials/traits',
   }
 
+  static traitUnifier: Page = {
+    name: 'traitUnifier',
+    path: '/data/trials/traits/unify',
+  }
+
   static traitDetails: Page = {
     name: 'traitDetails',
     path: '/data/trials/traits/[id]',

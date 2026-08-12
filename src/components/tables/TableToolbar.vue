@@ -7,7 +7,7 @@
     <div class="d-flex flex-row align-center">
       <v-toolbar-title class="flex-unset ms-2">
         <v-icon :icon="compProps.headerIcon" :color="headerIconColor || 'medium-emphasis'" size="x-small" start />
-        {{ compProps.headerTitle }}
+        {{ compProps.headerTitle }} <v-chip size="small" label v-if="totalCount !== undefined && totalCount !== -1" :text="getNumberWithSuffix(totalCount, 1)" />
       </v-toolbar-title>
       <v-btn-toggle
         v-if="compProps.supportsGridCards"
@@ -75,6 +75,7 @@
     headers: DataTableHeader[]
     disabled?: boolean
     canFilter?: boolean
+    totalCount?: number
   }>()
 
   const emit = defineEmits([

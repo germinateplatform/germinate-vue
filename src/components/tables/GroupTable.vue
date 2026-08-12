@@ -8,6 +8,7 @@
       :download="compProps.download"
       :headers="headers"
       :filter-on="filterOn"
+      :forced-filters="forcedFilters"
       :show-details="false"
       item-key="groupId"
       table-key="groups"
@@ -62,7 +63,7 @@
   import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { AxiosResponse } from 'axios'
-  import type { Grouptypes, FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGroups } from '@/plugins/types/germinate'
+  import { type Grouptypes, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableGroups, FilterComparator, FilterOperator } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { groupTypes } from '@/plugins/util/types'
@@ -82,6 +83,22 @@
     canCreateNew?: boolean
   }>(), {
     canCreateNew: true,
+  })
+
+  const forcedFilters = computed(() => {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+      return [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'projectIds',
+          comparator: FilterComparator.arrayContains,
+          values: store.storeSelectedProjects.map(id => `${id}`),
+          canBeChanged: false,
+        }],
+      }]
+    } else {
+      return []
+    }
   })
 
   const store = coreStore()

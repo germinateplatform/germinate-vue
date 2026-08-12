@@ -49,15 +49,6 @@
       })
     }
 
-    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
-      result[0].filters?.push({
-        column: 'projectId',
-        comparator: FilterComparator.inSet,
-        values: store.storeSelectedProjects.map(id => `${id}`),
-        canBeChanged: false,
-      })
-    }
-
     return result
   }
 

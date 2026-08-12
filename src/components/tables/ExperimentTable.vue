@@ -7,6 +7,7 @@
     :download="compProps.download"
     :headers="headers"
     :filter-on="filterOn"
+    :forced-filters="forcedFilters"
     :show-details="false"
     item-key="experimentId"
     table-key="experiments"
@@ -69,6 +70,7 @@
 
   import ShowFullCell from '@/components/tables/ShowFullCell.vue'
   import { mdiFolderTable } from '@mdi/js'
+  import { coreStore } from '@/stores/app'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableExperiments[]>>> }
@@ -81,10 +83,17 @@
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
   const router = useRouter()
+  const store = coreStore()
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     const headers = [{
+      key: 'projectId',
+      dataType: 'integer',
+      sortable: false,
+      visibleInTable: false,
+      title: t('tableColumnProjectId'),
+    }, {
       key: 'experimentId',
       title: t('tableColumnExperimentId'),
       dataType: 'integer',
@@ -109,6 +118,22 @@
     }]
 
     return headers
+  })
+
+  const forcedFilters = computed(() => {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+      return [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'projectId',
+          comparator: FilterComparator.inSet,
+          values: store.storeSelectedProjects.map(id => `${id}`),
+          canBeChanged: false,
+        }],
+      }]
+    } else {
+      return []
+    }
   })
 
   function redirectToExport (experiment: ViewTableExperiments, datasetType: string) {

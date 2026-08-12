@@ -20,6 +20,7 @@ export interface BaseTableProps<T> {
   headerIconColor?: string
   headerTitle: string
   filterOn?: FilterGroup[]
+  forcedFilters?: FilterGroup[]
   markedItemType?: string
   showDetails?: boolean
   storeUrlParameters?: boolean

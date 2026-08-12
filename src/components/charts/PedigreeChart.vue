@@ -2,12 +2,12 @@
   <div v-if="datasets && datasets.length > 0">
     <div v-if="hasPlotData">
       <BaseChart
-        :title="$t('pagePedigreeChartTitle')"
+        :title="$t('pagePassportPedigreeChartTitle')"
         :chart-id="id"
         chart-type="d3.js"
         :filename="filename"
         :source-file="sourceFile"
-        @header-icon="mdiFamilyTree"
+        :header-icon="mdiFamilyTree"
         :header-icon-color="headerIconColor"
         :supports-svg-download="false"
         :supports-file-download="false"
@@ -22,8 +22,8 @@
           <div :id="id" ref="graph" class="pedigree-chart" v-if="hasPlotData" />
         </template>
 
-        <template #actions v-if="hasPlotData">
-          <div class="d-flex flex-column align-start">
+        <template #actions>
+          <div class="d-flex flex-column align-start" v-if="hasPlotData">
             <v-btn prepend-icon="$helium" variant="tonal" :text="$t('buttonDownloadForHelium')" />
             <p><span class="text-muted" v-html="$t('pageExportFormatsHeliumText')" />&nbsp;<router-link :to="Pages.aboutExportFormats.path" v-tooltip:top="$t('tooltipExportFormatLearnMore')"> <v-icon :icon="mdiInformationOutline" /></router-link> </p>
           </div>

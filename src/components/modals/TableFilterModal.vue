@@ -275,6 +275,7 @@
     tableKey: string
     columns: ExtendedDataTableHeader[]
     filterOn?: FilterGroup[]
+    forcedFilters?: FilterGroup[]
   }>()
 
   const emit = defineEmits(['filter-changed', 'filter-cleared'])
@@ -566,11 +567,12 @@
   }
 
   function loadPresetFilters () {
-    let presetFilters: InternalFilterGroup[] | undefined = []
+    const presetFilters: InternalFilterGroup[] | undefined = []
 
-    if (compProps.filterOn) {
-      const internal = compProps.filterOn as InternalFilterGroup[]
-      presetFilters = internal.map(fg => {
+    const forced = compProps.forcedFilters as InternalFilterGroup[]
+
+    if (forced && forced.length > 0) {
+      presetFilters.push(...forced.map(fg => {
         if (fg.filters) {
           fg.internalFilters = fg.filters.map(f => {
             const existingColumn = compProps.columns.find(c => c.key === f.column)
@@ -582,7 +584,25 @@
         }
 
         return fg
-      })
+      }))
+    }
+
+    if (compProps.filterOn && compProps.filterOn.length > 0) {
+      const internal = compProps.filterOn as InternalFilterGroup[]
+
+      presetFilters.push(...internal.map(fg => {
+        if (fg.filters) {
+          fg.internalFilters = fg.filters.map(f => {
+            const existingColumn = compProps.columns.find(c => c.key === f.column)
+            return {
+              filter: f,
+              column: existingColumn,
+            }
+          })
+        }
+
+        return fg
+      }))
     }
 
     return presetFilters
@@ -620,12 +640,14 @@
 
         urlFilter = urlFilter?.map(fg => {
           if (fg.filters) {
-            fg.internalFilters = fg.filters.filter(f => {
+            // Remove any filters that don't map to existing columns or that are duplicates of other filters
+            fg.filters = fg.filters.filter(f => {
               const existingColumn = compProps.columns.some(c => c.key === f.column)
               const existingFilter = compProps.filterOn ? compProps.filterOn.find(ofg => ofg.filters?.some(of => of.column === f.column)) : undefined
+              const existingForced = compProps.forcedFilters ? compProps.forcedFilters.find(ofg => ofg.filters?.some(of => of.column === f.column)) : undefined
 
               if (existingColumn) {
-                if (existingFilter) {
+                if (existingFilter || existingForced) {
                   return false
                 } else {
                   return true
@@ -633,7 +655,10 @@
               } else {
                 return false
               }
-            }).map(f => {
+            })
+
+            // Then map to internal filters
+            fg.internalFilters = fg.filters.map(f => {
               const existingColumn = compProps.columns.find(c => c.key === f.column)
               return {
                 filter: f,
@@ -645,14 +670,18 @@
           return fg
         })
 
-        presetFilters = presetFilters?.concat(urlFilter)
+        if (urlFilter.length > 0) {
+          presetFilters = presetFilters?.concat(urlFilter)
+        }
       } catch {
         // Do nothing here
       }
     }
 
     if (presetFilters) {
-      filterGroups.value = presetFilters
+      filterGroups.value = presetFilters.filter(pf => {
+        return (pf.filters?.length || 0) > 0 || pf.filterGroups?.some(fg => (fg.filters?.length || 0) > 0)
+      })
 
       checkFilter()
     }
@@ -698,6 +727,7 @@
   })
 
   watch(() => compProps.filterOn, () => loadFilters(false))
+  watch(() => compProps.forcedFilters, () => loadFilters(false))
   // watch(() => filterGroups, () => updateUrl(), { deep: true })
 </script>
 

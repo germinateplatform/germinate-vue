@@ -38,22 +38,11 @@ name: groups
   import { apiPostGroupTable } from '@/plugins/api/group'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import { groupTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
-
-  const store = coreStore()
 
   const selectedGroupType = ref<string>()
 
   const filterOn: ComputedRef<FilterGroup[]> = computed(() => {
     const filter = []
-    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
-      filter.push({
-        column: 'projectIds',
-        comparator: FilterComparator.arrayContains,
-        values: store.storeSelectedProjects.map(n => `${n}`),
-        canBeChanged: false,
-      })
-    }
     if (selectedGroupType.value) {
       filter.push({
         column: 'groupType',

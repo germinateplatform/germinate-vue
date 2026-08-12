@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section v-if="dataWarnings && dataWarnings.length > 0" class="mb-10 g-no-gutters card-icon-avatar">
+    <section v-if="dataWarnings && dataWarnings.length > 0" class="mb-5 g-no-gutters card-icon-avatar">
       <v-banner
         v-for="(warning, index) in dataWarnings"
         :key="`data-warning-${index}`"
@@ -17,17 +17,17 @@
 
     <template v-if="germplasm">
       <h1 class="text-headline-large my-3 d-flex justify-space-between align-center">{{ title }}<v-chip label :prepend-icon="entityTypes[germplasm.entityTypeName].path" :text="entityTypes[germplasm.entityTypeName].text()" :color="entityTypes[germplasm.entityTypeName].color()" /></h1>
-      <v-divider class="mb-10" />
+      <v-divider class="mb-5" />
       <p>{{ $t('pagePassportText') }}</p>
 
       <v-row>
         <v-col cols="12" md="6">
           <!-- MCPD -->
-          <McpdInfo class="mb-10" :germplasm="germplasm" id="mcpd" v-intersect="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+          <McpdInfo class="mb-5" :germplasm="germplasm" id="mcpd" v-intersect="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
         </v-col>
         <v-col cols="12" md="6">
           <!-- PDCI -->
-          <v-card class="mb-10" :title="$t('pagePassportPdciTitle')" id="pdci" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+          <v-card class="mb-5" :title="$t('pagePassportPdciTitle')" id="pdci" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
             <template #prepend><v-icon :icon="mdiChartDonut" color="primary" /></template>
             <template #append><v-icon :icon="mdiHelpCircle" @click="showPdciInfo" /></template>
             <template #text>
@@ -35,7 +35,7 @@
             </template>
           </v-card>
           <!-- Synonyms -->
-          <v-card class="mb-10" :title="$t('pagePassportSynonymsTitle')" v-if="germplasm.synonyms" id="synonyms" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+          <v-card class="mb-5" :title="$t('pagePassportSynonymsTitle')" v-if="germplasm.synonyms" id="synonyms" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
             <template #prepend><v-icon :icon="mdiTagTextOutline" color="primary" /></template>
             <template #text>
               <ul>
@@ -46,14 +46,14 @@
             </template>
           </v-card>
           <!-- Links -->
-          <v-card class="mb-10" :title="$t('pagePassportLinksTitle')" id="links" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+          <v-card class="mb-5" :title="$t('pagePassportLinksTitle')" id="links" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
             <template #prepend><v-icon :icon="mdiLinkVariant" color="primary" /></template>
             <template #text>
               <ExternalLinks :foreign-id="germplasm.germplasmId" target-table="germinatebase" />
             </template>
           </v-card>
 
-          <v-card class="mb-10" title="Humbug" id="humbug">
+          <v-card class="mb-5" title="Humbug" id="humbug">
             <template #prepend><v-icon :icon="mdiBarcode" color="primary" /></template>
             <template #text>
               <v-btn :text="$t('pagePassportGenerateBarcode')" target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.germplasmName}`" />
@@ -62,8 +62,8 @@
         </v-col>
       </v-row>
 
-      <InstitutionTable class="mb-10" header-icon-color="primary" :get-data="getInstitutionData" id="institutions" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
-      <PublicationTable class="mb-10" header-icon-color="primary" :publication-reference-type="PublicationdataReferenceType.germplasm" :publication-reference-id="germplasmId" :get-data="getPublicationData" :filter-on="publicationFilter" id="publications" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <InstitutionTable class="mb-5" header-icon-color="primary" :get-data="getInstitutionData" id="institutions" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+      <PublicationTable class="mb-5" header-icon-color="primary" :publication-reference-type="PublicationdataReferenceType.germplasm" :publication-reference-id="germplasmId" :get-data="getPublicationData" :filter-on="publicationFilter" id="publications" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportPublicationsText')" />
@@ -71,7 +71,7 @@
         </template>
       </PublicationTable>
 
-      <v-card v-show="performanceDataCount > 0" class="mb-10" id="performance" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <v-card v-show="performanceDataCount > 0" class="mb-5" id="performance" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <v-toolbar
           flat
           density="compact"
@@ -95,25 +95,25 @@
         </v-card-text>
       </v-card>
 
-      <DatasetTable class="mb-10" header-icon-color="primary" :get-data="getDatasetData" id="datasets" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <DatasetTable class="mb-5" header-icon-color="primary" :get-data="getDatasetData" id="datasets" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportDatasetText')" />
           </v-card-text>
         </template>
       </DatasetTable>
-      <PedigreeDefinitionTable class="mb-10" header-icon-color="primary" :get-data="getPedigreedefinitionData" :filter-on="pedigreeDefinitionFilter" id="pedigree" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <PedigreeDefinitionTable class="mb-5" header-icon-color="primary" :get-data="getPedigreedefinitionData" :filter-on="pedigreeDefinitionFilter" id="pedigree" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportPedigreeText')" />
           </v-card-text>
         </template>
       </PedigreeDefinitionTable>
-      <PedigreeTable class="mb-10" header-icon-color="primary" :get-data="getPedigreeData" :filter-on="pedigreeFilter" />
+      <PedigreeTable class="mb-5" header-icon-color="primary" :get-data="getPedigreeData" :filter-on="pedigreeFilter" />
 
-      <PedigreeChart class="mb-10" header-icon-color="primary" :germplasm="germplasm" />
+      <PedigreeChart class="mb-5" header-icon-color="primary" :germplasm="germplasm" />
 
-      <v-card v-if="location" class="mb-10" id="location" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <v-card v-if="location" class="mb-5" id="location" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <v-toolbar
           flat
           density="compact"
@@ -127,9 +127,9 @@
         </v-card-text>
       </v-card>
 
-      <Images class="mb-10" :filter-on="imageFilter" header-icon-color="primary" id="images" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+      <Images class="mb-5" :filter-on="imageFilter" header-icon-color="primary" id="images" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
 
-      <GroupTable class="mb-10" header-icon-color="primary" :get-data="getGroupData" id="groups" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+      <GroupTable class="mb-5" header-icon-color="primary" :get-data="getGroupData" id="groups" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
           <v-card-text>
             <p v-html="$t('pagePassportGroupText')" />
@@ -218,10 +218,10 @@
       { href: '#links', icon: mdiOpenInNew, title: 'pagePassportLinksTitle' },
       { href: '#institutions', icon: mdiOfficeBuildingCog, title: 'pagePassportInstitutionTitle' },
       { href: '#publications', icon: mdiBookOpenVariant, title: 'pagePassportPublicationsTitle' },
-      ...location.value ? [{ href: '#performance', icon: mdiSpeedometer, title: 'pagePassportTraitStatsTitle' }] : [],
+      { href: '#performance', icon: mdiSpeedometer, title: 'pagePassportTraitStatsTitle' },
       { href: '#datasets', icon: mdiDatabase, title: 'pagePassportDatasetTitle' },
       { href: '#pedigree', icon: mdiFamilyTree, title: 'pagePassportPedigreeTitle' },
-      ...germplasm.value?.latitude && germplasm.value?.longitude ? [{ href: '#location', icon: mdiMapMarker, title: 'pagePassportLocationTitle' }] : [],
+      ...(location.value ? [{ href: '#location', icon: mdiMapMarker, title: 'pagePassportLocationTitle' }] : []),
       { href: '#images', icon: mdiImageMultiple, title: 'pagePassportImageTitle' },
       { href: '#groups', icon: mdiGroup, title: 'pagePassportGroupTitle' },
       { href: '#entity', icon: mdiFileTree, title: 'pagePassportEntityTitle' },

@@ -48,11 +48,11 @@
               <v-icon color="warning" :icon="mdiAccountKey" />
             </template>
           </v-list-item>
-          <v-list-item :to="Pages.userFeedback.path" :title="$t('dropdownUserSettingsUserFeedback')" v-if="store.storeServerSettings?.supportsFeedback">
+          <!-- <v-list-item :to="Pages.userFeedback.path" :title="$t('dropdownUserSettingsUserFeedback')" v-if="store.storeServerSettings?.supportsFeedback">
             <template #prepend>
               <v-icon color="warning" :icon="mdiCommentQuoteOutline" />
             </template>
-          </v-list-item>
+          </v-list-item> -->
         </template>
         <template v-if="store.storeUserIsDataCurator">
           <v-list-item :to="Pages.importUpload.path" :title="$t('dropdownUserSettingsDataUpload')">
@@ -60,15 +60,33 @@
               <v-icon color="warning" :icon="mdiUpload" />
             </template>
           </v-list-item>
-          <v-list-item :to="Pages.germplasmUnifier.path" :title="$t('dropdownUserSettingsGermplasmUnifier')">
+          <v-list-item :title="$t('dropdownUserSettingsDataCleaning')">
             <template #prepend>
-              <v-icon color="warning" :icon="mdiSetMerge" />
+              <v-icon color="warning" :icon="mdiMonitorShimmer" />
             </template>
-          </v-list-item>
-          <v-list-item :to="Pages.germplasmMatch.path" :title="$t('dropdownUserSettingsGermplasmMatchSearch')">
-            <template #prepend>
-              <v-icon color="warning" :icon="mdiTextSearch" />
+            <template #append>
+              <v-icon :icon="mdiMenuRight" size="x-small" />
             </template>
+
+            <v-menu :open-on-focus="false" activator="parent" submenu>
+              <v-list>
+                <v-list-item :to="Pages.germplasmUnifier.path" :title="$t('dropdownUserSettingsGermplasmUnifier')">
+                  <template #prepend>
+                    <v-icon color="warning" :icon="mdiSetMerge" />
+                  </template>
+                </v-list-item>
+                <v-list-item :to="Pages.traitUnifier.path" :title="$t('dropdownUserSettingsTraitUnifier')">
+                  <template #prepend>
+                    <v-icon color="warning" :icon="mdiSetMerge" />
+                  </template>
+                </v-list-item>
+                <v-list-item :to="Pages.germplasmMatch.path" :title="$t('dropdownUserSettingsGermplasmMatchSearch')">
+                  <template #prepend>
+                    <v-icon color="warning" :icon="mdiTextSearch" />
+                  </template>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-list-item>
         </template>
       </v-list>
@@ -92,7 +110,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import TextfieldModal from '@/components/modals/TextfieldModal.vue'
-  import { mdiAccount, mdiAccountKey, mdiBackupRestore, mdiCircleMultiple, mdiCog, mdiCommentQuoteOutline, mdiLoginVariant, mdiLogoutVariant, mdiSetMerge, mdiTextSearch, mdiUpload } from '@mdi/js'
+  import { mdiAccount, mdiAccountKey, mdiBackupRestore, mdiCircleMultiple, mdiCog, mdiCommentQuoteOutline, mdiLoginVariant, mdiLogoutVariant, mdiMenuRight, mdiMonitorShimmer, mdiSetMerge, mdiTextSearch, mdiUpload } from '@mdi/js'
 
   const store = coreStore()
   const router = useRouter()

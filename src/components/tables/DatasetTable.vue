@@ -9,6 +9,7 @@
       :download="compProps.download"
       :headers="headers"
       :filter-on="filterOn"
+      :forced-filters="forcedFilters"
       :show-details="true"
       :selection-type="selectionType"
       :disabled="compProps.disabled"
@@ -248,6 +249,22 @@
       c.title = t(c.title || '')
       return c
     })
+  })
+
+  const forcedFilters = computed(() => {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+      return [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'projectId',
+          comparator: FilterComparator.inSet,
+          values: store.storeSelectedProjects.map(id => `${id}`),
+          canBeChanged: false,
+        }],
+      }]
+    } else {
+      return []
+    }
   })
 
   const experimentFields = computed(() => {
