@@ -53,14 +53,59 @@
         </template>
       </v-card>
 
+      <v-card class="mb-5" :title="$t('pageProjectsExperimentsTitle')" :subtitle="$t('pageProjectsExperimentsSubtitle')">
+        <template #append v-if="store.storeUserIsDataCurator">
+          <v-btn @click="addNew('experiment')" variant="tonal" :text="$t('buttonAddNewToProject')" :prepend-icon="mdiPlusBox" />
+        </template>
+        <ExperimentTable disabled disable-forced-project-filter :get-data="getExperimentData" :filter-on="experimentFilter" ref="experimentTable">
+          <template #item.actions="{ item }">
+            <v-btn-group variant="tonal">
+              <v-btn size="x-small" color="error" :icon="mdiDelete" @click="removeItem(item.experimentId, 'experiment')" />
+            </v-btn-group>
+          </template>
+        </ExperimentTable>
+      </v-card>
+
       <v-card class="mb-5" :title="$t('pageProjectsDatasetsTitle')" :subtitle="$t('pageProjectsDatasetsSubtitle')">
-        <DatasetTable :get-data="getDatasetData" :filter-on="datasetFilter" />
+        <DatasetTable disabled :get-data="getDatasetData" :filter-on="datasetFilter" ref="datasetTable" />
       </v-card>
 
       <v-card :title="$t('pageProjectsGroupsTitle')" :subtitle="$t('pageProjectsGroupsSubtitle')">
-        <GroupTable :get-data="getGroupData" :filter-on="genericFilter" />
+        <template #append v-if="store.storeUserIsDataCurator">
+          <v-btn @click="addNew('group')" variant="tonal" :text="$t('buttonAddNewToProject')" :prepend-icon="mdiPlusBox" />
+        </template>
+        <GroupTable disabled disable-forced-project-filter :get-data="getGroupData" :filter-on="genericFilter" ref="groupTable">
+          <template #item.groupActions="{ item }">
+            <v-btn-group variant="tonal">
+              <v-btn size="x-small" color="error" :icon="mdiDelete" @click="removeItem(item.groupId, 'group')" />
+            </v-btn-group>
+          </template>
+        </GroupTable>
       </v-card>
     </template>
+
+    <v-bottom-sheet
+      v-model="bottomSheetVisible"
+      inset
+      scrollable
+      max-height="75vh"
+    >
+      <v-card
+        class="pb-10"
+      >
+        <v-card-title class="d-flex justify-space-between align-center  ">
+          <div>
+            <v-btn variant="text" v-tooltip:top="$t('buttonCancel')" :icon="mdiClose" @click="bottomSheetVisible = false" />
+            <span>{{ $t('buttonAddNewToProject') }}</span>
+          </div>
+          <v-btn :text="$t('buttonSave')" color="primary" variant="tonal" :disabled="!selectedIds || selectedIds.length === 0" @click="addToProject" />
+        </v-card-title>
+        <v-card-text>
+          <ExperimentTable disable-forced-project-filter disabled :get-data="getExperimentData" :get-ids="getExperimentIds" :selection-type="TableSelectionType.all" v-if="addType === 'experiment'" @selection-changed="(ids: number[]) => { selectedIds = ids }" />
+          <GroupTable disable-forced-project-filter disabled :get-data="getGroupData" :get-ids="getGroupIds" :selection-type="TableSelectionType.all" v-else-if="addType === 'group'" @selection-changed="(ids: number[]) => { selectedIds = ids }" />
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </v-container>
 </template>
 
@@ -71,25 +116,38 @@ name: projectDetails
 <script setup lang="ts">
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import GroupTable from '@/components/tables/GroupTable.vue'
-  import { apiPostDatasetTable } from '@/plugins/api/dataset'
-  import { apiPostGroupTable } from '@/plugins/api/group'
-  import { apiGetProjectStats, apiPostProjectTable } from '@/plugins/api/project'
+  import { apiPostDatasetTable, apiPostExperimentTable, apiPostExperimentTableIds } from '@/plugins/api/dataset'
+  import { apiPostGroupTable, apiPostGroupTableIds } from '@/plugins/api/group'
+  import { apiDeleteProjectExperiment, apiDeleteProjectGroup, apiGetProjectStats, apiPostProjectExperiments, apiPostProjectGroups, apiPostProjectTable } from '@/plugins/api/project'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ProjectStats, type ViewTableProjects } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type ProjectStats, type ViewTableProjects } from '@/plugins/types/germinate'
+  import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { getImageUrlById } from '@/plugins/util/image'
   import { coreStore } from '@/stores/app'
-  import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiDatabase, mdiGroup, mdiNewspaperVariant } from '@mdi/js'
+  import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiClose, mdiDatabase, mdiDelete, mdiGroup, mdiNewspaperVariant, mdiPlusBox } from '@mdi/js'
   import Markdown from 'vue3-markdown-it'
+
+  import emitter from 'tiny-emitter/instance'
+  import { useI18n } from 'vue-i18n'
 
   const route = useRoute('projectDetails')
   const router = useRouter()
   const store = coreStore()
+  const { t } = useI18n()
+
+  const experimentTable = useTemplateRef('experimentTable')
+  const datasetTable = useTemplateRef('datasetTable')
+  const groupTable = useTemplateRef('groupTable')
 
   const projectId = ref<number>()
   const project = ref<ViewTableProjects>()
   const projectStats = ref<ProjectStats>()
+
+  const bottomSheetVisible = ref(false)
+  const addType = ref<'group' | 'experiment'>()
+  const selectedIds = ref<number[]>([])
 
   const projectSrc = computed(() => {
     if (project.value) {
@@ -141,6 +199,22 @@ name: projectDetails
     }
   })
 
+  const experimentFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    if (projectId.value) {
+      return [{
+        filters: [{
+          column: 'projectId',
+          comparator: FilterComparator.equals,
+          values: [`${projectId.value}`],
+          canBeChanged: false,
+        }],
+        operator: FilterOperator.and,
+      }]
+    } else {
+      return []
+    }
+  })
+
   const genericFilter: ComputedRef<FilterGroup[]> = computed(() => {
     if (projectId.value) {
       return [{
@@ -157,6 +231,69 @@ name: projectDetails
     }
   })
 
+  function getExperimentData (data: PaginatedRequest) {
+    return apiPostExperimentTable(data)
+  }
+
+  function getExperimentIds (data: PaginatedRequest) {
+    return apiPostExperimentTableIds(data)
+  }
+
+  function addToProject () {
+    if (!project.value) {
+      return
+    }
+
+    switch (addType.value) {
+      case 'experiment':
+        apiPostProjectExperiments(project.value.projectId || -1, selectedIds.value, () => {
+          experimentTable.value?.refresh()
+          datasetTable.value?.refresh()
+          bottomSheetVisible.value = false
+        })
+        break
+      case 'group':
+        apiPostProjectGroups(project.value.projectId || -1, selectedIds.value, () => {
+          groupTable.value?.refresh()
+          bottomSheetVisible.value = false
+        })
+        break
+    }
+  }
+
+  function removeItem (item: number, type: 'experiment' | 'group') {
+    const p = project.value
+
+    if (!p) {
+      return
+    }
+
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTitleSure'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          switch (type) {
+            case 'experiment':
+              apiDeleteProjectExperiment(p.projectId || -1, item, () => {
+                experimentTable.value?.refresh()
+                datasetTable.value?.refresh()
+              })
+              break
+            case 'group':
+              apiDeleteProjectGroup(p.projectId || -1, item, () => {
+                groupTable.value?.refresh()
+              })
+              break
+          }
+        }
+      },
+    })
+  }
+
   function getDatasetData (data: PaginatedRequest) {
     return apiPostDatasetTable(data)
   }
@@ -164,6 +301,25 @@ name: projectDetails
   function getGroupData (data: PaginatedRequest) {
     return apiPostGroupTable(data)
   }
+
+  function getGroupIds (data: PaginatedRequest) {
+    return apiPostGroupTableIds(data)
+  }
+
+  function addNew (type: 'experiment' | 'group') {
+    addType.value = type
+
+    nextTick(() => {
+      bottomSheetVisible.value = true
+    })
+  }
+
+  watch(bottomSheetVisible, async newValue => {
+    if (newValue === false) {
+      selectedIds.value = []
+      addType.value = undefined
+    }
+  })
 
   onBeforeMount(() => {
     if (route.params && route.params.id) {

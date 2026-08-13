@@ -20,7 +20,7 @@
       :header-title="$t('pageDatasetsTitle')"
       v-bind="$attrs"
     >
-      <template #header v-if="canCreateNew">
+      <template #header v-if="canCreateNew && store.storeUserIsDataCurator && disabled !== true">
         <v-btn v-if="store.storeUserIsDataCurator" variant="outlined" :prepend-icon="mdiFilePlus" @click="addItem">{{ $t('tableButtonAddDataset') }}</v-btn>
       </template>
 
@@ -107,7 +107,7 @@
       </template>
 
       <template #item.datasetDetails="{ item }">
-        <v-btn-group variant="tonal">
+        <v-btn-group variant="tonal" v-if="disabled !== true">
           <v-btn size="x-small" color="primary" target="_blank" :href="item.hyperlink" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
           <v-btn size="x-small" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="datasetStates[item.datasetState].text()" />
           <v-btn size="x-small" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
@@ -221,8 +221,10 @@
     selectionType?: TableSelectionType
     disabled?: boolean
     canCreateNew?: boolean
+    disableForcedProjectFilter?: boolean
   }>(), {
     canCreateNew: true,
+    disableForcedProjectFilter: false,
   })
 
   const router = useRouter()
@@ -252,7 +254,7 @@
   })
 
   const forcedFilters = computed(() => {
-    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0 && compProps.disableForcedProjectFilter !== true) {
       return [{
         operator: FilterOperator.and,
         filters: [{

@@ -43,6 +43,12 @@ export function apiPostExperimentTable (queryData: PaginatedRequest, onSuccess?:
   return authAxios({ url: 'experiment/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+export function apiPostExperimentTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
+  delete queryData.orderBy
+  delete queryData.ascending
+  return authAxios({ url: 'experiment/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 export function apiPostDatasetTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'dataset/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

@@ -16,7 +16,7 @@ export function apiPostTaxonomyTable (queryData: PaginatedRequest, onSuccess?: G
   return authAxios({ url: 'taxonomy/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-export function apiPostGermplasmTableIds<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
+export function apiPostGermplasmTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending
   return authAxios({ url: 'germplasm/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })

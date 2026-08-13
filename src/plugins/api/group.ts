@@ -27,6 +27,12 @@ export function apiPostGroupTable (queryData: PaginatedRequest, onSuccess?: Germ
   return authAxios({ url: 'group/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+export function apiPostGroupTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
+  delete queryData.orderBy
+  delete queryData.ascending
+  return authAxios({ url: 'group/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 export function apiPostDatasetGroups (queryData: DatasetGroupRequest, onSuccess?: GerminateResponseHandler<ViewTableGroups[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'dataset/group', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }

@@ -8,6 +8,7 @@
     :headers="headers"
     :filter-on="filterOn"
     :forced-filters="forcedFilters"
+    :selection-type="selectionType"
     :show-details="false"
     item-key="experimentId"
     table-key="experiments"
@@ -78,6 +79,7 @@
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
+    disableForcedProjectFilter?: boolean
   }>()
 
   const baseTable = useTemplateRef('baseTable')
@@ -115,13 +117,20 @@
       type: undefined,
       sortable: false,
       title: t('tableColumnExperimentDataTypes'),
+    }, {
+      key: 'actions',
+      type: undefined,
+      align: 'end' as 'start' | 'end' | 'center',
+      sortable: false,
+      visibleInFilter: false,
+      title: '',
     }]
 
     return headers
   })
 
   const forcedFilters = computed(() => {
-    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0 && compProps.disableForcedProjectFilter !== true) {
       return [{
         operator: FilterOperator.and,
         filters: [{

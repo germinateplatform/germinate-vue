@@ -7,8 +7,10 @@
       :get-ids="compProps.getIds"
       :download="compProps.download"
       :headers="headers"
+      :disabled="disabled"
       :filter-on="filterOn"
       :forced-filters="forcedFilters"
+      :selection-type="selectionType"
       :show-details="false"
       item-key="groupId"
       table-key="groups"
@@ -16,7 +18,7 @@
       :header-title="$t('pageGroupsTitle')"
       v-bind="$attrs"
     >
-      <template #header v-if="canCreateNew && store.storeUserIsAuthenticated">
+      <template #header v-if="canCreateNew && store.storeUserIsAuthenticated && disabled !== true">
         <v-btn variant="outlined" :text="$t('buttonAddGroup')" :prepend-icon="mdiPlus" @click="addItem" />
       </template>
 
@@ -32,10 +34,10 @@
       </template>
 
       <template #item.groupActions="{ item }">
-        <template v-if="store.storeUserIsAdmin || (item.userId === store.storeToken?.id)">
-          <v-icon class="mx-1" color="info" :icon="mdiPencil" @click="editItem(item)" />
-          <v-icon class="mx-1" color="error" :icon="mdiDelete" @click="deleteItem(item)" />
-        </template>
+        <v-btn-group variant="tonal" v-if="disabled !== true && (store.storeUserIsAdmin || (item.userId === store.storeToken?.id))">
+          <v-btn size="x-small" color="info" :icon="mdiPencil" @click="editItem(item)" />
+          <v-btn size="x-small" color="error" :icon="mdiDelete" @click="deleteItem(item)" />
+        </v-btn-group>
       </template>
 
       <!-- Pass on all named slots -->
@@ -79,14 +81,17 @@
     getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
+    disabled?: boolean
     selectionType?: TableSelectionType
     canCreateNew?: boolean
+    disableForcedProjectFilter?: boolean
   }>(), {
     canCreateNew: true,
+    disableForcedProjectFilter: false,
   })
 
   const forcedFilters = computed(() => {
-    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0 && compProps.disableForcedProjectFilter !== true) {
       return [{
         operator: FilterOperator.and,
         filters: [{

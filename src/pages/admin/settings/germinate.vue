@@ -329,6 +329,7 @@
                   class="mb-3"
                   :label="$t('formLabelAdminSettingsFilesDeletedAfterAsync')"
                   persistent-hint
+                  hide-details
                   :min="1"
                   :step="1"
                   control-variant="stacked"
@@ -340,6 +341,7 @@
                   class="mb-3"
                   :label="$t('formLabelAdminSettingsFilesDeletedAfterTemp')"
                   persistent-hint
+                  hide-details
                   :min="1"
                   :step="1"
                   control-variant="stacked"

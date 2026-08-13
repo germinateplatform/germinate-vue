@@ -120,10 +120,11 @@
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
+    disableForcedProjectFilter?: boolean
   }>()
 
   const forcedFilters = computed(() => {
-    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0 && compProps.disableForcedProjectFilter !== true) {
       return [{
         operator: FilterOperator.and,
         filters: [{
