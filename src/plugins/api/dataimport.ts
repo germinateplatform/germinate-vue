@@ -2,9 +2,15 @@ import type { AsyncExportResult, DataImportJobs, DataOrientation, PaginatedReque
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
 import { authAxios, authForm, type ErrorHandler } from '@/plugins/api/base'
 
-export function apiPostDataImportStats (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableImportJobs[]>>, onError?: ErrorHandler) {
+export function apiPostDataImportStats (queryData: PaginatedRequest, projectIds?: number[], onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableImportJobs[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
-  return authAxios({ url: 'import/stats', method: 'POST', data: queryData, success: onSuccess, error: onError })
+  let url = 'import/stats'
+
+  if (projectIds && projectIds.length > 0) {
+    url += `?${projectIds.map(id => `projectIds=${id}`).join('&')}`
+  }
+
+  return authAxios({ url, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
 export function apiPostDataAsyncImport (uuids: string[], onSuccess?: GerminateResponseHandler<DataImportJobs[]>, onError?: ErrorHandler) {

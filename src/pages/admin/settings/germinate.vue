@@ -6,343 +6,357 @@
     <p>{{ $t('pageGerminateSettingsText') }}</p>
 
     <template v-if="settings">
-      <div class="masonry" :style="{ columnCount }">
-        <v-card class="mb-5" :title="$t('pageGerminateSettingsCardColors')" :prepend-icon="mdiTune">
-          <template #text>
-            <v-color-input
-              v-model="settings.colorPrimary"
-              hide-details
-              pip-variant="tonal"
-              color-pip
-              :mode="colorMode"
-              autocomplete="off"
-              :label="$t('formLabelAdminSettingsColorPrimary')"
-              :picker-props="{
-                'onUpdate:mode': (m: any) => { colorMode = m },
-              }"
-            />
-            <!-- TEMPLATE COLORS -->
-            <h3>{{ $t('formLabelAdminSettingsColorTemplate') }}</h3>
-            <v-sheet border rounded ref="colorsTemplateParent" class="flex-grow-1 pa-2">
-              <v-chip
-                v-for="(color, index) in colorsTemplate"
-                :key="`template-chip-${color}-${index}`"
-                label
-                class="me-2 mb-1"
-                :text="color"
-                :color="color"
-                variant="flat"
-                :closable="colorsTemplate.length > 1"
-                @click:close="removeTemplateColor(index)"
+      <!-- <div class="masonry" :style="{ columnCount }"> -->
+      <v-row>
+        <v-col cols="12" sm="6" xxl="4" class="d-flex">
+          <v-card class="flex-grow-1" :title="$t('pageGerminateSettingsCardColors')" :prepend-icon="mdiTune">
+            <template #text>
+              <v-color-input
+                v-model="settings.colorPrimary"
+                hide-details
+                pip-variant="tonal"
+                color-pip
+                :mode="colorMode"
+                autocomplete="off"
+                :label="$t('formLabelAdminSettingsColorPrimary')"
+                :picker-props="{
+                  'onUpdate:mode': (m: any) => { colorMode = m },
+                }"
               />
-            </v-sheet>
-            <v-color-input
-              v-model="newTemplateColor"
-              class="mt-2"
-              hide-details
-              pip-variant="tonal"
-              color-pip
-              :mode="colorMode"
-              autocomplete="off"
-              :label="$t('formLabelChartColorsNew')"
-              :picker-props="{
-                'onUpdate:mode': (m: any) => { colorMode = m },
-              }"
-            >
-              <template #append>
-                <v-btn :icon="mdiEyedropperPlus" @click="addTemplateColor" :disabled="!newTemplateColor" />
-              </template>
-            </v-color-input>
-            <!-- CHART COLORS -->
-            <h3>{{ $t('formLabelAdminSettingsColorChart') }}</h3>
-            <v-sheet border rounded ref="colorsChartsParent" class="flex-grow-1 pa-2">
-              <v-chip
-                v-for="(color, index) in colorsCharts"
-                :key="`template-chip-${color}-${index}`"
-                label
-                class="me-2 mb-1"
-                :text="color"
-                :color="color"
-                variant="flat"
-                :closable="colorsCharts.length > 1"
-                @click:close="removeChartColor(index)"
-              />
-            </v-sheet>
-            <v-color-input
-              v-model="newChartColor"
-              class="mt-2"
-              hide-details
-              pip-variant="tonal"
-              color-pip
-              :mode="colorMode"
-              autocomplete="off"
-              :label="$t('formLabelChartColorsNew')"
-              :picker-props="{
-                'onUpdate:mode': (m: any) => { colorMode = m },
-              }"
-            >
-              <template #append>
-                <v-btn :icon="mdiEyedropperPlus" @click="addChartColor" :disabled="!newChartColor" />
-              </template>
-            </v-color-input>
-          </template>
-        </v-card>
-        <v-card class="mb-5" :title="$t('pageGerminateSettingsCardToggles')" :prepend-icon="mdiTune">
-          <template #text>
-            <v-list slim density="compact">
-              <v-list-item :base-color="getTemplateColor(0)" :title="$t('formLabelAdminSettingsToggleBrapi')" prepend-icon="$brapi" @click="settings.brapiEnabled = !settings.brapiEnabled">
-                <template #append><v-switch density="compact" :model-value="settings.brapiEnabled" :color="getTemplateColor(0)" hide-details /></template>
-              </v-list-item>
-              <v-list-item :base-color="getTemplateColor(1)" :title="$t('formLabelAdminSettingsTogglePdci')" :prepend-icon="mdiCalculatorVariant" @click="settings.pdciEnabled = !settings.pdciEnabled">
-                <template #append><v-switch density="compact" :model-value="settings.pdciEnabled" :color="getTemplateColor(1)" hide-details /></template>
-              </v-list-item>
-              <v-list-item :base-color="getTemplateColor(2)" :title="$t('formLabelAdminSettingsToggleGdpr')" :prepend-icon="mdiCookieLock" @click="settings.showGdprNotification = !settings.showGdprNotification">
-                <template #append><v-switch density="compact" :model-value="settings.showGdprNotification" :color="getTemplateColor(2)" hide-details /></template>
-              </v-list-item>
-              <v-list-item :base-color="getTemplateColor(3)" :title="$t('formLabelAdminSettingsToggleComments')" :prepend-icon="mdiCommentTextMultiple" @click="settings.commentsEnabled = !settings.commentsEnabled">
-                <template #append><v-switch density="compact" :model-value="settings.commentsEnabled" :color="getTemplateColor(3)" hide-details /></template>
-              </v-list-item>
-            </v-list>
-          </template>
-        </v-card>
-        <v-card class="mb-5" :title="$t('formLabelAdminSettingsTemplateDashboardCategories')" :prepend-icon="mdiViewDashboardVariant">
-          <template #text>
-            <v-row>
-              <v-col cols="12" md="6" class="d-flex flex-column">
-                <h3>{{ $t('formLabelAdminSettingsTemplateDashboardCategories') }}</h3>
-                <v-sheet border rounded ref="usedCategoryParent" class="flex-grow-1 pa-3">
-                  <v-chip
-                    v-for="element in usedDashboardCategories"
-                    :key="`category-chip-${element.value}`"
-                    label
-                    class="me-2 mb-1"
-                    :text="$t(element.text)"
-                    :prepend-icon="element.path"
-                  />
-                </v-sheet>
-                <v-btn :text="$t('buttonShowAll')" :prepend-icon="mdiChevronDoubleLeft" class="mt-3" @click="toggleCategories('show')" />
-              </v-col>
-              <v-col cols="12" md="6" class="d-flex flex-column">
-                <h3>{{ $t('formLabelAdminSettingsTemplateDashboardCategoriesHidden') }}</h3>
-                <v-sheet border rounded ref="unusedCategoryParent" class="flex-grow-1 pa-3">
-                  <v-chip
-                    v-for="element in unusedDashboardCategories"
-                    :key="`category-chip-${element.value}`"
-                    label
-                    class="me-2 mb-1"
-                    :text="$t(element.text)"
-                    :prepend-icon="element.path"
-                  />
-                </v-sheet>
-                <v-btn :text="$t('buttonHideAll')" :append-icon="mdiChevronDoubleRight" class="mt-3" @click="toggleCategories('hide')" />
-              </v-col>
-            </v-row>
-          </template>
-        </v-card>
-        <v-card class="mb-5" :title="$t('formLabelAdminSettingsTemplateDashboardCategories')" :prepend-icon="mdiViewDashboardVariant">
-          <template #text>
-            <v-row>
-              <v-col cols="12" md="6" class="d-flex flex-column">
-                <h3>{{ $t('formLabelAdminSettingsTemplateDashboardSections') }}</h3>
-                <v-sheet border rounded ref="usedSectionParent" class="flex-grow-1 pa-2">
-                  <v-chip
-                    v-for="element in usedDashboardSections"
-                    :key="`section-chip-${element.value}`"
-                    label
-                    class="me-2 mb-1"
-                    :text="$t(element.text)"
-                    :prepend-icon="element.path"
-                  />
-                </v-sheet>
-                <v-btn :text="$t('buttonShowAll')" :prepend-icon="mdiChevronDoubleLeft" class="mt-3" @click="toggleSections('show')" />
-              </v-col>
-              <v-col cols="12" md="6" class="d-flex flex-column">
-                <h3>{{ $t('formLabelAdminSettingsTemplateDashboardSectionsHidden') }}</h3>
-                <v-sheet border rounded ref="unusedSectionParent" class="flex-grow-1 pa-2">
-                  <v-chip
-                    v-for="element in unusedDashboardSections"
-                    :key="`section-chip-${element.value}`"
-                    label
-                    class="me-2 mb-1"
-                    :text="$t(element.text)"
-                    :prepend-icon="element.path"
-                  />
-                </v-sheet>
-                <v-btn :text="$t('buttonHideAll')" :append-icon="mdiChevronDoubleRight" class="mt-3" @click="toggleSections('hide')" />
-              </v-col>
-            </v-row>
-          </template>
-        </v-card>
-        <v-card class="mb-5" :title="$t('pageGerminateSettingsCardBackups')" :prepend-icon="mdiBackupRestore">
-          <template #text>
-            <v-number-input
-              v-model="settings.databaseBackupEveryDays"
-              class="mb-3"
-              :label="$t('formLabelAdminSettingsBackupEveryDays')"
-              :hint="$t('formDescriptionAdminSettingsBackupEveryDays')"
-              persistent-hint
-              :min="1"
-              :max="30"
-              :step="1"
-              control-variant="stacked"
-            >
-              <template #append-inner><span class="me-2">{{ $t('genericDays') }}</span></template>
-            </v-number-input>
-
-            <v-number-input
-              v-model="settings.databaseBackupMaxSizeGB"
-              class="mb-3"
-              :label="$t('formLabelAdminSettingsBackupMaxSizeGb')"
-              :hint="$t('formDescriptionAdminSettingsBackupMaxSizeGb')"
-              persistent-hint
-              :min="0.001"
-              :precision="null"
-              control-variant="stacked"
-            >
-              <template #append-inner><span class="me-2">GB</span></template>
-            </v-number-input>
-          </template>
-        </v-card>
-        <v-card class="mb-5" :title="$t('pageGerminateSettingsCardGatekeeper')" :prepend-icon="mdiAccountLockOpen">
-          <template #text>
-            <v-text-field
-              v-model="settings.gatekeeperUrl"
-              class="mb-3"
-              type="url"
-              :label="$t('formLabelAdminSettingsGatekeeperUrl')"
-              hide-details
-            />
-            <v-text-field
-              v-model="settings.gatekeeperUsername"
-              class="mb-3"
-              :label="$t('formLabelAdminSettingsGatekeeperUsername')"
-              hide-details
-            />
-            <v-text-field
-              v-model="settings.gatekeeperPassword"
-              class="mb-3"
-              type="password"
-              :label="$t('formLabelAdminSettingsGatekeeperPassword')"
-              hide-details
-            />
-            <v-switch
-              v-model="settings.registrationEnabled"
-              :label="$t('formLabelAdminSettingsGatekeeperRegistrationEnabled')"
-              hide-details
-              color="primary"
-            />
-            <v-switch
-              v-model="settings.gatekeeperRegistrationRequiresApproval"
-              :label="$t('formLabelAdminSettingsGatekeeperRegistrationRequiresApproval')"
-              hide-details
-              :disabled="settings.registrationEnabled === false"
-              color="primary"
-            />
-          </template>
-        </v-card>
-
-        <v-card class="mb-5 text-wrap" :title="$t('pageGerminateSettingsCardAdvanced')" :prepend-icon="mdiShieldAlert" color="error" variant="outlined">
-          <template #subtitle><span class="text-error">{{ $t('pageGerminateSettingsCardAdvancedWarning') }}</span></template>
-
-          <template #text>
-            <div class="text-surface-variant">
-              <div class="text-title-small mt-3">{{ $t('formLabelAdminSettingsAuthMode') }}</div>
-              <v-btn-toggle
-                variant="tonal"
-                class="d-flex"
-                :direction="(xs || mdAndUp) ? 'horizontal' : 'vertical'"
-                color="primary"
-                mandatory
-                v-model="settings.authMode"
+              <!-- TEMPLATE COLORS -->
+              <h3>{{ $t('formLabelAdminSettingsColorTemplate') }}</h3>
+              <v-sheet border rounded ref="colorsTemplateParent" class="flex-grow-1 pa-2">
+                <v-chip
+                  v-for="(color, index) in colorsTemplate"
+                  :key="`template-chip-${color}-${index}`"
+                  label
+                  class="me-2 mb-1"
+                  :text="color"
+                  :color="color"
+                  variant="flat"
+                  :closable="colorsTemplate.length > 1"
+                  @click:close="removeTemplateColor(index)"
+                />
+              </v-sheet>
+              <v-color-input
+                v-model="newTemplateColor"
+                class="mt-2"
+                hide-details
+                pip-variant="tonal"
+                color-pip
+                :mode="colorMode"
+                autocomplete="off"
+                :label="$t('formLabelChartColorsNew')"
+                :picker-props="{
+                  'onUpdate:mode': (m: any) => { colorMode = m },
+                }"
               >
-                <v-btn class="flex-grow-1" :value="AuthenticationMode.NONE" :prepend-icon="mdiLockOpenVariant" text="NONE" />
-                <v-btn class="flex-grow-1" :value="AuthenticationMode.SELECTIVE" :prepend-icon="mdiLockOpen" text="SELECTIVE" />
-                <v-btn class="flex-grow-1" :value="AuthenticationMode.FULL" :prepend-icon="mdiLock" text="FULL" />
-              </v-btn-toggle>
-              <div class="v-input__details mb-3">
-                <div class="v-messages">
-                  <span class="v-messages__message" v-html="authModeHint" />
-                </div>
-              </div>
-
-              <div class="text-title-small mt-3">{{ $t('formLabelAdminSettingsDataImportMode') }}</div>
-              <v-btn-toggle
-                variant="tonal"
-                class="d-flex"
-                :direction="(xs || mdAndUp) ? 'horizontal' : 'vertical'"
-                color="primary"
-                mandatory
-                divided
-                v-model="settings.dataImportMode"
+                <template #append>
+                  <v-btn :icon="mdiEyedropperPlus" @click="addTemplateColor" :disabled="!newTemplateColor" />
+                </template>
+              </v-color-input>
+              <!-- CHART COLORS -->
+              <h3>{{ $t('formLabelAdminSettingsColorChart') }}</h3>
+              <v-sheet border rounded ref="colorsChartsParent" class="flex-grow-1 pa-2">
+                <v-chip
+                  v-for="(color, index) in colorsCharts"
+                  :key="`template-chip-${color}-${index}`"
+                  label
+                  class="me-2 mb-1"
+                  :text="color"
+                  :color="color"
+                  variant="flat"
+                  :closable="colorsCharts.length > 1"
+                  @click:close="removeChartColor(index)"
+                />
+              </v-sheet>
+              <v-color-input
+                v-model="newChartColor"
+                class="mt-2"
+                hide-details
+                pip-variant="tonal"
+                color-pip
+                :mode="colorMode"
+                autocomplete="off"
+                :label="$t('formLabelChartColorsNew')"
+                :picker-props="{
+                  'onUpdate:mode': (m: any) => { colorMode = m },
+                }"
               >
-                <v-btn class="flex-grow-1" :value="DataImportMode.NONE" :prepend-icon="mdiCancel" text="NONE" />
-                <v-btn class="flex-grow-1" :value="DataImportMode.VERIFY" :prepend-icon="mdiFormatListChecks" text="VERIFY" />
-                <v-btn class="flex-grow-1" :value="DataImportMode.IMPORT" :prepend-icon="mdiDatabaseImport" text="IMPORT" />
-              </v-btn-toggle>
-              <div class="v-input__details mb-3">
-                <div class="v-messages">
-                  <span class="v-messages__message" v-html="importModeHint" />
-                </div>
-              </div>
-
-              <v-text-field
-                v-model="settings.plausibleDomain"
-                class="mb-3"
-                :label="$t('formLabelAdminSettingsPlausibleDomain')"
-                hide-details
-              />
-              <v-text-field
-                v-model="settings.plausibleApiHost"
-                class="mb-3"
-                type="url"
-                :label="$t('formLabelAdminSettingsPlausibleApiHost')"
-                hide-details
-              />
-              <v-text-field
-                v-model="settings.externalLinkIdentifier"
-                class="mb-3"
-                :label="$t('formLabelAdminSettingsExternalLinkId')"
-                hide-details
-              />
-              <v-text-field
-                v-model="settings.externalLinkTemplate"
-                class="mb-3"
-                type="url"
-                :label="$t('formLabelAdminSettingsExternalLinkTemplate')"
-                hide-details
-              />
+                <template #append>
+                  <v-btn :icon="mdiEyedropperPlus" @click="addChartColor" :disabled="!newChartColor" />
+                </template>
+              </v-color-input>
+            </template>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" xxl="4" class="d-flex">
+          <v-card class="flex-grow-1" :title="$t('pageGerminateSettingsCardToggles')" :prepend-icon="mdiTune">
+            <template #text>
+              <v-list slim density="compact">
+                <v-list-item :base-color="getTemplateColor(0)" :title="$t('formLabelAdminSettingsToggleBrapi')" prepend-icon="$brapi" @click="settings.brapiEnabled = !settings.brapiEnabled">
+                  <template #append><v-switch density="compact" :model-value="settings.brapiEnabled" :color="getTemplateColor(0)" hide-details /></template>
+                </v-list-item>
+                <v-list-item :base-color="getTemplateColor(1)" :title="$t('formLabelAdminSettingsTogglePdci')" :prepend-icon="mdiCalculatorVariant" @click="settings.pdciEnabled = !settings.pdciEnabled">
+                  <template #append><v-switch density="compact" :model-value="settings.pdciEnabled" :color="getTemplateColor(1)" hide-details /></template>
+                </v-list-item>
+                <v-list-item :base-color="getTemplateColor(2)" :title="$t('formLabelAdminSettingsToggleGdpr')" :prepend-icon="mdiCookieLock" @click="settings.showGdprNotification = !settings.showGdprNotification">
+                  <template #append><v-switch density="compact" :model-value="settings.showGdprNotification" :color="getTemplateColor(2)" hide-details /></template>
+                </v-list-item>
+                <v-list-item :base-color="getTemplateColor(3)" :title="$t('formLabelAdminSettingsToggleComments')" :prepend-icon="mdiCommentTextMultiple" @click="settings.commentsEnabled = !settings.commentsEnabled">
+                  <template #append><v-switch density="compact" :model-value="settings.commentsEnabled" :color="getTemplateColor(3)" hide-details /></template>
+                </v-list-item>
+              </v-list>
+            </template>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" xxl="4" class="d-flex">
+          <v-card class="flex-grow-1" :title="$t('formLabelAdminSettingsTemplateDashboardCategories')" :prepend-icon="mdiViewDashboardVariant">
+            <template #text>
+              <v-row>
+                <v-col cols="12" md="6" class="d-flex flex-column">
+                  <h3>{{ $t('formLabelAdminSettingsTemplateDashboardCategories') }}</h3>
+                  <v-sheet border rounded ref="usedCategoryParent" class="flex-grow-1 pa-3">
+                    <v-chip
+                      v-for="element in usedDashboardCategories"
+                      :key="`category-chip-${element.value}`"
+                      label
+                      class="me-2 mb-1"
+                      :text="$t(element.text)"
+                      :prepend-icon="element.path"
+                    />
+                  </v-sheet>
+                  <v-btn :text="$t('buttonShowAll')" :prepend-icon="mdiChevronDoubleLeft" class="mt-3" @click="toggleCategories('show')" />
+                </v-col>
+                <v-col cols="12" md="6" class="d-flex flex-column">
+                  <h3>{{ $t('formLabelAdminSettingsTemplateDashboardCategoriesHidden') }}</h3>
+                  <v-sheet border rounded ref="unusedCategoryParent" class="flex-grow-1 pa-3">
+                    <v-chip
+                      v-for="element in unusedDashboardCategories"
+                      :key="`category-chip-${element.value}`"
+                      label
+                      class="me-2 mb-1"
+                      :text="$t(element.text)"
+                      :prepend-icon="element.path"
+                    />
+                  </v-sheet>
+                  <v-btn :text="$t('buttonHideAll')" :append-icon="mdiChevronDoubleRight" class="mt-3" @click="toggleCategories('hide')" />
+                </v-col>
+              </v-row>
+            </template>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" xxl="4" class="d-flex">
+          <v-card class="flex-grow-1" :title="$t('formLabelAdminSettingsTemplateDashboardCategories')" :prepend-icon="mdiViewDashboardVariant">
+            <template #text>
+              <v-row>
+                <v-col cols="12" md="6" class="d-flex flex-column">
+                  <h3>{{ $t('formLabelAdminSettingsTemplateDashboardSections') }}</h3>
+                  <v-sheet border rounded ref="usedSectionParent" class="flex-grow-1 pa-2">
+                    <v-chip
+                      v-for="element in usedDashboardSections"
+                      :key="`section-chip-${element.value}`"
+                      label
+                      class="me-2 mb-1"
+                      :text="$t(element.text)"
+                      :prepend-icon="element.path"
+                    />
+                  </v-sheet>
+                  <v-btn :text="$t('buttonShowAll')" :prepend-icon="mdiChevronDoubleLeft" class="mt-3" @click="toggleSections('show')" />
+                </v-col>
+                <v-col cols="12" md="6" class="d-flex flex-column">
+                  <h3>{{ $t('formLabelAdminSettingsTemplateDashboardSectionsHidden') }}</h3>
+                  <v-sheet border rounded ref="unusedSectionParent" class="flex-grow-1 pa-2">
+                    <v-chip
+                      v-for="element in unusedDashboardSections"
+                      :key="`section-chip-${element.value}`"
+                      label
+                      class="me-2 mb-1"
+                      :text="$t(element.text)"
+                      :prepend-icon="element.path"
+                    />
+                  </v-sheet>
+                  <v-btn :text="$t('buttonHideAll')" :append-icon="mdiChevronDoubleRight" class="mt-3" @click="toggleSections('hide')" />
+                </v-col>
+              </v-row>
+            </template>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" xxl="4" class="d-flex">
+          <v-card class="flex-grow-1" :title="$t('pageGerminateSettingsCardBackups')" :prepend-icon="mdiBackupRestore">
+            <template #text>
               <v-number-input
-                v-model="settings.filesDeleteAfterHoursAsync"
+                v-model="settings.databaseBackupEveryDays"
                 class="mb-3"
-                :label="$t('formLabelAdminSettingsFilesDeletedAfterAsync')"
+                :label="$t('formLabelAdminSettingsBackupEveryDays')"
+                :hint="$t('formDescriptionAdminSettingsBackupEveryDays')"
                 persistent-hint
                 :min="1"
+                :max="30"
                 :step="1"
                 control-variant="stacked"
               >
-                <template #append-inner><span class="me-2">{{ $t('genericHours') }}</span></template>
+                <template #append-inner><span class="me-2">{{ $t('genericDays') }}</span></template>
               </v-number-input>
+
               <v-number-input
-                v-model="settings.filesDeleteAfterHoursTemp"
+                v-model="settings.databaseBackupMaxSizeGB"
                 class="mb-3"
-                :label="$t('formLabelAdminSettingsFilesDeletedAfterTemp')"
+                :label="$t('formLabelAdminSettingsBackupMaxSizeGb')"
+                :hint="$t('formDescriptionAdminSettingsBackupMaxSizeGb')"
                 persistent-hint
-                :min="1"
-                :step="1"
+                :min="0.001"
+                :precision="null"
                 control-variant="stacked"
               >
-                <template #append-inner><span class="me-2">{{ $t('genericHours') }}</span></template>
+                <template #append-inner><span class="me-2">GB</span></template>
               </v-number-input>
+            </template>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" xxl="4" class="d-flex">
+          <v-card class="flex-grow-1" :title="$t('pageGerminateSettingsCardGatekeeper')" :prepend-icon="mdiAccountLockOpen">
+            <template #text>
+              <v-text-field
+                v-model="settings.gatekeeperUrl"
+                class="mb-3"
+                type="url"
+                :label="$t('formLabelAdminSettingsGatekeeperUrl')"
+                hide-details
+              />
+              <v-text-field
+                v-model="settings.gatekeeperUsername"
+                class="mb-3"
+                :label="$t('formLabelAdminSettingsGatekeeperUsername')"
+                hide-details
+              />
+              <v-text-field
+                v-model="settings.gatekeeperPassword"
+                class="mb-3"
+                type="password"
+                :label="$t('formLabelAdminSettingsGatekeeperPassword')"
+                hide-details
+              />
               <v-switch
-                v-model="settings.hiddenPagesAutodiscover"
-                :label="$t('formLabelAdminSettingsHiddenPagesAutodiscover')"
-                color="primary"
+                v-model="settings.registrationEnabled"
+                :label="$t('formLabelAdminSettingsGatekeeperRegistrationEnabled')"
                 hide-details
+                color="primary"
               />
-            </div>
-          </template>
-        </v-card>
-      </div>
+              <v-switch
+                v-model="settings.gatekeeperRegistrationRequiresApproval"
+                :label="$t('formLabelAdminSettingsGatekeeperRegistrationRequiresApproval')"
+                hide-details
+                :disabled="settings.registrationEnabled === false"
+                color="primary"
+              />
+            </template>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" xxl="4" class="d-flex">
+          <v-card class="flex-grow-1 text-wrap" :title="$t('pageGerminateSettingsCardAdvanced')" :prepend-icon="mdiShieldAlert" color="error" variant="outlined">
+            <template #subtitle><span class="text-error">{{ $t('pageGerminateSettingsCardAdvancedWarning') }}</span></template>
+
+            <template #text>
+              <div class="text-surface-variant">
+                <div class="text-title-small mt-3">{{ $t('formLabelAdminSettingsAuthMode') }}</div>
+                <v-btn-toggle
+                  variant="tonal"
+                  class="d-flex"
+                  :direction="(xs || mdAndUp) ? 'horizontal' : 'vertical'"
+                  color="primary"
+                  mandatory
+                  v-model="settings.authMode"
+                >
+                  <v-btn class="flex-grow-1" :value="AuthenticationMode.NONE" :prepend-icon="mdiLockOpenVariant" text="NONE" />
+                  <v-btn class="flex-grow-1" :value="AuthenticationMode.SELECTIVE" :prepend-icon="mdiLockOpen" text="SELECTIVE" />
+                  <v-btn class="flex-grow-1" :value="AuthenticationMode.FULL" :prepend-icon="mdiLock" text="FULL" />
+                </v-btn-toggle>
+                <div class="v-input__details mb-3">
+                  <div class="v-messages">
+                    <span class="v-messages__message" v-html="authModeHint" />
+                  </div>
+                </div>
+
+                <div class="text-title-small mt-3">{{ $t('formLabelAdminSettingsDataImportMode') }}</div>
+                <v-btn-toggle
+                  variant="tonal"
+                  class="d-flex"
+                  :direction="(xs || mdAndUp) ? 'horizontal' : 'vertical'"
+                  color="primary"
+                  mandatory
+                  divided
+                  v-model="settings.dataImportMode"
+                >
+                  <v-btn class="flex-grow-1" :value="DataImportMode.NONE" :prepend-icon="mdiCancel" text="NONE" />
+                  <v-btn class="flex-grow-1" :value="DataImportMode.VERIFY" :prepend-icon="mdiFormatListChecks" text="VERIFY" />
+                  <v-btn class="flex-grow-1" :value="DataImportMode.IMPORT" :prepend-icon="mdiDatabaseImport" text="IMPORT" />
+                </v-btn-toggle>
+                <div class="v-input__details mb-3">
+                  <div class="v-messages">
+                    <span class="v-messages__message" v-html="importModeHint" />
+                  </div>
+                </div>
+
+                <v-text-field
+                  v-model="settings.plausibleDomain"
+                  class="mb-3"
+                  :label="$t('formLabelAdminSettingsPlausibleDomain')"
+                  hide-details
+                />
+                <v-text-field
+                  v-model="settings.plausibleApiHost"
+                  class="mb-3"
+                  type="url"
+                  :label="$t('formLabelAdminSettingsPlausibleApiHost')"
+                  hide-details
+                />
+                <v-text-field
+                  v-model="settings.externalLinkIdentifier"
+                  class="mb-3"
+                  :label="$t('formLabelAdminSettingsExternalLinkId')"
+                  hide-details
+                />
+                <v-text-field
+                  v-model="settings.externalLinkTemplate"
+                  class="mb-3"
+                  type="url"
+                  :label="$t('formLabelAdminSettingsExternalLinkTemplate')"
+                  hide-details
+                />
+                <v-number-input
+                  v-model="settings.filesDeleteAfterHoursAsync"
+                  class="mb-3"
+                  :label="$t('formLabelAdminSettingsFilesDeletedAfterAsync')"
+                  persistent-hint
+                  :min="1"
+                  :step="1"
+                  control-variant="stacked"
+                >
+                  <template #append-inner><span class="me-2">{{ $t('genericHours') }}</span></template>
+                </v-number-input>
+                <v-number-input
+                  v-model="settings.filesDeleteAfterHoursTemp"
+                  class="mb-3"
+                  :label="$t('formLabelAdminSettingsFilesDeletedAfterTemp')"
+                  persistent-hint
+                  :min="1"
+                  :step="1"
+                  control-variant="stacked"
+                >
+                  <template #append-inner><span class="me-2">{{ $t('genericHours') }}</span></template>
+                </v-number-input>
+                <v-switch
+                  v-model="settings.hiddenPagesAutodiscover"
+                  :label="$t('formLabelAdminSettingsHiddenPagesAutodiscover')"
+                  color="primary"
+                  hide-details
+                />
+              </div>
+            </template>
+          </v-card>
+        </v-col>
+      </v-row>
 
       <v-btn :text="$t('buttonSaveSettings')" :prepend-icon="mdiContentSaveAlert" color="primary" class="mt-5" @click="save" />
     </template>
@@ -373,19 +387,19 @@ name: germinateSettings
   const theme = useTheme()
 
   const { name, mdAndUp, xs } = useDisplay()
-  const columnCount = computed(() => {
-    switch (name.value) {
-      case 'xs':
-        return 1
-      case 'sm':
-      case 'md':
-      case 'lg':
-      case 'xl':
-        return 2
-      default:
-        return 3
-    }
-  })
+  // const columnCount = computed(() => {
+  //   switch (name.value) {
+  //     case 'xs':
+  //       return 1
+  //     case 'sm':
+  //     case 'md':
+  //     case 'lg':
+  //     case 'xl':
+  //       return 2
+  //     default:
+  //       return 3
+  //   }
+  // })
 
   const settings = ref<ClientAdminConfiguration>()
   const newTemplateColor = ref<string>()
@@ -523,7 +537,7 @@ name: germinateSettings
       unusedDashboardCategories.value = allCategories.filter(c => !result.dashboardCategories.includes(c)).map(c => statCategories[c])
 
       const allSections = Object.keys(dashboardSections)
-      usedDashboardSections.value = result.dashboardSections.map(c => dashboardSections[c])
+      usedDashboardSections.value = result.dashboardSections.filter(sec => sec !== 'projects').map(c => dashboardSections[c])
       unusedDashboardSections.value = allSections.filter(c => !result.dashboardSections.includes(c)).map(c => dashboardSections[c])
 
       colorsTemplate.value = result.colorsTemplate.concat()
@@ -533,15 +547,15 @@ name: germinateSettings
 </script>
 
 <style scoped>
-.masonry {
+/*.masonry {
   column-count: 3;
   column-gap: 16px;
 }
 
 .masonry-item {
-  break-inside: avoid; /* prevents a card being split across columns */
+  break-inside: avoid;
   margin-bottom: 16px;
-  display: inline-block; /* helps some browsers with break-inside */
+  display: inline-block;
   width: 100%;
-}
+}*/
 </style>

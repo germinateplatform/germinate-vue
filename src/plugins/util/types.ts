@@ -625,11 +625,6 @@ const dashboardSections: { [id: string]: ValueState & TextState & PathState } = 
     text: 'dashboardSectionNews',
     path: mdiNewspaper,
   },
-  projects: {
-    value: 'projects',
-    text: 'dashboardSectionProjects',
-    path: mdiClipboardList,
-  },
   publications: {
     value: 'publications',
     text: 'dashboardSectionPublications',

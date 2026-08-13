@@ -31,29 +31,33 @@
 
     <HtmlTemplateEditor i18n-key="pageDashboardText" />
 
-    <div v-if="showPublicationSection && (showPublications || store.storeUserIsDataCurator)" class="my-5">
-      <PublicationTable display-type="grid" :get-data="getPublicationData" :filter-on="publicationsFilter">
-        <template #card-text>
-          <v-card-text>{{ $t('pageDashboardPublicationsText') }}</v-card-text>
-        </template>
-      </PublicationTable>
-    </div>
+    {{ store.storeServerSettings?.dashboardSections }}
 
-    <div v-if="showDataStoriesSection && hasStoriesData" class="my-5">
-      <StoryTable
-        :get-data="getStories"
-        :filter-on="storiesFilter"
-        display-type="grid"
-      />
-    </div>
+    <v-row>
+      <v-col cols="12" :order="allDashboardSections.indexOf('publications') + 1" v-if="showPublicationSection && (showPublications || store.storeUserIsDataCurator)">
+        <PublicationTable display-type="grid" :get-data="getPublicationData" :filter-on="publicationsFilter">
+          <template #card-text>
+            <v-card-text>{{ $t('pageDashboardPublicationsText') }}</v-card-text>
+          </template>
+        </PublicationTable>
+      </v-col>
 
-    <div v-if="showDataUpdateSection && showDataUpdates" class="my-5">
-      <DataUpdateTable display-type="table" :get-data="getDataUpdateData" />
-    </div>
+      <v-col cols="12" :order="allDashboardSections.indexOf('datastories') + 1" v-if="showDataStoriesSection && hasStoriesData">
+        <StoryTable
+          :get-data="getStories"
+          :filter-on="storiesFilter"
+          display-type="grid"
+        />
+      </v-col>
 
-    <div v-if="showNewsSection && (showNews || store.storeUserIsDataCurator)" class="my-5">
-      <NewsTable display-type="grid" :get-data="getNewsData" />
-    </div>
+      <v-col cols="12" :order="allDashboardSections.indexOf('dataupdates') + 1" v-if="showDataUpdateSection && showDataUpdates">
+        <DataUpdateTable display-type="table" :get-data="getDataUpdateData" />
+      </v-col>
+
+      <v-col cols="12" :order="allDashboardSections.indexOf('news') + 1" v-if="showNewsSection && (showNews || store.storeUserIsDataCurator)">
+        <NewsTable display-type="grid" :get-data="getNewsData" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -64,7 +68,7 @@ name: home
 <script lang="ts" setup>
   import { apiGetOverviewStats } from '@/plugins/api/stats'
   import { coreStore } from '@/stores/app'
-  import { statCategories } from '@/plugins/util/types'
+  import { dashboardSections, statCategories } from '@/plugins/util/types'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import ImageCarousel from '@/components/structure/ImageCarousel.vue'
@@ -85,6 +89,8 @@ name: home
   const showNews = ref<boolean>(true)
   const showDataUpdates = ref<boolean>(true)
   const hasStoriesData = ref<boolean>(true)
+
+  const allDashboardSections = computed(() => store.storeServerSettings?.dashboardSections || Object.keys(dashboardSections))
 
   const showPublicationSection = computed(() => {
     if (store.storeServerSettings && store.storeServerSettings.dashboardSections) {
@@ -116,7 +122,8 @@ name: home
   })
   const dashboardCategories = computed(() => {
     if (store.storeServerSettings && store.storeServerSettings.dashboardCategories) {
-      return Object.keys(statCategories).filter(k => store.storeServerSettings?.dashboardCategories?.includes(statCategories[k].value)).map(k => statCategories[k])
+      // Show them in the order they were defined in
+      return store.storeServerSettings.dashboardCategories.map(c => statCategories[c]).filter(c => c !== undefined)
     } else {
       return Object.values(statCategories)
     }
@@ -182,7 +189,7 @@ name: home
     })
   }
   function getDataUpdateData (data: PaginatedRequest) {
-    return apiPostDataImportStats(data, result => {
+    return apiPostDataImportStats(data, store.storeSelectedProjects, result => {
       if (result && result.data && result.data.length > 0) {
         // TODO
       } else {

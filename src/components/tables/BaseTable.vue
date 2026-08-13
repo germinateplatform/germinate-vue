@@ -619,7 +619,6 @@
       orderBy: (sortBy && sortBy.length > 0) ? sortBy[0].key : undefined,
       ascending: +((sortBy && sortBy.length > 0) ? sortBy[0].order === 'asc' : false),
       filters: filters.value || [],
-      projectIds: store.storeSelectedProjects,
     }
 
     loading.value = true
