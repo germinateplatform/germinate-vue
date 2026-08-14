@@ -14,6 +14,14 @@
             <DatasetTable :get-data="getDatasetTableData" disabled />
           </template>
         </v-expansion-panel>
+        <v-expansion-panel eager v-if="hasFileResources">
+          <template #title>
+            <v-icon :icon="mdiFileDownload" class="me-2" /> {{ $t('widgetAvailableFileresourcesTitle') }}
+          </template>
+          <template #text>
+            <FileResourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled />
+          </template>
+        </v-expansion-panel>
       </v-expansion-panels>
 
       <v-tabs
@@ -104,7 +112,7 @@ name: exportClimates
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import RevealOnShowPanel from '@/components/widgets/RevealOnShowPanel.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostDatasetTable } from '@/plugins/api/dataset'
+  import { apiPostDatasetTable, apiPostFileResourceTable } from '@/plugins/api/dataset'
   import { apiPostDatasetGroups } from '@/plugins/api/group'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { Pages } from '@/plugins/pages'
@@ -112,7 +120,7 @@ name: exportClimates
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { coreStore } from '@/stores/app'
-  import { mdiDatabase, mdiEye, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
+  import { mdiDatabase, mdiEye, mdiFileDownload, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
@@ -139,6 +147,21 @@ name: exportClimates
   const datasets = ref<ViewTableDatasets[]>()
   const climates = ref<ViewTableClimates[]>([])
   const groups = ref<ViewTableGroups[]>([])
+
+  const hasFileResources = computed(() => datasets.value?.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
+
+  const fileresourceFilter = computed(() => {
+    return datasets.value
+      ? [{
+        filters: [{
+          column: 'datasetIds',
+          comparator: FilterComparator.arrayContains,
+          values: datasets.value?.map(ds => `${ds.datasetId}`),
+        }],
+        operator: FilterOperator.and,
+      }]
+      : []
+  })
 
   const tabs: ComputedRef<Tab[]> = computed(() => {
     const result = [{
@@ -202,6 +225,10 @@ name: exportClimates
       limit: MAX_JAVA_INTEGER,
       filters: data.filters,
     }, 'dataset/data/climate')
+  }
+
+  function getFileresourceTableData (query: PaginatedRequest) {
+    return apiPostFileResourceTable(query)
   }
 
   function getDatasetTableData () {
@@ -313,3 +340,11 @@ name: exportClimates
     }
   })
 </script>
+
+<style scoped>
+.g-expansion-panels :deep(.v-expansion-panel-text__wrapper) {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+</style>

@@ -1876,6 +1876,7 @@
   "widgetScaleAvg": "Avg:",
   "widgetScaleCount": "Count:",
   "widgetSelectedDatasetsTitle": "Selected datasets",
+  "widgetAvailableFileresourcesTitle": "Available file resources",
   "widgetRegisterToastSuccessfulNewText": "Your request has been sent successfully. Please check your email for a verification link.",
   "widgetRegisterToastSuccessfulNewTitle": "Successful registration",
   "widgetRegisterToastSuccessfulExistingText": "Your access request has been generated. Please check your email for feedback.",

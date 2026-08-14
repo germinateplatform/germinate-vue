@@ -9,6 +9,7 @@
       :headers="headers"
       :filter-on="filterOn"
       :forced-filters="forcedFilters"
+      :disabled="disabled"
       :show-details="false"
       item-key="fileresourceId"
       table-key="fileresources"
@@ -119,6 +120,7 @@
     getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
+    disabled?: boolean
     selectionType?: TableSelectionType
     disableForcedProjectFilter?: boolean
   }>()
