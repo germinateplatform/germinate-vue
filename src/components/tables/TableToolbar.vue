@@ -32,9 +32,11 @@
             <v-btn :disabled="compProps.disabled" v-tooltip:top="$t('tooltipTableColumnSelector')" v-bind="props" :append-icon="props['aria-expanded'] === 'true' ? mdiMenuUp : mdiMenuDown"><v-icon :icon="mdiViewColumn" /></v-btn>
           </template>
           <v-list max-height="75vh">
-            <v-list-item v-for="header in dropdownHeaders" :key="`table-header-${compProps.tableKey}-${header.key}`">
+            <v-list-item v-for="header in dropdownHeaders" :key="`table-header-${compProps.tableKey}-${header.key}`" @click="emit('toggle-header', header)">
               <template #prepend>
-                <v-checkbox-btn :model-value="selectedHeaderKeys.has(header.key || '')" @update:model-value="emit('toggle-header', header)" />
+                <v-list-item-action start>
+                  <v-checkbox-btn :model-value="selectedHeaderKeys.has(header.key || '')" @update:model-value="emit('toggle-header', header)" />
+                </v-list-item-action>
               </template>
               {{ header.title }}
             </v-list-item>

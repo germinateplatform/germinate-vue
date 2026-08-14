@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="tonal" v-if="displayData && publication" class="d-flex flex-column">
+  <v-card v-if="displayData && publication" class="d-flex flex-column">
     <v-card-text class="flex-grow-1">
       <v-chip label color="muted" variant="tonal" :prepend-icon="mdiNewspaper">{{ displayData['container-title'] }}</v-chip>
 

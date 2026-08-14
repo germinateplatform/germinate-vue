@@ -164,6 +164,7 @@
             <v-list-item :title="$t('tableItemMarkingCreateGroup')" :prepend-icon="mdiGroup" @click="addGroup" v-if="store.storeUserIsAuthenticated" :disabled="!markedItemConfig || markedItemConfig.count === 0" />
             <v-list-item :title="$t('tableItemMarkingMarkAll')" :prepend-icon="mdiCheckboxMultipleMarked" @click="markAllItems(true)" />
             <v-list-item :title="$t('tableItemMarkingUnmarkAll')" :prepend-icon="mdiCheckboxMultipleBlankOutline" @click="markAllItems(false)" />
+            <slot name="header.marking.append" />
           </v-list>
         </v-menu>
       </template>
@@ -182,6 +183,8 @@
         >
           <!-- @vue-ignore -->
           <v-icon :icon="isMarked(item[componentProps.itemKey]) ? mdiBookmarkCheck : mdiBookmarkOutline" />
+
+          <slot name="item.marking.append" :item="item" />
         </v-chip>
       </template>
 
@@ -305,6 +308,8 @@
   const groupModal = useTemplateRef('groupModal')
   const localDisplayType = ref<DisplayType>('table')
   const localGroupTypes = ref<Grouptypes[]>([])
+
+  const currentRequest = ref<PaginatedRequest>()
 
   const groupFields = computed(() => {
     return [{
@@ -558,7 +563,7 @@
   }
 
   function manuallySelectAll (allSelected: any) {
-    if (!componentProps.getIds) {
+    if (!componentProps.getIds || !currentRequest.value) {
       return
     }
 
@@ -566,14 +571,7 @@
       selected.value = []
     } else {
       loading.value = true
-      componentProps.getIds({
-        page: currentPage.value,
-        limit: itemsPerPage.value,
-        prevCount: isResetCall ? -1 : totalItems.value,
-        orderBy: (localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].key : undefined,
-        ascending: +((localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].order === 'asc' : false),
-        filters: filters.value || [],
-      }).then((result: AxiosResponse<PaginatedResult<number[]>>) => {
+      componentProps.getIds(currentRequest.value).then((result: AxiosResponse<PaginatedResult<number[]>>) => {
         isResetCall.value = false
         if (result && result.data) {
           selected.value = result.data.data || []
@@ -586,20 +584,13 @@
   }
 
   function markAllItems (mark: boolean) {
-    if (!componentProps.getIds) {
+    if (!componentProps.getIds || !currentRequest.value) {
       return
     }
 
     if (componentProps.markedItemType) {
       emitter.emit('show-loading', true)
-      componentProps.getIds({
-        page: currentPage.value,
-        limit: itemsPerPage.value,
-        prevCount: isResetCall ? -1 : totalItems.value,
-        orderBy: (localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].key : undefined,
-        ascending: +((localSortByColumns.value && localSortByColumns.value.length > 0) ? localSortByColumns.value[0].order === 'asc' : false),
-        filters: filters.value || [],
-      })
+      componentProps.getIds(currentRequest.value)
         .then((result: AxiosResponse<PaginatedResult<number[]>>) => {
           if (mark) {
             store.addMarkedIds(componentProps.markedItemType || '', result.data.data)
@@ -612,7 +603,7 @@
   }
 
   function loadItems ({ page, itemsPerPage, sortBy }: { page: number, itemsPerPage: number, sortBy?: DataTableSortItem[] }) {
-    const request: PaginatedRequest = {
+    currentRequest.value = {
       page: page,
       limit: itemsPerPage,
       prevCount: isResetCall ? -1 : totalItems.value,
@@ -622,14 +613,17 @@
     }
 
     loading.value = true
-    componentProps.getData(request).then((result: AxiosResponse<PaginatedResult<T[]>>) => {
+    componentProps.getData(currentRequest.value).then((result: AxiosResponse<PaginatedResult<T[]>>) => {
       isResetCall.value = false
       loading.value = false
       if (result && result.data) {
         serverItems.value = result.data.data
         totalItems.value = result.data.count
+        if (currentRequest.value) {
+          currentRequest.value.prevCount = result.data.count
+        }
 
-        emit('data-changed', request, result.data)
+        emit('data-changed', currentRequest.value, result.data)
 
         if (urlPageToForce.value) {
           currentPage.value = urlPageToForce.value
@@ -773,6 +767,7 @@
     getSelection,
     setOverallOperator,
     forceFilters: (filters: FilterGroup[]) => tableFilterModal.value?.forceFilters(filters),
+    currentRequest: readonly(currentRequest),
   })
 </script>
 

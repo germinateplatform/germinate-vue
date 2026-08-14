@@ -2,11 +2,11 @@
   <v-row>
     <v-col class="v-input--indent-details">
       <HintContainer text="widgetGermplasmTableFilterHasData">
-        <v-btn-group variant="tonal">
-          <v-btn :icon="datasetTypes.trials.path" :color="datasetTypes.trials.color()" v-tooltip:top="datasetTypes.trials.text()" @click="filterDataType('trials')" />
-          <v-btn :icon="datasetTypes.genotype.path" :color="datasetTypes.genotype.color()" v-tooltip:top="datasetTypes.genotype.text()" @click="filterDataType('genotype')" />
-          <v-btn :icon="datasetTypes.pedigree.path" :color="datasetTypes.pedigree.color()" v-tooltip:top="datasetTypes.pedigree.text()" @click="filterDataType('pedigree')" />
-          <v-btn :icon="mdiCamera" :color="getTemplateColor(1)" v-tooltip:top="$t('widgetGermplasmTableFilterHasImages')" @click="filterDataType('image')" />
+        <v-btn-group variant="tonal" class="d-flex">
+          <v-btn class="flex-grow-1" :icon="datasetTypes.trials.path" :color="datasetTypes.trials.color()" v-tooltip:top="datasetTypes.trials.text()" @click="filterDataType('trials')" />
+          <v-btn class="flex-grow-1" :icon="datasetTypes.genotype.path" :color="datasetTypes.genotype.color()" v-tooltip:top="datasetTypes.genotype.text()" @click="filterDataType('genotype')" />
+          <v-btn class="flex-grow-1" :icon="datasetTypes.pedigree.path" :color="datasetTypes.pedigree.color()" v-tooltip:top="datasetTypes.pedigree.text()" @click="filterDataType('pedigree')" />
+          <v-btn class="flex-grow-1" :icon="mdiCamera" :color="getTemplateColor(1)" v-tooltip:top="$t('widgetGermplasmTableFilterHasImages')" @click="filterDataType('image')" />
         </v-btn-group>
       </HintContainer>
     </v-col>
@@ -20,6 +20,7 @@
         item-value="id"
         item-title="title"
         return-object
+        min-width="200px"
         class="mb-3"
         v-model="selectedTaxonomy"
         :items="aggregatedTaxonomy"
@@ -47,6 +48,7 @@
         item-value="id"
         :item-title="(bs: BiologicalStatusCount) => bs.biologicalstatus || 'N/A'"
         return-object
+        min-width="200px"
         class="mb-3"
         v-model="selectedBiologicalStatus"
         :items="biologicalStatus"
@@ -74,6 +76,7 @@
         item-value="id"
         :item-title="(bs: CountryCount) => bs.countryName || 'N/A'"
         return-object
+        min-width="200px"
         class="mb-3"
         v-model="selectedCountry"
         :items="countries"

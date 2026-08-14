@@ -31,9 +31,7 @@
 
     <HtmlTemplateEditor i18n-key="pageDashboardText" />
 
-    {{ store.storeServerSettings?.dashboardSections }}
-
-    <v-row>
+    <v-row class="mt-5">
       <v-col cols="12" :order="allDashboardSections.indexOf('publications') + 1" v-if="showPublicationSection && (showPublications || store.storeUserIsDataCurator)">
         <PublicationTable display-type="grid" :get-data="getPublicationData" :filter-on="publicationsFilter">
           <template #card-text>

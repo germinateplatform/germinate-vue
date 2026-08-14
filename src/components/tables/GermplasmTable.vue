@@ -40,6 +40,40 @@
       <v-icon :icon="datasetTypes.pedigree.path" v-tooltip:bottom="$t('tableColumnHasPedigreeData')" />
     </template>
 
+    <template #header.marking.append>
+      <v-divider />
+      <v-list-item :title="$t('tableContextMarkEntityParents')" :prepend-icon="mdiChevronUpBox" @click="markEntityParents(true)" />
+      <v-list-item :title="$t('tableContextUnmarkEntityParents')" :prepend-icon="mdiChevronUpBoxOutline" @click="markEntityParents(false)" />
+      <v-list-item :title="$t('tableContextMarkEntityChildren')" :prepend-icon="mdiChevronDownBox" @click="markEntityChildren(true)" />
+      <v-list-item :title="$t('tableContextUnmarkEntityChildren')" :prepend-icon="mdiChevronDownBoxOutline" @click="markEntityChildren(false)" />
+    </template>
+    <template #item.marking.append="{ item }">
+      <!-- Visual divider to separate the chip body from the dropdown arrow -->
+      <v-divider
+        vertical
+        class="mx-2 my-1"
+      />
+
+      <!-- Dropdown icon slot -->
+      <v-menu location="bottom end">
+        <template #activator="{ props }">
+          <v-icon
+            v-bind="props"
+            :icon="mdiChevronDown"
+            size="small"
+            @click.stop
+          />
+        </template>
+
+        <v-list slim>
+          <v-list-item :title="$t('tableContextMarkEntityParents')" :prepend-icon="mdiChevronUpBox" @click="markEntityParents(true, item)" />
+          <v-list-item :title="$t('tableContextUnmarkEntityParents')" :prepend-icon="mdiChevronUpBoxOutline" @click="markEntityParents(false, item)" />
+          <v-list-item :title="$t('tableContextMarkEntityChildren')" :prepend-icon="mdiChevronDownBox" @click="markEntityChildren(true, item)" />
+          <v-list-item :title="$t('tableContextUnmarkEntityChildren')" :prepend-icon="mdiChevronDownBoxOutline" @click="markEntityChildren(false, item)" />
+        </v-list>
+      </v-menu>
+    </template>
+
     <template #item.germplasmId="{ item }">
       <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmId }}</router-link>
     </template>
@@ -177,8 +211,11 @@
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
   import { columns } from '@/plugins/util/table-columns'
   import type { DataTableSortItem } from 'vuetify'
-  import { mdiCamera, mdiHelpCircle, mdiMapMarker, mdiPageNext, mdiSprout } from '@mdi/js'
+  import { mdiCamera, mdiHelpCircle, mdiMapMarker, mdiPageNext, mdiSprout, mdiChevronDownBox, mdiChevronDownBoxOutline, mdiChevronUpBox, mdiChevronUpBoxOutline, mdiChevronDown } from '@mdi/js'
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
+  import { apiPostEntityIds } from '@/plugins/api/germplasm'
+
+  import emitter from 'tiny-emitter/instance'
 
   interface GermplasmTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasm[]>>> }
@@ -238,6 +275,82 @@
       size: 'small',
       token: store.storeToken ? store.storeToken.imageToken : '',
     })
+  }
+
+  function markEntityParents (mark: boolean, item?: ViewTableGermplasm) {
+    if (item) {
+      // Easy, just get the parent id and add/remove
+      if (item.entityParentId) {
+        if (mark) {
+          store.addMarkedIds('germplasm', [item.entityParentId])
+        } else {
+          store.removeMarkedIds('germplasm', [item.entityParentId])
+        }
+      }
+    } else {
+      // Get from server
+      if (baseTable.value && baseTable.value.currentRequest) {
+        emitter.emit('show-loading', true)
+
+        // Get all the ids of items currently in the table
+        compProps.getIds(baseTable.value.currentRequest as PaginatedRequest)
+          .then(axiosResponse => {
+            if (axiosResponse?.data?.data) {
+              // Then exchange them for their entity parents
+              apiPostEntityIds(axiosResponse.data.data, 'up', result => {
+                if (result && result.length > 0) {
+                  if (mark) {
+                    store.addMarkedIds('germplasm', result)
+                  } else {
+                    store.removeMarkedIds('germplasm', result)
+                  }
+                }
+              }).finally(() => emitter.emit('show-loading', false))
+            }
+          })
+          .catch(() => emitter.emit('show-loading', false))
+      }
+    }
+  }
+
+  function markEntityChildren (mark: boolean, item?: ViewTableGermplasm) {
+    if (item) {
+      emitter.emit('show-loading', true)
+
+      // Exchange the current germplasm id for their entity children
+      apiPostEntityIds([item.germplasmId], 'down', result => {
+        if (result && result.length > 0) {
+          if (mark) {
+            store.addMarkedIds('germplasm', result)
+          } else {
+            store.removeMarkedIds('germplasm', result)
+          }
+        }
+      }).finally(() => emitter.emit('show-loading', false))
+    } else {
+      // Get from server
+      if (baseTable.value && baseTable.value.currentRequest) {
+        emitter.emit('show-loading', true)
+
+        // Get all the ids of items currently in the table
+        compProps.getIds(baseTable.value.currentRequest as PaginatedRequest)
+          .then(axiosResponse => {
+            if (axiosResponse?.data?.data) {
+              // Then exchange them for their entity children
+              apiPostEntityIds(axiosResponse.data.data, 'down', result => {
+                if (result && result.length > 0) {
+                  if (mark) {
+                    store.addMarkedIds('germplasm', result)
+                  } else {
+                    store.removeMarkedIds('germplasm', result)
+                  }
+                }
+              }).finally(() => emitter.emit('show-loading', false))
+            }
+          })
+          .catch(() => emitter.emit('show-loading', false))
+      }
+    }
   }
 
   defineExpose({
