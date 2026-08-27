@@ -106,6 +106,8 @@ name: genesysRequest
       emitter.emit('show-loading', false)
     }, {
       codes: [400, 404, 503],
+      // TODO: TEST THIS AGAIN!
+      // @ts-expect-error
       callback: (e: MaterialRequestResponse) => {
         // Do nothing here, it just means there is no data.
         emitter.emit('show-loading', false)

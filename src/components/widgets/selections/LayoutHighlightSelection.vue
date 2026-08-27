@@ -69,7 +69,7 @@
     <TraitSelection
       v-else-if="selectionMode === 'trait'"
       :traits="traits"
-      :label="$t('formDescriptionHighlightTraitValues')"
+      :label="$t('formLabelHighlightTraitValues')"
       :hint="$t('formDescriptionHighlightTraitValues')"
       v-model="selectedTrait"
       :can-select-all="false"

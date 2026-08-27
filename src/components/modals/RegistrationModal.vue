@@ -211,7 +211,7 @@
   import { isSet } from '@/plugins/util'
 
   import emitter from 'tiny-emitter/instance'
-  import type { AxiosResponse } from 'axios'
+  import type { AxiosError, AxiosResponse } from 'axios'
   import { apiGetGatekeeperInstitutions, apiPostGatekeeperExisting, apiPostGatekeeperNew } from '@/plugins/api/gatekeeper'
 
   zxcvbnOptions.setOptions({
@@ -436,12 +436,12 @@
         }
       }, {
         codes: [],
-        callback: (error: AxiosResponse) => {
+        callback: (error: AxiosError) => {
           // Show error
-          if (error && error.data && error.data && gatekeeperErrors[error.data]) {
-            errorMessage.value = t(gatekeeperErrors[error.data])
+          if (error && error.response && error.response.data && error.response.data && gatekeeperErrors[error.response.data as string]) {
+            errorMessage.value = t(gatekeeperErrors[error.response.data as string])
           } else {
-            errorMessage.value = error.data || handleError(error)
+            errorMessage.value = (error.response?.data as string) || handleError(error)
           }
         },
       }).finally(() => emitter.emit('show-loading', false))
@@ -468,12 +468,12 @@
         }
       }, {
         codes: [],
-        callback: (error: AxiosResponse) => {
+        callback: (error: AxiosError) => {
           // Show error
-          if (error && error.data && error.data && gatekeeperErrors[error.data]) {
-            errorMessage.value = t(gatekeeperErrors[error.data])
+          if (error && error.response && error.response.data && error.response.data && gatekeeperErrors[error.response.data as string]) {
+            errorMessage.value = t(gatekeeperErrors[error.response.data as string])
           } else {
-            errorMessage.value = error.data || handleError(error)
+            errorMessage.value = (error.response?.data as string) || handleError(error)
           }
         },
       }).finally(() => emitter.emit('show-loading', false))

@@ -3,7 +3,38 @@
   <v-responsive v-else>
     <v-app>
       <v-main class="mx-auto mt-10 d-flex justify-center align-center">
-        <v-card max-width="800px" min-width="50vw" :loading="loaded === undefined">
+        <v-card max-width="800px" min-width="50vw" v-if="configIssue">
+          <v-img
+            height="200px"
+            class="ma-4 mt-8"
+            src="/img/germinate-square-name.svg"
+            contain
+          />
+
+          <v-card-title>{{ $t('pageLoadingConfigErrorTitle') }}</v-card-title>
+          <v-card-subtitle>{{ $t('pageLoadingConfigErrorSubtitle') }}</v-card-subtitle>
+          <v-card-text>
+            <div v-html="$t('pageLoadingConfigErrorText')" />
+
+            <v-list variant="tonal">
+              <v-list-item
+                :base-color="configIssue.dbConfigValid === true ? 'success' : 'error'"
+                :title="$t('pageLoadingConfigStatusDatabaseTitle')"
+                :subtitle="$t('pageLoadingConfigStatusDatabaseSubtitle')"
+                :prepend-icon="configIssue.dbConfigValid === true ? mdiDatabaseCheck : mdiDatabaseAlert"
+                :append-icon="configIssue.dbConfigValid === true ? mdiCheck : mdiClose"
+              />
+              <v-list-item
+                :base-color="configIssue.gkConfigValid === true ? 'success' : 'error'"
+                :title="$t('pageLoadingConfigStatusGatekeeperTitle')"
+                :subtitle="$t('pageLoadingConfigStatusGatekeeperSubtitle')"
+                :prepend-icon="configIssue.gkConfigValid === true ? mdiShieldCheck : mdiShieldAlert"
+                :append-icon="configIssue.gkConfigValid === true ? mdiCheck : mdiClose"
+              />
+            </v-list>
+          </v-card-text>
+        </v-card>
+        <v-card max-width="800px" min-width="50vw" :loading="loaded === undefined" v-else>
           <template #loader="{ isActive }">
             <v-progress-linear
               :active="isActive"
@@ -41,6 +72,9 @@
   import { coreStore } from '@/stores/app'
   import { useTheme } from 'vuetify'
   import { apiGetSettings } from '@/plugins/api/setting'
+  import type { AxiosError } from 'axios'
+  import type { GerminateConfigStatus } from '@/plugins/types/germinate'
+  import { mdiDatabaseAlert, mdiShieldAlert, mdiShieldCheck, mdiDatabaseCheck, mdiCheck, mdiClose } from '@mdi/js'
 
   export default {
     setup () {
@@ -48,6 +82,7 @@
       const store = coreStore()
       const loaded = ref<boolean | undefined>()
       const error = ref<string | undefined>()
+      const configIssue = ref<GerminateConfigStatus>()
       const theme = useTheme()
 
       // Set base URL based on environment
@@ -59,6 +94,13 @@
       store.setBaseUrl(baseUrl)
 
       return {
+        mdiDatabaseAlert,
+        mdiDatabaseCheck,
+        mdiShieldAlert,
+        mdiShieldCheck,
+        mdiCheck,
+        mdiClose,
+        configIssue,
         store,
         loaded,
         error,
@@ -69,17 +111,22 @@
       apiGetSettings(result => {
         this.store.setServerSettings(result)
         this.loaded = true
+        this.configIssue = undefined
 
         if (result.colorPrimary) {
           this.theme.themes.value.light.colors.primary = result.colorPrimary
           this.theme.themes.value.dark.colors.primary = result.colorPrimary
         }
       }, {
-        codes: [],
-        callback: (err: Error) => {
-          console.log(err)
+        codes: [503],
+        callback: (err: AxiosError) => {
           this.loaded = false
-          this.error = err.message
+          if (err && err.status === 503) {
+            this.configIssue = err.response?.data as GerminateConfigStatus
+          } else {
+            console.log(err)
+            this.error = err.message
+          }
         },
       })
     },

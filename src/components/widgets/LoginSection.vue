@@ -78,7 +78,7 @@
 <script setup lang="ts">
   import { apiPostToken } from '@/plugins/api/auth'
   import { coreStore } from '@/stores/app'
-  import type { AxiosResponse } from 'axios'
+  import type { AxiosError } from 'axios'
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
@@ -142,7 +142,7 @@
       emitter.emit('update-async-jobs')
     }, {
       codes: [403, 503],
-      callback: (e: AxiosResponse) => {
+      callback: (e: AxiosError) => {
         loading.value = false
         switch (e.status) {
           case 403: {

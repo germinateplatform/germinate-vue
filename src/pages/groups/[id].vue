@@ -74,7 +74,7 @@
     </MarkerTable>
 
     <template v-if="showPublications || store.storeUserIsDataCurator">
-      <PublicationTable class="mt-5" display-type="grid" :get-data="getPublicationData" :publication-reference-id="groupId" publication-reference-type="group">
+      <PublicationTable class="mt-5" display-type="grid" :get-data="getPublicationData" :publication-reference-id="groupId" :publication-reference-type="PublicationdataReferenceType.group">
         <template #card-text>
           <v-card-text>{{ $t('pageGroupsPublicationsText') }}</v-card-text>
         </template>
@@ -117,7 +117,7 @@ name: groupDetails
   import { apiPostGroupLocationTable, apiPostGroupLocationTableExport, apiPostGroupLocationTableIds, apiPostLocationTableIds } from '@/plugins/api/location'
   import { apiPostPublicationsTable } from '@/plugins/api/publication'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type GroupModificationRequest, type PaginatedRequest, type PaginatedResult, type ViewTableGroups } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, PublicationdataReferenceType, type GroupModificationRequest, type PaginatedRequest, type PaginatedResult, type ViewTableGroups } from '@/plugins/types/germinate'
   import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { lookupDoiInformation } from '@/plugins/util'

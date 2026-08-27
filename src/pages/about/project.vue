@@ -22,7 +22,7 @@
           item-key="id"
           tag="div"
           handle=".drag-handle"
-          class="v-row"
+          class="v-row v-row--density-default"
         >
           <v-col
             v-for="(item, itemIndex) in group.items"
@@ -37,11 +37,18 @@
                   <div>
                     <v-card-title class="text-headline-small text-wrap d-flex">
                       <v-icon class="drag-handle" :icon="mdiDrag" v-if="store.storeUserIsAdmin" />
-                      <v-text-field v-model="item.name" hide-details v-if="store.storeUserIsAdmin && item.isEditing === true" />
+                      <v-text-field v-model="item.name" :label="$t('formLabelAboutPartnerName')" hide-details v-if="store.storeUserIsAdmin && item.isEditing === true" />
                       <span v-else>{{ item.name }}</span>
                     </v-card-title>
 
-                    <v-card-subtitle class="text-wrap">{{ item.description }}</v-card-subtitle>
+                    <v-card-subtitle class="text-wrap">
+                      <v-text-field v-model="item.description" :label="$t('formLabelAboutPartnerDescription')" hide-details v-if="store.storeUserIsAdmin && item.isEditing === true" />
+                      <span v-else>{{ item.description }}</span>
+                    </v-card-subtitle>
+
+                    <v-card-text v-if="store.storeUserIsAdmin && item.isEditing === true">
+                      <v-text-field v-model="item.url" :label="$t('formLabelAboutPartnerUrl')" hide-details />
+                    </v-card-text>
                   </div>
 
                   <v-card-actions class="mb-2">
@@ -54,6 +61,7 @@
                       color="primary"
                       :prepend-icon="mdiOpenInNew"
                       :href="item.url"
+                      v-if="item.url"
                     />
                     <v-btn
                       v-if="store.storeUserIsAdmin"
@@ -75,7 +83,7 @@
                   </v-card-actions>
                 </div>
 
-                <v-img aspect-ratio="1/1" class="ma-4" inline width="125" height="125" contain :src="`${store.storeBaseUrl}image/src/?name=${item.image}&type=template`" />
+                <v-img crossorigin="anonymous" aspect-ratio="1/1" class="ma-4" inline width="125" height="125" contain :src="`${store.storeBaseUrl}image/src/?name=${item.image}&type=template`" />
               </div>
             </v-card>
           </v-col>
@@ -164,9 +172,8 @@ name: aboutProject
       title: 'formLabelAboutPartnerUrl',
       type: 'text' as const,
       inputType: 'url',
-      required: true,
+      required: false,
       width: 2,
-      valid: (value: string) => value !== undefined && value !== null && value.trim().length > 0,
     }, {
       key: 'image',
       title: 'formLabelAboutPartnerImage',
@@ -200,7 +207,7 @@ name: aboutProject
   function onSendInfo () {
     const formData = new FormData()
 
-    if (!selectedInfo.value.name || !selectedInfo.value.url || !selectedInfo.value.image) {
+    if (!selectedInfo.value.name || !selectedInfo.value.image) {
       return new Promise<boolean>((resolve, reject) => reject(false))
     }
 
@@ -211,7 +218,9 @@ name: aboutProject
     if (selectedInfo.value.group) {
       formData.append('group', selectedInfo.value.group)
     }
-    formData.append('url', selectedInfo.value.url)
+    if (selectedInfo.value.url) {
+      formData.append('url', selectedInfo.value.url)
+    }
     formData.append('imageFile', selectedInfo.value.image)
 
     return new Promise<boolean>(resolve => apiPostAboutPartner(formData, () => resolve(true)))

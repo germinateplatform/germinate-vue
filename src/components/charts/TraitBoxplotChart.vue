@@ -231,6 +231,7 @@
           bgcolor: 'rgba(0,0,0,0)',
           orientation: 'h' as const,
           x: 0,
+          y: 1.1,
           font: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
       }

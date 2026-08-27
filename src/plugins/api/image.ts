@@ -31,7 +31,7 @@ export function apiDeleteTemplateImageByName (name: string, onSuccess?: Germinat
   return authAxios({ url: `image/${name}`, method: 'DELETE', success: onSuccess, error: onError })
 }
 
-export function apiPostCarouselImage (formData: FormData, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+export function apiPostCarouselImage (formData: FormData, onSuccess?: GerminateResponseHandler<string>, onError?: ErrorHandler) {
   return authForm({ url: 'image/carousel', method: 'POST', formData, success: onSuccess, error: onError })
 }
 

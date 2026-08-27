@@ -70,7 +70,7 @@
             <v-row>
               <v-col cols="12" lg="4">
                 <div class="d-flex flex-column align-center">
-                  <v-avatar :image="`/img/${member.img}`" :size="lg ? 120 : 160" />
+                  <v-avatar :size="lg ? 120 : 160" :image="`./img/team/${member.img}`" />
                   <v-chip variant="tonal" label color="success" class="mt-3" :prepend-icon="mdiCalendar">Since {{ member.since }}</v-chip>
                 </div>
               </v-col>
@@ -105,15 +105,20 @@
       <h2 class="mt-10 mb-3">{{ $t('pageAboutGerminateLocationTitle') }}<small class="text-muted"> - {{ $t('pageAboutGerminateLocationSubtitle') }}</small></h2>
       <LocationMap :show-links="false" :locations="[location]" class="mb-5" />
 
+      <template v-if="store.storeServerSettings?.donationsSectionEnabled">
+        <h2 class="mt-10 mb-3">{{ $t('pageAboutGerminateDonationsTitle') }}<small class="text-muted"> - {{ $t('pageAboutGerminateDonationsSubtitle') }}</small></h2>
+        <div v-html="$t('pageAboutGerminateDonationsText')" />
+      </template>
+
       <h2 class="mt-10 mb-3">{{ $t('pageAboutGerminateFundersTitle') }}<small class="text-muted"> - {{ $t('pageAboutGerminateFundersSubtitle') }}</small></h2>
       <p>{{ $t('pageAboutGerminateFundersText') }}</p>
       <v-row class="funders">
         <v-col cols="12" sm="6" md="4" lg="3" xxl="2" v-for="(funder, i) in funders" :key="'about-funders-' + i" class="text-center pb-5 col-xxl-2">
           <div class="pa-3 pa-xl-4 img-container">
             <a :href="funder.href" :title="funder.name" target="_blank" rel="noopener noreferrer" v-if="funder.href">
-              <v-img height="100" :src="`./img/${funder.logo}`" alt="Funder logo" />
+              <v-img height="100" :src="`./img/funders/${funder.logo}`" alt="Funder logo" />
             </a>
-            <v-img height="100" :src="`./img/${funder.logo}`" alt="Funder logo" v-else />
+            <v-img height="100" :src="`./img/funders/${funder.logo}`" alt="Funder logo" v-else />
           </div>
         </v-col>
       </v-row>
@@ -135,9 +140,11 @@ name: aboutGerminate
   import emitter from 'tiny-emitter/instance'
   import { useDisplay } from 'vuetify'
   import { mdiBriefcaseVariant, mdiCalendar, mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiInformation, mdiInformationOutline, mdiTag, mdiTwitter, mdiWeb } from '@mdi/js'
+  import { coreStore } from '@/stores/app'
 
   const { t } = useI18n()
   const { lg } = useDisplay()
+  const store = coreStore()
 
   interface TeamMember {
     name: string
@@ -198,117 +205,117 @@ name: aboutGerminate
     {
       name: 'The James Hutton Institute',
       href: 'https://www.hutton.ac.uk/',
-      logo: 'funders/hutton.svg',
+      logo: 'hutton.svg',
     },
     {
       name: 'Crop Trust',
       href: 'https://www.croptrust.org/',
-      logo: 'funders/crop-trust.svg',
+      logo: 'crop-trust.svg',
     },
     {
       name: 'The Crop Wild Relatives Project',
       href: 'https://www.cwrdiversity.org/',
-      logo: 'funders/cwr.svg',
+      logo: 'cwr.svg',
     },
     {
       name: 'Norway',
       href: 'https://www.norway.no/',
-      logo: 'funders/norway.svg',
+      logo: 'norway.svg',
     },
     {
       name: 'Norwegian Ministry of Foreign Affairs',
       href: 'https://www.regjeringen.no/en/dep/ud/id833/',
-      logo: 'funders/norwegian-ministry-of-foreign-affairs.svg',
-    },
-    {
-      name: 'Templeton World Charity Foundation',
-      href: 'https://www.templetonworldcharity.org/',
-      logo: 'funders/templeton.svg',
+      logo: 'norwegian-ministry-of-foreign-affairs.svg',
     },
     {
       name: 'CIMMYT',
       href: 'https://www.cimmyt.org/',
-      logo: 'funders/cimmyt.svg',
+      logo: 'cimmyt.svg',
     },
     {
       name: 'University of Dundee',
       href: 'https://www.dundee.ac.uk/',
-      logo: 'funders/uod.svg',
+      logo: 'uod.svg',
     },
     {
       name: 'UK Research and Innovation',
       href: 'https://www.ukri.org/',
-      logo: 'funders/ukri.svg',
+      logo: 'ukri.svg',
     },
     {
       name: 'Biotechnology and Biological Sciences Research Council',
       href: 'https://bbsrc.ukri.org/',
-      logo: 'funders/bbsrc.svg',
+      logo: 'bbsrc.svg',
     },
     {
       name: 'UKRI Innovate UK',
       href: 'https://www.gov.uk/government/organisations/innovate-uk',
-      logo: 'funders/innovate-uk.svg',
+      logo: 'innovate-uk.svg',
     },
     {
       name: 'Rural & Environment Science & Analytical Services',
       href: undefined,
-      logo: 'funders/resas.svg',
+      logo: 'resas.svg',
     },
     {
       name: 'The Scottish Government',
       href: 'https://www.gov.scot/',
-      logo: 'funders/scottish-government.svg',
+      logo: 'scottish-government.svg',
     },
     {
       name: 'Scottish Environment, Food and Agriculture Research Institutes',
       href: 'https://sefari.scot/',
-      logo: 'funders/sefari.svg',
+      logo: 'sefari.svg',
     },
     {
       name: 'James Hutton Institute Scientific Services',
       href: 'https://www.hutton.ac.uk/scientific-services/',
-      logo: 'funders/jhiss.svg',
+      logo: 'jhiss.svg',
     },
     {
       name: 'International Barley Hub',
       href: 'https://www.barleyhub.org/',
-      logo: 'funders/ibh.svg',
+      logo: 'ibh.svg',
     },
     {
       name: 'CRP Maize',
       href: 'https://maize.org/',
-      logo: 'funders/crp-maize.svg',
+      logo: 'crp-maize.svg',
     },
     {
       name: 'CRP Wheat',
       href: 'https://wheat.org/',
-      logo: 'funders/crp-wheat.svg',
+      logo: 'crp-wheat.svg',
     },
     {
       name: 'International Wheat Yield Partnership',
       href: 'https://iwyp.org/',
-      logo: 'funders/iwyp.svg',
+      logo: 'iwyp.svg',
     },
     {
       name: 'Secretaría de Agricultura y Desarrollo Rural',
       href: 'https://www.gob.mx/agricultura',
-      logo: 'funders/sader.svg',
+      logo: 'sader.svg',
     },
     {
       name: 'DivSeek International Network',
       href: 'https://divseekintl.org/',
-      logo: 'funders/divseek.png',
+      logo: 'divseek.png',
     },
     {
       name: 'European Union',
       href: 'https://europa.eu/',
-      logo: 'funders/eu.svg',
+      logo: 'eu.svg',
     },
     {
       name: 'Department for Environment, Food and Rural Affairs',
       href: 'https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs',
-      logo: 'funders/defra.svg',
+      logo: 'defra.svg',
+    },
+    {
+      name: 'Templeton World Charity Foundation',
+      href: 'https://www.templetonworldcharity.org/',
+      logo: 'templeton.svg',
     },
   ])
 
@@ -329,7 +336,7 @@ name: aboutGerminate
     {
       name: 'Sebastian Raubach',
       job: () => t('pageAboutGerminateTeamJobSebastian'),
-      img: 'team/sebastian-raubach.jpg',
+      img: 'sebastian-raubach.jpg',
       about: () => t('pageAboutGerminateTeamSebastian'),
       since: 2012,
       links: [{
@@ -349,7 +356,7 @@ name: aboutGerminate
     {
       name: 'Iain Milne',
       job: () => t('pageAboutGerminateTeamJobIain'),
-      img: 'team/iain-milne.jpg',
+      img: 'iain-milne.jpg',
       about: () => t('pageAboutGerminateTeamIain'),
       since: 2010,
       links: [{
@@ -361,7 +368,7 @@ name: aboutGerminate
     {
       name: 'Paul Shaw',
       job: () => t('pageAboutGerminateTeamJobPaul'),
-      img: 'team/paul-shaw.jpg',
+      img: 'paul-shaw.jpg',
       about: () => t('pageAboutGerminateTeamPaul'),
       since: 2004,
       links: [{

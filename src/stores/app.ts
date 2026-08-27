@@ -47,8 +47,8 @@ export type HiddenColumns = { [key: string]: string[] }
 type UserState = { [key: number]: UserStateContent }
 
 const defaultUserState: UserStateContent = {
-  theme: 'system',
-  systemTheme: 'dark',
+  theme: 'light',
+  systemTheme: 'light',
   locale: 'en_GB',
   mapLayer: 'theme',
   hiddenColumns: {
@@ -214,7 +214,7 @@ export const coreStore = defineStore('germinate', {
       return (this.userStates[this.storeUserId].theme === 'system' ? this.userStates[this.storeUserId].systemTheme : this.userStates[this.storeUserId].theme) === 'dark'
     },
     storeSystemTheme (): string {
-      return this.userStates[this.storeUserId].systemTheme || 'dark'
+      return this.userStates[this.storeUserId].systemTheme || 'light'
     },
     storeTheme (): string {
       return this.userStates[this.storeUserId].theme || 'system'

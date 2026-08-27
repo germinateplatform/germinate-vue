@@ -531,6 +531,7 @@ export interface ClientConfiguration {
     hiddenColumns: HiddenColumns;
     supportsFeedback: boolean;
     genesysUrl: string;
+    donationsSectionEnabled?: boolean;
 }
 
 export interface HiddenColumns {
@@ -1553,7 +1554,7 @@ export interface Fileresourcetypes {
 
 export interface ImageConfig {
     name: string;
-    text: string;
+    text?: string;
 }
 
 export interface AboutInfo {
@@ -1564,6 +1565,11 @@ export interface AboutInfo {
     url?: string;
     image?: string;
     isEditing?: boolean
+}
+
+export interface GerminateConfigStatus {
+    dbConfigValid: boolean;
+    gkConfigValid: boolean;
 }
 
 export type CarouselConfig = { [key: string]: ImageConfig[] }

@@ -2,7 +2,7 @@ import { coreStore } from '@/stores/app'
 import router from '@/router'
 import { i18n } from '@/plugins/vuetify.ts'
 import { Pages } from '@/plugins/pages'
-import axios, { type AxiosResponse, type ResponseType } from 'axios'
+import axios, { type AxiosError, type ResponseType } from 'axios'
 
 import emitter from 'tiny-emitter/instance'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
@@ -44,15 +44,15 @@ export function getToken () {
   return t ? t.token : null
 }
 
-export function handleError (error: AxiosResponse) {
+export function handleError (error: AxiosError) {
   const store = coreStore()
   emitter.emit('show-loading', false)
   const variant = 'error'
   const title = i18n.global.t('genericError')
-  let message = error.statusText
+  let message = error.response?.statusText
 
-  if (error.data && error.data && gatekeeperErrors[error.data]) {
-    message = i18n.global.t(gatekeeperErrors[error.data])
+  if (error.response?.data && error.response?.data && gatekeeperErrors[error.response.data as string]) {
+    message = i18n.global.t(gatekeeperErrors[error.response.data as string])
   } else {
     const authMode = store.storeServerSettings?.authMode
     switch (error.status) {
@@ -113,7 +113,7 @@ export function handleError (error: AxiosResponse) {
 
 export interface ErrorHandler {
   codes: number[]
-  callback: Function
+  callback: (response: AxiosError) => void
 }
 
 /**
@@ -257,7 +257,7 @@ export function authAxios<T> ({ url = undefined, method = 'GET', data = null, da
     }
   })
 
-  promise.catch(err => {
+  promise.catch((err: AxiosError) => {
     if (err.response) {
       // The request was made and the server responded with a status code that falls out of the range of 2xx
       // Log the user out if the result is forbidden and no error method has been provided
@@ -275,9 +275,9 @@ export function authAxios<T> ({ url = undefined, method = 'GET', data = null, da
         }
       } else if (error && error.callback) {
         if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
-          return error.callback(err.response)
+          return error.callback(err)
         } else {
-          return handleError(err.response)
+          return handleError(err)
         }
       } else if (process.env.NODE_ENV === 'development') {
         console.error(err)

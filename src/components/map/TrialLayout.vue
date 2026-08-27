@@ -281,26 +281,32 @@
         }
       } else {
         Object.values(cellMapping.value).forEach(c => {
-          c.traitValue = undefined
-          c.color = undefined
           let index = -1
           switch (us.type) {
             case 'reps':
               index = options.indexOf(c.rep || '')
+              c.traitValue = c.rep
               break
             case 'treatments':
               index = options.indexOf(c.treatment || '')
+              c.traitValue = c.treatment
               break
             case 'taxonomies':
               index = options.indexOf(`${c.taxonomyId || ''}`)
+              const tax = taxonomies.value?.find(t => t.id === c.taxonomyId)
+              c.traitValue = tax ? [tax.genus, tax.species, tax.subtaxa].filter(p => p !== undefined && p !== '').join(' ') : 'N/A'
               break
             case 'germplasm':
               index = options.indexOf(c.germplasmDisplayName)
+              c.traitValue = c.germplasmDisplayName
               break
           }
 
           if (index !== -1) {
+            c.color = getColor(index + 1)
             hl.set(`${c.row - 1}|${c.column - 1}`, getColor(index + 1))
+          } else {
+            c.color = undefined
           }
         })
       }

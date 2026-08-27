@@ -125,8 +125,7 @@
 
     apiPostTrialsDataTable(query, result => {
       traitData.value = result.data
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
 
     categoricalTraits.value.forEach(t => {
       const q = Object.assign(query, { traitIds: [t.variableId] })

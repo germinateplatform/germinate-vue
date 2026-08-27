@@ -1,6 +1,6 @@
 import { authAxios, type ErrorHandler } from '@/plugins/api/base'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { AsyncExportResult, Datawarnings, DbObjectCount, ExportRequest, GermplasmDistance, GermplasmExportRequest, GermplasmStats, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneGermplasmUnificationRequest, SgoneUnificationRequest, TaxonCount, UnificationRequest, ViewMcpd, ViewTableDatasets, ViewTableEntities, ViewTableGermplasm, ViewTableGermplasmAttributes, ViewTableGroupGermplasm, ViewTableGroups, ViewTablePedigreedefinitions, ViewTablePedigrees, ViewTableTaxonomies } from '@/plugins/types/germinate'
+import type { AsyncExportResult, Datawarnings, DbObjectCount, ExportRequest, GermplasmDistance, GermplasmExportRequest, GermplasmStats, Locations, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest, PaginatedResult, PedigreeRequest, SgoneUnificationRequest, TaxonCount, UnificationRequest, ViewMcpd, ViewTableDatasets, ViewTableEntities, ViewTableGermplasm, ViewTableGermplasmAttributes, ViewTableGroupGermplasm, ViewTableGroups, ViewTablePedigreedefinitions, ViewTablePedigrees, ViewTableTaxonomies } from '@/plugins/types/germinate'
 
 export function apiGetGermplasmMcpd (germplasmId: number, onSuccess?: GerminateResponseHandler<ViewMcpd>, onError?: ErrorHandler) {
   return authAxios({ url: `germplasm/${germplasmId}/mcpd`, success: onSuccess, error: onError })
