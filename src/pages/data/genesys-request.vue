@@ -11,7 +11,7 @@
     <template v-else>
       <p>{{ $t('pageGenesysText') }}</p>
 
-      <b-alert variant="warning" v-if="!store.serverSettings?.genesysAvailable">{{ $t('pageGenesysUnavailable') }}</b-alert>
+      <v-alert color="warning" variant="tonal" v-if="!store.serverSettings?.genesysAvailable">{{ $t('pageGenesysUnavailable') }}</v-alert>
       <template v-else>
         <GermplasmTable :get-data="getGermplasmData" :get-ids="getGermplasmIds" :download="downloadGermplasm" :filter-on="germplasmFilters" ref="germplasmTable" />
       </template>
@@ -20,7 +20,7 @@
         <v-col cols="12" sm="6" md="4" lg="3">
           <v-card :title="$t('pageGenesysFormDetailsTitle')">
             <template #text>
-              <v-form @submit.prevent="submit">
+              <v-form @submit.prevent="submit" :disabled="store.storeMarkedGermplasm.length === 0">
                 <template v-if="!store.storeToken">
                   <v-text-field :label="$t('formLabelFullName')" v-model="name" required />
                   <v-text-field :label="$t('formLabelEmail')" v-model="email" type="email" required />
@@ -51,10 +51,10 @@ name: genesysRequest
   import { apiPostGermplasmTable, apiPostGermplasmTableIds } from '@/plugins/api/germplasm'
   import { apiPostGenesysRequest, apiPostTableExport } from '@/plugins/api/misc'
   import { Pages } from '@/plugins/pages'
-  import type { MaterialRequestResponse } from '@/plugins/types/genesys'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
   import { mdiAccount } from '@mdi/js'
+  import type { AxiosError } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
@@ -106,9 +106,7 @@ name: genesysRequest
       emitter.emit('show-loading', false)
     }, {
       codes: [400, 404, 503],
-      // TODO: TEST THIS AGAIN!
-      // @ts-expect-error
-      callback: (e: MaterialRequestResponse) => {
+      callback: (e: AxiosError) => {
         // Do nothing here, it just means there is no data.
         emitter.emit('show-loading', false)
 
@@ -117,19 +115,22 @@ name: genesysRequest
             // TODO
             break
           case 400:
-            if (e.data && e.data.length > 0) {
-              emitter.emit('show-confirm', {
-                title: t('modalTitleGenesysMissingItems'),
-                message: t('modalTextGenesysMissingItems', { missing: e.data.length, total: store.storeMarkedGermplasm.length }),
-                okTitle: t('genericYes'),
-                cancelTitle: t('genericNo'),
-                okVariant: 'error',
-                callback: (result: boolean) => {
-                  if (result === true) {
-                    store.removeMarkedIds('germplasm', e.data)
-                  }
-                },
-              })
+            if (e.response && e.response.data) {
+              const ids = e.response.data as number[]
+              if (ids.length > 0) {
+                emitter.emit('show-confirm', {
+                  title: t('modalTitleGenesysMissingItems'),
+                  message: t('modalTextGenesysMissingItems', { missing: ids.length, total: store.storeMarkedGermplasm.length }),
+                  okTitle: t('genericYes'),
+                  cancelTitle: t('genericNo'),
+                  okVariant: 'error',
+                  callback: (result: boolean) => {
+                    if (result === true) {
+                      store.removeMarkedIds('germplasm', ids)
+                    }
+                  },
+                })
+              }
             }
             break
           case 503:

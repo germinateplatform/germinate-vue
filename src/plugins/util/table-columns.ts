@@ -56,6 +56,11 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnBiologicalStatus',
   searchable: true,
 }, {
+  key: 'taxonomyId',
+  dataType: 'integer',
+  title: 'tableColumnTaxonomyId',
+  searchable: true,
+}, {
   key: 'genus',
   dataType: 'string',
   title: 'tableColumnGenus',

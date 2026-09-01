@@ -11,7 +11,7 @@
     :show-details="false"
     item-key="taxonomyId"
     table-key="taxonomies"
-    :header-icon="mdiGraph"
+    :header-icon="mdiLan"
     :header-title="$t('pageTaxonomiesTitle')"
     v-bind="$attrs"
   >
@@ -57,7 +57,7 @@
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
   import { coreStore } from '@/stores/app'
-  import { mdiGraph, mdiIdentifier } from '@mdi/js'
+  import { mdiLan, mdiIdentifier } from '@mdi/js'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTaxonomies[]>>> }

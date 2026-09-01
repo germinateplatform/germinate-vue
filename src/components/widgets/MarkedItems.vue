@@ -26,7 +26,7 @@
     <MarkerTable :get-data="getMarkerData" :get-ids="getMarkerIds" :download="downloadMarkers" :filter-on="markerFilters" v-else-if="localType === 'markers'" />
 
     <template v-if="localType === 'germplasm' && store.serverSettings?.genesysAvailable">
-      <v-btn class="my-5" color="info" :to="Pages.genesysRequest.path" prepend-icon="$genesys" :text="$t('buttonGoToGenesysOrdering')" />
+      <v-btn class="my-5" color="info" :to="Pages.genesysRequest.path" prepend-icon="$genesys" :disabled="store.storeMarkedGermplasm.length === 0" :text="$t('buttonGoToGenesysOrdering')" />
     </template>
   </v-container>
 </template>

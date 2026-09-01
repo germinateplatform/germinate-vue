@@ -1548,7 +1548,7 @@
   "tableColumnSpecies": "Species",
   "tableColumnSubtaxa": "Subtaxa",
   "tableColumnSynonyms": "Synonyms",
-  "tableColumnTaxonomyId": "Id",
+  "tableColumnTaxonomyId": "Taxonomy id",
   "tableColumnTaxonomyGenus": "Genus",
   "tableColumnTaxonomySpecies": "Species",
   "tableColumnTaxonomySubtaxa": "Subtaxa",
