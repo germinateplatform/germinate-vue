@@ -71,6 +71,7 @@
       key: 'markerName',
       title: t('tableColumnMarkerName'),
       dataType: 'string',
+      quickSearchable: true,
     }, {
       key: 'markerType',
       dataType: 'string',

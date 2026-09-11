@@ -18,12 +18,12 @@
       <v-tabs-window v-model="tab">
         <v-tabs-window-item eager :transition="false" :reverse-transition="false" :value="1">
           <!-- Point search map -->
-          <LocationMap :locations="[]" :rounded="false" selection-mode="point" ref="pointMap" />
+          <LocationMap :locations="[]" :rounded="false" selection-mode="point" ref="pointMap" @location-updated="update" />
         </v-tabs-window-item>
 
         <v-tabs-window-item eager :transition="false" :reverse-transition="false" :value="2">
           <!-- Point search map -->
-          <LocationMap :locations="polygonLocations || []" map-type="cluster" :rounded="false" selection-mode="polygon" ref="polygonMap" />
+          <LocationMap :locations="polygonLocations || []" map-type="cluster" :rounded="false" selection-mode="polygon" ref="polygonMap" @location-updated="update" />
         </v-tabs-window-item>
       </v-tabs-window>
 
@@ -36,24 +36,24 @@
     <v-card class="mt-5">
       <v-tabs-window v-model="tab">
         <v-tabs-window-item :transition="false" :reverse-transition="false" :value="1">
-          <GermplasmTable :get-data="getGermplasmData" :get-ids="getGermplasmIds" v-if="point" :sort-by="[{ key: 'distance', order: 'asc' }]" table-mode="distance">
+          <GermplasmTable ref="germplasmTable" :get-data="getGermplasmData" :get-ids="getGermplasmIds" v-if="point" :sort-by="[{ key: 'distance', order: 'asc' }]" table-mode="distance">
             <template #card-text>
               <v-card-text>{{ $t('pageGeographicSearchPointGermplasmResultTitle') }}</v-card-text>
             </template>
           </GermplasmTable>
-          <LocationTable class="mt-5" :get-data="getLocationData" :get-ids="getLocationIds" v-if="point" :sort-by="[{ key: 'distance', order: 'asc' }]" table-mode="distance">
+          <LocationTable ref="locationTable" class="mt-5" :get-data="getLocationData" :get-ids="getLocationIds" v-if="point" :sort-by="[{ key: 'distance', order: 'asc' }]" table-mode="distance">
             <template #card-text>
               <v-card-text>{{ $t('pageGeographicSearchPointLocationResultTitle') }}</v-card-text>
             </template>
           </LocationTable>
         </v-tabs-window-item>
         <v-tabs-window-item eager :transition="false" :reverse-transition="false" :value="2">
-          <GermplasmTable :get-data="getGermplasmData" :get-ids="getGermplasmIds" v-if="polygons && polygons.length > 0">
+          <GermplasmTable ref="germplasmTable" :get-data="getGermplasmData" :get-ids="getGermplasmIds" v-if="polygons && polygons.length > 0">
             <template #card-text>
               <v-card-text>{{ $t('pageGeographicSearchPolygonGermplasmResultTitle') }}</v-card-text>
             </template>
           </GermplasmTable>
-          <LocationTable class="mt-5" :get-data="getLocationData" :get-ids="getLocationIds" v-if="polygons && polygons.length > 0">
+          <LocationTable ref="locationTable" class="mt-5" :get-data="getLocationData" :get-ids="getLocationIds" v-if="polygons && polygons.length > 0">
             <template #card-text>
               <v-card-text>{{ $t('pageGeographicSearchPolygonLocationResultTitle') }}</v-card-text>
             </template>
@@ -74,7 +74,7 @@ name: geographicSearch
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostGermplasmDistanceTable, apiPostGermplasmDistanceTableIds, apiPostGermplasmPolygonTable, apiPostGermplasmPolygonTableIds } from '@/plugins/api/germplasm'
   import { apiPostLocationDistanceTable, apiPostLocationDistanceTableIds, apiPostLocationPolygonTable, apiPostLocationPolygonTableIds } from '@/plugins/api/location'
-  import type { PaginatedResult, ViewTableLocations, LatLng, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest } from '@/plugins/types/germinate'
+  import type { ViewTableLocations, LatLng, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest } from '@/plugins/types/germinate'
   import { mdiArrowRightBox, mdiCrosshairsGps, mdiVectorPolygon } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
@@ -85,6 +85,8 @@ name: geographicSearch
   const tab = ref(1)
   const pointMap = useTemplateRef('pointMap')
   const polygonMap = useTemplateRef('polygonMap')
+  const germplasmTable = useTemplateRef('germplasmTable')
+  const locationTable = useTemplateRef('locationTable')
   const point = ref<LatLng>()
   const polygons = ref<LatLng[][]>()
   const polygonLocations = ref<ViewTableLocations[]>([])
@@ -96,6 +98,11 @@ name: geographicSearch
       nextTick(() => polygonMap.value?.invalidateSize())
     }
   })
+
+  function update () {
+    germplasmTable.value?.refresh()
+    locationTable.value?.refresh()
+  }
 
   function getGermplasmData (data: PaginatedRequest) {
     if (tab.value === 1) {

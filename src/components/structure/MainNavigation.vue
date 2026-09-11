@@ -21,15 +21,15 @@
       </v-list-item>
       <v-list-item to="/" link :prepend-icon="mdiHome" :title="$t('menuHome')" />
       <v-list-item :to="Pages.search.path" link :prepend-icon="mdiMagnify" :title="$t('menuSearch')" />
-      <v-list-item link :active="isActive(Pages.projects.path)" :to="Pages.projects.path" :prepend-icon="mdiClipboardList" v-if="Pages.isAvailable(Pages.projects) && (badgeCounts?.projects || 0) > 0" :title="$t('menuProjects')"><template #append><v-chip size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge('projects')}` }}</v-chip></template></v-list-item>
+      <v-list-item link :active="isActive(Pages.projects.path)" :to="Pages.projects.path" :prepend-icon="mdiClipboardList" v-if="Pages.isAvailable(Pages.projects) && (badgeCounts?.projects || 0) > 0" :title="$t('menuProjects')"><template #append><v-chip :disabled="badgeCounts?.projects === 0" size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge(badgeCounts?.projects)}` }}</v-chip></template></v-list-item>
 
       <v-list-group value="data">
         <template #activator="{ props }">
           <v-list-item v-bind="props" link :prepend-icon="mdiDatabaseSearch" :title="$t('menuExplore')" />
         </template>
 
-        <v-list-item link :active="isActive(Pages.germplasm.path)" :to="Pages.germplasm.path" :prepend-icon="mdiSprout" v-if="Pages.isAvailable(Pages.germplasm)" :title="$t('menuGermplasm')"><template #append><v-chip size="small">{{ formatBadge('germplasm') }}</v-chip></template></v-list-item>
-        <v-list-item link :active="isActive(Pages.taxonomies.path)" :to="Pages.taxonomies.path" :prepend-icon="mdiLan" v-if="Pages.isAvailable(Pages.taxonomies)" :title="$t('menuTaxonomies')"><template #append><v-chip size="small">{{ formatBadge('taxonomies') }}</v-chip></template></v-list-item>
+        <v-list-item link :active="isActive(Pages.germplasm.path)" :to="Pages.germplasm.path" :prepend-icon="mdiSprout" v-if="Pages.isAvailable(Pages.germplasm)" :title="$t('menuGermplasm')"><template #append><v-chip :disabled="badgeCounts?.germplasm === 0" size="small">{{ formatBadge(badgeCounts?.germplasm) }}</v-chip></template></v-list-item>
+        <v-list-item link :active="isActive(Pages.taxonomies.path)" :to="Pages.taxonomies.path" :prepend-icon="mdiLan" v-if="Pages.isAvailable(Pages.taxonomies)" :title="$t('menuTaxonomies')"><template #append><v-chip :disabled="badgeCounts?.taxonomies === 0" size="small">{{ formatBadge(badgeCounts?.taxonomies) }}</v-chip></template></v-list-item>
 
         <v-list-group value="pedigrees">
           <template #activator="{ props }">
@@ -38,9 +38,9 @@
 
           <v-list-item link :to="Pages.pedigrees.path" v-if="Pages.isAvailable(Pages.pedigrees)" :title="$t('menuPedigrees')">
             <template #prepend><v-icon :icon="mdiPeriodicTable" class="mdi-rotate-90" /></template>
-            <template #append><v-chip size="small">{{ formatBadge('pedigreeDefinitions') }}</v-chip></template>
+            <template #append><v-chip :disabled="badgeCounts?.pedigreeDefinitions === 0" size="small">{{ formatBadge(badgeCounts?.pedigreeDefinitions) }}</v-chip></template>
           </v-list-item>
-          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'pedigree') || route.meta.navGroup === 'pedigree'" :to="Pages.getPath(Pages.export, 'pedigree')" :prepend-icon="mdiFamilyTree" v-if="Pages.isAvailable(Pages.exportPedigrees)" :title="$t('menuPedigreeDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsPedigree') }}</v-chip></template></v-list-item>
+          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'pedigree') || route.meta.navGroup === 'pedigree'" :to="Pages.getPath(Pages.export, 'pedigree')" :prepend-icon="mdiFamilyTree" v-if="Pages.isAvailable(Pages.exportPedigrees)" :title="$t('menuPedigreeDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsPedigree === 0" size="small">{{ formatBadge(badgeCounts?.datasetsPedigree) }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="trials">
@@ -49,8 +49,8 @@
           </template>
 
           <v-list-item link :to="Pages.trialsOverview.path" :prepend-icon="mdiLandFields" v-if="Pages.isAvailable(Pages.trialsOverview)" :title="$t('menuTrialsOverview')" />
-          <v-list-item link :to="Pages.traits.path" :prepend-icon="mdiTagTextOutline" v-if="Pages.isAvailable(Pages.traits)" :title="$t('menuTrialsTraits')"><template #append><v-chip size="small">{{ formatBadge('traits') }}</v-chip></template></v-list-item>
-          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'trials') || route.meta.navGroup === 'trials'" :to="Pages.getPath(Pages.export, 'trials')" :prepend-icon="mdiShovel" v-if="Pages.isAvailable(Pages.exportTraits)" :title="$t('menuTrialsDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsTrials') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.traits.path" :prepend-icon="mdiTagTextOutline" v-if="Pages.isAvailable(Pages.traits)" :title="$t('menuTrialsTraits')"><template #append><v-chip :disabled="badgeCounts?.traits === 0" size="small">{{ formatBadge(badgeCounts?.traits) }}</v-chip></template></v-list-item>
+          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'trials') || route.meta.navGroup === 'trials'" :to="Pages.getPath(Pages.export, 'trials')" :prepend-icon="mdiShovel" v-if="Pages.isAvailable(Pages.exportTraits)" :title="$t('menuTrialsDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsTrials === 0" size="small">{{ formatBadge(badgeCounts?.datasetsTrials) }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="genotypes">
@@ -61,13 +61,13 @@
           <v-list-item link :to="Pages.genotypeOverview.path" :prepend-icon="mdiViewDashboard" v-if="Pages.isAvailable(Pages.genotypeOverview)" :title="$t('menuGenotypicOverview')" />
           <v-list-item link :to="Pages.markers.path" v-if="Pages.isAvailable(Pages.markers)" :title="$t('menuGenotypicMarkers')">
             <template #prepend><v-icon :icon="mdiFormatIndentIncrease" class="mdi-rotate-90" /></template>
-            <template #append><v-chip size="small">{{ formatBadge('markers') }}</v-chip></template>
+            <template #append><v-chip :disabled="badgeCounts?.markers === 0" size="small">{{ formatBadge(badgeCounts?.markers) }}</v-chip></template>
           </v-list-item>
           <v-list-item link :to="Pages.maps.path" v-if="Pages.isAvailable(Pages.maps)" :title="$t('menuGenotypicMaps')">
             <template #prepend><v-icon :icon="mdiReorderHorizontal" class="mdi-rotate-90" /></template>
-            <template #append><v-chip size="small">{{ formatBadge('maps') }}</v-chip></template>
+            <template #append><v-chip :disabled="badgeCounts?.maps === 0" size="small">{{ formatBadge(badgeCounts?.maps) }}</v-chip></template>
           </v-list-item>
-          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'genotype') || route.meta.navGroup === 'genotype'" :to="Pages.getPath(Pages.export, 'genotype')" :prepend-icon="mdiDna" v-if="Pages.isAvailable(Pages.exportGenotypes)" :title="$t('menuGenotypicDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsGenotype') }}</v-chip></template></v-list-item>
+          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'genotype') || route.meta.navGroup === 'genotype'" :to="Pages.getPath(Pages.export, 'genotype')" :prepend-icon="mdiDna" v-if="Pages.isAvailable(Pages.exportGenotypes)" :title="$t('menuGenotypicDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsGenotype === 0" size="small">{{ formatBadge(badgeCounts?.datasetsGenotype) }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="geography">
@@ -75,7 +75,7 @@
             <v-list-item v-bind="props" link :prepend-icon="mdiEarth" :title="$t('menuGeography')" />
           </template>
 
-          <v-list-item link :to="Pages.locations.path" :prepend-icon="mdiMap" v-if="Pages.isAvailable(Pages.locations)" :title="$t('menuLocations')"><template #append><v-chip size="small">{{ formatBadge('locations') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.locations.path" :prepend-icon="mdiMap" v-if="Pages.isAvailable(Pages.locations)" :title="$t('menuLocations')"><template #append><v-chip :disabled="badgeCounts?.locations === 0" size="small">{{ formatBadge(badgeCounts?.locations) }}</v-chip></template></v-list-item>
           <v-list-item link :to="Pages.geographicSearch.path" :prepend-icon="mdiMapSearch" v-if="Pages.isAvailable(Pages.geographicSearch)" :title="$t('menuGeographicSearch')" />
         </v-list-group>
 
@@ -85,20 +85,20 @@
           </template>
 
           <v-list-item link :to="Pages.climateOverview.path" :prepend-icon="mdiEarth" v-if="Pages.isAvailable(Pages.climateOverview)" :title="$t('menuClimateOverview')" />
-          <v-list-item link :to="Pages.climates.path" :prepend-icon="mdiWeatherSnowyRainy" v-if="Pages.isAvailable(Pages.climates)" :title="$t('menuClimateClimates')"><template #append><v-chip size="small">{{ formatBadge('climates') }}</v-chip></template></v-list-item>
-          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'climate') || route.meta.navGroup === 'climate'" :to="Pages.getPath(Pages.export, 'climate')" :prepend-icon="mdiChartSankey" v-if="Pages.isAvailable(Pages.exportClimates)" :title="$t('menuClimateDataExport')"><template #append><v-chip size="small">{{ formatBadge('datasetsClimate') }}</v-chip></template></v-list-item>
+          <v-list-item link :to="Pages.climates.path" :prepend-icon="mdiWeatherSnowyRainy" v-if="Pages.isAvailable(Pages.climates)" :title="$t('menuClimateClimates')"><template #append><v-chip :disabled="badgeCounts?.climates === 0" size="small">{{ formatBadge(badgeCounts?.climates) }}</v-chip></template></v-list-item>
+          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'climate') || route.meta.navGroup === 'climate'" :to="Pages.getPath(Pages.export, 'climate')" :prepend-icon="mdiChartSankey" v-if="Pages.isAvailable(Pages.exportClimates)" :title="$t('menuClimateDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsClimate === 0" size="small">{{ formatBadge(badgeCounts?.datasetsClimate) }}</v-chip></template></v-list-item>
         </v-list-group>
 
-        <v-list-item link :to="Pages.datasets.path" :prepend-icon="mdiDatabase" v-if="Pages.isAvailable(Pages.datasets)" :title="$t('menuDatasets')"><template #append><v-chip size="small">{{ formatBadge('datasets') }}</v-chip></template></v-list-item>
-        <v-list-item link :to="Pages.experiments.path" :prepend-icon="mdiFolderTable" v-if="Pages.isAvailable(Pages.experiments)" :title="$t('menuExperiments')"><template #append><v-chip size="small">{{ formatBadge('experiments') }}</v-chip></template></v-list-item>
-        <v-list-item link :to="Pages.dataResources.path" :prepend-icon="mdiFileDownload" v-if="Pages.isAvailable(Pages.dataResources)" :title="$t('menuDataResources')"><template #append><v-chip size="small">{{ formatBadge('fileresources') }}</v-chip></template></v-list-item>
-        <v-list-item link :to="Pages.stories.path" :prepend-icon="mdiBookOpenPageVariant" v-if="Pages.isAvailable(Pages.stories)" :title="$t('menuDataStories')"><template #append><v-chip size="small">{{ formatBadge('dataStories') }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.datasets.path" :prepend-icon="mdiDatabase" v-if="Pages.isAvailable(Pages.datasets)" :title="$t('menuDatasets')"><template #append><v-chip :disabled="badgeCounts?.datasets === 0" size="small">{{ formatBadge(badgeCounts?.datasets) }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.experiments.path" :prepend-icon="mdiFolderTable" v-if="Pages.isAvailable(Pages.experiments)" :title="$t('menuExperiments')"><template #append><v-chip :disabled="badgeCounts?.experiments === 0" size="small">{{ formatBadge(badgeCounts?.experiments) }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.dataResources.path" :prepend-icon="mdiFileDownload" v-if="Pages.isAvailable(Pages.dataResources)" :title="$t('menuDataResources')"><template #append><v-chip :disabled="badgeCounts?.fileresources === 0" size="small">{{ formatBadge(badgeCounts?.fileresources) }}</v-chip></template></v-list-item>
+        <v-list-item link :to="Pages.stories.path" :prepend-icon="mdiBookOpenPageVariant" v-if="Pages.isAvailable(Pages.stories)" :title="$t('menuDataStories')"><template #append><v-chip :disabled="badgeCounts?.dataStories === 0" size="small">{{ formatBadge(badgeCounts?.dataStories) }}</v-chip></template></v-list-item>
         <v-list-item link :to="Pages.statistics.path" :prepend-icon="mdiChartAreaspline" v-if="Pages.isAvailable(Pages.statistics)" :title="$t('menuDataStatistics')" />
       </v-list-group>
 
-      <v-list-item link :to="Pages.publications.path" :prepend-icon="mdiNewspaperVariant" v-if="Pages.isAvailable(Pages.publications)" :title="$t('menuPublications')"><template #append><v-chip size="small">{{ formatBadge('publications') }}</v-chip></template></v-list-item>
-      <v-list-item link :to="Pages.images.path" :prepend-icon="mdiImageMultiple" v-if="Pages.isAvailable(Pages.images)" :title="$t('menuImages')"><template #append><v-chip size="small">{{ formatBadge('images') }}</v-chip></template></v-list-item>
-      <v-list-item link :to="Pages.groups.path" :prepend-icon="mdiGroup" v-if="Pages.isAvailable(Pages.groups)" :title="$t('menuGroups')"><template #append><v-chip size="small">{{ formatBadge('groups') }}</v-chip></template></v-list-item>
+      <v-list-item link :to="Pages.publications.path" :prepend-icon="mdiNewspaperVariant" v-if="Pages.isAvailable(Pages.publications)" :title="$t('menuPublications')"><template #append><v-chip :disabled="badgeCounts?.publications === 0" size="small">{{ formatBadge(badgeCounts?.publications) }}</v-chip></template></v-list-item>
+      <v-list-item link :to="Pages.images.path" :prepend-icon="mdiImageMultiple" v-if="Pages.isAvailable(Pages.images)" :title="$t('menuImages')"><template #append><v-chip :disabled="badgeCounts?.images === 0" size="small">{{ formatBadge(badgeCounts?.images) }}</v-chip></template></v-list-item>
+      <v-list-item link :to="Pages.groups.path" :prepend-icon="mdiGroup" v-if="Pages.isAvailable(Pages.groups)" :title="$t('menuGroups')"><template #append><v-chip :disabled="badgeCounts?.groups === 0" size="small">{{ formatBadge(badgeCounts?.groups) }}</v-chip></template></v-list-item>
 
       <v-list-group value="about">
         <template #activator="{ props }">
@@ -150,13 +150,7 @@
     return route.path === item || route.path.startsWith(item + '/')
   }
 
-  function formatBadge (key: OverviewStatsField) {
-    let value = null
-
-    if (badgeCounts.value && badgeCounts.value[key]) {
-      value = badgeCounts.value[key]
-    }
-
+  function formatBadge (value: number | undefined) {
     if (value === undefined || value === null) {
       return '0'
     } else {

@@ -77,6 +77,7 @@ declare module 'vue' {
     LicenseModal: typeof import('./components/modals/LicenseModal.vue')['default']
     LicenseSelectModal: typeof import('./components/modals/LicenseSelectModal.vue')['default']
     LineNumberTextareaInput: typeof import('./components/input/LineNumberTextareaInput.vue')['default']
+    LocationEditForm: typeof import('./components/form/LocationEditForm.vue')['default']
     LocationMap: typeof import('./components/map/LocationMap.vue')['default']
     LocationPopup: typeof import('./components/map/LocationPopup.vue')['default']
     LocationSelection: typeof import('./components/widgets/selections/LocationSelection.vue')['default']

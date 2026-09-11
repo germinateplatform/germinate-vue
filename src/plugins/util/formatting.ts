@@ -113,7 +113,7 @@ function isAnyMissing (...parts: (string | undefined)[]): boolean {
   return !parts || parts.some(p => !p || p.trim().length === 0)
 }
 
-function concat(separator: string, parts: (string | undefined)[]) {
+function concat (separator: string, parts: (string | undefined)[]) {
   return parts.filter(p => p !== undefined && p.trim().length > 0).join(separator)
 }
 
@@ -127,6 +127,10 @@ function isNumeric (str: string): boolean {
   }
 
   return !Number.isNaN(Number(str)) && str.trim() !== ''
+}
+
+function isEmptyNullOrUndefined (input: string | number | undefined | null) {
+  return input === undefined || input === null || `${input}`.trim().length === 0
 }
 
 function getServerBaseUrl (storeBaseUrl: string) {
@@ -171,4 +175,5 @@ export {
   toParagraphs,
   isNumeric,
   getServerBaseUrl,
+  isEmptyNullOrUndefined,
 }

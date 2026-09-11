@@ -27,6 +27,10 @@ export function apiPostLocationPolygonTable (queryData: PaginatedRequest, onSucc
   return authAxios({ url: 'location/polygon/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+export function apiPatchLocation (data: ViewTableLocations, onSuccess?: GerminateResponseHandler<ViewTableLocations>, onError?: ErrorHandler) {
+  return authAxios({ url: `location/${data.locationId}`, method: 'PATCH', data, success: onSuccess, error: onError })
+}
+
 export function apiPostLocationPolygonTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
   delete queryData.orderBy
   delete queryData.ascending

@@ -127,6 +127,7 @@
               <LocationMap
                 :rounded="false"
                 :locations="item.locations"
+                @location-updated="baseTable?.refresh()"
               />
             </v-sheet>
           </td>

@@ -33,6 +33,7 @@
         <LocationPopup
           :location="selectedLocation"
           show-links
+          @edit="editLocation"
           v-if="selectedLocation"
         >
           <template #prepend v-if="selectedGermplasm">
@@ -60,6 +61,30 @@
     </div>
 
     <ColorGradient v-bind="gradientProps" v-if="gradientProps" />
+
+    <v-bottom-sheet
+      v-model="editLocationBottomSheet"
+      inset
+      persistent
+      max-height="50vh"
+      width="auto"
+      v-if="selectedLocation"
+    >
+      <v-card class="pb-10">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div>{{ $t('modalTitleFixLocation') }}</div>
+          <v-btn :icon="mdiClose" variant="text" @click="editLocationBottomSheet = false" />
+        </v-card-title>
+        <v-card-text>
+          <p>{{ $t('modalTextFixLocation') }}</p>
+
+          <LocationEditForm
+            v-model="selectedLocation"
+            @updated="saveLocationDetails"
+          />
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </div>
 </template>
 
@@ -79,7 +104,7 @@
   import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 
   import { mcpdDateToJsDate, uuidv4 } from '@/plugins/util'
-  import { apiPostLocationTable } from '@/plugins/api/location'
+  import { apiPatchLocation, apiPostLocationTable } from '@/plugins/api/location'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { FilterComparator, FilterOperator, type ViewTableLocations, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
@@ -89,7 +114,7 @@
   import type { UserSelection } from '@/components/widgets/selections/GermplasmMapHighlightSelection.vue'
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
   import ColorGradient, { type ColorGradientProps } from '@/components/widgets/ColorGradient.vue'
-  import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiCircle, mdiDotsVertical } from '@mdi/js'
+  import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiCircle, mdiClose, mdiDotsVertical } from '@mdi/js'
 
   interface HighlightConfig {
     format: (g: number | string | undefined) => string
@@ -172,6 +197,7 @@
   const mapElement = useTemplateRef('mapElement')
   const popupContent = useTemplateRef('popupContent')
   const legend = useTemplateRef('legend')
+  const editLocationBottomSheet = ref(false)
   const loading = ref<boolean>(false)
   const loadingProgress = ref<number>(0)
   const germplasmData = ref<ViewTableGermplasm[]>()
@@ -216,6 +242,20 @@
     if (themeLayer) {
       themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${store.storeIsDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
     }
+  }
+
+  function editLocation () {
+    nextTick(() => {
+      editLocationBottomSheet.value = true
+    })
+  }
+
+  function saveLocationDetails (changes: ViewTableLocations) {
+    apiPatchLocation(changes, () => {
+      editLocationBottomSheet.value = false
+
+      getData()
+    })
   }
 
   function toggleItems (add: boolean) {

@@ -123,7 +123,7 @@
         <v-card-text>
           <p>{{ $t('pagePassportLocationText') }}</p>
 
-          <LocationMap :locations="[location]" />
+          <LocationMap :locations="[location]" @location-updated="update" />
         </v-card-text>
       </v-card>
 
@@ -363,7 +363,7 @@
     })
   }
 
-  onMounted(() => {
+  function update () {
     const query: PaginatedRequest = {
       filters: [{
         filters: [{
@@ -386,5 +386,7 @@
     apiGetGermplasmDataWarnings(compProps.germplasmId, result => {
       dataWarnings.value = result
     })
-  })
+  }
+
+  onMounted(() => update)
 </script>

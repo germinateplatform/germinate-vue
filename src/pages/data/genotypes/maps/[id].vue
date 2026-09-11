@@ -19,7 +19,7 @@ name: mapDetails
   import MapChart from '@/components/charts/MapChart.vue'
   import MapDefinitionTable from '@/components/tables/MapDefinitionTable.vue'
   import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMapsTable } from '@/plugins/api/genotype'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type PaginatedRequest, type ViewTableMaps, type FilterGroup } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedRequest, type ViewTableMaps, type FilterGroup } from '@/plugins/types/germinate'
 
   const route = useRoute('mapDetails')
 

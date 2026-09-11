@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LocationMap map-type="cluster" :locations="locations" ref="map" />
+    <LocationMap map-type="cluster" :locations="locations" ref="map" @location-updated="update" />
   </div>
 </template>
 

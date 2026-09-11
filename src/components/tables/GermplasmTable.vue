@@ -177,6 +177,7 @@
                 countryCode2: item.countryCode,
                 countryName: item.countryName
               }]"
+              @location-updated="baseTable?.refresh()"
             />
           </v-sheet>
         </td>

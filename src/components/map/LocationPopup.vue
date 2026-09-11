@@ -1,29 +1,37 @@
 <template>
-  <v-list v-if="location">
+  <v-list slim v-if="location">
     <slot name="prepend" />
-    <v-list-item :title="$t('tableColumnLocationName')">
+    <v-list-item :title="$t('tableColumnLocationName')" :prepend-icon="mdiTag">
       <template #subtitle>
-        <template v-if="showLinks">
-          <span v-if="location.locationType === 'datasets' || !location.locationId">{{ location.locationName }}</span>
-          <router-link :to="Pages.germplasm.path" v-else-if="location.locationType === 'collectingsites'" @click.prevent="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
-          <span v-else>{{ location.locationName }}</span>
-        </template>
-        <span v-else v-html="location.locationName" />
+        <div class="g-trim-rows-3">
+          <template v-if="showLinks">
+            <span v-if="location.locationType === 'datasets' || !location.locationId">{{ location.locationName }}</span>
+            <router-link :to="Pages.germplasm.path" v-else-if="location.locationType === 'collectingsites'" @click.prevent="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
+            <span v-else>{{ location.locationName }}</span>
+          </template>
+          <span v-else v-html="location.locationName" />
+        </div>
       </template>
     </v-list-item>
     <v-list-item v-if="location.locationType" :title="$t('tableColumnLocationType')">
+      <template #prepend>
+        <v-icon :style="`color: ${locationTypes[location.locationType].color()};`" :icon="locationTypes[location.locationType].path" />
+      </template>
       <template #subtitle>
-        <span :style="`color: ${locationTypes[location.locationType].color()};`"><v-icon :icon="locationTypes[location.locationType].path" /></span> {{ locationTypes[location.locationType].text() }}
+        {{ locationTypes[location.locationType].text() }}
       </template>
     </v-list-item>
     <v-list-item v-if="location.countryCode2 || location.countryCode3" :title="$t('tableColumnCountryName')">
-      <template #subtitle>
-        <i :class="'fi fi-' + getFlag(location)" /> {{ getCountry(location) }}
+      <template #prepend>
+        <v-icon opacity="1">
+          <i :class="'fi fi-' + getFlag(location)" />
+        </v-icon>
       </template>
+      <template #subtitle>{{ getCountry(location) }}</template>
     </v-list-item>
-    <v-list-item :title="$t('tableColumnLocationLatitude')" :subtitle="location.locationLatitude?.toFixed(2)" />
-    <v-list-item :title="$t('tableColumnLocationLongitude')" :subtitle="location.locationLongitude?.toFixed(2)" />
-    <v-list-item :title="$t('tableColumnLocationElevation')" :subtitle="location.locationElevation?.toFixed(2)" v-if="location.locationElevation" />
+    <v-list-item :title="$t('tableColumnLocationLatitude')" :subtitle="location.locationLatitude?.toFixed(2)" :prepend-icon="mdiLatitude" />
+    <v-list-item :title="$t('tableColumnLocationLongitude')" :subtitle="location.locationLongitude?.toFixed(2)" :prepend-icon="mdiLongitude" />
+    <v-list-item :title="$t('tableColumnLocationElevation')" :subtitle="location.locationElevation?.toFixed(2)" :prepend-icon="mdiAltimeter" v-if="location.locationElevation" />
 
     <template v-if="location.additionalInfo">
       <v-list-item
@@ -34,6 +42,14 @@
       />
     </template>
     <slot name="append" />
+
+    <v-list-item
+      v-if="store.storeUserIsDataCurator"
+      @click="emit('edit')"
+      :prepend-icon="mdiTooltipEdit"
+      :title="$t('buttonEdit')"
+      base-color="info"
+    />
   </v-list>
 </template>
 
@@ -42,6 +58,8 @@
   import type { ExtendedViewTableLocations } from '@/plugins/types/client'
   import { FilterComparator, FilterOperator, type FilterGroup } from '@/plugins/types/germinate'
   import { locationTypes } from '@/plugins/util/types'
+  import { coreStore } from '@/stores/app'
+  import { mdiAltimeter, mdiLatitude, mdiLongitude, mdiTag, mdiTooltipEdit } from '@mdi/js'
 
   // @ts-ignore
   import * as countries from 'i18n-iso-countries'
@@ -50,19 +68,22 @@
   countries.registerLocale(countryDataEn)
 
   const router = useRouter()
+  const store = coreStore()
 
   const compProps = defineProps<{
     location: ExtendedViewTableLocations
     showLinks: boolean
   }>()
 
-  function navigateToGermplasm (location: ExtendedViewTableLocations) {
+  const emit = defineEmits(['edit'])
+
+  function navigateToGermplasm () {
     // Navigate to the germplasm overview page and filter on location
     const filter: FilterGroup[] = [{
       filters: [{
         column: 'locationId',
         comparator: FilterComparator.equals,
-        values: [`${location.locationId}`],
+        values: [`${compProps.location.locationId}`],
       }],
       operator: FilterOperator.and,
     }]

@@ -20,7 +20,7 @@
       />
     </template>
 
-    <LocationMap map-type="cluster" :shapefile-id="selectedShapefile?.fileresourceId" :locations="locations" ref="map" />
+    <LocationMap map-type="cluster" :shapefile-id="selectedShapefile?.fileresourceId" :locations="locations" ref="map" @location-updated="update" />
   </div>
 </template>
 
@@ -29,7 +29,7 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetfileresource } from '@/plugins/api/dataset'
   import { apiPostTrialLocations } from '@/plugins/api/trait'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableFileresources, type ViewTableLocations, type ViewTableTraits } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableDatasets, type ViewTableFileresources, type ViewTableLocations, type ViewTableTraits } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
 

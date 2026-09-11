@@ -203,6 +203,10 @@ p {
   overflow: unset !important;
 }
 
+.v-checkbox-btn .v-icon {
+  pointer-events: none;
+}
+
 .g-no-gutters {
   margin-left: -16px;
   margin-right: -16px;

@@ -5,7 +5,7 @@
     <p v-html="$t('pageLocationsText')" />
 
     <!-- All locations in a table -->
-    <LocationTable :get-data="getData" :get-ids="getIds" :download="downloadTable" @data-changed="onDataChanged" />
+    <LocationTable ref="locationTable" :get-data="getData" :get-ids="getIds" :download="downloadTable" @data-changed="onDataChanged" />
 
     <h2 class="text-headline-small my-3">{{ $t('pageLocationsMapsTitle') }}</h2>
     <p class="text-info">{{ $t('pageLocationsMapsText') }}</p>
@@ -15,13 +15,13 @@
         <h3>{{ $t('pageLocationsMapsClusteredTitle') }}</h3>
         <p>{{ $t('pageLocationsMapsClusteredText') }}</p>
         <!-- Clustered location map -->
-        <LocationMap :locations="locationsWithLatLng" map-type="cluster" class="mb-3" @map-loaded="map => { clusteredMap = map }" />
+        <LocationMap :locations="locationsWithLatLng" map-type="cluster" class="mb-3" @map-loaded="map => { clusteredMap = map }" @location-updated="update" />
       </v-col>
       <v-col cols="12" xl="6">
         <h3>{{ $t('pageLocationsMapsHeatmappedTitle') }}</h3>
         <p>{{ $t('pageLocationsMapsHeatmappedText') }}</p>
         <!-- Heatmapped location map -->
-        <LocationMap :locations="locationsWithLatLng" map-type="heatmap" class="mb-3" @map-loaded="map => { heatmappedMap = map }" />
+        <LocationMap :locations="locationsWithLatLng" map-type="heatmap" class="mb-3" @map-loaded="map => { heatmappedMap = map }" @location-updated="update" />
       </v-col>
     </v-row>
   </v-container>
@@ -44,6 +44,8 @@ name: locations
   const locations = ref<ViewTableLocations[]>([])
   let synced = false
 
+  const locationTable = useTemplateRef('locationTable')
+
   const locationsWithLatLng = computed(() => {
     if (locations.value) {
       return locations.value.filter(l => l.locationLatitude !== undefined && l.locationLatitude !== null && l.locationLongitude !== undefined && l.locationLongitude !== null)
@@ -60,6 +62,10 @@ name: locations
   }
   function downloadTable (data: PaginatedRequest) {
     return apiPostTableExport({ filters: data.filters } as PaginatedRequest, 'location')
+  }
+
+  function update () {
+    locationTable.value?.refresh()
   }
 
   function onDataChanged (request: PaginatedRequest) {

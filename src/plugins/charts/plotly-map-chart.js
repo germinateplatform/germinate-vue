@@ -24,7 +24,7 @@ export function plotlyMapChart (Plotly) {
       const threshold = total / distinctChromosomes.length / 100 * 5
 
       distinctChromosomes = distinctChromosomes.filter(c => unique[c] > threshold)
-      distinctChromosomes.sort((a, b) => a.localeCompare(b))
+      distinctChromosomes.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
 
       const data = []
       const layout = {

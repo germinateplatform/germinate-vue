@@ -5,6 +5,7 @@
         <LocationPopup
           :location="currentLocation"
           :show-links="showLinks"
+          @edit="editLocation(currentLocation)"
           v-if="currentLocation"
         />
       </div>
@@ -29,6 +30,30 @@
       @select="updateOverlays"
       ref="climateOverlaySelectModal"
     />
+
+    <v-bottom-sheet
+      v-model="editLocationBottomSheet"
+      inset
+      persistent
+      max-height="50vh"
+      width="auto"
+      v-if="selectedLocation"
+    >
+      <v-card class="pb-10">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div>{{ $t('modalTitleFixLocation') }}</div>
+          <v-btn :icon="mdiClose" variant="text" @click="editLocationBottomSheet = false" />
+        </v-card-title>
+        <v-card-text>
+          <p>{{ $t('modalTextFixLocation') }}</p>
+
+          <LocationEditForm
+            v-model="selectedLocation"
+            @updated="saveLocationDetails"
+          />
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
 
     <v-bottom-sheet
       v-model="bottomSheetVisible"
@@ -88,6 +113,7 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { toUrlString } from '@/plugins/util/formatting'
   import { mdiClose, mdiMapLegend, mdiWeatherPartlySnowyRainy } from '@mdi/js'
+  import { apiPatchLocation } from '@/plugins/api/location.ts'
 
   // Set the leaflet marker icon
   // @ts-ignore
@@ -117,7 +143,7 @@
     climateOverlaysDisabled: false,
   })
 
-  const emit = defineEmits(['map-loaded'])
+  const emit = defineEmits(['map-loaded', 'location-updated'])
 
   // Refs
   const id = ref(uuidv4())
@@ -129,6 +155,8 @@
   const loading = ref<boolean>(false)
   const loadingProgress = ref<number>(0)
   const bottomSheetVisible = ref(false)
+  const editLocationBottomSheet = ref(false)
+  const selectedLocation = ref<ExtendedViewTableLocations>()
   const legendUrl = ref<string>()
 
   const climates = ref<ViewTableClimates[]>([])
@@ -146,6 +174,23 @@
   let gradientColors: string[] = []
   let editableLayers: FeatureGroup
   let shapefileLayers: { [key: string]: Layer[] } = {}
+
+  function editLocation (location: ExtendedViewTableLocations) {
+    selectedLocation.value = location
+
+    nextTick(() => {
+      editLocationBottomSheet.value = true
+    })
+  }
+
+  function saveLocationDetails (changes: ExtendedViewTableLocations) {
+    apiPatchLocation(changes, () => {
+      editLocationBottomSheet.value = false
+      selectedLocation.value = undefined
+
+      emit('location-updated')
+    })
+  }
 
   function updateThemeLayer () {
     if (themeLayer) {
