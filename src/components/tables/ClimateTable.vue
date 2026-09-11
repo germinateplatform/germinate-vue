@@ -22,13 +22,19 @@
       <template v-slot:cell(climateDescription)="data">
         <router-link :to="{ name: Pages.climateDetails, params: { climateId: data.item.climateId } }">{{ data.item.climateDescription }}</router-link>
       </template>
+      <!-- Dataset type icon -->
+      <template v-slot:cell(dataType)="data">
+        <span class="text-nowrap"><span :style="`color: ${dataTypes[data.item.dataType].color()};`"><MdiIcon :path="dataTypes[data.item.dataType].path" /></span> {{ dataTypes[data.item.dataType].text() }}</span>
+      </template>
     </BaseTable>
   </div>
 </template>
 
 <script>
+import MdiIcon from '@/components/icons/MdiIcon'
 import BaseTable from '@/components/tables/BaseTable'
 import defaultProps from '@/const/table-props.js'
+import { dataTypes } from '@/mixins/types.js'
 import { getNumberWithSuffix } from '@/mixins/formatting'
 import { Pages } from '@/mixins/pages'
 
@@ -40,6 +46,7 @@ export default {
   data: function () {
     return {
       Pages,
+      dataTypes,
       options: {
         idColumn: 'climateId',
         tableName: 'climates'
@@ -72,6 +79,11 @@ export default {
           sortable: true,
           label: this.$t('tableColumnClimateDescription')
         }, {
+          key: 'dataType',
+          type: 'dataType',
+          sortable: true,
+          label: this.$t('tableColumnClimateDataType')
+        }, {
           key: 'unitName',
           type: String,
           sortable: true,
@@ -98,7 +110,8 @@ export default {
     }
   },
   components: {
-    BaseTable
+    BaseTable,
+    MdiIcon
   },
   methods: {
     refresh: function () {
