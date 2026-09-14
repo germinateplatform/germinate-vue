@@ -18,6 +18,7 @@
         <GroupSelection
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
+          url-query-key="boxplot"
           :groups="groups || []"
           marked-item-type="locations"
         >

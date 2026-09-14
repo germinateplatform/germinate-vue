@@ -28,6 +28,7 @@
       :germplasm="trialGermplasm"
       :label="$t('formLabelHighlightGermplasm')"
       :hint="$t('formDescriptionHighlightGermplasm')"
+      url-query-key="highlight"
       persistent-hint
       multiple
     />
@@ -71,6 +72,7 @@
       :traits="traits"
       :label="$t('formLabelHighlightTraitValues')"
       :hint="$t('formDescriptionHighlightTraitValues')"
+      url-query-key="highlight"
       v-model="selectedTrait"
       :can-select-all="false"
       :can-select-multiple="false"

@@ -35,6 +35,7 @@
       :germplasm="trialGermplasm"
       :label="$t('formLabelHighlightGermplasm')"
       :hint="$t('formDescriptionHighlightGermplasm')"
+      url-query-key="highlight"
       persistent-hint
       multiple
     />
@@ -56,6 +57,7 @@
       marked-item-type="germplasm"
       :label="$t('formLabelHighlightGroups')"
       :hint="$t('formDescriptionHighlightGroups')"
+      url-query-key="highlight"
       type="groups"
       persistent-hint
       multiple

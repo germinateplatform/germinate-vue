@@ -6,6 +6,8 @@ import ShortUniqueId from 'short-unique-id'
 import { Cite } from '@citation-js/core'
 import '@citation-js/plugin-doi'
 import '@citation-js/plugin-csl'
+import type { RouteLocation, Router } from 'vue-router'
+import { isEmptyNullOrUndefined } from './util/formatting'
 
 const germinateVersion = '5.0.0'
 
@@ -24,6 +26,22 @@ const uid = new ShortUniqueId({
 
 export function getId () {
   return uid.randomUUID()
+}
+
+export function handleRouterQuery (router: Router, route: RouteLocation, key: string, value: string) {
+  const updatedQuery: { [key: string]: string } = {
+    [key]: value,
+  }
+
+  const query = Object.assign({}, route.query, updatedQuery)
+
+  Object.keys(query).forEach(k => {
+    if (isEmptyNullOrUndefined(query[k])) {
+      delete query[k]
+    }
+  })
+
+  router.replace({ query })
 }
 
 /**

@@ -23,6 +23,17 @@
         <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (modelValue || []).length - 4 }} others)</span>
       </template>
 
+      <template #item="{ props, internalItem: item }">
+        <v-list-item v-bind="props">
+          <template #prepend="{ isSelected }">
+            <v-checkbox-btn :model-value="isSelected" />
+          </template>
+          <template #append>
+            <v-chip label :color="dataTypes[item.raw.dataType].color()" :prepend-icon="dataTypes[item.raw.dataType].path" v-if="item.raw.dataType">{{ dataTypes[item.raw.dataType].text() }}</v-chip>
+          </template>
+        </v-list-item>
+      </template>
+
       <template #prepend-item v-if="canSelectAll">
         <v-list-item
           :title="$t('buttonSelectAll')"
@@ -44,6 +55,7 @@
 
 <script setup lang="ts">
   import type { ViewTableClimates } from '@/plugins/types/germinate'
+  import { dataTypes } from '@/plugins/util/types'
 
   interface TrialSelectionProps {
     climates: ViewTableClimates[]
@@ -88,4 +100,12 @@
       emit('update:model-value', toNotify)
     }
   })
+
+  watch(modelValue, newValue => {
+    const current = JSON.stringify(selectedClimate.value)
+    const incoming = JSON.stringify(newValue || [])
+    if (current !== incoming) {
+      selectedClimate.value = JSON.parse(JSON.stringify(newValue || []))
+    }
+  }, { immediate: true })
 </script>

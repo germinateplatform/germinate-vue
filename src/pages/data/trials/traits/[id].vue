@@ -30,7 +30,7 @@ name: traitDetails
         limit: 1,
         filters: [{
           filters: [{
-            column: 'traitId',
+            column: 'variableId',
             comparator: FilterComparator.equals,
             values: [`${traitId.value}`],
           }],

@@ -18,6 +18,7 @@
         <GroupSelection
           v-model="selectedLocations"
           v-model:group-selection="groupSelection"
+          url-query-key="matrix"
           :groups="groups"
           marked-item-type="locations"
         >

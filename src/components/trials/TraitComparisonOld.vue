@@ -5,6 +5,7 @@
     <v-row>
       <v-col cols="12" md="6">
         <TraitSelection
+          url-query-key="comparisonOld"
           v-model="selectedTraits"
           :traits="traits"
           can-select-all
@@ -18,6 +19,7 @@
         <GroupSelection
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
+          url-query-key="comparisonOld"
           :groups="groups"
           marked-item-type="germplasm"
           :multiple="false"
@@ -27,6 +29,7 @@
 
         <GermplasmSelection
           class="mt-5"
+          url-query-key="comparisonOld"
           :germplasm="allGermplasm"
           v-model="selectedGermplasm"
         />

@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
   import type { ViewTableGroups } from '@/plugins/types/germinate'
+  import { handleRouterQuery } from '@/plugins/util'
   import { coreStore } from '@/stores/app'
   import { mdiFormatListChecks, mdiSelectAll } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
@@ -39,6 +40,7 @@
     groups: ViewTableGroups[]
     multiple?: boolean
     type?: 'groups' | 'export'
+    urlQueryKey: string
   }
 
   export type GroupSelectionType = 'all' | 'groups'
@@ -50,6 +52,8 @@
 
   const emit = defineEmits(['update:model-value'])
 
+  const router = useRouter()
+  const route = useRoute()
   const store = coreStore()
   const { t } = useI18n()
 
@@ -59,6 +63,9 @@
     default: 'all',
   })
   // const groupSelection = ref<GroupSelectionType>('all')
+
+  const urlQueryKey = computed(() => `${compProps.urlQueryKey}Groups`)
+  watch(modelValue, async newValue => handleRouterQuery(router, route, urlQueryKey.value, (newValue || []).map(t => t.groupId).map(String).join(',')))
 
   watch(groupSelection, async newValue => {
     if (newValue === 'all') {
@@ -123,6 +130,26 @@
     if ((!newValue || newValue.length === 0) && asArray && asArray.length > 0 && asArray[0].value.groupId === -1) {
       // Marked items group was selected, but items have been unmarked elsewhere -> de-select group
       selectedGroups.value = asArray.filter(g => g.value.groupId !== -1)
+    }
+  })
+
+  watch(() => compProps.groups, async newValue => {
+    if (route.query.boxplotGroups) {
+      const ids = new Set((route.query.boxplotGroups as string).split(',').map(Number))
+      modelValue.value = (newValue || []).filter(t => ids.has(t.groupId || -1))
+
+      if (modelValue.value.length > 0) {
+        groupSelection.value = 'groups'
+      } else {
+        groupSelection.value = 'all'
+      }
+    }
+  }, { immediate: true })
+
+  onMounted(() => {
+    if (route.query && route.query[urlQueryKey.value]) {
+      const ids = new Set((route.query[urlQueryKey.value] as string).split(',').map(Number))
+      modelValue.value = compProps.groups.filter(t => ids.has(t.groupId || -1))
     }
   })
 </script>

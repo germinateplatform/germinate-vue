@@ -21,6 +21,7 @@
           <GroupSelection
             v-model="selectedGermplasmGroups"
             v-model:group-selection="germplasmGroupSelection"
+            url-query-key="germplasm"
             :groups="germplasmGroups || []"
             marked-item-type="germplasm"
           >
@@ -34,6 +35,7 @@
           <GroupSelection
             v-model="selectedMarkerGroups"
             v-model:group-selection="markerGroupSelection"
+            url-query-key="markers"
             :groups="markerGroups || []"
             marked-item-type="markers"
           >

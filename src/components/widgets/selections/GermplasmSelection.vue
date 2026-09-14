@@ -41,18 +41,26 @@
 
 <script setup lang="ts">
   import type { ViewTableGermplasm } from '@/plugins/types/germinate'
+  import { handleRouterQuery } from '@/plugins/util'
 
   interface TrialSelectionProps {
     germplasm: ViewTableGermplasm[]
     canSelectAll?: boolean
+    urlQueryKey: string
   }
 
   const compProps = withDefaults(defineProps<TrialSelectionProps>(), {
     canSelectAll: false,
   })
 
+  const router = useRouter()
+  const route = useRoute()
+
   const searchTerm = ref<string>()
   const selectedGermplasm = defineModel<ViewTableGermplasm[]>()
+  const urlQueryKey = computed(() => `${compProps.urlQueryKey}Germplasm`)
+
+  watch(selectedGermplasm, async newValue => handleRouterQuery(router, route, urlQueryKey.value, (newValue || []).map(t => t.germplasmId).map(String).join(',')))
 
   const allSelected = computed(() => (selectedGermplasm.value || []).length === compProps.germplasm.length)
   const someSelected = computed(() => (selectedGermplasm.value || []).length > 0)
@@ -70,4 +78,11 @@
       selectedGermplasm.value = compProps.germplasm
     }
   }
+
+  onMounted(() => {
+    if (compProps.germplasm && route.query && route.query[urlQueryKey.value]) {
+      const ids = new Set((route.query[urlQueryKey.value] as string).split(',').map(Number))
+      selectedGermplasm.value = compProps.germplasm.filter(g => ids.has(g.germplasmId))
+    }
+  })
 </script>

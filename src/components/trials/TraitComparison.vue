@@ -7,6 +7,7 @@
         <TraitSelection
           v-model="selectedTraits"
           :traits="numericOrCategoricalTraits"
+          url-query-key="comparison"
           can-select-all
         >
           <template #text>
@@ -18,6 +19,7 @@
         <GroupSelection
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
+          url-query-key="comparison"
           :groups="groups"
           marked-item-type="germplasm"
           :multiple="false"
@@ -27,6 +29,7 @@
 
         <GermplasmSelection
           class="mt-5"
+          url-query-key="comparison"
           :germplasm="allGermplasm"
           v-model="selectedGermplasm"
         />
@@ -61,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-  import { type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm, type TrialsExportDatasetRequest, type ViewTableTrialsData, ViewTableTraitsScaleDatatype, ScalesDatatype } from '@/plugins/types/germinate'
+  import { type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm, type TrialsExportDatasetRequest, type ViewTableTrialsData, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
   import { apiPostGermplasmTable, apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
@@ -79,6 +82,7 @@
   import TraitBubbleChart from '@/components/charts/TraitBubbleChart.vue'
   import TraitHeatmap from '@/components/charts/TraitHeatmap.vue'
   import { mdiArrowRightBox } from '@mdi/js'
+  import { handleRouterQuery } from '@/plugins/util'
 
   const compProps = defineProps<{
     datasetIds: number[]
@@ -106,6 +110,8 @@
     color: string
   }
 
+  const route = useRoute()
+  const router = useRouter()
   const store = coreStore()
   const { t } = useI18n()
 
@@ -128,6 +134,9 @@
   const plotTraces = ref<TraitComparisonChartTrace[]>([])
   const selectedTraitStats = ref<StatsTrait[]>([])
   const allSelectedGermplasmIds = ref<number[]>([])
+
+  watch(selectedGermplasm, async newValue => handleRouterQuery(router, route, 'comparisonGermplasm', (newValue || []).map(t => t.germplasmId).map(String).join(',')))
+  watch(selectedGroups, async newValue => handleRouterQuery(router, route, 'comparisonGroups', (newValue || []).map(t => t.groupId).map(String).join(',')))
 
   function collectGermplasm () {
     const germplasmIds: Set<number> = new Set()
@@ -349,6 +358,19 @@
     }
   }
 
+  watch(() => compProps.groups, async newValue => {
+    if (route.query.comparisonGroups) {
+      const ids = new Set((route.query.comparisonGroups as string).split(',').map(Number))
+      selectedGroups.value = (newValue || []).filter(t => ids.has(t.groupId || -1))
+
+      if (selectedGroups.value.length > 0) {
+        groupSelection.value = 'groups'
+      } else {
+        groupSelection.value = 'all'
+      }
+    }
+  }, { immediate: true })
+
   onMounted(() => {
     apiPostGermplasmTable({
       page: 1,
@@ -359,6 +381,11 @@
         allGermplasm.value = result.data
       } else {
         allGermplasm.value = []
+      }
+
+      if (compProps.traits && route.query && route.query.comparisonGermplasm) {
+        const ids = new Set((route.query.comparisonGermplasm as string).split(',').map(Number))
+        selectedGermplasm.value = allGermplasm.value.filter(t => ids.has(t.germplasmId))
       }
     })
   })

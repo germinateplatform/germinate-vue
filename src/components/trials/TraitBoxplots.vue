@@ -7,6 +7,7 @@
         <TraitSelection
           v-model="selectedTraits"
           :traits="traits"
+          url-query-key="boxplot"
           can-select-all
         >
           <template #text>
@@ -18,6 +19,7 @@
         <GroupSelection
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
+          url-query-key="boxplot"
           :groups="groups || []"
           marked-item-type="germplasm"
         >
@@ -104,7 +106,7 @@
   const traitData = ref<ViewTableTrialsData[]>()
   const catChartData = ref<Map<number, Blob>>(new Map())
 
-  const categoricalTraits = computed(() => (compProps.traits || []).filter(t => t.scaleDatatype !== ViewTableTraitsScaleDatatype.numeric))
+  const categoricalTraits = computed(() => (compProps.traits || []).filter(t => t.scaleDatatype !== ViewTableTraitsScaleDatatype.numeric && t.scaleDatatype !== ViewTableTraitsScaleDatatype.date))
   const canContinue = computed(() => {
     return selectedTraits.value.length > 0 && selectedTraits.value.length < (compProps.max || Number.MAX_SAFE_INTEGER) && (groupSelection.value === 'all' || selectedGroups.value.length > 0)
   })

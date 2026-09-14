@@ -11,7 +11,7 @@
   >
     <template #card-text>
       <v-card-text>
-        <p>{{ $t('pageTrialsExportTraitBoxplotText') }}</p>
+        <p>{{ $t(type === 'numeric' ? 'pageTrialsExportTraitBoxplotText' : 'pageTrialsExportTraitBoxplotDateText') }}</p>
       </v-card-text>
     </template>
     <template #toolbar-append>
@@ -38,7 +38,7 @@
   import Plotly from 'plotly.js/lib/core'
   import box from 'plotly.js/lib/box'
   import { coreStore } from '@/stores/app'
-  import type { ViewTableDatasets, ViewTableGroups, ViewTableTraits, ViewTableTrialsData } from '@/plugins/types/germinate'
+  import { ScalesDatatype, type ViewTableDatasets, type ViewTableGroups, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
   import { getColor } from '@/plugins/util/colors'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -60,6 +60,7 @@
     datasets: ViewTableDatasets[]
     userSelection?: UserSelection
     showIndividuals?: boolean
+    type: 'numeric' | 'date'
   }>()
 
   const store = coreStore()
@@ -121,13 +122,13 @@
     if (boxplotChart.value) {
       Plotly.purge(boxplotChart.value)
 
-      const x: number[] = []
+      const x: (number | string)[] = []
       const y: string[] = []
       const ids: string[] = []
       const text: string[] = []
 
       data.forEach(dp => {
-        x.push(+dp.traitValue)
+        x.push(dp.scaleDatatype === ScalesDatatype.numeric ? +dp.traitValue : dp.traitValue)
         y.push(dp.variableName)
         ids.push(`${dp.germplasmId}-${uuidv4()}`)
         text.push(getGermplasmDisplayName(dp))
@@ -285,7 +286,7 @@
     const dps = data.filter(filter)
     return {
       y: dps.map(dp => dp.variableName),
-      x: dps.map(dp => +dp.traitValue),
+      x: dps.map(dp => dp.scaleDatatype === ScalesDatatype.numeric ? +dp.traitValue : dp.traitValue),
       ids: dps.map(dp => `${dp.germplasmId}-${uuidv4()}`),
       text: dps.map(dp => getGermplasmDisplayName(dp)),
       marker: { color: getColor(index + 1), size: 4 },

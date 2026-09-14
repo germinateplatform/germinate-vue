@@ -6,6 +6,7 @@
       <v-col cols="12" md="6">
         <TraitSelection
           v-model="selectedTraits"
+          url-query-key="download"
           can-select-all
           :traits="traits"
         >
@@ -18,6 +19,7 @@
         <GroupSelection
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
+          url-query-key="download"
           :groups="groups"
           marked-item-type="germplasm"
         >

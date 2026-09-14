@@ -14,17 +14,33 @@
   <template v-if="datasets">
     <TraitBoxplotChart
       :plot-data="traitData"
+      type="numeric"
       :groups="groups || []"
       :user-selection="userSelection"
       :dataset-ids="datasetIds || []"
       :traits="numericTraits"
       :datasets="datasets || []"
       :show-individuals="showIndividuals"
-      ref="traitBoxPlot"
+      ref="numericTraitBoxPlot"
       v-if="traitData && numericTraits && numericTraits.length > 0"
     />
 
+    <TraitBoxplotChart
+      class="mt-5"
+      type="date"
+      :plot-data="traitData"
+      :groups="groups || []"
+      :user-selection="userSelection"
+      :dataset-ids="datasetIds || []"
+      :traits="dateTraits"
+      :datasets="datasets || []"
+      :show-individuals="showIndividuals"
+      ref="dateTraitBoxPlot"
+      v-if="traitData && dateTraits && dateTraits.length > 0"
+    />
+
     <TraitBarChart
+      class="mt-5"
       :traits="categoricalTraits"
       :trait-data="traitData"
       :groups="groups || []"
@@ -49,13 +65,15 @@
     catChartData: Map<number, Blob>
   }>()
 
-  const traitBoxPlot = useTemplateRef('traitBoxPlot')
+  const numericTraitBoxPlot = useTemplateRef('numericTraitBoxPlot')
+  const dateTraitBoxPlot = useTemplateRef('dateTraitBoxPlot')
   const traitBarChart = useTemplateRef('traitBarChart')
 
   const datasetIds = computed(() => compProps.datasets.map(ds => ds.datasetId || -1) || [])
 
   const numericTraits = computed(() => (compProps.variables || []).filter(t => t.scaleDatatype === ViewTableTraitsScaleDatatype.numeric))
-  const categoricalTraits = computed(() => (compProps.variables || []).filter(t => t.scaleDatatype !== ViewTableTraitsScaleDatatype.numeric))
+  const dateTraits = computed(() => (compProps.variables || []).filter(t => t.scaleDatatype === ViewTableTraitsScaleDatatype.date))
+  const categoricalTraits = computed(() => (compProps.variables || []).filter(t => t.scaleDatatype !== ViewTableTraitsScaleDatatype.numeric && t.scaleDatatype !== ViewTableTraitsScaleDatatype.date))
 
   const showIndividuals = ref(false)
   const highlightSelection = ref<InstanceType<typeof HighlightSelection>>()
@@ -63,7 +81,8 @@
   const userSelectionValid = computed(() => highlightSelection.value?.valid || false)
 
   function forceRedraw () {
-    traitBoxPlot.value?.redraw()
+    numericTraitBoxPlot.value?.redraw()
+    dateTraitBoxPlot.value?.redraw()
     traitBarChart.value?.redrawAll()
     highlightSelection.value?.update()
   }

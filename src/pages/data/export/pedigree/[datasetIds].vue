@@ -22,6 +22,7 @@
             v-model="selectedGermplasmGroups"
             v-model:group-selection="germplasmGroupSelection"
             :groups="germplasmGroups || []"
+            url-query-key="germplasm"
             marked-item-type="germplasm"
           >
             <template #title>{{ $t('pagePedigreeExportSelectGermplasmGroupTitle') }}</template>

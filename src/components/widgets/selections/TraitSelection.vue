@@ -23,6 +23,17 @@
         <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (modelValue || []).length - 4 }} others)</span>
       </template>
 
+      <template #item="{ props, internalItem: item }">
+        <v-list-item v-bind="props">
+          <template #prepend="{ isSelected }">
+            <v-checkbox-btn :model-value="isSelected" />
+          </template>
+          <template #append>
+            <v-chip label :color="dataTypes[item.raw.scaleDatatype].color()" :prepend-icon="dataTypes[item.raw.scaleDatatype].path" v-if="item.raw.scaleDatatype">{{ dataTypes[item.raw.scaleDatatype].text() }}</v-chip>
+          </template>
+        </v-list-item>
+      </template>
+
       <template #prepend-item v-if="canSelectAll">
         <v-list-item
           :title="$t('buttonSelectAll')"
@@ -44,7 +55,8 @@
 
 <script setup lang="ts">
   import type { ViewTableTraits } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { handleRouterQuery } from '@/plugins/util'
+  import { dataTypes } from '@/plugins/util/types'
 
   interface TrialSelectionProps {
     traits: ViewTableTraits[]
@@ -52,12 +64,16 @@
     canSelectMultiple?: boolean
     hint?: string
     label?: string
+    urlQueryKey: string
   }
 
   const compProps = withDefaults(defineProps<TrialSelectionProps>(), {
     canSelectAll: false,
     canSelectMultiple: true,
   })
+
+  const router = useRouter()
+  const route = useRoute()
 
   const searchTerm = ref<string>()
 
@@ -68,6 +84,9 @@
 
   const allSelected = computed(() => (modelValue.value || []).length === compProps.traits.length)
   const someSelected = computed(() => (modelValue.value || []).length > 0)
+  const urlQueryKey = computed(() => `${compProps.urlQueryKey}Traits`)
+
+  watch(modelValue, async newValue => handleRouterQuery(router, route, urlQueryKey.value, (newValue || []).map(t => t.variableId).map(String).join(',')))
 
   function toggle () {
     if (allSelected.value) {
@@ -87,6 +106,21 @@
     const toNotify = asArray || []
     if (JSON.stringify(toNotify) !== JSON.stringify(modelValue.value)) {
       emit('update:model-value', toNotify)
+    }
+  })
+
+  watch(modelValue, newValue => {
+    const current = JSON.stringify(selectedTraits.value)
+    const incoming = JSON.stringify(newValue || [])
+    if (current !== incoming) {
+      selectedTraits.value = JSON.parse(JSON.stringify(newValue || []))
+    }
+  }, { immediate: true })
+
+  onMounted(() => {
+    if (compProps.traits && route.query && route.query[urlQueryKey.value]) {
+      const ids = new Set((route.query[urlQueryKey.value] as string).split(',').map(Number))
+      selectedTraits.value = compProps.traits.filter(t => ids.has(t.variableId))
     }
   })
 </script>
