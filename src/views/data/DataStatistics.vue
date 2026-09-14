@@ -143,7 +143,7 @@ export default {
       })
     },
     datasetClicked: function (dataset) {
-      this.$router.push({ name: Pages.export, params: { datasetType: dataset } })
+      this.$router.push({ name: Pages.export, params: { datasetType: dataset.x } })
     }
   },
   mounted: function () {

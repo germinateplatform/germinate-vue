@@ -14,6 +14,11 @@ export function plotlyBarChart (Plotly) {
 
   function chart (selection) {
     selection.each(function (rows) {
+      if (!rows || rows.length === 0) {
+        Plotly.purge(this)
+        return
+      }
+
       let dims = Object.keys(rows[0])
       dims = dims.filter(d => d !== x && !columnsToIgnore.includes(d))
 
@@ -27,20 +32,16 @@ export function plotlyBarChart (Plotly) {
         const groupBySet = new Set(unpack(rows, groupBy))
         const groupByValues = [...groupBySet]
 
-        if (groupByValues.length < 2) {
-          xValues = null
-        } else {
-          for (let i = 0; i < groupByValues.length; i++) {
-            data.push({
-              x: xValues,
-              y: unpackConditional(rows, dims[0], groupBy, groupByValues[i]),
-              name: groupByValues[i] || 'N/A',
-              type: 'bar',
-              marker: {
-                color: mode === 'traces' ? colors[i % colors.length] : colors
-              }
-            })
-          }
+        for (let i = 0; i < groupByValues.length; i++) {
+          data.push({
+            x: xValues,
+            y: unpackConditional(rows, dims[0], groupBy, groupByValues[i]),
+            name: groupByValues[i] || 'N/A',
+            type: 'bar',
+            marker: {
+              color: mode === 'traces' ? colors[i % colors.length] : colors
+            }
+          })
         }
       }
 
