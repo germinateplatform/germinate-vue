@@ -6,7 +6,7 @@
         <div class="g-trim-rows-3">
           <template v-if="showLinks">
             <span v-if="location.locationType === 'datasets' || !location.locationId">{{ location.locationName }}</span>
-            <router-link :to="Pages.germplasm.path" v-else-if="location.locationType === 'collectingsites'" @click.prevent="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
+            <router-link :to="Pages.germplasm.path" v-else-if="location.locationType === 'collectingsites'" @click.prevent="navigateToLocation" event="">{{ location.locationName }}</router-link>
             <span v-else>{{ location.locationName }}</span>
           </template>
           <span v-else v-html="location.locationName" />
@@ -77,7 +77,7 @@
 
   const emit = defineEmits(['edit'])
 
-  function navigateToGermplasm () {
+  function navigateToLocation () {
     // Navigate to the germplasm overview page and filter on location
     const filter: FilterGroup[] = [{
       filters: [{
