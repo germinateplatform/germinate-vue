@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
-  import { uuidv4, type DownloadBlob } from '@/plugins/util'
+  import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import Plotly from 'plotly.js/lib/core'
   import heatmap from 'plotly.js/lib/heatmap'
@@ -153,19 +153,13 @@
       },
     }
 
-    const config = {
-      modeBarButtonsToRemove: ['toImage' as const],
-      responsive: true,
-      displaylogo: false,
-    }
-
     try {
       Plotly.purge(heatmapChart.value)
     } catch {
       // Do nothing here
     }
 
-    Plotly.react(heatmapChart.value, data, layout, config)
+    Plotly.react(heatmapChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(() => {
         emitter.emit('show-loading', false)
       })

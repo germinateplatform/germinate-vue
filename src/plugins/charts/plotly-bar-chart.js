@@ -1,3 +1,5 @@
+import { DEFAULT_PLOTLY_CONFIG } from '@/plugins/util'
+
 export function plotlyBarChart (Plotly) {
   let height = 600
   let xCategory = ''
@@ -59,10 +61,8 @@ export function plotlyBarChart (Plotly) {
       }
 
       const config = {
-        modeBarButtonsToRemove: ['toImage'],
+        ...DEFAULT_PLOTLY_CONFIG,
         displayModeBar: false,
-        responsive: true,
-        displaylogo: false,
       }
 
       let xTickLabels = null
@@ -115,7 +115,7 @@ export function plotlyBarChart (Plotly) {
           automargin: true,
           fixedrange: true,
           showgrid: true,
-          gridcolor: darkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          gridcolor: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',

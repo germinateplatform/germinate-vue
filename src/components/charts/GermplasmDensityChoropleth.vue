@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
   import { apiGetStatsFile } from '@/plugins/api/stats'
-  import { uuidv4, type DownloadBlob } from '@/plugins/util'
+  import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
   import { mdiEarth } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
@@ -114,6 +114,7 @@
         geo: {
           bgcolor: 'rgba(0,0,0,0)',
           showframe: true,
+          fitbounds: false,
           showcountries: true,
           showcoastlines: false,
           projection: {
@@ -123,10 +124,8 @@
       }
 
       const config = {
-        modeBarButtonsToRemove: ['toImage' as const],
+        ...DEFAULT_PLOTLY_CONFIG,
         displayModeBar: true,
-        responsive: true,
-        displaylogo: false,
         scrollZoom: false,
       }
 

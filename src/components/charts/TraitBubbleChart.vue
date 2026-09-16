@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
-  import { uuidv4, type DownloadBlob } from '@/plugins/util'
+  import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import Plotly from 'plotly.js/lib/core'
   import scatter from 'plotly.js/lib/scatter'
@@ -118,19 +118,13 @@
       showlegend: data.length > 1,
     }
 
-    const config = {
-      modeBarButtonsToRemove: ['toImage' as const],
-      responsive: true,
-      displaylogo: false,
-    }
-
     try {
       Plotly.purge(bubbleChart.value)
     } catch {
       // Do nothing here
     }
 
-    Plotly.react(bubbleChart.value, data, layout, config)
+    Plotly.react(bubbleChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(() => {
         emitter.emit('show-loading', false)
       })

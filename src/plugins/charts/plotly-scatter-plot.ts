@@ -1,5 +1,5 @@
 import Plotly from 'plotly.js/lib/core'
-import { uuidv4 } from '@/plugins/util'
+import { DEFAULT_PLOTLY_CONFIG, uuidv4 } from '@/plugins/util'
 import { DEFAULT_CHART_COLORS } from '@/plugins/util/colors'
 
 export type ClickHandler = (dbId: number) => void
@@ -170,12 +170,6 @@ export class ScatterPlot {
       this.addData(data, ids, names, x, y, 0, undefined)
     }
 
-    const config = {
-      modeBarButtonsToRemove: ['toImage'],
-      responsive: true,
-      displaylogo: false,
-    }
-
     try {
       Plotly.purge(this.config.element)
     } catch {
@@ -183,7 +177,7 @@ export class ScatterPlot {
     }
 
     // @ts-ignore
-    Plotly.react(this.config.element, data, layout, config)
+    Plotly.react(this.config.element, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(element => {
         element.on('plotly_selected', eventData => {
           if (!eventData || (eventData.points.length === 0)) {

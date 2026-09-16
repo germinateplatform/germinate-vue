@@ -1,3 +1,5 @@
+import { DEFAULT_PLOTLY_CONFIG } from '@/plugins/util'
+
 export function plotlyTreemapChart (Plotly) {
   let height = 800
   let onLeafClicked = null
@@ -17,10 +19,8 @@ export function plotlyTreemapChart (Plotly) {
       }]
 
       const config = {
-        modeBarButtonsToRemove: ['toImage'],
+        ...DEFAULT_PLOTLY_CONFIG,
         displayModeBar: false,
-        responsive: true,
-        displaylogo: false,
       }
 
       const layout = {

@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
-  import { uuidv4, type DownloadBlob } from '@/plugins/util'
+  import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import Plotly from 'plotly.js/lib/core'
   import scatterpolar from 'plotly.js/lib/scatterpolar'
@@ -115,19 +115,13 @@
       },
     }
 
-    const config = {
-      modeBarButtonsToRemove: ['toImage' as const],
-      responsive: true,
-      displaylogo: false,
-    }
-
     try {
       Plotly.purge(radarChart.value)
     } catch {
       // Do nothing here
     }
 
-    Plotly.react(radarChart.value, data, layout, config)
+    Plotly.react(radarChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(() => {
         emitter.emit('show-loading', false)
       })

@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
-  import { uuidv4, type DownloadBlob } from '@/plugins/util'
+  import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import Plotly from 'plotly.js/lib/core'
   import bar from 'plotly.js/lib/bar'
@@ -122,7 +122,7 @@
           automargin: true,
           fixedrange: true,
           showgrid: true,
-          gridcolor: store.storeIsDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          gridcolor: store.storeIsDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
@@ -154,13 +154,7 @@
         }
       }
 
-      const config = {
-        modeBarButtonsToRemove: ['toImage' as const],
-        responsive: true,
-        displaylogo: false,
-      }
-
-      Plotly.react(element, data, layout, config)
+      Plotly.react(element, data, layout, DEFAULT_PLOTLY_CONFIG)
         .then(element => {
           const dragLayer = element.getElementsByClassName('nsewdrag')[0] as HTMLElement
 

@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
-  import { uuidv4, type DownloadBlob } from '@/plugins/util'
+  import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import Plotly from 'plotly.js/lib/core'
   import box from 'plotly.js/lib/box'
@@ -192,7 +192,7 @@
           title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
           tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
           showgrid: true,
-          gridcolor: store.storeIsDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
+          gridcolor: store.storeIsDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
           mirror: 'ticks' as const,
         },
         paper_bgcolor: 'transparent',
@@ -215,19 +215,13 @@
         },
       }
 
-      const config = {
-        modeBarButtonsToRemove: ['toImage' as const],
-        responsive: true,
-        displaylogo: false,
-      }
-
       if (traces) {
         if (compProps.climates.length < 2) {
           // @ts-ignore
           layout.boxgap = 0
         }
 
-        Plotly.react(boxplotChart.value, traces, layout, config)
+        Plotly.react(boxplotChart.value, traces, layout, DEFAULT_PLOTLY_CONFIG)
           .then(() => {
             emitter.emit('show-loading', false)
 

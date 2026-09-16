@@ -24,6 +24,13 @@ const uid = new ShortUniqueId({
   length: 16,
 })
 
+export const DEFAULT_PLOTLY_CONFIG = {
+  modeBarButtonsToRemove: ['toImage' as const],
+  responsive: true,
+  displaylogo: false,
+  showSendToCloud: false,
+}
+
 export function getId () {
   return uid.randomUUID()
 }
