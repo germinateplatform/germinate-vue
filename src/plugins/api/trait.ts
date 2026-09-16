@@ -14,7 +14,7 @@ function apiPostTrialsDataTableIds (queryData: PaginatedRequest, onSuccess?: Ger
   return authAxios({ url: 'dataset/data/trial/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-function apiPostTrialsDataTimepoints<T> (queryData: TraitTimelineRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
+function apiPostTrialsDataTimepoints (queryData: TraitTimelineRequest, onSuccess?: GerminateResponseHandler<string[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'dataset/data/trial/timepoint', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 

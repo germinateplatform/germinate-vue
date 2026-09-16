@@ -30,7 +30,7 @@
         <GermplasmSelection
           class="mt-5"
           url-query-key="comparison"
-          :germplasm="allGermplasm"
+          :germplasm="trialGermplasm"
           v-model="selectedGermplasm"
         />
       </v-col>
@@ -67,7 +67,7 @@
   import { type ViewTableGroups, type ViewTableTraits, type ViewTableGermplasm, type TrialsExportDatasetRequest, type ViewTableTrialsData, ViewTableTraitsScaleDatatype } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
-  import { apiPostGermplasmTable, apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
+  import { apiPostDatasetGermplasmTable, apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import GroupSelection from '@/components/widgets/selections/GroupSelection.vue'
   import GermplasmSelection from '@/components/widgets/selections/GermplasmSelection.vue'
@@ -126,7 +126,7 @@
   const selectedGermplasm = ref<ViewTableGermplasm[]>([])
 
   // Server responses
-  const allGermplasm = ref<ViewTableGermplasm[]>([])
+  const trialGermplasm = ref<ViewTableGermplasm[]>([])
   const traitData = ref<ViewTableTrialsData[]>()
 
   // Computed
@@ -294,7 +294,7 @@
 
       const result: TraitComparisonChartTrace[] = []
       allSelectedGermplasmIds.value.forEach((gId, i) => {
-        const g = allGermplasm.value.find(g => g.germplasmId === gId)
+        const g = trialGermplasm.value.find(g => g.germplasmId === gId)
 
         if (!g) {
           return
@@ -372,20 +372,20 @@
   }, { immediate: true })
 
   onMounted(() => {
-    apiPostGermplasmTable({
+    apiPostDatasetGermplasmTable(compProps.datasetIds, {
       page: 1,
       limit: MAX_JAVA_INTEGER,
       minimal: true,
     }, result => {
       if (result && result.data) {
-        allGermplasm.value = result.data
+        trialGermplasm.value = result.data
       } else {
-        allGermplasm.value = []
+        trialGermplasm.value = []
       }
 
       if (compProps.traits && route.query && route.query.comparisonGermplasm) {
         const ids = new Set((route.query.comparisonGermplasm as string).split(',').map(Number))
-        selectedGermplasm.value = allGermplasm.value.filter(t => ids.has(t.germplasmId))
+        selectedGermplasm.value = trialGermplasm.value.filter(t => ids.has(t.germplasmId))
       }
     })
   })

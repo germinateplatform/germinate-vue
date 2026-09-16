@@ -11,6 +11,11 @@ export function apiPostGermplasmTable (queryData: PaginatedRequest, onSuccess?: 
   return authAxios({ url: 'germplasm/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+export function apiPostDatasetGermplasmTable (datasetIds: number[], queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableGermplasm[]>>, onError?: ErrorHandler) {
+  queryData.page -= 1
+  return authAxios({ url: `dataset/${(datasetIds || []).join(',')}/germplasm`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 export function apiPostTaxonomyTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableTaxonomies[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'taxonomy/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

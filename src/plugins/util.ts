@@ -28,7 +28,7 @@ export function getId () {
   return uid.randomUUID()
 }
 
-export function handleRouterQuery (router: Router, route: RouteLocation, key: string, value: string) {
+export async function handleRouterQuery (router: Router, route: RouteLocation, key: string, value: string) {
   const updatedQuery: { [key: string]: string } = {
     [key]: value,
   }
@@ -41,7 +41,7 @@ export function handleRouterQuery (router: Router, route: RouteLocation, key: st
     }
   })
 
-  router.replace({ query })
+  await router.replace({ query })
 }
 
 /**

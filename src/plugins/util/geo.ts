@@ -5,6 +5,14 @@ import L from 'leaflet'
 import emitter from 'tiny-emitter/instance'
 import type { LatLng } from '@/plugins/types/germinate'
 
+export interface ShapefilePopupInfo {
+  germplasm: string
+  row: number
+  column: number
+  rep?: string
+  latLng: LatLng
+}
+
 const radEarth = 6378.16
 const oneDegree = (2 * Math.PI * radEarth) / 360
 const oneKm = 1 / oneDegree
@@ -55,14 +63,15 @@ function addShapefileToMap (map: Map, shp: FeatureCollectionWithFilename): { [ke
                 const row = e.target.feature.properties.row
                 const column = e.target.feature.properties.column
                 const germplasm = e.target.feature.properties.germplasm
-                const rep = `${e.target.feature.properties.rep}`
+                const rep = e.target.feature.properties.rep
 
                 emitter.emit('shapefile-germplasm-selected', {
                   germplasm,
                   rep,
                   row,
                   column,
-                })
+                  latLng: { lat: e.latlng.lat, lng: e.latlng.lng },
+                } as ShapefilePopupInfo)
               }
             },
           })
@@ -81,10 +90,10 @@ function addShapefileToMap (map: Map, shp: FeatureCollectionWithFilename): { [ke
 
       layer.addTo(map)
 
-      if (shapefileLayers[`${f.properties.row}-${f.properties.column}`]) {
-        shapefileLayers[`${f.properties.row}-${f.properties.column}`].push(layer)
+      if (shapefileLayers[`${f.properties.row - 1}|${f.properties.column - 1}`]) {
+        shapefileLayers[`${f.properties.row - 1}|${f.properties.column - 1}`].push(layer)
       } else {
-        shapefileLayers[`${f.properties.row}-${f.properties.column}`] = [layer]
+        shapefileLayers[`${f.properties.row - 1}|${f.properties.column - 1}`] = [layer]
       }
     }
   })

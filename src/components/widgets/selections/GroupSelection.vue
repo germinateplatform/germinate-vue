@@ -134,22 +134,16 @@
   })
 
   watch(() => compProps.groups, async newValue => {
-    if (route.query.boxplotGroups) {
-      const ids = new Set((route.query.boxplotGroups as string).split(',').map(Number))
-      modelValue.value = (newValue || []).filter(t => ids.has(t.groupId || -1))
+    if (route.query[urlQueryKey.value]) {
+      const ids = new Set((route.query[urlQueryKey.value] as string).split(',').map(Number))
+      const matches = (newValue || []).filter(t => ids.has(t.groupId || -1))
+      modelValue.value = matches
 
-      if (modelValue.value.length > 0) {
+      if (matches.length > 0) {
         groupSelection.value = 'groups'
       } else {
         groupSelection.value = 'all'
       }
     }
   }, { immediate: true })
-
-  onMounted(() => {
-    if (route.query && route.query[urlQueryKey.value]) {
-      const ids = new Set((route.query[urlQueryKey.value] as string).split(',').map(Number))
-      modelValue.value = compProps.groups.filter(t => ids.has(t.groupId || -1))
-    }
-  })
 </script>

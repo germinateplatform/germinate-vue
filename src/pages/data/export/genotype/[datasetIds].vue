@@ -17,7 +17,7 @@
       </v-expansion-panels>
 
       <v-row>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6" lg="4">
           <GroupSelection
             v-model="selectedGermplasmGroups"
             v-model:group-selection="germplasmGroupSelection"
@@ -31,7 +31,7 @@
             </template>
           </GroupSelection>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6" lg="4">
           <GroupSelection
             v-model="selectedMarkerGroups"
             v-model:group-selection="markerGroupSelection"
@@ -45,6 +45,35 @@
             </template>
           </GroupSelection>
         </v-col>
+        <v-col cols="12" md="6" lg="4">
+          <h3>{{ $t('pageGenotypesExportSelectMapTitle') }}</h3>
+          <p>{{ $t('pageGenotypesExportSelectMapText') }}</p>
+
+          <v-select
+            v-model="selectedMap"
+            :label="$t('pageGenotypesExportSelectMapTitle')"
+            :items="maps"
+            return-object
+            item-title="mapName"
+            item-value="mapId"
+          >
+            <template #selection="{ item }">
+              <div class="d-flex align-center justify-space-between w-100">
+                <span>{{ item.mapName }}</span>
+                <v-chip size="small" label>
+                  {{ item.mapCoverageCount }}/{{ item.markerCount }}
+                </v-chip>
+              </div>
+            </template>
+            <template #item="{ props: itemProps, item }">
+              <v-list-item v-bind="itemProps">
+                <template #append>
+                  <v-chip label size="small" :text="`${item.mapCoverageCount}/${item.markerCount}`" />
+                </template>
+              </v-list-item>
+            </template>
+          </v-select>
+        </v-col>
       </v-row>
 
       <v-card
@@ -55,41 +84,13 @@
       >
         <template #text>
           <p>{{ $t('pageGenotypesExportMultipleSubselectText') }}</p>
-
-          <!-- Dataset subset size preview table -->
-          <GenotypeDatasetSummaryTable :query-params="queryParams" :dataset-ids="datasetIds" v-model="selectedDatasets" />
         </template>
+
+        <!-- Dataset subset size preview table -->
+        <GenotypeDatasetSummaryTable :query-params="queryParams" :dataset-ids="datasetIds" v-model="selectedDatasets" />
       </v-card>
 
       <div v-show="datasetsSelected">
-        <h3>{{ $t('pageGenotypesExportSelectMapTitle') }}</h3>
-        <p>{{ $t('pageGenotypesExportSelectMapText') }}</p>
-
-        <v-select
-          v-model="selectedMap"
-          :label="$t('pageGenotypesExportSelectMapTitle')"
-          :items="maps"
-          return-object
-          item-title="mapName"
-          item-value="mapId"
-        >
-          <template #selection="{ item }">
-            <div class="d-flex align-center justify-space-between w-100">
-              <span>{{ item.mapName }}</span>
-              <v-chip size="small" label>
-                {{ item.mapCoverageCount }}/{{ item.markerCount }}
-              </v-chip>
-            </div>
-          </template>
-          <template #item="{ props: itemProps, item }">
-            <v-list-item v-bind="itemProps">
-              <template #append>
-                <v-chip label size="small" :text="`${item.mapCoverageCount}/${item.markerCount}`" />
-              </template>
-            </v-list-item>
-          </template>
-        </v-select>
-
         <h3>{{ $t('pageGenotypesExportFormatTitle') }}</h3>
         <p>{{ $t('pageGenotypesExportFormatText') }}</p>
 
@@ -161,7 +162,7 @@ name: exportGenotypes
   import { apiPostDatasetGroups } from '@/plugins/api/group'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type ViewTableDatasetMaps, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type GenotypeSubsetDatasetRequest } from '@/plugins/types/germinate'
-  import { isAccepted } from '@/plugins/util'
+  import { handleRouterQuery, isAccepted } from '@/plugins/util'
   import { coreStore } from '@/stores/app'
   import { mdiArrowRightBox, mdiDatabase, mdiFileDocument, mdiFileTable, mdiInformation } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
@@ -187,7 +188,7 @@ name: exportGenotypes
   const markerGroupSelection = ref<GroupSelectionType>('all')
 
   const genotypeFormats = ref<GenotypeFormats>({
-    txt: true,
+    txt: false,
     flapjack: false,
     hapmap: false,
   })
@@ -250,6 +251,15 @@ name: exportGenotypes
 
     return request
   })
+
+  watch(selectedMap, async newValue => handleRouterQuery(router, route, 'map', newValue ? `${newValue.mapId}` : ''))
+  watch(genotypeFormats, async newValue => {
+    const selectedFormats = (Object.entries(newValue) as [keyof GenotypeFormats, boolean][])
+      .filter(([, value]) => value)
+      .map(([key]) => key)
+      .join(',')
+    handleRouterQuery(router, route, 'format', selectedFormats)
+  }, { deep: true, immediate: true })
 
   function exportData () {
     emitter.emit('show-loading', true)
@@ -355,7 +365,13 @@ name: exportGenotypes
       maps.value = result || []
 
       if (result.length > 0) {
-        selectedMap.value = result.reduce((prev, current) => (prev && prev.mapCoverageCount > current.mapCoverageCount) ? prev : current)
+        if (route.query.map) {
+          selectedMap.value = result.find(m => m.mapId === +`${route.query.map}`)
+        }
+
+        if (!selectedMap.value) {
+          selectedMap.value = result.reduce((prev, current) => (prev && prev.mapCoverageCount > current.mapCoverageCount) ? prev : current)
+        }
       }
     })
   }
@@ -393,6 +409,10 @@ name: exportGenotypes
         datasetIds.value = []
       }
     }
+
+    nextTick(() => {
+      genotypeFormats.value = { txt: true, flapjack: false, hapmap: false }
+    })
   })
 </script>
 

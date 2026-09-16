@@ -7,6 +7,11 @@ export function apiPostLocationTable (queryData: PaginatedRequest, onSuccess?: G
   return authAxios({ url: 'location/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+export function apiPostDatasetLocationTable (datasetIds: number[], queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableLocations[]>>, onError?: ErrorHandler) {
+  queryData.page -= 1
+  return authAxios({ url: `dataset/${(datasetIds || []).join(',')}/location`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 export function apiPostLocationDistanceTable (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<LocationDistance[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'location/distance/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

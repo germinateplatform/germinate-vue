@@ -8,6 +8,10 @@
           @edit="editLocation(currentLocation)"
           v-if="currentLocation"
         />
+        <ShapefilePopup
+          :info="shapefileInfo"
+          v-if="shapefileInfo"
+        />
       </div>
 
       <v-overlay
@@ -106,7 +110,7 @@
   import 'leaflet-easybutton'
 
   import { uuidv4 } from '@/plugins/util'
-  import { addShapefileToMap } from '@/plugins/util/geo'
+  import { addShapefileToMap, type ShapefilePopupInfo } from '@/plugins/util/geo'
   import { apiGetDataResource } from '@/plugins/api/dataset'
   import { FilterComparator, FilterOperator, type ViewTableClimates, type PaginatedRequest } from '@/plugins/types/germinate'
   import { apiPostClimateTable } from '@/plugins/api/climate'
@@ -114,6 +118,8 @@
   import { toUrlString } from '@/plugins/util/formatting'
   import { mdiClose, mdiMapLegend, mdiWeatherPartlySnowyRainy } from '@mdi/js'
   import { apiPatchLocation } from '@/plugins/api/location.ts'
+
+  import emitter from 'tiny-emitter/instance'
 
   // Set the leaflet marker icon
   // @ts-ignore
@@ -143,7 +149,7 @@
     climateOverlaysDisabled: false,
   })
 
-  const emit = defineEmits(['map-loaded', 'location-updated'])
+  const emit = defineEmits(['map-loaded', 'location-updated', 'shapefile-loaded'])
 
   // Refs
   const id = ref(uuidv4())
@@ -157,6 +163,7 @@
   const bottomSheetVisible = ref(false)
   const editLocationBottomSheet = ref(false)
   const selectedLocation = ref<ExtendedViewTableLocations>()
+  const shapefileInfo = ref<ShapefilePopupInfo>()
   const legendUrl = ref<string>()
 
   const climates = ref<ViewTableClimates[]>([])
@@ -584,7 +591,20 @@
     })
   }
 
+  function showShapefilePopup (payload: ShapefilePopupInfo) {
+    shapefileInfo.value = payload
+
+    nextTick(() => {
+      L.popup({ maxHeight: 200 })
+        .setLatLng(payload.latLng)
+        .setContent(popupContent.value)
+        .openOn(map)
+    })
+  }
+
   function updateShapefile () {
+    emitter.off('shapefile-germplasm-selected', showShapefilePopup)
+
     if (shapefileLayers) {
       Object.keys(shapefileLayers).forEach(k => shapefileLayers[k].forEach(l => l.remove()))
       shapefileLayers = {}
@@ -597,6 +617,27 @@
 
         // @ts-ignore
         shapefileLayers = addShapefileToMap(map, shape)
+
+        // If there are multiple locations, fit them into view
+        // @ts-ignore
+        const latLngBounds = L.latLngBounds(internalLocations.value.filter(l => l.locationLatitude && l.locationLongitude).map(l => new L.LatLng(l.locationLatitude, l.locationLongitude)))
+
+        const layers = Object.values(shapefileLayers).flat()
+
+        emit('shapefile-loaded', shapefileLayers)
+
+        if (layers.length > 0) {
+          const featureGroup = L.featureGroup(layers)
+          const groupBounds = featureGroup.getBounds()
+
+          if (groupBounds.isValid()) {
+            latLngBounds.extend(groupBounds)
+          }
+        }
+
+        map.fitBounds(latLngBounds.pad(0.1))
+
+        emitter.on('shapefile-germplasm-selected', showShapefilePopup)
       })
     }
   }

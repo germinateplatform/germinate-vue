@@ -49,6 +49,7 @@ const highlightFilter: { [index: string]: (dp: any, value: string) => boolean } 
   'reps': (dp: any, value: string) => dp.rep === value,
   'treatments': (dp: any, value: string) => dp.treatment === value,
   'year': (dp: any, value: string) => dp.year === value,
+  'location': (dp: any, value: string) => dp.name === value,
 }
 
 const highlightOppositeFilter: { [index: string]: (dp: any, nonMatchValues: string[]) => boolean } = {
@@ -60,6 +61,7 @@ const highlightOppositeFilter: { [index: string]: (dp: any, nonMatchValues: stri
   'reps': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.rep),
   'treatments': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.treatment),
   'year': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.year),
+  'location': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.name),
 }
 
 export class ScatterMatrix {
@@ -153,7 +155,7 @@ export class ScatterMatrix {
         text: names,
         ids,
         customdata: names,
-        hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Germplasm: %{customdata}',
+        hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Item: %{customdata}',
         marker: {
           color: this.config.colors[0 % this.config.colors.length],
           symbol: symbolList[0 % symbolList.length],
@@ -193,7 +195,7 @@ export class ScatterMatrix {
           text: names,
           ids,
           customdata: names,
-          hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Germplasm: %{customdata}',
+          hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Item: %{customdata}',
           marker: {
             color: this.config.colors[(index + 1) % this.config.colors.length],
             symbol: symbolList[(index + 1) % symbolList.length],
@@ -223,7 +225,7 @@ export class ScatterMatrix {
         text: names,
         ids,
         customdata: names,
-        hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Germplasm: %{customdata}',
+        hovertemplate: '%{xaxis.title.text}: %{x}<br>%{yaxis.title.text}: %{y}<br>Item: %{customdata}',
         marker: {
           color: this.config.colors[0],
           symbol: symbolList[0],

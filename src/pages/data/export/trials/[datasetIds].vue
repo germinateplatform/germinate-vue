@@ -102,6 +102,17 @@
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
+        v-show="selectedTab === 'timeseries'"
+        :showing="selectedTab === 'timeseries'"
+      >
+        <TraitTimeseries
+          :traits="traits"
+          :groups="groups || []"
+          :dataset-ids="datasetIds"
+        />
+      </RevealOnShowPanel>
+
+      <RevealOnShowPanel
         v-show="selectedTab === 'export'"
         :showing="selectedTab === 'export'"
       >
@@ -143,8 +154,10 @@ name: exporTrials
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
 
+  type TabType = 'overview' | 'matrix' | 'comparison' | 'table' | 'locations' | 'timeseries' | 'export'
+
   interface Tab {
-    key: string
+    key: TabType
     text: string
     path: string
     help: string
@@ -157,7 +170,7 @@ name: exporTrials
 
   const trialLocationMap = useTemplateRef('trialLocationMap')
 
-  const selectedTab = ref<string>('overview')
+  const selectedTab = ref<TabType>('overview')
   const datasetIds = ref<number[]>([])
   const datasets = ref<ViewTableDatasets[]>()
   const traits = ref<ViewTableTraits[]>([])
@@ -183,7 +196,7 @@ name: exporTrials
   })
 
   const tabs: ComputedRef<Tab[]> = computed(() => {
-    const result = [{
+    const result: Tab[] = [{
       key: 'overview',
       text: t('pageDataExportTabDataStatistics'),
       path: mdiEye,
@@ -371,7 +384,7 @@ name: exporTrials
 
   onBeforeMount(() => {
     if (route.query && route.query.tab) {
-      selectedTab.value = route.query.tab as string
+      selectedTab.value = route.query.tab as TabType
     }
   })
 
@@ -396,7 +409,7 @@ name: exporTrials
           }
         })
 
-        apiPostTrialsDataTimepoints<string[]>({
+        apiPostTrialsDataTimepoints({
           datasetIds: datasetIds.value,
         }, result => {
           if (result && result.length > 1) {

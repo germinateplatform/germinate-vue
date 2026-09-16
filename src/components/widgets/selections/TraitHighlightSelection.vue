@@ -112,7 +112,7 @@
 
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
+  import { apiPostDatasetGermplasmTable } from '@/plugins/api/germplasm'
   import { apiPostTrialSetupStats } from '@/plugins/api/trait'
   import type { Taxonomies, PlotDetails, Treatments, ViewTableGermplasm, ViewTableGroups } from '@/plugins/types/germinate'
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -225,7 +225,7 @@
       trialTaxonomies.value = result.taxonomies || []
     })
 
-    apiPostGermplasmTable({
+    apiPostDatasetGermplasmTable(compProps.datasetIds, {
       page: 1,
       limit: MAX_JAVA_INTEGER,
       minimal: true,

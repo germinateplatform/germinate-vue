@@ -57,7 +57,7 @@
   import type { ViewTableLocations, ViewTableGroups, ViewTableClimates } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { mdiCalendarWeek, mdiDatabase, mdiGroup, mdiSprout } from '@mdi/js'
-  import { apiPostLocationTable } from '@/plugins/api/location'
+  import { apiPostDatasetLocationTable } from '@/plugins/api/location'
   import { apiPostClimateYears } from '@/plugins/api/climate'
 
   export interface UserSelection {
@@ -109,7 +109,7 @@
       case 'location':
         return {
           type: selectionMode.value,
-          selectedItems: (selectedLocations.value || []).map(g => `${g.countryName} | ${g.locationName}`),
+          selectedItems: (selectedLocations.value || []).map(g => `${g.locationName}`),
         }
       case 'year':
         return {
@@ -126,7 +126,7 @@
   })
 
   function update () {
-    apiPostLocationTable({
+    apiPostDatasetLocationTable(compProps.datasetIds, {
       page: 1,
       limit: MAX_JAVA_INTEGER,
       minimal: true,

@@ -1,84 +1,112 @@
 <template>
-  <div v-if="dataset">
-    <h2>{{ dataset.datasetName }}</h2>
-
-    <LayoutHighlightSelection
-      :dataset-id="dataset.datasetId || -1"
-      :traits="numericOrCategoricalTraits"
-      ref="highlightSelection"
-      v-model:taxonomies="taxonomies"
-    />
-
-    <v-btn @click="updateHighlight" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
-
-    <div class="field-plan-wrapper" ref="wrapperRef">
-      <canvas
-        ref="canvasRef"
-        class="field-plan-canvas"
-        @wheel.prevent="onWheel"
-        @mousedown="onMouseDown"
-        @mousemove="onMouseMove"
-        @mouseup="onMouseUp"
-        @mouseleave="onMouseLeave"
-        @touchstart.prevent="onTouchStart"
-        @touchmove.prevent="onTouchMove"
-        @touchend="onTouchEnd"
+  <v-card :title="dataset.datasetName" v-if="dataset">
+    <template #text>
+      <v-select
+        v-model="selectedShapefile"
+        :items="shapefiles"
+        :label="$t('formLabelTraitTimelineShapefile')"
+        return-object
+        clearable
+        item-key="fileresourceId"
+        item-title="fileresourceName"
+        v-if="shapefiles"
       />
-      <div class="field-plan-controls">
-        <v-btn @click="zoomIn" :icon="mdiPlus" />
-        <v-btn @click="resetView" title="Reset view" :icon="mdiRecordCircleOutline" />
-        <v-btn @click="zoomOut" :icon="mdiMinus" />
-      </div>
-      <div class="field-plan-legend" v-if="legend && legend.length > 0">
-        <template
-          v-for="item in legend"
-          :key="`legend-item-${item.color}`"
-        >
-          <span class="legend-dot" :style="{ background: item.color }" /> {{ item.name }}
-        </template>
-      </div>
 
-      <!-- Tooltip -->
-      <Teleport to="body">
-        <div
-          v-if="tooltipVisible && hoveredPlot"
-          class="field-plan-tooltip text-wrap"
-          :style="{ left: `${tooltipX + 14}px`, top: `${tooltipY - 8}px` }"
-        >
-          <slot name="tooltip" v-bind="hoveredPlot">
-            <!-- Fake up an array of just a single entry to basically have a temporary variable -->
+      <template v-if="hasLayout || selectedShapefile">
+        <LayoutHighlightSelection
+          :dataset-id="dataset.datasetId || -1"
+          :traits="numericOrCategoricalTraits"
+          ref="highlightSelection"
+          v-model:taxonomies="taxonomies"
+        />
+
+        <v-btn @click="updateHighlight" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
+
+        <div class="field-plan-wrapper" ref="wrapperRef" v-if="hasLayout">
+          <canvas
+            ref="canvasRef"
+            class="field-plan-canvas"
+            @wheel.prevent="onWheel"
+            @mousedown="onMouseDown"
+            @mousemove="onMouseMove"
+            @mouseup="onMouseUp"
+            @mouseleave="onMouseLeave"
+            @touchstart.prevent="onTouchStart"
+            @touchmove.prevent="onTouchMove"
+            @touchend="onTouchEnd"
+          />
+          <div class="field-plan-controls">
+            <v-btn
+              @click="reverseRows = !reverseRows; draw()"
+              :color="reverseRows ? 'primary' : undefined"
+              :icon="mdiSwapVertical"
+            />
+            <v-btn
+              @click="reverseCols = !reverseCols; draw()"
+              :color="reverseCols ? 'primary' : undefined"
+              :icon="mdiSwapHorizontal"
+            />
+            <v-btn @click="zoomIn" :icon="mdiPlus" />
+            <v-btn @click="resetView" title="Reset view" :icon="mdiRecordCircleOutline" />
+            <v-btn @click="zoomOut" :icon="mdiMinus" />
+          </div>
+          <div class="field-plan-legend" v-if="legend && legend.length > 0">
             <template
-              :key="`${cell.row + 1}|${cell.column + 1}`"
-              v-for="cell in [cellMapping[`${hoveredPlot.row + 1}|${hoveredPlot.col + 1}`]]"
+              v-for="item in legend"
+              :key="`legend-item-${item.color}`"
             >
-              <v-list-item
-                v-if="cell"
-                :title="cell.germplasmDisplayName"
-                :subtitle="cell.traitValue || 'N/A'"
-              >
-                <template #subtitle="{ subtitle }">
-                  <p>{{ cell.germplasmName }}</p>
-                  <v-chip label variant="flat" :color="cell.color" :text="subtitle" />
-                </template>
-              </v-list-item>
-              <span v-else>N/A</span>
+              <span class="legend-dot" :style="{ background: item.color }" /> {{ item.name }}
             </template>
-          </slot>
+          </div>
+
+          <!-- Tooltip -->
+          <Teleport to="body">
+            <div
+              v-if="tooltipVisible && hoveredPlot"
+              class="field-plan-tooltip text-wrap"
+              :style="{ left: `${tooltipX + 14}px`, top: `${tooltipY - 8}px` }"
+            >
+              <slot name="tooltip" v-bind="hoveredPlot">
+                <!-- Fake up an array of just a single entry to basically have a temporary variable -->
+                <template
+                  :key="`${cell.row + 1}|${cell.column + 1}`"
+                  v-for="cell in [cellMapping[`${hoveredPlot.row + 1}|${hoveredPlot.col + 1}`]]"
+                >
+                  <v-list-item
+                    v-if="cell"
+                    :title="cell.germplasmDisplayName"
+                    :subtitle="cell.traitValue || 'N/A'"
+                  >
+                    <template #subtitle="{ subtitle }">
+                      <p>{{ cell.germplasmName }}</p>
+                      <v-chip label variant="flat" :color="cell.color" :text="subtitle" />
+                    </template>
+                  </v-list-item>
+                  <span v-else>N/A</span>
+                </template>
+              </slot>
+            </div>
+          </Teleport>
         </div>
-      </Teleport>
-    </div>
-  </div>
+
+        <LocationMap class="mt-5" map-type="cluster" :shapefile-id="selectedShapefile?.fileresourceId" :locations="[]" ref="map" v-if="selectedShapefile" @shapefile-loaded="setShapefileLayers" />
+      </template>
+      <p v-else>{{ $t('headingNoData') }}</p>
+    </template>
+  </v-card>
 </template>
 
 <script setup lang="ts">
   import { apiPostTraitDatasetStats, apiPostTrialLayouts, apiPostTrialsDataTable } from '@/plugins/api/trait'
-  import { FilterComparator, FilterOperator, type Taxonomies, type TraitStats, type TrialsExportDatasetRequest, type ViewTableDatasets, type ViewTableTraits, type ViewTableTrialLayouts, type ViewTableTrialsData } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type Taxonomies, type TraitStats, type TrialsExportDatasetRequest, type ViewTableDatasets, type ViewTableFileresources, type ViewTableTraits, type ViewTableTrialLayouts, type ViewTableTrialsData } from '@/plugins/types/germinate'
   import type HighlightSelection from '@/components/widgets/selections/LayoutHighlightSelection.vue'
-  import { mdiMinus, mdiPlus, mdiRecordCircleOutline, mdiRefresh } from '@mdi/js'
+  import { mdiMinus, mdiPlus, mdiRecordCircleOutline, mdiRefresh, mdiSwapHorizontal, mdiSwapVertical } from '@mdi/js'
   import emitter from 'tiny-emitter/instance'
   import { brighten, createMultiColorGradient, getColor, getGradientColor, getPrimaryColor, GRADIENT_VIRIDIS, hexToRgb, rgbColorToHex } from '@/plugins/util/colors'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { AsyncCache } from '@/plugins/util/AsyncCache'
+  import { apiPostDatasetfileresource } from '@/plugins/api/dataset'
+import type { Layer } from 'leaflet'
 
   // ─── Types ────────────────────────────────────────────────────────────────────
   export interface PlotCoord {
@@ -112,6 +140,7 @@
       traits: ViewTableTraits[]
       /** Visual options — override any of these to customise the look */
       plotStyle?: Partial<PlotStyle>
+      hasLayout: boolean
     }>(),
     {
       plotStyle: () => ({}),
@@ -120,6 +149,11 @@
 
   const rows = shallowRef(1)
   const columns = shallowRef(1)
+  const reverseRows = ref(false)
+  const reverseCols = ref(false)
+  const shapefiles = ref<ViewTableFileresources[]>([])
+  const selectedShapefile = ref<ViewTableFileresources>()
+  let shapefileLayers: { [key: string]: Layer[] } = {}
 
   const numericOrCategoricalTraits = computed(() => props.traits.filter(t => t.scaleDatatype === 'numeric' || t.scaleDatatype === 'categorical'))
 
@@ -142,6 +176,10 @@
 
   function resolvedStyle (): PlotStyle {
     return { ...DEFAULT_STYLE, ...props.plotStyle }
+  }
+
+  function setShapefileLayers (ls: { [key: string]: Layer[] }) {
+    shapefileLayers = ls
   }
 
   // ─── Template refs ────────────────────────────────────────────────────────────
@@ -224,6 +262,13 @@
 
     const hl: Map<string, string> = new Map()
     legend.value = []
+
+    if (shapefileLayers) {
+      Object.keys(shapefileLayers).forEach(key => {
+        // @ts-expect-error
+        shapefileLayers[key]?.forEach(l => l.setStyle({ color: 'rgba(var(--v-theme-primary), 0.6)' }))
+      })
+    }
 
     const us = userSelection.value
     let options: string[] = []
@@ -314,6 +359,13 @@
       if (us.type === 'taxonomies' && taxonomies.value) {
         options = options.map((o, i) => [taxonomies.value?.[i]?.genus, taxonomies.value?.[i]?.species, taxonomies.value?.[i]?.subtaxa].filter(p => p !== undefined && p !== '').join(' '))
       }
+    } else {
+      Object.values(cellMapping.value).forEach(c => {
+        c.color = undefined
+        c.traitValue = undefined
+        // @ts-expect-error
+        shapefileLayers?.[`${c.row - 1}|${c.column - 1}`]?.forEach(l => l.setStyle({ color: 'rgba(var(--v-theme-primary), 0.6)' }))
+      })
     }
 
     if (!legend.value || legend.value.length === 0) {
@@ -325,6 +377,12 @@
       })
     }
     highlightedPlots.value = hl
+
+    // @ts-ignore
+    hl.forEach((value, key) => {
+      // @ts-ignore
+      shapefileLayers?.[key]?.forEach(l => l.setStyle({ color: value }))
+    })
 
     draw()
 
@@ -438,8 +496,8 @@
     const gx = (mx - offsetX) / scale
     const gy = (my - offsetY) / scale
 
-    const col = Math.floor(gx / (pw + s.gap))
-    const row = Math.floor(gy / (ph + s.gap))
+    let col = Math.floor(gx / (pw + s.gap))
+    let row = Math.floor(gy / (ph + s.gap))
 
     if (col < 0 || col >= columns.value || row < 0 || row >= rows.value) {
       return null
@@ -449,6 +507,14 @@
     const localX = gx - col * (pw + s.gap)
     const localY = gy - row * (ph + s.gap)
     if (localX > pw || localY > ph) return null
+
+    // Map visual grid position back to dataset data coords
+    if (reverseRows.value) {
+      row = rows.value - 1 - row
+    }
+    if (reverseCols.value) {
+      col = columns.value - 1 - col
+    }
 
     return { row, col }
   }
@@ -586,8 +652,12 @@
 
     for (let r = 0; r < rows.value; r++) {
       for (let c = 0; c < columns.value; c++) {
-        const x = c * (pw + s.gap)
-        const y = r * (ph + s.gap)
+        // Map row and column based on flip options
+        const displayR = reverseRows.value ? rows.value - 1 - r : r
+        const displayC = reverseCols.value ? columns.value - 1 - c : c
+
+        const x = displayC * (pw + s.gap)
+        const y = displayR * (ph + s.gap)
         const highlightColor = highlightedPlots.value.get(`${r}|${c}`)
 
         const cell = cellMapping.value[`${r + 1}|${c + 1}`]
@@ -625,7 +695,8 @@
     ctx.textAlign = 'right'
     ctx.textBaseline = 'middle'
     for (let r = 0; r < rows.value; r++) {
-      const y = r * (ph + s.gap) + ph / 2
+      const displayR = reverseRows.value ? rows.value - 1 - r : r
+      const y = displayR * (ph + s.gap) + ph / 2
       ctx.fillText(String.fromCodePoint(65 + r), -s.gap - 2, y)
     }
 
@@ -633,7 +704,8 @@
     ctx.textAlign = 'center'
     ctx.textBaseline = 'bottom'
     for (let c = 0; c < columns.value; c++) {
-      const x = c * (pw + s.gap) + pw / 2
+      const displayC = reverseCols.value ? columns.value - 1 - c : c
+      const x = displayC * (pw + s.gap) + pw / 2
       ctx.fillText(String(c + 1), x, -s.gap - 2)
     }
 
@@ -673,6 +745,26 @@
     }
 
     emitter.emit('show-loading', true)
+
+    apiPostDatasetfileresource({
+      datasetIds: [props.dataset.datasetId || -1],
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      filters: [{
+        filters: [{
+          column: 'fileresourcetypeName',
+          comparator: FilterComparator.equals,
+          values: ['Trials Shapefile'],
+        }],
+        operator: FilterOperator.and,
+      }],
+    }, result => {
+      if (result && result.data) {
+        shapefiles.value = result.data
+      } else {
+        shapefiles.value = []
+      }
+    })
 
     apiPostTrialLayouts(query, result => {
       if (result) {
