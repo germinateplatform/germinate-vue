@@ -6,7 +6,6 @@
 
     <StoryTable
       :get-data="getStories"
-      display-type="grid"
       ref="storyTable"
     />
 

@@ -141,19 +141,23 @@
       key: 'referenceName',
       dataType: 'string',
       title: t('tableColumnImageReferenceName'),
+      quickSearchable: true,
     }, {
       key: 'imageForeignId',
       dataType: 'integer',
       visibleInTable: false,
       title: t('tableColumnImageForeignId'),
+      visibleInFilter: false,
     }, {
       key: 'imageRefTable',
       dataType: 'string',
       title: t('tableColumnImageReferenceTable'),
+      quickSearchable: true,
     }, {
       key: 'imageDescription',
       dataType: 'string',
       title: t('tableColumnImageDescription'),
+      quickSearchable: true,
     }, {
       key: 'imageIsReference',
       dataType: 'boolean',
@@ -172,6 +176,7 @@
       dataType: 'json',
       sortable: false,
       title: t('tableColumnImageTags'),
+      quickSearchable: true,
     }, {
       key: 'createdOn',
       dataType: 'date',

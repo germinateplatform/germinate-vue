@@ -9,10 +9,10 @@
       <v-card-text class="py-0">
         <v-row align="center" no-gutters>
           <v-col
-            class="text-display-medium"
+            class="text-display-medium d-flex align-center"
             cols="6"
           >
-            {{ getNumberWithSuffix(highlight || 0, 1) }}
+            {{ hoveredValue }} <v-chip class="ms-5" label v-if="hoveredIdx !== null" :text="keys[hoveredIdx]" />
           </v-col>
 
           <v-col class="text-right" cols="6">
@@ -51,8 +51,10 @@
         line-width="2"
         stroke-linecap="round"
         :gradient="gradient"
+        interactive
         gradient-direction="top"
         auto-draw
+        @update:current-index="hoveredIdx = $event"
       >
         <template #label="item">
           {{ (item.index === 0 || item.index === aggregated.length - 1) ? keys[item.index] : '' }}
@@ -80,6 +82,16 @@
 
   const theme = useTheme()
   const mutedColor = computed(() => theme.current.value.colors.muted)
+
+  const highlightValue = computed(() => getNumberWithSuffix(highlight.value || 0, 1))
+
+  const hoveredIdx = ref<number | null>(null)
+  const hoveredValue = computed(() => {
+    if (hoveredIdx.value === null) {
+      return highlightValue
+    }
+    return getNumberWithSuffix(aggregated.value[hoveredIdx.value] || 0, 1)
+  })
 
   const gradient = computed(() => [compProps.color, `${mutedColor.value}` || '#ffffff'])
   const aggregated = computed(() => {

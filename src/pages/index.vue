@@ -33,7 +33,7 @@
 
     <v-row class="mt-5">
       <v-col cols="12" :order="allDashboardSections.indexOf('publications') + 1" v-if="showPublicationSection && (showPublications || store.storeUserIsDataCurator)">
-        <PublicationTable display-type="grid" :get-data="getPublicationData" :filter-on="publicationsFilter">
+        <PublicationTable :get-data="getPublicationData" :filter-on="publicationsFilter">
           <template #card-text>
             <v-card-text>{{ $t('pageDashboardPublicationsText') }}</v-card-text>
           </template>
@@ -44,16 +44,15 @@
         <StoryTable
           :get-data="getStories"
           :filter-on="storiesFilter"
-          display-type="grid"
         />
       </v-col>
 
       <v-col cols="12" :order="allDashboardSections.indexOf('dataupdates') + 1" v-if="showDataUpdateSection && showDataUpdates">
-        <DataUpdateTable display-type="table" :get-data="getDataUpdateData" />
+        <DataUpdateTable :get-data="getDataUpdateData" />
       </v-col>
 
       <v-col cols="12" :order="allDashboardSections.indexOf('news') + 1" v-if="showNewsSection && (showNews || store.storeUserIsDataCurator)">
-        <NewsTable display-type="grid" :get-data="getNewsData" />
+        <NewsTable :get-data="getNewsData" />
       </v-col>
     </v-row>
   </v-container>

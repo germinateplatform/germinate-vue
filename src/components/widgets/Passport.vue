@@ -388,5 +388,5 @@
     })
   }
 
-  onMounted(() => update)
+  onMounted(() => update())
 </script>

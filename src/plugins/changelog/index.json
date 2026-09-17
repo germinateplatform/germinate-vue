@@ -2,7 +2,91 @@
   {
     "version": "5.0.0",
     "date": "2026-xx-xx",
-    "items": []
+    "text": "We are happy to announce a completely new version of Germinate! This release focuses on a complete refresh of the technology stack we use to bring Germinate to our users. This move was necessary to ensure Germinate stays up to speed with evolving technologies and ensure its future-proofness. Rather than just translate what was there 1:1 we took the opportunity to tweak and improve many areas of Germinate for better usability, add new functionalities and give Germinate a general overhaul while keeping the familiar structure. Below is a list of everything that has changed and was added in this release.",
+    "items": [
+      {
+        "type": "new",
+        "title": "Ontology support",
+        "text": "This has been a long time coming. To better support standardisation of phenotypic data, we have added support for trait ontologies (Variable = trait + method + scale). To this end, the Germinate Data Templates have been updated to provide fields for this information and the Germinate database and user interface have been updated accordingly.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Chart highlighting",
+        "text": "Many data visualizations have been enhanced by adding more complex and more customisable data point highlighing options. As an example, phenotypic data always allowed highlighting reps and treatments, but now gives you much more control about which ones to highlight rather than all of them.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Taxonomy information providers",
+        "text": "Germinate can now use external taxonomy definition providers like NCBI to direct users to their infrastructure for more details. For the specific NCBI use-case, Germinate can now pull EBI data overviews (like genome assemblies) for each taxon and link to them.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "update",
+        "title": "Improved trial layout view",
+        "text": "The trials layout view has been improved significantly. If no shapefile is available, but there is layout information for each plot, these will be shown in a grid-like fashion. Trait data can be visualized on this grid as well as other characteristics like reps, treatments and taxonomies.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "update",
+        "title": "Project support",
+        "text": "The support of projects within Germinate has seen a major update. Selecting a project will now only show data related to this project throughout the user interface. De-selecting projects will return to showing everything.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "update",
+        "title": "Data stories",
+        "text": "Data stories have also been re-worked to be both easier to create and to use.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Table quick search",
+        "text": "The main data tables in Germinate (germplasm, markers, locations, groups, etc) now support a quick search box. Entering text into this box will search a number of pre-defined fields within this table for any matches to more quickly let you find what you are looking for.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "update",
+        "title": "Improved table filtering",
+        "text": "The table filtering mechanism has been reworked to support much more complex filering scenarios. While the server backend supports unlimited nesting of conditions, the frontend is limited to a depth of 2 meaning that you can create queries like <code>A and (B or C or D) and (E or F)</code>.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Visual modes for tables",
+        "text": "Some tables on the Germinate user interface support dynamically  switching between 'table' and 'grid' mode to best suit the data being shown. For example, the image table will show as a grid by default. Changes to this setting will be remembered between sessions.",
+        "categories": [
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Data overview pages",
+        "text": "For phenotypic, genotypic and climate data, there are now basic overview pages that show you how the number of datasets, data points and variables have evolved over time.",
+        "categories": [
+          "user"
+        ]
+      }
+    ]
   },
   {
     "version": "4.9.0",

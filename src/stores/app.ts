@@ -32,6 +32,7 @@ export interface UserStateContent {
   locale: string
   mapLayer: string
   hiddenColumns: HiddenColumns
+  tableDisplayType: TableDisplayType
   markedIds: MarkedItems
   customChartColors?: string[] | undefined
   asyncJobUuids: string[]
@@ -44,6 +45,7 @@ export interface UserStateContent {
 
 type MarkedItems = { [key: string]: number[] }
 export type HiddenColumns = { [key: string]: string[] }
+export type TableDisplayType = { [key: string]: 'grid' | 'table' }
 type UserState = { [key: number]: UserStateContent }
 
 const defaultUserState: UserStateContent = {
@@ -51,6 +53,15 @@ const defaultUserState: UserStateContent = {
   systemTheme: 'light',
   locale: 'en_GB',
   mapLayer: 'theme',
+  tableDisplayType: {
+    backup: 'table',
+    dataUpdate: 'table',
+    images: 'grid',
+    news: 'grid',
+    projects: 'grid',
+    publications: 'grid',
+    stories: 'grid',
+  },
   hiddenColumns: {
     germplasm: [],
     germplasmAttributes: [],
@@ -124,6 +135,14 @@ function createConsentAwareStorage (storage: Storage = localStorage): StorageLik
               Object.keys(defaultUserState.hiddenColumns).forEach(hd => {
                 if (!parsed.userStates[userId].hiddenColumns[hd]) {
                   parsed.userStates[userId].hiddenColumns[hd] = defaultUserState.hiddenColumns[hd]
+                }
+              })
+              Object.keys(defaultUserState.tableDisplayType).forEach(tdt => {
+                if (!parsed.userStates[userId].tableDisplayType) {
+                  parsed.userStates[userId].tableDisplayType = {}
+                }
+                if (!parsed.userStates[userId].tableDisplayType[tdt]) {
+                  parsed.userStates[userId].tableDisplayType[tdt] = defaultUserState.tableDisplayType[tdt]
                 }
               })
             })
@@ -237,6 +256,9 @@ export const coreStore = defineStore('germinate', {
     storeHiddenColumns (): HiddenColumns {
       return this.userStates[this.storeUserId].hiddenColumns
     },
+    storeTableDisplayType (): TableDisplayType {
+      return this.userStates[this.storeUserId].tableDisplayType
+    },
     storeCustomChartColors (): string[] | undefined {
       return this.userStates[this.storeUserId].customChartColors
     },
@@ -334,6 +356,9 @@ export const coreStore = defineStore('germinate', {
     },
     setHiddenColumnsType (type: string, newHiddenColumns: string[]) {
       this.userStates[this.storeUserId].hiddenColumns[type] = newHiddenColumns
+    },
+    setTableDisplayType (type: string, newTableDisplayType: 'grid' | 'table') {
+      this.userStates[this.storeUserId].tableDisplayType[type] = newTableDisplayType
     },
     setCustomChartColors (newColors: string[]) {
       this.userStates[this.storeUserId].customChartColors = newColors

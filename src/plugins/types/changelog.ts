@@ -1,6 +1,7 @@
 export interface ChangelogEntry {
   version: string
   date: string
+  text?: string
   items: ChangelogEntryItems[]
 }
 

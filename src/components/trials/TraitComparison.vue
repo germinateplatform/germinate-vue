@@ -32,6 +32,7 @@
           url-query-key="comparison"
           :germplasm="trialGermplasm"
           v-model="selectedGermplasm"
+          v-if="trialGermplasm && trialGermplasm.length > 0"
         />
       </v-col>
     </v-row>

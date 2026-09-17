@@ -48,7 +48,6 @@ name: groups
         column: 'groupType',
         comparator: FilterComparator.equals,
         values: [selectedGroupType.value],
-        canBeChanged: false,
       })
     }
     return filter.length > 0

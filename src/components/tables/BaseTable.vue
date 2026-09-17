@@ -28,6 +28,7 @@
             v-model="searchTerm"
             type="search"
             width="min(50vw, 250px)"
+            class="flex-grow-0"
             :prepend-inner-icon="mdiMagnify"
             :placeholder="$t('inputPlaceholderSearch')"
             :append-inner-icon="mdiArrowRight"
@@ -128,6 +129,7 @@
                 v-model="searchTerm"
                 type="search"
                 width="min(50vw, 250px)"
+                class="flex-grow-0"
                 :prepend-inner-icon="mdiMagnify"
                 :placeholder="$t('inputPlaceholderSearch')"
                 clearable
@@ -750,12 +752,16 @@
     localDisplayType.value = newValue
   })
 
+  watch(localDisplayType, async newValue => {
+    store.setTableDisplayType(componentProps.tableKey, newValue)
+  })
+
   onBeforeMount(() => {
     readUrlParams()
   })
 
   onMounted(() => {
-    localDisplayType.value = componentProps.displayType
+    localDisplayType.value = store.storeTableDisplayType[componentProps.tableKey] || componentProps.displayType
     if (!localSortByColumns.value || localSortByColumns.value.length === 0) {
       localSortByColumns.value = componentProps.sortBy || []
     }

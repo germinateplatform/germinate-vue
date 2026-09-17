@@ -18,6 +18,16 @@
             </div>
           </template>
 
+          <v-list v-if="version.text">
+            <v-list-item
+              :title="$t('widgetChangelogVersionInfo')"
+              :prepend-icon="mdiInformation"
+              base-color="info"
+              class="text-wrap"
+              :subtitle="version.text"
+            />
+          </v-list>
+
           <v-row class="my-3">
             <template
               v-for="(item, iindex) in version.items"
@@ -52,7 +62,7 @@
   import cd from '@/plugins/changelog/index.json'
   import type { ChangelogEntry } from '@/plugins/types/changelog'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { mdiCalendar, mdiTag } from '@mdi/js'
+  import { mdiCalendar, mdiInformation, mdiTag } from '@mdi/js'
 
   import semver from 'semver'
   import { useI18n } from 'vue-i18n'

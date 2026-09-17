@@ -8,7 +8,6 @@
     :headers="headers"
     :filter-on="filterOn"
     :show-details="false"
-    :display-type="compProps.displayType"
     item-key="id"
     table-key="importFeedback"
     :header-icon="mdiListStatus"
@@ -48,7 +47,6 @@
     getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
-    displayType?: DisplayType
   }>()
 
   const baseTable = useTemplateRef('baseTable')

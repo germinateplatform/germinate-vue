@@ -74,7 +74,7 @@
     </MarkerTable>
 
     <template v-if="showPublications || store.storeUserIsDataCurator">
-      <PublicationTable class="mt-5" display-type="grid" :get-data="getPublicationData" :publication-reference-id="groupId" :publication-reference-type="PublicationdataReferenceType.group">
+      <PublicationTable class="mt-5" :get-data="getPublicationData" :publication-reference-id="groupId" :publication-reference-type="PublicationdataReferenceType.group">
         <template #card-text>
           <v-card-text>{{ $t('pageGroupsPublicationsText') }}</v-card-text>
         </template>

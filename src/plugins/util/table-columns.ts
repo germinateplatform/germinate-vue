@@ -472,6 +472,7 @@ const locationColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnLocationName',
   dataType: 'string',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'locationRegion',
   title: 'tableColumnLocationRegion',
@@ -513,6 +514,7 @@ const locationColumns: ExtendedDataTableHeader[] = [{
   dataType: 'string',
   title: 'tableColumnLocationCountryName',
   searchable: true,
+  quickSearchable: true,
 }]
 
 const pedigreeColumns: ExtendedDataTableHeader[] = [
