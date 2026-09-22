@@ -4,7 +4,7 @@
     <v-divider class="mb-3" />
     <p v-html="$t('pageGermplasmText')" />
 
-    <v-expansion-panels class="my-5">
+    <v-expansion-panels class="my-5" :rounded="5">
       <v-expansion-panel>
         <v-expansion-panel-title class="px-4">
           <v-icon size="small" :icon="mdiFilter" color="medium-emphasis" class="me-2" /> {{ $t('widgetGermplasmTableFilterToggle') }}

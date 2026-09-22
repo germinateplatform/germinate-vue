@@ -28,7 +28,7 @@
       </v-btn-toggle>
 
       <v-row>
-        <v-col cols="12" lg="4" v-if="data.dps">
+        <v-col cols="12" md="6" lg="4" v-if="data.dps">
           <DataStatsCard
             title="pageClimatesOverviewDpTitle"
             subtitle="pageClimatesOverviewDpText"
@@ -41,7 +41,7 @@
             :aggregation="aggregation"
           />
         </v-col>
-        <v-col cols="12" lg="4" v-if="data.dss">
+        <v-col cols="12" md="6" lg="4" v-if="data.dss">
           <DataStatsCard
             title="pageClimatesOverviewDsTitle"
             subtitle="pageClimatesOverviewDsText"
@@ -54,7 +54,7 @@
             :aggregation="aggregation"
           />
         </v-col>
-        <v-col cols="12" lg="4" v-if="data.dts">
+        <v-col cols="12" md="6" lg="4" v-if="data.dts">
           <DataStatsCard
             title="pageClimatesOverviewDtTitle"
             subtitle="pageClimatesOverviewDtText"

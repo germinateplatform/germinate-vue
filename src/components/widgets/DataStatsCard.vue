@@ -10,12 +10,12 @@
         <v-row align="center" no-gutters>
           <v-col
             class="text-display-medium d-flex align-center"
-            cols="6"
+            cols="8"
           >
             {{ hoveredValue }} <v-chip class="ms-5" label v-if="hoveredIdx !== null" :text="keys[hoveredIdx]" />
           </v-col>
 
-          <v-col class="text-right" cols="6">
+          <v-col class="text-right" cols="4">
             <v-icon
               :icon="icon"
               size="60"

@@ -86,6 +86,7 @@
       v-model:sort-by="localSortByColumns"
       v-model:page="currentPage"
       class="base-table"
+      fixed-header
       :row-props="componentProps.getRowProps"
       :headers="allHeaders"
       :items="serverItems"
@@ -781,6 +782,11 @@
 .indicator-flag {
   height: 100%;
   width: 1em;
+}
+
+.base-table:deep(.v-table__wrapper) {
+  max-height: calc(100vh - 120px); /* Adjust offset based on layout header/padding */
+  overflow-y: auto;
 }
 </style>
 
