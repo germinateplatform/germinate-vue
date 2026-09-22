@@ -147,7 +147,7 @@
       dataType: 'integer',
       visibleInTable: false,
       title: t('tableColumnImageForeignId'),
-      visibleInFilter: false,
+      visibleInFilter: true,
     }, {
       key: 'imageRefTable',
       dataType: 'string',

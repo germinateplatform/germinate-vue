@@ -133,21 +133,7 @@
     </template>
 
     <template #item.imageCount="{ item }">
-      <v-menu v-if="item.imageCount" location="bottom">
-        <template #activator="{ props }">
-          <v-icon
-            :icon="mdiCamera"
-            v-bind="props"
-            v-tooltip:top="$t('tableTooltipGermplasmImage')"
-          /> {{ item.imageCount }}
-        </template>
-
-        <v-card>
-          <v-card-text>
-            <v-img :src="getSrc(item)" height="300px" width="300px" />
-          </v-card-text>
-        </v-card>
-      </v-menu>
+      <v-chip label :text="item.imageCount" :prepend-icon="mdiCamera" @click="showImageModal(item)" />
     </template>
 
     <template #item.pdci="{ item }">
@@ -159,7 +145,7 @@
 
     <template #item.data-table-expand="{ item, internalItem, toggleExpand }">
       <v-chip label @click="toggleExpand(internalItem)" v-if="item.latitude && item.longitude" :prepend-icon="mdiMapMarker" v-tooltip:top="$t('tableTooltipGermplasmLocation')" :text="item.location" />
-      <v-chip label v-else :prepend-icon="mdiMapMarker" :text="item.location" />
+      <v-chip label :prepend-icon="mdiMapMarker" :text="item.location" v-else-if="item.location" />
     </template>
 
     <template #expanded-row="{ columns, item }">
@@ -190,7 +176,8 @@
     </template>
 
     <template #bottom-sheet-content>
-      <InstitutionTable :get-data="getInstitutionData" v-if="selectedGermplasm" />
+      <InstitutionTable :get-data="getInstitutionData" v-if="selectedGermplasm && bottomSheetType === 'institutions'" />
+      <Images class="mb-5" :filter-on="imageFilter" header-icon-color="primary" v-if="selectedGermplasm && bottomSheetType === 'images'" />
     </template>
   </BaseTable>
 </template>
@@ -204,7 +191,7 @@
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import { datasetTypes, entityTypes } from '@/plugins/util/types'
   import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGermplasm } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import { coreStore } from '@/stores/app'
@@ -238,6 +225,24 @@
   const { t } = useI18n()
   const bottomVisible = ref(false)
   const selectedGermplasm = ref<ViewTableGermplasm>()
+  const bottomSheetType = ref<'images' | 'institutions'>()
+
+  const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'imageForeignId',
+        comparator: FilterComparator.equals,
+        values: [`${selectedGermplasm.value?.germplasmId}`],
+        canBeChanged: false,
+      }, {
+        column: 'imageRefTable',
+        comparator: FilterComparator.equals,
+        values: ['germinatebase'],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.and,
+    }]
+  })
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
@@ -257,8 +262,18 @@
     return result
   })
 
+  function showImageModal (item: ViewTableGermplasm) {
+    selectedGermplasm.value = item
+    bottomSheetType.value = 'images'
+
+    nextTick(() => {
+      bottomVisible.value = true
+    })
+  }
+
   function showInstitutionModal (item: ViewTableGermplasm) {
     selectedGermplasm.value = item
+    bottomSheetType.value = 'institutions'
 
     nextTick(() => {
       bottomVisible.value = true
@@ -362,6 +377,3 @@
 
   const emit = defineEmits(['filter-cleared'])
 </script>
-
-<style scoped>
-</style>

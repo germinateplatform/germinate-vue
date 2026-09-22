@@ -1,6 +1,6 @@
 <template>
   <BaseChart
-    title="pageStatisticsBiologicalStatusTreemapTitle"
+    title="pageStatisticsTaxonomyTreemapTitle"
     :chart-id="id"
     :filename="filename"
     :header-icon="mdiChartTree"

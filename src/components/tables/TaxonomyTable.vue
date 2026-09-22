@@ -105,7 +105,7 @@
       key: 'count',
       dataType: 'integer',
       title: t('tableColumnTaxonomyCount'),
-      value: (value: ViewTableTaxonomies) => value.count ? getNumberWithSuffix(value.count, 2) : undefined,
+      value: (value: ViewTableTaxonomies) => value.count !== undefined ? getNumberWithSuffix(value.count, 2) : undefined,
     }]
 
     return headers

@@ -2,6 +2,7 @@ export interface EbiRecord {
   result_id: string
   description: string
   entry_cnt: number
+  subtree_entry_cnt?: number
 }
 
 export interface EbiStudy {
@@ -19,4 +20,8 @@ export interface EbiGenomyAssembly {
   assembly_level: string
   assembly_quality: string
   assembly_software: string
+}
+
+export interface Count {
+  count: string
 }

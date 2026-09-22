@@ -1,6 +1,6 @@
 <template>
   <BaseChart
-    title="pageStatisticsBiologicalStatusSunburstTitle"
+    title="pageStatisticsTaxonomySunburstTitle"
     :chart-id="id"
     :filename="filename"
     :source-file="sourceFile"

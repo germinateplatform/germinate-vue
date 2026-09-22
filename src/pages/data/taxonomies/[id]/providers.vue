@@ -5,7 +5,7 @@
     <p v-html="$t('pageTaxonomyProviderText')" />
 
     <template v-if="taxonomy">
-      <v-list class="mb-3">
+      <v-list class="mb-5">
         <v-list-item :title="$t('tableColumnTaxonomyGenus')">
           <template #subtitle>
             <span class="font-italic">{{ taxonomy.taxonomyGenus }}</span>
@@ -24,7 +24,7 @@
       </v-list>
 
       <v-row v-if="taxonomy.taxonomyProviders && taxonomy.taxonomyProviders.length > 0">
-        <v-col cols="12" sm="6" md="4" lg="3" class="mb-3" v-for="provider in taxonomy.taxonomyProviders" :key="`provider-${provider.providerName}`">
+        <v-col cols="12" sm="6" md="4" lg="3" class="mb-5" v-for="provider in taxonomy.taxonomyProviders" :key="`provider-${provider.providerName}`">
           <v-card :prepend-icon="mdiIdentifier" :title="provider.providerName">
             <v-list>
               <v-list-item :title="$t('pageTaxonomyProviderUrl')" v-if="provider.providerHomepage">
@@ -47,11 +47,13 @@
         </v-col>
       </v-row>
 
-      <v-card class="mb-3" v-if="ebiOverview">
+      <v-card class="mb-5" v-if="ebiOverview">
         <v-data-table
           :headers="ebiOverviewHeaders"
           :items="ebiOverview"
+          :items-per-page="ebiOverview.length"
           :loading="ebiOverviewLoading"
+          hide-default-footer
         >
           <template #top>
             <v-toolbar
@@ -66,9 +68,7 @@
           </template>
 
           <template #item.result_id="{ item }">
-            <a href="#" @click.prevent="showStudies" v-if="item.result_id === 'study'">{{ item.result_id }}</a>
-            <a href="#" @click.prevent="showAssemblies" v-else-if="item.result_id === 'assembly'">{{ item.result_id }}</a>
-            <span v-else>{{ item.result_id }}</span>
+            <v-chip label :text="item.result_id" />
           </template>
           <template #item.description="{ item }">
             <a href="#" @click.prevent="showStudies" v-if="item.result_id === 'study'">{{ item.description }}</a>
@@ -78,7 +78,7 @@
         </v-data-table>
       </v-card>
 
-      <v-card class="mb-3" v-if="ebiStudies">
+      <v-card class="mb-5" v-if="ebiStudies">
         <v-data-table
           :items="ebiStudies"
           :loading="ebiStudiesLoading"
@@ -115,7 +115,7 @@
         </v-data-table>
       </v-card>
 
-      <v-card class="mb-3" v-if="ebiAssemblies">
+      <v-card class="mb-5" v-if="ebiAssemblies">
         <v-data-table
           :items="ebiAssemblies"
           :loading="ebiAssembliesLoading"
@@ -184,7 +184,13 @@ name: taxonomyProviderDetails
     }, {
       title: t('tableColumnEbiOverviewResultCount'),
       key: 'entry_cnt',
-      value: (item: EbiRecord) => item.entry_cnt !== undefined ? getNumberWithSuffix(item.entry_cnt, 1) : undefined,
+      value: (item: EbiRecord) => {
+        if (item.entry_cnt === -1) {
+          return 'N/A'
+        } else {
+          return item.entry_cnt !== undefined ? getNumberWithSuffix(item.subtree_entry_cnt || item.entry_cnt || 0, 1) : undefined
+        }
+      },
     }]
   })
 
@@ -206,7 +212,7 @@ name: taxonomyProviderDetails
       ebiOverview.value = []
       ebiOverviewLoading.value = true
       ebiGetRecords(provider.externalId)
-        .then(response => {
+        .then(async response => {
           if (response && response.data) {
             ebiOverviewLoading.value = false
             ebiOverview.value = response.data
