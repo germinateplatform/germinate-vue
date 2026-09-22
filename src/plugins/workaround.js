@@ -1,2 +1,2 @@
 // Workaround for Plotly.js
-window.global ||= window
+window.global = window.global || window

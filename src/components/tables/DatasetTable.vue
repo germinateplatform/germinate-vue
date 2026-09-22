@@ -168,6 +168,8 @@
     >
       <template #additional-fields="{ item }">
         <v-autocomplete
+          class="mt-5"
+          autocomplete="off"
           :items="experiments"
           v-model="item.experimentId"
           :label="$t('tableColumnExperimentName')"

@@ -46,6 +46,7 @@
         v-if="aggregated"
         :model-value="aggregated"
         :color="bgColor"
+        marker-stroke="rgb(var(--v-theme-surface))"
         padding="10"
         height="50"
         line-width="2"

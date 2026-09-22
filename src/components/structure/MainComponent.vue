@@ -115,7 +115,7 @@
           </v-list>
         </v-menu>
 
-        <UserDropdown v-if="showElements" />
+        <UserDropdown v-if="showElements && store.storeServerSettings?.authMode !== AuthenticationMode.NONE" />
 
         <v-btn icon @click="emitter.emit('toggle-aside')">
           <v-badge location="bottom left" color="primary" :offset-x="-2" :offset-y="-2" :content="store.storeAsyncJobUuids.length" v-if="store.storeAsyncJobUuids.length > 0">
@@ -183,7 +183,7 @@
   import ConfirmModal from '@/components/modals/ConfirmModal.vue'
   import AppFooter from '@/components/AppFooter.vue'
 
-  import { useDisplay, useTheme, type SnackbarQueueMessage } from 'vuetify'
+  import { useDisplay, useTheme } from 'vuetify'
   import { coreStore } from '@/stores/app'
   import type { Locale } from '@/plugins/types/Locale'
   import { loadLanguageAsync } from '@/plugins/vuetify'
@@ -203,6 +203,7 @@
 
   import { init as initPlausible, track } from '@plausible-analytics/tracker'
   import axios from 'axios'
+  import { AuthenticationMode } from '@/plugins/types/germinate'
 
   export interface SnackbarContent {
     title?: string

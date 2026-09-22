@@ -291,6 +291,11 @@ export class Pages {
     path: '/about/project',
   }
 
+  static aboutCookies: Page = {
+    name: 'aboutCookies',
+    path: '/about/cookie',
+  }
+
   static aboutExportFormats: Page = {
     name: 'aboutExportFormats',
     path: '/about/export-formats',

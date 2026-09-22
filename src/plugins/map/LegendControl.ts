@@ -37,7 +37,7 @@ export class LegendControl extends L.Control {
     // nothing to clean up, but Leaflet expects the method
   }
 
-  private buildIconSvg(path: string): string {
+  private buildIconSvg (path: string): string {
     return `
       <svg viewBox="0 0 24 24" width="18" height="18" class="legend-control__icon">
         <path d="${path}" fill="currentColor" />

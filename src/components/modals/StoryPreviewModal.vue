@@ -7,7 +7,7 @@
       v-if="localCopy"
     >
       <v-card-text>
-        <v-alert color="warning" class="mb-3" border="start" variant="tonal" :icon="mdiInformation" v-if="editable">{{ $t('modalTextStoryAddSteps') }}</v-alert>
+        <v-alert color="warning" class="mb-3" border="start" variant="tonal" :icon="mdiInformation" v-if="editable">{{ $t('modalTextStoryEditSteps') }}</v-alert>
 
         <div :class="lgAndUp ? 'd-flex flex-row' : undefined">
           <v-tabs

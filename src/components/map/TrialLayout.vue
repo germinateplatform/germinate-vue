@@ -106,7 +106,7 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { AsyncCache } from '@/plugins/util/AsyncCache'
   import { apiPostDatasetfileresource } from '@/plugins/api/dataset'
-import type { Layer } from 'leaflet'
+  import type { Layer } from 'leaflet'
 
   // ─── Types ────────────────────────────────────────────────────────────────────
   export interface PlotCoord {

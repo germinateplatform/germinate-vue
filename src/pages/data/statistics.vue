@@ -65,7 +65,7 @@ name: statistics
   import StatsChart from '@/components/charts/StatsChart.vue'
   import TaxonomySunburst from '@/components/charts/TaxonomySunburst.vue'
   import TaxonomyTreemap from '@/components/charts/TaxonomyTreemap.vue'
-import { apiPostInstitutionDatasetTable } from '@/plugins/api/institution'
+  import { apiPostInstitutionDatasetTable } from '@/plugins/api/institution'
   import { apiGetMetaStats } from '@/plugins/api/stats'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type GermplasmMetaStats, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'

@@ -20,6 +20,7 @@
       <slot name="footer.prepend" />
       <v-spacer />
       <div class="d-flex align-center g-items-per-page">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-missing-keys -->
         <div class="pe-2">{{ t('$vuetify.dataFooter.itemsPerPageText') }}</div>
         <v-select
           :items="perPageOptions"
@@ -31,6 +32,7 @@
         />
       </div>
       <div class="v-data-table-footer__info">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-missing-keys -->
         {{ t('$vuetify.dataFooter.pageText', !itemsLength ? 0 : startIndex + 1, stopIndex, itemsLength) }}
       </div>
       <v-pagination v-model="localPage" :length="totalPages" :total-visible="0" show-first-last-page />

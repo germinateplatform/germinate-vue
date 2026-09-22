@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
+    "prebuild": "eslint ./src --quiet",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix"
@@ -56,6 +57,7 @@
     "vuetify": "^4.1.2"
   },
   "devDependencies": {
+    "@intlify/eslint-plugin-vue-i18n": "^4.5.1",
     "@tsconfig/node22": "^22.0.0",
     "@types/d3-dsv": "^3.0.7",
     "@types/d3-selection": "^3.0.11",

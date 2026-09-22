@@ -108,6 +108,7 @@
         <v-list-item link :to="Pages.aboutProject.path" :prepend-icon="mdiInformationOutline" v-if="Pages.isAvailable(Pages.aboutProject)" :title="$t('menuAboutProject')" />
         <v-list-item link :to="Pages.aboutGerminate.path" prepend-icon="$germinate" :title="$t('menuAboutGerminate')" />
         <v-list-item link :to="Pages.aboutExportFormats.path" :prepend-icon="mdiApplicationBrackets" v-if="Pages.isAvailable(Pages.aboutExportFormats)" :title="$t('menuAboutExportFormat')" />
+        <v-list-item link :to="Pages.aboutCookies.path" :prepend-icon="mdiCookie" v-if="Pages.isAvailable(Pages.aboutCookies)" :title="$t('menuAboutCookies')" />
       </v-list-group>
 
       <v-list-item class="pa-5" v-if="logoVisible">
@@ -132,10 +133,10 @@
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { germinateVersion } from '@/plugins/util'
   import { useDisplay } from 'vuetify'
-  import type { OverviewStats, OverviewStatsField } from '@/plugins/types/germinate'
+  import type { OverviewStats } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderHorizontal, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy } from '@mdi/js'
+  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderHorizontal, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy, mdiCookie } from '@mdi/js'
 
   const { name, lgAndUp } = useDisplay()
   const store = coreStore()

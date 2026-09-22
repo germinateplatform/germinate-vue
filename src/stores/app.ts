@@ -14,7 +14,7 @@ if (!name) {
 }
 
 const essentialKeys = new Set(['token', 'locale', 'baseUrl', 'serverSettings', 'markedIds', 'cookiesAccepted', 'selectedProjects'])
-const nonPersistentKeys = new Set(['asyncJobUuids', 'asyncJobCount'])
+const nonPersistentKeys = new Set(['asyncJobUuids', 'deviceConfig', 'systemTheme', 'activeStory'])
 
 export interface StoreContent {
   baseUrl: string | undefined
@@ -112,8 +112,35 @@ const defaultUserState: UserStateContent = {
 }
 
 /**
+ * Deletes any keys present in `nonPersistentKeys` from the given object, in place.
+ * Works for both the top-level StoreContent object and individual UserStateContent objects,
+ * since it just checks for key presence rather than assuming a shape.
+ */
+function stripNonPersistentKeys (obj: Record<string, any>): void {
+  nonPersistentKeys.forEach(k => {
+    if (k in obj) {
+      delete obj[k]
+    }
+  })
+}
+
+/**
+ * Restores default values for any of `nonPersistentKeys` that are missing from a user state,
+ * since those keys are always stripped before persisting and therefore won't exist on load.
+ */
+function restoreNonPersistentDefaults (userState: Record<string, any>): void {
+  nonPersistentKeys.forEach(k => {
+    if (!(k in userState) && k in defaultUserState) {
+      userState[k] = JSON.parse(JSON.stringify((defaultUserState as Record<string, any>)[k]))
+    }
+  })
+}
+
+/**
  * Creates a GDPR-consent aware storage solution. This will only store keys marked specifically as essential when storing.
- * When loading, it'll fill in the gaps (non-essential keys and their values) from a default object
+ * When loading, it'll fill in the gaps (non-essential keys and their values) from a default object.
+ * It will also never persist keys marked as non-persistent, regardless of consent, and will restore
+ * their defaults on load.
  * @param storage The Storage instance to use (defaults to localStorage)
  * @returns The StorageLike instance handling the persistence of this store
  */
@@ -125,26 +152,32 @@ function createConsentAwareStorage (storage: Storage = localStorage): StorageLik
         try {
           const parsed = JSON.parse(result) as StoreContent
 
-          // If it exists and there is user state data and GDPR banner should be shown
-          if (parsed && parsed.serverSettings?.showGdprNotification && parsed.userStates) {
-            // Then for each user state, set the defaults for those fields that aren't stored (because of declined cookies (GDPR))
+          if (parsed && parsed.userStates) {
             Object.keys(parsed.userStates).forEach(us => {
               const userId = +us
-              parsed.userStates[userId] = Object.assign(JSON.parse(JSON.stringify(defaultUserState)), parsed.userStates[userId])
 
-              Object.keys(defaultUserState.hiddenColumns).forEach(hd => {
-                if (!parsed.userStates[userId].hiddenColumns[hd]) {
-                  parsed.userStates[userId].hiddenColumns[hd] = defaultUserState.hiddenColumns[hd]
-                }
-              })
-              Object.keys(defaultUserState.tableDisplayType).forEach(tdt => {
-                if (!parsed.userStates[userId].tableDisplayType) {
-                  parsed.userStates[userId].tableDisplayType = {}
-                }
-                if (!parsed.userStates[userId].tableDisplayType[tdt]) {
-                  parsed.userStates[userId].tableDisplayType[tdt] = defaultUserState.tableDisplayType[tdt]
-                }
-              })
+              // Non-persistent keys are always stripped on save, so always restore their defaults on load
+              restoreNonPersistentDefaults(parsed.userStates[userId])
+
+              // If it exists and there is user state data and GDPR banner should be shown
+              if (parsed.serverSettings?.showGdprNotification) {
+                // Then for each user state, set the defaults for those fields that aren't stored (because of declined cookies (GDPR))
+                parsed.userStates[userId] = Object.assign(JSON.parse(JSON.stringify(defaultUserState)), parsed.userStates[userId])
+
+                Object.keys(defaultUserState.hiddenColumns).forEach(hd => {
+                  if (!parsed.userStates[userId].hiddenColumns[hd]) {
+                    parsed.userStates[userId].hiddenColumns[hd] = defaultUserState.hiddenColumns[hd]
+                  }
+                })
+                Object.keys(defaultUserState.tableDisplayType).forEach(tdt => {
+                  if (!parsed.userStates[userId].tableDisplayType) {
+                    parsed.userStates[userId].tableDisplayType = {}
+                  }
+                  if (!parsed.userStates[userId].tableDisplayType[tdt]) {
+                    parsed.userStates[userId].tableDisplayType[tdt] = defaultUserState.tableDisplayType[tdt]
+                  }
+                })
+              }
             })
           }
           return JSON.stringify(parsed)
@@ -160,13 +193,20 @@ function createConsentAwareStorage (storage: Storage = localStorage): StorageLik
         // Get the value and parse it
         const parsed = JSON.parse(value) as StoreContent
 
+        // Always strip non-persistent top-level keys, regardless of consent
+        stripNonPersistentKeys(parsed)
+
         // If it exists and there is user state data and GDPR banner should be shown
-        if (parsed && parsed.serverSettings?.showGdprNotification && parsed.userStates) {
+        if (parsed && parsed.userStates) {
           // Then for each user state
           Object.keys(parsed.userStates).forEach(us => {
             const userId = +us
+
+            // Always strip non-persistent keys from each user state, regardless of consent
+            stripNonPersistentKeys(parsed.userStates[userId])
+
             // Now check if the cookie banner has been accepted. If not, remove the non-essential parts
-            if (parsed.userStates[userId].cookiesAccepted !== true) {
+            if (parsed.serverSettings?.showGdprNotification && parsed.userStates[userId].cookiesAccepted !== true) {
               Object.keys(parsed.userStates[userId]).forEach(k => {
                 if (!essentialKeys.has(k)) {
                   // @ts-expect-error
@@ -278,7 +318,7 @@ export const coreStore = defineStore('germinate', {
       return this.userStates[this.storeUserId].markedIds.locations || []
     },
     storeAsyncJobUuids (): string[] {
-      return this.userStates[this.storeUserId].asyncJobUuids
+      return this.userStates[this.storeUserId].asyncJobUuids || []
     },
     storeTablePerPage (): number {
       return this.userStates[this.storeUserId].tablePerPage
