@@ -1579,14 +1579,14 @@ export type AboutConfig = AboutInfo[]
 export type TemplateI18n = { [key: string]: string }
 
 export interface Comments {
-    id: number;
+    id?: number;
     commenttypeId: number;
     userId: number;
     visibility: boolean;
     description: string;
     referenceId: number;
-    createdOn: Date;
-    updatedOn: Date;
+    createdOn?: Date;
+    updatedOn?: Date;
 }
 
 export interface LinkRequest {
@@ -1650,6 +1650,8 @@ export interface ViewTableImportJobs {
     isUpdate: boolean;
     datasetstateId: number;
     datatype: ViewTableImportJobsDatatype;
+    userId: number;
+    userName: string;
     status: ViewTableImportJobsStatus;
     stats: ImportJobStats;
     createdOn: Date;
@@ -2070,11 +2072,11 @@ export interface ViewMcpd {
 }
 
 export interface Datawarnings {
-    id: number;
+    id?: number;
     description: string;
     category: DatawarningsCategory;
-    createdOn: Date;
-    updatedOn: Date;
+    createdOn?: Date;
+    updatedOn?: Date;
 }
 
 export interface ViewTableLinks {

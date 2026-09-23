@@ -573,7 +573,7 @@ const templateImportTypes: { [key: string]: TemplateImportType } = {
   },
 }
 
-const commentTypes = {
+const commentTypes: { [key: string]: BaseType } = {
   germinatebase: {
     path: mdiSprout,
     color: () => getTemplateColor(0),

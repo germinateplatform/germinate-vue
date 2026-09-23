@@ -139,6 +139,13 @@
       title: t('tableColumnDataUpdateStatus'),
       dataType: 'string',
     }, {
+      key: 'userName',
+      title: t('tableColumnDataUpdateUploadedBy'),
+      sortable: false,
+      searchable: false,
+      visibleInFilter: false,
+      dataType: 'string',
+    }, {
       key: 'createdOn',
       dataType: 'date',
       title: t('tableColumnDataUpdateCreatedOn'),

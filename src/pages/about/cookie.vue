@@ -5,7 +5,14 @@
     <h3 class="text-headline-medium mb-3">{{ $t('pageCookiesTitleGerminate') }}</h3>
     <p v-html="$t('pageCookiesTextGerminate')" />
 
-    <CookieBanner :sticky="false" :force="store.storeCoookiesAccepted !== undefined" />
+    <CookieBanner :sticky="false" :force="store.storeCookiesAccepted !== undefined" />
+
+    <v-chip
+      :color="store.storeCookiesAccepted ? 'success' : 'error'"
+      class="mt-5"
+      :text="$t('pageCookiesCurrentStatus', { status: store.storeCookiesAccepted ? $t('genericAccepted') : $t('genericDeclined') })"
+      :append-icon="store.storeCookiesAccepted ? mdiCheck : mdiClose"
+    />
 
     <v-data-table
       class="mt-5"
@@ -34,7 +41,7 @@
 
 <script setup lang="ts">
   import { coreStore } from '@/stores/app'
-  import { mdiCookie, mdiLockClock, mdiMonitorArrowDown, mdiProgressClock, mdiTimelineCheck, mdiTimelineOutline } from '@mdi/js'
+  import { mdiCheck, mdiClose, mdiCookie, mdiLockClock, mdiMonitorArrowDown, mdiProgressClock, mdiTimelineCheck, mdiTimelineOutline } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 
   export interface Cookie {

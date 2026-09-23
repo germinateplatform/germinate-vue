@@ -278,7 +278,7 @@ export const coreStore = defineStore('germinate', {
     storeTheme (): string {
       return this.userStates[this.storeUserId].theme || 'system'
     },
-    storeCoookiesAccepted (): boolean | undefined {
+    storeCookiesAccepted (): boolean | undefined {
       return this.userStates[this.storeUserId].cookiesAccepted
     },
     storeLocale (): string {

@@ -1,17 +1,6 @@
 <template>
   <div>
-    <section v-if="dataWarnings && dataWarnings.length > 0" class="mb-5 g-no-gutters card-icon-avatar">
-      <v-banner
-        v-for="(warning, index) in dataWarnings"
-        :key="`data-warning-${index}`"
-        bg-color="warning"
-        :icon="dataWarningTypes[warning.category]"
-      >
-        <template #text>
-          <v-chip class="me-2" label :prepend-icon="mdiCalendar" v-if="warning.createdOn">{{ new Date(warning.createdOn).toLocaleDateString() }}</v-chip> {{ warning.description }}
-        </template>
-      </v-banner>
-    </section>
+    <DataWarnings :germplasm-id="germplasmId" v-if="germplasmId" />
 
     <ScrollSpy :items="scrollSpyItems" :top-gap="topGap" ref="scrollSpy" />
 
@@ -136,14 +125,46 @@
           </v-card-text>
         </template>
       </GroupTable>
+
+      <EntityTable class="mb-5" header-icon-color="primary" :get-data="getEntityData" :filter-on="entityFilter" id="entity" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <template #card-text>
+          <v-card-text>
+            <p v-html="$t('pagePassportEntityText')" />
+
+            <v-list v-model:opened="entityListOpen">
+              <v-list-group value="accession">
+                <template #activator="{ props }">
+                  <v-list-item v-bind="props" :prepend-icon="mdiCircleMedium" :title="entityTypes['Accession'].text()" />
+                </template>
+
+                <v-list-group value="plantplot">
+                  <template #activator="{ props }">
+                    <v-list-item v-bind="props" :prepend-icon="mdiSubdirectoryArrowRight" :title="entityTypes['Plant/Plot'].text()" />
+                  </template>
+
+                  <v-list-group value="sample">
+                    <template #activator="{ props }">
+                      <v-list-item v-bind="props" :prepend-icon="mdiSubdirectoryArrowRight" :title="entityTypes['Sample'].text()" />
+                    </template>
+                  </v-list-group>
+                </v-list-group>
+              </v-list-group>
+            </v-list>
+          </v-card-text>
+        </template>
+      </EntityTable>
+
+      <GermplasmAttributeTable class="mb-5" header-icon-color="primary" :get-data="getGermplasmAttributeData" :filter-on="germplasmAttributeFilter" id="attributes" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+
+      <CommentTable class="mb-5" :reference-id="germplasmId" :comment-type-id="1" header-icon-color="primary" :get-data="getCommentData" :filter-on="commentFilter" id="comments" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
   import ScrollSpy from '@/components/widgets/ScrollSpy.vue'
-  import { apiGetGermplasmDataWarnings, apiPostGermplasmDatasetTable, apiPostGermplasmGroupTable, apiPostGermplasmTable, apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
-  import { type Datawarnings, FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, PublicationdataReferenceType, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations, type ViewTablePublications } from '@/plugins/types/germinate'
+  import { apiPostEntityTable, apiPostGermplasmAttributeTable, apiPostGermplasmDatasetTable, apiPostGermplasmGroupTable, apiPostGermplasmTable, apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
+  import { FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, PublicationdataReferenceType, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations } from '@/plugins/types/germinate'
   import { coreStore } from '@/stores/app'
   import McpdInfo from '@/components/germplasm/McpdInfo.vue'
   import ExternalLinks from '@/components/widgets/ExternalLinks.vue'
@@ -158,9 +179,10 @@
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
-  import { mdiAlert, mdiBarcode, mdiBookmarkCheck, mdiBookmarkOutline, mdiBookOpenVariant, mdiCalendar, mdiChartDonut, mdiDatabase, mdiFamilyTree, mdiFileCertificate, mdiFileDocumentAlert, mdiFileTree, mdiGroup, mdiHelpCircle, mdiHelpRhombus, mdiHistory, mdiImageMultiple, mdiInvoiceTextArrowRight, mdiLinkVariant, mdiMapMarker, mdiOfficeBuildingCog, mdiOpenInNew, mdiPassport, mdiPlaylistPlus, mdiSpeedometer, mdiTagTextOutline } from '@mdi/js'
+  import { mdiBarcode, mdiBookmarkCheck, mdiBookmarkOutline, mdiBookOpenVariant, mdiChartDonut, mdiCircleMedium, mdiCommentMultiple, mdiDatabase, mdiFamilyTree, mdiFileTree, mdiGroup, mdiHelpCircle, mdiImageMultiple, mdiLinkVariant, mdiMapMarker, mdiOfficeBuildingCog, mdiOpenInNew, mdiPassport, mdiPlaylistPlus, mdiSpeedometer, mdiSubdirectoryArrowRight, mdiTagTextOutline } from '@mdi/js'
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
   import { apiPostPublicationsTable } from '@/plugins/api/publication'
+  import { apiPostCommentsTable } from '@/plugins/api/comment'
 
   const compProps = defineProps<{
     germplasmId: number
@@ -173,20 +195,11 @@
   const scrollSpy = useTemplateRef('scrollSpy')
   const performanceDataCount = ref(1)
   const germplasm = ref<ViewTableGermplasm>()
-  const dataWarnings = ref<Datawarnings[]>([])
   const groups = ref<ViewTableGroups[]>()
+  const entityListOpen = ref(['accession', 'plantplot', 'sample'])
 
   const activeStack: string[] = []
   let activeItem: string | undefined = undefined
-
-  const dataWarningTypes: { [key: string]: string } = {
-    generic: mdiAlert,
-    quality: mdiFileCertificate,
-    source: mdiInvoiceTextArrowRight,
-    deprecated: mdiHistory,
-    missing: mdiHelpRhombus,
-    inaccuracy: mdiFileDocumentAlert,
-  }
 
   const title = computed(() => {
     if (germplasm.value) {
@@ -226,6 +239,7 @@
       { href: '#groups', icon: mdiGroup, title: 'pagePassportGroupTitle' },
       { href: '#entity', icon: mdiFileTree, title: 'pagePassportEntityTitle' },
       { href: '#attributes', icon: mdiPlaylistPlus, title: 'pagePassportAttributeTitle' },
+      { href: '#comments', icon: mdiCommentMultiple, title: 'pagePassportCommentTitle' },
     ]
   })
   const pedigreeDefinitionFilter: ComputedRef<FilterGroup[]> = computed(() => {
@@ -239,6 +253,17 @@
       operator: FilterOperator.and,
     }]
   })
+  const germplasmAttributeFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'germplasmId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.or,
+    }]
+  })
   const pedigreeFilter: ComputedRef<FilterGroup[]> = computed(() => {
     return [{
       filters: [{
@@ -248,6 +273,38 @@
         canBeChanged: false,
       }, {
         column: 'childId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.or,
+    }]
+  })
+  const commentFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'commentTypeId',
+        comparator: FilterComparator.equals,
+        values: ['1'],
+        canBeChanged: false,
+      }, {
+        column: 'commentForeignId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.and,
+    }]
+  })
+  const entityFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'entityParentId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }, {
+        column: 'entityChildId',
         comparator: FilterComparator.equals,
         values: [`${compProps.germplasmId}`],
         canBeChanged: false,
@@ -329,6 +386,15 @@
   function getInstitutionData (data: PaginatedRequest) {
     return apiPostGermplasmInstitutionTable(germplasm.value?.germplasmId || -1, data)
   }
+  function getGermplasmAttributeData (data: PaginatedRequest) {
+    return apiPostGermplasmAttributeTable(data)
+  }
+  function getEntityData (data: PaginatedRequest) {
+    return apiPostEntityTable(data)
+  }
+  function getCommentData (data: PaginatedRequest) {
+    return apiPostCommentsTable(data)
+  }
   function getPublicationData (data: PaginatedRequest) {
     return apiPostPublicationsTable(data, result => {
       if (result && result.data && result.data.length > 0) {
@@ -381,10 +447,6 @@
       if (result && result.data && result.data.length > 0) {
         germplasm.value = result.data[0]
       }
-    })
-
-    apiGetGermplasmDataWarnings(compProps.germplasmId, result => {
-      dataWarnings.value = result
     })
   }
 

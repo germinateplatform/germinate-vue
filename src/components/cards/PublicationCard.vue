@@ -33,6 +33,7 @@
         icon="$doi"
         color="primary"
         :href="displayData.URL"
+        target="_blank"
         v-tooltip:top="$t('buttonReadMore')"
       />
 

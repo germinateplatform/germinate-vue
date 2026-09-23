@@ -124,8 +124,20 @@ export function apiGetGermplasmStatsTraits (germplasmId: number, subsetReqest?: 
   return authAxios({ url: `germplasm/${germplasmId}/stats/trait`, data: subsetReqest, method: 'POST', success: onSuccess, error: onError })
 }
 
+export function apiGetDataWarnings (onSuccess?: GerminateResponseHandler<Datawarnings[]>, onError?: ErrorHandler) {
+  return authAxios({ url: 'datawarning', success: onSuccess, error: onError })
+}
+
 export function apiGetGermplasmDataWarnings (germplasmId: number, onSuccess?: GerminateResponseHandler<Datawarnings[]>, onError?: ErrorHandler) {
   return authAxios({ url: `datawarning/germplasm/${germplasmId}`, success: onSuccess, error: onError })
+}
+
+export function apiDeleteGermplasmDataWarning (germplasmId: number, dataWarningId: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: `datawarning/germplasm/${germplasmId}/${dataWarningId}`, method: 'DELETE', success: onSuccess, error: onError })
+}
+
+export function apiPutGermplasmDataWarning (germplasmId: number, dataWarning: Datawarnings, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: `datawarning/germplasm/${germplasmId}`, method: 'PUT', data: dataWarning, success: onSuccess, error: onError })
 }
 
 export function apiGetTaxonomyData (onSuccess?: GerminateResponseHandler<TaxonCount>, onError?: ErrorHandler) {

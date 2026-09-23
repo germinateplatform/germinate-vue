@@ -293,7 +293,7 @@
   }
 
   function enablePlausible () {
-    if (store.storeCoookiesAccepted === true && store.serverSettings?.plausibleDomain && store.serverSettings?.plausibleApiHost) {
+    if (store.storeCookiesAccepted === true && store.serverSettings?.plausibleDomain && store.serverSettings?.plausibleApiHost) {
       // Remove trailing slashes
       const host = store.serverSettings.plausibleApiHost.replace(/\/+$/, '')
 

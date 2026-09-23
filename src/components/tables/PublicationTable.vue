@@ -32,7 +32,7 @@
         <v-chip label color="muted" variant="tonal" :prepend-icon="mdiNewspaper" v-if="item.publicationFallbackCache">{{ item.publicationFallbackCache['container-title'] }}</v-chip>
       </template>
       <template #item.publicationDoi="{ item }">
-        <span><a rel="noopener noreferrer" :href="item.publicationDoi">{{ item.publicationDoi }}</a> <v-icon :icon="mdiOpenInNew" /></span>
+        <span><a rel="noopener noreferrer" target="_blank" :href="item.publicationDoi">{{ item.publicationDoi }}</a> <v-icon :icon="mdiOpenInNew" /></span>
       </template>
       <template #item.publicationDetails="{ item }">
         <v-chip label class="me-2 mt-1" v-if="item.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path">{{ publicationTypes.database.text() }}</v-chip>

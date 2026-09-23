@@ -4,7 +4,7 @@
     :text="$t('widgetGdprNotificationText')"
     :icon="mdiCookieAlert"
     :class="sticky ? 'cookie-banner' : ''"
-    v-if="force || (store.storeServerSettings?.showGdprNotification && store.storeCoookiesAccepted === undefined)"
+    v-if="force || (store.storeServerSettings?.showGdprNotification && store.storeCookiesAccepted === undefined)"
   >
     <template #actions>
       <v-btn color="error" variant="tonal" :prepend-icon="mdiClose" :text="$t('widgetGdprNotificationButtonDecline')" v-tooltip:bottom="$t('tooltipGdprNotificationButtonReject')" @click="askForCookieConfirmation" />

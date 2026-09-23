@@ -123,13 +123,13 @@
 
     <!-- Dataset types -->
     <template #item.hasTrialsData="{ item }">
-      <v-icon v-if="item.hasTrialsData" :color="datasetTypes.trials.color()" v-tooltip:top="datasetTypes.trials.text()" :icon="datasetTypes.trials.path" />
+      <v-icon v-if="item.hasTrialsData" :color="datasetTypes.trials.color()" v-tooltip:top="$t('tableColumnHasTrialsData')" :icon="datasetTypes.trials.path" />
     </template>
     <template #item.hasGenotypicData="{ item }">
-      <v-icon v-if="item.hasGenotypicData" :color="datasetTypes.genotype.color()" v-tooltip:top="datasetTypes.genotype.text()" :icon="datasetTypes.genotype.path" />
+      <v-icon v-if="item.hasGenotypicData" :color="datasetTypes.genotype.color()" v-tooltip:top="$t('tableColumnHasGenotypicData')" :icon="datasetTypes.genotype.path" />
     </template>
     <template #item.hasPedigreeData="{ item }">
-      <v-icon v-if="item.hasPedigreeData" :color="datasetTypes.pedigree.color()" v-tooltip:top="datasetTypes.pedigree.text()" :icon="datasetTypes.pedigree.path" />
+      <v-icon v-if="item.hasPedigreeData" :color="datasetTypes.pedigree.color()" v-tooltip:top="$t('tableColumnHasPedigreeData')" :icon="datasetTypes.pedigree.path" />
     </template>
 
     <template #item.imageCount="{ item }">
