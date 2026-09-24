@@ -6,6 +6,7 @@
     :header-icon="mdiChartTree"
     :source-file="sourceFile"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #chart-content>
       <div :id="id" ref="taxonomyChart" />
@@ -16,10 +17,9 @@
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { uuidv4, type DownloadBlob } from '@/plugins/util'
-  import { plotlyTreemapChart } from '@/plugins/charts/plotly-treemap-chart'
+  import { TreemapChart } from '@/plugins/charts/plotly-treemap-chart'
 
   import { tsvParse } from 'd3-dsv'
-  import { select } from 'd3-selection'
 
   import Plotly from 'plotly.js/lib/core'
   import treemap from 'plotly.js/lib/treemap'
@@ -40,6 +40,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const taxonomyChart = useTemplateRef('taxonomyChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('taxonomy-' + uuidv4())
 
   const filename = computed(() => {
@@ -108,52 +109,52 @@
         }
       })
 
-      select(taxonomyChart.value)
-        .datum(chartData)
-        .call(plotlyTreemapChart(Plotly)
-          .darkMode(store.storeIsDarkMode)
-          .height(500)
-          .onLeafClicked((path: string[]) => {
-            const query: FilterGroup[] = [{
-              filters: [],
-              operator: FilterOperator.and,
-            }]
+      new TreemapChart({
+        element: taxonomyChart.value,
+        darkMode: store.storeIsDarkMode,
+        height: 500,
+        colors: getColors(),
+        onLeafClicked: (path: string[]) => {
+          const query: FilterGroup[] = [{
+            filters: [],
+            operator: FilterOperator.and,
+          }]
 
-            // Then store a filter using genus, species and subtaxa
-            const genus = path[0]
-            const species = path.length > 1 ? path[1].split(' | ')[1] : null
-            const subtaxa = path.length > 2 ? path[2] : null
+          // Then store a filter using genus, species and subtaxa
+          const genus = path[0]
+          const species = path.length > 1 ? path[1] : null
+          const subtaxa = path.length > 2 ? path[2] : null
 
-            query[0].filters?.push({
-              column: 'genus',
-              comparator: FilterComparator.equals,
-              values: [genus],
-            })
-
-            if (species) {
-              query[0].filters?.push({
-                column: 'species',
-                comparator: FilterComparator.equals,
-                values: [species],
-              })
-            }
-            if (subtaxa) {
-              query[0].filters?.push({
-                column: 'subtaxa',
-                comparator: FilterComparator.equals,
-                values: [subtaxa],
-              })
-            }
-
-            // Navigate to the germplasm page
-            router.push({
-              path: Pages.germplasm.path,
-              query: {
-                'germplasm-filter': JSON.stringify(query),
-              },
-            })
+          query[0].filters?.push({
+            column: 'genus',
+            comparator: FilterComparator.equals,
+            values: [genus],
           })
-          .colors(getColors()))
+
+          if (species) {
+            query[0].filters?.push({
+              column: 'species',
+              comparator: FilterComparator.equals,
+              values: [species],
+            })
+          }
+          if (subtaxa) {
+            query[0].filters?.push({
+              column: 'subtaxa',
+              comparator: FilterComparator.equals,
+              values: [subtaxa],
+            })
+          }
+
+          // Navigate to the germplasm page
+          router.push({
+            path: Pages.germplasm.path,
+            query: {
+              'germplasm-filter': JSON.stringify(query),
+            },
+          })
+        },
+      }).create(baseChart.value, chartData)
     }
   }
 

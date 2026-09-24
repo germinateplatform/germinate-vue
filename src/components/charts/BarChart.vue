@@ -6,6 +6,7 @@
     :source-file="sourceFileDownload"
     :header-icon="compProps.headerIcon"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #chart-content>
       <div :id="id" ref="barChart" />
@@ -21,25 +22,18 @@
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { uuidv4, type DownloadBlob } from '@/plugins/util'
-  import { plotlyBarChart } from '@/plugins/charts/plotly-bar-chart'
+  import { BarChart, type ClickHandlerPayload } from '@/plugins/charts/plotly-bar-chart'
 
   import { tsvParse } from 'd3-dsv'
-  import { select } from 'd3-selection'
 
-  import Plotly from 'plotly.js/lib/core'
   import bar from 'plotly.js/lib/bar'
   import { coreStore } from '@/stores/app'
   import { getColors } from '@/plugins/util/colors'
   import { useI18n } from 'vue-i18n'
   import { mdiChartBar } from '@mdi/js'
 
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    bar,
-  ])
-
-  const { t } = useI18n()
   const emit = defineEmits(['bar-clicked'])
+  const { t } = useI18n()
 
   export interface BarClickEvent {
     x: string
@@ -68,6 +62,7 @@
 
   const sourceFileDownload = ref<DownloadBlob>()
   const barChart = useTemplateRef('barChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('taxonomy-' + uuidv4())
 
   async function redraw (source?: Blob) {
@@ -80,32 +75,35 @@
     }
 
     if (barChart.value) {
-      Plotly.purge(barChart.value)
-
       const text = await sourceFileDownload.value?.blob.text()
 
       const data = tsvParse(text || '')
 
-      select(barChart.value)
-        .datum(data)
-        .call(plotlyBarChart(Plotly)
-          .darkMode(store.storeIsDarkMode)
-          .height(compProps.height)
-          .colors(getColors())
-          .x(compProps.xColumn)
-          .columnsToIgnore(['genus'])
-          .xCategory(t(compProps.xTitle))
-          .yCategory(t(compProps.yTitle))
-          .xLabels(compProps.xLabels)
-          .groupBy(compProps.groupBy)
-          .mode(compProps.mode)
-          .onPointClicked((data: any) => {
-            emit('bar-clicked', data)
-          }))
+      new BarChart({
+        element: barChart.value,
+        darkMode: store.storeIsDarkMode,
+        height: compProps.height,
+        colors: getColors(),
+        x: compProps.xColumn,
+        columnsToIgnore: ['genus'],
+        xCategory: t(compProps.xTitle),
+        yCategory: t(compProps.yTitle),
+        xLabels: compProps.xLabels,
+        groupBy: compProps.groupBy,
+        mode: compProps.mode,
+        onPointClicked: (data: ClickHandlerPayload) => {
+          emit('bar-clicked', data)
+        },
+      }).create(baseChart.value, data)
     }
   }
 
   onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      bar,
+    ])
+
     if (compProps.sourceFile) {
       nextTick(() => redraw(compProps.sourceFile))
     }

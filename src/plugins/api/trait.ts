@@ -103,6 +103,10 @@ export function apiPostVariableUnificationSgone (queryData: SgoneUnificationRequ
   return authAxios({ url: 'trait/unify/sgone', data: queryData, method: 'POST', success: onSuccess, error: onError })
 }
 
+export function apiPatchTraitDetails (queryData: ViewTableTraits, onSuccess?: GerminateResponseHandler<ViewTableTraits>, onError?: ErrorHandler) {
+  return authAxios({ url: `trait/${queryData.variableId}`, data: queryData, method: 'PATCH', success: onSuccess, error: onError })
+}
+
 export {
   apiPostTrialsDataTable,
   apiPostTrialsDataTableIds,

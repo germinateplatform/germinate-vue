@@ -1,4 +1,4 @@
-import type { ExportRequest, ImageTag, PaginatedRequest, PaginatedResult, ViewTableImages } from '@/plugins/types/germinate'
+import type { AsyncExportResult, ExportRequest, ImageTag, PaginatedRequest, PaginatedResult, ViewTableImages } from '@/plugins/types/germinate'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
 import { authAxios, authForm, type ErrorHandler } from '@/plugins/api/base'
 
@@ -7,7 +7,7 @@ export function apiPostImages (queryData: PaginatedRequest, onSuccess?: Germinat
   return authAxios({ url: 'image/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
-export function apiPostImagesExport (queryData: ExportRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) {
+export function apiPostImagesExport (queryData: ExportRequest, onSuccess?: GerminateResponseHandler<AsyncExportResult[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'image/table/export', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 

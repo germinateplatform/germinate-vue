@@ -15,7 +15,32 @@
         <template #subtitle>
           <div class="d-flex justify-space-between align-center flex-grow flex-wrap">
             <span>{{ variable.traitName }}</span>
-            <v-chip label :color="traitClasses[variable.traitClass].color()" :prepend-icon="traitClasses[variable.traitClass].path" :text="traitClasses[variable.traitClass].text()" />
+
+            <v-menu>
+              <template #activator="{ props }">
+                <v-chip
+                  v-bind="store.storeUserIsDataCurator ? props : undefined"
+                  label
+                  :color="traitClasses[changedTraitClass || variable.traitClass].color()"
+                  :prepend-icon="traitClasses[changedTraitClass || variable.traitClass].path"
+                  :append-icon="store.storeUserIsAuthenticated ? mdiMenuDown : undefined"
+                  :text="traitClasses[changedTraitClass || variable.traitClass].text()"
+                />
+              </template>
+
+              <v-list :selected="changedTraitClass" mandatory density="compact" v-if="store.storeUserIsDataCurator" @update:selected="setSelectedTraitClass">
+                <v-list-item
+                  v-for="(value, key) in traitClasses"
+                  :key="`trait-class-${key}`"
+                  :title="value.text()"
+                  :value="key"
+                >
+                  <template #prepend>
+                    <v-icon :icon="value.path" :color="value.color()" />
+                  </template>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </div>
         </template>
         <template #text>
@@ -38,7 +63,33 @@
         <template #subtitle>
           <div class="d-flex justify-space-between align-center flex-grow flex-wrap">
             <span>{{ variable.methodName }}</span>
-            <v-chip label :color="methodClasses[variable.methodClass].color()" :prepend-icon="methodClasses[variable.methodClass].path" :text="methodClasses[variable.methodClass].text()" />
+
+            <v-menu>
+              <template #activator="{ props }">
+                <v-chip
+                  v-bind="store.storeUserIsDataCurator ? props : undefined"
+                  label
+                  :color="methodClasses[changedMethodClass || variable.methodClass].color()"
+                  :prepend-icon="methodClasses[changedMethodClass || variable.methodClass].path"
+                  :append-icon="store.storeUserIsAuthenticated ? mdiMenuDown : undefined"
+                  :text="methodClasses[changedMethodClass || variable.methodClass].text()"
+                />
+              </template>
+
+              <v-list :selected="changedMethodClass" mandatory density="compact" v-if="store.storeUserIsDataCurator" @update:selected="setSelectedMethodClass">
+                <v-list-item
+                  v-for="(value, key) in methodClasses"
+                  :key="`method-class-${key}`"
+                  :title="value.text()"
+                  :prepend-icon="value.path"
+                  :value="key"
+                >
+                  <template #prepend>
+                    <v-icon :icon="value.path" :color="value.color()" />
+                  </template>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </div>
         </template>
         <template #text>
@@ -69,23 +120,64 @@
         </template>
       </v-card>
     </v-col>
+
+    <v-col cols="12" v-if="isChanged">
+      <v-btn
+        :prepend-icon="mdiContentSave"
+        :text="$t('buttonSave')"
+        color="primary"
+        @click="saveChanges"
+      />
+    </v-col>
   </v-row>
 </template>
 
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostTraitTable } from '@/plugins/api/trait'
-  import { FilterComparator, FilterOperator, type ViewTableTraits } from '@/plugins/types/germinate'
+  import { apiPatchTraitDetails, apiPostTraitTable } from '@/plugins/api/trait'
+  import { FilterComparator, FilterOperator, type ViewTableTraitsMethodClass, type ViewTableTraitsTraitClass, type ViewTableTraits } from '@/plugins/types/germinate'
   import { dataTypes, methodClasses, traitClasses } from '@/plugins/util/types'
-  import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLabel, mdiLessThanOrEqual } from '@mdi/js'
+  import { coreStore } from '@/stores/app'
+  import { mdiCodeBrackets, mdiContentSave, mdiGreaterThanOrEqual, mdiLabel, mdiLessThanOrEqual, mdiMenuDown } from '@mdi/js'
 
   const compProps = defineProps<{
     variableId: number
   }>()
 
+  const store = coreStore()
   const variable = ref<ViewTableTraits>()
 
-  onMounted(() => {
+  const changedMethodClass = ref<ViewTableTraitsMethodClass>()
+  const changedTraitClass = ref<ViewTableTraitsTraitClass>()
+
+  const isChanged = computed(() => {
+    return (changedMethodClass.value !== undefined && changedMethodClass.value !== variable.value?.methodClass)
+      || (changedTraitClass.value !== undefined && changedTraitClass.value !== variable.value?.traitClass)
+  })
+
+  function setSelectedMethodClass (selected: any) {
+    changedMethodClass.value = selected[0]
+  }
+
+  function setSelectedTraitClass (selected: any) {
+    changedTraitClass.value = selected[0]
+  }
+
+  function saveChanges () {
+    if (!variable.value) {
+      return
+    }
+    // Patch any details that have changed
+    apiPatchTraitDetails({
+      ...variable.value,
+      methodClass: changedMethodClass.value || variable.value.methodClass,
+      traitClass: changedTraitClass.value || variable.value.traitClass,
+    }, updated => {
+      variable.value = updated
+    })
+  }
+
+  function update () {
     apiPostTraitTable({
       page: 1,
       limit: MAX_JAVA_INTEGER,
@@ -104,5 +196,7 @@
         variable.value = undefined
       }
     })
-  })
+  }
+
+  onMounted(() => update())
 </script>

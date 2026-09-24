@@ -6,6 +6,7 @@
     :source-file="sourceFile"
     :header-icon="mdiChartBar"
     @force-redraw="redraw()"
+    ref="baseChart"
   >
     <template #chart-content>
       <div :id="id" />
@@ -22,7 +23,6 @@
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
-  import Plotly from 'plotly.js/lib/core'
   import bar from 'plotly.js/lib/bar'
   import { coreStore } from '@/stores/app'
   import { getColor } from '@/plugins/util/colors'
@@ -31,13 +31,9 @@
   import type { UserSelection } from '@/components/widgets/selections/StatsHighlightSelection.vue'
   import { mdiChartBar } from '@mdi/js'
 
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    bar,
-  ])
-
   const store = coreStore()
   const { t } = useI18n()
+  const baseChart = useTemplateRef('baseChart')
 
   export interface BarClickEvent {
     x: string
@@ -61,8 +57,6 @@
   async function redraw () {
     const element = document.getElementById(id.value)
     if (element) {
-      Plotly.purge(element)
-
       const allXValues = new Map<string, number>()
 
       compProps.data.forEach(d => {
@@ -154,24 +148,26 @@
         }
       }
 
-      Plotly.react(element, data, layout, DEFAULT_PLOTLY_CONFIG)
+      baseChart.value?.react(element, data, layout, DEFAULT_PLOTLY_CONFIG)
         .then(element => {
-          const dragLayer = element.getElementsByClassName('nsewdrag')[0] as HTMLElement
+          if (element) {
+            const dragLayer = element.getElementsByClassName('nsewdrag')[0] as HTMLElement
 
-          element.on('plotly_hover', () => {
-            dragLayer.style.cursor = 'pointer'
-          })
-          element.on('plotly_unhover', () => {
-            dragLayer.style.cursor = ''
-          })
-          element.on('plotly_click', data => {
-            if (data && data.points && data.points.length > 0 && data.event && data.event.button === 0) {
-              emit('bar-clicked', {
-                x: data.points[0].x,
-                trace: data.points[0].data.name,
-              })
-            }
-          })
+            element.on('plotly_hover', () => {
+              dragLayer.style.cursor = 'pointer'
+            })
+            element.on('plotly_unhover', () => {
+              dragLayer.style.cursor = ''
+            })
+            element.on('plotly_click', data => {
+              if (data && data.points && data.points.length > 0 && data.event && data.event.button === 0) {
+                emit('bar-clicked', {
+                  x: data.points[0].x,
+                  trace: data.points[0].data.name,
+                })
+              }
+            })
+          }
         })
     }
   }
@@ -200,7 +196,14 @@
   watch(() => compProps.data, async () => redraw(), { immediate: true })
   watch(() => compProps.userSelection, async () => redraw(), { deep: true })
 
-  onMounted(() => redraw())
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      bar,
+    ])
+
+    redraw()
+  })
 
   const emit = defineEmits(['bar-clicked'])
 </script>

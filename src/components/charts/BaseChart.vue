@@ -29,7 +29,15 @@
     <slot name="card-text" />
 
     <v-card-text>
-      <slot name="chart-content" ref="chart" />
+      <v-empty-state
+        :icon="mdiFileDocumentRemove"
+        :title="$t('widgetChartNoDataTitle')"
+        :text="$t('widgetChartNoDataText')"
+        v-if="!hasData"
+      />
+      <div v-show="hasData">
+        <slot name="chart-content" ref="chart" />
+      </div>
     </v-card-text>
 
     <!-- Pass on all named slots -->
@@ -88,11 +96,21 @@
   import { downloadBlob, downloadSvgsFromContainer, type DownloadBlob } from '@/plugins/util'
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
   import { coreStore } from '@/stores/app'
-  import { mdiChartAreaspline, mdiDotsVertical, mdiFileCode, mdiFileDocument, mdiFileImage, mdiPalette, mdiPlus, mdiUndoVariant } from '@mdi/js'
+  import { mdiChartAreaspline, mdiDotsVertical, mdiFileCode, mdiFileDocument, mdiFileDocumentRemove, mdiFileImage, mdiPalette, mdiPlus, mdiUndoVariant } from '@mdi/js'
   import Plotly from 'plotly.js/lib/core'
   import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits(['update:loading', 'force-redraw', 'download-png-manually'])
+
+  // 1. Define and export the interface matching your defineExpose layout
+  export interface BaseChartExposed {
+    register: (modules: any | any[]) => void
+    purge: (el: string | HTMLElement) => void
+    react: (el: string | HTMLElement, data: any, layout?: any, config?: any) => Promise<Plotly.PlotlyHTMLElement | undefined>
+    restyle: (el: string | HTMLElement, update: any, indices?: number[]) => Promise<Plotly.PlotlyHTMLElement | undefined>
+    relayout: (el: string | HTMLElement, update: any) => Promise<Plotly.PlotlyHTMLElement | undefined>
+    downloadImage: (el: string | HTMLElement, opts?: any) => Promise<string>
+  }
 
   interface ChartProps {
     loading?: boolean
@@ -134,6 +152,7 @@
   const localLoading = ref(false)
   const colors = ref<string[]>([])
   const newColor = ref('#ffffff')
+  const hasData = ref(true)
 
   watch(() => compProps.loading, async (newValue: boolean) => {
     localLoading.value = newValue
@@ -215,4 +234,89 @@
   onMounted(() => {
     updateColors()
   })
+
+  function isEmpty (traces: any[]) {
+    return traces.some((trace: any) => {
+      if (!trace || typeof trace !== 'object') {
+        return false
+      }
+
+      // 1. Single scalar values (e.g. Indicator charts)
+      if ('value' in trace && trace.value !== null && trace.value !== undefined) {
+        return true
+      }
+
+      // 2. Matrix / 2D array data (e.g. Heatmaps, Surfaces, Contours)
+      if (Array.isArray(trace.z) && trace.z.length > 0) {
+        return trace.z.some((row: any) => Array.isArray(row) ? row.length > 0 : row !== null)
+      }
+
+      // 3. Special nested trace types
+      // Parallel Coordinates & Dimensions
+      if (Array.isArray(trace.dimensions) && trace.dimensions.length > 0) {
+        return trace.dimensions.some((dim: any) => Array.isArray(dim?.values) && dim.values.length > 0)
+      }
+
+      // Table traces
+      if (trace.cells && Array.isArray(trace.cells.values) && trace.cells.values.length > 0) {
+        return trace.cells.values.some((col: any) => Array.isArray(col) && col.length > 0)
+      }
+
+      // Sankey diagrams
+      if (trace.link && Array.isArray(trace.link.source) && trace.link.source.length > 0) {
+        return true
+      }
+
+      // 4. Standard 1D data arrays (Scatter, Bar, Pie, Sunburst, Maps, Box, Violin, etc.)
+      const arrayKeys = ['x', 'y', 'values', 'labels', 'locations', 'lat', 'lon', 'parents', 'ids', 'r', 'theta']
+
+      return arrayKeys.some((key: string) => {
+        return Array.isArray(trace[key]) && trace[key].length > 0
+      })
+    })
+  }
+
+  function handlePlot (el: string | HTMLElement, data: any[], layout: any, config?: any) {
+    hasData.value = isEmpty(data)
+
+    return new Promise<Plotly.PlotlyHTMLElement | undefined>(resolve => {
+      try {
+        Plotly.purge(el)
+      } catch {
+        // Do nothing here
+      }
+
+      nextTick(() => {
+        if (hasData.value) {
+          resolve(Plotly.react(el, data, layout, config))
+        } else {
+          resolve(undefined)
+        }
+      })
+    })
+  }
+
+  // 2. Pass your implementation to defineExpose
+  const exposedMethods: BaseChartExposed = {
+    register: (modules: any | any[]): void => {
+      Plotly.register(modules)
+    },
+    purge: (el: string | HTMLElement): void => {
+      Plotly.purge(el)
+    },
+    react: (el: string | HTMLElement, data: any, layout?: any, config?: any): Promise<Plotly.PlotlyHTMLElement | undefined> => {
+      return handlePlot(el, data, layout, config)
+    },
+    restyle: (el: string | HTMLElement, update: any, indices?: number[]): Promise<Plotly.PlotlyHTMLElement | undefined> => {
+      return Plotly.restyle(el, update, indices)
+    },
+    relayout: (el: string | HTMLElement, update: any): Promise<Plotly.PlotlyHTMLElement | undefined> => {
+      return Plotly.relayout(el, update)
+    },
+    downloadImage: (el: string | HTMLElement, opts?: any): Promise<string> => {
+      return Plotly.downloadImage(el, opts)
+    },
+  }
+
+  defineExpose(exposedMethods)
 </script>

@@ -218,11 +218,19 @@
     apiPostTrialSetupStats({
       datasetIds: compProps.datasetIds,
     }, result => {
-      trialTreatments.value = result.treatments || []
-      trialReps.value = result.reps || []
-      trialPlots.value = result.plots || []
-      trialYears.value = result.years || []
-      trialTaxonomies.value = result.taxonomies || []
+      if (result) {
+        trialTreatments.value = result.treatments || []
+        trialReps.value = result.reps || []
+        trialPlots.value = result.plots || []
+        trialYears.value = result.years || []
+        trialTaxonomies.value = result.taxonomies || []
+      } else {
+        trialTreatments.value = []
+        trialReps.value = []
+        trialPlots.value = []
+        trialYears.value = []
+        trialTaxonomies.value = []
+      }
     })
 
     apiPostDatasetGermplasmTable(compProps.datasetIds, {

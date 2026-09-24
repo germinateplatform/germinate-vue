@@ -7,6 +7,7 @@
       :source-file="data.sourceFile"
       :header-icon="mdiChartBar"
       @force-redraw="redraw(data)"
+      ref="baseChart"
     >
       <template #chart-content>
         <div :id="data.id" />
@@ -21,10 +22,8 @@
 </template>
 
 <script setup lang="ts">
-  import BaseChart from '@/components/charts/BaseChart.vue'
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
-  import Plotly from 'plotly.js/lib/core'
   import bar from 'plotly.js/lib/bar'
   import { coreStore } from '@/stores/app'
   import { getColor, hexToRGBA } from '@/plugins/util/colors'
@@ -33,13 +32,10 @@
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartBar } from '@mdi/js'
 
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    bar,
-  ])
-
   const store = coreStore()
   const { t } = useI18n()
+
+  const baseChart = useTemplateRef('baseChart')
 
   interface TraitBarChartData {
     id: string
@@ -62,8 +58,6 @@
   async function redraw (traitData: TraitBarChartData) {
     const element = document.getElementById(traitData.id)
     if (element) {
-      Plotly.purge(element)
-
       const xValues = new Map<string, number>()
 
       traitData.data.forEach(d => {
@@ -200,7 +194,7 @@
         layout.xaxis.tickmode = 'array'
       }
 
-      Plotly.react(element, data, layout, DEFAULT_PLOTLY_CONFIG)
+      baseChart.value?.react(element, data, layout, DEFAULT_PLOTLY_CONFIG)
     }
   }
 
@@ -246,6 +240,13 @@
 
   defineExpose({
     redrawAll,
+  })
+
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      bar,
+    ])
   })
 
   watch(() => compProps.traitData, async () => init(), { immediate: true })

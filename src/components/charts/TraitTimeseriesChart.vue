@@ -7,6 +7,7 @@
     v-model:loading="loading"
     :header-icon="mdiChartTimelineVariant"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #card-text>
       <v-card-text>
@@ -23,7 +24,6 @@
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
-  import Plotly from 'plotly.js/lib/core'
   import scatter from 'plotly.js/lib/scatter'
   import { coreStore } from '@/stores/app'
   import type { ViewTableGermplasm, ViewTableTraits, ViewTableTrialsData } from '@/plugins/types/germinate'
@@ -32,11 +32,6 @@
   import { useI18n } from 'vue-i18n'
   import { getDateString } from '@/plugins/util/formatting'
   import { getColor } from '@/plugins/util/colors'
-
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    scatter,
-  ])
 
   interface ScatterTraceData {
     x: string[]
@@ -58,6 +53,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const timeseriesChart = useTemplateRef('timeseriesChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('boxplot-' + uuidv4())
   const loading = ref(false)
 
@@ -95,8 +91,6 @@
     }
 
     if (timeseriesChart.value) {
-      Plotly.purge(timeseriesChart.value)
-
       const layout = {
         xaxis: {
           zeroline: false,
@@ -215,8 +209,7 @@
         })
       })
 
-      // @ts-expect-error
-      Plotly.react(timeseriesChart.value, traces, layout, DEFAULT_PLOTLY_CONFIG)
+      baseChart.value?.react(timeseriesChart.value, traces, layout, DEFAULT_PLOTLY_CONFIG)
         .then(() => {
           loading.value = false
 
@@ -234,7 +227,7 @@
       return
     }
 
-    Plotly.relayout(timeseriesChart.value, {
+    baseChart.value?.relayout(timeseriesChart.value, {
       shapes: [{
         layer: 'below',
         type: 'line',
@@ -252,6 +245,13 @@
   watch(() => compProps.plotData, async () => nextTick(() => redraw()), { immediate: true })
   watch(() => compProps.currentTimepoint, async () => updateTimepoint())
   watch(() => compProps.selectedGermplasm, async () => nextTick(() => redraw()), { immediate: true })
+
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      scatter,
+    ])
+  })
 
   defineExpose({
     redraw,

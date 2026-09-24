@@ -7,6 +7,7 @@
     v-model:loading="loading"
     :header-icon="mdiChartDonutVariant"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #card-text>
       <v-card-text>
@@ -23,7 +24,6 @@
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
-  import Plotly from 'plotly.js/lib/core'
   import scatterpolar from 'plotly.js/lib/scatterpolar'
   import { coreStore } from '@/stores/app'
 
@@ -31,11 +31,6 @@
   import type { TraitComparisonChartTrace } from '@/components/trials/TraitComparison.vue'
   import { hexToRGBA } from '@/plugins/util/colors'
   import { mdiChartDonutVariant } from '@mdi/js'
-
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    scatterpolar,
-  ])
 
   const compProps = defineProps<{
     traces: TraitComparisonChartTrace[]
@@ -46,6 +41,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const radarChart = useTemplateRef('radarChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('radar-' + uuidv4())
   const loading = ref(false)
 
@@ -115,13 +111,7 @@
       },
     }
 
-    try {
-      Plotly.purge(radarChart.value)
-    } catch {
-      // Do nothing here
-    }
-
-    Plotly.react(radarChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
+    baseChart.value?.react(radarChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(() => {
         emitter.emit('show-loading', false)
       })
@@ -130,6 +120,13 @@
   }
 
   watch(() => compProps.traces, async () => nextTick(() => redraw()), { immediate: true })
+
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      scatterpolar,
+    ])
+  })
 
   defineExpose({
     redraw,

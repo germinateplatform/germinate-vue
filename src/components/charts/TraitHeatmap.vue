@@ -7,6 +7,7 @@
     v-model:loading="loading"
     :header-icon="mdiGradientHorizontal"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #card-text>
       <v-card-text>
@@ -23,18 +24,12 @@
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
-  import Plotly from 'plotly.js/lib/core'
   import heatmap from 'plotly.js/lib/heatmap'
   import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import type { TraitComparisonChartTrace } from '@/components/trials/TraitComparison.vue'
   import { mdiGradientHorizontal } from '@mdi/js'
-
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    heatmap,
-  ])
 
   export interface CustomRange {
     from: number
@@ -51,6 +46,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const heatmapChart = useTemplateRef('heatmapChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('radar-' + uuidv4())
   const loading = ref(false)
 
@@ -153,13 +149,7 @@
       },
     }
 
-    try {
-      Plotly.purge(heatmapChart.value)
-    } catch {
-      // Do nothing here
-    }
-
-    Plotly.react(heatmapChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
+    baseChart.value?.react(heatmapChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(() => {
         emitter.emit('show-loading', false)
       })
@@ -168,6 +158,13 @@
   }
 
   watch(() => compProps.traces, async () => nextTick(() => redraw()), { immediate: true })
+
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      heatmap,
+    ])
+  })
 
   defineExpose({
     redraw,

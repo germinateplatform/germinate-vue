@@ -8,6 +8,7 @@
     :badge-count="markedItemCount"
     :header-icon="mdiChartGantt"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #card-text>
       <v-card-text>
@@ -35,7 +36,6 @@
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
-  import Plotly from 'plotly.js/lib/core'
   import box from 'plotly.js/lib/box'
   import { coreStore } from '@/stores/app'
   import type { ViewTableDatasets, ViewTableGroups, ViewTableClimates, ViewTableClimateData } from '@/plugins/types/germinate'
@@ -46,11 +46,6 @@
   import emitter from 'tiny-emitter/instance'
   import type { UserSelection } from '@/components/widgets/selections/ClimateHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
-
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    box,
-  ])
 
   const compProps = defineProps<{
     datasetIds: number[]
@@ -66,6 +61,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const boxplotChart = useTemplateRef('boxplotChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('boxplot-' + uuidv4())
   const loading = ref(false)
   const selectedIds = ref<number[]>([])
@@ -119,8 +115,6 @@
     }
 
     if (boxplotChart.value) {
-      Plotly.purge(boxplotChart.value)
-
       const x: number[] = []
       const y: string[] = []
       const ids: string[] = []
@@ -221,33 +215,34 @@
           layout.boxgap = 0
         }
 
-        Plotly.react(boxplotChart.value, traces, layout, DEFAULT_PLOTLY_CONFIG)
-          .then(() => {
-            emitter.emit('show-loading', false)
+        baseChart.value?.react(boxplotChart.value, traces, layout, DEFAULT_PLOTLY_CONFIG)
+          .then(element => {
+            if (element) {
+              // @ts-ignore
+              boxplotChart.value.on('plotly_selected', eventData => {
+                if (boxplotChart.value && (!eventData || (eventData.points.length === 0))) {
+                  baseChart.value?.restyle(boxplotChart.value, { selectedpoints: null })
 
-            // @ts-ignore
-            boxplotChart.value.on('plotly_selected', eventData => {
-              if (boxplotChart.value && (!eventData || (eventData.points.length === 0))) {
-                Plotly.restyle(boxplotChart.value, { selectedpoints: null })
+                  selectedIds.value = []
+                } else {
+                  selectedIds.value = [...new Set<number>(eventData.points.map((p: any) => Number.parseInt(p.id.split('-')[0])).filter((value: number, index: number, self: number[]) => self.indexOf(value) === index))]
+                }
+              })
 
-                selectedIds.value = []
-              } else {
-                selectedIds.value = [...new Set<number>(eventData.points.map((p: any) => Number.parseInt(p.id.split('-')[0])).filter((value: number, index: number, self: number[]) => self.indexOf(value) === index))]
-              }
-            })
+              // @ts-ignore
+              boxplotChart.value.on('plotly_click', (data: any) => {
+                if (data.points.length > 0) {
+                  selectedLocationId.value = Number.parseInt(data.points[0].id.split('-')[0])
 
-            // @ts-ignore
-            boxplotChart.value.on('plotly_click', (data: any) => {
-              if (data.points.length > 0) {
-                selectedLocationId.value = Number.parseInt(data.points[0].id.split('-')[0])
-
-                // nextTick(() => this.$refs.passportModal.show())
-                // TODO: Show passport popup?
-              } else {
-                selectedLocationId.value = undefined
-              }
-            })
+                  // nextTick(() => this.$refs.passportModal.show())
+                  // TODO: Show passport popup?
+                } else {
+                  selectedLocationId.value = undefined
+                }
+              })
+            }
           })
+          .finally(() => emitter.emit('show-loading', false))
       }
     }
 
@@ -284,6 +279,13 @@
   }
 
   watch(() => compProps.plotData, async () => nextTick(() => redraw()), { immediate: true })
+
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      box,
+    ])
+  })
 
   defineExpose({
     redraw,

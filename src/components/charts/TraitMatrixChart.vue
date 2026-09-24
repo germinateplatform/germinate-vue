@@ -9,6 +9,7 @@
       :badge-count="markedItemCount"
       :header-icon="mdiChartGantt"
       @force-redraw="redraw"
+      ref="baseChart"
     >
       <template #card-text>
         <v-card-text>
@@ -55,7 +56,6 @@
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { uuidv4, type DownloadBlob } from '@/plugins/util'
 
-  import Plotly from 'plotly.js/lib/core'
   import splom from 'plotly.js/lib/splom'
   import scattergl from 'plotly.js/lib/scattergl'
   import histogram from 'plotly.js/lib/histogram'
@@ -71,13 +71,6 @@
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    splom,
-    scattergl,
-    histogram,
-  ])
-
   const compProps = defineProps<{
     datasets: ViewTableDatasets[]
     traits: ViewTableTraits[]
@@ -91,6 +84,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const matrixChart = useTemplateRef('matrixChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('scattermatrixplot-' + uuidv4())
   const loading = ref(false)
   const selectedIds = ref<number[]>([])
@@ -149,8 +143,6 @@
     }
 
     if (matrixChart.value) {
-      Plotly.purge(matrixChart.value)
-
       loading.value = true
 
       const dirtyTsv = await sourceFile.value?.blob.text() || ''
@@ -185,7 +177,7 @@
           selectionHandler: (dbIds: number[]) => {
             selectedIds.value = dbIds
           },
-        }).create(tsvData)
+        }).create(baseChart.value, tsvData)
       } else {
         new ScatterMatrix({
           userSelection: compProps.userSelection,
@@ -205,7 +197,7 @@
           selectionHandler: (dbIds: number[]) => {
             selectedIds.value = dbIds
           },
-        }).create(tsvData)
+        }).create(baseChart.value, tsvData)
       }
     }
 
@@ -226,6 +218,15 @@
 
   watch(swapAxes, async () => redraw())
   watch(() => compProps.plotData, async () => nextTick(() => redraw()), { immediate: true })
+
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      splom,
+      scattergl,
+      histogram,
+    ])
+  })
 
   defineExpose({
     redraw,

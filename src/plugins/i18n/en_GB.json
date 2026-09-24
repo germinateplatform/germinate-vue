@@ -94,6 +94,7 @@
   "buttonApply": "Apply",
   "buttonSave": "Save",
   "buttonSaveSettings": "Save settings",
+  "buttonSaveChanges": "Save changes",
   "buttonLicenseCreateNew": "Create new",
   "buttonLicenseRemoveFromDataset": "Remove from dataset",
   "buttonAssignLicense": "Assign license",
@@ -2015,5 +2016,7 @@
   "widgetDataWarningTypeSource": "Warning about the source of this data",
   "widgetDataWarningTypeDeprecated": "Warning about deprecation of this data",
   "widgetDataWarningTypeMissing": "Warning about missing data or missing data points within datasets",
-  "widgetDataWarningTypeInaccuracy": "Warning about potential inaccuracies in the data"
+  "widgetDataWarningTypeInaccuracy": "Warning about potential inaccuracies in the data",
+  "widgetChartNoDataTitle": "The data query resulted in no data matches.",
+  "widgetChartNoDataText": "Please try a different query."
 }

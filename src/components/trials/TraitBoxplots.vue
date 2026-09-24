@@ -39,39 +39,6 @@
       ref="traitStatsChart"
       v-if="traitData || (catChartData && catChartData.size > 0)"
     />
-    <!-- <template v-if="traitData || (catChartData && catChartData.size > 0)">
-      <TraitHighlightSelection
-        ref="highlightSelection"
-        :groups="groups || []"
-        :dataset-ids="datasetIds || []"
-      />
-
-      <v-switch v-model="showIndividuals" color="primary" :label="$t('chartControlShowIndividualPoints')" />
-
-      <v-btn @click="forceRedraw" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
-    </template>
-
-    <TraitBoxplotChart
-      :plot-data="traitData"
-      :groups="groups || []"
-      :user-selection="userSelection"
-      :dataset-ids="datasetIds || []"
-      :traits="numericTraits"
-      :datasets="datasets || []"
-      :show-individuals="showIndividuals"
-      ref="traitBoxPlot"
-      v-if="traitData && numericTraits && numericTraits.length > 0"
-    />
-
-    <TraitBarChart
-      :traits="categoricalTraits"
-      :trait-data="traitData"
-      :groups="groups || []"
-      :datasets="datasets || []"
-      :user-selection="userSelection"
-      ref="traitBarChart"
-      v-if="traitData && categoricalTraits && categoricalTraits.length > 0"
-    /> -->
   </div>
 </template>
 

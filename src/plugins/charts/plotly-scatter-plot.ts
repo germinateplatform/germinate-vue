@@ -1,6 +1,7 @@
-import Plotly from 'plotly.js/lib/core'
 import { DEFAULT_PLOTLY_CONFIG, uuidv4 } from '@/plugins/util'
 import { DEFAULT_CHART_COLORS } from '@/plugins/util/colors'
+
+import type { BaseChartExposed } from '@/components/charts/BaseChart.vue'
 
 export type ClickHandler = (dbId: number) => void
 export type SelectionHandler = (dbIds: number[]) => void
@@ -78,7 +79,7 @@ export class ScatterPlot {
     }, config)
   }
 
-  create (rows: any[]) {
+  create (plotlyWrapper: BaseChartExposed | null, rows: any[]) {
     const layout: any = {
       autosize: true,
       bargap: 0,
@@ -170,72 +171,37 @@ export class ScatterPlot {
       this.addData(data, ids, names, x, y, 0, undefined)
     }
 
-    try {
-      Plotly.purge(this.config.element)
-    } catch {
-      // Do nothing here
-    }
-
-    // @ts-ignore
-    Plotly.react(this.config.element, data, layout, DEFAULT_PLOTLY_CONFIG)
+    plotlyWrapper?.react(this.config.element, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(element => {
-        element.on('plotly_selected', eventData => {
-          if (!eventData || (eventData.points.length === 0)) {
-            Plotly.restyle(element, { selectedpoints: null })
-            // @ts-ignore
-            Plotly.relayout(element, { selections: [] })
+        if (element) {
+          element.on('plotly_selected', eventData => {
+            if (!eventData || (eventData.points.length === 0)) {
+              plotlyWrapper?.restyle(element, { selectedpoints: null })
+              plotlyWrapper?.relayout(element, { selections: [] })
 
-            if (this.config.selectionHandler) {
-              this.config.selectionHandler([])
-            }
-          } else {
-            if (this.config.selectionHandler) {
-              // @ts-ignore
-              const mapped = eventData.points.map(p => Number.parseInt(p.id.split('-')[0])).filter((value, index, self) => self.indexOf(value) === index)
+              if (this.config.selectionHandler) {
+                this.config.selectionHandler([])
+              }
+            } else {
+              if (this.config.selectionHandler) {
+                // @ts-ignore
+                const mapped = eventData.points.map(p => Number.parseInt(p.id.split('-')[0])).filter((value, index, self) => self.indexOf(value) === index)
 
-              this.config.selectionHandler(mapped)
-            }
-          }
-        })
-
-        if (this.config.clickHandler) {
-          element.on('plotly_click', data => {
-            if (data.points.length > 0) {
-              // @ts-ignore
-              this.config.clickHandler?.(Number.parseInt(data.points[0].id.split('-')[0]))
+                this.config.selectionHandler(mapped)
+              }
             }
           })
+
+          if (this.config.clickHandler) {
+            element.on('plotly_click', data => {
+              if (data.points.length > 0) {
+                // @ts-ignore
+                this.config.clickHandler?.(Number.parseInt(data.points[0].id.split('-')[0]))
+              }
+            })
+          }
         }
       })
-
-    // this.on('plotly_selected', eventData => {
-    //   if (!eventData || (eventData.points.length === 0)) {
-    //     Plotly.restyle(this, { selectedpoints: null })
-    //     Plotly.relayout(this, { selections: [] })
-
-    //     if (onPointsSelected) {
-    //       onPointsSelected([])
-    //     }
-    //   } else {
-    //     if (onPointsSelected) {
-    //       const mapped = eventData.points.map(p => Number.parseInt(p.id.split('-')[0])).filter((value, index, self) => self.indexOf(value) === index)
-
-    //       onPointsSelected(mapped)
-    //     }
-    //   }
-    // })
-
-    // if (onPointClicked) {
-    //   this.on('plotly_click', function (data) {
-    //     if (data.points.length > 0) {
-    //       onPointClicked(Number.parseInt(data.points[0].id.split('-')[0]))
-    //     }
-    //   })
-    // }
-
-    // if (onColorByStatsLoaded) {
-    //   getColorByStats(rows)
-    // }
   }
 
   addData (data: any[], ids: string[], names: string[], x: string[], y: string[], index: number, traceName: string | undefined) {

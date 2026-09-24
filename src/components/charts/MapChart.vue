@@ -6,6 +6,7 @@
     :source-file="sourceFile"
     :header-icon="mdiChartHistogram"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #card-text>
       <v-card-text>
@@ -34,12 +35,10 @@
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { uuidv4, type DownloadBlob } from '@/plugins/util'
-  import { plotlyMapChart } from '@/plugins/charts/plotly-map-chart'
+  import { MapChart, type PositionClickHandlerPayload } from '@/plugins/charts/plotly-map-chart'
 
   import { tsvParse } from 'd3-dsv'
-  import { select } from 'd3-selection'
 
-  import Plotly from 'plotly.js/lib/core'
   import histogram from 'plotly.js/lib/histogram'
   import { coreStore } from '@/stores/app'
   import { getColors } from '@/plugins/util/colors'
@@ -51,11 +50,6 @@
 
   import emitter from 'tiny-emitter/instance'
   import { mdiChartHistogram, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
-
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    histogram,
-  ])
 
   interface MapSelection {
     chromosome: string
@@ -73,6 +67,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const mapChart = useTemplateRef('mapChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('taxonomy-' + uuidv4())
   const distinctChromosomes = ref<number>(0)
   const mapSelections = ref<MapSelection[]>([])
@@ -84,10 +79,6 @@
   })
 
   async function redraw () {
-    if (mapChart.value) {
-      Plotly.purge(mapChart.value)
-    }
-
     if (!sourceFile.value) {
       apiPostMapExport(compProps.mapId, { format: 'flapjack' })
         .then(result => {
@@ -166,33 +157,42 @@
   }
 
   function plot () {
-    select(mapChart.value)
-      .datum(tsvData)
-      .call(plotlyMapChart(Plotly)
-        .darkMode(store.storeIsDarkMode)
-        .colors(getColors())
-        .onPointsSelected((chromosome: string, start: number, end: number) => {
-          const changed = (mapSelections.value || []).filter(ms => ms.chromosome !== chromosome)
-          changed.push({
-            chromosome: chromosome,
-            start: Math.floor(start),
-            end: Math.ceil(end),
-          })
-          mapSelections.value = changed
-          emit('points-selected', chromosome, start, end)
+    if (!mapChart.value) {
+      return
+    }
+
+    new MapChart({
+      element: mapChart.value,
+      darkMode: store.storeIsDarkMode,
+      colors: getColors(),
+      onPointsSelected: (data: PositionClickHandlerPayload) => {
+        const changed = (mapSelections.value || []).filter(ms => ms.chromosome !== data.chromosome)
+        changed.push({
+          chromosome: data.chromosome,
+          start: Math.floor(data.from),
+          end: Math.ceil(data.to),
         })
-        .onDistinctChromosomes((d: string[]) => {
-          if (d && d.length > 0) {
-            distinctChromosomes.value = d.length
-          }
-        })
-        .onSelectionCleared(() => {
-          mapSelections.value = []
-          emit('selection-cleared')
-        }))
+        mapSelections.value = changed
+        emit('points-selected', data.chromosome, data.from, data.to)
+      },
+      onSelectionCleared: () => {
+        mapSelections.value = []
+        emit('selection-cleared')
+      },
+      onDistinctChromosomes: (d: string[]) => {
+        if (d && d.length > 0) {
+          distinctChromosomes.value = d.length
+        }
+      },
+    }).create(baseChart.value, tsvData)
   }
 
   onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      histogram,
+    ])
+
     redraw()
   })
 </script>

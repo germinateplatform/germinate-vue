@@ -7,6 +7,7 @@
     v-model:loading="loading"
     :header-icon="mdiChartBubble"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #card-text>
       <v-card-text>
@@ -23,18 +24,12 @@
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
-  import Plotly from 'plotly.js/lib/core'
   import scatter from 'plotly.js/lib/scatter'
   import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import type { TraitComparisonChartTrace } from '@/components/trials/TraitComparison.vue'
   import { mdiChartBubble } from '@mdi/js'
-
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    scatter,
-  ])
 
   const compProps = defineProps<{
     traces: TraitComparisonChartTrace[]
@@ -45,6 +40,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const bubbleChart = useTemplateRef('bubbleChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('radar-' + uuidv4())
   const loading = ref(false)
 
@@ -118,13 +114,7 @@
       showlegend: data.length > 1,
     }
 
-    try {
-      Plotly.purge(bubbleChart.value)
-    } catch {
-      // Do nothing here
-    }
-
-    Plotly.react(bubbleChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
+    baseChart.value?.react(bubbleChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(() => {
         emitter.emit('show-loading', false)
       })
@@ -133,6 +123,13 @@
   }
 
   watch(() => compProps.traces, async () => nextTick(() => redraw()), { immediate: true })
+
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      scatter,
+    ])
+  })
 
   defineExpose({
     redraw,

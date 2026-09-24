@@ -58,7 +58,7 @@
           :loading="loading"
           :search="search"
           :item-value="componentProps.itemKey"
-          :hide-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12 && !$slots.footer)"
+          :hide-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12 && !$slots.footer && componentProps.download === undefined)"
           @update:options="loadItems"
         >
           <!-- Pass on all named slots -->
@@ -93,7 +93,7 @@
       :items-length="totalItems"
       :loading="loading"
       :search="search"
-      :hide-default-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12 && !$slots.footer)"
+      :hide-default-footer="componentProps.hideFooter || (totalItems !== -1 && totalItems <= 12 && !$slots.footer && componentProps.download === undefined)"
       :item-value="componentProps.itemId || componentProps.itemKey"
       :show-expand="showDetails"
       :disable-sort="componentProps.disabled"
@@ -506,8 +506,7 @@
         filename: `${componentProps.tableKey}-table-${getDateTimeString()}`,
         extension: 'zip',
       })
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function toggleMarkedItem (id: number) {

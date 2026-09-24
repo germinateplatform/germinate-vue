@@ -45,10 +45,10 @@
 <script setup lang="ts">
   import Images from '@/components/widgets/Images.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostDatasetTable, apiPostTraitStatsCategorical } from '@/plugins/api/dataset'
+  import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { apiPostTraitDatasetTable, apiPostTraitTable, apiPostTrialsDataTable, apiPostTrialsDataTableIds } from '@/plugins/api/trait'
-  import { FilterComparator, FilterOperator, type ViewTableDatasets, ViewTableTraitsScaleDatatype, type FilterGroup, type PaginatedRequest, type PaginatedResult, type TrialsExportDatasetRequest, type UnacceptedLicenseRequest, type ViewTableImages, type ViewTableTraits, type ViewTableTrialsData, type ViewTableGroups } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableDatasets, type FilterGroup, type PaginatedRequest, type PaginatedResult, type TrialsExportDatasetRequest, type UnacceptedLicenseRequest, type ViewTableImages, type ViewTableTraits, type ViewTableTrialsData, type ViewTableGroups } from '@/plugins/types/germinate'
   import { mdiChartTimeline } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'

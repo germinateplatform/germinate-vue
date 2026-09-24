@@ -6,6 +6,7 @@
     :source-file="sourceFile"
     :header-icon="mdiChartDonutVariant"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #chart-content>
       <div :id="id" ref="taxonomyChart" />
@@ -16,10 +17,9 @@
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { uuidv4, type DownloadBlob } from '@/plugins/util'
-  import { plotlySunburstChart } from '@/plugins/charts/plotly-sunburst-chart'
+  import { SunburstChart } from '@/plugins/charts/plotly-sunburst-chart'
 
   import { tsvParse } from 'd3-dsv'
-  import { select } from 'd3-selection'
 
   import Plotly from 'plotly.js/lib/core'
   import sunburst from 'plotly.js/lib/sunburst'
@@ -40,6 +40,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const taxonomyChart = useTemplateRef('taxonomyChart')
+  const baseChart = useTemplateRef('baseChart')
   const id = ref('taxonomy-' + uuidv4())
 
   const filename = computed(() => {
@@ -108,60 +109,63 @@
         }
       })
 
-      select(taxonomyChart.value)
-        .datum(chartData)
-        .call(plotlySunburstChart(Plotly)
-          .darkMode(store.storeIsDarkMode)
-          .height(500)
-          .onLeafClicked((path: string[]) => {
-            // Then store a filter using genus, species and subtaxa
-            const query: FilterGroup[] = [{
-              filters: [],
-              operator: FilterOperator.and,
-            }]
+      new SunburstChart({
+        element: taxonomyChart.value,
+        darkMode: store.storeIsDarkMode,
+        height: 500,
+        onLeafClicked: (path: string[]) => {
+          console.log(path)
+          // Then store a filter using genus, species and subtaxa
+          const query: FilterGroup[] = [{
+            filters: [],
+            operator: FilterOperator.and,
+          }]
 
-            if (path.length === 1 && path[0] === 'N/A') {
-              query[0].filters?.push({
-                column: 'genus',
-                comparator: FilterComparator.isNull,
-                values: [],
-              })
-            } else {
-              const genus = path[0]
-              const species = path.length > 1 ? path[1].split(' | ')[1] : null
-              const subtaxa = path.length > 2 ? path[2] : null
-
-              query[0].filters?.push({
-                column: 'genus',
-                comparator: FilterComparator.equals,
-                values: [genus],
-              })
-
-              if (species) {
-                query[0].filters?.push({
-                  column: 'species',
-                  comparator: FilterComparator.equals,
-                  values: [species],
-                })
-              }
-              if (subtaxa) {
-                query[0].filters?.push({
-                  column: 'subtaxa',
-                  comparator: FilterComparator.equals,
-                  values: [subtaxa],
-                })
-              }
-            }
-
-            // Navigate to the germplasm page
-            router.push({
-              path: Pages.germplasm.path,
-              query: {
-                'germplasm-filter': JSON.stringify(query),
-              },
+          if (path.length === 1 && path[0] === 'N/A') {
+            query[0].filters?.push({
+              column: 'genus',
+              comparator: FilterComparator.isNull,
+              values: [],
             })
+          } else {
+            const genus = path[0]
+            const species = path.length > 1 ? path[1].split(' | ')[1] : null
+            const subtaxa = path.length > 2 ? path[2] : null
+
+            console.log(genus, species, subtaxa)
+
+            query[0].filters?.push({
+              column: 'genus',
+              comparator: FilterComparator.equals,
+              values: [genus],
+            })
+
+            if (species) {
+              query[0].filters?.push({
+                column: 'species',
+                comparator: FilterComparator.equals,
+                values: [species],
+              })
+            }
+            if (subtaxa) {
+              query[0].filters?.push({
+                column: 'subtaxa',
+                comparator: FilterComparator.equals,
+                values: [subtaxa],
+              })
+            }
+          }
+
+          // Navigate to the germplasm page
+          router.push({
+            path: Pages.germplasm.path,
+            query: {
+              'germplasm-filter': JSON.stringify(query),
+            },
           })
-          .colors(getColors()))
+        },
+        colors: getColors(),
+      }).create(baseChart.value, chartData)
     }
   }
 

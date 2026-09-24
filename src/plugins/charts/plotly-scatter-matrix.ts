@@ -1,6 +1,7 @@
-import Plotly from 'plotly.js/lib/core'
 import { DEFAULT_PLOTLY_CONFIG, uuidv4 } from '@/plugins/util'
 import { DEFAULT_CHART_COLORS } from '@/plugins/util/colors'
+
+import type { BaseChartExposed } from '@/components/charts/BaseChart.vue'
 
 export type ClickHandler = (dbId: number) => void
 export type SelectionHandler = (dbIds: number[]) => void
@@ -75,7 +76,7 @@ export class ScatterMatrix {
     }, config)
   }
 
-  create (rows: any[]) {
+  create (plotlyWrapper: BaseChartExposed | null, rows: any[]) {
     const layout: any = {
       margin: { autoexpand: true },
       autosize: true,
@@ -244,43 +245,35 @@ export class ScatterMatrix {
       })
     }
 
-    try {
-      Plotly.purge(this.config.element)
-    } catch {
-      // Do nothing here
-    }
-
-    console.log(data)
-
-    // @ts-ignore
-    Plotly.react(this.config.element, data, layout, DEFAULT_PLOTLY_CONFIG)
+    plotlyWrapper?.react(this.config.element, data, layout, DEFAULT_PLOTLY_CONFIG)
       .then(element => {
-        element.on('plotly_selected', eventData => {
-          if (!eventData || (eventData.points.length === 0)) {
-            Plotly.restyle(element, { selectedpoints: null })
-            // @ts-ignore
-            Plotly.relayout(element, { selections: [] })
+        if (element) {
+          element.on('plotly_selected', eventData => {
+            if (!eventData || (eventData.points.length === 0)) {
+              plotlyWrapper?.restyle(element, { selectedpoints: null })
+              plotlyWrapper?.relayout(element, { selections: [] })
 
-            if (this.config.selectionHandler) {
-              this.config.selectionHandler([])
-            }
-          } else {
-            if (this.config.selectionHandler) {
-              // @ts-ignore
-              const mapped = eventData.points.map(p => Number.parseInt(p.id.split('-')[0])).filter((value, index, self) => self.indexOf(value) === index)
+              if (this.config.selectionHandler) {
+                this.config.selectionHandler([])
+              }
+            } else {
+              if (this.config.selectionHandler) {
+                // @ts-ignore
+                const mapped = eventData.points.map(p => Number.parseInt(p.id.split('-')[0])).filter((value, index, self) => self.indexOf(value) === index)
 
-              this.config.selectionHandler(mapped)
-            }
-          }
-        })
-
-        if (this.config.clickHandler) {
-          element.on('plotly_click', data => {
-            if (data.points.length > 0) {
-              // @ts-ignore
-              this.config.clickHandler?.(Number.parseInt(data.points[0].id.split('-')[0]))
+                this.config.selectionHandler(mapped)
+              }
             }
           })
+
+          if (this.config.clickHandler) {
+            element.on('plotly_click', data => {
+              if (data.points.length > 0) {
+                // @ts-ignore
+                this.config.clickHandler?.(Number.parseInt(data.points[0].id.split('-')[0]))
+              }
+            })
+          }
         }
       })
   }

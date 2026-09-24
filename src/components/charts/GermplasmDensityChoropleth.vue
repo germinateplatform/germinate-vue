@@ -7,6 +7,7 @@
     v-model:loading="loading"
     :header-icon="mdiEarth"
     @force-redraw="redraw"
+    ref="baseChart"
   >
     <template #card-text>
       <v-card-text>
@@ -26,16 +27,10 @@
 
   import emitter from 'tiny-emitter/instance'
 
-  import Plotly from 'plotly.js/lib/core'
   import choropleth from 'plotly.js/lib/choropleth'
   import { tsvParse } from 'd3-dsv'
   import { coreStore } from '@/stores/app'
   import { getColor } from '@/plugins/util/colors'
-
-  // Only register the chart types we're actually using to reduce the final bundle size
-  Plotly.register([
-    choropleth,
-  ])
 
   const id = ref('choropleth-' + uuidv4())
   const loading = ref(false)
@@ -44,6 +39,7 @@
 
   const sourceFile = ref<DownloadBlob>()
   const choroplethChart = useTemplateRef('choroplethChart')
+  const baseChart = useTemplateRef('baseChart')
 
   async function redraw (source: Blob) {
     emitter.emit('show-loading', true)
@@ -59,8 +55,6 @@
     }
 
     if (choroplethChart.value) {
-      Plotly.purge(choroplethChart.value)
-
       const text = await sourceFile.value?.blob.text()
 
       const chartData = tsvParse(text || '').filter(r => r.code !== 'UNK')
@@ -129,15 +123,16 @@
         scrollZoom: false,
       }
 
-      // @ts-expect-error
-      Plotly.react(choroplethChart.value, data, layout, config)
+      baseChart.value?.react(choroplethChart.value, data, layout, config)
         .then(element => {
-          element.on('plotly_click', data => {
-            if (data && data.points && data.points.length > 0) {
-              console.log(data.points[0])
-              // this.navigateToGermplasmPageFilteredByCountry(data.points[0].text)
-            }
-          })
+          if (element) {
+            element.on('plotly_click', data => {
+              if (data && data.points && data.points.length > 0) {
+                console.log(data.points[0])
+                // this.navigateToGermplasmPageFilteredByCountry(data.points[0].text)
+              }
+            })
+          }
         })
     }
 
@@ -145,5 +140,12 @@
     emitter.emit('show-loading', false)
   }
 
-  onMounted(() => apiGetStatsFile('country', result => redraw(result)))
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      choropleth,
+    ])
+
+    apiGetStatsFile('country', result => redraw(result))
+  })
 </script>
