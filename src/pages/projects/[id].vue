@@ -30,7 +30,7 @@
                       <template v-else-if="banner.textValue">{{ banner.textValue }}</template>
                     </v-card-title>
 
-                    <v-card-subtitle>{{ $t(banner.title) }}</v-card-subtitle>
+                    <v-card-subtitle class="mt-2">{{ $t(banner.title) }}</v-card-subtitle>
                   </div>
 
                   <v-avatar
@@ -58,7 +58,7 @@
           <v-btn @click="addNew('experiment')" variant="tonal" :text="$t('buttonAddNewToProject')" :prepend-icon="mdiPlusBox" />
         </template>
         <ExperimentTable disabled disable-forced-project-filter :get-data="getExperimentData" :filter-on="experimentFilter" ref="experimentTable">
-          <template #item.actions="{ item }">
+          <template #item.actions="{ item }" v-if="store.storeUserIsDataCurator">
             <v-btn-group variant="tonal">
               <v-btn size="x-small" color="error" :icon="mdiDelete" @click="removeItem(item.experimentId, 'experiment')" />
             </v-btn-group>

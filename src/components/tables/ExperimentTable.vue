@@ -9,6 +9,7 @@
     :filter-on="filterOn"
     :forced-filters="forcedFilters"
     :selection-type="selectionType"
+    :disabled="compProps.disabled"
     :show-details="false"
     item-key="experimentId"
     table-key="experiments"
@@ -73,14 +74,17 @@
   import { mdiFolderTable } from '@mdi/js'
   import { coreStore } from '@/stores/app'
 
-  const compProps = defineProps<{
+  const compProps = withDefaults(defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableExperiments[]>>> }
     getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
+    disabled?: boolean
     selectionType?: TableSelectionType
     disableForcedProjectFilter?: boolean
-  }>()
+  }>(), {
+    disabled: false,
+  })
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
