@@ -1,10 +1,10 @@
 <template>
   <BaseChart
-    title="pageMapsHistogramTitle"
+    title="pageMapsHeatmapTitle"
     :chart-id="id"
     :filename="filename"
     :source-file="sourceFile"
-    :header-icon="mdiChartHistogram"
+    :header-icon="mdiBlurLinear"
     @force-redraw="redraw"
     ref="baseChart"
   >
@@ -35,11 +35,13 @@
 <script setup lang="ts">
   import BaseChart from '@/components/charts/BaseChart.vue'
   import { uuidv4, type DownloadBlob } from '@/plugins/util'
-  import { MapChart, type PositionClickHandlerPayload } from '@/plugins/charts/plotly-map-chart'
+  // import { MapChart, type PositionClickHandlerPayload } from '@/plugins/charts/plotly-map-chart'
+  import { MapHeatmap, type PositionClickHandlerPayload } from '@/plugins/charts/plotly-map-heatmap'
 
   import { tsvParse } from 'd3-dsv'
 
   import histogram from 'plotly.js/lib/histogram'
+  import heatmap from 'plotly.js/lib/heatmap'
   import { coreStore } from '@/stores/app'
   import { getColors } from '@/plugins/util/colors'
   import { apiPostMapdefinitionTableIds, apiPostMapExport } from '@/plugins/api/genotype'
@@ -49,7 +51,7 @@
   import { FilterComparator, FilterOperator, type PaginatedRequest } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiChartHistogram, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
+  import { mdiBlurLinear, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
   interface MapSelection {
     chromosome: string
@@ -161,7 +163,7 @@
       return
     }
 
-    new MapChart({
+    new MapHeatmap({
       element: mapChart.value,
       darkMode: store.storeIsDarkMode,
       colors: getColors(),
@@ -191,6 +193,7 @@
     // Only register the chart types we're actually using to reduce the final bundle size
     baseChart.value?.register([
       histogram,
+      heatmap,
     ])
 
     redraw()

@@ -2,12 +2,18 @@
   <v-dialog
     v-model="dialog"
     fullscreen
+    persistent
     scrollable
   >
     <v-card
       class="table-filters"
-      :title="$t('modalTitleTableFilter')"
     >
+      <template #title>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div>{{ $t('modalTitleTableFilter') }}</div>
+          <v-btn :icon="mdiClose" variant="text" @click="dialog = false" />
+        </v-card-title>
+      </template>
       <v-card-text>
         <v-card class="mb-3">
           <p class="mx-3 mt-3">{{ $t('widgetTableFilterOverallOperator') }}</p>
@@ -261,7 +267,7 @@
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
   import { validCompsForType } from '@/plugins/util/table-columns'
   import { entityTypes, locationTypes, groupTypes, methodClasses, dataTypes, newsTypes, traitClasses } from '@/plugins/util/types'
-  import { mdiCalendar, mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
+  import { mdiCalendar, mdiClose, mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
   import { useDate } from 'vuetify'
 

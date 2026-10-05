@@ -3,9 +3,7 @@
     height="50"
     class="d-flex justify-space-between border-t border-primary border-opacity-100"
   >
-    <div
-      class="text-body-small text-disabled"
-    >
+    <div class="text-body-small text-disabled">
       &copy; {{ new Date().getFullYear() }} Germinate: The James Hutton Institute
     </div>
     <div>
