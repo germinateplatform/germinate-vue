@@ -1,5 +1,4 @@
 import type { Page } from '@/plugins/types/Page'
-import { coreStore } from '@/stores/app'
 
 export class Pages {
   static home: Page = {

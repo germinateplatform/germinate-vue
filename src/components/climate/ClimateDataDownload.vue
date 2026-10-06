@@ -7,7 +7,7 @@
         <ClimateSelection
           v-model="selectedClimates"
           can-select-all
-          :climates="climates"
+          :climates="cdStore.storeClimates"
         >
           <template #text>
             <p>{{ $t('pageClimateExportSelectClimateExportText') }}</p>
@@ -19,7 +19,7 @@
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
           url-query-key="download"
-          :groups="groups"
+          :groups="cdStore.storeGroups"
           marked-item-type="locations"
         >
           <template #text>{{ $t('pageClimateExportSelectGroupExportText') }}</template>
@@ -66,7 +66,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { coreStore } from '@/stores/app'
+
   import { apiPostClimateDatasetExport } from '@/plugins/api/dataset'
   import { downloadBlob } from '@/plugins/util'
   import { apiPostTableExport } from '@/plugins/api/misc'
@@ -74,13 +74,11 @@
   import { mdiDownload, mdiFormatListGroup, mdiTableColumnWidth } from '@mdi/js'
 
   const compProps = defineProps<{
-    datasetIds: number[]
-    climates: ViewTableClimates[]
-    groups: ViewTableGroups[]
     max?: number
   }>()
 
   const store = coreStore()
+  const cdStore = climateDataStore()
 
   const selectedClimates = ref<ViewTableClimates[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])
@@ -97,7 +95,7 @@
     apiPostTableExport({
       page: 1,
       limit: MAX_JAVA_INTEGER,
-      datasetIds: compProps.datasetIds,
+      datasetIds: cdStore.storeDatasetIds,
       locationIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedLocations : undefined,
       locationGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
       filters: [{
@@ -111,7 +109,7 @@
     }, 'dataset/data/climate').then((result: AxiosResponse<Blob>) => {
       downloadBlob({
         blob: result.data,
-        filename: 'climate-long-dataset-' + compProps.datasetIds.join('-'),
+        filename: 'climate-long-dataset-' + cdStore.storeDatasetIds.join('-'),
         extension: 'zip',
       })
       emitter.emit('show-loading', false)
@@ -125,7 +123,7 @@
       page: 1,
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
-      datasetIds: compProps.datasetIds,
+      datasetIds: cdStore.storeDatasetIds,
       climateIds: selectedClimates.value.map(t => t.climateId),
       locationIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedLocations : undefined,
       locationGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
@@ -135,7 +133,7 @@
     apiPostClimateDatasetExport(query, result => {
       const downloadRequest = {
         blob: result,
-        filename: 'climate-wide-dataset-' + compProps.datasetIds.join('-'),
+        filename: 'climate-wide-dataset-' + cdStore.storeDatasetIds.join('-'),
         extension: 'txt',
       }
 

@@ -140,7 +140,6 @@ name: aboutGerminate
   import emitter from 'tiny-emitter/instance'
   import { useDisplay } from 'vuetify'
   import { mdiBriefcaseVariant, mdiCalendar, mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiInformation, mdiInformationOutline, mdiTag, mdiTwitter, mdiWeb } from '@mdi/js'
-  import { coreStore } from '@/stores/app'
 
   const { t } = useI18n()
   const { lg } = useDisplay()

@@ -109,7 +109,6 @@
   import { getNumberWithSuffix, isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
 
   import emitter from 'tiny-emitter/instance'
-  import { coreStore } from '@/stores/app'
   import { Pages } from '@/plugins/pages'
   import { apiDeleteFileresource } from '@/plugins/api/dataset'
   import AddFileresourceModal from '@/components/modals/AddFileresourceModal.vue'

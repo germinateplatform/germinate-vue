@@ -7,7 +7,7 @@
         <TraitSelection
           v-model="selectedTraits"
           url-query-key="matrix"
-          :traits="traits"
+          :traits="tdStore.storeTraits"
           can-select-all
         >
           <template #text>
@@ -20,7 +20,7 @@
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
           url-query-key="matrix"
-          :groups="groups"
+          :groups="tdStore.storeGroups"
           marked-item-type="germplasm"
         >
           <template #text>{{ $t('pageTrialsExportSelectGroupChartText') }}</template>
@@ -33,39 +33,40 @@
     <template v-if="chartData">
       <TraitHighlightSelection
         ref="highlightSelection"
-        :groups="groups"
-        :dataset-ids="datasetIds"
+        :plotted-groups="selectedGroups"
       />
 
       <v-btn @click="traitMatrixChart?.redraw()" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
     </template>
 
-    <TraitMatrixChart :user-selection="userSelection" :groups="groups || []" :plot-data="chartData" v-if="chartData" :datasets="datasets" :traits="selectedTraits" :has-groups-data="hasGroupsData" ref="traitMatrixChart" />
+    <TraitMatrixChart
+      :user-selection="userSelection"
+      :plot-data="chartData"
+      v-if="chartData"
+      :traits="selectedTraits"
+      :has-groups-data="hasGroupsData"
+      ref="traitMatrixChart"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { TrialsExportDatasetRequest, ViewTableDatasets, ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
+  import type { TrialsExportDatasetRequest, ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
   import emitter from 'tiny-emitter/instance'
   import { apiPostTrialDatasetExport } from '@/plugins/api/dataset'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { coreStore } from '@/stores/app'
   import TraitMatrixChart from '@/components/charts/TraitMatrixChart.vue'
   import type HighlightSelection from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiArrowRightBox, mdiRefresh } from '@mdi/js'
 
   const compProps = defineProps<{
-    datasets: ViewTableDatasets[]
-    traits: ViewTableTraits[]
-    groups: ViewTableGroups[]
     max?: number
   }>()
 
   const store = coreStore()
-
-  const datasetIds = computed(() => (compProps.datasets ?? []).map(ds => ds.datasetId || -1))
+  const tdStore = traitDataStore()
 
   const selectedTraits = ref<ViewTableTraits[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])
@@ -90,7 +91,7 @@
       page: 1,
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
-      datasetIds: compProps.datasets.map(ds => ds.datasetId || -1),
+      datasetIds: tdStore.storeDatasetIds,
       traitIds: selectedTraits.value.map(t => t.variableId),
       germplasmIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedGermplasm : undefined,
       germplasmGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),

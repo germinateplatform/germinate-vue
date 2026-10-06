@@ -93,7 +93,6 @@
 <script setup lang="ts">
   import { Pages } from '@/plugins/pages'
   import type { ExtendedStorysteps, IndexedViewTableStoriesEnriched } from '@/plugins/types/client'
-  import { coreStore } from '@/stores/app'
   import { mdiArrowLeft, mdiArrowLeftBottom, mdiArrowRight, mdiBookOpenPageVariant, mdiCheck, mdiCircleMedium, mdiClose, mdiMenuDown, mdiMenuUp, mdiPlus } from '@mdi/js'
   import type { FieldConfig } from '@/components/modals/GenericAddEditFormModal.vue'
   import { FilterComparator, FilterOperator, type StoryStepConfig } from '@/plugins/types/germinate'

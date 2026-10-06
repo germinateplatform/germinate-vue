@@ -56,7 +56,6 @@
   import { useI18n } from 'vue-i18n'
   import { mdiCommentAccount, mdiCommentPlus, mdiDelete } from '@mdi/js'
   import { commentTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import { apiDeleteComment, apiPutComment } from '@/plugins/api/comment'

@@ -23,7 +23,6 @@
 
   import Plotly from 'plotly.js/lib/core'
   import sunburst from 'plotly.js/lib/sunburst'
-  import { coreStore } from '@/stores/app'
   import { Pages } from '@/plugins/pages'
   import { getColors } from '@/plugins/util/colors'
   import { FilterComparator, FilterOperator, type FilterGroup } from '@/plugins/types/germinate'

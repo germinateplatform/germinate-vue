@@ -1,11 +1,10 @@
 <template>
   <div>
     <TrialLayout
-      v-for="(dataset, index) in datasets"
+      v-for="(dataset, index) in tdStore.storeDatasets"
       :key="`trial-layout-${dataset.datasetId}`"
       :dataset="dataset"
       :has-layout="hasLayout?.[index] || false"
-      :traits="traits"
     />
 
     <LocationMap class="mt-5" map-type="cluster" :locations="locations" ref="map" @location-updated="update" />
@@ -15,26 +14,26 @@
 <script setup lang="ts">
   import LocationMap from '@/components/map/LocationMap.vue'
   import { apiPostTrialLocations } from '@/plugins/api/trait'
-  import type { ViewTableDatasets, ViewTableLocations, ViewTableTraits } from '@/plugins/types/germinate'
+  import type { ViewTableLocations } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
 
   const compProps = defineProps<{
-    datasets: ViewTableDatasets[]
-    traits: ViewTableTraits[]
     hasLayout?: boolean[]
   }>()
 
   const locations = ref<ViewTableLocations[]>([])
   const map = useTemplateRef('map')
 
+  const tdStore = traitDataStore()
+
   function update () {
-    if (!compProps.datasets || compProps.datasets.length === 0) {
+    if (!tdStore.storeDatasetIds || tdStore.storeDatasetIds.length === 0) {
       return
     }
 
     const query = {
-      datasetIds: compProps.datasets.map(ds => ds.datasetId || -1),
+      datasetIds: tdStore.storeDatasetIds,
     }
 
     emitter.emit('show-loading', true)

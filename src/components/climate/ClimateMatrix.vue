@@ -6,7 +6,7 @@
       <v-col cols="12" md="6">
         <ClimateSelection
           v-model="selectedClimates"
-          :climates="climates"
+          :climates="cdStore.storeClimates"
           can-select-all
         >
           <template #text>
@@ -19,7 +19,7 @@
           v-model="selectedLocations"
           v-model:group-selection="groupSelection"
           url-query-key="matrix"
-          :groups="groups"
+          :groups="cdStore.storeGroups"
           marked-item-type="locations"
         >
           <template #text>{{ $t('pageClimateExportSelectGroupChartText') }}</template>
@@ -32,15 +32,19 @@
     <template v-if="chartData">
       <ClimateHighlightSelection
         ref="highlightSelection"
-        :groups="groups"
-        :dataset-ids="datasetIds"
-        :climates="climates"
       />
 
       <v-btn @click="climateMatrixChart?.redraw()" class="mb-5" :prepend-icon="mdiRefresh" :text="$t('buttonReload')" :disabled="userSelection !== undefined && !userSelectionValid" />
     </template>
 
-    <ClimateMatrixChart :user-selection="userSelection" :groups="groups || []" :plot-data="chartData" v-if="chartData" :dataset-ids="datasetIds" :climates="selectedClimates" :has-groups-data="hasGroupsData" ref="climateMatrixChart" />
+    <ClimateMatrixChart
+      :user-selection="userSelection"
+      :plot-data="chartData"
+      v-if="chartData"
+      :climates="selectedClimates"
+      :has-groups-data="hasGroupsData"
+      ref="climateMatrixChart"
+    />
   </div>
 </template>
 
@@ -50,19 +54,17 @@
 
   import emitter from 'tiny-emitter/instance'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { coreStore } from '@/stores/app'
+
   import type HighlightSelection from '@/components/widgets/selections/ClimateHighlightSelection.vue'
   import { mdiArrowRightBox, mdiRefresh } from '@mdi/js'
   import { apiPostClimateDatasetExport } from '@/plugins/api/dataset'
 
   const compProps = defineProps<{
-    datasetIds: number[]
-    climates: ViewTableClimates[]
-    groups: ViewTableGroups[]
     max?: number
   }>()
 
   const store = coreStore()
+  const cdStore = climateDataStore()
 
   const selectedClimates = ref<ViewTableClimates[]>([])
   const selectedLocations = ref<ViewTableGroups[]>([])
@@ -87,7 +89,7 @@
       page: 1,
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
-      datasetIds: compProps.datasetIds,
+      datasetIds: cdStore.storeDatasetIds,
       climateIds: selectedClimates.value.map(t => t.climateId),
       locationIds: groupSelection.value === 'groups' && selectedLocations.value.some(g => g.groupId === -1) ? store.storeMarkedLocations : undefined,
       locationGroupIds: selectedLocations.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),

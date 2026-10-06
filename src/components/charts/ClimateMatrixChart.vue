@@ -59,28 +59,27 @@
   import splom from 'plotly.js/lib/splom'
   import scattergl from 'plotly.js/lib/scattergl'
   import histogram from 'plotly.js/lib/histogram'
-  import { coreStore } from '@/stores/app'
+
   import { ScatterMatrix } from '@/plugins/charts/plotly-scatter-matrix.ts'
   import { ScatterPlot } from '@/plugins/charts/plotly-scatter-plot.ts'
   import { getColors } from '@/plugins/util/colors'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { tsvParse } from 'd3-dsv'
-  import type { ViewTableGroups, ViewTableClimates } from '@/plugins/types/germinate'
+  import type { ViewTableClimates } from '@/plugins/types/germinate'
   import Passport from '@/components/widgets/Passport.vue'
   import type { UserSelection } from '@/components/widgets/selections/ClimateHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
   const compProps = defineProps<{
-    datasetIds: number[]
     climates: ViewTableClimates[]
     plotData: Blob
-    groups: ViewTableGroups[]
     hasGroupsData: boolean
     userSelection?: UserSelection
   }>()
 
   const store = coreStore()
+  const cdStore = climateDataStore()
 
   const sourceFile = ref<DownloadBlob>()
   const matrixChart = useTemplateRef('matrixChart')
@@ -96,8 +95,8 @@
 
   const filename = computed(() => {
     let name = 'climate-matrix'
-    if (compProps.datasetIds) {
-      name += `-${compProps.datasetIds.join('-')}`
+    if (cdStore.storeDatasetIds) {
+      name += `-${cdStore.storeDatasetIds.join('-')}`
     } else {
       name += '-all-datasets'
     }
@@ -113,7 +112,7 @@
   const groupsMapped = computed(() => {
     const result: { [index: string]: string } = {}
 
-    compProps.groups.forEach(g => {
+    cdStore.storeGroups.forEach(g => {
       result[`${g.groupId}`] = g.groupName || 'N/A'
     })
 

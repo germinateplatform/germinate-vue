@@ -69,7 +69,6 @@
   import { useI18n } from 'vue-i18n'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { groupTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import { apiDeleteGroup, apiGetGroupTypes, apiPatchGroup, apiPutGroup } from '@/plugins/api/group'

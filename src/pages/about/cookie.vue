@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-  import { coreStore } from '@/stores/app'
   import { mdiCheck, mdiClose, mdiCookie, mdiLockClock, mdiMonitorArrowDown, mdiProgressClock, mdiTimelineCheck, mdiTimelineOutline } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 

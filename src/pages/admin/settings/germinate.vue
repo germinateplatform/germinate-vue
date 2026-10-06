@@ -380,7 +380,6 @@ name: germinateSettings
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
-  import { coreStore } from '@/stores/app'
   import { Pages } from '@/plugins/pages'
 
   const { t } = useI18n()

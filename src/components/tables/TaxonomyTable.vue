@@ -56,7 +56,6 @@
   import { useI18n } from 'vue-i18n'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
-  import { coreStore } from '@/stores/app'
   import { mdiLan, mdiIdentifier } from '@mdi/js'
 
   const compProps = defineProps<{

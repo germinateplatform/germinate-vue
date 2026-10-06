@@ -249,7 +249,6 @@
   import type { AxiosResponse } from 'axios'
   import type { DataTableHeader, DataTableSortItem } from 'vuetify'
   import { useI18n } from 'vue-i18n'
-  import { coreStore } from '@/stores/app'
   import { getDateTimeString } from '@/plugins/util/formatting'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import TableFilterModal from '@/components/modals/TableFilterModal.vue'

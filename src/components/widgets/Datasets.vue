@@ -16,13 +16,10 @@
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
-  import { coreStore } from '@/stores/app'
 
   const props = defineProps<{
     datasetId?: number
   }>()
-
-  const store = coreStore()
 
   const filterOnInternal: ComputedRef<FilterGroup[]> = computed(() => getFilter(false))
   const filterOnExternal: ComputedRef<FilterGroup[]> = computed(() => getFilter(true))

@@ -137,7 +137,6 @@
   const props = withDefaults(
     defineProps<{
       dataset: ViewTableDatasets
-      traits: ViewTableTraits[]
       /** Visual options — override any of these to customise the look */
       plotStyle?: Partial<PlotStyle>
       hasLayout: boolean
@@ -147,6 +146,7 @@
     },
   )
 
+  const tdStore = traitDataStore()
   const rows = shallowRef(1)
   const columns = shallowRef(1)
   const reverseRows = ref(false)
@@ -155,7 +155,7 @@
   const selectedShapefile = ref<ViewTableFileresources>()
   let shapefileLayers: { [key: string]: Layer[] } = {}
 
-  const numericOrCategoricalTraits = computed(() => props.traits.filter(t => t.scaleDatatype === 'numeric' || t.scaleDatatype === 'categorical'))
+  const numericOrCategoricalTraits = computed(() => tdStore.storeTraits.filter(t => t.scaleDatatype === 'numeric' || t.scaleDatatype === 'categorical'))
 
   const cellMapping = shallowRef<{ [index: string]: FieldPlanCell }>({})
 

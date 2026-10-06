@@ -14,7 +14,6 @@
   import ImageTags from '@/components/widgets/ImageTags.vue'
   import { apiPostImages, apiPostImagesExport } from '@/plugins/api/image'
   import { FilterComparator, FilterOperator, type FilterGroup, type ImageTag, type PaginatedRequest, type PaginatedResult, type ViewTableImages } from '@/plugins/types/germinate'
-  import { coreStore } from '@/stores/app'
   import type { AxiosResponse } from 'axios'
   import emitter from 'tiny-emitter/instance'
 

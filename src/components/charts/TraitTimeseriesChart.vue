@@ -25,7 +25,7 @@
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import scatter from 'plotly.js/lib/scatter'
-  import { coreStore } from '@/stores/app'
+
   import type { ViewTableGermplasm, ViewTableTraits, ViewTableTrialsData } from '@/plugins/types/germinate'
 
   import { mdiChartTimelineVariant } from '@mdi/js'
@@ -40,7 +40,6 @@
   }
 
   const compProps = defineProps<{
-    datasetIds: number[]
     trait: ViewTableTraits
     plotData: ViewTableTrialsData[]
     timepoints: string[]
@@ -49,6 +48,7 @@
   }>()
 
   const store = coreStore()
+  const tdStore = traitDataStore()
   const { t } = useI18n()
 
   const sourceFile = ref<DownloadBlob>()
@@ -59,8 +59,8 @@
 
   const filename = computed(() => {
     let name = 'trait-timeseries'
-    if (compProps.datasetIds) {
-      name += `-${compProps.datasetIds.join('-')}`
+    if (tdStore.storeDatasetIds) {
+      name += `-${tdStore.storeDatasetIds.join('-')}`
     } else {
       name += '-all-datasets'
     }

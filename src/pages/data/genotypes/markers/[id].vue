@@ -61,7 +61,6 @@ name: markerDetails
   import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMarkerDatasetTable, apiPostMarkerGroupTable, apiPostMarkerTable } from '@/plugins/api/genotype'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type ViewTableMarkers } from '@/plugins/types/germinate'
   import { isNumeric } from '@/plugins/util/formatting'
-  import { coreStore } from '@/stores/app'
   import { mdiBookmarkCheck, mdiBookmarkOutline, mdiLabel, mdiLabelVariant } from '@mdi/js'
 
   const route = useRoute('markerDetails')

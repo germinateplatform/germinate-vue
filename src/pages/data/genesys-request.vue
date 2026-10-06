@@ -52,7 +52,6 @@ name: genesysRequest
   import { apiPostGenesysRequest, apiPostTableExport } from '@/plugins/api/misc'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
-  import { coreStore } from '@/stores/app'
   import { mdiAccount } from '@mdi/js'
   import type { AxiosError } from 'axios'
 

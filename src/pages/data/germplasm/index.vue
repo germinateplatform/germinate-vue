@@ -170,7 +170,6 @@ name: germplasm
   import { apiPostGroupTable } from '@/plugins/api/group'
   import { FilterComparator, type FilterGroup, FilterOperator, type GermplasmExportRequest, type PaginatedRequest, type PedigreeRequest, type ViewTableDatasets, type ViewTableGroups } from '@/plugins/types/germinate'
   import { downloadBlob } from '@/plugins/util'
-  import { coreStore } from '@/stores/app'
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
 

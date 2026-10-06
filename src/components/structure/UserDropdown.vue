@@ -106,7 +106,6 @@
 <script setup lang="ts">
   import { apiDeleteToken } from '@/plugins/api/auth'
   import { Pages } from '@/plugins/pages'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import TextfieldModal from '@/components/modals/TextfieldModal.vue'

@@ -74,7 +74,6 @@
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
 
   import emitter from 'tiny-emitter/instance'
-  import { coreStore } from '@/stores/app'
   import { apiPostGermplasmTable, apiPostGroupGermplasmTableIds } from '@/plugins/api/germplasm'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostTrialsDataTable } from '@/plugins/api/trait'

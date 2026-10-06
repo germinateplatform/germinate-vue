@@ -184,7 +184,6 @@
   import { DataExportJobsDatatype, DataExportJobsStatus, DataImportJobsStatus, type PaginatedResult, type DataExportJobs, type DataImportJobs, type ImportResult, type PaginatedRequest } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { coreStore } from '@/stores/app'
   import type { AxiosError, AxiosResponse } from 'axios'
   import emitter from 'tiny-emitter/instance'
   import { useDisplay } from 'vuetify'

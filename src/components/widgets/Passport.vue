@@ -165,7 +165,6 @@
   import ScrollSpy from '@/components/widgets/ScrollSpy.vue'
   import { apiPostEntityTable, apiPostGermplasmAttributeTable, apiPostGermplasmDatasetTable, apiPostGermplasmGroupTable, apiPostGermplasmTable, apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import { FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, PublicationdataReferenceType, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations } from '@/plugins/types/germinate'
-  import { coreStore } from '@/stores/app'
   import McpdInfo from '@/components/germplasm/McpdInfo.vue'
   import ExternalLinks from '@/components/widgets/ExternalLinks.vue'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'

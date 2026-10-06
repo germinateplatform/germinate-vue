@@ -103,7 +103,6 @@ name: traitUnifier
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { getNumberWithSuffix, getServerBaseUrl } from '@/plugins/util/formatting'
   import { dataTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
   import { mdiArrowRightBoldBox, mdiCheck, mdiSetMerge, mdiTableCheck } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'

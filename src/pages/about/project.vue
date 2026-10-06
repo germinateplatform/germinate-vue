@@ -119,7 +119,6 @@ name: aboutProject
   import { apiGetTemplateAboutConfig, apiPatchTemplateAboutConfig, apiPostAboutPartner } from '@/plugins/api/setting'
   import type { AboutInfo } from '@/plugins/types/germinate'
   import { uuidv4 } from '@/plugins/util'
-  import { coreStore } from '@/stores/app'
   import { mdiContentSave, mdiDelete, mdiDrag, mdiOpenInNew, mdiPlusBox } from '@mdi/js'
   import { VueDraggableNext as draggable } from 'vue-draggable-next'
 

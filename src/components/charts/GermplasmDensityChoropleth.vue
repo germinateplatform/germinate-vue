@@ -29,7 +29,6 @@
 
   import choropleth from 'plotly.js/lib/choropleth'
   import { tsvParse } from 'd3-dsv'
-  import { coreStore } from '@/stores/app'
   import { getColor } from '@/plugins/util/colors'
 
   const id = ref('choropleth-' + uuidv4())

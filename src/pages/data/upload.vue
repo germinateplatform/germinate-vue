@@ -167,7 +167,6 @@ name: importUpload
   import { DataOrientation, FilterComparator, FilterOperator, UserType, type ViewTableDatasets } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { type DatasetState, datasetStates, templateImportTypes, type TemplateImportType } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
   import { mdiHelpCircle, mdiRefresh, mdiUpload } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'

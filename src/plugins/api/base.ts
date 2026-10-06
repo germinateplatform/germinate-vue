@@ -1,4 +1,3 @@
-import { coreStore } from '@/stores/app'
 import router from '@/router'
 import { i18n } from '@/plugins/vuetify.ts'
 import { Pages } from '@/plugins/pages'

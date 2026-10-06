@@ -37,8 +37,8 @@
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import box from 'plotly.js/lib/box'
-  import { coreStore } from '@/stores/app'
-  import type { ViewTableDatasets, ViewTableGroups, ViewTableClimates, ViewTableClimateData } from '@/plugins/types/germinate'
+
+  import type { ViewTableClimates, ViewTableClimateData } from '@/plugins/types/germinate'
   import { getColor } from '@/plugins/util/colors'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -48,16 +48,14 @@
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
   const compProps = defineProps<{
-    datasetIds: number[]
     climates: ViewTableClimates[]
     plotData: ViewTableClimateData[]
-    groups: ViewTableGroups[]
-    datasets: ViewTableDatasets[]
     userSelection?: UserSelection
     showIndividuals?: boolean
   }>()
 
   const store = coreStore()
+  const cdStore = climateDataStore()
 
   const sourceFile = ref<DownloadBlob>()
   const boxplotChart = useTemplateRef('boxplotChart')
@@ -69,8 +67,8 @@
 
   const filename = computed(() => {
     let name = 'trait-boxplot'
-    if (compProps.datasetIds) {
-      name += `-${compProps.datasetIds.join('-')}`
+    if (cdStore.storeDatasetIds) {
+      name += `-${cdStore.storeDatasetIds.join('-')}`
     } else {
       name += '-all-datasets'
     }
@@ -87,7 +85,7 @@
     if (compProps.userSelection) {
       switch (compProps.userSelection.type) {
         case 'dataset':
-          return Math.max(300, (compProps.climates.length + compProps.datasetIds.length + 1) * 150)
+          return Math.max(300, (compProps.climates.length + cdStore.storeDatasetIds.length + 1) * 150)
         default:
           return Math.max(300, (compProps.climates.length + compProps.userSelection.selectedItems.length + 1) * 150)
       }
@@ -144,7 +142,7 @@
       if (compProps.userSelection) {
         switch (compProps.userSelection.type) {
           case 'dataset':
-            traces.push(...compProps.datasets.map((dataset, index) => {
+            traces.push(...cdStore.storeDatasets.map((dataset, index) => {
               return getData(data, dp => dp.datasetId === dataset.datasetId, index, dataset.datasetName || 'N/A')
             }))
             break
@@ -168,7 +166,7 @@
           case 'group':
             const groupNames: { [index: number]: string } = {}
 
-            compProps.groups.forEach(g => {
+            cdStore.storeGroups.forEach(g => {
               groupNames[g.groupId || -1] = g.groupName || ''
             })
 

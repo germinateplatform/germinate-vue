@@ -20,7 +20,7 @@
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
           url-query-key="comparison"
-          :groups="groups"
+          :groups="tdStore.storeGroups"
           marked-item-type="germplasm"
           :multiple="false"
         >
@@ -73,7 +73,6 @@
   import GroupSelection from '@/components/widgets/selections/GroupSelection.vue'
   import GermplasmSelection from '@/components/widgets/selections/GermplasmSelection.vue'
   import TraitSelection from '@/components/widgets/selections/TraitSelection.vue'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import { apiPostTraitDatasetStats, apiPostTrialsDataTable } from '@/plugins/api/trait'
@@ -84,12 +83,6 @@
   import TraitHeatmap from '@/components/charts/TraitHeatmap.vue'
   import { mdiArrowRightBox } from '@mdi/js'
   import { handleRouterQuery } from '@/plugins/util'
-
-  const compProps = defineProps<{
-    datasetIds: number[]
-    traits: ViewTableTraits[]
-    groups: ViewTableGroups[]
-  }>()
 
   interface StatsTrait extends ViewTableTraits {
     // Domain is original value set (e.g [3.3, 104.2]). Basically FROM
@@ -114,11 +107,12 @@
   const route = useRoute()
   const router = useRouter()
   const store = coreStore()
+  const tdStore = traitDataStore()
   const { t } = useI18n()
 
   const canContinue = computed(() => selectedTraits.value.length > 0 && (selectedGroups.value.length > 0 || selectedGermplasm.value.length > 0))
 
-  const numericOrCategoricalTraits = computed(() => compProps.traits.filter(t => t.scaleDatatype === ViewTableTraitsScaleDatatype.numeric || t.scaleDatatype === ViewTableTraitsScaleDatatype.categorical))
+  const numericOrCategoricalTraits = computed(() => tdStore.storeTraits.filter(t => t.scaleDatatype === ViewTableTraitsScaleDatatype.numeric || t.scaleDatatype === ViewTableTraitsScaleDatatype.categorical))
 
   // User selections
   const groupSelection = ref<GroupSelectionType>('groups')
@@ -176,7 +170,7 @@
       page: 1,
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
-      datasetIds: compProps.datasetIds,
+      datasetIds: tdStore.storeDatasetIds,
       traitIds: selectedTraits.value.map(t => t.variableId),
       germplasmIds: germplasmIds,
       minimal: true,
@@ -187,7 +181,7 @@
     }).finally(() => emitter.emit('show-loading', false))
 
     apiPostTraitDatasetStats({
-      datasetIds: compProps.datasetIds,
+      datasetIds: tdStore.storeDatasetIds,
       traitIds: selectedTraits.value.map(t => t.variableId),
     }, result => {
       if (result) {
@@ -359,7 +353,7 @@
     }
   }
 
-  watch(() => compProps.groups, async newValue => {
+  watch(() => tdStore.storeGroups, async newValue => {
     if (route.query.comparisonGroups) {
       const ids = new Set((route.query.comparisonGroups as string).split(',').map(Number))
       selectedGroups.value = (newValue || []).filter(t => ids.has(t.groupId || -1))
@@ -373,7 +367,7 @@
   }, { immediate: true })
 
   onMounted(() => {
-    apiPostDatasetGermplasmTable(compProps.datasetIds, {
+    apiPostDatasetGermplasmTable(tdStore.storeDatasetIds, {
       page: 1,
       limit: MAX_JAVA_INTEGER,
       minimal: true,
@@ -384,7 +378,7 @@
         trialGermplasm.value = []
       }
 
-      if (compProps.traits && route.query && route.query.comparisonGermplasm) {
+      if (tdStore.storeTraits && route.query && route.query.comparisonGermplasm) {
         const ids = new Set((route.query.comparisonGermplasm as string).split(',').map(Number))
         selectedGermplasm.value = trialGermplasm.value.filter(t => ids.has(t.germplasmId))
       }

@@ -23,7 +23,6 @@
 </template>
 
 <script setup lang="ts">
-  import { coreStore } from '@/stores/app'
   import { mdiArrowCollapseLeft, mdiArrowCollapseRight } from '@mdi/js'
 
   export interface ColorGradientProps {

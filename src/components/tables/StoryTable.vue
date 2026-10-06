@@ -123,7 +123,6 @@
   import type { AxiosResponse } from 'axios'
   import type { ViewTablePublications, FilterGroup, PaginatedRequest, PaginatedResult, ViewTableStoriesEnriched } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
-  import { coreStore } from '@/stores/app'
   import { mdiBookOpenPageVariant, mdiDelete, mdiFormatListNumbered, mdiSquareEditOutline, mdiFileEye, mdiPlus } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'

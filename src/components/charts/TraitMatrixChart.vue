@@ -59,28 +59,27 @@
   import splom from 'plotly.js/lib/splom'
   import scattergl from 'plotly.js/lib/scattergl'
   import histogram from 'plotly.js/lib/histogram'
-  import { coreStore } from '@/stores/app'
+
   import { ScatterMatrix } from '@/plugins/charts/plotly-scatter-matrix.ts'
   import { ScatterPlot } from '@/plugins/charts/plotly-scatter-plot.ts'
   import { getColors } from '@/plugins/util/colors'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { tsvParse } from 'd3-dsv'
-  import type { ViewTableDatasets, ViewTableGroups, ViewTableTraits } from '@/plugins/types/germinate'
+  import type { ViewTableTraits } from '@/plugins/types/germinate'
   import Passport from '@/components/widgets/Passport.vue'
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
   const compProps = defineProps<{
-    datasets: ViewTableDatasets[]
     traits: ViewTableTraits[]
     plotData: Blob
-    groups: ViewTableGroups[]
     hasGroupsData: boolean
     userSelection?: UserSelection
   }>()
 
   const store = coreStore()
+  const tdStore = traitDataStore()
 
   const sourceFile = ref<DownloadBlob>()
   const matrixChart = useTemplateRef('matrixChart')
@@ -96,8 +95,8 @@
 
   const filename = computed(() => {
     let name = 'trait-matrix'
-    if (compProps.datasets) {
-      name += `-${compProps.datasets.map(ds => ds.datasetId).join('-')}`
+    if (tdStore.storeDatasets) {
+      name += `-${tdStore.storeDatasets.map(ds => ds.datasetId).join('-')}`
     } else {
       name += '-all-datasets'
     }
@@ -113,7 +112,7 @@
   const groupsMapped = computed(() => {
     const result: { [index: string]: string } = {}
 
-    compProps.groups?.forEach(g => {
+    tdStore.storeGroups.forEach(g => {
       result[`${g.groupId}`] = g.groupName || 'N/A'
     })
 
@@ -123,7 +122,7 @@
   const datasetsMapped = computed(() => {
     const result: { [index: string]: string } = {}
 
-    compProps.datasets?.forEach(d => {
+    tdStore.storeDatasets.forEach(d => {
       result[`${d.datasetId}`] = d.datasetName || 'N/A'
     })
 

@@ -208,7 +208,7 @@
   import { truncateAfterWords } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
   import { datasetStates, datasetTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
+
   import { apiDeleteDataset, apiPatchDataset, apiPatchExperiment, apiPostDatasetCollaboratorsTable, apiPostExperimentTable, apiPostLicenseTable, apiPutExperiment } from '@/plugins/api/dataset'
   import type { ItemKeySlot } from 'vuetify/lib/components/VDataTable/types.mjs'
   import { isPageAvailable } from '@/plugins/util'

@@ -69,7 +69,6 @@
 </template>
 
 <script lang="ts">
-  import { coreStore } from '@/stores/app'
   import { useTheme } from 'vuetify'
   import { apiGetSettings } from '@/plugins/api/setting'
   import type { AxiosError } from 'axios'

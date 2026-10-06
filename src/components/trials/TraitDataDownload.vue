@@ -8,7 +8,7 @@
           v-model="selectedTraits"
           url-query-key="download"
           can-select-all
-          :traits="traits"
+          :traits="tdStore.storeTraits"
         >
           <template #text>
             <p>{{ $t('pageTrialsExportSelectTraitExportText') }}</p>
@@ -20,7 +20,7 @@
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
           url-query-key="download"
-          :groups="groups"
+          :groups="tdStore.storeGroups"
           marked-item-type="germplasm"
         >
           <template #text>{{ $t('pageTrialsExportSelectGroupExportText') }}</template>
@@ -67,7 +67,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { coreStore } from '@/stores/app'
+
   import { apiPostTrialDatasetExport } from '@/plugins/api/dataset'
   import { downloadBlob } from '@/plugins/util'
   import { apiPostTableExport } from '@/plugins/api/misc'
@@ -75,13 +75,11 @@
   import { mdiDownload, mdiFormatListGroup, mdiTableColumnWidth } from '@mdi/js'
 
   const compProps = defineProps<{
-    datasetIds: number[]
-    traits: ViewTableTraits[]
-    groups: ViewTableGroups[]
     max?: number
   }>()
 
   const store = coreStore()
+  const tdStore = traitDataStore()
 
   const selectedTraits = ref<ViewTableTraits[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])
@@ -98,7 +96,7 @@
     apiPostTableExport({
       page: 1,
       limit: MAX_JAVA_INTEGER,
-      datasetIds: compProps.datasetIds,
+      datasetIds: tdStore.storeDatasetIds,
       germplasmIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedGermplasm : undefined,
       germplasmGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
       filters: [{
@@ -112,7 +110,7 @@
     }, 'dataset/data/trial').then((result: AxiosResponse<Blob>) => {
       downloadBlob({
         blob: result.data,
-        filename: 'trials-long-dataset-' + compProps.datasetIds.join('-'),
+        filename: 'trials-long-dataset-' + tdStore.storeDatasetIds.join('-'),
         extension: 'zip',
       })
       emitter.emit('show-loading', false)
@@ -126,7 +124,7 @@
       page: 1,
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
-      datasetIds: compProps.datasetIds,
+      datasetIds: tdStore.storeDatasetIds,
       traitIds: selectedTraits.value.map(t => t.variableId),
       germplasmIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedGermplasm : undefined,
       germplasmGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
@@ -136,7 +134,7 @@
     apiPostTrialDatasetExport(query, result => {
       const downloadRequest = {
         blob: result,
-        filename: 'trials-wide-dataset-' + compProps.datasetIds.join('-'),
+        filename: 'trials-wide-dataset-' + tdStore.storeDatasetIds.join('-'),
         extension: 'txt',
       }
 

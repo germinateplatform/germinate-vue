@@ -1,5 +1,3 @@
-import { coreStore } from '@/stores/app'
-
 const padTo2Digits = (num: number) => num.toString().padStart(2, '0')
 
 function getDateTimeString (date?: Date) {

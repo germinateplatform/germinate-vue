@@ -202,7 +202,6 @@
 
 <script setup lang="ts">
   import type { GatekeeperInstitution, NewUnapprovedUser, NewUnapprovedUserRequest, NewUserAccessRequest } from '@/plugins/types/germinate'
-  import { coreStore } from '@/stores/app'
   import { mdiAlert, mdiCheck, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiClose, mdiEmailOutline, mdiEye, mdiEyeOff, mdiFormTextbox, mdiHomeCity, mdiLockOutline } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
   import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
@@ -211,7 +210,7 @@
   import { isSet } from '@/plugins/util'
 
   import emitter from 'tiny-emitter/instance'
-  import type { AxiosError, AxiosResponse } from 'axios'
+  import type { AxiosError } from 'axios'
   import { apiGetGatekeeperInstitutions, apiPostGatekeeperExisting, apiPostGatekeeperNew } from '@/plugins/api/gatekeeper'
 
   zxcvbnOptions.setOptions({

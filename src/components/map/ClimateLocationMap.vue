@@ -11,20 +11,18 @@
 
   import emitter from 'tiny-emitter/instance'
 
-  const compProps = defineProps<{
-    datasetIds: number[]
-  }>()
+  const cdStore = climateDataStore()
 
   const locations = ref<ViewTableLocations[]>([])
   const map = useTemplateRef('map')
 
   function update () {
-    if (!compProps.datasetIds || compProps.datasetIds.length === 0) {
+    if (!cdStore.storeDatasetIds || cdStore.storeDatasetIds.length === 0) {
       return
     }
 
     const query = {
-      datasetIds: compProps.datasetIds,
+      datasetIds: cdStore.storeDatasetIds,
     }
 
     emitter.emit('show-loading', true)

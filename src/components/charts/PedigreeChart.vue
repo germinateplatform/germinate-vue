@@ -39,7 +39,6 @@
 
   import { DataSet, Network } from 'vis-network/standalone'
 
-  import { coreStore } from '@/stores/app'
   import { getColor, getHighContrastTextColor } from '@/plugins/util/colors'
   import { FilterComparator, FilterOperator, type ViewTablePedigrees, type PaginatedRequest, type ViewTableDatasets, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'

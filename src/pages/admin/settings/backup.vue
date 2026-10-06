@@ -26,7 +26,6 @@ name: backup
   import { apiGetAdminSettings } from '@/plugins/api/setting'
   import { Pages } from '@/plugins/pages'
   import { type ClientAdminConfiguration, type PaginatedRequest, UserType } from '@/plugins/types/germinate'
-  import { coreStore } from '@/stores/app'
   import { mdiCalendarClock, mdiDatabaseArrowRight, mdiFileCabinet } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'

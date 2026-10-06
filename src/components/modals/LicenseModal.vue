@@ -38,7 +38,6 @@
   import { apiGetAcceptLicense } from '@/plugins/api/dataset'
   import type { ViewTableDatasets, ViewTableLicenses } from '@/plugins/types/germinate'
   import { downloadBlob } from '@/plugins/util'
-  import { coreStore } from '@/stores/app'
   import { mdiCancel, mdiCheck, mdiDelete, mdiDotsVertical, mdiDownload, mdiSquareEditOutline } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'

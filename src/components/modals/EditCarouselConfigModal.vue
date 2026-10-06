@@ -144,7 +144,6 @@
   import { apiGetLocales, apiPostTemplateCarouselConfig } from '@/plugins/api/setting'
   import type { LocaleConfig } from '@/plugins/types/germinate'
   import { getImageUrl } from '@/plugins/util/image'
-  import { coreStore } from '@/stores/app'
   import { mdiArrowDown, mdiArrowUp, mdiClose, mdiDelete, mdiImageOff, mdiImagePlus } from '@mdi/js'
 
   interface EditableImageConfig extends ImageConfig {

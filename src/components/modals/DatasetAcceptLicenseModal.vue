@@ -27,7 +27,6 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { FilterComparator, FilterOperator, type ViewTableDatasets, type PaginatedRequest, type ViewTableStoriesEnriched } from '@/plugins/types/germinate'
-  import { coreStore } from '@/stores/app'
   import { mdiInformation } from '@mdi/js'
 
   const compProps = defineProps<{

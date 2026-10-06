@@ -7,9 +7,10 @@
       v-model:search="searchTerm"
       autocomplete="off"
       return-object
-      hide-details
+      :hide-details="$attrs.hint === undefined"
       multiple
       clearable
+      v-bind="$attrs"
       :items="compProps.germplasm"
       item-value="germplasmId"
       :item-title="(item: ViewTableGermplasm) => [item.germplasmDisplayName, item.germplasmName, item.germplasmNumber].filter(i => i !== undefined && i !== null && i.trim().length > 0).join(' | ')"

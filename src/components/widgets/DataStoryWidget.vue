@@ -21,7 +21,6 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostStoryTable } from '@/plugins/api/story'
   import { UserType, type FilterGroup, type ViewTableStoriesEnriched } from '@/plugins/types/germinate'
-  import { coreStore } from '@/stores/app'
   import { useI18n } from 'vue-i18n'
 
   const compProps = defineProps<{

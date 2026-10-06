@@ -54,7 +54,6 @@
   import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableUsergroups } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import { mdiAccountGroup, mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'

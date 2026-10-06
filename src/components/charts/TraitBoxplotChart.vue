@@ -37,8 +37,8 @@
   import { DEFAULT_PLOTLY_CONFIG, getGermplasmDisplayName, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import box from 'plotly.js/lib/box'
-  import { coreStore } from '@/stores/app'
-  import { ScalesDatatype, type ViewTableDatasets, type ViewTableGroups, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
+
+  import { ScalesDatatype, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
   import { getColor } from '@/plugins/util/colors'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -46,19 +46,18 @@
   import emitter from 'tiny-emitter/instance'
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
+  import { traitDataStore } from '@/stores/traitDataExport'
 
   const compProps = defineProps<{
-    datasetIds: number[]
     traits: ViewTableTraits[]
     plotData: ViewTableTrialsData[]
-    groups: ViewTableGroups[]
-    datasets: ViewTableDatasets[]
     userSelection?: UserSelection
     showIndividuals?: boolean
     type: 'numeric' | 'date'
   }>()
 
   const store = coreStore()
+  const tdStore = traitDataStore()
 
   const sourceFile = ref<DownloadBlob>()
   const boxplotChart = useTemplateRef('boxplotChart')
@@ -70,8 +69,8 @@
 
   const filename = computed(() => {
     let name = 'trait-boxplot'
-    if (compProps.datasetIds) {
-      name += `-${compProps.datasetIds.join('-')}`
+    if (tdStore.storeDatasetIds) {
+      name += `-${tdStore.storeDatasetIds.join('-')}`
     } else {
       name += '-all-datasets'
     }
@@ -88,7 +87,7 @@
     if (compProps.userSelection) {
       switch (compProps.userSelection.type) {
         case 'datasets':
-          return Math.max(300, (compProps.traits.length + compProps.datasetIds.length + 1) * 100)
+          return Math.max(300, (compProps.traits.length + tdStore.storeDatasetIds.length + 1) * 100)
         default:
           return Math.max(300, (compProps.traits.length + compProps.userSelection.selectedItems.length + 1) * 100)
       }
@@ -145,7 +144,7 @@
       if (compProps.userSelection) {
         switch (compProps.userSelection.type) {
           case 'datasets':
-            traces.push(...compProps.datasets.map((dataset, index) => {
+            traces.push(...tdStore.storeDatasets.map((dataset, index) => {
               return getData(data, dp => dp.datasetId === dataset.datasetId, index, dataset.datasetName || 'N/A')
             }))
             break
@@ -185,7 +184,7 @@
           case 'group':
             const groupNames: { [index: number]: string } = {}
 
-            compProps.groups.forEach(g => {
+            tdStore.storeGroups.forEach(g => {
               groupNames[g.groupId || -1] = g.groupName || ''
             })
 

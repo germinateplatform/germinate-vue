@@ -1,5 +1,4 @@
 import { toUrlString } from '@/plugins/util/formatting'
-import { coreStore } from '@/stores/app'
 
 export function getImageUrl (name: string, params: { [key: string]: string | undefined }) {
   const store = coreStore()

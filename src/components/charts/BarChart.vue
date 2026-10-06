@@ -27,7 +27,6 @@
   import { tsvParse } from 'd3-dsv'
 
   import bar from 'plotly.js/lib/bar'
-  import { coreStore } from '@/stores/app'
   import { getColors } from '@/plugins/util/colors'
   import { useI18n } from 'vue-i18n'
   import { mdiChartBar } from '@mdi/js'

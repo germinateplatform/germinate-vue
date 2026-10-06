@@ -7,7 +7,9 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
+  const climateDataStore: typeof import('./stores/climateDataExport')['climateDataStore']
   const computed: typeof import('vue')['computed']
+  const coreStore: typeof import('./stores/app')['coreStore']
   const createApp: typeof import('vue')['createApp']
   const customRef: typeof import('vue')['customRef']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
@@ -50,10 +52,12 @@ declare global {
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
   const storeToRefs: typeof import('pinia')['storeToRefs']
+  const stores: typeof import('./stores/index')['default']
   const toRaw: typeof import('vue')['toRaw']
   const toRef: typeof import('vue')['toRef']
   const toRefs: typeof import('vue')['toRefs']
   const toValue: typeof import('vue')['toValue']
+  const traitDataStore: typeof import('./stores/traitDataExport')['traitDataStore']
   const triggerRef: typeof import('vue')['triggerRef']
   const unref: typeof import('vue')['unref']
   const useAttrs: typeof import('vue')['useAttrs']
@@ -75,6 +79,15 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { StoreContent, UserStateContent, HiddenColumns, TableDisplayType } from './stores/app'
+  import('./stores/app')
+  // @ts-ignore
+  export type { ClimateDataStoreContent } from './stores/climateDataExport'
+  import('./stores/climateDataExport')
+  // @ts-ignore
+  export type { TraitDataStoreContent } from './stores/traitDataExport'
+  import('./stores/traitDataExport')
 }
 
 // for vue template auto import
@@ -83,7 +96,9 @@ declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly climateDataStore: UnwrapRef<typeof import('./stores/climateDataExport')['climateDataStore']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
+    readonly coreStore: UnwrapRef<typeof import('./stores/app')['coreStore']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
@@ -126,10 +141,12 @@ declare module 'vue' {
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
     readonly storeToRefs: UnwrapRef<typeof import('pinia')['storeToRefs']>
+    readonly stores: UnwrapRef<typeof import('./stores/index')['default']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
     readonly toRefs: UnwrapRef<typeof import('vue')['toRefs']>
     readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
+    readonly traitDataStore: UnwrapRef<typeof import('./stores/traitDataExport')['traitDataStore']>
     readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>

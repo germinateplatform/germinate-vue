@@ -194,7 +194,6 @@
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
-  import { coreStore } from '@/stores/app'
   import { getImageUrl } from '@/plugins/util/image'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
   import { columns } from '@/plugins/util/table-columns'

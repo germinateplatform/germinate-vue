@@ -123,7 +123,6 @@ name: groupDetails
   import { lookupDoiInformation } from '@/plugins/util'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { groupTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
   import { mdiCollapseAllOutline, mdiDelete, mdiExpandAllOutline, mdiUpload } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'

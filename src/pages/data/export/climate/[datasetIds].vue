@@ -1,10 +1,10 @@
 <template>
   <v-container fluid>
     <h1 class="text-headline-large mb-3">{{ $t('pageClimateExportTitle') }}</h1>
-    <DatasetList :datasets="datasets" v-if="datasets" />
+    <DatasetList :datasets="cdStore.storeDatasets" v-if="cdStore.storeDatasets" />
     <v-divider class="mb-3" />
 
-    <div v-if="datasets && datasets.length > 0">
+    <div v-if="cdStore.storeDatasets && cdStore.storeDatasets.length > 0">
       <v-expansion-panels>
         <v-expansion-panel eager>
           <template #title>
@@ -48,23 +48,14 @@
         v-show="selectedTab === 'overview'"
         :showing="selectedTab === 'overview'"
       >
-        <ClimateBoxplots
-          :climates="climates"
-          :datasets="datasets || []"
-          :groups="groups || []"
-          :dataset-ids="datasetIds"
-        />
+        <ClimateBoxplots />
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
         v-show="selectedTab === 'matrix'"
         :showing="selectedTab === 'matrix'"
       >
-        <ClimateMatrix
-          :climates="climates"
-          :groups="groups || []"
-          :dataset-ids="datasetIds"
-        />
+        <ClimateMatrix />
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
@@ -83,7 +74,6 @@
         :showing="selectedTab === 'locations'"
       >
         <ClimateLocationMap
-          :dataset-ids="datasetIds"
           ref="climateLocationMap"
         />
       </RevealOnShowPanel>
@@ -92,11 +82,7 @@
         v-show="selectedTab === 'export'"
         :showing="selectedTab === 'export'"
       >
-        <ClimateDataDownload
-          :climates="climates"
-          :groups="groups || []"
-          :dataset-ids="datasetIds"
-        />
+        <ClimateDataDownload />
       </RevealOnShowPanel>
     </div>
   </v-container>
@@ -119,7 +105,7 @@ name: exportClimates
   import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest, type ViewTableClimates } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { coreStore } from '@/stores/app'
+
   import { mdiDatabase, mdiEye, mdiFileDownload, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
@@ -136,27 +122,27 @@ name: exportClimates
 
   const { t } = useI18n()
 
+  const cdStore = climateDataStore()
   const router = useRouter()
   const route = useRoute('exportClimates')
-  const store = coreStore()
 
   const climateLocationMap = useTemplateRef('climateLocationMap')
 
   const selectedTab = ref<string>('overview')
   const datasetIds = ref<number[]>([])
-  const datasets = ref<ViewTableDatasets[]>()
-  const climates = ref<ViewTableClimates[]>([])
-  const groups = ref<ViewTableGroups[]>([])
+  // const datasets = ref<ViewTableDatasets[]>()
+  // const climates = ref<ViewTableClimates[]>([])
+  // const groups = ref<ViewTableGroups[]>([])
 
-  const hasFileResources = computed(() => datasets.value?.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
+  const hasFileResources = computed(() => cdStore.storeDatasets.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
 
   const fileresourceFilter = computed(() => {
-    return datasets.value
+    return cdStore.storeDatasets
       ? [{
         filters: [{
           column: 'datasetIds',
           comparator: FilterComparator.arrayContains,
-          values: datasets.value?.map(ds => `${ds.datasetId}`),
+          values: cdStore.storeDatasetIds.map(ds => `${ds}`),
         }],
         operator: FilterOperator.and,
       }]
@@ -198,7 +184,7 @@ name: exportClimates
     emitter.emit('show-loading', true)
 
     apiPostDatasetClimates(newValue || [], result => {
-      climates.value = result
+      cdStore.setClimates(result)
 
       getDatasets()
       updateGroups()
@@ -236,8 +222,8 @@ name: exportClimates
       // @ts-ignore
       resolve({
         data: {
-          data: datasets.value || [],
-          count: datasets.value?.length || 0,
+          data: cdStore.storeDatasets,
+          count: cdStore.storeDatasets.length || 0,
         },
       })
     })
@@ -267,14 +253,16 @@ name: exportClimates
     }
 
     apiPostDatasetTable(request, result => {
-      datasets.value = result.data.filter(d => {
+      const datasets = result.data.filter(d => {
         // Exclude the ones where a license exists, but hasn't been accepted
         return (!d.licenseName || isAccepted(d))
       })
 
-      if (datasets.value.length === 0) {
+      if (datasets.length === 0) {
         redirectBack()
       }
+
+      cdStore.setDatasets(datasets)
     }, {
       codes: [404],
       callback: () => {
@@ -307,7 +295,7 @@ name: exportClimates
     }
     // Get groups
     apiPostDatasetGroups(request, result => {
-      groups.value = result
+      cdStore.setGroups(result)
     })
   }
 

@@ -24,14 +24,13 @@
           <v-icon :icon="mdiChartTimeline" class="me-2" /> {{ $t('pageTraitDetailsStatsTitle') }}
         </template>
         <template #text>
-          <template v-if="localVariable && (traitData || (catChartData && catChartData.size > 0))">
+          <template v-if="localVariable && traitData">
             <p>{{ $t('pageTraitDetailsStatsText') }}</p>
 
             <TraitStatsChart
               :datasets="datasets || []"
               :groups="groups || []"
               :variables="[localVariable]"
-              :cat-chart-data="catChartData"
               :trait-data="traitData || []"
               ref="traitStatsChart"
             />
@@ -67,7 +66,6 @@
   const groups = ref<ViewTableGroups[]>()
   const imagesVisible = ref(true)
   const traitData = shallowRef<ViewTableTrialsData[]>()
-  const catChartData = shallowRef<Map<number, Blob>>(new Map())
 
   const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
     return [{
@@ -118,22 +116,12 @@
       minimal: true,
     }
 
-    // if (v.scaleDatatype === ViewTableTraitsScaleDatatype.numeric) {
     apiPostTrialsDataTable(query, result => {
       traitData.value = result.data
       emitter.emit('show-loading', false)
 
       nextTick(() => traitStatsChart.value?.update())
     })
-    // } else {
-    //   const q = Object.assign(query, { traitIds: [v.variableId] })
-
-    //   apiPostTraitStatsCategorical(q, result => {
-    //     emitter.emit('show-loading', false)
-
-    //     catChartData.value.set(v.variableId, result)
-    //   })
-    // }
   }
 
   function getDatasetData (data: PaginatedRequest) {

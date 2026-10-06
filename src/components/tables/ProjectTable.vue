@@ -131,7 +131,6 @@
   import { useI18n } from 'vue-i18n'
   // import AddEditProjectModal from '@/components/modals/AddEditProjectModal.vue'
   import GenericAddEditFormModal from '@/components/modals/GenericAddEditFormModal.vue'
-  import { coreStore } from '@/stores/app'
   import { apiPatchProject, apiPostProject, apiDeleteProject } from '@/plugins/api/project'
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'

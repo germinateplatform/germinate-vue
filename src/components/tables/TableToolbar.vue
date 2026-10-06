@@ -55,7 +55,6 @@
 
 <script setup lang="ts">
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { coreStore } from '@/stores/app'
   import type { DisplayType, MarkedItemConfig } from '@/components/tables/BaseTable.vue'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import type { DataTableHeader } from 'vuetify'

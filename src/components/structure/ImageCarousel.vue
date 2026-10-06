@@ -66,7 +66,6 @@
 <script setup lang="ts">
   import { apiGetTemplateCarouselConfig } from '@/plugins/api/setting'
   import { getImageUrl } from '@/plugins/util/image'
-  import { coreStore } from '@/stores/app'
   import { mdiPencil } from '@mdi/js'
   import { useDisplay } from 'vuetify'
 

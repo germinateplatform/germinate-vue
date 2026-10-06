@@ -137,7 +137,6 @@
   import { apiPatchTraitDetails, apiPostTraitTable } from '@/plugins/api/trait'
   import { FilterComparator, FilterOperator, type ViewTableTraitsMethodClass, type ViewTableTraitsTraitClass, type ViewTableTraits } from '@/plugins/types/germinate'
   import { dataTypes, methodClasses, traitClasses } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
   import { mdiCodeBrackets, mdiContentSave, mdiGreaterThanOrEqual, mdiLabel, mdiLessThanOrEqual, mdiMenuDown } from '@mdi/js'
 
   const compProps = defineProps<{

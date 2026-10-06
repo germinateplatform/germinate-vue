@@ -42,7 +42,6 @@
 
   import histogram from 'plotly.js/lib/histogram'
   import heatmap from 'plotly.js/lib/heatmap'
-  import { coreStore } from '@/stores/app'
   import { getColors } from '@/plugins/util/colors'
   import { apiPostMapdefinitionTableIds, apiPostMapExport } from '@/plugins/api/genotype'
   import { Pages } from '@/plugins/pages'

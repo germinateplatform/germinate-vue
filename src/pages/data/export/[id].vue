@@ -34,10 +34,9 @@ name: export
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDatasetTable, apiPostDatasetTableIds, apiPostLicenseTable } from '@/plugins/api/dataset'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type FilterGroup, type PaginatedRequest, type ViewTableLicenses } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { datasetTypes, type DatasetType } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
   import { mdiArrowRightBox } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'

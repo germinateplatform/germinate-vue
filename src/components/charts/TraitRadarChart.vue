@@ -25,7 +25,6 @@
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import scatterpolar from 'plotly.js/lib/scatterpolar'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import type { TraitComparisonChartTrace } from '@/components/trials/TraitComparison.vue'

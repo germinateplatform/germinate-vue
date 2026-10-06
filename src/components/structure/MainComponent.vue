@@ -184,7 +184,6 @@
   import AppFooter from '@/components/AppFooter.vue'
 
   import { useDisplay, useTheme } from 'vuetify'
-  import { coreStore } from '@/stores/app'
   import type { Locale } from '@/plugins/types/Locale'
   import { loadLanguageAsync } from '@/plugins/vuetify'
   import { markedItemTypes } from '@/plugins/util/types'

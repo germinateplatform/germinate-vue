@@ -64,7 +64,6 @@ name: home
 
 <script lang="ts" setup>
   import { apiGetOverviewStats } from '@/plugins/api/stats'
-  import { coreStore } from '@/stores/app'
   import { dashboardSections, statCategories } from '@/plugins/util/types'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'

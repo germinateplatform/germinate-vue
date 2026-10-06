@@ -24,7 +24,6 @@
   import { DEFAULT_PLOTLY_CONFIG, uuidv4, type DownloadBlob } from '@/plugins/util'
 
   import bar from 'plotly.js/lib/bar'
-  import { coreStore } from '@/stores/app'
   import { getColor } from '@/plugins/util/colors'
   import { useI18n } from 'vue-i18n'
   import type { GermplasmMetaStats } from '@/plugins/types/germinate'

@@ -85,8 +85,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { coreStore } from '@/stores/app'
-
   import shp from 'shpjs'
   import L, { type TileLayer, type Map, type Marker, type FeatureGroup, type Layer, type ImageOverlay, type Control } from 'leaflet'
   import 'leaflet/dist/leaflet.css'

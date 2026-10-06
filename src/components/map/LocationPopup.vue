@@ -58,7 +58,6 @@
   import type { ExtendedViewTableLocations } from '@/plugins/types/client'
   import { FilterComparator, FilterOperator, type FilterGroup } from '@/plugins/types/germinate'
   import { locationTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
   import { mdiAltimeter, mdiLatitude, mdiLongitude, mdiTag, mdiTooltipEdit } from '@mdi/js'
 
   // @ts-ignore

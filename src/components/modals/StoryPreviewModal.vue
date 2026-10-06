@@ -91,7 +91,6 @@
   import type { Storysteps, ViewTableStoriesEnriched } from '@/plugins/types/germinate'
   import { toParagraphs, truncateAfterChars } from '@/plugins/util/formatting'
   import { getImageUrl, getImageUrlById } from '@/plugins/util/image'
-  import { coreStore } from '@/stores/app'
   import { mdiArrowDown, mdiArrowUp, mdiContentSave, mdiDelete, mdiInformation, mdiPlay } from '@mdi/js'
   import { useDisplay } from 'vuetify'
 

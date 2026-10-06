@@ -1816,6 +1816,8 @@
   "widgetChartColoringByLocationName": "Specific location (one name per line)",
   "widgetChartMarkSelectedItems": "Mark selected items",
   "widgetChartUnmarkSelectedItems": "Unmark selected items",
+  "widgetChartLoadingTitle": "Loading",
+  "widgetChartLoadingText": "We're loading your data, please wait.",
   "widgetCookieToken": "Stores user authentication information.",
   "widgetCookieLocale": "Stores information about user language preferences.",
   "widgetCookieBaseUrl": "Stores information about the base URL of the application itself.",

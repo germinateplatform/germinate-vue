@@ -25,14 +25,13 @@
         <template #title>
           <v-icon :icon="mdiChartTimeline" class="me-2" /> {{ $t('pageClimateDetailsStatsTitle') }}
         </template>
-        <template #text v-if="localClimate && (climateData || (catChartData && catChartData.size > 0))">
+        <template #text v-if="localClimate && climateData">
           <p>{{ $t('pageClimateDetailsStatsText') }}</p>
 
           <ClimateStatsChart
             :datasets="datasets || []"
             :climates="[localClimate]"
             :groups="groups"
-            :cat-chart-data="catChartData"
             :climate-data="climateData || []"
             ref="traitStatsChart"
           />
@@ -45,7 +44,7 @@
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostClimateDatasetTable, apiPostClimateDataTable, apiPostClimateDataTableIds, apiPostClimateTable } from '@/plugins/api/climate'
-  import { apiPostClimateStatsCategorical, apiPostDatasetTable } from '@/plugins/api/dataset'
+  import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { FilterComparator, FilterOperator, type ViewTableDatasets, type PaginatedRequest, type UnacceptedLicenseRequest, type ViewTableClimates, type ClimateExportDatasetRequest, ViewTableClimatesDataType, type ViewTableClimateDataWithGroups, type FilterGroup, type ViewTableImages, type PaginatedResult, type ViewTableGroups } from '@/plugins/types/germinate'
   import { mdiChartTimeline } from '@mdi/js'
@@ -66,7 +65,6 @@
   const groups = ref<ViewTableGroups[]>()
   const imagesVisible = ref(true)
   const climateData = shallowRef<ViewTableClimateDataWithGroups[]>()
-  const catChartData = shallowRef<Map<number, Blob>>(new Map())
 
   const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
     return [{
@@ -116,20 +114,12 @@
       minimal: true,
     }
 
-    if (v.dataType === ViewTableClimatesDataType.numeric) {
-      apiPostClimateDataTable(query, result => {
-        climateData.value = result.data
-        emitter.emit('show-loading', false)
+    apiPostClimateDataTable(query, result => {
+      climateData.value = result.data
+      emitter.emit('show-loading', false)
 
-        nextTick(() => traitStatsChart.value?.update())
-      })
-    } else {
-      const q = Object.assign(query, { climateIds: [v.climateId] })
-
-      apiPostClimateStatsCategorical(q, result => {
-        catChartData.value.set(v.climateId, result)
-      })
-    }
+      nextTick(() => traitStatsChart.value?.update())
+    })
   }
 
   function getDatasetData (data: PaginatedRequest) {

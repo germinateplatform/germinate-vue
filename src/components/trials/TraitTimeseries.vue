@@ -20,8 +20,8 @@
         <GroupSelection
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
+          :groups="tdStore.storeGroups"
           url-query-key="timeseries"
-          :groups="groups"
           marked-item-type="germplasm"
           :multiple="true"
         >
@@ -53,7 +53,6 @@
 
       <TraitTimeseriesChart
         :plot-data="plotData"
-        :dataset-ids="datasetIds"
         :selected-germplasm="selectedGermplasm"
         :trait="selectedTraits[0]"
         :timepoints="timepoints"
@@ -73,23 +72,18 @@
   import { mdiArrowRightBox } from '@mdi/js'
   import { handleRouterQuery } from '@/plugins/util'
   import { apiPostTrialsDataTable, apiPostTrialsDataTimepoints } from '@/plugins/api/trait'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import type { SliderTick } from '@/components/input/DynamicTickSlider.vue'
 
-  const compProps = defineProps<{
-    datasetIds: number[]
-    traits: ViewTableTraits[]
-    groups: ViewTableGroups[]
-  }>()
-
   const route = useRoute()
   const router = useRouter()
 
+  const tdStore = traitDataStore()
+
   const canContinue = computed(() => selectedTraits.value.length > 0 && (groupSelection.value === 'all' || selectedGroups.value.length > 0))
 
-  const numericTraits = computed(() => compProps.traits.filter(t => t.scaleDatatype === ViewTableTraitsScaleDatatype.numeric))
+  const numericTraits = computed(() => tdStore.storeTraits.filter(t => t.scaleDatatype === ViewTableTraitsScaleDatatype.numeric))
 
   // User selections
   const groupSelection = ref<GroupSelectionType>('all')
@@ -118,7 +112,7 @@
   watch(selectedGermplasm, async newValue => handleRouterQuery(router, route, 'timeseriesGermplasm', (newValue || []).map(t => t.germplasmId).map(String).join(',')))
   watch(selectedGroups, async newValue => handleRouterQuery(router, route, 'timeseriesGroups', (newValue || []).map(t => t.groupId).map(String).join(',')))
 
-  watch(() => compProps.groups, async newValue => {
+  watch(() => tdStore.storeGroups, async newValue => {
     if (route.query.timeseriesGroups) {
       const ids = new Set((route.query.timeseriesGroups as string).split(',').map(Number))
       selectedGroups.value = (newValue || []).filter(t => ids.has(t.groupId || -1))
@@ -137,7 +131,7 @@
     const germplasmGroupIds = selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1)
 
     apiPostTrialsDataTimepoints({
-      datasetIds: compProps.datasetIds,
+      datasetIds: tdStore.storeDatasetIds,
       markedIds: germplasmIds,
       groupIds: germplasmGroupIds,
       traitIds: [selectedTraits.value?.[0]?.variableId || -1],
@@ -148,7 +142,7 @@
     apiPostTrialsDataTable({
       page: 1,
       limit: MAX_JAVA_INTEGER,
-      datasetIds: compProps.datasetIds,
+      datasetIds: tdStore.storeDatasetIds,
       germplasmGroupIds: germplasmGroupIds,
       germplasmIds: germplasmIds,
       filters: [{
@@ -167,7 +161,7 @@
   }
 
   onMounted(() => {
-    apiPostDatasetGermplasmTable(compProps.datasetIds, {
+    apiPostDatasetGermplasmTable(tdStore.storeDatasetIds, {
       page: 1,
       limit: MAX_JAVA_INTEGER,
       minimal: true,
@@ -178,7 +172,7 @@
         trialGermplasm.value = []
       }
 
-      if (compProps.traits && route.query && route.query.timeseriesGroups) {
+      if (tdStore.storeTraits && route.query && route.query.timeseriesGroups) {
         const ids = new Set((route.query.timeseriesGroups as string).split(',').map(Number))
         selectedGermplasm.value = trialGermplasm.value.filter(t => ids.has(t.germplasmId))
       }

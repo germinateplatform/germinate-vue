@@ -110,7 +110,6 @@
   import { getTemplateColor } from '@/plugins/util/colors'
   import ExifInfo from '@/components/widgets/ExifInfo.vue'
   import { getImageUrl } from '@/plugins/util/image'
-  import { coreStore } from '@/stores/app'
   import { mdiBookInformationVariant, mdiImageMultiple, mdiImageText } from '@mdi/js'
 
   const compProps = defineProps<{

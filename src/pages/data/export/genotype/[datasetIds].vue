@@ -163,7 +163,6 @@ name: exportGenotypes
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type ViewTableDatasetMaps, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type GenotypeSubsetDatasetRequest } from '@/plugins/types/germinate'
   import { handleRouterQuery, isAccepted } from '@/plugins/util'
-  import { coreStore } from '@/stores/app'
   import { mdiArrowRightBox, mdiDatabase, mdiFileDocument, mdiFileTable, mdiInformation } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 

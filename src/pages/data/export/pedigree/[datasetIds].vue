@@ -57,7 +57,6 @@ name: exportPedigrees
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type PedigreeRequest, type AsyncExportResult } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
-  import { coreStore } from '@/stores/app'
   import { mdiArrowRightBox, mdiDatabase } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 

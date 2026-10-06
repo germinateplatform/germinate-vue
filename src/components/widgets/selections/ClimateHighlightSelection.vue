@@ -9,8 +9,8 @@
     >
       <v-btn class="flex-grow-1" value="dataset" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
       <v-btn class="flex-grow-1" value="location" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionLocation')" />
-      <v-btn class="flex-grow-1" value="group" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
-        <template #append><v-badge inline :content="getNumberWithSuffix((groups|| []).length, 0)" /></template>
+      <v-btn class="flex-grow-1" value="group" :disabled="plottedGroups?.length === 0" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
+        <template #append><v-badge inline :content="getNumberWithSuffix(cdStore.storeGroups.length, 0)" /></template>
       </v-btn>
       <v-btn class="flex-grow-1" value="year" :prepend-icon="mdiCalendarWeek" :disabled="!climateYears || climateYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
         <template #append><v-badge inline :content="getNumberWithSuffix((climateYears|| []).length, 0)" /></template>
@@ -30,7 +30,7 @@
     <GroupSelection
       v-else-if="selectionMode === 'group'"
       v-model="selectedGroups"
-      :groups="compProps.groups"
+      :groups="cdStore.storeGroups"
       marked-item-type="germplasm"
       :label="$t('formLabelHighlightGroups')"
       :hint="$t('formDescriptionHighlightGroups')"
@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import type { ViewTableLocations, ViewTableGroups, ViewTableClimates } from '@/plugins/types/germinate'
+  import type { ViewTableLocations, ViewTableGroups } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { mdiCalendarWeek, mdiDatabase, mdiGroup, mdiSprout } from '@mdi/js'
   import { apiPostDatasetLocationTable } from '@/plugins/api/location'
@@ -66,13 +66,14 @@
   }
 
   export interface HighlightSelectionProps {
-    datasetIds: number[]
-    groups: ViewTableGroups[]
-    climates: ViewTableClimates[]
+    plottedGroups?: ViewTableGroups[]
   }
 
-  const compProps = withDefaults(defineProps<HighlightSelectionProps>(), {})
+  const compProps = withDefaults(defineProps<HighlightSelectionProps>(), {
+    plottedGroups: () => [],
+  })
 
+  const cdStore = climateDataStore()
   const selectionMode = ref<'group' | 'dataset' | 'location' | 'year'>()
 
   const selectedLocations = ref<ViewTableLocations[]>([])
@@ -126,7 +127,7 @@
   })
 
   function update () {
-    apiPostDatasetLocationTable(compProps.datasetIds, {
+    apiPostDatasetLocationTable(cdStore.storeDatasetIds, {
       page: 1,
       limit: MAX_JAVA_INTEGER,
       minimal: true,
@@ -139,8 +140,8 @@
     })
 
     apiPostClimateYears({
-      datasetIds: compProps.datasetIds,
-      climateIds: compProps.climates.map(c => c.climateId),
+      datasetIds: cdStore.storeDatasetIds,
+      climateIds: cdStore.storeClimates.map(c => c.climateId),
     }, result => {
       climateYears.value = result || []
     })

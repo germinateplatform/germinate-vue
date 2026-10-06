@@ -1,10 +1,10 @@
 <template>
   <v-container fluid>
     <h1 class="text-headline-large mb-3">{{ $t('pageTrialsExportTitle') }}</h1>
-    <DatasetList :datasets="datasets" v-if="datasets" />
+    <DatasetList :datasets="tdStore.storeDatasets" v-if="tdStore.storeDatasets" />
     <v-divider class="mb-3" />
 
-    <div v-if="datasets && datasets.length > 0">
+    <div v-if="tdStore.storeDatasets && tdStore.storeDatasets.length > 0">
       <v-expansion-panels class="g-expansion-panels">
         <v-expansion-panel eager>
           <template #title>
@@ -48,34 +48,21 @@
         v-show="selectedTab === 'overview'"
         :showing="selectedTab === 'overview'"
       >
-        <TraitBoxplots
-          :traits="traits"
-          :datasets="datasets || []"
-          :groups="groups || []"
-          :dataset-ids="datasetIds"
-        />
+        <TraitBoxplots />
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
         v-show="selectedTab === 'matrix'"
         :showing="selectedTab === 'matrix'"
       >
-        <TraitMatrix
-          :traits="traits"
-          :groups="groups || []"
-          :datasets="datasets"
-        />
+        <TraitMatrix />
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
         v-show="selectedTab === 'comparison'"
         :showing="selectedTab === 'comparison'"
       >
-        <TraitComparison
-          :traits="traits"
-          :groups="groups || []"
-          :dataset-ids="datasetIds"
-        />
+        <TraitComparison />
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
@@ -94,9 +81,7 @@
         :showing="selectedTab === 'locations'"
       >
         <TrialLocationMap
-          :datasets="datasets"
           ref="trialLocationMap"
-          :traits="traits"
           :has-layout="trialLayoutAvailable"
         />
       </RevealOnShowPanel>
@@ -105,22 +90,14 @@
         v-show="selectedTab === 'timeseries'"
         :showing="selectedTab === 'timeseries'"
       >
-        <TraitTimeseries
-          :traits="traits"
-          :groups="groups || []"
-          :dataset-ids="datasetIds"
-        />
+        <TraitTimeseries />
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
         v-show="selectedTab === 'export'"
         :showing="selectedTab === 'export'"
       >
-        <TraitDataDownload
-          :traits="traits"
-          :groups="groups || []"
-          :dataset-ids="datasetIds"
-        />
+        <TraitDataDownload />
       </RevealOnShowPanel>
     </div>
   </v-container>
@@ -148,6 +125,7 @@ name: exporTrials
   import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
+  import { traitDataStore } from '@/stores/traitDataExport'
   import { mdiChartBellCurve, mdiCompare, mdiDatabase, mdiEye, mdiFileDownload, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
@@ -165,6 +143,8 @@ name: exporTrials
 
   const { t } = useI18n()
 
+  const tdStore = traitDataStore()
+
   const router = useRouter()
   const route = useRoute('exporTrials')
 
@@ -172,23 +152,23 @@ name: exporTrials
 
   const selectedTab = ref<TabType>('overview')
   const datasetIds = ref<number[]>([])
-  const datasets = ref<ViewTableDatasets[]>()
-  const traits = ref<ViewTableTraits[]>([])
-  const groups = ref<ViewTableGroups[]>([])
+  // const datasets = ref<ViewTableDatasets[]>()
+  // const traits = ref<ViewTableTraits[]>([])
+  // const groups = ref<ViewTableGroups[]>([])
 
   const trialLocationsAvailable = ref(false)
   const trialLayoutAvailable = ref<boolean[]>()
   const trialTimepointsAvailable = ref(false)
 
-  const hasFileResources = computed(() => datasets.value?.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
+  const hasFileResources = computed(() => tdStore.storeDatasets.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
 
   const fileresourceFilter = computed(() => {
-    return datasets.value
+    return tdStore.storeDatasets
       ? [{
         filters: [{
           column: 'datasetIds',
           comparator: FilterComparator.arrayContains,
-          values: datasets.value?.map(ds => `${ds.datasetId}`),
+          values: tdStore.storeDatasets.map(ds => `${ds.datasetId}`),
         }],
         operator: FilterOperator.and,
       }]
@@ -255,7 +235,7 @@ name: exporTrials
     emitter.emit('show-loading', true)
 
     apiPostDatasetTraits(newValue || [], result => {
-      traits.value = result
+      tdStore.setTraits(result)
 
       getDatasets()
       updateGroups()
@@ -294,8 +274,8 @@ name: exporTrials
       // @ts-ignore
       resolve({
         data: {
-          data: datasets.value || [],
-          count: datasets.value?.length || 0,
+          data: tdStore.storeDatasets || [],
+          count: tdStore.storeDatasets.length || 0,
         },
       })
     })
@@ -325,14 +305,16 @@ name: exporTrials
     }
 
     apiPostDatasetTable(request, result => {
-      datasets.value = result.data.filter(d => {
+      const datasets = result.data.filter(d => {
         // Exclude the ones where a license exists, but hasn't been accepted
         return (!d.licenseName || isAccepted(d))
       })
 
-      if (datasets.value.length === 0) {
+      if (datasets.length === 0) {
         redirectBack()
       }
+
+      tdStore.setDatasets(datasets)
     }, {
       codes: [404],
       callback: () => {
@@ -365,7 +347,7 @@ name: exporTrials
     }
     // Get groups
     apiPostDatasetGroups(request, result => {
-      groups.value = result
+      tdStore.setGroups(result)
     })
   }
 

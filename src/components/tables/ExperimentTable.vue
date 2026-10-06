@@ -72,7 +72,6 @@
 
   import ShowFullCell from '@/components/tables/ShowFullCell.vue'
   import { mdiFolderTable } from '@mdi/js'
-  import { coreStore } from '@/stores/app'
 
   const compProps = withDefaults(defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableExperiments[]>>> }

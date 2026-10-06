@@ -42,7 +42,7 @@ export interface ScatterMatrixParams {
 const symbolList = ['circle', 'square', 'diamond', 'cross', 'x', 'triangle-up', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-ne', 'triangle-se', 'triangle-sw', 'triangle-nw', 'pentagon', 'hexagon', 'hexagon2', 'octagon', 'star', 'hexagram', 'star-triangle-up', 'star-triangle-down', 'star-square', 'star-diamond', 'diamond-tall', 'diamond-wide', 'hourglass', 'bowtie']
 
 const highlightFilter: { [index: string]: (dp: any, value: string) => boolean } = {
-  'group': (dp: any, value: string) => dp.groups ? JSON.parse(dp.groups).includes(value) : false,
+  'group': (dp: any, value: string) => dp.groups ? JSON.parse(dp.groups).includes(+value) : false,
   'datasets': (dp: any, value: string) => dp.dataset_ids ? JSON.parse(dp.dataset_ids).includes(+value) : false,
   'plot': (dp: any, value: string) => `${dp.trial_row}|${dp.trial_column}` === value,
   'taxonomies': (dp: any, value: string) => dp.taxonomy === value,

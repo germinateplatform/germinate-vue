@@ -18,7 +18,6 @@ import { aliases as defaultAliases, mdi } from 'vuetify/iconsets/mdi-svg'
 import enGB from '@/plugins/i18n/en_GB.json'
 import deDE from '@/plugins/i18n/de_DE.json'
 
-import { coreStore } from '@/stores/app'
 import { createI18n, useI18n } from 'vue-i18n'
 import { en, de } from 'vuetify/locale'
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'

@@ -55,7 +55,6 @@
   import { Cite } from '@citation-js/core'
   import '@citation-js/plugin-doi'
   import '@citation-js/plugin-csl'
-  import { coreStore } from '@/stores/app'
   import { publicationTypes } from '@/plugins/util/types'
   import { mdiNewspaper } from '@mdi/js'
   import { Pages } from '@/plugins/pages'

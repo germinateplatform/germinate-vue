@@ -127,7 +127,6 @@
 </template>
 
 <script setup lang="ts">
-  import { coreStore } from '@/stores/app'
   import { Pages } from '@/plugins/pages'
   import { apiGetOverviewStats } from '@/plugins/api/stats'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'

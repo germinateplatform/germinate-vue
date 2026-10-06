@@ -15,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-  import { coreStore } from '@/stores/app'
   import { mdiCheck, mdiClose, mdiCookieAlert } from '@mdi/js'
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'

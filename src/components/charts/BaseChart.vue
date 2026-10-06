@@ -1,7 +1,6 @@
 <template>
   <v-card
-    :model-value:loading="localLoading"
-    @update:loading="notifyLoading"
+    v-model:loading="loading"
   >
     <v-toolbar density="comfortable" :color="compProps.toolbarColor">
       <v-toolbar-title class="ms-4"><v-icon size="x-small" start :color="headerIconColor" :icon="compProps.headerIcon" /> {{ compProps.title ? $t(compProps.title) : undefined }}<slot name="title-append" /></v-toolbar-title>
@@ -29,12 +28,20 @@
     <slot name="card-text" />
 
     <v-card-text>
-      <v-empty-state
-        :icon="mdiFileDocumentRemove"
-        :title="$t('widgetChartNoDataTitle')"
-        :text="$t('widgetChartNoDataText')"
-        v-if="!hasData"
-      />
+      <template v-if="!hasData">
+        <v-empty-state
+          :icon="mdiLoading"
+          :title="$t('widgetChartLoadingTitle')"
+          :text="$t('widgetChartLoadingText')"
+          v-if="loading"
+        />
+        <v-empty-state
+          :icon="mdiFileDocumentRemove"
+          :title="$t('widgetChartNoDataTitle')"
+          :text="$t('widgetChartNoDataText')"
+          v-else
+        />
+      </template>
       <div v-show="hasData">
         <slot name="chart-content" ref="chart" />
       </div>
@@ -95,8 +102,8 @@
 <script lang="ts" setup>
   import { downloadBlob, downloadSvgsFromContainer, type DownloadBlob } from '@/plugins/util'
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { coreStore } from '@/stores/app'
-  import { mdiChartAreaspline, mdiDotsVertical, mdiFileCode, mdiFileDocument, mdiFileDocumentRemove, mdiFileImage, mdiPalette, mdiPlus, mdiUndoVariant } from '@mdi/js'
+
+  import { mdiChartAreaspline, mdiDotsVertical, mdiFileCode, mdiFileDocument, mdiFileDocumentRemove, mdiFileImage, mdiLoading, mdiPalette, mdiPlus, mdiUndoVariant } from '@mdi/js'
   import Plotly from 'plotly.js/lib/core'
   import { useI18n } from 'vue-i18n'
 
@@ -113,7 +120,6 @@
   }
 
   interface ChartProps {
-    loading?: boolean
     title?: string
     downloadWidth?: number
     downloadHeight?: number
@@ -132,7 +138,6 @@
   }
 
   const compProps = withDefaults(defineProps<ChartProps>(), {
-    loading: false,
     downloadWidth: 1280,
     downloadHeight: 600,
     supportsPngDownload: true,
@@ -149,18 +154,11 @@
   const { locale } = useI18n()
 
   const bottomSheetVisible = ref(false)
-  const localLoading = ref(false)
   const colors = ref<string[]>([])
   const newColor = ref('#ffffff')
   const hasData = ref(true)
 
-  watch(() => compProps.loading, async (newValue: boolean) => {
-    localLoading.value = newValue
-  })
-
-  function notifyLoading (value: boolean) {
-    emit('update:loading', value)
-  }
+  const loading = defineModel<boolean>('loading')
 
   function addColor () {
     colors.value.push(newColor.value)

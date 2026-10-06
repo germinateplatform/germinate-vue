@@ -1,5 +1,3 @@
-import { coreStore } from '@/stores/app'
-
 const FACTOR = 0.75
 
 export interface RGB {

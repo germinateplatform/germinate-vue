@@ -9,7 +9,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
 import emitter from 'tiny-emitter/instance'
-import { coreStore } from '@/stores/app'
+
 import { Pages } from '@/plugins/pages'
 import { userIsAtLeast } from '@/plugins/api/auth'
 import { UserType } from '@/plugins/types/germinate'

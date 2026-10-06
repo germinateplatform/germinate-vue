@@ -12,8 +12,8 @@
       <v-btn class="flex-grow-1" value="plot" :prepend-icon="mdiViewGridPlus" :disabled="!trialPlots || trialPlots.length === 0" :text="$t('widgetHighlightSelectionPlot')" v-if="allowCellSelect">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialPlots || []).length, 0)" /></template>
       </v-btn>
-      <v-btn class="flex-grow-1" value="group" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
-        <template #append><v-badge inline :content="getNumberWithSuffix((groups|| []).length, 0)" /></template>
+      <v-btn class="flex-grow-1" value="group" :disabled="plottedGroups?.length === 0" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
+        <template #append><v-badge inline :content="getNumberWithSuffix(tdStore.storeGroups.length, 0)" /></template>
       </v-btn>
       <v-btn class="flex-grow-1" value="year" :prepend-icon="mdiCalendarWeek" :disabled="!trialYears || trialYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialYears|| []).length, 0)" /></template>
@@ -53,7 +53,7 @@
     <GroupSelection
       v-else-if="selectionMode === 'group'"
       v-model="selectedGroups"
-      :groups="compProps.groups"
+      :groups="tdStore.storeGroups"
       marked-item-type="germplasm"
       :label="$t('formLabelHighlightGroups')"
       :hint="$t('formDescriptionHighlightGroups')"
@@ -118,6 +118,7 @@
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
   import PlotSelection from '@/components/widgets/selections/PlotSelection.vue'
   import { mdiCalendarWeek, mdiDatabase, mdiFormatListNumbered, mdiGroup, mdiSitemap, mdiSprinklerFire, mdiSprout, mdiViewGridPlus } from '@mdi/js'
+  import { traitDataStore } from '@/stores/traitDataExport'
 
   export interface UserSelection {
     type: 'group' | 'datasets' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'
@@ -126,13 +127,15 @@
 
   export interface HighlightSelectionProps {
     allowCellSelect?: boolean
-    datasetIds: number[]
-    groups: ViewTableGroups[]
+    plottedGroups?: ViewTableGroups[]
   }
 
   const compProps = withDefaults(defineProps<HighlightSelectionProps>(), {
     allowCellSelect: true,
+    plottedGroups: () => [],
   })
+
+  const tdStore = traitDataStore()
 
   const selectionMode = ref<'group' | 'datasets' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'>()
 
@@ -164,7 +167,7 @@
       case 'datasets':
         return {
           type: selectionMode.value,
-          selectedItems: (compProps.datasetIds || []).map(ds => `${ds}`),
+          selectedItems: tdStore.storeDatasetIds.map(ds => `${ds}`),
         }
       case 'group':
         return {
@@ -216,7 +219,7 @@
 
   function update () {
     apiPostTrialSetupStats({
-      datasetIds: compProps.datasetIds,
+      datasetIds: tdStore.storeDatasetIds,
     }, result => {
       if (result) {
         trialTreatments.value = result.treatments || []
@@ -233,7 +236,7 @@
       }
     })
 
-    apiPostDatasetGermplasmTable(compProps.datasetIds, {
+    apiPostDatasetGermplasmTable(tdStore.storeDatasetIds, {
       page: 1,
       limit: MAX_JAVA_INTEGER,
       minimal: true,

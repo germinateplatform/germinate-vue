@@ -117,7 +117,6 @@
   import { useI18n } from 'vue-i18n'
   import { newsTypeImageFit, newsTypes } from '@/plugins/util/types'
   import { getImageUrl } from '@/plugins/util/image'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'

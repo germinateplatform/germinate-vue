@@ -125,7 +125,6 @@ name: projectDetails
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { getImageUrlById } from '@/plugins/util/image'
-  import { coreStore } from '@/stores/app'
   import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiClose, mdiDatabase, mdiDelete, mdiGroup, mdiNewspaperVariant, mdiPlusBox } from '@mdi/js'
   import Markdown from 'vue3-markdown-it'
 

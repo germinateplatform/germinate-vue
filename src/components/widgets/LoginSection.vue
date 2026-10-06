@@ -77,7 +77,6 @@
 
 <script setup lang="ts">
   import { apiPostToken } from '@/plugins/api/auth'
-  import { coreStore } from '@/stores/app'
   import type { AxiosError } from 'axios'
   import { useI18n } from 'vue-i18n'
 

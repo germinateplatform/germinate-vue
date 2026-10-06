@@ -40,7 +40,6 @@
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import type { MarkedItemType } from '@/plugins/types/MarkedItemType'
   import { markedItemTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
 
   const compProps = defineProps<{
     type?: MarkedItemType

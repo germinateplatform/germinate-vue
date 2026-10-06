@@ -31,6 +31,9 @@ export default defineConfig({
           pinia: ['defineStore', 'storeToRefs'],
         },
       ],
+      dirs: [
+        'src/stores',
+      ],
       dts: 'src/auto-imports.d.ts',
       eslintrc: {
         enabled: true,

@@ -13,7 +13,6 @@
 
 <script setup lang="ts">
   import { getImageUrl } from '@/plugins/util/image'
-  import { coreStore } from '@/stores/app'
   import { QuillEditor } from '@vueup/vue-quill'
   import '@vueup/vue-quill/dist/vue-quill.snow.css'
   import ImageUploader from 'quill-image-uploader'

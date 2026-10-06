@@ -56,7 +56,6 @@
 <script setup lang="ts">
   import type { ViewTableStoriesEnriched } from '@/plugins/types/germinate'
   import { getImageUrl } from '@/plugins/util/image'
-  import { coreStore } from '@/stores/app'
   import { mdiCalendar, mdiCog, mdiDelete, mdiMenuDown, mdiSquareEditOutline, mdiFileEye, mdiNotebookPlus, mdiPlaylistEdit } from '@mdi/js'
 
   const compProps = defineProps<{

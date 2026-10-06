@@ -89,8 +89,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { coreStore } from '@/stores/app'
-
   import L, { type TileLayer, type Map, type CircleMarker, type FeatureGroup, type Polygon, type LatLng } from 'leaflet'
   import 'leaflet/dist/leaflet.css'
   import 'leaflet-draw'

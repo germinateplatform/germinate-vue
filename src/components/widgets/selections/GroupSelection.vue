@@ -8,7 +8,8 @@
       :label="$t('pageTrialsExportSelectGroupTitle')"
       :disabled="groupSelection === 'all'"
       return-object
-      hide-details
+      :hide-details="$attrs.hint === undefined"
+      v-bind="$attrs"
       :multiple="multiple"
       chips
       clearable
@@ -24,7 +25,7 @@
 <script setup lang="ts">
   import type { ViewTableGroups } from '@/plugins/types/germinate'
   import { handleRouterQuery } from '@/plugins/util'
-  import { coreStore } from '@/stores/app'
+
   import { mdiFormatListChecks, mdiSelectAll } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 

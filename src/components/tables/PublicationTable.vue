@@ -91,7 +91,6 @@
   import { FilterComparator, FilterOperator, PublicationdataReferenceType, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { publicationTypes } from '@/plugins/util/types'
-  import { coreStore } from '@/stores/app'
   import { mdiAlarm, mdiBookOpenVariant, mdiCalendar, mdiDelete, mdiMagnify, mdiNewspaper, mdiOpenInNew, mdiPlus } from '@mdi/js'
   import { Pages } from '@/plugins/pages'
   import { apiDeletePublicationReference, apiPutPublication, apiPutPublicationReference } from '@/plugins/api/publication'

@@ -6,7 +6,7 @@
       <v-col cols="12" md="6">
         <TraitSelection
           v-model="selectedTraits"
-          :traits="traits"
+          :traits="tdStore.storeTraits"
           url-query-key="boxplot"
           can-select-all
         >
@@ -19,8 +19,8 @@
         <GroupSelection
           v-model="selectedGroups"
           v-model:group-selection="groupSelection"
+          :groups="tdStore.storeGroups"
           url-query-key="boxplot"
-          :groups="groups || []"
           marked-item-type="germplasm"
         >
           <template #text>{{ $t('pageTrialsExportSelectGroupChartText') }}</template>
@@ -31,38 +31,30 @@
     <v-btn class="my-5" :disabled="!canContinue" color="primary" :prepend-icon="mdiArrowRightBox" :text="$t('buttonPlot')" @click="plot" />
 
     <TraitStatsChart
-      :datasets="datasets || []"
       :variables="selectedTraits"
-      :groups="groups || []"
       :trait-data="traitData || []"
-      :cat-chart-data="catChartData"
       ref="traitStatsChart"
-      v-if="traitData || (catChartData && catChartData.size > 0)"
+      v-if="traitData"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ViewTableTraitsScaleDatatype, type TrialsExportDatasetRequest, type ViewTableDatasets, type ViewTableGroups, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
+  import { ViewTableTraitsScaleDatatype, type TrialsExportDatasetRequest, type ViewTableGroups, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
   import { apiPostTrialsDataTable } from '@/plugins/api/trait'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { coreStore } from '@/stores/app'
 
   import emitter from 'tiny-emitter/instance'
-  import { apiPostTraitStatsCategorical } from '@/plugins/api/dataset'
   import TraitStatsChart from '@/components/charts/TraitStatsChart.vue'
   import { mdiArrowRightBox } from '@mdi/js'
 
   const compProps = defineProps<{
-    traits: ViewTableTraits[]
-    groups?: ViewTableGroups[]
-    datasets?: ViewTableDatasets[]
-    datasetIds?: number[]
     max?: number
   }>()
 
   const store = coreStore()
+  const tdStore = traitDataStore()
 
   const traitStatsChart = useTemplateRef('traitStatsChart')
 
@@ -71,9 +63,7 @@
   const groupSelection = ref<GroupSelectionType>('all')
 
   const traitData = ref<ViewTableTrialsData[]>()
-  const catChartData = ref<Map<number, Blob>>(new Map())
 
-  const categoricalTraits = computed(() => (compProps.traits || []).filter(t => t.scaleDatatype !== ViewTableTraitsScaleDatatype.numeric && t.scaleDatatype !== ViewTableTraitsScaleDatatype.date))
   const canContinue = computed(() => {
     return selectedTraits.value.length > 0 && selectedTraits.value.length < (compProps.max || Number.MAX_SAFE_INTEGER) && (groupSelection.value === 'all' || selectedGroups.value.length > 0)
   })
@@ -85,7 +75,7 @@
       page: 1,
       limit: MAX_JAVA_INTEGER,
       prevCount: -1,
-      datasetIds: compProps.datasetIds,
+      datasetIds: tdStore.storeDatasetIds,
       traitIds: selectedTraits.value.map(t => t.variableId),
       germplasmIds: groupSelection.value === 'groups' && selectedGroups.value.some(g => g.groupId === -1) ? store.storeMarkedGermplasm : undefined,
       germplasmGroupIds: selectedGroups.value.filter(g => g.groupId !== -1).map(g => g.groupId || -1),
@@ -95,13 +85,5 @@
     apiPostTrialsDataTable(query, result => {
       traitData.value = result.data
     }).finally(() => emitter.emit('show-loading', false))
-
-    categoricalTraits.value.forEach(t => {
-      const q = Object.assign(query, { traitIds: [t.variableId] })
-
-      apiPostTraitStatsCategorical(q, result => {
-        catChartData.value.set(t.variableId, result)
-      })
-    })
   }
 </script>
