@@ -193,7 +193,7 @@
   import { downloadBlob } from '@/plugins/util'
   import { apiDeleteDataAsyncImport, apiGetDataAsyncImportLog, apiGetDataAsyncImportStart, apiPostDataAsyncImport } from '@/plugins/api/dataimport'
 
-  const store = coreStore()
+  const store = useCoreStore()
   const { name } = useDisplay()
 
   const { t } = useI18n()

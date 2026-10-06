@@ -11,7 +11,7 @@
 
   import emitter from 'tiny-emitter/instance'
 
-  const cdStore = climateDataStore()
+  const cdStore = useClimateDataStore()
 
   const locations = ref<ViewTableLocations[]>([])
   const map = useTemplateRef('map')

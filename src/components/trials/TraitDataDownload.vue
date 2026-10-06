@@ -78,8 +78,8 @@
     max?: number
   }>()
 
-  const store = coreStore()
-  const tdStore = traitDataStore()
+  const store = useCoreStore()
+  const tdStore = useTraitDataStore()
 
   const selectedTraits = ref<ViewTableTraits[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])

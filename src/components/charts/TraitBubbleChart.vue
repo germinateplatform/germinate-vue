@@ -35,7 +35,7 @@
     average?: TraitComparisonChartTrace
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const sourceFile = ref<DownloadBlob>()
   const bubbleChart = useTemplateRef('bubbleChart')

@@ -34,7 +34,7 @@
   const id = ref('choropleth-' + uuidv4())
   const loading = ref(false)
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const sourceFile = ref<DownloadBlob>()
   const choroplethChart = useTemplateRef('choroplethChart')

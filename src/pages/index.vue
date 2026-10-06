@@ -79,7 +79,7 @@ name: home
   import { apiPostNewsTable } from '@/plugins/api/news'
   import { apiPostDataImportStats } from '@/plugins/api/dataimport'
 
-  const store = coreStore()
+  const store = useCoreStore()
   const stats = ref<OverviewStats>()
   const showPublications = ref<boolean>(true)
   const showNews = ref<boolean>(true)

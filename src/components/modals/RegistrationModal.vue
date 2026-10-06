@@ -220,7 +220,7 @@
     },
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const passwordStrengthColor = shallowRef<{ [index: number]: string }>({
     0: 'error',

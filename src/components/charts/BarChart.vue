@@ -57,7 +57,7 @@
     headerIcon: mdiChartBar,
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const sourceFileDownload = ref<DownloadBlob>()
   const barChart = useTemplateRef('barChart')

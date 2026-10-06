@@ -50,7 +50,7 @@
 
   const emit = defineEmits(['delete-clicked', 'edit-clicked'])
 
-  const store = coreStore()
+  const store = useCoreStore()
   const dialog = ref(false)
 
   const licenseContent = computed(() => {

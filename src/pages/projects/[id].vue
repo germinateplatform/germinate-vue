@@ -133,7 +133,7 @@ name: projectDetails
 
   const route = useRoute('projectDetails')
   const router = useRouter()
-  const store = coreStore()
+  const store = useCoreStore()
   const { t } = useI18n()
 
   const experimentTable = useTemplateRef('experimentTable')

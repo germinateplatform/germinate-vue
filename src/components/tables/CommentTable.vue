@@ -67,7 +67,7 @@
     referenceId: number
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')
   const commentEditModal = useTemplateRef('commentEditModal')
   const { t } = useI18n()

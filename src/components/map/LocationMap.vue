@@ -128,7 +128,7 @@
     shadowUrl: shadowUrl,
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   interface MapProps {
     locations: ExtendedViewTableLocations[]

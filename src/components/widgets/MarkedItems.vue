@@ -45,7 +45,7 @@
     type?: MarkedItemType
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const localType = ref<MarkedItemType>('germplasm')
 
   const germplasmFilters: ComputedRef<FilterGroup[]> = computed(() => {

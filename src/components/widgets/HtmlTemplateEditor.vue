@@ -30,7 +30,7 @@
   }>()
 
   const router = useRouter()
-  const store = coreStore()
+  const store = useCoreStore()
   const editingEnabled = ref(false)
   const quill = ref()
   const toolbar = ref([

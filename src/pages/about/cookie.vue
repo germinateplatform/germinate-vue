@@ -52,7 +52,7 @@
     duration: 'persistent' | 'session'
   }
 
-  const store = coreStore()
+  const store = useCoreStore()
   const host = computed(() => window.location.origin)
   const { t } = useI18n()
 

@@ -143,7 +143,7 @@ name: aboutGerminate
 
   const { t } = useI18n()
   const { lg } = useDisplay()
-  const store = coreStore()
+  const store = useCoreStore()
 
   interface TeamMember {
     name: string

@@ -31,7 +31,7 @@ const gatekeeperErrors: { [key: string]: string } = {
  * Returns the current authentication token
  */
 export function getToken () {
-  const store = coreStore()
+  const store = useCoreStore()
   let t = store.storeToken
 
   // Check if the token is still valid
@@ -44,7 +44,7 @@ export function getToken () {
 }
 
 export function handleError (error: AxiosError) {
-  const store = coreStore()
+  const store = useCoreStore()
   emitter.emit('show-loading', false)
   const variant = 'error'
   const title = i18n.global.t('genericError')
@@ -120,7 +120,7 @@ export interface ErrorHandler {
  * @param {Object} param0 `{ url: String, formData: Object, method: String, success: Callback, error: { codes: [], callback: Callback } }`
  */
 export function authForm<T> ({ url = undefined, formData, method = 'post', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, formData?: any | undefined, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
-  const store = coreStore()
+  const store = useCoreStore()
   const promise = axios<T>({
     baseURL: store.storeBaseUrl,
     url,
@@ -200,7 +200,7 @@ export function authForm<T> ({ url = undefined, formData, method = 'post', succe
  * @param {Object} param0 `{ url: String, method: String, data: Object, formData: Object, dataType: String, contentType: String, success: Callback, error: { codes: [], callback: Callback } }`
  */
 export function authAxios<T> ({ url = undefined, method = 'GET', data = null, dataType = 'json', contentType = 'application/json; charset=utf-8', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, data?: any, dataType?: ResponseType, contentType?: string, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
-  const store = coreStore()
+  const store = useCoreStore()
 
   let requestData = null
   let requestParams = null

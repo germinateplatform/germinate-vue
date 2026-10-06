@@ -100,7 +100,7 @@
 
   const router = useRouter()
   const route = useRoute()
-  const store = coreStore()
+  const store = useCoreStore()
 
   const menuExpanded = ref(false)
   const bottomSheetVisible = ref(false)

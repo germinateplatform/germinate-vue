@@ -235,7 +235,7 @@
 
   type DetailsType = 'collaborators' | 'publications' | 'attributes' | undefined
 
-  const store = coreStore()
+  const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')
   const licenseModal = useTemplateRef('licenseModal')
   const datasetEditModal = useTemplateRef('datasetEditModal')

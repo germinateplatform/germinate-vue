@@ -67,7 +67,7 @@
   countries.registerLocale(countryDataEn)
 
   const router = useRouter()
-  const store = coreStore()
+  const store = useCoreStore()
 
   const compProps = defineProps<{
     location: ExtendedViewTableLocations

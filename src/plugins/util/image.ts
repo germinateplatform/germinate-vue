@@ -1,7 +1,7 @@
 import { toUrlString } from '@/plugins/util/formatting'
 
 export function getImageUrl (name: string, params: { [key: string]: string | undefined }) {
-  const store = coreStore()
+  const store = useCoreStore()
   const paramString = toUrlString(params)
 
   let finalName = name || ''
@@ -18,14 +18,14 @@ export function getImageUrl (name: string, params: { [key: string]: string | und
 }
 
 export function getImageUrlById (id: number, params: { [key: string]: string | undefined }) {
-  const store = coreStore()
+  const store = useCoreStore()
   const paramString = toUrlString(params)
 
   return `${store.storeBaseUrl}image/${id}/src?${paramString}`
 }
 
 export function getFeedbackImageUrl (id: number, params: { [key: string]: string | undefined }) {
-  const store = coreStore()
+  const store = useCoreStore()
   const paramString = toUrlString(params)
 
   return `${store.storeBaseUrl}feedback/${id}/img?${paramString}`

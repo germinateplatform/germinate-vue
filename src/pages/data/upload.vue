@@ -177,7 +177,7 @@ name: importUpload
     },
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const selectedTab = ref<TemplateImportType>()
   const selectedSubTab = ref<TemplateImportType>()

@@ -41,7 +41,7 @@
     customRange?: CustomRange
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const sourceFile = ref<DownloadBlob>()
   const heatmapChart = useTemplateRef('heatmapChart')

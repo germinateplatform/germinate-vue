@@ -179,7 +179,7 @@ name: germplasm
   import { mdiDownload, mdiFamilyTree, mdiFilter, mdiGroup, mdiListStatus, mdiMapMarkerMultiple, mdiPassport, mdiPlaylistCheck } from '@mdi/js'
   import { watchIgnorable } from '@vueuse/core'
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const germplasmLocationMap = useTemplateRef('germplasmLocationMap')
   const germplasmTable = useTemplateRef('germplasmTable')

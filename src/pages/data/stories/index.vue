@@ -28,7 +28,7 @@ name: dataStories
   import type { PaginatedRequest } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
 
-  const store = coreStore()
+  const store = useCoreStore()
   const { t } = useI18n()
 
   const storyTable = useTemplateRef('storyTable')

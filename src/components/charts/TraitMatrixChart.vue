@@ -78,8 +78,8 @@
     userSelection?: UserSelection
   }>()
 
-  const store = coreStore()
-  const tdStore = traitDataStore()
+  const store = useCoreStore()
+  const tdStore = useTraitDataStore()
 
   const sourceFile = ref<DownloadBlob>()
   const matrixChart = useTemplateRef('matrixChart')

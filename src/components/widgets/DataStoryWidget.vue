@@ -31,7 +31,7 @@
   const perPage = ref(12)
 
   const { t } = useI18n()
-  const store = coreStore()
+  const store = useCoreStore()
 
   const stories = ref<ViewTableStoriesEnriched[]>([])
 

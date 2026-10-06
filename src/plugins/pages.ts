@@ -345,7 +345,7 @@ export class Pages {
   }
 
   static isAvailable (page: Page): boolean {
-    const store = coreStore()
+    const store = useCoreStore()
 
     if (store.serverSettings && store.serverSettings.hiddenPages) {
       return !store.serverSettings.hiddenPages.includes(page.name) && !(page.identifiers || []).some(i => store.serverSettings?.hiddenPages?.includes(i))

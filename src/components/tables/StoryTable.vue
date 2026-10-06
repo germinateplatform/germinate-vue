@@ -151,7 +151,7 @@
     displayType?: DisplayType
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const storyPreviewModal = useTemplateRef('storyPreviewModal')
   const datasetAcceptLicenseModal = useTemplateRef('datasetAcceptLicenseModal')
   const addStoryModal = useTemplateRef('addStoryModal')

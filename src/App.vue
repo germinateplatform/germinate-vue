@@ -78,7 +78,7 @@
   export default {
     setup () {
       // Composition
-      const store = coreStore()
+      const store = useCoreStore()
       const loaded = ref<boolean | undefined>()
       const error = ref<string | undefined>()
       const configIssue = ref<GerminateConfigStatus>()

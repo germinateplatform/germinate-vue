@@ -121,7 +121,7 @@ name: germplasmUnifier
     },
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const germplasmTable = useTemplateRef('germplasmTable')
 

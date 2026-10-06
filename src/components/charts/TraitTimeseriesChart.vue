@@ -47,8 +47,8 @@
     currentTimepoint: number
   }>()
 
-  const store = coreStore()
-  const tdStore = traitDataStore()
+  const store = useCoreStore()
+  const tdStore = useTraitDataStore()
   const { t } = useI18n()
 
   const sourceFile = ref<DownloadBlob>()

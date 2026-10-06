@@ -13,7 +13,7 @@ const DEFAULT_CHART_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467
      * Returns the chart colors
      */
 export function getColors (): string[] | undefined {
-  const store = coreStore()
+  const store = useCoreStore()
 
   let colors: string[]
   if (store.storeCustomChartColors && store.storeCustomChartColors.length > 0) {
@@ -35,7 +35,7 @@ export function getPrimaryColor (): string {
 }
 
 export function getTemplateColors () {
-  const store = coreStore()
+  const store = useCoreStore()
   if (store.storeServerSettings && store.storeServerSettings.colorsTemplate && store.storeServerSettings.colorsTemplate.length > 0) {
     return store.storeServerSettings.colorsTemplate
   } else {

@@ -66,7 +66,7 @@
     selectionType?: TableSelectionType
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

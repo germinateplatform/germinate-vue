@@ -64,7 +64,7 @@ name: markerDetails
   import { mdiBookmarkCheck, mdiBookmarkOutline, mdiLabel, mdiLabelVariant } from '@mdi/js'
 
   const route = useRoute('markerDetails')
-  const store = coreStore()
+  const store = useCoreStore()
 
   const marker = ref<ViewTableMarkers>()
   const markerId = ref<number>()

@@ -7,7 +7,7 @@ export interface TraitDataStoreContent {
   groups: ViewTableGroups[]
 }
 
-export const traitDataStore = defineStore('traitDataStore', {
+export const useTraitDataStore = defineStore('traitDataStore', {
   state: () => ({
     traits: [],
     datasets: [],

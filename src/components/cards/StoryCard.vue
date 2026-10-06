@@ -63,7 +63,7 @@
     isPlaceholder?: boolean
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const sortedSteps = computed(() => (compProps.story.storySteps || []).concat().filter(s => s.name !== undefined && s.name !== null).sort((a, b) => a.storyIndex - b.storyIndex))
 

@@ -138,7 +138,7 @@
   import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderHorizontal, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy, mdiCookie } from '@mdi/js'
 
   const { name, lgAndUp } = useDisplay()
-  const store = coreStore()
+  const store = useCoreStore()
   const railVisible = ref()
   const forcedRail = ref(false)
 

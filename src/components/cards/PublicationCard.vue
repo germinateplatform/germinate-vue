@@ -59,7 +59,7 @@
   import { mdiNewspaper } from '@mdi/js'
   import { Pages } from '@/plugins/pages'
 
-  const store = coreStore()
+  const store = useCoreStore()
   const route = useRoute()
 
   const {

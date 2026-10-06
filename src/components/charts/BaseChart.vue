@@ -150,7 +150,7 @@
     headerIcon: mdiChartAreaspline,
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
   const { locale } = useI18n()
 
   const bottomSheetVisible = ref(false)

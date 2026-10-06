@@ -25,7 +25,7 @@
   const locations = ref<ViewTableLocations[]>([])
   const map = useTemplateRef('map')
 
-  const tdStore = traitDataStore()
+  const tdStore = useTraitDataStore()
 
   function update () {
     if (!tdStore.storeDatasetIds || tdStore.storeDatasetIds.length === 0) {

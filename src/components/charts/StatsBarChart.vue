@@ -30,7 +30,7 @@
   import type { UserSelection } from '@/components/widgets/selections/StatsHighlightSelection.vue'
   import { mdiChartBar } from '@mdi/js'
 
-  const store = coreStore()
+  const store = useCoreStore()
   const { t } = useI18n()
   const baseChart = useTemplateRef('baseChart')
 

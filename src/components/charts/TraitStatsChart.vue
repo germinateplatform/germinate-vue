@@ -46,14 +46,13 @@
   import { ViewTableTraitsScaleDatatype, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
   import type HighlightSelection from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiRefresh } from '@mdi/js'
-  import { traitDataStore } from '@/stores/traitDataExport'
 
   const compProps = defineProps<{
     variables: ViewTableTraits[]
     traitData: ViewTableTrialsData[]
   }>()
 
-  const tdStore = traitDataStore()
+  const tdStore = useTraitDataStore()
 
   const numericTraitBoxPlot = useTemplateRef('numericTraitBoxPlot')
   const dateTraitBoxPlot = useTemplateRef('dateTraitBoxPlot')

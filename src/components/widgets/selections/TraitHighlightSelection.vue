@@ -118,7 +118,6 @@
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
   import PlotSelection from '@/components/widgets/selections/PlotSelection.vue'
   import { mdiCalendarWeek, mdiDatabase, mdiFormatListNumbered, mdiGroup, mdiSitemap, mdiSprinklerFire, mdiSprout, mdiViewGridPlus } from '@mdi/js'
-  import { traitDataStore } from '@/stores/traitDataExport'
 
   export interface UserSelection {
     type: 'group' | 'datasets' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'
@@ -135,7 +134,7 @@
     plottedGroups: () => [],
   })
 
-  const tdStore = traitDataStore()
+  const tdStore = useTraitDataStore()
 
   const selectionMode = ref<'group' | 'datasets' | 'plot' | 'germplasm' | 'reps' | 'treatments' | 'year' | 'taxonomies'>()
 

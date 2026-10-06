@@ -27,7 +27,7 @@
     force: false,
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
   const { t } = useI18n()
 
   function askForCookieConfirmation () {

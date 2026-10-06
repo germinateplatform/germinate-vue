@@ -122,7 +122,7 @@ name: exportClimates
 
   const { t } = useI18n()
 
-  const cdStore = climateDataStore()
+  const cdStore = useClimateDataStore()
   const router = useRouter()
   const route = useRoute('exportClimates')
 

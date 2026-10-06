@@ -97,7 +97,7 @@
     germplasmId: number
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const dataWarnings = ref<Datawarnings[]>([])
   const addDialogVisible = ref(false)
   const newDataWarning = ref<Datawarnings>()

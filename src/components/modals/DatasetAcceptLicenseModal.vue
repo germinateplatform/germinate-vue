@@ -33,7 +33,7 @@
     story: ViewTableStoriesEnriched
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const dialog = ref(false)
 
   const datasets = shallowRef<ViewTableDatasets[]>([])

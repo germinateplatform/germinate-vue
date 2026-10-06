@@ -143,7 +143,7 @@
   const addFileresourceModal = useTemplateRef('addFileresourceModal')
   const baseTable = useTemplateRef('baseTable')
   const router = useRouter()
-  const store = coreStore()
+  const store = useCoreStore()
   const { t } = useI18n()
 
   // @ts-ignore

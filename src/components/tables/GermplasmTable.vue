@@ -220,7 +220,7 @@
   })
 
   const baseTable = useTemplateRef('baseTable')
-  const store = coreStore()
+  const store = useCoreStore()
   const { t } = useI18n()
   const bottomVisible = ref(false)
   const selectedGermplasm = ref<ViewTableGermplasm>()

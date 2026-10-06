@@ -122,10 +122,9 @@ name: exporTrials
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { apiPostDatasetTraits, apiPostTrialLayoutCount, apiPostTrialLocationCount, apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTrialsDataTimepoints } from '@/plugins/api/trait'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type ViewTableTraits, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type PaginatedRequest, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { traitDataStore } from '@/stores/traitDataExport'
   import { mdiChartBellCurve, mdiCompare, mdiDatabase, mdiEye, mdiFileDownload, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
@@ -143,7 +142,7 @@ name: exporTrials
 
   const { t } = useI18n()
 
-  const tdStore = traitDataStore()
+  const tdStore = useTraitDataStore()
 
   const router = useRouter()
   const route = useRoute('exporTrials')

@@ -7,7 +7,7 @@ export interface ClimateDataStoreContent {
   groups: ViewTableGroups[]
 }
 
-export const climateDataStore = defineStore('climateDataStore', {
+export const useClimateDataStore = defineStore('climateDataStore', {
   state: () => ({
     climates: [],
     datasets: [],

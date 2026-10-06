@@ -106,8 +106,8 @@
 
   const route = useRoute()
   const router = useRouter()
-  const store = coreStore()
-  const tdStore = traitDataStore()
+  const store = useCoreStore()
+  const tdStore = useTraitDataStore()
   const { t } = useI18n()
 
   const canContinue = computed(() => selectedTraits.value.length > 0 && (selectedGroups.value.length > 0 || selectedGermplasm.value.length > 0))

@@ -73,7 +73,7 @@
     plottedGroups: () => [],
   })
 
-  const cdStore = climateDataStore()
+  const cdStore = useClimateDataStore()
   const selectionMode = ref<'group' | 'dataset' | 'location' | 'year'>()
 
   const selectedLocations = ref<ViewTableLocations[]>([])

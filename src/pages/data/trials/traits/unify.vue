@@ -113,7 +113,7 @@ name: traitUnifier
     },
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const traitTable = useTemplateRef('traitTable')
 

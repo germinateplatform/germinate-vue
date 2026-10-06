@@ -160,7 +160,7 @@
     flag: 'gb',
   }])
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const localeIds = computed(() => locales.value.map(l => l.locale))
 

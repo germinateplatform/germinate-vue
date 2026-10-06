@@ -46,7 +46,7 @@ name: export
 
   const router = useRouter()
   const route = useRoute('export')
-  const store = coreStore()
+  const store = useCoreStore()
 
   const selectedDatasets = ref<number[]>([])
   const datasetType = ref<string>()

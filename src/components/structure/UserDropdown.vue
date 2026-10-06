@@ -111,7 +111,7 @@
   import TextfieldModal from '@/components/modals/TextfieldModal.vue'
   import { mdiAccount, mdiAccountKey, mdiBackupRestore, mdiCircleMultiple, mdiCog, mdiCommentQuoteOutline, mdiLoginVariant, mdiLogoutVariant, mdiMenuRight, mdiMonitorShimmer, mdiSetMerge, mdiTextSearch, mdiUpload } from '@mdi/js'
 
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
 
   const tokenModal = useTemplateRef('tokenModal')

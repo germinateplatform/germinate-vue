@@ -22,7 +22,7 @@
     headerIconColor?: string
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const emit = defineEmits(['data-changed'])
 
   const selectedTag = ref<ImageTag>()

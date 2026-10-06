@@ -96,7 +96,7 @@
 
   const registrationModal = useTemplateRef('registrationModal')
 
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
   const route = useRoute()
   const { t } = useI18n()

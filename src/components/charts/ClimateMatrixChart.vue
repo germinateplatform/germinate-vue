@@ -78,8 +78,8 @@
     userSelection?: UserSelection
   }>()
 
-  const store = coreStore()
-  const cdStore = climateDataStore()
+  const store = useCoreStore()
+  const cdStore = useClimateDataStore()
 
   const sourceFile = ref<DownloadBlob>()
   const matrixChart = useTemplateRef('matrixChart')

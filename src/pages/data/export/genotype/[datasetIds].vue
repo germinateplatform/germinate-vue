@@ -168,7 +168,7 @@ name: exportGenotypes
 
   import emitter from 'tiny-emitter/instance'
 
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
   const route = useRoute('exportGenotypes')
 

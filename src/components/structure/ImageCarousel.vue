@@ -78,7 +78,7 @@
   export type CarouselConfig = { [key: string]: ImageConfig[] }
 
   const { lgAndDown } = useDisplay()
-  const store = coreStore()
+  const store = useCoreStore()
   const currentIndex = shallowRef(0)
   const currentItem = toRef(() => images.value ? images.value[currentIndex.value] : undefined)
   const configs = ref<CarouselConfig>()

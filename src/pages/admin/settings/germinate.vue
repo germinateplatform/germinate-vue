@@ -383,7 +383,7 @@ name: germinateSettings
   import { Pages } from '@/plugins/pages'
 
   const { t } = useI18n()
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
   const theme = useTheme()
 

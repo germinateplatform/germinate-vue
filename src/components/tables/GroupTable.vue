@@ -105,7 +105,7 @@
     }
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
   const selectedGroup = ref<ViewTableGroups>()

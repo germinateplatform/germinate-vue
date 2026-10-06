@@ -31,7 +31,7 @@ const router = createRouter({
 router.beforeEach(to => {
   emitter.emit('show-loading', false)
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   if (store.storeServerSettings) {
     if (store.storeServerSettings.authMode === 'FULL' && !store.storeToken && (to.path !== Pages.login.path)) {

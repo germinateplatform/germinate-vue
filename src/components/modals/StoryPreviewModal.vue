@@ -108,7 +108,7 @@
   const { t } = useI18n()
   const { lgAndUp } = useDisplay()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const dialog = ref(false)
   const errors = ref<string[]>([])
 

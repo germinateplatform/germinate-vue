@@ -34,7 +34,7 @@
     sunburst,
   ])
 
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
 
   const sourceFile = ref<DownloadBlob>()

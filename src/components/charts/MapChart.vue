@@ -64,7 +64,7 @@
 
   const emit = defineEmits(['points-selected', 'selection-cleared'])
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const sourceFile = ref<DownloadBlob>()
   const mapChart = useTemplateRef('mapChart')

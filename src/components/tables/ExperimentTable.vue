@@ -88,7 +88,7 @@
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
   const router = useRouter()
-  const store = coreStore()
+  const store = useCoreStore()
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {

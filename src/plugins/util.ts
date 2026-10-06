@@ -110,7 +110,7 @@ function mcpdDateToJsDate (input: string) {
  * @returns The style that should be applied to this column
  */
 function getTableColumnStyle (tableName: string, columnKey: string) {
-  const store = coreStore()
+  const store = useCoreStore()
   if (store.storeHiddenColumns[tableName]) {
     return (!store.storeHiddenColumns[tableName].includes(columnKey)) ? 'd-none' : ''
   } else {
@@ -123,7 +123,7 @@ function getTableColumnStyle (tableName: string, columnKey: string) {
  * @param {String} name The name of the page to check (refer to router for names)
  */
 function isPageAvailable (name: string) {
-  const store = coreStore()
+  const store = useCoreStore()
   if (store.storeServerSettings != null && store.storeServerSettings.hiddenPages != null) {
     return !store.storeServerSettings.hiddenPages.includes(name)
   } else {
@@ -172,7 +172,7 @@ export interface DownloadBlob {
 }
 
 function isAccepted (dataset: ViewTableDatasets) {
-  const store = coreStore()
+  const store = useCoreStore()
 
   if (store.storeToken) {
     return dataset.acceptedBy && dataset.acceptedBy.includes(store.storeToken.id)

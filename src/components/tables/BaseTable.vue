@@ -289,7 +289,7 @@
 
   const router = useRouter()
   const route = useRoute()
-  const store = coreStore()
+  const store = useCoreStore()
   const { t } = useI18n()
 
   const searchTerm = ref<string>()

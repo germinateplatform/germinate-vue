@@ -59,7 +59,7 @@ name: genesysRequest
   import { useI18n } from 'vue-i18n'
 
   const { t } = useI18n()
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
   const genesysUuid = ref<string>()
   const name = ref<string>()

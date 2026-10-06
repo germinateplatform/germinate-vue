@@ -54,7 +54,7 @@
     headerIconColor?: string
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
 
   const hasPlotData = ref(false)

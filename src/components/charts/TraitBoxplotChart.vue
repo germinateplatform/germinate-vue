@@ -46,7 +46,6 @@
   import emitter from 'tiny-emitter/instance'
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
-  import { traitDataStore } from '@/stores/traitDataExport'
 
   const compProps = defineProps<{
     traits: ViewTableTraits[]
@@ -56,8 +55,8 @@
     type: 'numeric' | 'date'
   }>()
 
-  const store = coreStore()
-  const tdStore = traitDataStore()
+  const store = useCoreStore()
+  const tdStore = useTraitDataStore()
 
   const sourceFile = ref<DownloadBlob>()
   const boxplotChart = useTemplateRef('boxplotChart')

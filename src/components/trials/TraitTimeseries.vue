@@ -79,7 +79,7 @@
   const route = useRoute()
   const router = useRouter()
 
-  const tdStore = traitDataStore()
+  const tdStore = useTraitDataStore()
 
   const canContinue = computed(() => selectedTraits.value.length > 0 && (groupSelection.value === 'all' || selectedGroups.value.length > 0))
 
@@ -104,7 +104,7 @@
     return result
   })
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   // Server responses
   const trialGermplasm = ref<ViewTableGermplasm[]>([])

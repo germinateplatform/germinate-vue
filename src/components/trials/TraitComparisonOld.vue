@@ -109,7 +109,7 @@
   }>()
 
   const { t } = useI18n()
-  const store = coreStore()
+  const store = useCoreStore()
 
   const selectedTraits = ref<ViewTableTraits[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])

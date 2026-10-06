@@ -51,8 +51,8 @@
     max?: number
   }>()
 
-  const store = coreStore()
-  const cdStore = climateDataStore()
+  const store = useCoreStore()
+  const cdStore = useClimateDataStore()
 
   const climateStatsChart = useTemplateRef('climateStatsChart')
 

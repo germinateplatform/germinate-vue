@@ -28,7 +28,7 @@ function getNumberWithSuffix (value: number, decimals = 2, k = 1000, separator =
     return '0'
   }
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   // Check if advanced number formatting is available
   if ('Intl' in window && Intl.NumberFormat) {

@@ -214,7 +214,7 @@
   // Composition
   const router = useRouter()
   const theme = useTheme()
-  const store = coreStore()
+  const store = useCoreStore()
   const isDark = useDark()
   const { smAndUp } = useDisplay()
 

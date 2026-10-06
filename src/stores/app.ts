@@ -228,7 +228,7 @@ function createConsentAwareStorage (storage: Storage = localStorage): StorageLik
 // Instantiate OUTSIDE defineStore options
 const consentStorage = createConsentAwareStorage()
 
-export const coreStore = defineStore('germinate', {
+export const useCoreStore = defineStore('germinate', {
   state: () => ({
     baseUrl: undefined as string | undefined,
     token: undefined as Token | undefined,

@@ -143,7 +143,7 @@
     variableId: number
   }>()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const variable = ref<ViewTableTraits>()
 
   const changedMethodClass = ref<ViewTableTraitsMethodClass>()

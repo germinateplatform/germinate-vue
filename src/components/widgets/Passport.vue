@@ -190,7 +190,7 @@
 
   const { t } = useI18n()
 
-  const store = coreStore()
+  const store = useCoreStore()
   const scrollSpy = useTemplateRef('scrollSpy')
   const performanceDataCount = ref(1)
   const germplasm = ref<ViewTableGermplasm>()

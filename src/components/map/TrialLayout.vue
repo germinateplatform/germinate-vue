@@ -146,7 +146,7 @@
     },
   )
 
-  const tdStore = traitDataStore()
+  const tdStore = useTraitDataStore()
   const rows = shallowRef(1)
   const columns = shallowRef(1)
   const reverseRows = ref(false)

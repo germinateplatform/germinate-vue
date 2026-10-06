@@ -41,7 +41,7 @@
     climateData: ViewTableClimateData[]
   }>()
 
-  const cdStore = climateDataStore()
+  const cdStore = useClimateDataStore()
 
   const climateBoxPlot = useTemplateRef('climateBoxPlot')
   // const climateBarChart = useTemplateRef('climateBarChart')

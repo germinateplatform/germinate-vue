@@ -34,8 +34,8 @@
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartBar } from '@mdi/js'
 
-  const store = coreStore()
-  const tdStore = traitDataStore()
+  const store = useCoreStore()
+  const tdStore = useTraitDataStore()
   const { t } = useI18n()
 
   const loading = ref<boolean[]>([])

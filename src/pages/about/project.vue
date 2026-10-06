@@ -129,7 +129,7 @@ name: aboutProject
     items: AboutInfo[]
   }
 
-  const store = coreStore()
+  const store = useCoreStore()
   const config = ref<AboutGroup[]>([])
   const selectedInfo = ref<AboutInfo>({})
   const infoModal = useTemplateRef('infoModal')

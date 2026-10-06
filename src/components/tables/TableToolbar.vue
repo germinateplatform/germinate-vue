@@ -61,7 +61,7 @@
   import { Pages } from '@/plugins/pages'
   import { mdiDelete, mdiFilter, mdiMenuDown, mdiMenuUp, mdiTable, mdiViewColumn, mdiViewGrid } from '@mdi/js'
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const compProps = defineProps<{
     modelValue: DisplayType

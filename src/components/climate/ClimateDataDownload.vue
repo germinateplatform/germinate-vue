@@ -77,8 +77,8 @@
     max?: number
   }>()
 
-  const store = coreStore()
-  const cdStore = climateDataStore()
+  const store = useCoreStore()
+  const cdStore = useClimateDataStore()
 
   const selectedClimates = ref<ViewTableClimates[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])

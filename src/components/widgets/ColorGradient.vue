@@ -39,7 +39,7 @@
 
   const canvas = useTemplateRef('canvas')
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   const colors = computed(() => {
     if (store.storeServerSettings && store.storeServerSettings.colorsGradient && store.storeServerSettings.colorsGradient.length > 0) {

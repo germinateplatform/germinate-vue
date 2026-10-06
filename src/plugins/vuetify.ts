@@ -123,7 +123,7 @@ export function loadLanguageAsync (lang: string) {
     htmlTag = lang.slice(0, underscoreIndex)
   }
 
-  const store = coreStore()
+  const store = useCoreStore()
 
   // If the same language
   if (vuetify.locale.current.value === htmlTag) {

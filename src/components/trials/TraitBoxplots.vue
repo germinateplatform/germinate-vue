@@ -53,8 +53,8 @@
     max?: number
   }>()
 
-  const store = coreStore()
-  const tdStore = traitDataStore()
+  const store = useCoreStore()
+  const tdStore = useTraitDataStore()
 
   const traitStatsChart = useTemplateRef('traitStatsChart')
 

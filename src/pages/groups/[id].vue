@@ -133,7 +133,7 @@ name: groupDetails
   }
 
   const { t } = useI18n()
-  const store = coreStore()
+  const store = useCoreStore()
   const router = useRouter()
   const route = useRoute('groupDetails')
   const groupId = ref<number>()
