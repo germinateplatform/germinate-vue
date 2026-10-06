@@ -41,6 +41,7 @@ export interface UserStateContent {
   changelogVersionNumber: string | undefined
   activeStory: IndexedViewTableStoriesEnriched | undefined
   cookiesAccepted: boolean | undefined
+  mainNavHidden: boolean
 }
 
 type MarkedItems = { [key: string]: number[] }
@@ -109,6 +110,7 @@ const defaultUserState: UserStateContent = {
   changelogVersionNumber: undefined,
   activeStory: undefined,
   cookiesAccepted: undefined,
+  mainNavHidden: false,
 }
 
 /**
@@ -271,6 +273,9 @@ export const useCoreStore = defineStore('germinate', {
     storeServerSettings: (state): ClientConfiguration | undefined => state.serverSettings,
     storeIsDarkMode (): boolean {
       return (this.userStates[this.storeUserId].theme === 'system' ? this.userStates[this.storeUserId].systemTheme : this.userStates[this.storeUserId].theme) === 'dark'
+    },
+    storeMainNavHidden (): boolean {
+      return this.userStates[this.storeUserId].mainNavHidden || false
     },
     storeSystemTheme (): string {
       return this.userStates[this.storeUserId].systemTheme || 'light'
@@ -443,6 +448,9 @@ export const useCoreStore = defineStore('germinate', {
     },
     clearAsyncJobUuids () {
       this.userStates[this.storeUserId].asyncJobUuids = []
+    },
+    setMainNavHidden (newMainNavHidden: boolean) {
+      this.userStates[this.storeUserId].mainNavHidden = newMainNavHidden
     },
   },
   persist: {

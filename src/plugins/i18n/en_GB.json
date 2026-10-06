@@ -1834,6 +1834,7 @@
   "widgetCookieCustomChartColors": "Remembers any custom chart colors a user might have chosen.",
   "widgetCookieAsyncJobUuids": "Stores information about import/export jobs each user currently has running.",
   "widgetCookieTablePerPage": "Remembers how many items per page should be shown in all tables.",
+  "widgetCookieMainNavState": "Stores the state of the main navigation (expanded/collapsed).",
   "widgetCookieChangelogVersionNumber": "Stores the latest Germinate version number for which the user has seen the changelog information.",
   "widgetCookieActiveStory": "Remembers which (if any) story the current user is looking at.",
   "widgetCookieDeviceConfig": "Stores information about the device the user is currently using for telemetry purposes.",

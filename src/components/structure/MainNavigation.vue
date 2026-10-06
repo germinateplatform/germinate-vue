@@ -4,9 +4,8 @@
     permanent
     theme="dark"
     :width="navbarWidth"
-    :rail="$vuetify.display.mdAndDown || forcedRail"
+    v-model:rail="railVisible"
     :expand-on-hover="$vuetify.display.mdAndDown || forcedRail"
-    @update:rail="e => { railVisible = !e }"
   >
     <v-list density="comfortable" color="primary">
       <v-list-item
@@ -117,7 +116,7 @@
     </v-list>
 
     <template #append v-if="$vuetify.display.lgAndUp">
-      <v-list-item base-color="muted" active @click="forcedRail = !forcedRail" :prepend-icon="logoVisible ? undefined : forceRailIcon">
+      <v-list-item base-color="muted" active @click="toggleRail()" :prepend-icon="logoVisible ? undefined : forceRailIcon">
         <div class="d-flex justify-center align-center" v-if="logoVisible">
           <v-icon :icon="forceRailIcon" />
         </div>
@@ -137,9 +136,9 @@
   import emitter from 'tiny-emitter/instance'
   import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderHorizontal, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy, mdiCookie } from '@mdi/js'
 
-  const { name, lgAndUp } = useDisplay()
+  const { name, lgAndUp, mdAndDown } = useDisplay()
   const store = useCoreStore()
-  const railVisible = ref()
+  const railVisible = ref(true)
   const forcedRail = ref(false)
 
   const badgeCounts = ref<OverviewStats>()
@@ -164,9 +163,9 @@
 
   const logoVisible = computed(() => {
     if (forcedRail.value) {
-      return railVisible.value
+      return !railVisible.value
     } else {
-      return lgAndUp.value || railVisible.value
+      return lgAndUp.value || !railVisible.value
     }
   })
 
@@ -190,9 +189,21 @@
     })
   }
 
+  function toggleRail () {
+    forcedRail.value = !forcedRail.value
+    store.setMainNavHidden(forcedRail.value)
+  }
+
   watch(() => store.storeSelectedProjects, async () => updateStats())
 
-  onMounted(() => emitter.on('update-sidebar-menu', updateStats))
+  onMounted(() => {
+    emitter.on('update-sidebar-menu', updateStats)
+    railVisible.value = store.storeMainNavHidden === true ? true : mdAndDown.value || forcedRail.value
+    forcedRail.value = store.storeMainNavHidden === true
+    // console.log(store.storeMainNavHidden)
+    // forcedRail.value = store.storeMainNavHidden === true ? false : (mdAndDown.value || forcedRail.value)
+    // console.log(forcedRail.value)
+  })
   onBeforeUnmount(() => emitter.off('update-sidebar-menu', updateStats))
 </script>
 

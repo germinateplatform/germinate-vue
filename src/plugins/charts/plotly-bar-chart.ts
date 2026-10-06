@@ -161,7 +161,7 @@ export class BarChart {
             if (data && data.points && data.points.length > 0 && data.event && data.event.button === 0) {
               this.config.onPointClicked?.({
                 x: data.points[0].x,
-                trace: data.points[0].data.name,
+                trace: data.points[0].data.name || '',
               })
             }
           })

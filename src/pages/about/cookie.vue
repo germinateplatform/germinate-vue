@@ -191,6 +191,13 @@
       purpose: t('widgetCookieActiveStory'),
       duration: 'persistent',
     }, {
+      name: 'userStates.mainNavHidden',
+      essential: false,
+      storageType: 'localStorage',
+      provider: host.value,
+      purpose: t('widgetCookieMainNavState'),
+      duration: 'persistent',
+    }, {
       name: 'deviceConfig',
       essential: false,
       storageType: 'localStorage',
