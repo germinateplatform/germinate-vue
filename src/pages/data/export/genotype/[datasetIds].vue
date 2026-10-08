@@ -1,7 +1,10 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageGenotypesExportTitle') }}</h1>
-    <DatasetList :datasets="datasets" v-if="datasets" />
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes.genotype.path">
+      <template #append>
+        <DatasetList :datasets="datasets" v-if="datasets" />
+      </template>
+    </PageHeaderBreadcrumbs>
     <v-divider class="mb-3" />
 
     <div v-if="datasets && datasets.length > 0">
@@ -163,11 +166,14 @@ name: exportGenotypes
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type ViewTableDatasetMaps, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type GenotypeSubsetDatasetRequest } from '@/plugins/types/germinate'
   import { handleRouterQuery, isAccepted } from '@/plugins/util'
+  import { datasetTypes } from '@/plugins/util/types'
   import { mdiArrowRightBox, mdiDatabase, mdiFileDocument, mdiFileTable, mdiInformation } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
+  import { useI18n } from 'vue-i18n'
 
+  const { t } = useI18n()
   const store = useCoreStore()
   const router = useRouter()
   const route = useRoute('exportGenotypes')
@@ -197,6 +203,15 @@ name: exportGenotypes
     flapjack: boolean
     hapmap: boolean
   }
+
+  const breadcrumbs = computed(() => {
+    return [{
+      title: t('menuExportData'),
+      to: Pages.export.path,
+    }, {
+      title: t('pageGenotypesExportTitle'),
+    }]
+  })
 
   const datasetsSelected = computed(() => selectedDatasets.value.length > 0)
 
@@ -378,7 +393,7 @@ name: exportGenotypes
   function redirectBack () {
     // Navigate to the germplasm page
     router.push({
-      path: Pages.getPath(Pages.export, 'genotype'),
+      path: Pages.getPath(Pages.exportType, 'genotype'),
       query: {
         'datasets-filter': JSON.stringify([{
           filters: [{

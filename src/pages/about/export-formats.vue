@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageExportFormatsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageExportFormatsTitle')]" :icon="mdiApplicationBrackets" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageExportFormatsText')" />
 
@@ -78,7 +78,7 @@ name: aboutExportFormats
 <script setup lang="ts">
   import { getTemplateColor } from '@/plugins/util/colors'
   import { exportFormats, type FormatState } from '@/plugins/util/types'
-  import { mdiCloud, mdiCloudDownload, mdiCloudUpload, mdiDownload, mdiOpenInNew, mdiTag } from '@mdi/js'
+  import { mdiApplicationBrackets, mdiCloud, mdiCloudDownload, mdiCloudUpload, mdiDownload, mdiOpenInNew, mdiTag } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 
   const { t } = useI18n()

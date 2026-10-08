@@ -11,6 +11,7 @@ export interface BaseTableProps<T> {
   getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
   download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
   getRowProps?: Record<string, any> | RowPropsFunction<T>
+  showCustomActions?: boolean
   selectionType?: TableSelectionType
   headers: ExtendedDataTableHeader[]
   itemId?: (item: T) => string

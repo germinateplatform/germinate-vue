@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div id="about-page">
-      <h1 class="text-headline-large mb-3">{{ $t('pageAboutGerminateTitle') }}</h1>
+      <PageHeaderBreadcrumbs :items="[$t('pageAboutGerminateTitle')]" icon="$germinate" />
       <v-divider class="mb-3" />
 
       <v-row class="my-5 card-icon-avatar">

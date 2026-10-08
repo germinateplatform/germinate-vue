@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageMarkersTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageMarkersTitle')]" :icon="mdiFormatIndentIncrease" :icon-rotate="90" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageMarkersText')" />
 
@@ -16,6 +16,7 @@ name: markers
   import MarkerTable from '@/components/tables/MarkerTable.vue'
   import { apiPostMarkerTable, apiPostMarkerTableIds } from '@/plugins/api/genotype'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiFormatIndentIncrease } from '@mdi/js'
 
   function getData (data: PaginatedRequest) {
     return apiPostMarkerTable(data)

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageTrialsOverviewTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageTrialsOverviewTitle')]" :icon="mdiLandFields" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageTrialsOverviewText')" />
 
@@ -80,7 +80,7 @@ name: trials
   import { apiGetTrialStats } from '@/plugins/api/trait'
   import type { TrialStats } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { mdiChartBellCurveCumulative, mdiChartLine, mdiDatabase, mdiSpade, mdiTagMultiple } from '@mdi/js'
+  import { mdiChartBellCurveCumulative, mdiChartLine, mdiDatabase, mdiLandFields, mdiSpade, mdiTagMultiple } from '@mdi/js'
 
   interface ChartData {
     keys: string[]

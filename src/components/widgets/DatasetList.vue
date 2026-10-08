@@ -1,5 +1,5 @@
 <template>
-  <v-chip-group class="mb-3" v-if="datasets">
+  <v-chip-group v-if="datasets">
     <v-menu
       location="top start"
       origin="top start"

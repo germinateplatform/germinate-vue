@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageGermplasmTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageGermplasmTitle')]" :icon="mdiSprout" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageGermplasmText')" />
 
@@ -176,7 +176,7 @@ name: germplasm
   import emitter from 'tiny-emitter/instance'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { mdiDownload, mdiFamilyTree, mdiFilter, mdiGroup, mdiListStatus, mdiMapMarkerMultiple, mdiPassport, mdiPlaylistCheck } from '@mdi/js'
+  import { mdiDownload, mdiFamilyTree, mdiFilter, mdiGroup, mdiListStatus, mdiMapMarkerMultiple, mdiPassport, mdiPlaylistCheck, mdiSprout } from '@mdi/js'
   import { watchIgnorable } from '@vueuse/core'
 
   const store = useCoreStore()

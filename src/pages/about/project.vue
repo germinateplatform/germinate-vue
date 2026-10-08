@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div id="about-page">
-      <h1 class="text-headline-large mb-3">{{ $t('pageAboutProjectTitle') }}</h1>
+      <PageHeaderBreadcrumbs :items="[$t('pageAboutProjectTitle')]" :icon="mdiInformationOutline" />
       <v-divider class="mb-3" />
 
       <HtmlTemplateEditor i18n-key="pageAboutProjectText" />
@@ -119,7 +119,7 @@ name: aboutProject
   import { apiGetTemplateAboutConfig, apiPatchTemplateAboutConfig, apiPostAboutPartner } from '@/plugins/api/setting'
   import type { AboutInfo } from '@/plugins/types/germinate'
   import { uuidv4 } from '@/plugins/util'
-  import { mdiContentSave, mdiDelete, mdiDrag, mdiOpenInNew, mdiPlusBox } from '@mdi/js'
+  import { mdiContentSave, mdiDelete, mdiDrag, mdiInformationOutline, mdiOpenInNew, mdiPlusBox } from '@mdi/js'
   import { VueDraggableNext as draggable } from 'vue-draggable-next'
 
   const NO_GROUP = '--NO_GROUP--'

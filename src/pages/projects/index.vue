@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageProjectsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageProjectsTitle')]" :icon="mdiClipboardList" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageProjectsText')" />
 
@@ -16,6 +16,7 @@ name: projects
   import ProjectTable from '@/components/tables/ProjectTable.vue'
   import { apiPostProjectTable, apiPostProjectTableIds } from '@/plugins/api/project'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiClipboardList } from '@mdi/js'
 
   function getData (data: PaginatedRequest) {
     return apiPostProjectTable(data)

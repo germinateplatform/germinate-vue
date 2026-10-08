@@ -1,7 +1,10 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageTrialsExportTitle') }}</h1>
-    <DatasetList :datasets="tdStore.storeDatasets" v-if="tdStore.storeDatasets" />
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes.trials.path">
+      <template #append>
+        <DatasetList :datasets="tdStore.storeDatasets" v-if="tdStore.storeDatasets" />
+      </template>
+    </PageHeaderBreadcrumbs>
     <v-divider class="mb-3" />
 
     <div v-if="tdStore.storeDatasets && tdStore.storeDatasets.length > 0">
@@ -125,6 +128,7 @@ name: exporTrials
   import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type PaginatedRequest, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
+  import { datasetTypes } from '@/plugins/util/types'
   import { mdiChartBellCurve, mdiCompare, mdiDatabase, mdiEye, mdiFileDownload, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
@@ -151,13 +155,19 @@ name: exporTrials
 
   const selectedTab = ref<TabType>('overview')
   const datasetIds = ref<number[]>([])
-  // const datasets = ref<ViewTableDatasets[]>()
-  // const traits = ref<ViewTableTraits[]>([])
-  // const groups = ref<ViewTableGroups[]>([])
 
   const trialLocationsAvailable = ref(false)
   const trialLayoutAvailable = ref<boolean[]>()
   const trialTimepointsAvailable = ref(false)
+
+  const breadcrumbs = computed(() => {
+    return [{
+      title: t('menuExportData'),
+      to: Pages.export.path,
+    }, {
+      title: t('pageTrialsExportTitle'),
+    }]
+  })
 
   const hasFileResources = computed(() => tdStore.storeDatasets.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
 
@@ -325,7 +335,7 @@ name: exporTrials
   function redirectBack () {
     // Navigate to the germplasm page
     router.push({
-      path: Pages.getPath(Pages.export, 'trials'),
+      path: Pages.getPath(Pages.exportType, 'trials'),
       query: {
         'datasets-filter': JSON.stringify([{
           filters: [{

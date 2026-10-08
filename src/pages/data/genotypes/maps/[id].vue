@@ -1,6 +1,6 @@
 <template>
   <v-container fluid v-if="map">
-    <h1 class="text-headline-large mb-3">{{ $t('pageMapsDetailsTitle') }} <small>{{ map.mapName }}</small></h1>
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiReorderVertical" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageMapsDetailsText')" />
 
@@ -19,7 +19,10 @@ name: mapDetails
   import MapChart from '@/components/charts/MapChart.vue'
   import MapDefinitionTable from '@/components/tables/MapDefinitionTable.vue'
   import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMapsTable } from '@/plugins/api/genotype'
+  import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedRequest, type ViewTableMaps, type FilterGroup } from '@/plugins/types/germinate'
+  import { mdiReorderVertical } from '@mdi/js'
+  import { useI18n } from 'vue-i18n'
 
   const route = useRoute('mapDetails')
 
@@ -34,7 +37,22 @@ name: mapDetails
   const selections = ref<MapSelection[]>([])
   const filter = ref<FilterGroup[]>([])
 
+  const { t } = useI18n()
   const mapDefinitionTable = useTemplateRef('mapDefinitionTable')
+
+  const breadcrumbs = computed(() => {
+    if (map.value) {
+      return [{
+        title: t('pageMapsTitle'),
+        to: Pages.maps.path,
+      }, {
+        title: map.value.mapName || '',
+        to: Pages.getPath(Pages.mapDetails, `${map.value.mapId}`),
+      }]
+    } else {
+      return []
+    }
+  })
 
   function getData (data: PaginatedRequest) {
     const fs: FilterGroup[] = [{

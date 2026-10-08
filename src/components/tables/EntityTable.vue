@@ -51,6 +51,31 @@
       <v-chip label :color="entityTypes[item.entityChildType].color()" :prepend-icon="entityTypes[item.entityChildType].path">{{ entityTypes[item.entityChildType].text() }}</v-chip>
     </template>
 
+    <template #item.entityParentId="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityParentId)">{{ item.entityParentId }}</router-link>
+    </template>
+    <template #item.entityParentGid="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityParentId)">{{ item.entityParentGid }}</router-link>
+    </template>
+    <template #item.entityParentName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityParentId)">{{ item.entityParentName }}</router-link>
+    </template>
+    <template #item.entityParentDisplayName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityParentId)">{{ item.entityParentDisplayName }}</router-link>
+    </template>
+    <template #item.entityChildId="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityChildId)">{{ item.entityChildId }}</router-link>
+    </template>
+    <template #item.entityChildGid="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityChildId)">{{ item.entityChildGid }}</router-link>
+    </template>
+    <template #item.entityChildName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityChildId)">{{ item.entityChildName }}</router-link>
+    </template>
+    <template #item.entityChildDisplayName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityChildId)">{{ item.entityChildDisplayName }}</router-link>
+    </template>
+
     <!-- Pass on all named slots -->
     <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
       <slot :name="slot" v-bind="slotProps" />
@@ -68,6 +93,7 @@
   import type { DataTableSortItem } from 'vuetify'
   import { mdiFileTree } from '@mdi/js'
   import { entityTypes } from '@/plugins/util/types'
+  import { Pages } from '@/plugins/pages'
 
   interface EntityTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableEntities[]>>> }

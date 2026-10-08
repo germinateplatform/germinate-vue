@@ -388,6 +388,9 @@
     if (markedItemConfig.value) {
       headers.push({ title: '', key: 'marked-items', width: '1em', dataType: 'boolean', sortable: false, visibleInFilter: false, align: 'end' as 'start' | 'end' | 'center' })
     }
+    if (componentProps.showCustomActions) {
+      headers.push({ title: '', key: 'custom-actions', width: '1em', dataType: 'string', sortable: false, visibleInFilter: false, align: 'end' as 'start' | 'end' | 'center' })
+    }
 
     if (hiddenColumns) {
       headers = headers.filter(h => h.key ? !hiddenColumns.includes(h.key) : true)

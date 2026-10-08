@@ -26,7 +26,7 @@
 
     <ImageCarousel class="my-5" />
 
-    <h1 class="text-headline-large mb-3">{{ $t('pageDashboardTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageDashboardTitle')]" :icon="mdiHome" />
     <v-divider class="mb-3" />
 
     <HtmlTemplateEditor i18n-key="pageDashboardText" />
@@ -78,6 +78,7 @@ name: home
   import { apiPostPublicationsTable } from '@/plugins/api/publication'
   import { apiPostNewsTable } from '@/plugins/api/news'
   import { apiPostDataImportStats } from '@/plugins/api/dataimport'
+  import { mdiHome } from '@mdi/js'
 
   const store = useCoreStore()
   const stats = ref<OverviewStats>()

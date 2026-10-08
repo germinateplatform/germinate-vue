@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageTraitsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageTraitsTitle')]" :icon="mdiTagTextOutline" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageTraitsText')" />
 
@@ -28,6 +28,7 @@ name: traits
   import TraitTable from '@/components/tables/TraitTable.vue'
   import { apiPostTraitTable } from '@/plugins/api/trait'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiTagTextOutline } from '@mdi/js'
 
   const selectedMethodClasses = ref<string[]>([])
   const selectedScaleDataTypes = ref<string[]>([])

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pagePedigreeDefinitionsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pagePedigreeDefinitionsTitle')]" :icon="mdiPeriodicTable" :icon-rotate="90" />
     <v-divider class="mb-3" />
     <p v-html="$t('pagePedigreeDefinitionsText')" />
 
@@ -23,6 +23,7 @@ name: pedigrees
 <script setup lang="ts">
   import { apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiPeriodicTable } from '@mdi/js'
 
   function getPedigreeData (data: PaginatedRequest) {
     return apiPostPedigreeTable(data)

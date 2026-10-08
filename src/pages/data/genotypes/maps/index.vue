@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageMapsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageMapsTitle')]" :icon="mdiReorderVertical" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageMapsText')" />
 
@@ -16,6 +16,7 @@ name: maps
   import MapTable from '@/components/tables/MapTable.vue'
   import { apiPostMapsTable } from '@/plugins/api/genotype'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiReorderVertical } from '@mdi/js'
 
   function getData (data: PaginatedRequest) {
     return apiPostMapsTable(data)

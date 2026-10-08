@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-headline-large mb-3">{{ $t('pageSearchTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="tempLocalSearchTerm ? [$t('pageSearchTitle'), tempLocalSearchTerm || ''] : [$t('pageSearchTitle')]" :icon="mdiMagnify" />
     <v-divider class="mb-3" />
 
     <v-row>

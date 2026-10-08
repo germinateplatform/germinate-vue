@@ -39,7 +39,7 @@
             <template #prepend><v-icon :icon="mdiPeriodicTable" class="mdi-rotate-90" /></template>
             <template #append><v-chip :disabled="badgeCounts?.pedigreeDefinitions === 0" size="small">{{ formatBadge(badgeCounts?.pedigreeDefinitions) }}</v-chip></template>
           </v-list-item>
-          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'pedigree') || route.meta.navGroup === 'pedigree'" :to="Pages.getPath(Pages.export, 'pedigree')" :prepend-icon="mdiFamilyTree" v-if="Pages.isAvailable(Pages.exportPedigrees)" :title="$t('menuPedigreeDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsPedigree === 0" size="small">{{ formatBadge(badgeCounts?.datasetsPedigree) }}</v-chip></template></v-list-item>
+          <v-list-item link :active="route.path === Pages.getPath(Pages.exportType, 'pedigree') || route.meta.navGroup === 'pedigree'" :to="Pages.getPath(Pages.exportType, 'pedigree')" :prepend-icon="mdiFamilyTree" v-if="Pages.isAvailable(Pages.exportPedigrees)" :title="$t('menuPedigreeDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsPedigree === 0" size="small">{{ formatBadge(badgeCounts?.datasetsPedigree) }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="trials">
@@ -49,7 +49,7 @@
 
           <v-list-item link :to="Pages.trialsOverview.path" :prepend-icon="mdiLandFields" v-if="Pages.isAvailable(Pages.trialsOverview)" :title="$t('menuTrialsOverview')" />
           <v-list-item link :to="Pages.traits.path" :prepend-icon="mdiTagTextOutline" v-if="Pages.isAvailable(Pages.traits)" :title="$t('menuTrialsTraits')"><template #append><v-chip :disabled="badgeCounts?.traits === 0" size="small">{{ formatBadge(badgeCounts?.traits) }}</v-chip></template></v-list-item>
-          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'trials') || route.meta.navGroup === 'trials'" :to="Pages.getPath(Pages.export, 'trials')" :prepend-icon="mdiShovel" v-if="Pages.isAvailable(Pages.exportTraits)" :title="$t('menuTrialsDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsTrials === 0" size="small">{{ formatBadge(badgeCounts?.datasetsTrials) }}</v-chip></template></v-list-item>
+          <v-list-item link :active="route.path === Pages.getPath(Pages.exportType, 'trials') || route.meta.navGroup === 'trials'" :to="Pages.getPath(Pages.exportType, 'trials')" :prepend-icon="mdiShovel" v-if="Pages.isAvailable(Pages.exportTraits)" :title="$t('menuTrialsDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsTrials === 0" size="small">{{ formatBadge(badgeCounts?.datasetsTrials) }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="genotypes">
@@ -63,10 +63,10 @@
             <template #append><v-chip :disabled="badgeCounts?.markers === 0" size="small">{{ formatBadge(badgeCounts?.markers) }}</v-chip></template>
           </v-list-item>
           <v-list-item link :to="Pages.maps.path" v-if="Pages.isAvailable(Pages.maps)" :title="$t('menuGenotypicMaps')">
-            <template #prepend><v-icon :icon="mdiReorderHorizontal" class="mdi-rotate-90" /></template>
+            <template #prepend><v-icon :icon="mdiReorderVertical" /></template>
             <template #append><v-chip :disabled="badgeCounts?.maps === 0" size="small">{{ formatBadge(badgeCounts?.maps) }}</v-chip></template>
           </v-list-item>
-          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'genotype') || route.meta.navGroup === 'genotype'" :to="Pages.getPath(Pages.export, 'genotype')" :prepend-icon="mdiDna" v-if="Pages.isAvailable(Pages.exportGenotypes)" :title="$t('menuGenotypicDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsGenotype === 0" size="small">{{ formatBadge(badgeCounts?.datasetsGenotype) }}</v-chip></template></v-list-item>
+          <v-list-item link :active="route.path === Pages.getPath(Pages.exportType, 'genotype') || route.meta.navGroup === 'genotype'" :to="Pages.getPath(Pages.exportType, 'genotype')" :prepend-icon="mdiDna" v-if="Pages.isAvailable(Pages.exportGenotypes)" :title="$t('menuGenotypicDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsGenotype === 0" size="small">{{ formatBadge(badgeCounts?.datasetsGenotype) }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-group value="geography">
@@ -85,7 +85,7 @@
 
           <v-list-item link :to="Pages.climateOverview.path" :prepend-icon="mdiEarth" v-if="Pages.isAvailable(Pages.climateOverview)" :title="$t('menuClimateOverview')" />
           <v-list-item link :to="Pages.climates.path" :prepend-icon="mdiWeatherSnowyRainy" v-if="Pages.isAvailable(Pages.climates)" :title="$t('menuClimateClimates')"><template #append><v-chip :disabled="badgeCounts?.climates === 0" size="small">{{ formatBadge(badgeCounts?.climates) }}</v-chip></template></v-list-item>
-          <v-list-item link :active="route.path === Pages.getPath(Pages.export, 'climate') || route.meta.navGroup === 'climate'" :to="Pages.getPath(Pages.export, 'climate')" :prepend-icon="mdiChartSankey" v-if="Pages.isAvailable(Pages.exportClimates)" :title="$t('menuClimateDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsClimate === 0" size="small">{{ formatBadge(badgeCounts?.datasetsClimate) }}</v-chip></template></v-list-item>
+          <v-list-item link :active="route.path === Pages.getPath(Pages.exportType, 'climate') || route.meta.navGroup === 'climate'" :to="Pages.getPath(Pages.exportType, 'climate')" :prepend-icon="mdiChartSankey" v-if="Pages.isAvailable(Pages.exportClimates)" :title="$t('menuClimateDataExport')"><template #append><v-chip :disabled="badgeCounts?.datasetsClimate === 0" size="small">{{ formatBadge(badgeCounts?.datasetsClimate) }}</v-chip></template></v-list-item>
         </v-list-group>
 
         <v-list-item link :to="Pages.datasets.path" :prepend-icon="mdiDatabase" v-if="Pages.isAvailable(Pages.datasets)" :title="$t('menuDatasets')"><template #append><v-chip :disabled="badgeCounts?.datasets === 0" size="small">{{ formatBadge(badgeCounts?.datasets) }}</v-chip></template></v-list-item>
@@ -134,7 +134,7 @@
   import type { OverviewStats } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderHorizontal, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy, mdiCookie } from '@mdi/js'
+  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderVertical, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy, mdiCookie } from '@mdi/js'
 
   const { name, lgAndUp, mdAndDown } = useDisplay()
   const store = useCoreStore()

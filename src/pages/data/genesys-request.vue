@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageGenesysTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageGenesysTitle')]" icon="$genesys" />
     <v-divider class="mb-3" />
 
     <template v-if="genesysUrl">

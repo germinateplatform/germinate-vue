@@ -19,8 +19,20 @@ export function apiPutPublication (data: Publications, onSuccess?: GerminateResp
   return authAxios({ url: 'publication', method: 'PUT', data, success: onSuccess, error: onError })
 }
 
+export function apiDeletePublication (publicationId: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: `publication/${publicationId}`, method: 'DELETE', success: onSuccess, error: onError })
+}
+
 export function apiPutPublicationReference (publicationId: number, data: Publicationdata, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
   return authAxios({ url: `publication/${publicationId}/reference`, method: 'PUT', data, success: onSuccess, error: onError })
+}
+
+export function apiPutPublicationReferences (publicationId: number, data: Publicationdata[], onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: `publication/${publicationId}/references`, method: 'PUT', data, success: onSuccess, error: onError })
+}
+
+export function apiDeletePublicationReferenceDatabase (publicationId: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: `publication/${publicationId}/reference/database`, method: 'DELETE', success: onSuccess, error: onError })
 }
 
 export function apiDeletePublicationReference (publicationId: number, referenceType: string, referenceId?: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {

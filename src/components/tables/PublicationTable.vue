@@ -35,11 +35,27 @@
         <span><a rel="noopener noreferrer" target="_blank" :href="item.publicationDoi">{{ item.publicationDoi }}</a> <v-icon :icon="mdiOpenInNew" /></span>
       </template>
       <template #item.publicationDetails="{ item }">
-        <v-chip label class="me-2 mt-1" v-if="item.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path">{{ publicationTypes.database.text() }}</v-chip>
-        <v-chip label class="me-2 mt-1" v-if="item.germplasmIds && item.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path">{{ publicationTypes.germplasm.text() }} ({{ item.germplasmIds.length }})</v-chip>
-        <v-chip label class="me-2 mt-1" v-if="item.datasetIds && item.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path">{{ publicationTypes.dataset.text() }} ({{ item.datasetIds.length }})</v-chip>
-        <v-chip label class="me-2 mt-1" v-if="item.experimentIds && item.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path">{{ publicationTypes.experiment.text() }} ({{ item.experimentIds.length }})</v-chip>
-        <v-chip label class="me-2 mt-1" v-if="item.groupIds && item.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path">{{ publicationTypes.group.text() }} ({{ item.groupIds.length }})</v-chip>
+        <v-chip label class="me-2 mt-1" v-if="item.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path" :text="publicationTypes.database.text()" />
+        <v-chip label class="me-2 mt-1" v-if="item.germplasmIds && item.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path" :text="publicationTypes.germplasm.text()">
+          <template #append>
+            <v-badge inline :content="item.germplasmIds.length" />
+          </template>
+        </v-chip>
+        <v-chip label class="me-2 mt-1" v-if="item.datasetIds && item.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path" :text="publicationTypes.dataset.text()">
+          <template #append>
+            <v-badge inline class="ms-1" color="muted" :content="item.datasetIds.length" />
+          </template>
+        </v-chip>
+        <v-chip label class="me-2 mt-1" v-if="item.experimentIds && item.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path" :text="publicationTypes.experiment.text()">
+          <template #append>
+            <v-badge inline class="ms-1" color="muted" :content="item.experimentIds.length" />
+          </template>
+        </v-chip>
+        <v-chip label class="me-2 mt-1" v-if="item.groupIds && item.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path" :text="publicationTypes.group.text()">
+          <template #append>
+            <v-badge inline class="ms-1" color="muted" :content="item.groupIds.length" />
+          </template>
+        </v-chip>
       </template>
 
       <template #item.actions="{ item }">

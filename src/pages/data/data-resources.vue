@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageDataResourcesTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageDataResourcesTitle')]" :icon="mdiFileDownload" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageDataResourcesText')" />
 
@@ -16,6 +16,7 @@ name: dataResources
   import FileResourceTable from '@/components/tables/FileResourceTable.vue'
   import { apiPostFileResourceTable } from '@/plugins/api/dataset'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiFileDownload } from '@mdi/js'
 
   function getData (data: PaginatedRequest) {
     return apiPostFileResourceTable(data)

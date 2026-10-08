@@ -1,6 +1,11 @@
 <template>
   <v-container fluid v-if="group">
-    <h1 class="text-headline-large mb-3">{{ group.groupName }} <v-chip v-if="group.groupType" label :color="groupTypes[group.groupType].color()" :prepend-icon="groupTypes[group.groupType].path">{{ groupTypes[group.groupType].text() }}</v-chip></h1>
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiGroup">
+      <template #append>
+        <v-chip v-if="group.groupType" label :color="groupTypes[group.groupType].color()" :prepend-icon="groupTypes[group.groupType].path">{{ groupTypes[group.groupType].text() }}</v-chip>
+      </template>
+    </PageHeaderBreadcrumbs>
+
     <v-divider class="mb-3" />
     <!-- Description -->
     <v-list>
@@ -123,7 +128,7 @@ name: groupDetails
   import { lookupDoiInformation } from '@/plugins/util'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { groupTypes } from '@/plugins/util/types'
-  import { mdiCollapseAllOutline, mdiDelete, mdiExpandAllOutline, mdiUpload } from '@mdi/js'
+  import { mdiCollapseAllOutline, mdiDelete, mdiExpandAllOutline, mdiGroup, mdiUpload } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
@@ -147,6 +152,20 @@ name: groupDetails
 
   const userCanEdit = computed(() => {
     return store.token && (store.token.id === group.value?.userId || store.storeUserIsAdmin) && store.storeServerSettings?.authMode !== 'NONE'
+  })
+
+  const breadcrumbs = computed(() => {
+    if (group.value) {
+      return [{
+        title: t('pageGroupsTitle'),
+        to: Pages.groups.path,
+      }, {
+        title: group.value.groupName || '',
+        to: Pages.getPath(Pages.groupDetails, `${group.value.groupId}`),
+      }]
+    } else {
+      return []
+    }
   })
 
   function updateSelection (selection: number[]) {

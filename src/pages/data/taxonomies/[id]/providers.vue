@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageTaxonomyProviderTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiLan" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageTaxonomyProviderText')" />
 
@@ -161,15 +161,40 @@ name: taxonomyProviderDetails
   import { ebiGetGenomeAssemblies, ebiGetRecords, ebiGetStudies } from '@/plugins/api/ebi'
   import { FilterComparator, FilterOperator, type ViewTableTaxonomies, type PaginatedRequest, type TaxonomyProviderInfo } from '@/plugins/types/germinate'
   import type { EbiStudy, EbiRecord, EbiGenomyAssembly } from '@/plugins/types/ebi'
-  import { getNumberWithSuffix } from '@/plugins/util/formatting'
+  import { getNumberWithSuffix, isEmptyNullOrUndefined } from '@/plugins/util/formatting'
   import { useI18n } from 'vue-i18n'
-  import { mdiApi, mdiIdentifier, mdiMagnify } from '@mdi/js'
+  import { mdiApi, mdiIdentifier, mdiLan, mdiMagnify } from '@mdi/js'
+  import { Pages } from '@/plugins/pages'
 
   const { t } = useI18n()
   const route = useRoute('taxonomyProviderDetails')
 
   const taxonomyId = ref<number>()
   const taxonomy = ref<ViewTableTaxonomies>()
+
+  const joinedName = computed(() => {
+    if (taxonomy.value) {
+      return [taxonomy.value.taxonomyGenus, taxonomy.value.taxonomySpecies, taxonomy.value.taxonomySubtaxa].filter(p => !isEmptyNullOrUndefined(p)).join(' ')
+    } else {
+      return ''
+    }
+  })
+
+  const breadcrumbs = computed(() => {
+    if (taxonomy.value) {
+      return [{
+        title: t('pageTaxonomiesTitle'),
+        to: Pages.taxonomies.path,
+      }, {
+        title: joinedName.value,
+      }, {
+        title: t('pageTaxonomyProviderTitle'),
+        to: Pages.getPath(Pages.taxonomyProviderDetails, `${taxonomyId.value}`),
+      }]
+    } else {
+      return []
+    }
+  })
 
   const ebiProvider = ref<TaxonomyProviderInfo>()
   const ebiOverview = ref<EbiRecord[]>()

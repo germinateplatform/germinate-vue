@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageStoriesTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageStoriesTitle')]" :icon="mdiBookOpenPageVariant" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageStoriesText')" />
 
@@ -26,6 +26,7 @@ name: dataStories
 <script setup lang="ts">
   import { apiPostStoryTable } from '@/plugins/api/story'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiBookOpenPageVariant } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
 
   const store = useCoreStore()

@@ -21,11 +21,27 @@
         <span v-html="displayData.fullReference" />
       </div>
 
-      <v-chip label class="me-2 mt-1" v-if="publication.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path">{{ publicationTypes.database.text() }}</v-chip>
-      <v-chip label class="me-2 mt-1" v-if="publication.germplasmIds && publication.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path">{{ publicationTypes.germplasm.text() }} ({{ publication.germplasmIds.length }})</v-chip>
-      <v-chip label class="me-2 mt-1" v-if="publication.datasetIds && publication.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path">{{ publicationTypes.dataset.text() }} ({{ publication.datasetIds.length }})</v-chip>
-      <v-chip label class="me-2 mt-1" v-if="publication.experimentIds && publication.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path">{{ publicationTypes.experiment.text() }} ({{ publication.experimentIds.length }})</v-chip>
-      <v-chip label class="me-2 mt-1" v-if="publication.groupIds && publication.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path">{{ publicationTypes.group.text() }} ({{ publication.groupIds.length }})</v-chip>
+      <v-chip label class="me-2 mt-1" v-if="publication.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path" :text="publicationTypes.database.text()" />
+      <v-chip label class="me-2 mt-1" v-if="publication.germplasmIds && publication.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path" :text="publicationTypes.germplasm.text()">
+        <template #append>
+          <v-badge inline :content="publication.germplasmIds.length" />
+        </template>
+      </v-chip>
+      <v-chip label class="me-2 mt-1" v-if="publication.datasetIds && publication.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path" :text="publicationTypes.dataset.text()">
+        <template #append>
+          <v-badge inline class="ms-1" color="muted" :content="publication.datasetIds.length" />
+        </template>
+      </v-chip>
+      <v-chip label class="me-2 mt-1" v-if="publication.experimentIds && publication.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path" :text="publicationTypes.experiment.text()">
+        <template #append>
+          <v-badge inline class="ms-1" color="muted" :content="publication.experimentIds.length" />
+        </template>
+      </v-chip>
+      <v-chip label class="me-2 mt-1" v-if="publication.groupIds && publication.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path" :text="publicationTypes.group.text()">
+        <template #append>
+          <v-badge inline class="ms-1" color="muted" :content="publication.groupIds.length" />
+        </template>
+      </v-chip>
     </v-card-text>
 
     <v-card-actions v-if="displayData.URL">
@@ -50,14 +66,11 @@
 </template>
 
 <script setup lang="ts">
-  import type { PublicationDoiLookupDetails, ViewTablePublications } from '@/plugins/types/germinate'
-  // @ts-ignore
-  import { Cite } from '@citation-js/core'
-  import '@citation-js/plugin-doi'
-  import '@citation-js/plugin-csl'
+  import type { ViewTablePublications } from '@/plugins/types/germinate'
   import { publicationTypes } from '@/plugins/util/types'
   import { mdiNewspaper } from '@mdi/js'
   import { Pages } from '@/plugins/pages'
+  import { getPublicationData } from '@/plugins/util/formatting'
 
   const store = useCoreStore()
   const route = useRoute()
@@ -72,60 +85,9 @@
 
   const emit = defineEmits(['delete'])
 
-  function getFromCache () {
-    if (!publication) {
-      return undefined
-    }
-
-    try {
-      const citation = new Cite(publication.publicationFallbackCache)
-
-      if (citation && citation.data && citation.data.length > 0) {
-        const result = citation.format('data', { format: 'object' })[0]
-        result.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
-        return result
-      } else {
-        return {
-          title: 'N/A',
-          fullReference: 'N/A',
-          URL: publication.publicationDoi,
-        }
-      }
-    } catch {
-      return {
-        title: 'N/A',
-        fullReference: 'N/A',
-        URL: publication.publicationDoi,
-      }
-    }
-  }
-
   const displayData = computed(() => {
     if (publication) {
-      let result: PublicationDoiLookupDetails
-
-      if (publication.publicationFallbackCache) {
-        result = getFromCache()
-      } else {
-        try {
-          const citation = Cite.async(publication.publicationDoi.trim())
-          if (citation && citation.data && citation.data.length > 0) {
-            const temp = citation.format('data', { format: 'object' })[0]
-            result = {
-              title: temp.title,
-              fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
-              URL: temp.URL,
-              date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
-              'container-title': temp['container-title'],
-            }
-          } else {
-            result = getFromCache()
-          }
-        } catch {
-          result = getFromCache()
-        }
-      }
-      return result
+      return getPublicationData(publication)
     } else {
       return undefined
     }

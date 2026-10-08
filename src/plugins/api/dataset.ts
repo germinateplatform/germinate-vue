@@ -8,6 +8,11 @@ export function apiPostPublicationDatasetTable (publicationId: number, queryData
   return authAxios({ url: `publication/${publicationId}/dataset`, method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+export function apiPostPublicationExperimentTable (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableExperiments[]>>, onError?: ErrorHandler) {
+  queryData.page -= 1
+  return authAxios({ url: `publication/${publicationId}/experiment`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 export function apiPostCollaboratorsTable<T> (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<T>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: 'collaborator/table', method: 'POST', data: queryData, success: onSuccess, error: onError })

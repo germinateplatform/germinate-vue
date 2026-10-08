@@ -1,3 +1,9 @@
+import type { PublicationDoiLookupDetails, ViewTablePublications } from '@/plugins/types/germinate'
+// @ts-ignore
+import { Cite } from '@citation-js/core'
+import '@citation-js/plugin-doi'
+import '@citation-js/plugin-csl'
+
 const padTo2Digits = (num: number) => num.toString().padStart(2, '0')
 
 function getDateTimeString (date?: Date) {
@@ -14,6 +20,65 @@ function getDateString (date: Date) {
   }
 
   return `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())}`
+}
+
+export function getPublicationData (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
+  if (publication) {
+    let result: PublicationDoiLookupDetails | undefined
+
+    if (publication.publicationFallbackCache) {
+      result = getFromCache(publication)
+    } else {
+      try {
+        const citation = Cite.async(publication.publicationDoi.trim())
+        if (citation && citation.data && citation.data.length > 0) {
+          const temp = citation.format('data', { format: 'object' })[0]
+          result = {
+            title: temp.title,
+            fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
+            URL: temp.URL,
+            date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
+            'container-title': temp['container-title'],
+          }
+        } else {
+          result = getFromCache(publication)
+        }
+      } catch {
+        result = getFromCache(publication)
+      }
+    }
+    return result
+  } else {
+    return undefined
+  }
+}
+
+export function getFromCache (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
+  if (!publication) {
+    return undefined
+  }
+
+  try {
+    const citation = new Cite(publication.publicationFallbackCache)
+
+    if (citation && citation.data && citation.data.length > 0) {
+      const result = citation.format('data', { format: 'object' })[0]
+      result.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
+      return result
+    } else {
+      return {
+        title: 'N/A',
+        fullReference: 'N/A',
+        URL: publication.publicationDoi,
+      }
+    }
+  } catch {
+    return {
+      title: 'N/A',
+      fullReference: 'N/A',
+      URL: publication.publicationDoi,
+    }
+  }
 }
 
 /**

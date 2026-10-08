@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageUserPermissionsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageUserPermissionsTitle')]" :icon="mdiAccountKey" />
     <v-divider class="mb-3" />
 
     <p>{{ $t('pageUserPermissionsText') }}</p>
@@ -30,7 +30,7 @@ name: userPermissions
 </route>
 
 <script setup lang="ts">
-  import { mdiAccountGroup, mdiDatabaseLock } from '@mdi/js'
+  import { mdiAccountGroup, mdiAccountKey, mdiDatabaseLock } from '@mdi/js'
 
   const activeTab = ref<'groups' | 'datasets'>('groups')
 </script>

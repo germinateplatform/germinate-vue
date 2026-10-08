@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageGerminateSettingsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageGerminateSettingsTitle')]" :icon="mdiCog" />
     <v-divider class="mb-3" />
 
     <p>{{ $t('pageGerminateSettingsText') }}</p>
@@ -374,7 +374,7 @@ name: germinateSettings
   import { AuthenticationMode, DataImportMode, type ClientAdminConfiguration } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { dashboardSections, statCategories, type IsCountState, type LinkState, type OverviewStatsState, type PathState, type TextState, type ValueState } from '@/plugins/util/types'
-  import { mdiCookieLock, mdiCalculatorVariant, mdiCommentTextMultiple, mdiTune, mdiViewDashboardVariant, mdiBackupRestore, mdiLockOpenVariant, mdiLockOpen, mdiLock, mdiCancel, mdiFormatListChecks, mdiDatabaseImport, mdiAccountLockOpen, mdiShieldAlert, mdiChevronDoubleLeft, mdiChevronDoubleRight, mdiEyedropperPlus, mdiContentSaveAlert } from '@mdi/js'
+  import { mdiCookieLock, mdiCalculatorVariant, mdiCommentTextMultiple, mdiTune, mdiViewDashboardVariant, mdiBackupRestore, mdiLockOpenVariant, mdiLockOpen, mdiLock, mdiCancel, mdiFormatListChecks, mdiDatabaseImport, mdiAccountLockOpen, mdiShieldAlert, mdiChevronDoubleLeft, mdiChevronDoubleRight, mdiEyedropperPlus, mdiContentSaveAlert, mdiCog } from '@mdi/js'
   import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
   import { useDisplay, useTheme } from 'vuetify'
   import { useI18n } from 'vue-i18n'

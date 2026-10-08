@@ -1,6 +1,6 @@
 <template>
   <v-container fluid v-if="climate">
-    <h1 class="text-headline-large my-3 ">{{ climate.climateName }}</h1>
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiWeatherSnowyRainy" />
     <v-divider class="mb-3" />
 
     <ClimateDetails :climate="climate" />
@@ -13,12 +13,30 @@ name: climateDetails
 
 <script setup lang="ts">
   import { apiPostClimateTable } from '@/plugins/api/climate'
+  import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type ViewTableClimates } from '@/plugins/types/germinate'
+  import { mdiWeatherSnowyRainy } from '@mdi/js'
+  import { useI18n } from 'vue-i18n'
 
+  const { t } = useI18n()
   const route = useRoute('climateDetails')
 
   const climate = ref<ViewTableClimates>()
   const climateId = ref<number>()
+
+  const breadcrumbs = computed(() => {
+    if (climate.value) {
+      return [{
+        title: t('pageClimatesTitle'),
+        to: Pages.climates.path,
+      }, {
+        title: climate.value.climateName || '',
+        to: Pages.getPath(Pages.climateDetails, `${climate.value.climateId}`),
+      }]
+    } else {
+      return []
+    }
+  })
 
   onMounted(() => {
     if (route && route.params && route.params.id) {

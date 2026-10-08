@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageTaxonomiesTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageTaxonomiesTitle')]" :icon="mdiLan" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageTaxonomiesText')" />
 
@@ -16,6 +16,7 @@ name: taxonomies
   import TaxonomyTable from '@/components/tables/TaxonomyTable.vue'
   import { apiPostTaxonomyTable } from '@/plugins/api/germplasm'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiLan } from '@mdi/js'
 
   function getData (data: PaginatedRequest) {
     return apiPostTaxonomyTable(data)

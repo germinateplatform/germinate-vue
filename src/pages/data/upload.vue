@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageDataUploadTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageDataUploadTitle')]" :icon="mdiUpload" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageDataUploadText')" />
 

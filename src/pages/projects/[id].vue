@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageProjectsSelectedTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiClipboardList" />
     <v-divider class="mb-3" />
 
     <template v-if="project">
@@ -125,7 +125,7 @@ name: projectDetails
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { getImageUrlById } from '@/plugins/util/image'
-  import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiClose, mdiDatabase, mdiDelete, mdiGroup, mdiNewspaperVariant, mdiPlusBox } from '@mdi/js'
+  import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiClipboardList, mdiClose, mdiDatabase, mdiDelete, mdiGroup, mdiNewspaperVariant, mdiPlusBox } from '@mdi/js'
   import Markdown from 'vue3-markdown-it'
 
   import emitter from 'tiny-emitter/instance'
@@ -147,6 +147,20 @@ name: projectDetails
   const bottomSheetVisible = ref(false)
   const addType = ref<'group' | 'experiment'>()
   const selectedIds = ref<number[]>([])
+
+  const breadcrumbs = computed(() => {
+    if (project.value) {
+      return [{
+        title: t('pageProjectsTitle'),
+        to: Pages.projects.path,
+      }, {
+        title: project.value.projectName || '',
+        to: Pages.getPath(Pages.projectDetails, `${project.value.projectId}`),
+      }]
+    } else {
+      return []
+    }
+  })
 
   const projectSrc = computed(() => {
     if (project.value) {
@@ -230,14 +244,6 @@ name: projectDetails
     }
   })
 
-  function getExperimentData (data: PaginatedRequest) {
-    return apiPostExperimentTable(data)
-  }
-
-  function getExperimentIds (data: PaginatedRequest) {
-    return apiPostExperimentTableIds(data)
-  }
-
   function addToProject () {
     if (!project.value) {
       return
@@ -303,6 +309,14 @@ name: projectDetails
 
   function getGroupIds (data: PaginatedRequest) {
     return apiPostGroupTableIds(data)
+  }
+
+  function getExperimentData (data: PaginatedRequest) {
+    return apiPostExperimentTable(data)
+  }
+
+  function getExperimentIds (data: PaginatedRequest) {
+    return apiPostExperimentTableIds(data)
   }
 
   function addNew (type: 'experiment' | 'group') {

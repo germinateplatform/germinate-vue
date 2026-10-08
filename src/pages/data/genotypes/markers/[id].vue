@@ -1,11 +1,16 @@
 <template>
   <v-container fluid v-if="marker">
-    <h1 class="text-headline-large my-3 d-flex justify-space-between align-center">
-      <span>{{ $t('pageMarkerDetailsTitle') }} - <small>{{ marker.markerName }}</small> - <v-chip label :prepend-icon="mdiLabelVariant" :text="marker.markerType" /></span>
-      <v-chip label v-tooltip:top="$t('tooltipMarkerMarkedItem')" @click="markItem" :color="isMarked ? 'primary' : undefined">
-        <v-icon :icon="isMarked ? mdiBookmarkCheck : mdiBookmarkOutline" />
-      </v-chip>
-    </h1>
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiFormatIndentIncrease" :icon-rotate="90">
+      <template #append>
+        <div class="d-flex flex-grow-1 justify-space-between align-center">
+          <v-chip label :prepend-icon="mdiLabelVariant" :text="marker.markerType" />
+
+          <v-chip label v-tooltip:top="$t('tooltipMarkerMarkedItem')" @click="markItem" :color="isMarked ? 'primary' : undefined">
+            <v-icon :icon="isMarked ? mdiBookmarkCheck : mdiBookmarkOutline" />
+          </v-chip>
+        </div>
+      </template>
+    </PageHeaderBreadcrumbs>
     <v-divider class="mb-3" />
     <p>{{ $t('pageMarkerDetailsText') }}</p>
 
@@ -59,17 +64,34 @@ name: markerDetails
   import GroupTable from '@/components/tables/GroupTable.vue'
   import MapDefinitionTable from '@/components/tables/MapDefinitionTable.vue'
   import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMarkerDatasetTable, apiPostMarkerGroupTable, apiPostMarkerTable } from '@/plugins/api/genotype'
+  import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type ViewTableMarkers } from '@/plugins/types/germinate'
   import { isNumeric } from '@/plugins/util/formatting'
-  import { mdiBookmarkCheck, mdiBookmarkOutline, mdiLabel, mdiLabelVariant } from '@mdi/js'
+  import { mdiBookmarkCheck, mdiBookmarkOutline, mdiFormatIndentIncrease, mdiLabel, mdiLabelVariant } from '@mdi/js'
+  import { useI18n } from 'vue-i18n'
 
   const route = useRoute('markerDetails')
   const store = useCoreStore()
+  const { t } = useI18n()
 
   const marker = ref<ViewTableMarkers>()
   const markerId = ref<number>()
 
   const isMarked = computed(() => markerId.value ? store.storeMarkedMarkers.includes(markerId.value) : false)
+
+  const breadcrumbs = computed(() => {
+    if (marker.value) {
+      return [{
+        title: t('pageMarkersTitle'),
+        to: Pages.markers.path,
+      }, {
+        title: marker.value.markerName || '',
+        to: Pages.getPath(Pages.markerDetails, `${marker.value.markerId}`),
+      }]
+    } else {
+      return []
+    }
+  })
 
   const mapdefinitionFilter: ComputedRef<FilterGroup[]> = computed(() => {
     return [{

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageCookiesTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageCookiesTitle')]" :icon="mdiCookie" />
     <v-divider class="mb-3" />
     <h3 class="text-headline-medium mb-3">{{ $t('pageCookiesTitleGerminate') }}</h3>
     <p v-html="$t('pageCookiesTextGerminate')" />

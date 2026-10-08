@@ -1,9 +1,5 @@
 <template>
   <div v-if="localClimate">
-    {{ localClimate }}
-
-    <!-- <VariableDetails :variable-id="localClimate.climateId" /> -->
-
     <Images class="mt-3" :filter-on="imageFilter" @data-changed="setImageVisibility" v-if="imagesVisible" />
 
     <ClimateDataTable

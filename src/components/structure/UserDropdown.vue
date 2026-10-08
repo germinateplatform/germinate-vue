@@ -109,7 +109,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import TextfieldModal from '@/components/modals/TextfieldModal.vue'
-  import { mdiAccount, mdiAccountKey, mdiBackupRestore, mdiCircleMultiple, mdiCog, mdiCommentQuoteOutline, mdiLoginVariant, mdiLogoutVariant, mdiMenuRight, mdiMonitorShimmer, mdiSetMerge, mdiTextSearch, mdiUpload } from '@mdi/js'
+  import { mdiAccount, mdiAccountKey, mdiBackupRestore, mdiCircleMultiple, mdiCog, mdiLoginVariant, mdiLogoutVariant, mdiMenuRight, mdiMonitorShimmer, mdiSetMerge, mdiTextSearch, mdiUpload } from '@mdi/js'
 
   const store = useCoreStore()
   const router = useRouter()

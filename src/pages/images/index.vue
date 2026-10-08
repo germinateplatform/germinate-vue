@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageImagesTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageImagesTitle')]" :icon="mdiImageMultiple" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageImagesText')" />
 
@@ -14,4 +14,5 @@ name: images
 
 <script setup lang="ts">
   import Images from '@/components/widgets/Images.vue'
+  import { mdiImageMultiple } from '@mdi/js'
 </script>

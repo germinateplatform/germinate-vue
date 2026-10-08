@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageBackupTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageBackupTitle')]" :icon="mdiBackupRestore" />
     <v-divider class="mb-3" />
 
     <p>{{ $t('pageBackupText') }}</p>
@@ -26,7 +26,7 @@ name: backup
   import { apiGetAdminSettings } from '@/plugins/api/setting'
   import { Pages } from '@/plugins/pages'
   import { type ClientAdminConfiguration, type PaginatedRequest, UserType } from '@/plugins/types/germinate'
-  import { mdiCalendarClock, mdiDatabaseArrowRight, mdiFileCabinet } from '@mdi/js'
+  import { mdiBackupRestore, mdiCalendarClock, mdiDatabaseArrowRight, mdiFileCabinet } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'

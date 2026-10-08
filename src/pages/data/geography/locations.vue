@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageLocationsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageLocationsTitle')]" :icon="mdiMap" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageLocationsText')" />
 
@@ -38,6 +38,7 @@ name: locations
   import { apiPostLocationTable, apiPostLocationTableIds } from '@/plugins/api/location'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import type { ViewTableLocations, PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiMap } from '@mdi/js'
 
   const clusteredMap = ref()
   const heatmappedMap = ref()

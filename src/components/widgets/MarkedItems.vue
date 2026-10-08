@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageMarkedItemsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageMarkedItemsTitle')]" :icon="mdiCheckboxMultipleMarked" />
     <v-divider class="mb-3" />
 
     <p>{{ $t('pageMarkedItemsText') }}</p>
@@ -40,6 +40,7 @@
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import type { MarkedItemType } from '@/plugins/types/MarkedItemType'
   import { markedItemTypes } from '@/plugins/util/types'
+  import { mdiCheckboxMultipleMarked } from '@mdi/js'
 
   const compProps = defineProps<{
     type?: MarkedItemType

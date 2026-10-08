@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageClimatesOverviewTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageClimatesOverviewTitle')]" :icon="mdiEarth" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageClimatesOverviewText')" />
 
@@ -80,7 +80,7 @@ name: climateOverview
   import { apiGetClimateStats } from '@/plugins/api/climate'
   import type { ClimateStats } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { mdiChartBellCurveCumulative, mdiChartLine, mdiDatabase, mdiWeatherPartlySnowyRainy, mdiWeatherSnowyRainy } from '@mdi/js'
+  import { mdiChartBellCurveCumulative, mdiChartLine, mdiDatabase, mdiEarth, mdiWeatherPartlySnowyRainy, mdiWeatherSnowyRainy } from '@mdi/js'
 
   interface ChartData {
     keys: string[]

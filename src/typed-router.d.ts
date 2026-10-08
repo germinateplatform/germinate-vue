@@ -138,6 +138,13 @@ declare module 'vue-router/auto-routes' {
     >,
     'export': RouteRecordInfo<
       'export',
+      '/data/export',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    'exportType': RouteRecordInfo<
+      'exportType',
       '/data/export/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
@@ -542,9 +549,17 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
-    'src/pages/data/export/[id].vue': {
+    'src/pages/data/export/index.vue': {
       routes:
         | 'export'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/data/export/[id].vue': {
+      routes:
+        | 'exportType'
       views:
         | never
       pathParamNames:

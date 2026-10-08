@@ -1,7 +1,10 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pagePedigreeExportTitle') }}</h1>
-    <DatasetList :datasets="datasets" v-if="datasets" />
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes.pedigree.path">
+      <template #append>
+        <DatasetList :datasets="datasets" v-if="datasets" />
+      </template>
+    </PageHeaderBreadcrumbs>
     <v-divider class="mb-3" />
 
     <div v-if="datasets && datasets.length > 0">
@@ -57,11 +60,14 @@ name: exportPedigrees
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type PedigreeRequest, type AsyncExportResult } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
+  import { datasetTypes } from '@/plugins/util/types'
   import { mdiArrowRightBox, mdiDatabase } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
+  import { useI18n } from 'vue-i18n'
 
+  const { t } = useI18n()
   const store = useCoreStore()
   const router = useRouter()
   const route = useRoute('exportPedigrees')
@@ -75,6 +81,15 @@ name: exportPedigrees
   const germplasmGroups = shallowRef<ViewTableGroups[]>([])
   const selectedGermplasmGroups = shallowRef<ViewTableGroups[]>([])
   const germplasmGroupSelection = ref<GroupSelectionType>('all')
+    
+  const breadcrumbs = computed(() => {
+    return [{
+      title: t('menuExportData'),
+      to: Pages.export.path,
+    }, {
+      title: t('pagePedigreeExportTitle'),
+    }]
+  })
 
   const datasetsSelected = computed(() => selectedDatasets.value.length > 0)
 
@@ -196,7 +211,7 @@ name: exportPedigrees
   function redirectBack () {
     // Navigate to the germplasm page
     router.push({
-      path: Pages.getPath(Pages.export, 'pedigree'),
+      path: Pages.getPath(Pages.exportType, 'pedigree'),
       query: {
         'datasets-filter': JSON.stringify([{
           filters: [{

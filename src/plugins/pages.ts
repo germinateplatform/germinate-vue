@@ -140,6 +140,11 @@ export class Pages {
 
   static export: Page = {
     name: 'export',
+    path: '/data/export',
+  }
+
+  static exportType: Page = {
+    name: 'exportType',
     path: '/data/export/[id]',
   }
 
@@ -337,9 +342,6 @@ export class Pages {
     if (!Pages._byPath) {
       Pages._byPath = Pages.buildIndexPath()
     }
-
-    console.log(name, Pages._byName, Pages._byPath)
-    console.log(Pages._byName.get(name), Pages._byPath.get(name))
 
     return Pages._byName.get(name) || Pages._byPath.get(name)
   }

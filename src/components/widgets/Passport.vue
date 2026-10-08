@@ -20,7 +20,7 @@
             <template #prepend><v-icon :icon="mdiChartDonut" color="primary" /></template>
             <template #append><v-icon :icon="mdiHelpCircle" @click="showPdciInfo" /></template>
             <template #text>
-              <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasm.pdci.toFixed(2) }) }}</strong></p>
+              <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasm.pdci?.toFixed(2) }) }}</strong></p>
             </template>
           </v-card>
           <!-- Synonyms -->

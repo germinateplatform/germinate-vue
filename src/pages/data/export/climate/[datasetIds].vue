@@ -1,7 +1,10 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageClimateExportTitle') }}</h1>
-    <DatasetList :datasets="cdStore.storeDatasets" v-if="cdStore.storeDatasets" />
+    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes.climate.path">
+      <template #append>
+        <DatasetList :datasets="cdStore.storeDatasets" v-if="cdStore.storeDatasets" />
+      </template>
+    </PageHeaderBreadcrumbs>
     <v-divider class="mb-3" />
 
     <div v-if="cdStore.storeDatasets && cdStore.storeDatasets.length > 0">
@@ -112,6 +115,7 @@ name: exportClimates
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
   import { apiPostClimateDataTable, apiPostDatasetClimates, apiPostClimateDataTableIds } from '@/plugins/api/climate'
+  import { datasetTypes } from '@/plugins/util/types'
 
   interface Tab {
     key: string
@@ -130,9 +134,15 @@ name: exportClimates
 
   const selectedTab = ref<string>('overview')
   const datasetIds = ref<number[]>([])
-  // const datasets = ref<ViewTableDatasets[]>()
-  // const climates = ref<ViewTableClimates[]>([])
-  // const groups = ref<ViewTableGroups[]>([])
+
+  const breadcrumbs = computed(() => {
+    return [{
+      title: t('menuExportData'),
+      to: Pages.export.path,
+    }, {
+      title: t('pageClimateExportTitle'),
+    }]
+  })
 
   const hasFileResources = computed(() => cdStore.storeDatasets.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
 
@@ -274,7 +284,7 @@ name: exportClimates
   function redirectBack () {
     // Navigate to the germplasm page
     router.push({
-      path: Pages.getPath(Pages.export, 'climate'),
+      path: Pages.getPath(Pages.exportType, 'climate'),
       query: {
         'datasets-filter': JSON.stringify([{
           filters: [{

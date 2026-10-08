@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageGroupsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageGroupsTitle')]" :icon="mdiGroup" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageGroupsText')" />
 
@@ -38,6 +38,7 @@ name: groups
   import { apiPostGroupTable } from '@/plugins/api/group'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import { groupTypes } from '@/plugins/util/types'
+  import { mdiGroup } from '@mdi/js'
 
   const selectedGroupType = ref<string>()
 

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageExperimentsTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageExperimentsTitle')]" :icon="mdiFolderTable" />
     <v-divider class="mb-3" />
     <p v-html="$t('pageExperimentsText')" />
 
@@ -16,6 +16,7 @@ name: experiments
   import ExperimentTable from '@/components/tables/ExperimentTable.vue'
   import { apiPostExperimentTable } from '@/plugins/api/dataset'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { mdiFolderTable } from '@mdi/js'
 
   function getData (data: PaginatedRequest) {
     return apiPostExperimentTable(data)

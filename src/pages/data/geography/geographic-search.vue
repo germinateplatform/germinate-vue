@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-headline-large mb-3">{{ $t('pageGeographicSearchTitle') }}</h1>
+    <PageHeaderBreadcrumbs :items="[$t('pageGeographicSearchTitle')]" :icon="mdiMapSearch" />
     <v-divider class="mb-3" />
 
     <v-card>
@@ -75,7 +75,7 @@ name: geographicSearch
   import { apiPostGermplasmDistanceTable, apiPostGermplasmDistanceTableIds, apiPostGermplasmPolygonTable, apiPostGermplasmPolygonTableIds } from '@/plugins/api/germplasm'
   import { apiPostLocationDistanceTable, apiPostLocationDistanceTableIds, apiPostLocationPolygonTable, apiPostLocationPolygonTableIds } from '@/plugins/api/location'
   import type { ViewTableLocations, LatLng, PaginatedLocationRequest, PaginatedPolygonRequest, PaginatedRequest } from '@/plugins/types/germinate'
-  import { mdiArrowRightBox, mdiCrosshairsGps, mdiVectorPolygon } from '@mdi/js'
+  import { mdiArrowRightBox, mdiCrosshairsGps, mdiMapSearch, mdiVectorPolygon } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
