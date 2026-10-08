@@ -1,10 +1,8 @@
 <template>
   <v-container fluid v-if="group">
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiGroup">
-      <template #append>
-        <v-chip v-if="group.groupType" label :color="groupTypes[group.groupType].color()" :prepend-icon="groupTypes[group.groupType].path">{{ groupTypes[group.groupType].text() }}</v-chip>
-      </template>
-    </PageHeaderBreadcrumbs>
+    <Teleport to="#breadcrumb-last" defer>
+      <v-chip v-if="group.groupType" label :color="groupTypes[group.groupType].color()" :prepend-icon="groupTypes[group.groupType].path">{{ groupTypes[group.groupType].text() }}</v-chip>
+    </Teleport>
 
     <v-divider class="mb-3" />
     <!-- Description -->
@@ -121,6 +119,7 @@ name: groupDetails
   import { apiPatchGroup, apiPatchGroupMembers, apiPostGroupTable } from '@/plugins/api/group'
   import { apiPostGroupLocationTable, apiPostGroupLocationTableExport, apiPostGroupLocationTableIds, apiPostLocationTableIds } from '@/plugins/api/location'
   import { apiPostPublicationsTable } from '@/plugins/api/publication'
+  import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, PublicationdataReferenceType, type GroupModificationRequest, type PaginatedRequest, type PaginatedResult, type ViewTableGroups } from '@/plugins/types/germinate'
   import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
@@ -128,7 +127,7 @@ name: groupDetails
   import { lookupDoiInformation } from '@/plugins/util'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { groupTypes } from '@/plugins/util/types'
-  import { mdiCollapseAllOutline, mdiDelete, mdiExpandAllOutline, mdiGroup, mdiUpload } from '@mdi/js'
+  import { mdiCollapseAllOutline, mdiDelete, mdiExpandAllOutline, mdiUpload } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
@@ -154,19 +153,7 @@ name: groupDetails
     return store.token && (store.token.id === group.value?.userId || store.storeUserIsAdmin) && store.storeServerSettings?.authMode !== 'NONE'
   })
 
-  const breadcrumbs = computed(() => {
-    if (group.value) {
-      return [{
-        title: t('pageGroupsTitle'),
-        to: Pages.groups.path,
-      }, {
-        title: group.value.groupName || '',
-        to: Pages.getPath(Pages.groupDetails, `${group.value.groupId}`),
-      }]
-    } else {
-      return []
-    }
-  })
+  useBreadcrumbTitle(() => group.value?.groupName)
 
   function updateSelection (selection: number[]) {
     selectedIds.value = selection

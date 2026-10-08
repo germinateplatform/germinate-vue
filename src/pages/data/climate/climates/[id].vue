@@ -1,7 +1,8 @@
 <template>
   <v-container fluid v-if="climate">
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiWeatherSnowyRainy" />
-    <v-divider class="mb-3" />
+    <Teleport to="#breadcrumb-last" defer>
+      <v-chip label :color="dataTypes[climate.dataType].color()" :prepend-icon="dataTypes[climate.dataType].path" :text="dataTypes[climate.dataType].text()" />
+    </Teleport>
 
     <ClimateDetails :climate="climate" />
   </v-container>
@@ -13,30 +14,16 @@ name: climateDetails
 
 <script setup lang="ts">
   import { apiPostClimateTable } from '@/plugins/api/climate'
-  import { Pages } from '@/plugins/pages'
+  import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
   import { FilterComparator, FilterOperator, type ViewTableClimates } from '@/plugins/types/germinate'
-  import { mdiWeatherSnowyRainy } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
+  import { dataTypes } from '@/plugins/util/types'
 
-  const { t } = useI18n()
   const route = useRoute('climateDetails')
 
   const climate = ref<ViewTableClimates>()
   const climateId = ref<number>()
 
-  const breadcrumbs = computed(() => {
-    if (climate.value) {
-      return [{
-        title: t('pageClimatesTitle'),
-        to: Pages.climates.path,
-      }, {
-        title: climate.value.climateName || '',
-        to: Pages.getPath(Pages.climateDetails, `${climate.value.climateId}`),
-      }]
-    } else {
-      return []
-    }
-  })
+  useBreadcrumbTitle(() => climate.value?.climateName)
 
   onMounted(() => {
     if (route && route.params && route.params.id) {

@@ -1,9 +1,6 @@
 <template>
   <v-container fluid>
     <div id="about-page">
-      <PageHeaderBreadcrumbs :items="[$t('pageAboutGerminateTitle')]" icon="$germinate" />
-      <v-divider class="mb-3" />
-
       <v-row class="my-5 card-icon-avatar">
         <v-col>
           <v-card color="primary">

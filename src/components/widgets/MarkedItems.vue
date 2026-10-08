@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageMarkedItemsTitle')]" :icon="mdiCheckboxMultipleMarked" />
-    <v-divider class="mb-3" />
-
     <p>{{ $t('pageMarkedItemsText') }}</p>
 
     <v-chip-group
@@ -17,6 +14,7 @@
         :text="`${value.text()}: ${(store.storeMarkedIds[key] || []).length}`"
         :color="value.color()"
         :prepend-icon="value.path"
+        :to="Pages.getPath(Pages.markedItemType, key)"
         :value="key"
       />
     </v-chip-group>
@@ -36,11 +34,11 @@
   import { apiPostGermplasmTable, apiPostGermplasmTableIds } from '@/plugins/api/germplasm'
   import { apiPostLocationTable, apiPostLocationTableIds } from '@/plugins/api/location'
   import { apiPostTableExport } from '@/plugins/api/misc'
+  import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import type { MarkedItemType } from '@/plugins/types/MarkedItemType'
   import { markedItemTypes } from '@/plugins/util/types'
-  import { mdiCheckboxMultipleMarked } from '@mdi/js'
 
   const compProps = defineProps<{
     type?: MarkedItemType
@@ -48,6 +46,8 @@
 
   const store = useCoreStore()
   const localType = ref<MarkedItemType>('germplasm')
+
+  useBreadcrumbTitle(() => markedItemTypes[localType.value].text())
 
   const germplasmFilters: ComputedRef<FilterGroup[]> = computed(() => {
     return [{

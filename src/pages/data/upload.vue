@@ -1,7 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageDataUploadTitle')]" :icon="mdiUpload" />
-    <v-divider class="mb-3" />
     <p v-html="$t('pageDataUploadText')" />
 
     <v-row class="my-5 card-icon-avatar">

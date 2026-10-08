@@ -1,7 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageDatasetsTitle')]" :icon="mdiDatabase" />
-    <v-divider class="mb-3" />
     <h2>{{ $t('pageDatasetsInternalTitle') }}</h2>
     <p>{{ $t('pageDatasetsInternalText') }}</p>
     <DatasetTable :get-data="getData" :filter-on="filterOnInternal" />
@@ -16,7 +14,6 @@
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
-import { mdiDatabase } from '@mdi/js';
 
   const props = defineProps<{
     datasetId?: number

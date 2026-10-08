@@ -1,11 +1,8 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes.genotype.path">
-      <template #append>
-        <DatasetList :datasets="datasets" v-if="datasets" />
-      </template>
-    </PageHeaderBreadcrumbs>
-    <v-divider class="mb-3" />
+    <Teleport to="#breadcrumb-last" defer>
+      <DatasetList :datasets="datasets" v-if="datasets" />
+    </Teleport>
 
     <div v-if="datasets && datasets.length > 0">
       <v-expansion-panels>
@@ -163,6 +160,7 @@ name: exportGenotypes
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostDatasetMapTable, apiPostGenotypeDatasetExport } from '@/plugins/api/genotype'
   import { apiPostDatasetGroups } from '@/plugins/api/group'
+  import { useBreadcrumbIcon } from '@/plugins/composables/breadcrumbs'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type ViewTableDatasetMaps, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type GenotypeSubsetDatasetRequest } from '@/plugins/types/germinate'
   import { handleRouterQuery, isAccepted } from '@/plugins/util'
@@ -171,9 +169,7 @@ name: exportGenotypes
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
 
-  const { t } = useI18n()
   const store = useCoreStore()
   const router = useRouter()
   const route = useRoute('exportGenotypes')
@@ -204,16 +200,9 @@ name: exportGenotypes
     hapmap: boolean
   }
 
-  const breadcrumbs = computed(() => {
-    return [{
-      title: t('menuExportData'),
-      to: Pages.export.path,
-    }, {
-      title: t('pageGenotypesExportTitle'),
-    }]
-  })
-
   const datasetsSelected = computed(() => selectedDatasets.value.length > 0)
+
+  useBreadcrumbIcon(() => datasetTypes.genotype.path)
 
   const canContinue = computed(() => {
     if (!datasetsSelected.value) {

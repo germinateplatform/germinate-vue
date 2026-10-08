@@ -1,7 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageGenotypeOverviewTitle')]" :icon="mdiViewDashboard" />
-    <v-divider class="mb-3" />
     <p v-html="$t('pageGenotypeOverviewText')" />
 
     <v-row v-if="loading">
@@ -80,7 +78,7 @@ name: genotypes
   import { apiGetGenotypeStats } from '@/plugins/api/genotype'
   import type { GenotypeStats } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { mdiChartBellCurveCumulative, mdiChartLine, mdiDatabase, mdiDna, mdiFormatIndentIncrease, mdiViewDashboard } from '@mdi/js'
+  import { mdiChartBellCurveCumulative, mdiChartLine, mdiDatabase, mdiDna, mdiFormatIndentIncrease } from '@mdi/js'
 
   interface ChartData {
     keys: string[]

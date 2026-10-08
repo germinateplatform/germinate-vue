@@ -1,7 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageTrialsOverviewTitle')]" :icon="mdiLandFields" />
-    <v-divider class="mb-3" />
     <p v-html="$t('pageTrialsOverviewText')" />
 
     <v-row v-if="loading">
@@ -80,7 +78,7 @@ name: trials
   import { apiGetTrialStats } from '@/plugins/api/trait'
   import type { TrialStats } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { mdiChartBellCurveCumulative, mdiChartLine, mdiDatabase, mdiLandFields, mdiSpade, mdiTagMultiple } from '@mdi/js'
+  import { mdiChartBellCurveCumulative, mdiChartLine, mdiDatabase, mdiSpade, mdiTagMultiple } from '@mdi/js'
 
   interface ChartData {
     keys: string[]

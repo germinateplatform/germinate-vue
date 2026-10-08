@@ -38,6 +38,7 @@ name: passport
 <script setup lang="ts">
   import Passport from '@/components/widgets/Passport.vue'
   import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
+  import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
   import { FilterComparator, FilterOperator, type ViewTableGermplasm, type PaginatedRequest } from '@/plugins/types/germinate'
   import { isNumeric } from '@/plugins/util/formatting'
   import { mdiArrowDownBox, mdiArrowUpBox } from '@mdi/js'
@@ -48,6 +49,8 @@ name: passport
   const noGermplasmFound = ref(false)
   const requestedIdentifier = ref<string>()
   const germplasm = ref<ViewTableGermplasm>()
+
+  useBreadcrumbTitle(() => germplasm.value?.germplasmDisplayName)
 
   onBeforeMount(() => {
     if (route.params && route.params.id) {

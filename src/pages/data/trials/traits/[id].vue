@@ -1,8 +1,5 @@
 <template>
   <v-container fluid v-if="variable">
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiTagTextOutline" />
-    <v-divider class="mb-3" />
-
     <TraitDetails :variable="variable" />
   </v-container>
 </template>
@@ -14,30 +11,15 @@ name: traitDetails
 <script setup lang="ts">
   import TraitDetails from '@/components/trials/TraitDetails.vue'
   import { apiPostTraitTable } from '@/plugins/api/trait'
-  import { Pages } from '@/plugins/pages'
+  import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
   import { FilterComparator, FilterOperator, type ViewTableTraits } from '@/plugins/types/germinate'
-  import { mdiTagTextOutline } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
 
   const route = useRoute('traitDetails')
-  const { t } = useI18n()
 
   const variable = ref<ViewTableTraits>()
   const traitId = ref<number>()
 
-  const breadcrumbs = computed(() => {
-    if (variable.value) {
-      return [{
-        title: t('pageTraitsTitle'),
-        to: Pages.traits.path,
-      }, {
-        title: variable.value.variableName || '',
-        to: Pages.getPath(Pages.traitDetails, `${variable.value.variableId}`),
-      }]
-    } else {
-      return []
-    }
-  })
+  useBreadcrumbTitle(() => variable.value?.variableName)
 
   onMounted(() => {
     if (route && route.params && route.params.id) {

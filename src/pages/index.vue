@@ -26,9 +26,6 @@
 
     <ImageCarousel class="my-5" />
 
-    <PageHeaderBreadcrumbs :items="[$t('pageDashboardTitle')]" :icon="mdiHome" />
-    <v-divider class="mb-3" />
-
     <HtmlTemplateEditor i18n-key="pageDashboardText" />
 
     <v-row class="mt-5">

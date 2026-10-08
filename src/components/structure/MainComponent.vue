@@ -133,6 +133,8 @@
 
         <StoryBanner v-if="store.storeActiveStory" />
 
+        <AppBreadcrumbs v-if="$route.name !== 'login'" />
+
         <router-view :key="$route.path" class="h-100" />
       </div>
 

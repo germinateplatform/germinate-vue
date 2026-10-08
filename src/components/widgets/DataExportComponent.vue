@@ -1,17 +1,12 @@
 <template>
   <v-container fluid>
     <div v-if="datasetType">
-      <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes[datasetType].path" />
-      <v-divider class="mb-3" />
-
       <!-- Table showing all datasets of the type -->
       <DatasetTable :get-data="getData" :get-ids="getIds" :filter-on="filterOn" :selection-type="selectionMode" class="mb-3" ref="datasetTable" @selection-changed="setSelection" />
       <!-- Continue button -->
       <v-btn color="primary" @click="checkLicenses" :disabled="!canContinue" :prepend-icon="mdiArrowRightBox" :text="$t('buttonNext')" />
     </div>
     <div v-else>
-      <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiExport" />
-      <v-divider class="mb-3" />
       <p>{{ $t('pageDatasetSelectorInvalidTypeText') }}</p>
       <v-chip
         v-for="(dsType, name) in allDatasetType"
@@ -33,7 +28,8 @@
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { datasetTypes, type DatasetType } from '@/plugins/util/types'
-  import { mdiArrowRightBox, mdiExport } from '@mdi/js'
+  import { mdiArrowRightBox } from '@mdi/js'
+  import { useBreadcrumbIcon, useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
@@ -49,25 +45,8 @@
 
   const selectedDatasets = ref<number[]>([])
 
-  const breadcrumbs = computed(() => {
-    if (compProps.datasetType) {
-      return [{
-        title: t('menuExportData'),
-        to: Pages.export.path,
-      }, {
-        title: datasetTypes[compProps.datasetType].text(),
-        to: Pages.getPath(Pages.exportType, compProps.datasetType),
-      }]
-    } else {
-      return [{
-        title: t('menuExportData'),
-        to: Pages.export.path,
-      }, {
-        title: t('pageDatasetSelectorInvalidTypeTitle'),
-        to: Pages.export.path,
-      }]
-    }
-  })
+  useBreadcrumbTitle(() => compProps.datasetType ? datasetTypes[compProps.datasetType].text() : undefined)
+  useBreadcrumbIcon(() => compProps.datasetType ? datasetTypes[compProps.datasetType].path : undefined)
 
   const filterOn = computed(() => {
     const result: FilterGroup[] = [{

@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiClipboardList" />
-    <v-divider class="mb-3" />
-
     <template v-if="project">
       <v-row class="mb-3 card-icon-avatar">
         <v-col cols="12" lg="6">
@@ -125,11 +122,12 @@ name: projectDetails
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { getImageUrlById } from '@/plugins/util/image'
-  import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiClipboardList, mdiClose, mdiDatabase, mdiDelete, mdiGroup, mdiNewspaperVariant, mdiPlusBox } from '@mdi/js'
+  import { mdiAccountMultiple, mdiCalendarArrowLeft, mdiCalendarArrowRight, mdiClose, mdiDatabase, mdiDelete, mdiGroup, mdiNewspaperVariant, mdiPlusBox } from '@mdi/js'
   import Markdown from 'vue3-markdown-it'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
+  import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
 
   const route = useRoute('projectDetails')
   const router = useRouter()
@@ -148,19 +146,7 @@ name: projectDetails
   const addType = ref<'group' | 'experiment'>()
   const selectedIds = ref<number[]>([])
 
-  const breadcrumbs = computed(() => {
-    if (project.value) {
-      return [{
-        title: t('pageProjectsTitle'),
-        to: Pages.projects.path,
-      }, {
-        title: project.value.projectName || '',
-        to: Pages.getPath(Pages.projectDetails, `${project.value.projectId}`),
-      }]
-    } else {
-      return []
-    }
-  })
+  useBreadcrumbTitle(() => project.value?.projectName)
 
   const projectSrc = computed(() => {
     if (project.value) {

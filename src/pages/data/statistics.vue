@@ -1,7 +1,8 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageStatisticsTitle'), $t('pageStatisticsSubtitle')]" :icon="mdiChartAreaspline" />
-    <v-divider class="mb-3" />
+    <Teleport to="#breadcrumb-last" defer>
+      <v-chip label :text="$t('pageStatisticsSubtitle')" />
+    </Teleport>
 
     <h2 class="text-headline-small mb-3">{{ $t('pageStatisticsTaxonomyTitle') }}</h2>
     <p>{{ $t('pageStatisticsTaxonomyText') }}</p>
@@ -69,7 +70,6 @@ name: statistics
   import { apiGetMetaStats } from '@/plugins/api/stats'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type GermplasmMetaStats, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
-  import { mdiChartAreaspline } from '@mdi/js'
 
   const germplasmMetadata = ref<GermplasmMetaStats[]>()
 

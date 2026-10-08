@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageGenesysTitle')]" icon="$genesys" />
-    <v-divider class="mb-3" />
-
     <template v-if="genesysUrl">
       <p>{{ $t('pageGenesysTextSuccessful') }}</p>
 

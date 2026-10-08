@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageGerminateSettingsTitle')]" :icon="mdiCog" />
-    <v-divider class="mb-3" />
-
     <p>{{ $t('pageGerminateSettingsText') }}</p>
 
     <template v-if="settings">

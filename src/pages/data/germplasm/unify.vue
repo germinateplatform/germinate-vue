@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageGermplasmUnifierTitle')]" :icon="mdiSetMerge" />
-    <v-divider class="mb-3" />
-
     <p v-html="$t('pageGermplasmUnifierText')" />
 
     <v-btn-toggle

@@ -1,11 +1,8 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes.pedigree.path">
-      <template #append>
-        <DatasetList :datasets="datasets" v-if="datasets" />
-      </template>
-    </PageHeaderBreadcrumbs>
-    <v-divider class="mb-3" />
+    <Teleport to="#breadcrumb-last" defer>
+      <DatasetList :datasets="datasets" v-if="datasets" />
+    </Teleport>
 
     <div v-if="datasets && datasets.length > 0">
       <v-expansion-panels>
@@ -57,6 +54,7 @@ name: exportPedigrees
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostPedigreeDatasetExport } from '@/plugins/api/germplasm'
   import { apiPostDatasetGroups } from '@/plugins/api/group'
+  import { useBreadcrumbIcon } from '@/plugins/composables/breadcrumbs'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type PedigreeRequest, type AsyncExportResult } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
@@ -65,9 +63,7 @@ name: exportPedigrees
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
 
-  const { t } = useI18n()
   const store = useCoreStore()
   const router = useRouter()
   const route = useRoute('exportPedigrees')
@@ -81,15 +77,8 @@ name: exportPedigrees
   const germplasmGroups = shallowRef<ViewTableGroups[]>([])
   const selectedGermplasmGroups = shallowRef<ViewTableGroups[]>([])
   const germplasmGroupSelection = ref<GroupSelectionType>('all')
-    
-  const breadcrumbs = computed(() => {
-    return [{
-      title: t('menuExportData'),
-      to: Pages.export.path,
-    }, {
-      title: t('pagePedigreeExportTitle'),
-    }]
-  })
+
+  useBreadcrumbIcon(() => datasetTypes.pedigree.path)
 
   const datasetsSelected = computed(() => selectedDatasets.value.length > 0)
 

@@ -1,11 +1,8 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes.trials.path">
-      <template #append>
-        <DatasetList :datasets="tdStore.storeDatasets" v-if="tdStore.storeDatasets" />
-      </template>
-    </PageHeaderBreadcrumbs>
-    <v-divider class="mb-3" />
+    <Teleport to="#breadcrumb-last" defer>
+      <DatasetList :datasets="tdStore.storeDatasets" v-if="tdStore.storeDatasets" />
+    </Teleport>
 
     <div v-if="tdStore.storeDatasets && tdStore.storeDatasets.length > 0">
       <v-expansion-panels class="g-expansion-panels">
@@ -124,6 +121,7 @@ name: exporTrials
   import { apiPostDatasetGroups } from '@/plugins/api/group'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { apiPostDatasetTraits, apiPostTrialLayoutCount, apiPostTrialLocationCount, apiPostTrialsDataTable, apiPostTrialsDataTableIds, apiPostTrialsDataTimepoints } from '@/plugins/api/trait'
+  import { useBreadcrumbIcon } from '@/plugins/composables/breadcrumbs'
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type PaginatedRequest, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
@@ -160,14 +158,7 @@ name: exporTrials
   const trialLayoutAvailable = ref<boolean[]>()
   const trialTimepointsAvailable = ref(false)
 
-  const breadcrumbs = computed(() => {
-    return [{
-      title: t('menuExportData'),
-      to: Pages.export.path,
-    }, {
-      title: t('pageTrialsExportTitle'),
-    }]
-  })
+  useBreadcrumbIcon(() => datasetTypes.trials.path)
 
   const hasFileResources = computed(() => tdStore.storeDatasets.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
 

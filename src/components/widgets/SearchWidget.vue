@@ -1,7 +1,8 @@
 <template>
   <div>
-    <PageHeaderBreadcrumbs :items="tempLocalSearchTerm ? [$t('pageSearchTitle'), tempLocalSearchTerm || ''] : [$t('pageSearchTitle')]" :icon="mdiMagnify" />
-    <v-divider class="mb-3" />
+    <Teleport to="#breadcrumb-last" defer>
+      <v-chip label :text="localSearchTerm" v-if="localSearchTerm" />
+    </Teleport>
 
     <v-row>
       <v-col cols="12" sm="6" md="4">

@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageTraitUnifierTitle')]" :icon="mdiSetMerge" />
-    <v-divider class="mb-3" />
-
     <p v-html="$t('pageTraitUnifierText')" />
 
     <v-btn-toggle

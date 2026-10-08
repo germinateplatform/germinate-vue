@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AddFileresourceModal: typeof import('./components/modals/AddFileresourceModal.vue')['default']
     AddFileresourceTypeModal: typeof import('./components/modals/AddFileresourceTypeModal.vue')['default']
+    AppBreadcrumbs: typeof import('./components/structure/AppBreadcrumbs.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AsyncSidebar: typeof import('./components/structure/AsyncSidebar.vue')['default']
     AttributeDetails: typeof import('./components/widgets/AttributeDetails.vue')['default']

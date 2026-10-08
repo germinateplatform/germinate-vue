@@ -1,7 +1,9 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiLan" />
-    <v-divider class="mb-3" />
+    <Teleport to="#breadcrumb-last" defer>
+      <v-chip label class="font-italic" :text="joinedName" />
+    </Teleport>
+
     <p v-html="$t('pageTaxonomyProviderText')" />
 
     <template v-if="taxonomy">
@@ -164,7 +166,6 @@ name: taxonomyProviderDetails
   import { getNumberWithSuffix, isEmptyNullOrUndefined } from '@/plugins/util/formatting'
   import { useI18n } from 'vue-i18n'
   import { mdiApi, mdiIdentifier, mdiLan, mdiMagnify } from '@mdi/js'
-  import { Pages } from '@/plugins/pages'
 
   const { t } = useI18n()
   const route = useRoute('taxonomyProviderDetails')
@@ -177,22 +178,6 @@ name: taxonomyProviderDetails
       return [taxonomy.value.taxonomyGenus, taxonomy.value.taxonomySpecies, taxonomy.value.taxonomySubtaxa].filter(p => !isEmptyNullOrUndefined(p)).join(' ')
     } else {
       return ''
-    }
-  })
-
-  const breadcrumbs = computed(() => {
-    if (taxonomy.value) {
-      return [{
-        title: t('pageTaxonomiesTitle'),
-        to: Pages.taxonomies.path,
-      }, {
-        title: joinedName.value,
-      }, {
-        title: t('pageTaxonomyProviderTitle'),
-        to: Pages.getPath(Pages.taxonomyProviderDetails, `${taxonomyId.value}`),
-      }]
-    } else {
-      return []
     }
   })
 

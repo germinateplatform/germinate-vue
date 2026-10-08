@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="[$t('pageGermplasmMatchTitle')]" :icon="mdiTextSearch" />
-    <v-divider class="mb-3" />
-
     <p v-html="$t('pageGermplasmMatchText')" class="mb-5" />
 
     <LineNumberTextareaInput
@@ -52,7 +49,7 @@
   import { apiPostGermplasmTable, apiPostGermplasmTableIds } from '@/plugins/api/germplasm'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm } from '@/plugins/types/germinate'
-  import { mdiRefresh, mdiTextSearch } from '@mdi/js'
+  import { mdiRefresh } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
   const tableFilter = ref<FilterGroup[]>([])

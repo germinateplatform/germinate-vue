@@ -1,11 +1,8 @@
 <template>
   <v-container fluid>
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="datasetTypes.climate.path">
-      <template #append>
-        <DatasetList :datasets="cdStore.storeDatasets" v-if="cdStore.storeDatasets" />
-      </template>
-    </PageHeaderBreadcrumbs>
-    <v-divider class="mb-3" />
+    <Teleport to="#breadcrumb-last" defer>
+      <DatasetList :datasets="cdStore.storeDatasets" v-if="cdStore.storeDatasets" />
+    </Teleport>
 
     <div v-if="cdStore.storeDatasets && cdStore.storeDatasets.length > 0">
       <v-expansion-panels>
@@ -116,6 +113,7 @@ name: exportClimates
   import { useI18n } from 'vue-i18n'
   import { apiPostClimateDataTable, apiPostDatasetClimates, apiPostClimateDataTableIds } from '@/plugins/api/climate'
   import { datasetTypes } from '@/plugins/util/types'
+  import { useBreadcrumbIcon } from '@/plugins/composables/breadcrumbs'
 
   interface Tab {
     key: string
@@ -135,14 +133,7 @@ name: exportClimates
   const selectedTab = ref<string>('overview')
   const datasetIds = ref<number[]>([])
 
-  const breadcrumbs = computed(() => {
-    return [{
-      title: t('menuExportData'),
-      to: Pages.export.path,
-    }, {
-      title: t('pageClimateExportTitle'),
-    }]
-  })
+  useBreadcrumbIcon(() => datasetTypes.climate.path)
 
   const hasFileResources = computed(() => cdStore.storeDatasets.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
 

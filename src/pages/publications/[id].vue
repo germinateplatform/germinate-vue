@@ -1,8 +1,5 @@
 <template>
   <v-container fluid v-if="publication && displayData">
-    <PageHeaderBreadcrumbs :items="breadcrumbs" :icon="mdiNewspaper" />
-    <v-divider class="mb-3" />
-
     <PublicationCard :publication="publication" @delete="deletePublication" />
 
     <v-card :title="$t('pagePublicationGermplasmTitle')" :subtitle="$t('pagePublicationGermplasmSubtitle')" class="mt-5" v-if="store.storeUserIsDataCurator || (publication.germplasmIds || []).length > 0">
@@ -93,11 +90,12 @@ name: publicationDetails
   import { apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostPublicationGermplasmTable, apiPostPublicationGermplasmTableIds } from '@/plugins/api/germplasm'
   import { apiPostGroupTable, apiPostGroupTableIds, apiPostPublicationGroupTable } from '@/plugins/api/group'
   import { apiDeletePublication, apiDeletePublicationReference, apiDeletePublicationReferenceDatabase, apiPostPublicationsTable, apiPutPublicationReferences } from '@/plugins/api/publication'
+  import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, PublicationdataReferenceType, type PaginatedRequest, type PublicationDoiLookupDetails, type ViewTablePublications } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, PublicationdataReferenceType, type PaginatedRequest, type ViewTablePublications } from '@/plugins/types/germinate'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { getPublicationData } from '@/plugins/util/formatting'
-  import { mdiClose, mdiDelete, mdiNewspaper, mdiPlusBox } from '@mdi/js'
+  import { mdiClose, mdiDelete, mdiPlusBox } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
@@ -119,20 +117,6 @@ name: publicationDetails
   const publicationId = ref<number>()
   const publication = ref<ViewTablePublications>()
 
-  const breadcrumbs = computed(() => {
-    if (publication.value && displayData.value) {
-      return [{
-        title: t('pagePublicationsTitle'),
-        to: Pages.publications.path,
-      }, {
-        title: displayData.value.title,
-        to: Pages.getPath(Pages.publicationDetails, `${publicationId.value}`),
-      }]
-    } else {
-      return []
-    }
-  })
-
   const displayData = computed(() => {
     if (publication.value) {
       return getPublicationData(publication.value)
@@ -140,6 +124,8 @@ name: publicationDetails
       return undefined
     }
   })
+
+  useBreadcrumbTitle(() => displayData.value?.title)
 
   function getPublicationGermplasmData (data: PaginatedRequest) {
     return apiPostPublicationGermplasmTable(publicationId.value || -1, data)
