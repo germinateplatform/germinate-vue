@@ -13,7 +13,11 @@
                   :append-icon="mdiSquareEditOutline"
                   item-title="licenseName"
                   @click:append="toggleDetails"
-                />
+                >
+                  <template #item="{ props, internalItem: item }">
+                    <v-list-item v-bind="props" :title="item.title" :subtitle="item.raw.licenseDescription" />
+                  </template>
+                </v-select>
 
                 <v-btn :prepend-icon="mdiPlusBox" variant="tonal" @click="addNewLicense" color="success" :text="$t('buttonLicenseCreateNew')" />
               </v-col>

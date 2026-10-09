@@ -1259,6 +1259,7 @@ export interface ViewTableDatasets {
     experimentId?: number;
     experimentName?: string;
     experimentDescription?: string;
+    studyDetailsCore?: StudyDetailsCore;
     projectId?: number;
     projectName?: string;
     projectDescription?: string;
@@ -1282,6 +1283,18 @@ export interface ViewTableDatasets {
     collaborators?: number;
     attributes?: number;
     acceptedBy?: number[];
+}
+
+export interface StudyDetailsCore {
+    studyStartDate: Date;
+    studyEndDate?: Date;
+    experimentDesignType?: string;
+    experimentDesignDescription?: string;
+    experimentDesignMap?: string;
+    observationUnitDescription?: string;
+    growthFacilityDescription?: string;
+    growthFacilityType?: string;
+    culturalPractice?: string;
 }
 
 export interface ViewTableProjects {
@@ -1423,6 +1436,7 @@ export interface Datasets {
     createdBy?: number;
     datasetStateId: number;
     licenseId?: number;
+    studydetailsId?: number;
     isExternal?: boolean;
     hyperlink?: string;
     createdOn?: Date;

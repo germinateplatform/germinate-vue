@@ -2032,5 +2032,15 @@
   "widgetDataWarningTypeMissing": "Warning about missing data or missing data points within datasets",
   "widgetDataWarningTypeInaccuracy": "Warning about potential inaccuracies in the data",
   "widgetChartNoDataTitle": "The data query resulted in no data matches.",
-  "widgetChartNoDataText": "Please try a different query."
+  "widgetChartNoDataText": "Please try a different query.",
+  "widgetStudyDetailsTitle": "Study/trial details",
+  "widgetStudyDetailsStartDate": "Trial start date",
+  "widgetStudyDetailsEndDate": "Trial end date",
+  "widgetStudyDetailsExperimentalDesignType": "Type of experimental design",
+  "widgetStudyDetailsExperimentalDesignDescription": "Description of the experimental design",
+  "widgetStudyDetailsExperimentalDesignMap": "Map of experimental design",
+  "widgetStudyDetailsObservationUnitDescription": "Observation unit description",
+  "widgetStudyDetailsGrowthFacilityType": "Type of growth facility",
+  "widgetStudyDetailsGrowthFacilityDescription": "Description of growth facility",
+  "widgetStudyDetailsCulturalPractices": "Cultural practices"
 }

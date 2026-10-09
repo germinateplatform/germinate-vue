@@ -63,7 +63,18 @@
 
       <!-- Dataset type icon -->
       <template #item.datasetType="{ item }">
-        <v-chip label :color="datasetTypes[item.datasetType].color()" :prepend-icon="datasetTypes[item.datasetType].path">{{ datasetTypes[item.datasetType].text() }}</v-chip>
+        <v-chip
+          label
+          :color="datasetTypes[item.datasetType].color()"
+          :prepend-icon="datasetTypes[item.datasetType].path"
+          :text="datasetTypes[item.datasetType].text()"
+          :link="(item.datasetType === 'trials' && item.studyDetailsCore !== undefined)"
+          @click="(item.datasetType === 'trials' && item.studyDetailsCore !== undefined) ? showStudyDetails(item) : undefined"
+        >
+          <template #append v-if="item.datasetType === 'trials' && item.studyDetailsCore">
+            <v-icon end :icon="mdiInformation" />
+          </template>
+        </v-chip>
       </template>
 
       <template #item.data-table-expand="{ item, internalItem, toggleExpand }">
@@ -142,6 +153,10 @@
       <template #bottom-sheet-content>
         <CollaboratorTable :get-data="getCollaboratorData" v-if="selectedDataset && visibleDetails === 'collaborators'" />
         <AttributeDetails v-if="selectedDataset && visibleDetails === 'attributes'" :dataset="selectedDataset" />
+        <template v-if="selectedDataset && selectedDataset.studyDetailsCore && visibleDetails === 'studyDetails'">
+          <h3 class="text-headline-medium">{{ $t('widgetStudyDetailsTitle') }}</h3>
+          <StudyDetailsComponent :study-details="selectedDataset.studyDetailsCore" />
+        </template>
       </template>
     </BaseTable>
 
@@ -214,7 +229,7 @@
   import { isPageAvailable } from '@/plugins/util'
   import { columns } from '@/plugins/util/table-columns'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiDelete, mdiFilePlus, mdiHelpCircle, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiOpenInNew, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
+  import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiDelete, mdiFilePlus, mdiHelpCircle, mdiInformation, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiOpenInNew, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
 
   const compProps = withDefaults(defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>> }
@@ -233,7 +248,7 @@
   const router = useRouter()
   const emit = defineEmits(['license-accepted'])
 
-  type DetailsType = 'collaborators' | 'publications' | 'attributes' | undefined
+  type DetailsType = 'collaborators' | 'publications' | 'attributes' | 'studyDetails' | undefined
 
   const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')
@@ -247,6 +262,7 @@
   const selectedLicense = ref<ViewTableLicenses | undefined>()
   const visibleDetails = ref<DetailsType>()
   const bottomVisible = ref<boolean>(false)
+
   const { t } = useI18n()
 
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
@@ -357,6 +373,15 @@
       width: 1,
     }]
   })
+
+  function showStudyDetails (item: ViewTableDatasets) {
+    visibleDetails.value = 'studyDetails'
+    selectedDataset.value = item
+
+    nextTick(() => {
+      bottomVisible.value = true
+    })
+  }
 
   function addItem () {
     selectedDataset.value = {

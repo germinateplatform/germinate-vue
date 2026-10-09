@@ -128,6 +128,7 @@ declare module 'vue' {
     StoryCard: typeof import('./components/cards/StoryCard.vue')['default']
     StoryPreviewModal: typeof import('./components/modals/StoryPreviewModal.vue')['default']
     StoryTable: typeof import('./components/tables/StoryTable.vue')['default']
+    StudyDetailsComponent: typeof import('./components/widgets/StudyDetailsComponent.vue')['default']
     TableFilterModal: typeof import('./components/modals/TableFilterModal.vue')['default']
     TableToolbar: typeof import('./components/tables/TableToolbar.vue')['default']
     TaxonomySunburst: typeof import('./components/charts/TaxonomySunburst.vue')['default']
