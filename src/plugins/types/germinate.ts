@@ -856,16 +856,20 @@ export interface ViewTableTraits {
     variableName: string;
     variableDescription: string;
     variableSynonyms: string[];
+    variableOntologies?: OntologyInfo[];
     traitId: number;
     traitName: string;
     traitDescription: string;
+    traitOntologies?: OntologyInfo[];
     methodId: number;
     methodName: string;
     methodDescription: string;
     methodClass: ViewTableTraitsMethodClass;
+    methodOntologies?: OntologyInfo[];
     scaleId: number;
     scaleName: string;
     scaleDescription: string;
+    scaleOntologies?: OntologyInfo[];
     traitAbbreviation: string;
     traitClass: ViewTableTraitsTraitClass;
     traitSynonyms: string[];
@@ -876,6 +880,11 @@ export interface ViewTableTraits {
     scaleUnit: string;
     datasetIds: number[];
     count: number;
+}
+
+export interface OntologyInfo {
+    ontologyId: number;
+    ontologyPuid: string;
 }
 
 export interface Methodontologies {

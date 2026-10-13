@@ -53,6 +53,48 @@ export function getPublicationData (publication: ViewTablePublications): Publica
   }
 }
 
+export function toAgroPortalUrl (input: string | undefined): string | undefined {
+  const trimmed = (input || '').trim()
+  const parts = trimmed.split(':').map(s => s.trim())
+
+  if (parts.length === 2) {
+    return `https://agroportal.eu/search?q=${parts[1]}&lang=all&ontologies=${parts[0]}&also_search_properties=true&also_search_obsolete=true&also_search_views=true`
+  }
+
+  return undefined
+}
+
+export function toCropOntologyUrl (input: string | undefined): string | undefined {
+  const trimmed = (input || '').trim()
+  if (trimmed.startsWith('CO_')) {
+    const parts = trimmed.split(':').map(s => s.trim())
+
+    if (parts.length === 2) {
+      return `https://cropontology.org/term/${trimmed}`
+    }
+  }
+
+  return undefined
+}
+
+export function dmsToDecimal (value: string) {
+  if (value && (value.length === 7 || value.length === 8)) {
+    const l = value.length === 7
+
+    const degree = l ? +value.slice(0, 2) : +value.slice(0, 3)
+    const minute = l ? +value.slice(2, 4) : +value.slice(3, 5)
+    const second = l ? +value.slice(4, 6) : +value.slice(5, 7)
+
+    let decimal = degree + minute / 60 + second / 3600
+
+    if (value.endsWith('S') || value.endsWith('W')) {
+      decimal = -decimal
+    }
+
+    return decimal
+  }
+}
+
 export function getFromCache (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
   if (!publication) {
     return undefined

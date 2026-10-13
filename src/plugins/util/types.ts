@@ -485,6 +485,11 @@ const locationTypes: { [key: string]: BaseType } = {
     color: () => getTemplateColor(2),
     text: () => i18n.global.t('locationTypeDataset'),
   },
+  undefined: {
+    path: mdiMapMarker,
+    color: () => getTemplateColor(3),
+    text: () => 'N/A',
+  },
 }
 
 export type TemplateImportType = StringIdState & PathState & ColorState & I18nState & AcceptsState & HelpUrlState & GroupState

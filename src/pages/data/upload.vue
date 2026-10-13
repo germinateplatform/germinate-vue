@@ -138,9 +138,46 @@
           clearable
           show-size
           inset-file-list
+          :icon="mdiFileUpload"
           v-model="selectedFile"
           :filter-by-type="selectedNestedTab.accepts"
-        />
+        >
+          <!-- Override the slot to use appropriate file type icons -->
+          <template #single="{ file, props: itemProps }">
+            <v-file-upload-item
+              v-bind="itemProps"
+              :file="file"
+              :file-icon="getFileIcon(file)"
+              clearable
+              show-size
+            />
+          </template>
+        </v-file-upload>
+
+        <v-card
+          v-if="xlsxLocations && xlsxLocations.length > 0"
+          :title="$t('pageDataUploadLocationTitle')"
+          class="mb-5"
+        >
+          <template #text>
+            <v-alert class="mb-3" :icon="mdiAlert" :text="$t('pageDataUploadLocationText')" color="warning" variant="tonal" />
+
+            <LocationMap
+              :locations="xlsxLocations"
+              :climate-overlays-disabled="true"
+              :show-links="false"
+              :show-edit="false"
+              map-type="cluster"
+            />
+
+            <v-checkbox
+              v-model="locationsConfirmed"
+              :label="$t('pageDataUploadLocationConfirm')"
+              color="primary"
+              :error="!locationsConfirmed"
+            />
+          </template>
+        </v-card>
 
         <v-btn
           @click="upload"
@@ -162,12 +199,15 @@ name: importUpload
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostDataUpload } from '@/plugins/api/dataimport'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
-  import { DataOrientation, FilterComparator, FilterOperator, UserType, type ViewTableDatasets } from '@/plugins/types/germinate'
+  import { DataOrientation, FilterComparator, FilterOperator, UserType, type ViewTableLocations, type ViewTableDatasets } from '@/plugins/types/germinate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { type DatasetState, datasetStates, templateImportTypes, type TemplateImportType } from '@/plugins/util/types'
-  import { mdiHelpCircle, mdiRefresh, mdiUpload } from '@mdi/js'
+  import { mdiFile, mdiFileDocument, mdiFileExcel, mdiFolderZip, mdiFileUpload, mdiHelpCircle, mdiRefresh, mdiUpload, mdiAlert } from '@mdi/js'
+  import { read, utils } from 'xlsx'
 
   import emitter from 'tiny-emitter/instance'
+  import { dmsToDecimal } from '@/plugins/util/formatting'
+  import { useI18n } from 'vue-i18n'
 
   definePage({
     meta: {
@@ -176,6 +216,7 @@ name: importUpload
   })
 
   const store = useCoreStore()
+  const { t } = useI18n()
 
   const selectedTab = ref<TemplateImportType>()
   const selectedSubTab = ref<TemplateImportType>()
@@ -185,8 +226,12 @@ name: importUpload
   const selectedDataset = ref<ViewTableDatasets>()
   const dataOrientation = ref<DataOrientation>(DataOrientation.GENOTYPE_GERMPLASM_BY_MARKER)
   const selectedFile = ref<File>()
+  const xlsxLocations = ref<ViewTableLocations[]>([])
+  const locationsConfirmed = ref(false)
 
   const selectedNestedTab = computed(() => selectedSubTab.value || selectedTab.value)
+
+  const locationsValid = computed(() => (xlsxLocations.value || []).length === 0 || locationsConfirmed.value)
 
   const tabGroups = computed(() => {
     const groups = new Map<string, TemplateImportType[]>()
@@ -207,6 +252,10 @@ name: importUpload
   const canContinue = computed(() => {
     const tab = selectedSubTab.value || selectedTab.value
 
+    if (!locationsValid.value) {
+      return false
+    }
+
     if (tab && selectedFile.value) {
       if (tab.id === 'mcpd') {
         return mcpdImportUpdate.value !== undefined
@@ -219,6 +268,19 @@ name: importUpload
       return false
     }
   })
+
+  const iconsByExtension: Record<string, string> = {
+    xlsx: mdiFileExcel,
+    xls: mdiFileExcel,
+    csv: mdiFileExcel,
+    txt: mdiFileDocument,
+    zip: mdiFolderZip,
+  }
+
+  function getFileIcon (file?: File | null): string {
+    const ext = file?.name.split('.').pop()?.toLowerCase() ?? ''
+    return iconsByExtension[ext] ?? mdiFile
+  }
 
   function upload () {
     if (selectedFile.value) {
@@ -270,5 +332,83 @@ name: importUpload
     mcpdImportUpdate.value = 'import'
     selectedSubTab.value = newValue ? tabGroups.value.get(newValue.group)?.[0] : undefined
     selectedFile.value = undefined
+    locationsConfirmed.value = false
+  })
+
+  watch(selectedFile, async newValue => {
+    if (newValue instanceof File) {
+      if (selectedTab.value?.id === 'mcpd') {
+        const fileBuffer = await newValue.arrayBuffer()
+        const data = read(fileBuffer, { type: 'array', cellDates: false })
+        // Parse Excel file to JSON
+        const parsed = utils.sheet_to_json(data.Sheets.DATA)
+
+        xlsxLocations.value = parsed.map((g: any, i) => {
+          const lat = g.DECLATITUDE || dmsToDecimal(g.LATITUDE)
+          const lng = g.DECLONGITUDE || dmsToDecimal(g.LONGITUDE)
+
+          if (lat && lng) {
+            return {
+              locationId: i,
+              locationLatitude: lat,
+              locationLongitude: lng,
+              locationType: 'collectingsites',
+              additionalInfo: { [t('widgetLocationMapInputRow')]: `${i + 1}` },
+              locationName: g.ACCENUMB,
+            }
+          } else {
+            return undefined
+          }
+        }).filter(g => g !== undefined)
+      } else if (selectedSubTab.value?.id === 'trial') {
+        const fileBuffer = await newValue.arrayBuffer()
+        const data = read(fileBuffer, { type: 'array', cellDates: false })
+
+        // Parse Excel file to JSON
+        let parsed = utils.sheet_to_json(data.Sheets.DATA)
+
+        const plots = parsed.map((g: any, i) => {
+          const lat = g.Latitude
+          const lng = g.Longitude
+
+          if (lat && lng) {
+            return {
+              locationId: i,
+              locationLatitude: lat,
+              locationLongitude: lng,
+              locationType: 'trialsite',
+              additionalInfo: { [t('widgetLocationMapInputRow')]: `${i + 1}` },
+              locationName: g['Line/Phenotype'],
+            }
+          } else {
+            return undefined
+          }
+        }).filter(g => g !== undefined)
+
+        parsed = utils.sheet_to_json(data.Sheets.LOCATION)
+
+        const locations = parsed.map((g: any, i) => {
+          const lat = g.Latitude
+          const lng = g.Longitude
+
+          if (lat && lng) {
+            return {
+              locationId: i,
+              locationLatitude: lat,
+              locationLongitude: lng,
+              locationType: 'datasets',
+              additionalInfo: { [t('widgetLocationMapInputRow')]: `${i + 1}` },
+              locationName: g.Name,
+            }
+          } else {
+            return undefined
+          }
+        }).filter(g => g !== undefined)
+
+        xlsxLocations.value = plots.concat(locations)
+      }
+    } else {
+      xlsxLocations.value = []
+    }
   })
 </script>

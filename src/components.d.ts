@@ -100,6 +100,7 @@ declare module 'vue' {
     McpdInfo: typeof import('./components/germplasm/McpdInfo.vue')['default']
     MethodClassSelector: typeof import('./components/variable/MethodClassSelector.vue')['default']
     NewsTable: typeof import('./components/tables/NewsTable.vue')['default']
+    OntologyLinks: typeof import('./components/variable/OntologyLinks.vue')['default']
     PageHeaderBreadcrumbs: typeof import('./components/structure/PageHeaderBreadcrumbs.vue')['default']
     Passport: typeof import('./components/widgets/Passport.vue')['default']
     PedigreeChart: typeof import('./components/charts/PedigreeChart.vue')['default']

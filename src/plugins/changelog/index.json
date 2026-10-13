@@ -15,6 +15,15 @@
       },
       {
         "type": "new",
+        "title": "Trial information in data templates",
+        "text": "Trials data templates now include a new tab called 'TRIAL_INFORMATION' which includes fields that are needed to align Germinate with MIAPPE.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "new",
         "title": "Chart highlighting",
         "text": "Many data visualizations have been enhanced by adding more complex and more customisable data point highlighing options. As an example, phenotypic data always allowed highlighting reps and treatments, but now gives you much more control about which ones to highlight rather than all of them.",
         "categories": [

@@ -7,6 +7,11 @@
         </template>
         <template #text>
           <div v-if="variable.variableDescription">{{ variable.variableDescription }}</div>
+
+          <OntologyLinks
+            v-if="variable.variableOntologies && variable.variableOntologies.length > 0"
+            :ontology-info="variable.variableOntologies"
+          />
         </template>
       </v-card>
     </v-col>
@@ -55,6 +60,11 @@
             :text="synonym"
             class="me-2"
           />
+
+          <OntologyLinks
+            v-if="variable.traitOntologies && variable.traitOntologies.length > 0"
+            :ontology-info="variable.traitOntologies"
+          />
         </template>
       </v-card>
     </v-col>
@@ -94,6 +104,11 @@
         </template>
         <template #text>
           <div v-if="variable.methodDescription">{{ variable.methodDescription }}</div>
+
+          <OntologyLinks
+            v-if="variable.methodOntologies && variable.methodOntologies.length > 0"
+            :ontology-info="variable.methodOntologies"
+          />
         </template>
       </v-card>
     </v-col>
@@ -117,6 +132,11 @@
               <v-chip class="mr-2" label v-if="variable.scaleRestrictions.categories" :prepend-icon="mdiCodeBrackets" :text="variable.scaleRestrictions.categories.map(c => c.join(', ')).join(', ')" />
             </h4>
           </template>
+
+          <OntologyLinks
+            v-if="variable.scaleOntologies && variable.scaleOntologies.length > 0"
+            :ontology-info="variable.scaleOntologies"
+          />
         </template>
       </v-card>
     </v-col>

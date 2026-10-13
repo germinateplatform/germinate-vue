@@ -1,10 +1,11 @@
 <template>
   <div>
-    <div :id="`map-${id}`" ref="mapElement" :class="`${props.selectionMode === 'point' ? 'point-search' : ''} ${props.rounded ? 'rounded-lg' : ''} location-map map`">
+    <div :id="`map-${id}`" ref="mapElement" :class="`${props.selectionMode === 'point' ? 'point-search' : ''} ${props.rounded ? 'rounded-md' : ''} location-map map`">
       <div ref="popupContent" class="popup-content">
         <LocationPopup
           :location="currentLocation"
           :show-links="showLinks"
+          :show-edit="showEdit"
           @edit="editLocation(currentLocation)"
           v-if="currentLocation"
         />
@@ -118,6 +119,7 @@
   import { apiPatchLocation } from '@/plugins/api/location.ts'
 
   import emitter from 'tiny-emitter/instance'
+  import { locationTypes } from '@/plugins/util/types'
 
   // Set the leaflet marker icon
   // @ts-ignore
@@ -136,6 +138,7 @@
     selectionMode?: 'point' | 'polygon' | undefined
     showLinks?: boolean
     showClimateOverlays?: boolean
+    showEdit?: boolean
     rounded?: boolean
     shapefileId?: number
     climateOverlaysDisabled?: boolean
@@ -143,6 +146,7 @@
 
   const props = withDefaults(defineProps<MapProps>(), {
     showLinks: true,
+    showEdit: true,
     rounded: true,
     climateOverlaysDisabled: false,
   })
@@ -179,6 +183,26 @@
   let gradientColors: string[] = []
   let editableLayers: FeatureGroup
   let shapefileLayers: { [key: string]: Layer[] } = {}
+
+  const iconCache: Partial<Record<string, L.DivIcon>> = {}
+
+  function getCustomIcon (type: string | undefined): L.DivIcon {
+    const key = type === undefined ? 'undefined' : type
+    if (!iconCache[key]) {
+      const config = locationTypes[key] || locationTypes.dataset
+      const svgHtml = `<svg viewBox="0 0 24 24" width="18" height="18"><path fill="#ffffff" d="${config.path}"/></svg>`
+
+      iconCache[key] = L.divIcon({
+        className: 'custom-marker-wrapper',
+        html: `<div style="background-color: ${config.color()};" class="marker-pin">${svgHtml}</div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+      })
+    }
+
+    return iconCache[key]!
+  }
 
   function editLocation (location: ExtendedViewTableLocations) {
     selectedLocation.value = location
@@ -449,7 +473,7 @@
         if (currentLocation.value.locationLatitude && currentLocation.value.locationLongitude) {
           map.panTo(new L.LatLng(currentLocation.value.locationLatitude, currentLocation.value.locationLongitude))
 
-          const marker = L.marker([currentLocation.value.locationLatitude, currentLocation.value.locationLongitude]).bindPopup('')
+          const marker = L.marker([currentLocation.value.locationLatitude, currentLocation.value.locationLongitude], { icon: getCustomIcon(currentLocation.value.locationType) }).bindPopup('')
           marker.on('click', e => {
             const popup = e.target.getPopup()
             // Set the popup content on click
@@ -491,7 +515,7 @@
         const clusterMarker = internalLocations.value.filter(l => l.locationLatitude && l.locationLongitude)
           .map(l => {
             // @ts-ignore
-            const marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
+            const marker = L.marker([l.locationLatitude, l.locationLongitude], { icon: getCustomIcon(l.locationType) }).bindPopup('')
             marker.on('click', e => {
               const popup = e.target.getPopup()
               currentLocation.value = l
@@ -530,7 +554,7 @@
         internalLocations.value.filter(l => l.locationLatitude && l.locationLongitude)
           .forEach(l => {
             // @ts-ignore
-            const marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
+            const marker = L.marker([l.locationLatitude, l.locationLongitude], { icon: getCustomIcon(l.locationType) }).bindPopup('')
             marker.on('click', e => {
               const popup = e.target.getPopup()
               currentLocation.value = l
@@ -810,5 +834,30 @@
 
 .location-map .legend-control:hover .legend-control__image {
   display: block;
+}
+
+.location-map .custom-marker-wrapper {
+  background: transparent;
+  border: none;
+}
+
+.location-map .marker-pin {
+  width: 32px;
+  height: 32px;
+  border-radius: 50% 50% 50% 0;
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -16px 0 0 -16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  border: 2px solid #ffffff;
+}
+
+.location-map .marker-pin svg {
+  transform: rotate(45deg);
 }
 </style>

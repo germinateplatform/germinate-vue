@@ -44,7 +44,7 @@
     <slot name="append" />
 
     <v-list-item
-      v-if="store.storeUserIsDataCurator"
+      v-if="store.storeUserIsDataCurator && showEdit"
       @click="emit('edit')"
       :prepend-icon="mdiTooltipEdit"
       :title="$t('buttonEdit')"
@@ -72,6 +72,7 @@
   const compProps = defineProps<{
     location: ExtendedViewTableLocations
     showLinks: boolean
+    showEdit: boolean
   }>()
 
   const emit = defineEmits(['edit'])

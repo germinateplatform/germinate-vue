@@ -33,6 +33,7 @@
         <LocationPopup
           :location="selectedLocation"
           show-links
+          :show-edit="false"
           @edit="editLocation"
           v-if="selectedLocation"
         >
