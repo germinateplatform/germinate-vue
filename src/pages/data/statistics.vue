@@ -50,6 +50,14 @@
 
     <GermplasmDensityChoropleth />
 
+    <DatasetCountStackedBarChart
+      :data="datasetStats"
+      :title="$t('pageStatisticsDatasetTitle')"
+      filename="dataset-stats"
+      v-if="datasetStats && datasetStats.length > 0"
+      class="mt-5"
+    />
+
     <InstitutionDatasetTable
       class="mt-5"
       :get-data="getInstitutionDatasets"
@@ -67,11 +75,12 @@ name: statistics
   import TaxonomySunburst from '@/components/charts/TaxonomySunburst.vue'
   import TaxonomyTreemap from '@/components/charts/TaxonomyTreemap.vue'
   import { apiPostInstitutionDatasetTable } from '@/plugins/api/institution'
-  import { apiGetMetaStats } from '@/plugins/api/stats'
+  import { apiGetMetaStats, apiGetDatasetStats } from '@/plugins/api/stats'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type GermplasmMetaStats, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type GermplasmMetaStats, type FilterGroup, type PaginatedRequest, type ViewStatsDatasets } from '@/plugins/types/germinate'
 
   const germplasmMetadata = ref<GermplasmMetaStats[]>()
+  const datasetStats = ref<ViewStatsDatasets[]>([])
 
   const router = useRouter()
 
@@ -154,6 +163,9 @@ name: statistics
   onMounted(() => {
     apiGetMetaStats(result => {
       germplasmMetadata.value = result
+    })
+    apiGetDatasetStats(result => {
+      datasetStats.value = result
     })
   })
 </script>

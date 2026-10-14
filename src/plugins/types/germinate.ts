@@ -201,6 +201,14 @@ export interface BackupResult {
     href?: string
 }
 
+export interface ViewStatsDatasets {
+    year: number;
+    type: string;
+    datasetCount: number;
+    dataObjectCount: number;
+    dataPointCount: number;
+}
+
 export const enum BackupType {
     UPDATE = 'UPDATE',
     PERIODICAL = 'PERIODICAL',

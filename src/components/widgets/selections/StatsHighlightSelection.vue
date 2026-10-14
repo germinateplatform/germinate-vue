@@ -15,7 +15,7 @@
       </v-btn>
     </v-btn-toggle>
 
-    <v-select
+    <SelectAllBox
       v-if="selectionMode === 'taxonomies'"
       :label="$t('formLabelHighlightTaxonomies')"
       :hint="$t('formDescriptionHighlightTaxonomies')"
@@ -33,9 +33,9 @@
 
         <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedTaxonomies || []).length - 4 }} others)</span>
       </template>
-    </v-select>
+    </SelectAllBox>
 
-    <v-select
+    <SelectAllBox
       v-else-if="selectionMode === 'sampstat'"
       :label="$t('formLabelHighlightBiologicalStatus')"
       :hint="$t('formDescriptionHighlightBiologicalStatus')"
@@ -64,7 +64,7 @@
           </template>
         </v-list-item>
       </template>
-    </v-select>
+    </SelectAllBox>
   </div>
 </template>
 

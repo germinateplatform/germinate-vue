@@ -77,7 +77,7 @@
     </MarkerTable>
 
     <template v-if="showPublications || store.storeUserIsDataCurator">
-      <PublicationTable class="mt-5" :get-data="getPublicationData" :publication-reference-id="groupId" :publication-reference-type="PublicationdataReferenceType.group">
+      <PublicationTable class="mt-5" :filter-on="publicationsFilter" :get-data="getPublicationData" :publication-reference-id="groupId" :publication-reference-type="PublicationdataReferenceType.group">
         <template #card-text>
           <v-card-text>{{ $t('pageGroupsPublicationsText') }}</v-card-text>
         </template>
@@ -154,6 +154,17 @@ name: groupDetails
   })
 
   useBreadcrumbTitle(() => group.value?.groupName)
+
+  const publicationsFilter = computed(() => {
+    return [{
+      operator: FilterOperator.and,
+      filters: [{
+        column: 'groupIds',
+        comparator: FilterComparator.arrayContains,
+        values: [`${groupId.value}`],
+      }],
+    }]
+  })
 
   function updateSelection (selection: number[]) {
     selectedIds.value = selection

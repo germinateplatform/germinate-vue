@@ -181,11 +181,13 @@
         <v-chip
           :color="isMarked(item[componentProps.itemKey]) ? 'primary' : undefined"
           v-if="componentProps.markedItemType"
-          @click="toggleMarkedItem(item[componentProps.itemKey])"
           v-tooltip:top="isMarked(item[componentProps.itemKey]) ? $t('widgetTableMarkingRemoveItemFromList') : $t('widgetTableMarkingAddItemToList')"
         >
           <!-- @vue-ignore -->
-          <v-icon :icon="isMarked(item[componentProps.itemKey]) ? mdiBookmarkCheck : mdiBookmarkOutline" />
+          <v-icon
+            @click="toggleMarkedItem(item[componentProps.itemKey])"
+            :icon="isMarked(item[componentProps.itemKey]) ? mdiBookmarkCheck : mdiBookmarkOutline"
+          />
 
           <slot name="item.marking.append" :item="item" />
         </v-chip>

@@ -49,7 +49,7 @@
 
     <template #item.datasetIds="{ item }">
       <div class="d-flex flex-wrap ga-1 my-1" style="min-width: 200px;">
-        <v-chip label @click="redirectToDatasets(item.allDatasetIds)" :color="item.trialsDatasetIds ? getPrimaryColor() : 'grey'" v-tooltip:top="$t('tableTooltipInstitutionDatasetsAll')" :prepend-icon="mdiDatabase" :text="(item.allDatasetIds || []).length" />
+        <v-chip label @click="redirectToDatasets(item.allDatasetIds)" :color="item.allDatasetIds ? getPrimaryColor() : 'grey'" v-tooltip:top="$t('tableTooltipInstitutionDatasetsAll')" :prepend-icon="mdiDatabase" :text="(item.allDatasetIds || []).length" />
         <v-chip label @click="redirectToDatasets(item.trialsDatasetIds)" :color="item.trialsDatasetIds ? datasetTypes.trials.color() : 'grey'" v-tooltip:top="datasetTypes.trials.text()" :prepend-icon="datasetTypes.trials.path" :text="(item.trialsDatasetIds || []).length" />
         <v-chip label @click="redirectToDatasets(item.genotypeDatasetIds)" :color="item.genotypeDatasetIds ? datasetTypes.genotype.color() : 'grey'" v-tooltip:top="datasetTypes.genotype.text()" :prepend-icon="datasetTypes.genotype.path" :text="(item.genotypeDatasetIds || []).length" />
         <v-chip label @click="redirectToDatasets(item.pedigreeDatasetIds)" :color="item.pedigreeDatasetIds ? datasetTypes.pedigree.color() : 'grey'" v-tooltip:top="datasetTypes.pedigree.text()" :prepend-icon="datasetTypes.pedigree.path" :text="(item.pedigreeDatasetIds || []).length" />

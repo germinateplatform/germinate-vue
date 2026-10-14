@@ -1,12 +1,31 @@
 <template>
   <v-row v-if="variable">
     <v-col cols="12">
-      <v-card :title="$t('widgetVariableVariable')">
+      <v-card>
+        <template #title>
+          <div class="d-flex justify-space-between align-center mb-2">
+            <span>{{ $t('widgetVariableVariable') }}</span>
+            <OntologyLinks
+              v-if="variable.variableOntologies && variable.variableOntologies.length > 0"
+              :ontology-info="variable.variableOntologies"
+            />
+          </div>
+        </template>
         <template #subtitle>
           <span>{{ variable.variableName }}</span>
         </template>
         <template #text>
           <div v-if="variable.variableDescription">{{ variable.variableDescription }}</div>
+
+          <h4 class="mt-3" v-if="variable.variableSynonyms">{{ $t('genericSynonyms') }}</h4>
+          <v-chip
+            label
+            v-for="(synonym, index) in variable.variableSynonyms"
+            :key="`variable-synonym-${index}`"
+            :prepend-icon="mdiLabel"
+            :text="synonym"
+            class="me-2"
+          />
 
           <OntologyLinks
             v-if="variable.variableOntologies && variable.variableOntologies.length > 0"
@@ -16,7 +35,16 @@
       </v-card>
     </v-col>
     <v-col class="d-flex">
-      <v-card :title="$t('widgetVariableTrait')" class="d-flex flex-column flex-grow-1" v-if="variable.traitId">
+      <v-card class="d-flex flex-column flex-grow-1" v-if="variable.traitId">
+        <template #title>
+          <div class="d-flex justify-space-between align-center mb-2">
+            <span>{{ $t('widgetVariableTrait') }}</span>
+            <OntologyLinks
+              v-if="variable.traitOntologies && variable.traitOntologies.length > 0"
+              :ontology-info="variable.traitOntologies"
+            />
+          </div>
+        </template>
         <template #subtitle>
           <div class="d-flex justify-space-between align-center flex-grow flex-wrap">
             <span>{{ variable.traitName }}</span>
@@ -55,21 +83,25 @@
           <v-chip
             label
             v-for="(synonym, index) in variable.traitSynonyms"
-            :key="`marker-synonym-${index}`"
+            :key="`trait-synonym-${index}`"
             :prepend-icon="mdiLabel"
             :text="synonym"
             class="me-2"
-          />
-
-          <OntologyLinks
-            v-if="variable.traitOntologies && variable.traitOntologies.length > 0"
-            :ontology-info="variable.traitOntologies"
           />
         </template>
       </v-card>
     </v-col>
     <v-col class="d-flex">
-      <v-card :title="$t('widgetVariableMethod')" class="d-flex flex-column flex-grow-1" v-if="variable.methodId">
+      <v-card class="d-flex flex-column flex-grow-1" v-if="variable.methodId">
+        <template #title>
+          <div class="d-flex justify-space-between align-center mb-2">
+            <span>{{ $t('widgetVariableMethod') }}</span>
+            <OntologyLinks
+              v-if="variable.methodOntologies && variable.methodOntologies.length > 0"
+              :ontology-info="variable.methodOntologies"
+            />
+          </div>
+        </template>
         <template #subtitle>
           <div class="d-flex justify-space-between align-center flex-grow flex-wrap">
             <span>{{ variable.methodName }}</span>
@@ -104,16 +136,20 @@
         </template>
         <template #text>
           <div v-if="variable.methodDescription">{{ variable.methodDescription }}</div>
-
-          <OntologyLinks
-            v-if="variable.methodOntologies && variable.methodOntologies.length > 0"
-            :ontology-info="variable.methodOntologies"
-          />
         </template>
       </v-card>
     </v-col>
     <v-col class="d-flex">
-      <v-card :title="$t('widgetVariableScale')" class="d-flex flex-column flex-grow-1" v-if="variable.scaleId">
+      <v-card class="d-flex flex-column flex-grow-1" v-if="variable.scaleId">
+        <template #title>
+          <div class="d-flex justify-space-between align-center mb-2">
+            <span>{{ $t('widgetVariableScale') }}</span>
+            <OntologyLinks
+              v-if="variable.scaleOntologies && variable.scaleOntologies.length > 0"
+              :ontology-info="variable.scaleOntologies"
+            />
+          </div>
+        </template>
         <template #subtitle>
           <div class="d-flex justify-space-between align-center flex-grow flex-wrap">
             <span>{{ variable.scaleName }}</span>
@@ -126,17 +162,29 @@
           <template v-if="variable.scaleRestrictions">
             <h2>{{ $t('pageTraitDetailsRestrictionsTitle') }}</h2>
 
-            <h4>
-              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.min !== undefined && variable.scaleRestrictions.min !== null" :prepend-icon="mdiGreaterThanOrEqual" :text="variable.scaleRestrictions.min" />
-              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.max !== undefined && variable.scaleRestrictions.max !== null" :prepend-icon="mdiLessThanOrEqual" :text="variable.scaleRestrictions.max" />
-              <v-chip class="mr-2" label v-if="variable.scaleRestrictions.categories" :prepend-icon="mdiCodeBrackets" :text="variable.scaleRestrictions.categories.map(c => c.join(', ')).join(', ')" />
-            </h4>
-          </template>
+            <v-chip class="mr-2" label v-if="variable.scaleRestrictions.min !== undefined && variable.scaleRestrictions.min !== null" :prepend-icon="mdiGreaterThanOrEqual" :text="variable.scaleRestrictions.min" />
+            <v-chip class="mr-2" label v-if="variable.scaleRestrictions.max !== undefined && variable.scaleRestrictions.max !== null" :prepend-icon="mdiLessThanOrEqual" :text="variable.scaleRestrictions.max" />
 
-          <OntologyLinks
-            v-if="variable.scaleOntologies && variable.scaleOntologies.length > 0"
-            :ontology-info="variable.scaleOntologies"
-          />
+            <h3 class="mb-0">{{ $t('widgetTraitCategoriesTitle') }}</h3>
+            <v-chip-group v-if="variable.scaleRestrictions.categories" column>
+              <v-chip
+                v-for="(set, index) in categorySets"
+                :key="`category-set-${index}`"
+                label
+                class="h-auto py-2 px-3"
+              >
+                <div class="d-flex flex-column align-center" style="line-height: 1.2;">
+                  <span
+                    v-for="(setItem, setIndex) in set"
+                    :key="`category-set-${index}-${setIndex}`"
+                    class="text-caption"
+                  >
+                    {{ setItem }}
+                  </span>
+                </div>
+              </v-chip>
+            </v-chip-group>
+          </template>
         </template>
       </v-card>
     </v-col>
@@ -172,6 +220,24 @@
   const isChanged = computed(() => {
     return (changedMethodClass.value !== undefined && changedMethodClass.value !== variable.value?.methodClass)
       || (changedTraitClass.value !== undefined && changedTraitClass.value !== variable.value?.traitClass)
+  })
+
+  const categorySets = computed(() => {
+    if (variable.value?.scaleRestrictions?.categories) {
+      const maxLength = Math.max(...variable.value.scaleRestrictions.categories.map(c => c.length))
+
+      const result: string[][] = Array.from({ length: maxLength }, () => [])
+
+      variable.value.scaleRestrictions.categories.forEach(c => {
+        for (let i = 0; i < result.length; i++) {
+          result[i].push(c.at(i) || '')
+        }
+      })
+
+      return result
+    } else {
+      return undefined
+    }
   })
 
   function setSelectedMethodClass (selected: any) {

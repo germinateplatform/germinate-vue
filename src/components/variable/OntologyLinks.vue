@@ -1,17 +1,18 @@
 <template>
-  <v-chip-group v-if="ontologyInfo && ontologyInfo.length > 0">
-    <v-chip
+  <div class="d-flex ga-2" v-if="ontologyInfo && ontologyInfo.length > 0">
+    <v-btn
       v-for="ont in asLinks"
       :key="`ontology-info-${ont.text}-${ont.to}`"
       :href="ont.to"
-      :text="ont.text"
       label
       target="_blank"
-      :prepend-icon="types[ont.type]?.icon || mdiOpenInNew"
+      :icon="types[ont.type]?.icon || mdiOpenInNew"
       v-tooltip:top="types[ont.type]?.name"
-      size="small"
+      size="x-small"
+      variant="tonal"
+      color="primary"
     />
-  </v-chip-group>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -42,7 +43,7 @@
     cropontology: {
       name: 'CropOntology',
       icon: '$cropontology',
-    }
+    },
   })
 
   const asLinks: ComputedRef<Link[]> = computed(() => {

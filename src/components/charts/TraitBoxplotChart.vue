@@ -1,35 +1,52 @@
 <template>
-  <BaseChart
-    title="pageTrialsExportTraitBoxplotTitle"
-    :chart-id="id"
-    :filename="filename"
-    :source-file="sourceFile"
-    v-model:loading="loading"
-    :badge-count="markedItemCount"
-    :header-icon="mdiChartGantt"
-    @force-redraw="redraw"
-    ref="baseChart"
-  >
-    <template #card-text>
-      <v-card-text>
-        <p>{{ $t(type === 'numeric' ? 'pageTrialsExportTraitBoxplotText' : 'pageTrialsExportTraitBoxplotDateText') }}</p>
-      </v-card-text>
-    </template>
-    <template #toolbar-append>
-      <v-btn-group class="mx-2" density="compact" variant="tonal">
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, 'germplasm')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedGermplasm.length, 1) }}</v-chip></v-btn>
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
-      </v-btn-group>
-    </template>
-    <template #list-append>
-      <v-divider />
-      <v-list-item :prepend-icon="mdiCheckboxMarked" :disabled="markedItemCount === 0" @click="toggleItems(true)">{{ $t('widgetChartMarkSelectedItems') }}</v-list-item>
-      <v-list-item :prepend-icon="mdiCheckboxBlankOutline" :disabled="markedItemCount === 0" @click="toggleItems(false)">{{ $t('widgetChartUnmarkSelectedItems') }}</v-list-item>
-    </template>
-    <template #chart-content>
-      <div :id="id" ref="boxplotChart" />
-    </template>
-  </BaseChart>
+  <div>
+    <BaseChart
+      title="pageTrialsExportTraitBoxplotTitle"
+      :chart-id="id"
+      :filename="filename"
+      :source-file="sourceFile"
+      v-model:loading="loading"
+      :badge-count="markedItemCount"
+      :header-icon="mdiChartGantt"
+      @force-redraw="redraw"
+      ref="baseChart"
+    >
+      <template #card-text>
+        <v-card-text>
+          <p>{{ $t(type === 'numeric' ? 'pageTrialsExportTraitBoxplotText' : 'pageTrialsExportTraitBoxplotDateText') }}</p>
+        </v-card-text>
+      </template>
+      <template #toolbar-append>
+        <v-btn-group class="mx-2" density="compact" variant="tonal">
+          <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, 'germplasm')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedGermplasm.length, 1) }}</v-chip></v-btn>
+          <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
+        </v-btn-group>
+      </template>
+      <template #list-append>
+        <v-divider />
+        <v-list-item :prepend-icon="mdiCheckboxMarked" :disabled="markedItemCount === 0" @click="toggleItems(true)">{{ $t('widgetChartMarkSelectedItems') }}</v-list-item>
+        <v-list-item :prepend-icon="mdiCheckboxBlankOutline" :disabled="markedItemCount === 0" @click="toggleItems(false)">{{ $t('widgetChartUnmarkSelectedItems') }}</v-list-item>
+      </template>
+      <template #chart-content>
+        <div :id="id" ref="boxplotChart" />
+      </template>
+    </BaseChart>
+    <v-bottom-sheet
+      v-model="bottomSheetVisible"
+      inset
+      max-height="75vh"
+      v-if="selectedGermplasmId"
+    >
+      <v-card
+        :title="$t('pagePassportTitle')"
+        class="pb-10"
+      >
+        <v-card-text>
+          <Passport :top-gap="false" :germplasm-id="selectedGermplasmId" />
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -57,6 +74,8 @@
 
   const store = useCoreStore()
   const tdStore = useTraitDataStore()
+
+  const bottomSheetVisible = ref(false)
 
   const sourceFile = ref<DownloadBlob>()
   const boxplotChart = useTemplateRef('boxplotChart')
@@ -254,8 +273,9 @@
                 if (data.points.length > 0) {
                   selectedGermplasmId.value = Number.parseInt(data.points[0].id.split('-')[0])
 
-                  // nextTick(() => this.$refs.passportModal.show())
-                  // TODO: Show passport popup?
+                  nextTick(() => {
+                    bottomSheetVisible.value = true
+                  })
                 } else {
                   selectedGermplasmId.value = undefined
                 }

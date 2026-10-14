@@ -18,7 +18,7 @@
       @license-accepted="update"
     />
 
-    <v-expansion-panels class="mt-5">
+    <v-expansion-panels class="mt-5" rounded>
       <v-expansion-panel>
         <template #title>
           <v-icon :icon="mdiChartTimeline" class="me-2" /> {{ $t('pageTraitDetailsStatsTitle') }}
@@ -28,8 +28,6 @@
             <p>{{ $t('pageTraitDetailsStatsText') }}</p>
 
             <TraitStatsChart
-              :datasets="datasets || []"
-              :groups="groups || []"
               :variables="[localVariable]"
               :trait-data="traitData || []"
               ref="traitStatsChart"
@@ -62,10 +60,10 @@
 
   const localVariable = ref<ViewTableTraits>()
   const datasets = ref<ViewTableDatasets[]>()
-  // TODO: Fetch
-  const groups = ref<ViewTableGroups[]>()
   const imagesVisible = ref(true)
   const traitData = shallowRef<ViewTableTrialsData[]>()
+
+  const tdStore = useTraitDataStore()
 
   const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
     return [{
@@ -168,6 +166,8 @@
       if (result && result.data) {
         datasets.value = result.data
 
+        tdStore.setDatasets(result.data)
+
         plot()
       }
     })
@@ -197,6 +197,8 @@
       }, result => {
         if (result && result.data && result.data.length > 0) {
           localVariable.value = result.data[0]
+
+          tdStore.setTraits(result.data)
         }
       })
     }

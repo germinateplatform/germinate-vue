@@ -16,7 +16,7 @@
       @license-accepted="update"
     />
 
-    <v-expansion-panels class="mt-5">
+    <v-expansion-panels class="mt-5" rounded>
       <v-expansion-panel>
         <template #title>
           <v-icon :icon="mdiChartTimeline" class="me-2" /> {{ $t('pageClimateDetailsStatsTitle') }}
@@ -25,9 +25,7 @@
           <p>{{ $t('pageClimateDetailsStatsText') }}</p>
 
           <ClimateStatsChart
-            :datasets="datasets || []"
             :climates="[localClimate]"
-            :groups="groups"
             :climate-data="climateData || []"
             ref="traitStatsChart"
           />
@@ -58,9 +56,10 @@
   const localClimate = ref<ViewTableClimates>()
   const datasets = ref<ViewTableDatasets[]>()
   // TODO: Fetch
-  const groups = ref<ViewTableGroups[]>()
   const imagesVisible = ref(true)
   const climateData = shallowRef<ViewTableClimateDataWithGroups[]>()
+
+  const cdStore = useClimateDataStore()
 
   const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
     return [{
@@ -162,6 +161,8 @@
       if (result && result.data) {
         datasets.value = result.data
 
+        cdStore.setDatasets(result.data)
+
         plot()
       }
     })
@@ -191,6 +192,8 @@
       }, result => {
         if (result && result.data && result.data.length > 0) {
           localClimate.value = result.data[0]
+
+          cdStore.setClimates(result.data)
         }
       })
     }

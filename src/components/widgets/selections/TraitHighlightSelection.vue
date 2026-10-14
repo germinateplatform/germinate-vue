@@ -112,7 +112,7 @@
 
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostDatasetGermplasmTable } from '@/plugins/api/germplasm'
+  import { apiPostDatasetGermplasmTable, apiPostGermplasmTable } from '@/plugins/api/germplasm'
   import { apiPostTrialSetupStats } from '@/plugins/api/trait'
   import type { Taxonomies, PlotDetails, Treatments, ViewTableGermplasm, ViewTableGroups } from '@/plugins/types/germinate'
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -235,17 +235,31 @@
       }
     })
 
-    apiPostDatasetGermplasmTable(tdStore.storeDatasetIds, {
-      page: 1,
-      limit: MAX_JAVA_INTEGER,
-      minimal: true,
-    }, result => {
-      if (result && result.data) {
-        trialGermplasm.value = result.data
-      } else {
-        trialGermplasm.value = []
-      }
-    })
+    if (tdStore.storeDatasetIds && tdStore.storeDatasetIds.length > 0) {
+      apiPostDatasetGermplasmTable(tdStore.storeDatasetIds, {
+        page: 1,
+        limit: MAX_JAVA_INTEGER,
+        minimal: true,
+      }, result => {
+        if (result && result.data) {
+          trialGermplasm.value = result.data
+        } else {
+          trialGermplasm.value = []
+        }
+      })
+    } else {
+      apiPostGermplasmTable({
+        page: 1,
+        limit: MAX_JAVA_INTEGER,
+        minimal: true,
+      }, result => {
+        if (result && result.data) {
+          trialGermplasm.value = result.data
+        } else {
+          trialGermplasm.value = []
+        }
+      })
+    }
   }
 
   onMounted(() => update())

@@ -71,11 +71,11 @@
     numericTraitBoxPlot.value?.redraw()
     dateTraitBoxPlot.value?.redraw()
     traitBarChart.value?.redrawAll()
-    highlightSelection.value?.update()
+    // highlightSelection.value?.update()
   }
 
   function update () {
-    highlightSelection.value?.update()
+    // highlightSelection.value?.update()
   }
 
   defineExpose({
