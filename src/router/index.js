@@ -79,6 +79,13 @@ const routes = [
         beforeEnter: requireAuth
       },
       {
+        // Backup of the original Germinate home page
+        path: '/home-legacy',
+        name: 'home-legacy',
+        component: () => import(/* webpackChunkName: "home-legacy" */ '@/views/HomeViewLegacy'),
+        beforeEnter: requireAuth
+      },
+      {
         path: 'cookies',
         name: Pages.cookies,
         component: () => import(/* webpackChunkName: "cookies" */ '@/views/Cookies'),
@@ -165,7 +172,15 @@ const routes = [
           {
             path: 'germplasm/:germplasmId',
             name: Pages.passport,
-            component: () => import(/* webpackChunkName: "passport" */ '@/views/data/germplasm/Passport.vue'),
+            // New passport page. Passport.vue is still used by the germplasm popups.
+            component: () => import(/* webpackChunkName: "passport" */ '@/views/data/germplasm/PassportView.vue'),
+            beforeEnter: requireAuth
+          },
+          {
+            // Backup of the original passport page
+            path: 'germplasm-legacy/:germplasmId',
+            name: 'passport-legacy',
+            component: () => import(/* webpackChunkName: "passport-legacy" */ '@/views/data/germplasm/PassportLegacy.vue'),
             beforeEnter: requireAuth
           },
           {
@@ -360,6 +375,13 @@ const routes = [
         path: 'images',
         name: Pages.images,
         component: () => import(/* webpackChunkName: "images" */ '@/views/Images.vue'),
+        beforeEnter: requireAuth
+      },
+      {
+        // Video gallery built from the data resources of type "Video"
+        path: 'media',
+        name: Pages.media,
+        component: () => import(/* webpackChunkName: "media" */ '@/views/MediaView.vue'),
         beforeEnter: requireAuth
       },
       {

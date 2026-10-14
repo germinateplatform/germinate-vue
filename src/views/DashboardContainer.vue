@@ -45,7 +45,7 @@
 
           <PageHeader />
 
-          <router-view :key="$route.path" class="pb-3" />
+          <router-view :key="`${$route.path}-${routeReloadCount}`" class="pb-3" />
         </b-container>
 
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-dark">
@@ -168,6 +168,9 @@ export default {
       sidebarWidth: '300px',
       searchTerm: null,
       asyncSidebarOpen: false,
+      // Bumped to rebuild the current page when the menu navigates to it again with a different query
+      routeReloadCount: 0,
+      pendingReloadPath: null,
       popoverContent: [{
         title: () => this.$t('widgetIntroTourStepTitleWelcome'),
         text: () => this.$t('widgetIntroTourStepTextWelcome'),
@@ -204,9 +207,23 @@ export default {
   watch: {
     storeDarkMode: function () {
       this.loadAndSetDarkMode()
+    },
+    $route: function (to) {
+      if (this.pendingReloadPath && to.fullPath === this.pendingReloadPath) {
+        this.routeReloadCount++
+      }
+      this.pendingReloadPath = null
     }
   },
   methods: {
+    onReloadRoute: function (fullPath) {
+      if (this.$route.fullPath === fullPath) {
+        // The navigation already happened (or the same page was clicked again)
+        this.routeReloadCount++
+      } else {
+        this.pendingReloadPath = fullPath
+      }
+    },
     showChangelog: function () {
       this.changelogVersionNumber = null
 
@@ -271,12 +288,14 @@ export default {
     window.removeEventListener('resize', this.onResize)
     emitter.off('show-introduction', this.startIntroduction)
     emitter.off('toggle-aside', this.toggleAsyncSidebar)
+    emitter.off('reload-route', this.onReloadRoute)
   },
   mounted: function () {
     this.onResize()
     window.addEventListener('resize', this.onResize)
     emitter.on('show-introduction', this.startIntroduction)
     emitter.on('toggle-aside', this.toggleAsyncSidebar)
+    emitter.on('reload-route', this.onReloadRoute)
 
     if (this.storeDarkMode) {
       this.loadAndSetDarkMode()
