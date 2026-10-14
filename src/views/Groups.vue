@@ -56,7 +56,7 @@
       <p v-html="$t('pageGroupsPublicationsText')" />
       <PublicationsWidget :referencingId="group.groupId" referenceType="group" />
 
-      <h3 class="mt-3">{{ $t('pageGroupsMembersTitle') }}</h3>
+      <h3 class="mt-3" id="group-members" ref="groupMembers">{{ $t('pageGroupsMembersTitle') }}</h3>
       <!-- One of these three tables will be shown, depending on the type of the selected group -->
       <GermplasmTable v-if="group.groupType === 'germinatebase'"
                       ref="groupmembersTable"
@@ -451,10 +451,12 @@ export default {
           }]
         }
         const prevGroupType = this.group ? this.group.groupType : null
+        // Links to "groups/:groupId#group-members" open this group scrolled to its members
+        const scrollToMembers = this.$route.hash === '#group-members' && `${this.$route.params.groupId}` === `${this.groupId}`
         apiPostGroupTable(queryParams, result => {
           if (result && result.data && result.data.length > 0) {
             // Update the URL to reflect the newly selected group
-            this.$router.push({ name: 'group-details', params: { groupId: this.groupId }, query: this.$router.currentRoute.query })
+            this.$router.push({ name: 'group-details', params: { groupId: this.groupId }, query: this.$router.currentRoute.query, hash: scrollToMembers ? '#group-members' : undefined })
             this.group = result.data[0]
 
             // This refresh is necessary, since we're not switching group type. The table showing the resulting group
@@ -463,9 +465,10 @@ export default {
               this.$nextTick(() => this.$refs.groupmembersTable.refresh())
             }
 
-            // Scroll down to the group details section
+            // Scroll down to the group details section (or straight to the members if requested)
             this.$nextTick(() => {
-              const rect = this.$refs.groupDetails.getBoundingClientRect()
+              const target = scrollToMembers ? this.$refs.groupMembers : this.$refs.groupDetails
+              const rect = target.getBoundingClientRect()
 
               window.scrollTo({
                 left: 0,

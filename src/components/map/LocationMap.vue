@@ -121,7 +121,7 @@ export default {
       mdiMapLegend,
       loading: false,
       loadingProgress: 0,
-      zoom: 3,
+      zoom: this.initialZoom,
       maxZoom: 18,
       center: [22.5937, 2.1094],
       heat: null,
@@ -165,6 +165,20 @@ export default {
     border: {
       type: String,
       default: 'border'
+    },
+    // Base layer to start with ("osm", "theme" or "satellite"). By default the layer last chosen by the user is used.
+    baseLayer: {
+      type: String,
+      default: null
+    },
+    // Whether the details popup opens by itself when the map shows a single location
+    openPopup: {
+      type: Boolean,
+      default: true
+    },
+    initialZoom: {
+      type: Number,
+      default: 3
     }
   },
   watch: {
@@ -376,7 +390,9 @@ export default {
             this.$nextTick(() => popup.setContent(this.$refs.popupContent))
           })
           marker.addTo(map)
-          marker.fire('click')
+          if (this.openPopup) {
+            marker.fire('click')
+          }
 
           this.markers.push(marker)
         } else if (this.internalLocations.length > 1) {
@@ -487,7 +503,7 @@ export default {
 
       const map = this.$refs.map.mapObject
 
-      switch (this.storeMapLayer) {
+      switch (this.baseLayer || this.storeMapLayer) {
         case 'theme':
           map.addLayer(this.themeLayer)
           break

@@ -37,6 +37,7 @@
     "shpjs": "^4.0.4",
     "simplex-noise": "~2.4.0",
     "tiny-emitter": "~2.1.0",
+    "video.js": "8.24.2",
     "vis-data": "^7.1.4",
     "vis-network": "^9.1.2",
     "vue": "^2.7.16",

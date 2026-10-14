@@ -1,0 +1,112 @@
+/*
+ * Shared look of the customised pages (same palette and font as the new home page).
+ * Add the "custom-page" class to the root element of a view and use the tokens below in its styles.
+ * Every token is redefined for dark mode, which Germinate enables with "dark-mode" on the body.
+ */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+.custom-page {
+  --cp-green: #3b6b35;
+  --cp-green-hover: #2a4f26;
+  --cp-green-soft: #eaf2e6;
+  --cp-dot: #6aa84f;
+  --cp-button: #3b6b35;
+  --cp-button-hover: #2f5a2a;
+  --cp-on-button: #ffffff;
+  --cp-text: #1f2120;
+  --cp-text-subtle: #4a4d4b;
+  --cp-muted: #6b6f6c;
+  --cp-border: #e2e3df;
+  --cp-surface: #ffffff;
+  --cp-surface-hover: #fafaf8;
+  --cp-neutral-bg: #f0f1ee;
+  --cp-shadow: rgba(0, 0, 0, 0.06);
+  --cp-media-bg: #1f2120;
+
+  font-family: 'DM Sans', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--cp-text);
+}
+
+body.dark-mode .custom-page {
+  color-scheme: dark;
+
+  --cp-green: #8cc47e;
+  --cp-green-hover: #a8d69c;
+  --cp-green-soft: rgba(106, 168, 79, 0.16);
+  --cp-dot: #8cc47e;
+  --cp-button: #4a7f42;
+  --cp-button-hover: #578f4e;
+  --cp-on-button: #ffffff;
+  --cp-text: #e8e6e3;
+  --cp-text-subtle: #c4beb5;
+  --cp-muted: #a39d93;
+  --cp-border: rgb(62, 67, 70);
+  --cp-surface: rgb(31, 34, 35);
+  --cp-surface-hover: rgb(38, 42, 43);
+  --cp-neutral-bg: rgba(255, 255, 255, 0.06);
+  --cp-shadow: rgba(0, 0, 0, 0.4);
+  --cp-media-bg: #000000;
+}
+
+/* Flagship crop colours (icon circle), same as on the home page. The crops are listed in src/mixins/crops.js. */
+.custom-page {
+  --cp-crop-wheat-bg: #fdf6e3; --cp-crop-wheat-border: #f0d68f; --cp-crop-wheat-fg: #c9a227;
+  --cp-crop-barley-bg: #fbf2e8; --cp-crop-barley-border: #e9cba9; --cp-crop-barley-fg: #b5844e;
+  --cp-crop-pea-bg: #edf7ee; --cp-crop-pea-border: #a9d6ae; --cp-crop-pea-fg: #3f9a4a;
+  --cp-crop-lettuce-bg: #edf6f0; --cp-crop-lettuce-border: #9fcbaa; --cp-crop-lettuce-fg: #4b8f5c;
+  --cp-crop-brassica-bg: #eef1fa; --cp-crop-brassica-border: #b6c0e4; --cp-crop-brassica-fg: #6b7fc4;
+  --cp-crop-other-bg: #f0f1ee; --cp-crop-other-border: #d6d8d3; --cp-crop-other-fg: #6b6f6c;
+}
+body.dark-mode .custom-page {
+  --cp-crop-wheat-bg: rgba(201, 162, 39, 0.12); --cp-crop-wheat-border: rgba(201, 162, 39, 0.4); --cp-crop-wheat-fg: #e3c158;
+  --cp-crop-barley-bg: rgba(181, 132, 78, 0.14); --cp-crop-barley-border: rgba(181, 132, 78, 0.45); --cp-crop-barley-fg: #d9a874;
+  --cp-crop-pea-bg: rgba(63, 154, 74, 0.14); --cp-crop-pea-border: rgba(63, 154, 74, 0.45); --cp-crop-pea-fg: #7cc785;
+  --cp-crop-lettuce-bg: rgba(75, 143, 92, 0.14); --cp-crop-lettuce-border: rgba(75, 143, 92, 0.45); --cp-crop-lettuce-fg: #86c296;
+  --cp-crop-brassica-bg: rgba(107, 127, 196, 0.15); --cp-crop-brassica-border: rgba(107, 127, 196, 0.45); --cp-crop-brassica-fg: #a3b3ea;
+  --cp-crop-other-bg: rgba(255, 255, 255, 0.06); --cp-crop-other-border: rgb(62, 67, 70); --cp-crop-other-fg: #a39d93;
+}
+.custom-page .cp-crop-wheat { background: var(--cp-crop-wheat-bg); border-color: var(--cp-crop-wheat-border); color: var(--cp-crop-wheat-fg); }
+.custom-page .cp-crop-barley { background: var(--cp-crop-barley-bg); border-color: var(--cp-crop-barley-border); color: var(--cp-crop-barley-fg); }
+.custom-page .cp-crop-pea { background: var(--cp-crop-pea-bg); border-color: var(--cp-crop-pea-border); color: var(--cp-crop-pea-fg); }
+.custom-page .cp-crop-lettuce { background: var(--cp-crop-lettuce-bg); border-color: var(--cp-crop-lettuce-border); color: var(--cp-crop-lettuce-fg); }
+.custom-page .cp-crop-brassica { background: var(--cp-crop-brassica-bg); border-color: var(--cp-crop-brassica-border); color: var(--cp-crop-brassica-fg); }
+.custom-page .cp-crop-other { background: var(--cp-crop-other-bg); border-color: var(--cp-crop-other-border); color: var(--cp-crop-other-fg); }
+
+/* Page heading shared by the custom pages */
+.custom-page .cp-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cp-muted);
+}
+.custom-page .cp-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cp-dot);
+}
+.custom-page .cp-title {
+  font-size: 2.4rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0.75rem 0 0.75rem;
+}
+.custom-page .cp-lead {
+  max-width: 780px;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--cp-muted);
+  margin: 0;
+}
+@media (max-width: 767px) {
+  .custom-page .cp-title {
+    font-size: 1.9rem;
+  }
+  .custom-page .cp-lead {
+    font-size: 1rem;
+  }
+}

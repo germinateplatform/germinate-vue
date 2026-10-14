@@ -228,25 +228,25 @@ const templateImportTypes = {
     path: mdiPassport,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[0 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeMcpd'),
-    accepts: '.xlsx'
+    accepts: '.xlsx, .xlsm'
   },
   climate: {
     path: mdiWeatherSnowyRainy,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[1 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeClimate'),
-    accepts: '.xlsx'
+    accepts: '.xlsx, .xlsm'
   },
   genotype: {
     path: mdiDna,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[2 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeGenotype'),
-    accepts: '.xlsx, .txt, .hapmap'
+    accepts: '.xlsx, .xlsm, .txt, .hapmap'
   },
   trial: {
     path: mdiShovel,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[3 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeTrial'),
-    accepts: '.xlsx'
+    accepts: '.xlsx, .xlsm'
   },
   shapefile: {
     path: mdiShapeRectanglePlus,
@@ -264,7 +264,7 @@ const templateImportTypes = {
     path: mdiFamilyTree,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[4 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypePedigree'),
-    accepts: '.xlsx'
+    accepts: '.xlsx, .xlsm'
   },
   images: {
     path: mdiImageMultiple,
@@ -276,7 +276,7 @@ const templateImportTypes = {
     path: mdiGroup,
     color: () => store.getters.storeServerSettings ? store.getters.storeServerSettings.colorsTemplate[6 % store.getters.storeServerSettings.colorsTemplate.length] : null,
     text: () => i18n.t('templateImportTypeGroups'),
-    accepts: '.xlsx'
+    accepts: '.xlsx, .xlsm'
   }
 }
 

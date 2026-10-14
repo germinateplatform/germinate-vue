@@ -34,6 +34,7 @@ const Pages = Object.freeze({
   dataResources: 'data-resources',
   statistics: 'statistics',
   images: 'images',
+  media: 'media',
   markedItems: 'marked-items',
   markedItemsType: 'marked-items-type',
   importUpload: 'import-upload',

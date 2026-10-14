@@ -197,7 +197,6 @@ const authAxios = ({ url = null, method = 'GET', data = null, formData = null, d
   let requestData = null
   let requestParams = null
 
-  // Stringify the data object for non-GET requests
   if (data !== null || data !== undefined) {
     if (method === 'GET') {
       requestParams = data
@@ -222,76 +221,68 @@ const authAxios = ({ url = null, method = 'GET', data = null, formData = null, d
     }
   })
 
-  promise.then(result => {
-    const t = store.getters.storeToken
+  promise
+    .then(result => {
+      const t = store.getters.storeToken
 
-    // Check if the token is still valid. Renew it if so.
-    if (t && ((new Date().getTime() - new Date(t.createdOn).getTime()) <= t.lifetime)) {
-      t.createdOn = new Date().getTime()
-      store.dispatch('setToken', t)
-    }
-
-    if (success) {
-      if (dataType === 'blob' && result.headers && result.headers['content-disposition']) {
-        const filename = result.headers['content-disposition']
-          .split(';')
-          .map(p => p.trim())
-          .filter(p => p.indexOf('filename') === 0)
-          .map(p => p.replace('filename=', ''))
-
-        if (filename && filename.length > 0) {
-          result.data.filename = filename[0]
-        }
+      if (t && ((new Date().getTime() - new Date(t.createdOn).getTime()) <= t.lifetime)) {
+        t.createdOn = new Date().getTime()
+        store.dispatch('setToken', t)
       }
 
-      success(result.data)
-    }
-  })
+      if (success) {
+        if (dataType === 'blob' && result.headers && result.headers['content-disposition']) {
+          const filename = result.headers['content-disposition']
+            .split(';')
+            .map(p => p.trim())
+            .filter(p => p.indexOf('filename') === 0)
+            .map(p => p.replace('filename=', ''))
 
-  promise.catch(err => {
-    if (err.response) {
-      // The request was made and the server responded with a status code that falls out of the range of 2xx
-      // Log the user out if the result is forbidden and no error method has been provided
-      // Otherwise, we assume that the calling method takes care of the error
-      if (!error) {
-        if (err.response.status === 403) {
-          store.dispatch('setToken', null)
-          const authMode = store.getters.storeServerSettings.authMode
-          if (authMode === 'FULL' || authMode === 'SELECTIVE') {
-            router.push({ name: Pages.login })
+          if (filename && filename.length > 0) {
+            result.data.filename = filename[0]
+          }
+        }
+
+        success(result.data)
+      }
+    })
+    .catch(err => {
+      if (err.response) {
+        if (!error) {
+          if (err.response.status === 403) {
+            store.dispatch('setToken', null)
+            const authMode = store.getters.storeServerSettings.authMode
+            if (authMode === 'FULL' || authMode === 'SELECTIVE') {
+              router.push({ name: Pages.login })
+            }
+          } else if (process.env.NODE_ENV === 'development') {
+            console.error(err)
+          }
+        } else if (error && error.callback) {
+          if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
+            return error.callback(err.response)
+          } else {
+            return handleError(err.response)
           }
         } else if (process.env.NODE_ENV === 'development') {
           console.error(err)
         }
-      } else if (error && error.callback) {
-        if (error.codes.length === 0 || error.codes.includes(err.response.status)) {
-          return error.callback(err.response)
-        } else {
-          return handleError(err.response)
+      } else if (err.request) {
+        if (err.request.textStatus === 'timeout') {
+          emitter.emit('toast', {
+            message: 'Request to the server timed out.',
+            title: 'Error',
+            variant: 'danger',
+            autoHideDelay: 5000,
+            appendToast: true
+          })
         }
-      } else if (process.env.NODE_ENV === 'development') {
-        console.error(err)
+      } else {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(err)
+        }
       }
-    } else if (err.request) {
-      // The request was made but no response was received `err.request` is an instance of XMLHttpRequest in the browser
-      if (err.request.textStatus === 'timeout') {
-        emitter.emit('toast', {
-          message: 'Request to the server timed out.',
-          title: 'Error',
-          variant: 'danger',
-          autoHideDelay: 5000,
-          appendToast: true
-        })
-      }
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      if (process.env.NODE_ENV === 'development') {
-        console.error(err)
-      }
-    }
-
-    throw err
-  })
+    })
 
   return promise
 }
