@@ -233,7 +233,7 @@
     const filter: FilterGroup[] = [{
       filters: [{
         column: 'fileresourceIds',
-        comparator: FilterComparator.contains,
+        comparator: FilterComparator.arrayContains,
         values: [`${fileresource.fileresourceId}`],
       }],
       operator: FilterOperator.and,

@@ -413,8 +413,20 @@ name: exportGenotypes
       }
     }
 
+    const urlFormats = (route.query?.format as string)?.split(',') ?? []
+
+    const formats: GenotypeFormats = {
+      txt: urlFormats.includes('txt'),
+      flapjack: urlFormats.includes('flapjack'),
+      hapmap: urlFormats.includes('hapmap'),
+    }
+
+    if (Object.values(formats).every(v => v === false)) {
+      formats.txt = true
+    }
+
     nextTick(() => {
-      genotypeFormats.value = { txt: true, flapjack: false, hapmap: false }
+      genotypeFormats.value = formats
     })
   })
 </script>

@@ -221,11 +221,11 @@
       datasetIds: tdStore.storeDatasetIds,
     }, result => {
       if (result) {
-        trialTreatments.value = result.treatments || []
-        trialReps.value = result.reps || []
-        trialPlots.value = result.plots || []
-        trialYears.value = result.years || []
-        trialTaxonomies.value = result.taxonomies || []
+        trialTreatments.value = (result.treatments ?? []).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
+        trialReps.value = (result.reps ?? []).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+        trialPlots.value = result.plots ?? []
+        trialYears.value = (result.years ?? []).sort()
+        trialTaxonomies.value = result.taxonomies ?? []
       } else {
         trialTreatments.value = []
         trialReps.value = []

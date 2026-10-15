@@ -134,7 +134,7 @@
       <template #expanded-row="{ columns, item }">
         <tr>
           <td :colspan="columns.length" class="pa-0">
-            <v-sheet>
+            <v-sheet class="expanded-row-sticky">
               <LocationMap
                 :rounded="false"
                 :locations="item.locations"

@@ -105,12 +105,12 @@
     if (compProps.userSelection) {
       switch (compProps.userSelection.type) {
         case 'datasets':
-          return Math.max(300, (compProps.traits.length + tdStore.storeDatasetIds.length + 1) * 100)
+          return Math.max(300, (compProps.traits.length + tdStore.storeDatasetIds.length + 1) * 130)
         default:
-          return Math.max(300, (compProps.traits.length + compProps.userSelection.selectedItems.length + 1) * 100)
+          return Math.max(300, (compProps.traits.length + compProps.userSelection.selectedItems.length + 1) * 130)
       }
     } else {
-      return Math.max(300, compProps.traits.length * 100)
+      return Math.max(300, compProps.traits.length * 130)
     }
   }
 

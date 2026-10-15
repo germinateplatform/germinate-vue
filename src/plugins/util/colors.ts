@@ -29,6 +29,15 @@ export function getColors (): string[] | undefined {
   return colors
 }
 
+export function getVuetifyColor (name: string): string {
+  const rgb = getComputedStyle(document.documentElement).getPropertyValue(`--v-theme-${name}`).split(',').map(s => +s.trim())
+  if (rgb.length === 3) {
+    return rgbToHex(rgb[0], rgb[1], rgb[2])
+  } else {
+    return '#333333'
+  }
+}
+
 export function getPrimaryColor (): string {
   const rgb = getComputedStyle(document.documentElement).getPropertyValue('--v-theme-primary').split(',').map(s => +s.trim())
   return rgbToHex(rgb[0], rgb[1], rgb[2])

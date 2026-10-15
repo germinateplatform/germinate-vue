@@ -32,7 +32,6 @@ export interface ViewTableGermplasm {
     collDate: string;
     pdci: number;
     imageCount: number;
-    firstImagePath: string;
     hasTrialsData: number;
     hasGenotypicData: number;
     hasAllelefreqData: number;

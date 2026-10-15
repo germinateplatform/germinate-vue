@@ -470,10 +470,11 @@
       if (internalLocations.value.length === 1) {
         currentLocation.value = internalLocations.value[0]
 
-        if (currentLocation.value.locationLatitude && currentLocation.value.locationLongitude) {
-          map.panTo(new L.LatLng(currentLocation.value.locationLatitude, currentLocation.value.locationLongitude))
+        const lat = currentLocation.value.locationLatitude
+        const lng = currentLocation.value.locationLongitude
 
-          const marker = L.marker([currentLocation.value.locationLatitude, currentLocation.value.locationLongitude], { icon: getCustomIcon(currentLocation.value.locationType) }).bindPopup('')
+        if (lat && lng) {
+          const marker = L.marker([lat, lng], { icon: getCustomIcon(currentLocation.value.locationType) }).bindPopup('')
           marker.on('click', e => {
             const popup = e.target.getPopup()
             // Set the popup content on click
@@ -483,6 +484,10 @@
           marker.fire('click')
 
           markers.push(marker)
+
+          nextTick(() => {
+            map.panTo(new L.LatLng(lat, lng))
+          })
         }
       } else if (internalLocations.value.length > 1) {
         // If there are multiple locations, fit them into view

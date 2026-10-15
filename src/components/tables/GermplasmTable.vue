@@ -133,12 +133,12 @@
     </template>
 
     <template #item.imageCount="{ item }">
-      <v-chip label :text="item.imageCount" :prepend-icon="mdiCamera" @click="showImageModal(item)" />
+      <v-chip label :text="item.imageCount" :disabled="(item.imageCount ?? 0) < 1" :prepend-icon="mdiCamera" @click="showImageModal(item)" />
     </template>
 
     <template #item.pdci="{ item }">
       <div class="d-flex flex-column align-center ga-1" v-if="item.pdci !== undefined">
-        <v-progress-circular size="18" width="4" :model-value="(item.pdci || 0) * 10" />
+        <v-progress-circular size="18" width="4" :model-value="(item.pdci ?? 0) * 10" :color="pdciGradient[Math.floor(item.pdci ?? 0)]" />
         <span>{{ item.pdci.toFixed(2) }}</span>
       </div>
     </template>
@@ -151,7 +151,7 @@
     <template #expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length" class="pa-0">
-          <v-sheet>
+          <v-sheet class="expanded-row-sticky">
             <LocationMap
               :rounded="false"
               :locations="[{
@@ -194,7 +194,6 @@
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
-  import { getImageUrl } from '@/plugins/util/image'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
   import { columns } from '@/plugins/util/table-columns'
   import type { DataTableSortItem } from 'vuetify'
@@ -203,6 +202,7 @@
   import { apiPostEntityIds } from '@/plugins/api/germplasm'
 
   import emitter from 'tiny-emitter/instance'
+  import { createColorGradient, getPrimaryColor, getVuetifyColor } from '@/plugins/util/colors'
 
   interface GermplasmTableProps {
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasm[]>>> }
@@ -225,6 +225,8 @@
   const bottomVisible = ref(false)
   const selectedGermplasm = ref<ViewTableGermplasm>()
   const bottomSheetType = ref<'images' | 'institutions'>()
+
+  const pdciGradient = ref<string[]>(createColorGradient(getVuetifyColor('muted'), getPrimaryColor(), 10))
 
   const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
     return [{
@@ -281,15 +283,6 @@
 
   function getInstitutionData (data: PaginatedRequest) {
     return apiPostGermplasmInstitutionTable(selectedGermplasm.value?.germplasmId || -1, data)
-  }
-
-  function getSrc (item: ViewTableGermplasm) {
-    return getImageUrl(item.firstImagePath, {
-      name: item.firstImagePath,
-      type: 'database',
-      size: 'small',
-      token: store.storeToken ? store.storeToken.imageToken : '',
-    })
   }
 
   function markEntityParents (mark: boolean, item?: ViewTableGermplasm) {

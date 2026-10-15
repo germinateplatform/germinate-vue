@@ -148,6 +148,31 @@
         <slot name="card-text" />
       </template>
 
+      <!-- header.* slots: keep the consumer's content, re-add the sort icon -->
+      <template
+        v-for="name in headerSlotNames"
+        :key="name"
+        #[name]="slotProps"
+      >
+        <div
+          v-if="slotProps.column.sortable"
+          class="v-data-table-header__content"
+        >
+          <slot :name="name" v-bind="slotProps" />
+          <v-icon
+            class="v-data-table-header__sort-icon"
+            :icon="slotProps.getSortIcon(slotProps.column)"
+          />
+          <span
+            v-if="slotProps.isSorted(slotProps.column) && slotProps.sortBy.length > 1"
+            class="v-data-table-header__sort-badge"
+          >
+            {{ slotProps.sortBy.findIndex((s: any) => s.key === slotProps.column.key) + 1 }}
+          </span>
+        </div>
+        <slot v-else :name="name" v-bind="slotProps" />
+      </template>
+
       <template #header.data-table-select="{ allSelected, someSelected }" v-if="componentProps.selectionType === 'all'">
         <v-checkbox-btn :indeterminate="!allSelected && someSelected" :model-value="allSelected" @update:model-value="manuallySelectAll(allSelected)" />
       </template>
@@ -193,9 +218,13 @@
         </v-chip>
       </template>
 
-      <!-- Pass on all named slots -->
-      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
-        <slot :name="slot" v-bind="slotProps" />
+      <!-- Pass on all named slots that aren't header items -->
+      <template
+        v-for="name in otherSlotNames"
+        :key="name"
+        #[name]="slotProps"
+      >
+        <slot :name="name" v-bind="slotProps ?? {}" />
       </template>
 
       <template #body.append v-if="componentProps.selectionType !== undefined">
@@ -286,6 +315,15 @@
     displayType: 'table',
     hideFooter: false,
   })
+
+  const slots = useSlots()
+
+  const headerSlotNames = computed(() =>
+    Object.keys(slots).filter(name => name.startsWith('header.')),
+  )
+  const otherSlotNames = computed(() =>
+    Object.keys(slots).filter(name => !name.startsWith('header.')),
+  )
 
   const emit = defineEmits(['data-changed', 'selection-changed', 'update:bottom-sheet-visible', 'filter-changed', 'filter-cleared'])
 
@@ -790,6 +828,13 @@
 .base-table:deep(.v-table__wrapper) {
   max-height: calc(100vh - 120px); /* Adjust offset based on layout header/padding */
   overflow-y: auto;
+  container-type: inline-size;
+}
+
+.base-table:deep(.expanded-row-sticky) {
+  position: sticky;
+  left: 0;
+  width: 100cqw; /* width of the .v-table__wrapper scroll container */
 }
 </style>
 
