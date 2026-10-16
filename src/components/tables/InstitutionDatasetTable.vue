@@ -39,12 +39,11 @@
     </template>
     <!-- Country flag -->
     <template #item.countryCode="{ item }">
-      <span class="text-no-wrap" v-tooltip:top="item.countryCode" v-if="item.countryCode">
-        <i :class="'fi fi-' + item.countryCode.toLowerCase()" /> <span> {{ item.countryCode }}</span>
-      </span>
-      <span v-else>
-        {{ item.countryCode }}
-      </span>
+      <v-chip :text="item.countryCode" label v-tooltip:top="item.countryName" v-if="item.countryCode">
+        <template #prepend>
+          <v-icon start><i :class="'fi fi-' + item.countryCode.toLowerCase()" /></v-icon>
+        </template>
+      </v-chip>
     </template>
 
     <template #item.datasetIds="{ item }">

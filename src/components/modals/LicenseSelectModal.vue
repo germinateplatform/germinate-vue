@@ -55,7 +55,7 @@
                               :value="localeIndex + 1"
                             >
                               <template #prepend>
-                                <v-icon><i :class="'fi fi-' + locale.flag" /></v-icon>
+                                <v-icon><i :class="'elevation-1 fi fi-' + locale.flag" /></v-icon>
                               </template> <span>{{ locale.name || locale.locale }}</span>
                             </v-tab>
                           </v-tabs>

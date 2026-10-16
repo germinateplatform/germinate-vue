@@ -113,9 +113,11 @@
 
     <!-- Country flag -->
     <template #item.countryName="{ item }">
-      <span class="text-no-wrap" v-tooltip:top="item.countryName" v-if="item.countryCode">
-        <i :class="'fi fi-' + item.countryCode.toLowerCase()" /> <span> {{ item.countryCode }}</span>
-      </span>
+      <v-chip :text="item.countryCode" label v-tooltip:top="item.countryName" v-if="item.countryCode">
+        <template #prepend>
+          <v-icon start><i :class="'fi fi-' + item.countryCode.toLowerCase()" /></v-icon>
+        </template>
+      </v-chip>
       <span v-else>
         {{ item.countryName }}
       </span>
@@ -123,13 +125,25 @@
 
     <!-- Dataset types -->
     <template #item.hasTrialsData="{ item }">
-      <v-icon v-if="item.hasTrialsData" :color="datasetTypes.trials.color()" v-tooltip:top="$t('tableColumnHasTrialsData')" :icon="datasetTypes.trials.path" />
+      <v-chip label :disabled="item.hasTrialsData === 0" v-tooltip:top="$t('tableColumnHasTrialsDataCount')" :text="getNumberWithSuffix(item.hasTrialsData, 1)">
+        <template #prepend>
+          <v-icon start :color="item.hasTrialsData > 0 ? datasetTypes.trials.color() : 'muted'" :icon="datasetTypes.trials.path" />
+        </template>
+      </v-chip>
     </template>
     <template #item.hasGenotypicData="{ item }">
-      <v-icon v-if="item.hasGenotypicData" :color="datasetTypes.genotype.color()" v-tooltip:top="$t('tableColumnHasGenotypicData')" :icon="datasetTypes.genotype.path" />
+      <v-chip label :disabled="item.hasGenotypicData === 0" v-tooltip:top="$t('tableColumnHasGenotypicDataCount')" :text="getNumberWithSuffix(item.hasGenotypicData, 1)">
+        <template #prepend>
+          <v-icon start :color="item.hasGenotypicData > 0 ? datasetTypes.genotype.color() : 'muted'" :icon="datasetTypes.genotype.path" />
+        </template>
+      </v-chip>
     </template>
     <template #item.hasPedigreeData="{ item }">
-      <v-icon v-if="item.hasPedigreeData" :color="datasetTypes.pedigree.color()" v-tooltip:top="$t('tableColumnHasPedigreeData')" :icon="datasetTypes.pedigree.path" />
+      <v-chip label :disabled="item.hasPedigreeData === 0" v-tooltip:top="$t('tableColumnHasPedigreeDataCount')" :text="getNumberWithSuffix(item.hasPedigreeData, 1)">
+        <template #prepend>
+          <v-icon start :color="item.hasPedigreeData > 0 ? datasetTypes.pedigree.color() : 'muted'" :icon="datasetTypes.pedigree.path" />
+        </template>
+      </v-chip>
     </template>
 
     <template #item.imageCount="{ item }">
@@ -193,7 +207,7 @@
   import type { AxiosResponse } from 'axios'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
-  import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
+  import { getNumberWithSuffix, isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
   import { columns } from '@/plugins/util/table-columns'
   import type { DataTableSortItem } from 'vuetify'

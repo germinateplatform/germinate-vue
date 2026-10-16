@@ -22,7 +22,7 @@
       <v-list-item :title="$t('widgetMcpdSubtaxonAuth')" :subtitle="mcpd.subtauthor || 'N/A'" />
       <v-list-item :title="$t('widgetMcpdCountry')" :subtitle="mcpd.origcty" v-if="mcpd.origcty">
         <template #subtitle>
-          <i :class="'fi fi-' + getFlag(mcpd.origcty.toUpperCase())" /> {{ getCountry(mcpd.origcty.toUpperCase()) }}
+          <i :class="'elevation-1 fi fi-' + getFlag(mcpd.origcty.toUpperCase())" /> {{ getCountry(mcpd.origcty.toUpperCase()) }}
         </template>
       </v-list-item>
       <v-list-item :title="$t('widgetMcpdColldate')" :subtitle="new Date(mcpd.colldate).toLocaleDateString()" v-if="mcpd.colldate" />

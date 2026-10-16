@@ -52,9 +52,11 @@
 
     <!-- Country flag -->
     <template #item.countryName="{ item }">
-      <span class="text-no-wrap" v-tooltip:top="item.countryName" v-if="item.countryCode2">
-        <i :class="'fi fi-' + item.countryCode2.toLowerCase()" /> <span> {{ item.countryCode2 }}</span>
-      </span>
+      <v-chip :text="item.countryCode2" label v-tooltip:top="item.countryName" v-if="item.countryCode2">
+        <template #prepend>
+          <v-icon start><i :class="'fi fi-' + item.countryCode2.toLowerCase()" /></v-icon>
+        </template>
+      </v-chip>
       <span v-else>
         {{ item.countryName }}
       </span>

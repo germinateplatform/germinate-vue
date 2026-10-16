@@ -24,7 +24,7 @@
     <v-list-item v-if="location.countryCode2 || location.countryCode3" :title="$t('tableColumnCountryName')">
       <template #prepend>
         <v-icon opacity="1">
-          <i :class="'fi fi-' + getFlag(location)" />
+          <i :class="'elevation-1 fi fi-' + getFlag(location)" />
         </v-icon>
       </template>
       <template #subtitle>{{ getCountry(location) }}</template>
