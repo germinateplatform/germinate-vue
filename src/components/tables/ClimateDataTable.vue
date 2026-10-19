@@ -19,7 +19,7 @@
     :header-title="$t('pageDataExportTabDataTable')"
   >
     <template #item.locationType="{ item }">
-      <v-chip label :color="locationTypes[item.locationType].color()" :prepend-icon="locationTypes[item.locationType].path">{{ locationTypes[item.locationType].text() }}</v-chip>
+      <v-chip label :color="locationTypes[item.locationType].color()" :prepend-icon="locationTypes[item.locationType].path">{{ $t(locationTypes[item.locationType].text) }}</v-chip>
     </template>
 
     <!-- Country flag -->
@@ -35,7 +35,7 @@
     </template>
 
     <template #item.climateDataType="{ item }">
-      <v-chip label :color="dataTypes[item.climateDataType].color()" :prepend-icon="dataTypes[item.climateDataType].path">{{ dataTypes[item.climateDataType].text() }}</v-chip>
+      <v-chip label :color="dataTypes[item.climateDataType].color()" :prepend-icon="dataTypes[item.climateDataType].path">{{ $t(dataTypes[item.climateDataType].text) }}</v-chip>
     </template>
 
     <!-- Pass on all named slots -->
@@ -89,8 +89,10 @@
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     const result = columns.climateData.map(c => {
-      c.title = t(c.title || '')
-      return c
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
     })
 
     return result

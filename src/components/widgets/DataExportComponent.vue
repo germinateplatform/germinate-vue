@@ -14,7 +14,7 @@
         :key="`experiment-type-${name}`"
         :to="Pages.getPath(Pages.exportType, name as string)"
         :prepend-icon="dsType.path"
-        :text="dsType.text()"
+        :text="$t(dsType.text)"
         :color="dsType.color()"
       />
     </div>
@@ -45,7 +45,7 @@
 
   const selectedDatasets = ref<number[]>([])
 
-  useBreadcrumbTitle(() => compProps.datasetType ? datasetTypes[compProps.datasetType].text() : undefined)
+  useBreadcrumbTitle(() => compProps.datasetType ? t(datasetTypes[compProps.datasetType].text) : undefined)
   useBreadcrumbIcon(() => compProps.datasetType ? datasetTypes[compProps.datasetType].path : undefined)
 
   const filterOn = computed(() => {

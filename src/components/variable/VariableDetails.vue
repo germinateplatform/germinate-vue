@@ -26,11 +26,6 @@
             :text="synonym"
             class="me-2"
           />
-
-          <OntologyLinks
-            v-if="variable.variableOntologies && variable.variableOntologies.length > 0"
-            :ontology-info="variable.variableOntologies"
-          />
         </template>
       </v-card>
     </v-col>
@@ -57,7 +52,7 @@
                   :color="traitClasses[changedTraitClass || variable.traitClass].color()"
                   :prepend-icon="traitClasses[changedTraitClass || variable.traitClass].path"
                   :append-icon="store.storeUserIsAuthenticated ? mdiMenuDown : undefined"
-                  :text="traitClasses[changedTraitClass || variable.traitClass].text()"
+                  :text="$t(traitClasses[changedTraitClass || variable.traitClass].text)"
                 />
               </template>
 
@@ -65,7 +60,7 @@
                 <v-list-item
                   v-for="(value, key) in traitClasses"
                   :key="`trait-class-${key}`"
-                  :title="value.text()"
+                  :title="$t(value.text)"
                   :value="key"
                 >
                   <template #prepend>
@@ -114,7 +109,7 @@
                   :color="methodClasses[changedMethodClass || variable.methodClass].color()"
                   :prepend-icon="methodClasses[changedMethodClass || variable.methodClass].path"
                   :append-icon="store.storeUserIsAuthenticated ? mdiMenuDown : undefined"
-                  :text="methodClasses[changedMethodClass || variable.methodClass].text()"
+                  :text="$t(methodClasses[changedMethodClass || variable.methodClass].text)"
                 />
               </template>
 
@@ -122,7 +117,7 @@
                 <v-list-item
                   v-for="(value, key) in methodClasses"
                   :key="`method-class-${key}`"
-                  :title="value.text()"
+                  :title="$t(value.text)"
                   :prepend-icon="value.path"
                   :value="key"
                 >
@@ -153,7 +148,7 @@
         <template #subtitle>
           <div class="d-flex justify-space-between align-center flex-grow flex-wrap">
             <span>{{ variable.scaleName }}</span>
-            <v-chip label :color="dataTypes[variable.scaleDatatype].color()" :prepend-icon="dataTypes[variable.scaleDatatype].path" :text="dataTypes[variable.scaleDatatype].text()" />
+            <v-chip label :color="dataTypes[variable.scaleDatatype].color()" :prepend-icon="dataTypes[variable.scaleDatatype].path" :text="$t(dataTypes[variable.scaleDatatype].text)" />
           </div>
         </template>
         <template #text>

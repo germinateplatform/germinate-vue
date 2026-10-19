@@ -15,7 +15,10 @@
             @click:append-inner="initiateSearch"
           />
         </v-form>
-
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-chip-group
           v-model="selectedTypes"
           mandatory

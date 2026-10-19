@@ -1,5 +1,5 @@
 import { i18n } from '@/plugins/vuetify.ts'
-import { FilterComparator } from '../types/germinate'
+import { FilterComparator } from '@/plugins/types/germinate'
 
 const operators = {
   and: {

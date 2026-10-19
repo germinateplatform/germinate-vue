@@ -6,7 +6,7 @@ import { Cite } from '@citation-js/core'
 import '@citation-js/plugin-doi'
 import '@citation-js/plugin-csl'
 import type { RouteLocation, Router } from 'vue-router'
-import { isEmptyNullOrUndefined } from './util/formatting'
+import { isEmptyNullOrUndefined } from '@/plugins/util/formatting'
 
 const germinateVersion = '5.0.0'
 

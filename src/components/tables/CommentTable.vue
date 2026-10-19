@@ -19,7 +19,7 @@
       </template>
 
       <template #item.commentType="{ item }">
-        <v-chip label :color="commentTypes[item.commentType].color()" :prepend-icon="commentTypes[item.commentType].path">{{ commentTypes[item.commentType].text() }}</v-chip>
+        <v-chip label :color="commentTypes[item.commentType].color()" :prepend-icon="commentTypes[item.commentType].path">{{ $t(commentTypes[item.commentType].text) }}</v-chip>
       </template>
 
       <template #item.actions="{ item }">

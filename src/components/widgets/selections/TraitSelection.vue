@@ -29,7 +29,7 @@
             <v-checkbox-btn :model-value="isSelected" />
           </template>
           <template #append>
-            <v-chip label :color="dataTypes[item.raw.scaleDatatype].color()" :prepend-icon="dataTypes[item.raw.scaleDatatype].path" v-if="item.raw.scaleDatatype">{{ dataTypes[item.raw.scaleDatatype].text() }}</v-chip>
+            <v-chip label :color="dataTypes[item.raw.scaleDatatype].color()" :prepend-icon="dataTypes[item.raw.scaleDatatype].path" v-if="item.raw.scaleDatatype">{{ $t(dataTypes[item.raw.scaleDatatype].text) }}</v-chip>
           </template>
         </v-list-item>
       </template>

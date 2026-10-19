@@ -44,7 +44,7 @@
           <div class="bg-surface-variant d-flex flex-column flex-grow-1 justify-space-between">
             <div>
               <v-card-title>{{ format.name }}</v-card-title>
-              <v-card-text class="flex-grow-1">{{ format.text() }}</v-card-text>
+              <v-card-text class="flex-grow-1">{{ $t(format.text) }}</v-card-text>
             </div>
             <v-card-text class="flex-grow-0">
               <div>

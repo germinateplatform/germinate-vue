@@ -32,7 +32,7 @@
     </template>
 
     <template #item.dataType="{ item }">
-      <v-chip label :color="dataTypes[item.dataType].color()" :prepend-icon="dataTypes[item.dataType].path">{{ dataTypes[item.dataType].text() }}</v-chip>
+      <v-chip label :color="dataTypes[item.dataType].color()" :prepend-icon="dataTypes[item.dataType].path">{{ $t(dataTypes[item.dataType].text) }}</v-chip>
     </template>
 
     <!-- Pass on all named slots -->

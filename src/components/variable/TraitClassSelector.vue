@@ -15,7 +15,7 @@
         label
         :prepend-icon="traitClasses[traitClass].path"
         :color="traitClasses[traitClass].color()"
-        :text="traitClasses[traitClass].text()"
+        :text="$t(traitClasses[traitClass].text)"
       >
         <template #append>
           <v-badge inline :content="getNumberWithSuffix(count, 1)" />

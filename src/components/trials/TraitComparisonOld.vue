@@ -61,7 +61,7 @@
           v-if="plotData[trait.traitId]"
         >
           <template #title-append>
-            <v-chip class="ms-2" size="small" :text="dataTypes[trait.scaleDatatype].text()" :color="dataTypes[trait.scaleDatatype].color()" :prepend-icon="dataTypes[trait.scaleDatatype].path" />
+            <v-chip class="ms-2" size="small" :text="$t(dataTypes[trait.scaleDatatype].text)" :color="dataTypes[trait.scaleDatatype].color()" :prepend-icon="dataTypes[trait.scaleDatatype].path" />
           </template>
         </TraitComparisonChart> -->
       </div>

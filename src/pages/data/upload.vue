@@ -8,7 +8,7 @@
           <div class="d-flex flex-no-wrap justify-space-between align-center">
             <div>
               <v-card-title class="text-headline-small">
-                {{ tab.text() }}
+                {{ $t(tab.text) }}
               </v-card-title>
 
               <!-- <v-card-subtitle><a class="help-link" :href="tab.helpUrl" target="_blank"><v-icon :icon="mdiHelpCircle" /></a></v-card-subtitle> -->
@@ -34,7 +34,7 @@
               <div class="d-flex flex-no-wrap justify-space-between align-center">
                 <div>
                   <v-card-title class="text-headline-small">
-                    {{ tab.text() }}
+                    {{ $t(tab.text) }}
                   </v-card-title>
 
                   <!-- <v-card-subtitle><a class="help-link" :href="tab.helpUrl" target="_blank"><v-icon :icon="mdiHelpCircle" /></a></v-card-subtitle> -->
@@ -115,7 +115,7 @@
         <div v-if="selectedNestedTab.group === 'genotype' || selectedNestedTab.group === 'trial' || selectedNestedTab.group === 'climate' || selectedNestedTab.group === 'pedigree'">
           <h4 class="mt-3 mb-0">{{ $t('pageDataUploadDatasetStateTitle') }}</h4>
 
-          <HintContainer :text="datasetState.help()">
+          <HintContainer :text="$t(datasetState.help)">
             <v-btn-toggle
               v-model="datasetState"
               color="primary"
@@ -126,7 +126,7 @@
                 v-for="state in datasetStates"
                 :key="`dataset-state-${state.id}`"
                 :value="state"
-                :text="state.text()"
+                :text="$t(state.text)"
                 :prepend-icon="state.path"
               />
             </v-btn-toggle>

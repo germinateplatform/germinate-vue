@@ -42,10 +42,11 @@
 
   import bar from 'plotly.js/lib/bar'
   import { mdiCalendar, mdiChartBarStacked, mdiDatabase, mdiFormatListBulleted, mdiFormatListBulletedType, mdiScatterPlot } from '@mdi/js'
-  import type { ViewStatsDatasets } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type FilterGroup, type ViewStatsDatasets } from '@/plugins/types/germinate'
   import { getColor } from '@/plugins/util/colors'
   import { datasetTypes } from '@/plugins/util/types'
   import { useI18n } from 'vue-i18n'
+  import { Pages } from '@/plugins/pages'
 
   const baseChart = useTemplateRef('baseChart')
 
@@ -59,6 +60,7 @@
   }>()
 
   const store = useCoreStore()
+  const router = useRouter()
   const { t } = useI18n()
 
   const sourceFile = ref<DownloadBlob>()
@@ -78,7 +80,7 @@
       return {
         x: years.map(String),
         y: yValues,
-        name: datasetTypes[type].text(),
+        name: t(datasetTypes[type].text),
         marker: {
           color: datasetTypes[type].color(),
         },
@@ -91,12 +93,12 @@
 
   function getTypeViewTraces () {
     const data = compProps.data
-    const types = Array.from(new Set(data.map(d => datasetTypes[d.type].text()))).sort()
+    const types = Array.from(new Set(data.map(d => t(datasetTypes[d.type].text)))).sort()
     const years = Array.from(new Set(data.map(d => d.year))).sort((a, b) => a - b)
 
     const traces = years.map((year, index) => {
       const yValues = types.map(type => {
-        const match = data.find(d => d.year === year && datasetTypes[d.type].text() === type)
+        const match = data.find(d => d.year === year && t(datasetTypes[d.type].text) === type)
         return match?.[count.value] || 0
       })
 
@@ -127,6 +129,7 @@
           orientation: 'h',
           y: 1.1,
         },
+        hovermode: 'closest' as const,
         xaxis: {
           title: { text: isYear ? t('widgetChartModeYear') : t('widgetChartModeType'), font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
           tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
@@ -144,6 +147,51 @@
       }
 
       baseChart.value?.react(element, isYear ? yearTraces : typeTraces, layout, DEFAULT_PLOTLY_CONFIG)
+        .then(element => {
+          element?.on('plotly_click', data => {
+            if (data && data.points && data.points.length > 0) {
+              let year: number
+              let dataTypeString: string | undefined
+              if (mode.value === 'year') {
+                year = +(data.points[0].x || '0')
+                dataTypeString = data.points[0].data.name
+              } else {
+                dataTypeString = data.points[0].x?.toString()
+                year = +(data.points[0].data.name || '0')
+              }
+
+              const dataType = Object.keys(datasetTypes).find(k => t(datasetTypes[k].text) === dataTypeString)
+
+              if (year !== 0 && dataType !== undefined) {
+                const startOfYear = new Date(year, 0, 1).toISOString().split('T')[0]
+                const endOfYear = new Date(year, 12, 31).toISOString().split('T')[0]
+                // Set up the filter
+                const filter: FilterGroup[] = [{
+                  filters: [{
+                    column: 'datasetType',
+                    comparator: FilterComparator.equals,
+                    values: [dataType],
+                  }, {
+                    column: 'createdOn',
+                    comparator: FilterComparator.between,
+                    values: [startOfYear, endOfYear],
+                  }],
+                  operator: FilterOperator.and,
+                }]
+
+                console.log(filter)
+
+                // Then redirect to the export page
+                router.push({
+                  path: Pages.getPath(Pages.exportType, dataType),
+                  query: {
+                    'datasets-filter': JSON.stringify(filter),
+                  },
+                })
+              }
+            }
+          })
+        })
     }
   }
 

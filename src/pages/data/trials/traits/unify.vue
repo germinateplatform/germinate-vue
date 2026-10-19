@@ -47,7 +47,7 @@
               :append-icon="variable.variableId === primaryVariable?.variableId ? mdiCheck : undefined"
             >
               <template #title>
-                <v-chip label :color="dataTypes[variable.scaleDatatype].color()" :prepend-icon="dataTypes[variable.scaleDatatype].path">{{ dataTypes[variable.scaleDatatype].text() }}</v-chip> · {{ variable.variableId }} · {{ variable.variableName }}
+                <v-chip label :color="dataTypes[variable.scaleDatatype].color()" :prepend-icon="dataTypes[variable.scaleDatatype].path">{{ $t(dataTypes[variable.scaleDatatype].text) }}</v-chip> · {{ variable.variableId }} · {{ variable.variableName }}
               </template>
             </v-list-item>
           </v-list>

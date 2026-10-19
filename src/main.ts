@@ -9,7 +9,7 @@ import '@/plugins/workaround'
 import { registerPlugins } from '@/plugins'
 
 // Components
-import App from './App.vue'
+import App from '@/App.vue'
 
 // Composables
 import { createApp } from 'vue'

@@ -365,7 +365,7 @@
       selectOptions: localGroupTypes.value?.map(gt => {
         return {
           value: gt.id,
-          title: groupTypes[gt.targetTable].text(),
+          title: t(groupTypes[gt.targetTable].text),
         }
       }),
     }, {

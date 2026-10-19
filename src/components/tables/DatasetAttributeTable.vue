@@ -25,7 +25,7 @@
     </template>
 
     <template #item.attributeType="{ item }">
-      <v-chip label :color="dataTypes[item.attributeType].color()" :prepend-icon="dataTypes[item.attributeType].path">{{ dataTypes[item.attributeType].text() }}</v-chip>
+      <v-chip label :color="dataTypes[item.attributeType].color()" :prepend-icon="dataTypes[item.attributeType].path">{{ $t(dataTypes[item.attributeType].text) }}</v-chip>
     </template>
 
     <!-- Pass on all named slots -->
@@ -63,8 +63,10 @@
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     return columns.datasetAttributes.map(c => {
-      c.title = t(c.title || '')
-      return c
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
     })
   })
 

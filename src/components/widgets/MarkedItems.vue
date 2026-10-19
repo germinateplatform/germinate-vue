@@ -11,7 +11,7 @@
         v-for="(value, key) in markedItemTypes"
         :key="`marked-item-type-chip-${key}`"
         label
-        :text="`${value.text()}: ${(store.storeMarkedIds[key] || []).length}`"
+        :text="`${$t(value.text)}: ${(store.storeMarkedIds[key] || []).length}`"
         :color="value.color()"
         :prepend-icon="value.path"
         :to="Pages.getPath(Pages.markedItemType, key)"
@@ -39,6 +39,7 @@
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import type { MarkedItemType } from '@/plugins/types/MarkedItemType'
   import { markedItemTypes } from '@/plugins/util/types'
+  import { useI18n } from 'vue-i18n'
 
   const compProps = defineProps<{
     type?: MarkedItemType
@@ -46,8 +47,9 @@
 
   const store = useCoreStore()
   const localType = ref<MarkedItemType>('germplasm')
+  const { t } = useI18n()
 
-  useBreadcrumbTitle(() => markedItemTypes[localType.value].text())
+  useBreadcrumbTitle(() => t(markedItemTypes[localType.value].text))
 
   const germplasmFilters: ComputedRef<FilterGroup[]> = computed(() => {
     return [{

@@ -22,7 +22,7 @@
       </template>
 
       <template #item.newstypeName="{ item }">
-        <v-chip label :color="newsTypes[item.newstypeName].color()" :prepend-icon="newsTypes[item.newstypeName].path">{{ newsTypes[item.newstypeName].text() }}</v-chip>
+        <v-chip label :color="newsTypes[item.newstypeName].color()" :prepend-icon="newsTypes[item.newstypeName].path">{{ $t(newsTypes[item.newstypeName].text) }}</v-chip>
       </template>
 
       <template #item.newsContent="{ item, value }">
@@ -56,7 +56,7 @@
             <v-card-title>{{ item.newsTitle }}</v-card-title>
             <v-card-subtitle class="text-wrap" v-if="item.createdOn">{{ new Date(item.createdOn).toLocaleDateString() }}</v-card-subtitle>
             <v-card-text>
-              <v-chip label :color="newsTypes[item.newstypeName].color()" :prepend-icon="newsTypes[item.newstypeName].path">{{ newsTypes[item.newstypeName].text() }}</v-chip>
+              <v-chip label :color="newsTypes[item.newstypeName].color()" :prepend-icon="newsTypes[item.newstypeName].path">{{ $t(newsTypes[item.newstypeName].text) }}</v-chip>
             </v-card-text>
             <v-card-text class="text-wrap">
               <span class="g-trim-rows-5" v-html="item.newsContent" />
@@ -148,7 +148,7 @@
       selectOptions: Object.keys(newsTypes).map(nt => {
         return {
           value: newsTypes[nt].id,
-          title: newsTypes[nt].text(),
+          title: t(newsTypes[nt].text),
         }
       }),
     }, {
@@ -189,7 +189,7 @@
       selectOptions: newsTypeImageFit.map(nt => {
         return {
           value: nt.value,
-          title: nt.text(),
+          title: t(nt.text),
         }
       }),
     }, {

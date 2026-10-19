@@ -55,7 +55,7 @@
             <div class="d-flex justify-space-between">
               <div :class="`text-${asyncJobStatus[job.status].color}`">
                 <v-progress-circular color="info" indeterminate size="18" width="3" v-if="job.status === DataExportJobsStatus.running" />
-                <v-icon :icon="asyncJobStatus[job.status].path" v-else /> {{ asyncJobStatus[job.status].text() }}
+                <v-icon :icon="asyncJobStatus[job.status].path" v-else /> {{ $t(asyncJobStatus[job.status].text) }}
               </div>
 
               <v-chip label size="small" v-if="job.status === DataExportJobsStatus.completed"><v-icon :icon="mdiPaperclip" /> {{ getNumberWithSuffix(job.resultSize, 2, 1024, ' ') }}</v-chip>
@@ -93,7 +93,7 @@
           </template>
 
           <template #title>
-            <div class="text-title-medium">{{ templateImportTypes[job.datatype].text() }}</div>
+            <div class="text-title-medium">{{ $t(templateImportTypes[job.datatype].text) }}</div>
           </template>
 
           <template #subtitle>
@@ -104,7 +104,7 @@
             <v-chip label size="small" v-if="job.originalFilename"><v-icon :icon="mdiPaperclip" /> {{ job.originalFilename }}</v-chip>
 
             <div :class="`mt-2 text-${asyncJobStatus[job.status].color}`" v-if="showStandardStatus(job)">
-              <v-icon :icon="asyncJobStatus[job.status].path" /> {{ asyncJobStatus[job.status].text() }}
+              <v-icon :icon="asyncJobStatus[job.status].path" /> {{ $t(asyncJobStatus[job.status].text) }}
             </div>
           </template>
           <v-card-actions class="flex-wrap" v-if="(job.status === DataImportJobsStatus.completed && job.imported === false) || job.status === DataImportJobsStatus.failed">

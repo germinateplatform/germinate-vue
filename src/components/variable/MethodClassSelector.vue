@@ -14,7 +14,7 @@
         label
         :prepend-icon="methodClasses[methodClass].path"
         :color="methodClasses[methodClass].color()"
-        :text="methodClasses[methodClass].text()"
+        :text="$t(methodClasses[methodClass].text)"
       >
         <template #append>
           <v-badge inline :content="getNumberWithSuffix(count, 1)" />

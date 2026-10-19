@@ -61,7 +61,7 @@
           </v-card-title>
           <v-card-subtitle class="text-wrap" v-if="item.projectStartDate || item.projectEndDate" v-tooltip:top="getProjectDateRange(item)">{{ getYearRange(item) }}</v-card-subtitle>
           <!-- <v-card-text>
-            <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
+            <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ $t(imageTypes[item.imageRefTable].text) }}</v-chip>
           </v-card-text> -->
           <v-card-text>{{ item.projectDescription }}</v-card-text>
 

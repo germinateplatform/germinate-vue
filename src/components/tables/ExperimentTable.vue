@@ -31,11 +31,11 @@
     <!-- Experiment dataset types -->
     <template #item.dataTypes="{ item }">
       <!-- Trials datasets -->
-      <v-chip :prepend-icon="datasetTypes.trials.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.trials.color()" @click.prevent="redirectToExport(item, 'trials')" v-if="item.trialsCount" v-tooltip:top="datasetTypes.trials.text()" :text="item.trialsCount" />
-      <v-chip :prepend-icon="datasetTypes.genotype.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.genotype.color()" @click.prevent="redirectToExport(item, 'genotype')" v-if="item.genotypeCount" v-tooltip:top="datasetTypes.genotype.text()" :text="item.genotypeCount" />
-      <v-chip :prepend-icon="datasetTypes.allelefreq.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.allelefreq.color()" @click.prevent="redirectToExport(item, 'allelefreq')" v-if="item.alleleFreqCount" v-tooltip:top="datasetTypes.allelefreq.text()" :text="item.alleleFreqCount" />
-      <v-chip :prepend-icon="datasetTypes.climate.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.climate.color()" @click.prevent="redirectToExport(item, 'climate')" v-if="item.climateCount" v-tooltip:top="datasetTypes.climate.text()" :text="item.climateCount" />
-      <v-chip :prepend-icon="datasetTypes.pedigree.path" label class="me-2" :color="datasetTypes.pedigree.color()" v-if="item.pedigreeCount" v-tooltip:top="datasetTypes.pedigree.text()" :text="item.pedigreeCount" />
+      <v-chip :prepend-icon="datasetTypes.trials.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.trials.color()" @click.prevent="redirectToExport(item, 'trials')" v-if="item.trialsCount" v-tooltip:top="$t(datasetTypes.trials.text)" :text="item.trialsCount" />
+      <v-chip :prepend-icon="datasetTypes.genotype.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.genotype.color()" @click.prevent="redirectToExport(item, 'genotype')" v-if="item.genotypeCount" v-tooltip:top="$t(datasetTypes.genotype.text)" :text="item.genotypeCount" />
+      <v-chip :prepend-icon="datasetTypes.allelefreq.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.allelefreq.color()" @click.prevent="redirectToExport(item, 'allelefreq')" v-if="item.alleleFreqCount" v-tooltip:top="$t(datasetTypes.allelefreq.text)" :text="item.alleleFreqCount" />
+      <v-chip :prepend-icon="datasetTypes.climate.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.climate.color()" @click.prevent="redirectToExport(item, 'climate')" v-if="item.climateCount" v-tooltip:top="$t(datasetTypes.climate.text)" :text="item.climateCount" />
+      <v-chip :prepend-icon="datasetTypes.pedigree.path" label class="me-2" :color="datasetTypes.pedigree.color()" v-if="item.pedigreeCount" v-tooltip:top="$t(datasetTypes.pedigree.text)" :text="item.pedigreeCount" />
     </template>
     <!-- Pass on all named slots -->
     <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">

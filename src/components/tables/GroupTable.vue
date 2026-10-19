@@ -30,7 +30,7 @@
       </template>
 
       <template #item.groupType="{ item }">
-        <v-chip label :color="groupTypes[item.groupType].color()" :prepend-icon="groupTypes[item.groupType].path">{{ groupTypes[item.groupType].text() }}</v-chip>
+        <v-chip label :color="groupTypes[item.groupType].color()" :prepend-icon="groupTypes[item.groupType].path">{{ $t(groupTypes[item.groupType].text) }}</v-chip>
       </template>
 
       <template #item.groupActions="{ item }">
@@ -124,7 +124,7 @@
       selectOptions: localGroupTypes.value?.map(gt => {
         return {
           value: gt.id,
-          title: groupTypes[gt.targetTable].text(),
+          title: t(groupTypes[gt.targetTable].text),
         }
       }),
     }, {

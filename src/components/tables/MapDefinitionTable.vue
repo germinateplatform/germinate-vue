@@ -66,8 +66,10 @@
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     return columns.mapdefinitions.map(c => {
-      c.title = t(c.title || '')
-      return c
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
     })
   })
 

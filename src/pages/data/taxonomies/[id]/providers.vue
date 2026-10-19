@@ -57,6 +57,17 @@
           :loading="ebiOverviewLoading"
           hide-default-footer
         >
+          <template #no-data>
+            <v-alert
+              v-if="ebiOverviewError"
+              type="error"
+              variant="tonal"
+              class="ma-4"
+            >
+              {{ ebiOverviewError }}
+            </v-alert>
+            <span v-else>No data available</span>
+          </template>
           <template #top>
             <v-toolbar
               flat
@@ -86,6 +97,17 @@
           :loading="ebiStudiesLoading"
           :search="studySearch"
         >
+          <template #no-data>
+            <v-alert
+              v-if="ebiStudiesError"
+              type="error"
+              variant="tonal"
+              class="ma-4"
+            >
+              {{ ebiStudiesError }}
+            </v-alert>
+            <span v-else>No data available</span>
+          </template>
           <template #top>
             <v-toolbar
               flat
@@ -112,7 +134,7 @@
             <ShowFullCell :content="item.study_description" title="Study_description" v-if="item.study_description && item.study_description.length > 0" />
           </template>
           <template #item.study_accession="{ item }">
-            <a :href="`https://www.ebi.ac.uk/ena/browser/view/${item.study_accession}`" rel="noopener noreferrer" target="_blank">{{ item.study_accession }}</a>
+            <a :href="`https://www.ebi.ac.uk/ena/browser/view/${item.study_accession}`" rel="noopener noreferrer" target="_blank">{{ item.study_accession }}</a> <v-icon color="muted" :icon="mdiOpenInNew" />
           </template>
         </v-data-table>
       </v-card>
@@ -123,6 +145,17 @@
           :loading="ebiAssembliesLoading"
           :search="assemblySearch"
         >
+          <template #no-data>
+            <v-alert
+              v-if="ebiAssembliesError"
+              type="error"
+              variant="tonal"
+              class="ma-4"
+            >
+              {{ ebiAssembliesError }}
+            </v-alert>
+            <span v-else>No data available</span>
+          </template>
           <template #top>
             <v-toolbar
               flat
@@ -146,7 +179,7 @@
             </v-toolbar>
           </template>
           <template #item.accession="{ item }">
-            <a :href="`https://www.ebi.ac.uk/ena/browser/view/${item.accession}`" rel="noopener noreferrer" target="_blank">{{ item.accession }}</a>
+            <a :href="`https://www.ebi.ac.uk/ena/browser/view/${item.accession}`" rel="noopener noreferrer" target="_blank">{{ item.accession }}</a> <v-icon color="muted" :icon="mdiOpenInNew" />
           </template>
         </v-data-table>
       </v-card>
@@ -165,7 +198,8 @@ name: taxonomyProviderDetails
   import type { EbiStudy, EbiRecord, EbiGenomyAssembly } from '@/plugins/types/ebi'
   import { getNumberWithSuffix, isEmptyNullOrUndefined } from '@/plugins/util/formatting'
   import { useI18n } from 'vue-i18n'
-  import { mdiApi, mdiIdentifier, mdiLan, mdiMagnify } from '@mdi/js'
+  import { mdiApi, mdiIdentifier, mdiMagnify, mdiOpenInNew } from '@mdi/js'
+  import type { AxiosError } from 'axios'
 
   const { t } = useI18n()
   const route = useRoute('taxonomyProviderDetails')
@@ -184,6 +218,7 @@ name: taxonomyProviderDetails
   const ebiProvider = ref<TaxonomyProviderInfo>()
   const ebiOverview = ref<EbiRecord[]>()
   const ebiOverviewLoading = ref(false)
+  const ebiOverviewError = ref<string>()
   const ebiOverviewHeaders = computed(() => {
     return [{
       title: t('tableColumnEbiOverviewResultType'),
@@ -207,16 +242,19 @@ name: taxonomyProviderDetails
   const studySearch = ref()
   const ebiStudies = ref<EbiStudy[]>()
   const ebiStudiesLoading = ref(false)
+  const ebiStudiesError = ref<string>()
 
   const assemblySearch = ref()
   const ebiAssemblies = ref<EbiGenomyAssembly[]>()
   const ebiAssembliesLoading = ref(false)
+  const ebiAssembliesError = ref<string>()
 
   function getUrl (provider: TaxonomyProviderInfo) {
     return provider.providerPlaceholder.replace('{ID}', provider.externalId)
   }
 
   function showEbiOverview (provider: TaxonomyProviderInfo) {
+    ebiOverviewError.value = undefined
     ebiProvider.value = provider
     if (!ebiOverview.value) {
       ebiOverview.value = []
@@ -224,9 +262,15 @@ name: taxonomyProviderDetails
       ebiGetRecords(provider.externalId)
         .then(async response => {
           if (response && response.data) {
-            ebiOverviewLoading.value = false
             ebiOverview.value = response.data
           }
+        })
+        .catch((e: AxiosError) => {
+          ebiOverviewError.value = e.message
+          ebiOverview.value = []
+        })
+        .finally(() => {
+          ebiOverviewLoading.value = false
         })
     }
   }
@@ -239,8 +283,14 @@ name: taxonomyProviderDetails
         .then(response => {
           if (response && response.data) {
             ebiStudies.value = response.data
-            ebiStudiesLoading.value = false
           }
+        })
+        .catch((e: AxiosError) => {
+          ebiStudiesError.value = e.message
+          ebiStudies.value = []
+        })
+        .finally(() => {
+          ebiStudiesLoading.value = false
         })
     }
   }
@@ -253,8 +303,14 @@ name: taxonomyProviderDetails
         .then(response => {
           if (response && response.data) {
             ebiAssemblies.value = response.data
-            ebiAssembliesLoading.value = false
           }
+        })
+        .catch((e: AxiosError) => {
+          ebiAssembliesError.value = e.message
+          ebiAssemblies.value = []
+        })
+        .finally(() => {
+          ebiAssembliesLoading.value = false
         })
     }
   }

@@ -57,7 +57,7 @@ type MessageType = typeof enGB | typeof deDE
 const protectedProperties = ['pageAboutGerminateTitle', 'pageAboutGerminateSubtitle', 'pageAboutGerminateText', 'pageAboutGerminateCardHomepageText', 'pageAboutGerminateCardGithubText', 'pageAboutGerminateCardPublicationText', 'pageAboutGerminateCardDocumentationText', 'pageAboutGerminateTeamTitle', 'pageAboutGerminateTeamSubtitle', 'pageAboutGerminateTeamOthersTitle', 'pageAboutGerminateTeamOthersSubtitle', 'pageAboutGerminateTeamOthersText', 'pageAboutGerminateLocationTitle', 'pageAboutGerminateLocationSubtitle', 'pageAboutGerminateFundersTitle', 'pageAboutGerminateFundersSubtitle', 'pageAboutGerminateFundersText', 'pageAboutGerminateFundersExtra', 'pageAboutGerminateTeamSebastian', 'pageAboutGerminateTeamJobSebastian', 'pageAboutGerminateTeamIain', 'pageAboutGerminateTeamJobIain', 'pageAboutGerminateTeamPaul', 'pageAboutGerminateTeamJobPaul']
 const loadedLanguages = [] as string[]
 const messages: { [key: string]: MessageType } = {
-  en: enGB,
+  'en-GB': enGB,
 }
 
 const i18n = createI18n({
@@ -119,11 +119,11 @@ function setI18nLanguage (lang: string) {
 }
 
 export function loadLanguageAsync (lang: string) {
-  let htmlTag = lang
-  const underscoreIndex = lang.indexOf('_')
-  if (underscoreIndex !== -1) {
-    htmlTag = lang.slice(0, underscoreIndex)
-  }
+  const htmlTag = lang.replace('_', '-')
+  // const underscoreIndex = lang.indexOf('_')
+  // if (underscoreIndex !== -1) {
+  //   htmlTag = lang.slice(0, underscoreIndex)
+  // }
 
   const store = useCoreStore()
 
@@ -149,7 +149,7 @@ export function loadLanguageAsync (lang: string) {
       protectedProperties.forEach(p => delete m.data[p])
     }
 
-    if (htmlTag === 'de') {
+    if (htmlTag === 'de-DE') {
       // We do have some default text for de_DE, so load this here
       messages[htmlTag] = deDE
     }

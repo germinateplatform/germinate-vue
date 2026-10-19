@@ -90,7 +90,7 @@
       <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmNumber }}</router-link>
     </template>
     <template #item.entityTypeName="{ item }">
-      <v-chip label :color="entityTypes[item.entityTypeName].color()" :prepend-icon="entityTypes[item.entityTypeName].path">{{ entityTypes[item.entityTypeName].text() }}</v-chip>
+      <v-chip label :color="entityTypes[item.entityTypeName].color()" :prepend-icon="entityTypes[item.entityTypeName].path">{{ $t(entityTypes[item.entityTypeName].text) }}</v-chip>
     </template>
 
     <!-- Institutions -->
@@ -262,8 +262,10 @@
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     const result = columns.germplasm.map(c => {
-      c.title = t(c.title || '')
-      return c
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
     })
 
     if (compProps.tableMode === 'distance') {

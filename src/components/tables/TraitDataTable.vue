@@ -37,10 +37,10 @@
       <span v-if="item.germplasmSynonyms">{{ item.germplasmSynonyms.join(', ') }}</span>
     </template>
     <template #item.entityType="{ item }">
-      <v-chip label :color="entityTypes[item.entityType].color()" :prepend-icon="entityTypes[item.entityType].path">{{ entityTypes[item.entityType].text() }}</v-chip>
+      <v-chip label :color="entityTypes[item.entityType].color()" :prepend-icon="entityTypes[item.entityType].path">{{ $t(entityTypes[item.entityType].text) }}</v-chip>
     </template>
     <template #item.scaleDatatype="{ item }">
-      <v-chip label :color="dataTypes[item.scaleDatatype].color()" :prepend-icon="dataTypes[item.scaleDatatype].path">{{ dataTypes[item.scaleDatatype].text() }}</v-chip>
+      <v-chip label :color="dataTypes[item.scaleDatatype].color()" :prepend-icon="dataTypes[item.scaleDatatype].path">{{ $t(dataTypes[item.scaleDatatype].text) }}</v-chip>
     </template>
 
     <template #item.variableName="{ item }">
@@ -114,8 +114,10 @@
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     const result = columns.traitData.map(c => {
-      c.title = t(c.title || '')
-      return c
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
     })
 
     return result

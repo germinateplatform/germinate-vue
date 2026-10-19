@@ -7,17 +7,17 @@
       class="mb-3"
       variant="tonal"
     >
-      <v-btn value="germinatebase" :color="groupTypes.germinatebase.color()" :text="groupTypes.germinatebase.text()">
+      <v-btn value="germinatebase" :color="groupTypes.germinatebase.color()" :text="$t(groupTypes.germinatebase.text)">
         <template #prepend>
           <v-icon :icon="groupTypes.germinatebase.path" :color="groupTypes.germinatebase.color()" />
         </template>
       </v-btn>
-      <v-btn value="markers" :color="groupTypes.markers.color()" :text="groupTypes.markers.text()">
+      <v-btn value="markers" :color="groupTypes.markers.color()" :text="$t(groupTypes.markers.text)">
         <template #prepend>
           <v-icon :icon="groupTypes.markers.path" :color="groupTypes.markers.color()" />
         </template>
       </v-btn>
-      <v-btn value="locations" :color="groupTypes.locations.color()" :text="groupTypes.locations.text()">
+      <v-btn value="locations" :color="groupTypes.locations.color()" :text="$t(groupTypes.locations.text)">
         <template #prepend>
           <v-icon :icon="groupTypes.locations.path" :color="groupTypes.locations.color()" />
         </template>

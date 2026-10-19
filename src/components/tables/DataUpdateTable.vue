@@ -19,11 +19,11 @@
       v-bind="$attrs"
     >
       <template #item.datatype="{ item }">
-        <v-chip label :color="templateImportTypes[item.datatype].color()" :prepend-icon="templateImportTypes[item.datatype].path">{{ templateImportTypes[item.datatype].text() }}</v-chip>
+        <v-chip label :color="templateImportTypes[item.datatype].color()" :prepend-icon="templateImportTypes[item.datatype].path">{{ $t(templateImportTypes[item.datatype].text) }}</v-chip>
       </template>
 
       <template #item.status="{ item }">
-        <v-chip label :color="asyncJobStatus[item.status].color" :prepend-icon="asyncJobStatus[item.status].path">{{ asyncJobStatus[item.status].text() }}</v-chip>
+        <v-chip label :color="asyncJobStatus[item.status].color" :prepend-icon="asyncJobStatus[item.status].path">{{ $t(asyncJobStatus[item.status].text) }}</v-chip>
       </template>
 
       <template #item.isUpdate="{ item }">
@@ -46,8 +46,8 @@
         <v-card class="flex-grow-1 d-flex justify-space-between flex-column">
           <template #title>
             <div class="d-flex justify-space-between">
-              <span>{{ templateImportTypes[item.datatype].text() }}</span>
-              <v-chip label :color="asyncJobStatus[item.status].color" :prepend-icon="asyncJobStatus[item.status].path">{{ asyncJobStatus[item.status].text() }}</v-chip>
+              <span>{{ $t(templateImportTypes[item.datatype].text) }}</span>
+              <v-chip label :color="asyncJobStatus[item.status].color" :prepend-icon="asyncJobStatus[item.status].path">{{ $t(asyncJobStatus[item.status].text) }}</v-chip>
             </div>
           </template>
           <template #prepend>

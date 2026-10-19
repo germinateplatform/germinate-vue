@@ -21,7 +21,7 @@
     >
       <!-- Reference table -->
       <template #item.imageRefTable="{ item }">
-        <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
+        <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ $t(imageTypes[item.imageRefTable].text) }}</v-chip>
       </template>
 
       <!-- Show whether it's a trait reference image. -->
@@ -71,7 +71,7 @@
           </v-card-title>
           <v-card-subtitle class="text-wrap" v-if="item.createdOn">{{ new Date(item.createdOn).toLocaleDateString() }}</v-card-subtitle>
           <v-card-text>
-            <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ imageTypes[item.imageRefTable].text() }}</v-chip>
+            <v-chip label :color="imageTypes[item.imageRefTable].color()" :prepend-icon="imageTypes[item.imageRefTable].path">{{ $t(imageTypes[item.imageRefTable].text) }}</v-chip>
           </v-card-text>
           <v-card-text class="text-wrap">{{ item.imageDescription }}</v-card-text>
 

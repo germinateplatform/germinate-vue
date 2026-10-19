@@ -5,7 +5,7 @@
     <ScrollSpy :items="scrollSpyItems" :top-gap="topGap" ref="scrollSpy" />
 
     <template v-if="germplasm">
-      <h1 class="text-headline-large my-3 d-flex justify-space-between align-center">{{ title }}<v-chip label :prepend-icon="entityTypes[germplasm.entityTypeName].path" :text="entityTypes[germplasm.entityTypeName].text()" :color="entityTypes[germplasm.entityTypeName].color()" /></h1>
+      <h1 class="text-headline-large my-3 d-flex justify-space-between align-center">{{ title }}<v-chip label :prepend-icon="entityTypes[germplasm.entityTypeName].path" :text="$t(entityTypes[germplasm.entityTypeName].text)" :color="entityTypes[germplasm.entityTypeName].color()" /></h1>
       <v-divider class="mb-5" />
       <p>{{ $t('pagePassportText') }}</p>
 
@@ -134,17 +134,17 @@
             <v-list v-model:opened="entityListOpen">
               <v-list-group value="accession">
                 <template #activator="{ props }">
-                  <v-list-item v-bind="props" :prepend-icon="mdiCircleMedium" :title="entityTypes['Accession'].text()" />
+                  <v-list-item v-bind="props" :prepend-icon="mdiCircleMedium" :title="$t(entityTypes['Accession'].text)" />
                 </template>
 
                 <v-list-group value="plantplot">
                   <template #activator="{ props }">
-                    <v-list-item v-bind="props" :prepend-icon="mdiSubdirectoryArrowRight" :title="entityTypes['Plant/Plot'].text()" />
+                    <v-list-item v-bind="props" :prepend-icon="mdiSubdirectoryArrowRight" :title="$t(entityTypes['Plant/Plot'].text)" />
                   </template>
 
                   <v-list-group value="sample">
                     <template #activator="{ props }">
-                      <v-list-item v-bind="props" :prepend-icon="mdiSubdirectoryArrowRight" :title="entityTypes['Sample'].text()" />
+                      <v-list-item v-bind="props" :prepend-icon="mdiSubdirectoryArrowRight" :title="$t(entityTypes['Sample'].text)" />
                     </template>
                   </v-list-group>
                 </v-list-group>

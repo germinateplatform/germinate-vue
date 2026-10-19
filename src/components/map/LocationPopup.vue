@@ -18,7 +18,7 @@
         <v-icon :style="`color: ${locationTypes[location.locationType].color()};`" :icon="locationTypes[location.locationType].path" />
       </template>
       <template #subtitle>
-        {{ locationTypes[location.locationType].text() }}
+        {{ $t(locationTypes[location.locationType].text) }}
       </template>
     </v-list-item>
     <v-list-item v-if="location.countryCode2 || location.countryCode3" :title="$t('tableColumnCountryName')">

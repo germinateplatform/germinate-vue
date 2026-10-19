@@ -67,7 +67,7 @@
           label
           :color="datasetTypes[item.datasetType].color()"
           :prepend-icon="datasetTypes[item.datasetType].path"
-          :text="datasetTypes[item.datasetType].text()"
+          :text="$t(datasetTypes[item.datasetType].text)"
           :link="(item.datasetType === 'trials' && item.studyDetailsCore !== undefined)"
           @click="(item.datasetType === 'trials' && item.studyDetailsCore !== undefined) ? showStudyDetails(item) : undefined"
         >
@@ -120,7 +120,7 @@
       <template #item.datasetDetails="{ item }">
         <v-btn-group variant="tonal" v-if="disabled !== true">
           <v-btn size="x-small" color="primary" target="_blank" :href="item.hyperlink" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
-          <v-btn size="x-small" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="datasetStates[item.datasetState].text()" />
+          <v-btn size="x-small" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="$t(datasetStates[item.datasetState].text)" />
           <v-btn size="x-small" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
           <v-btn size="x-small" :icon="mdiAccountMultiple" color="muted" disabled v-else />
           <v-btn size="x-small" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
@@ -267,8 +267,10 @@
 
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     return columns.datasets.map(c => {
-      c.title = t(c.title || '')
-      return c
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
     })
   })
 
@@ -317,7 +319,7 @@
       selectOptions: Object.keys(datasetTypes).map(dt => {
         return {
           value: dt,
-          title: datasetTypes[dt].text(),
+          title: t(datasetTypes[dt].text),
         }
       }),
     }, {
@@ -329,7 +331,7 @@
       selectOptions: Object.keys(datasetStates).map(ds => {
         return {
           value: ds,
-          title: datasetStates[ds].text(),
+          title: t(datasetStates[ds].text),
         }
       }),
     }, {

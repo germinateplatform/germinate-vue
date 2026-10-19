@@ -321,7 +321,7 @@
     return Object.keys(entityTypes).map(e => {
       return {
         value: e,
-        title: entityTypes[e].text(),
+        title: t(entityTypes[e].text),
       }
     })
   })
@@ -330,7 +330,7 @@
     return Object.keys(locationTypes).map(e => {
       return {
         value: e,
-        title: locationTypes[e].text(),
+        title: t(locationTypes[e].text),
       }
     })
   })
@@ -349,7 +349,7 @@
     return Object.keys(groupTypes).map(e => {
       return {
         value: e,
-        title: groupTypes[e].text(),
+        title: t(groupTypes[e].text),
       }
     })
   })
@@ -358,7 +358,7 @@
     return Object.keys(methodClasses).map(e => {
       return {
         value: e,
-        title: methodClasses[e].text(),
+        title: t(methodClasses[e].text),
       }
     })
   })
@@ -367,7 +367,7 @@
     return Object.keys(traitClasses).map(e => {
       return {
         value: e,
-        title: traitClasses[e].text(),
+        title: t(traitClasses[e].text),
       }
     })
   })
@@ -376,7 +376,7 @@
     return Object.keys(dataTypes).map(e => {
       return {
         value: e,
-        title: dataTypes[e].text(),
+        title: t(dataTypes[e].text),
       }
     })
   })
@@ -385,7 +385,7 @@
     return Object.keys(newsTypes).map(e => {
       return {
         value: e,
-        title: newsTypes[e].text(),
+        title: t(newsTypes[e].text),
       }
     })
   })

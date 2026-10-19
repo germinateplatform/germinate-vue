@@ -21,23 +21,23 @@
         <span v-html="displayData.fullReference" />
       </div>
 
-      <v-chip label class="me-2 mt-1" v-if="publication.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path" :text="publicationTypes.database.text()" />
-      <v-chip label class="me-2 mt-1" v-if="publication.germplasmIds && publication.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path" :text="publicationTypes.germplasm.text()">
+      <v-chip label class="me-2 mt-1" v-if="publication.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path" :text="$t(publicationTypes.database.text)" />
+      <v-chip label class="me-2 mt-1" v-if="publication.germplasmIds && publication.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path" :text="$t(publicationTypes.germplasm.text)">
         <template #append>
           <v-badge inline :content="publication.germplasmIds.length" />
         </template>
       </v-chip>
-      <v-chip label class="me-2 mt-1" v-if="publication.datasetIds && publication.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path" :text="publicationTypes.dataset.text()">
+      <v-chip label class="me-2 mt-1" v-if="publication.datasetIds && publication.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path" :text="$t(publicationTypes.dataset.text)">
         <template #append>
           <v-badge inline class="ms-1" color="muted" :content="publication.datasetIds.length" />
         </template>
       </v-chip>
-      <v-chip label class="me-2 mt-1" v-if="publication.experimentIds && publication.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path" :text="publicationTypes.experiment.text()">
+      <v-chip label class="me-2 mt-1" v-if="publication.experimentIds && publication.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path" :text="$t(publicationTypes.experiment.text)">
         <template #append>
           <v-badge inline class="ms-1" color="muted" :content="publication.experimentIds.length" />
         </template>
       </v-chip>
-      <v-chip label class="me-2 mt-1" v-if="publication.groupIds && publication.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path" :text="publicationTypes.group.text()">
+      <v-chip label class="me-2 mt-1" v-if="publication.groupIds && publication.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path" :text="$t(publicationTypes.group.text)">
         <template #append>
           <v-badge inline class="ms-1" color="muted" :content="publication.groupIds.length" />
         </template>

@@ -3,9 +3,9 @@
     <v-col class="v-input--indent-details">
       <HintContainer text="widgetGermplasmTableFilterHasData">
         <v-btn-group variant="tonal" class="d-flex">
-          <v-btn class="flex-grow-1" :icon="datasetTypes.trials.path" :color="datasetTypes.trials.color()" v-tooltip:top="datasetTypes.trials.text()" @click="filterDataType('trials')" />
-          <v-btn class="flex-grow-1" :icon="datasetTypes.genotype.path" :color="datasetTypes.genotype.color()" v-tooltip:top="datasetTypes.genotype.text()" @click="filterDataType('genotype')" />
-          <v-btn class="flex-grow-1" :icon="datasetTypes.pedigree.path" :color="datasetTypes.pedigree.color()" v-tooltip:top="datasetTypes.pedigree.text()" @click="filterDataType('pedigree')" />
+          <v-btn class="flex-grow-1" :icon="datasetTypes.trials.path" :color="datasetTypes.trials.color()" v-tooltip:top="$t(datasetTypes.trials.text)" @click="filterDataType('trials')" />
+          <v-btn class="flex-grow-1" :icon="datasetTypes.genotype.path" :color="datasetTypes.genotype.color()" v-tooltip:top="$t(datasetTypes.genotype.text)" @click="filterDataType('genotype')" />
+          <v-btn class="flex-grow-1" :icon="datasetTypes.pedigree.path" :color="datasetTypes.pedigree.color()" v-tooltip:top="$t(datasetTypes.pedigree.text)" @click="filterDataType('pedigree')" />
           <v-btn class="flex-grow-1" :icon="mdiCamera" :color="getTemplateColor(1)" v-tooltip:top="$t('widgetGermplasmTableFilterHasImages')" @click="filterDataType('image')" />
         </v-btn-group>
       </HintContainer>

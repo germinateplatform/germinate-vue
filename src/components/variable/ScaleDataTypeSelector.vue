@@ -14,7 +14,7 @@
         label
         :prepend-icon="dataTypes[dataType].path"
         :color="dataTypes[dataType].color()"
-        :text="dataTypes[dataType].text()"
+        :text="$t(dataTypes[dataType].text)"
       >
         <template #append>
           <v-badge inline :content="getNumberWithSuffix(count, 1)" />

@@ -44,11 +44,11 @@
     </template>
 
     <template #item.entityParentType="{ item }">
-      <v-chip label :color="entityTypes[item.entityParentType].color()" :prepend-icon="entityTypes[item.entityParentType].path">{{ entityTypes[item.entityParentType].text() }}</v-chip>
+      <v-chip label :color="entityTypes[item.entityParentType].color()" :prepend-icon="entityTypes[item.entityParentType].path">{{ $t(entityTypes[item.entityParentType].text) }}</v-chip>
     </template>
 
     <template #item.entityChildType="{ item }">
-      <v-chip label :color="entityTypes[item.entityChildType].color()" :prepend-icon="entityTypes[item.entityChildType].path">{{ entityTypes[item.entityChildType].text() }}</v-chip>
+      <v-chip label :color="entityTypes[item.entityChildType].color()" :prepend-icon="entityTypes[item.entityChildType].path">{{ $t(entityTypes[item.entityChildType].text) }}</v-chip>
     </template>
 
     <template #item.entityParentId="{ item }">

@@ -31,7 +31,7 @@
       </div>
     </template>
     <template #item.institutionType="{ item }">
-      <v-chip label :color="germplasmInstitutionTypes[item.institutionType].color()" :prepend-icon="germplasmInstitutionTypes[item.institutionType].path" :text="germplasmInstitutionTypes[item.institutionType].text()" />
+      <v-chip label :color="germplasmInstitutionTypes[item.institutionType].color()" :prepend-icon="germplasmInstitutionTypes[item.institutionType].path" :text="$t(germplasmInstitutionTypes[item.institutionType].text)" />
     </template>
     <!-- Country flag -->
     <template #item.countryCode="{ item }">

@@ -47,7 +47,7 @@
               :append-icon="germplasm.germplasmId === primaryGermplasm?.germplasmId ? mdiCheck : undefined"
             >
               <template #title>
-                <v-chip label :color="entityTypes[germplasm.entityTypeName].color()" :prepend-icon="entityTypes[germplasm.entityTypeName].path">{{ entityTypes[germplasm.entityTypeName].text() }}</v-chip> · {{ germplasm.germplasmId }} · {{ germplasm.germplasmDisplayName || germplasm.germplasmName }}
+                <v-chip label :color="entityTypes[germplasm.entityTypeName].color()" :prepend-icon="entityTypes[germplasm.entityTypeName].path">{{ $t(entityTypes[germplasm.entityTypeName].text) }}</v-chip> · {{ germplasm.germplasmId }} · {{ germplasm.germplasmDisplayName || germplasm.germplasmName }}
               </template>
             </v-list-item>
           </v-list>

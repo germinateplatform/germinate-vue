@@ -17,7 +17,7 @@
     v-bind="$attrs"
   >
     <template #item.locationType="{ item }">
-      <v-chip label :color="locationTypes[item.locationType].color()" :prepend-icon="locationTypes[item.locationType].path">{{ locationTypes[item.locationType].text() }}</v-chip>
+      <v-chip label :color="locationTypes[item.locationType].color()" :prepend-icon="locationTypes[item.locationType].path">{{ $t(locationTypes[item.locationType].text) }}</v-chip>
     </template>
 
     <!-- Country flag -->
@@ -70,8 +70,10 @@
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
     const result = columns.locations.map(c => {
-      c.title = t(c.title || '')
-      return c
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
     })
 
     if (compProps.tableMode === 'distance') {

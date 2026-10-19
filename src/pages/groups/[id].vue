@@ -1,7 +1,7 @@
 <template>
   <v-container fluid v-if="group">
     <Teleport to="#breadcrumb-last" defer>
-      <v-chip v-if="group.groupType" label :color="groupTypes[group.groupType].color()" :prepend-icon="groupTypes[group.groupType].path">{{ groupTypes[group.groupType].text() }}</v-chip>
+      <v-chip v-if="group.groupType" label :color="groupTypes[group.groupType].color()" :prepend-icon="groupTypes[group.groupType].path">{{ $t(groupTypes[group.groupType].text) }}</v-chip>
     </Teleport>
 
     <v-divider class="mb-3" />

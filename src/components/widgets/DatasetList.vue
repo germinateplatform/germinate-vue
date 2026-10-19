@@ -26,7 +26,7 @@
           </v-list-item>
         </v-list>
         <v-card-text>
-          <v-chip label :color="datasetTypes[dataset.datasetType || ''].color()" :prepend-icon="datasetTypes[dataset.datasetType || ''].path" :text="datasetTypes[dataset.datasetType || ''].text()" />
+          <v-chip label :color="datasetTypes[dataset.datasetType || ''].color()" :prepend-icon="datasetTypes[dataset.datasetType || ''].path" :text="$t(datasetTypes[dataset.datasetType || ''].text)" />
         </v-card-text>
       </v-card>
     </v-menu>

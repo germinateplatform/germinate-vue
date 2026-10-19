@@ -1,7 +1,7 @@
 <template>
   <v-container fluid v-if="climate">
     <Teleport to="#breadcrumb-last" defer>
-      <v-chip label :color="dataTypes[climate.dataType].color()" :prepend-icon="dataTypes[climate.dataType].path" :text="dataTypes[climate.dataType].text()" />
+      <v-chip label :color="dataTypes[climate.dataType].color()" :prepend-icon="dataTypes[climate.dataType].path" :text="$t(dataTypes[climate.dataType].text)" />
     </Teleport>
 
     <ClimateDetails :climate="climate" />

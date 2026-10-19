@@ -68,7 +68,7 @@
               v-for="(details, itemType) in markedItemTypes"
               :key="`marked-item-${itemType}`"
               :to="Pages.getPath(Pages.markedItemType, itemType as string)"
-              :title="details.text()"
+              :title="$t(details.text)"
             >
               <template #prepend>
                 <v-icon :color="details.color()" :icon="details.path" />

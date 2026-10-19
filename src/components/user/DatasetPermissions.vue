@@ -7,6 +7,7 @@
       :filter-on="datasetFilter"
       :selection-type="TableSelectionType.single"
       ref="datasetTable"
+      disabled
       @selection-changed="setDatasetSelection"
     />
 
