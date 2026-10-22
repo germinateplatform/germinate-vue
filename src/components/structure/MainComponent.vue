@@ -63,7 +63,14 @@
             <v-btn v-bind="props" :icon="mdiBookmarkBoxMultiple" v-else />
           </template>
           <v-list slim>
-            <v-list-subheader class="text-high-emphasis text-uppercase font-weight-black">{{ $t('pageMarkedItemsTitle') }}</v-list-subheader>
+            <v-list-subheader class="list-subheader-w-button">
+              <div class="d-flex align-center justify-space-between">
+                <span class="text-high-emphasis text-uppercase font-weight-black">
+                  {{ $t('pageMarkedItemsTitle') }}
+                </span>
+                <v-btn size="x-small" variant="tonal" color="error" :icon="mdiDelete" @click="clearMarkedItems" v-if="totalMarkedItemCount" />
+              </div>
+            </v-list-subheader>
             <v-list-item
               v-for="(details, itemType) in markedItemTypes"
               :key="`marked-item-${itemType}`"
@@ -117,12 +124,10 @@
 
         <UserDropdown v-if="showElements && store.storeServerSettings?.authMode !== AuthenticationMode.NONE" />
 
-        <v-btn icon @click="emitter.emit('toggle-aside')">
-          <v-badge location="bottom left" color="primary" :offset-x="-2" :offset-y="-2" :content="store.storeAsyncJobUuids.length" v-if="store.storeAsyncJobUuids.length > 0">
-            <v-icon :icon="mdiFileArrowUpDown" />
-          </v-badge>
-          <v-icon :icon="mdiFileArrowUpDown" v-else />
-        </v-btn>
+        <v-badge class="pe-none" location="bottom left" color="primary" :offset-x="10" :offset-y="10" :content="store.storeAsyncJobUuids.length" v-if="store.storeAsyncJobUuids.length > 0">
+          <v-btn @click="emitter.emit('toggle-aside')" :icon="mdiFileArrowUpDown" />
+        </v-badge>
+        <v-btn @click="emitter.emit('toggle-aside')" :icon="mdiFileArrowUpDown" v-else />
       </v-app-bar>
 
       <MainNavigation v-if="showElements" />
@@ -198,13 +203,14 @@
   import ChangelogInfo from '@/components/widgets/ChangelogInfo.vue'
   import { germinateVersion, getId } from '@/plugins/util'
   import { useDark } from '@vueuse/core'
-  import { mdiBookmarkBoxMultiple, mdiCheck, mdiClipboardList, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiMagnify, mdiThemeLightDark, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
+  import { mdiBookmarkBoxMultiple, mdiCheck, mdiClipboardList, mdiDelete, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiMagnify, mdiThemeLightDark, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
   import { apiGetLocales } from '@/plugins/api/setting'
   import { UAParser } from 'ua-parser-js'
 
   import { init as initPlausible, track } from '@plausible-analytics/tracker'
   import axios from 'axios'
   import { AuthenticationMode } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
 
   export interface SnackbarContent {
     title?: string
@@ -219,6 +225,7 @@
   const store = useCoreStore()
   const isDark = useDark()
   const { smAndUp } = useDisplay()
+  const { t } = useI18n()
 
   // Refs
   const locales = ref<Locale[]>([])
@@ -287,6 +294,21 @@
     if (!snackbarQueue.value.some(m => m.title === message.title && m.text === message.text && m.color === message.color && m.timeout === message.timeout)) {
       snackbarQueue.value.push(message)
     }
+  }
+
+  function clearMarkedItems () {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTitleSure'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          store.clearAllMarkedIds()
+        }
+      },
+    })
   }
 
   function showLoading (visible: boolean) {
@@ -415,5 +437,11 @@ body.print .v-overlay-container {
 .cookie-banner {
   top: 64px;
   z-index: 1002;
+}
+</style>
+
+<style scoped>
+.list-subheader-w-button :deep(.v-list-subheader__text) {
+  width: 100%;
 }
 </style>

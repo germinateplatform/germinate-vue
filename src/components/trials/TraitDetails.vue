@@ -2,7 +2,13 @@
   <div v-if="localVariable">
     <VariableDetails :variable-id="localVariable.variableId" />
 
-    <Images class="mt-3" :filter-on="imageFilter" @data-changed="setImageVisibility" v-if="imagesVisible" />
+    <Images
+      class="mt-5"
+      :foreign-id="localVariable.variableId"
+      reference-table="variables"
+      @data-changed="setImageVisibility"
+      v-if="imagesVisible"
+    />
 
     <TraitDataTable
       class="mt-5"
@@ -45,7 +51,7 @@
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { apiPostTraitDatasetTable, apiPostTraitTable, apiPostTrialsDataTable, apiPostTrialsDataTableIds } from '@/plugins/api/trait'
-  import { FilterComparator, FilterOperator, type ViewTableDatasets, type FilterGroup, type PaginatedRequest, type PaginatedResult, type TrialsExportDatasetRequest, type UnacceptedLicenseRequest, type ViewTableImages, type ViewTableTraits, type ViewTableTrialsData, type ViewTableGroups } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableDatasets, type PaginatedRequest, type PaginatedResult, type TrialsExportDatasetRequest, type UnacceptedLicenseRequest, type ViewTableImages, type ViewTableTraits, type ViewTableTrialsData, type ViewTableGroups } from '@/plugins/types/germinate'
   import { mdiChartTimeline } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
@@ -64,23 +70,7 @@
   const traitData = shallowRef<ViewTableTrialsData[]>()
 
   const tdStore = useTraitDataStore()
-
-  const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
-    return [{
-      filters: [{
-        column: 'imageForeignId',
-        comparator: FilterComparator.equals,
-        values: [`${localVariable.value?.variableId}`],
-        canBeChanged: false,
-      }, {
-        column: 'imageRefTable',
-        comparator: FilterComparator.equals,
-        values: ['phenotypes'],
-        canBeChanged: false,
-      }],
-      operator: FilterOperator.and,
-    }]
-  })
+  const store = useCoreStore()
 
   function update () {
     nextTick(() => {
@@ -91,7 +81,7 @@
   }
 
   function setImageVisibility (request: PaginatedRequest, result: PaginatedResult<ViewTableImages[]>) {
-    imagesVisible.value = result !== undefined && result.count !== undefined && result.count > 0
+    imagesVisible.value = store.storeUserIsDataCurator || (result !== undefined && result.count !== undefined && result.count > 0)
   }
 
   function plot () {

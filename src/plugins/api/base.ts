@@ -119,7 +119,7 @@ export interface ErrorHandler {
  * Sends a FORM to the given URL using authentication
  * @param {Object} param0 `{ url: String, formData: Object, method: String, success: Callback, error: { codes: [], callback: Callback } }`
  */
-export function authForm<T> ({ url = undefined, formData, method = 'post', success = undefined, error = { codes: [], callback: handleError } }: { url?: string, formData?: any | undefined, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler }) {
+export function authForm<T> ({ url = undefined, formData, method = 'post', success = undefined, error = { codes: [], callback: handleError }, onProgress = undefined }: { url?: string, formData?: any | undefined, method?: string, success?: GerminateResponseHandler<T>, error?: ErrorHandler, onProgress?: (progress: number) => void }) {
   const store = useCoreStore()
   const promise = axios<T>({
     baseURL: store.storeBaseUrl,
@@ -132,6 +132,7 @@ export function authForm<T> ({ url = undefined, formData, method = 'post', succe
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${getToken()}`,
     },
+    onUploadProgress: e => onProgress?.(Math.round((e.progress ?? 0) * 100)),
   })
 
   promise.then(result => {

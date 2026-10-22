@@ -198,7 +198,7 @@
 <script setup lang="ts">
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPatchTraitDetails, apiPostTraitTable } from '@/plugins/api/trait'
-  import { FilterComparator, FilterOperator, type ViewTableTraitsMethodClass, type ViewTableTraitsTraitClass, type ViewTableTraits } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type ViewTableTraitsMethodClass, type ViewTableTraitsTraitClass, type ViewTableTraits, type PaginatedRequest, type PaginatedResult, type ViewTableImages } from '@/plugins/types/germinate'
   import { dataTypes, methodClasses, traitClasses } from '@/plugins/util/types'
   import { mdiCodeBrackets, mdiContentSave, mdiGreaterThanOrEqual, mdiLabel, mdiLessThanOrEqual, mdiMenuDown } from '@mdi/js'
 

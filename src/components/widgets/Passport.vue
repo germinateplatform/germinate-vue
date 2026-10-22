@@ -111,12 +111,18 @@
         </v-toolbar>
         <v-card-text>
           <p>{{ $t('pagePassportLocationText') }}</p>
-
-          <LocationMap :locations="[location]" @location-updated="update" />
         </v-card-text>
+        <LocationMap :locations="[location]" @location-updated="update" :rounded="false" />
       </v-card>
 
-      <Images class="mb-5" :filter-on="imageFilter" header-icon-color="primary" id="images" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+      <Images
+        class="mb-5"
+        reference-table="germinatebase"
+        :foreign-id="germplasm.germplasmId"
+        header-icon-color="primary"
+        id="images"
+        v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)"
+      />
 
       <GroupTable class="mb-5" header-icon-color="primary" :get-data="getGroupData" id="groups" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <template #card-text>
@@ -309,22 +315,6 @@
         canBeChanged: false,
       }],
       operator: FilterOperator.or,
-    }]
-  })
-  const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
-    return [{
-      filters: [{
-        column: 'imageForeignId',
-        comparator: FilterComparator.equals,
-        values: [`${compProps.germplasmId}`],
-        canBeChanged: false,
-      }, {
-        column: 'imageRefTable',
-        comparator: FilterComparator.equals,
-        values: ['germinatebase'],
-        canBeChanged: false,
-      }],
-      operator: FilterOperator.and,
     }]
   })
   const publicationFilter: ComputedRef<FilterGroup[]> = computed(() => {

@@ -248,14 +248,17 @@
     <TableFilterModal :columns="filterColumns" :filter-on="componentProps.filterOn" :forced-filters="componentProps.forcedFilters" :table-key="componentProps.tableKey" ref="tableFilterModal" @filter-changed="updateFilters" />
 
     <v-bottom-sheet
-      :model-value="localBottomSheetVisible"
-      @update:model-value="notifyBottomSheet"
+      v-model="bottomSheetVisible"
       inset
+      :persistent="bottomSheetPersistent"
       max-height="75vh"
     >
       <v-card
         class="pb-10"
       >
+        <template #title v-if="$slots.bottomSheetTitle">
+          <slot name="bottom-sheet-title" />
+        </template>
         <v-card-text>
           <slot name="bottom-sheet-content" />
         </v-card-text>
@@ -335,7 +338,6 @@
   const searchTerm = ref<string>()
   const newGroup = ref<ViewTableGroups>({})
   const urlPageToForce = ref()
-  const localBottomSheetVisible = ref(false)
   const currentPage = ref(1)
   const itemsPerPage = ref(store.storeTablePerPage || 12)
   const localSortByColumns = ref<DataTableSortItem[] | undefined>([])
@@ -351,6 +353,12 @@
   const localDisplayType = ref<DisplayType>('table')
   const localGroupTypes = ref<Grouptypes[]>([])
 
+  const bottomSheetVisible = defineModel<boolean>('bottomSheetVisible', {
+    default: false,
+  })
+  const bottomSheetPersistent = defineModel<boolean>('bottomSheetPersistent', {
+    default: false,
+  })
   const currentRequest = ref<PaginatedRequest>()
 
   const groupFields = computed(() => {
@@ -439,17 +447,9 @@
     return headers
   })
 
-  watch(() => componentProps.bottomSheetVisible, async (newValue: boolean) => {
-    localBottomSheetVisible.value = newValue
-  })
-
   watch(selected, async (newValue: number[]) => {
     emit('selection-changed', newValue)
   })
-
-  function notifyBottomSheet (value: boolean) {
-    emit('update:bottom-sheet-visible', value)
-  }
 
   function isMarked (id: number) {
     return markedItemConfig.value ? markedItemConfig.value.markedIds.has(id) : false
@@ -815,6 +815,8 @@
     getSelection,
     setOverallOperator,
     forceFilters: (filters: FilterGroup[]) => tableFilterModal.value?.forceFilters(filters),
+    toggleMarkedItem,
+    isMarked,
     currentRequest: readonly(currentRequest),
   })
 </script>

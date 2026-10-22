@@ -5,6 +5,7 @@
       ref="baseTable"
       class="image-table"
       v-model:bottom-sheet-visible="bottomVisible"
+      v-model:bottom-sheet-persistent="bottomPersistent"
       :get-data="compProps.getData"
       :get-ids="compProps.getIds"
       :download="compProps.download"
@@ -58,6 +59,13 @@
         <v-img width="200" height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
       </template>
 
+      <template #item.actions="{ item }">
+        <v-btn-group variant="tonal">
+          <v-btn size="x-small" color="primary" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipImageEdit')" @click="editImage(item)" />
+          <v-btn size="x-small" color="error" :icon="mdiDelete" v-tooltip:top="$t('tableTooltipImageDelete')" @click="deleteImage(item)" />
+        </v-btn-group>
+      </template>
+
       <template #card-item="{ item }">
         <v-card class="flex-grow-1">
           <v-img height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
@@ -86,8 +94,35 @@
         <slot :name="slot" v-bind="slotProps" />
       </template>
 
-      <template #bottom-sheet-content>
-        <ExifInfo :image="selectedImage" />
+      <template #bottom-sheet-content v-if="selectedImage">
+        <ExifInfo :image="selectedImage" v-if="bottomSheetType === 'exif'" />
+        <div v-else>
+          <v-card-title class="mx-0 px-0 d-flex justify-space-between align-center">
+            <span>{{ $t('pageImagesTitleEdit') }}</span>
+            <div class="d-flex ga-2">
+              <v-btn @click="bottomVisible = false" :prepend-icon="mdiClose" :text="$t('buttonClose')" />
+              <v-btn @click="saveImageChanges" :prepend-icon="mdiContentSave" :text="$t('buttonSave')" color="primary" />
+            </div>
+          </v-card-title>
+          <v-textarea
+            :label="$t('tableColumnImageDescription')"
+            hide-details
+            v-model="selectedImage.imageDescription"
+          />
+
+          <v-switch
+            :label="$t('tableColumnImageIsReference')"
+            hide-details
+            v-model="selectedImage.imageIsReference"
+            color="primary"
+          />
+
+          <TagInput
+            :label="$t('tableColumnImageTags')"
+            hide-details
+            v-model="selectedImage.tags"
+          />
+        </div>
       </template>
     </BaseTable>
 
@@ -110,7 +145,9 @@
   import { getTemplateColor } from '@/plugins/util/colors'
   import ExifInfo from '@/components/widgets/ExifInfo.vue'
   import { getImageUrl } from '@/plugins/util/image'
-  import { mdiBookInformationVariant, mdiImageMultiple, mdiImageText } from '@mdi/js'
+  import { mdiBookInformationVariant, mdiClose, mdiContentSave, mdiDelete, mdiImageMultiple, mdiImageText, mdiSquareEditOutline } from '@mdi/js'
+  import { apiDeleteImage, apiPatchImage, apiPatchImageTags } from '@/plugins/api/image'
+  import emitter from 'tiny-emitter/instance'
 
   const compProps = defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableImages[]>>> }
@@ -126,7 +163,10 @@
   const { t } = useI18n()
   const selectedImage = ref<ViewTableImages>()
   const bottomVisible = ref(false)
+  const bottomPersistent = ref(false)
   const lightboxVisible = ref(false)
+
+  const bottomSheetType = ref<'exif' | 'edit'>()
 
   const tags: { [key: number]: string } = {}
 
@@ -189,8 +229,51 @@
       title: '',
     }]
 
+    if (store.storeUserIsDataCurator) {
+      headers.push({
+        key: 'actions',
+        dataType: undefined,
+        sortable: false,
+        title: '',
+      })
+    }
+
     return headers
   })
+
+  function deleteImage (image: ViewTableImages) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTitleSure'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          apiDeleteImage(image.imageId, () => {
+            baseTable.value?.refresh()
+          })
+        }
+      },
+    })
+  }
+
+  async function saveImageChanges () {
+    if (!selectedImage.value) {
+      return
+    }
+
+    await Promise.all([
+      apiPatchImage(selectedImage.value),
+      apiPatchImageTags(selectedImage.value.imageId, selectedImage.value.tags),
+    ])
+      .then(() => {
+        baseTable.value?.refresh()
+      })
+      .finally(() => {
+        bottomVisible.value = false
+      })
+  }
 
   function getSrc (image: ViewTableImages, size: string) {
     return getImageUrl(image.imagePath, {
@@ -209,8 +292,20 @@
     })
   }
 
+  function editImage (item: ViewTableImages) {
+    selectedImage.value = { ...item }
+    bottomSheetType.value = 'edit'
+    bottomPersistent.value = true
+
+    nextTick(() => {
+      bottomVisible.value = true
+    })
+  }
+
   function showExif (item: ViewTableImages) {
     selectedImage.value = item
+    bottomSheetType.value = 'exif'
+    bottomPersistent.value = false
 
     nextTick(() => {
       bottomVisible.value = true

@@ -457,6 +457,11 @@ const imageTypes: { [key: string]: PathState & ColorState & TextState } = {
     color: () => getTemplateColor(2),
     text: 'imageTypePhenotypes',
   },
+  variables: {
+    path: mdiTagTextOutline,
+    color: () => getTemplateColor(2),
+    text: 'imageTypePhenotypes',
+  },
   projects: {
     path: mdiClipboardList,
     color: () => getTemplateColor(3),

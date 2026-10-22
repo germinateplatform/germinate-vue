@@ -47,31 +47,26 @@
       <v-list-item :title="$t('tableContextMarkEntityChildren')" :prepend-icon="mdiChevronDownBox" @click="markEntityChildren(true)" />
       <v-list-item :title="$t('tableContextUnmarkEntityChildren')" :prepend-icon="mdiChevronDownBoxOutline" @click="markEntityChildren(false)" />
     </template>
-    <template #item.marking.append="{ item }">
-      <!-- Visual divider to separate the chip body from the dropdown arrow -->
-      <v-divider
-        vertical
-        class="mx-2 my-1"
-      />
 
-      <!-- Dropdown icon slot -->
-      <v-menu location="bottom end">
-        <template #activator="{ props }">
-          <v-icon
-            v-bind="props"
-            :icon="mdiChevronDown"
-            size="small"
-            @click.stop
-          />
+    <template #item.marked-items="{ item }">
+      <VSplitBtn
+        :color="baseTable?.isMarked(item.germplasmId) ? 'primary' : undefined"
+        v-tooltip:top="baseTable?.isMarked(item.germplasmId) ? $t('widgetTableMarkingRemoveItemFromList') : $t('widgetTableMarkingAddItemToList')"
+        @click="baseTable?.toggleMarkedItem(item.germplasmId)"
+        :icon="baseTable?.isMarked(item.germplasmId) ? mdiBookmarkCheck : mdiBookmarkOutline"
+        variant="tonal"
+        size="default"
+        rounded="xl"
+      >
+        <template #menu>
+          <v-list slim>
+            <v-list-item :title="$t('tableContextMarkEntityParents')" :prepend-icon="mdiChevronUpBox" @click="markEntityParents(true, item)" />
+            <v-list-item :title="$t('tableContextUnmarkEntityParents')" :prepend-icon="mdiChevronUpBoxOutline" @click="markEntityParents(false, item)" />
+            <v-list-item :title="$t('tableContextMarkEntityChildren')" :prepend-icon="mdiChevronDownBox" @click="markEntityChildren(true, item)" />
+            <v-list-item :title="$t('tableContextUnmarkEntityChildren')" :prepend-icon="mdiChevronDownBoxOutline" @click="markEntityChildren(false, item)" />
+          </v-list>
         </template>
-
-        <v-list slim>
-          <v-list-item :title="$t('tableContextMarkEntityParents')" :prepend-icon="mdiChevronUpBox" @click="markEntityParents(true, item)" />
-          <v-list-item :title="$t('tableContextUnmarkEntityParents')" :prepend-icon="mdiChevronUpBoxOutline" @click="markEntityParents(false, item)" />
-          <v-list-item :title="$t('tableContextMarkEntityChildren')" :prepend-icon="mdiChevronDownBox" @click="markEntityChildren(true, item)" />
-          <v-list-item :title="$t('tableContextUnmarkEntityChildren')" :prepend-icon="mdiChevronDownBoxOutline" @click="markEntityChildren(false, item)" />
-        </v-list>
-      </v-menu>
+      </VSplitBtn>
     </template>
 
     <template #item.germplasmId="{ item }">
@@ -191,7 +186,13 @@
 
     <template #bottom-sheet-content>
       <InstitutionTable :get-data="getInstitutionData" v-if="selectedGermplasm && bottomSheetType === 'institutions'" />
-      <Images class="mb-5" :filter-on="imageFilter" header-icon-color="primary" v-if="selectedGermplasm && bottomSheetType === 'images'" />
+      <Images
+        class="mb-5"
+        reference-table="germinatebase"
+        :foreign-id="selectedGermplasm.germplasmId"
+        header-icon-color="primary"
+        v-if="selectedGermplasm && bottomSheetType === 'images'"
+      />
     </template>
   </BaseTable>
 </template>
@@ -211,9 +212,11 @@
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
   import { columns } from '@/plugins/util/table-columns'
   import type { DataTableSortItem } from 'vuetify'
-  import { mdiCamera, mdiHelpCircle, mdiMapMarker, mdiPageNext, mdiSprout, mdiChevronDownBox, mdiChevronDownBoxOutline, mdiChevronUpBox, mdiChevronUpBoxOutline, mdiChevronDown } from '@mdi/js'
+  import { mdiCamera, mdiHelpCircle, mdiMapMarker, mdiPageNext, mdiSprout, mdiChevronDownBox, mdiChevronDownBoxOutline, mdiChevronUpBox, mdiChevronUpBoxOutline, mdiChevronDown, mdiBookmarkCheck, mdiBookmarkOutline } from '@mdi/js'
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
   import { apiPostEntityIds } from '@/plugins/api/germplasm'
+
+  import { VSplitBtn } from 'vuetify/labs/VSplitBtn'
 
   import emitter from 'tiny-emitter/instance'
   import { createColorGradient, getPrimaryColor, getVuetifyColor } from '@/plugins/util/colors'
@@ -241,23 +244,6 @@
   const bottomSheetType = ref<'images' | 'institutions'>()
 
   const pdciGradient = ref<string[]>(createColorGradient(getVuetifyColor('muted'), getPrimaryColor(), 10))
-
-  const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
-    return [{
-      filters: [{
-        column: 'imageForeignId',
-        comparator: FilterComparator.equals,
-        values: [`${selectedGermplasm.value?.germplasmId}`],
-        canBeChanged: false,
-      }, {
-        column: 'imageRefTable',
-        comparator: FilterComparator.equals,
-        values: ['germinatebase'],
-        canBeChanged: false,
-      }],
-      operator: FilterOperator.and,
-    }]
-  })
 
   // @ts-ignore
   const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {

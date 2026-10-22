@@ -19,8 +19,8 @@ export function apiGetImageTagsForId (referenceTable: string, foreignId: number,
   return authAxios({ url: `imagetag/${referenceTable}/${foreignId}`, success: onSuccess, error: onError })
 }
 
-export function apiPutImageTags (imageId: number, data: string[], onSuccess?: GerminateResponseHandler<void>, onError?: ErrorHandler) {
-  return authAxios({ url: `image/${imageId}/tag`, method: 'PUT', data, success: onSuccess, error: onError })
+export function apiPatchImageTags (imageId: number, data: ImageTag[], onSuccess?: GerminateResponseHandler<void>, onError?: ErrorHandler) {
+  return authAxios({ url: `image/${imageId}/tag`, method: 'PATCH', data, success: onSuccess, error: onError })
 }
 
 export function apiDeleteImage (imageId: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
@@ -41,4 +41,8 @@ export function apiPatchImage (image: ViewTableImages, onSuccess?: GerminateResp
 
 export function apiPostTemplateImage (formData: FormData, onSuccess?: GerminateResponseHandler<string>, onError?: ErrorHandler) {
   return authForm({ url: 'image/upload/template', formData, success: onSuccess, error: onError })
+}
+
+export function apiPostReferenceImage (referenceTable: string, foreignId: number, formData: FormData, onSuccess?: GerminateResponseHandler<number>, onError?: ErrorHandler, onProgress?: (percent: number) => void) {
+  return authForm({ url: `image/upload/${referenceTable}/${foreignId}`, formData, success: onSuccess, error: onError, onProgress })
 }

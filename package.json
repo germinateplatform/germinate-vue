@@ -53,7 +53,7 @@
     "vue-i18n": "^11.1.11",
     "vue-router": "^5.1.0",
     "vue3-markdown-it": "^1.0.10",
-    "vuetify": "^4.1.2",
+    "vuetify": "^4.3.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

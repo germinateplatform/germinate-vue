@@ -424,6 +424,13 @@ export const useCoreStore = defineStore('germinate', {
     clearMarkedIds (type: string) {
       this.userStates[this.storeUserId].markedIds[type] = []
     },
+    clearAllMarkedIds () {
+      this.userStates[this.storeUserId].markedIds = {
+        germplasm: [],
+        markers: [],
+        locations: [],
+      }
+    },
     setActiveStory (newActiveStory: IndexedViewTableStoriesEnriched | undefined) {
       this.userStates[this.storeUserId].activeStory = newActiveStory
     },

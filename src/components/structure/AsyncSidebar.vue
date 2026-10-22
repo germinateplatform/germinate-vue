@@ -12,7 +12,7 @@
       </template>
     </v-list-item>
     <v-divider />
-    <v-tabs v-model="activeTab" color="primary" grow>
+    <v-tabs v-model="activeTab" color="primary" grow class="async-tabs">
       <v-tab value="download" :prepend-icon="mdiDownload" variant="tonal" :text="$t('buttonDownload')">
         <template #append><v-chip size="small" :text="exportJobs.length" /></template>
       </v-tab>
@@ -541,3 +541,11 @@
     }
   })
 </script>
+
+<style scoped>
+/* Hacky workaround to hide these buttons that shouldn't even be shown in the first place. Weird Vuetify bug. */
+.async-tabs :deep(.v-slide-group__prev),
+.async-tabs :deep(.v-slide-group__next) {
+  display: none;
+}
+</style>

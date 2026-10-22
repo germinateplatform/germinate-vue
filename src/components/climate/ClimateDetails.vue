@@ -1,6 +1,12 @@
 <template>
   <div v-if="localClimate">
-    <Images class="mt-3" :filter-on="imageFilter" @data-changed="setImageVisibility" v-if="imagesVisible" />
+    <Images
+      class="mt-3"
+      :foreign-id="localClimate.climateId"
+      reference-table="climates"
+      @data-changed="setImageVisibility"
+      v-if="imagesVisible"
+    />
 
     <ClimateDataTable
       class="mt-5"
@@ -53,6 +59,8 @@
     climateId?: number
   }>()
 
+  const store = useCoreStore()
+
   const localClimate = ref<ViewTableClimates>()
   const datasets = ref<ViewTableDatasets[]>()
   // TODO: Fetch
@@ -60,23 +68,6 @@
   const climateData = shallowRef<ViewTableClimateDataWithGroups[]>()
 
   const cdStore = useClimateDataStore()
-
-  const imageFilter: ComputedRef<FilterGroup[]> = computed(() => {
-    return [{
-      filters: [{
-        column: 'imageForeignId',
-        comparator: FilterComparator.equals,
-        values: [`${localClimate.value?.climateId}`],
-        canBeChanged: false,
-      }, {
-        column: 'imageRefTable',
-        comparator: FilterComparator.equals,
-        values: ['climates'],
-        canBeChanged: false,
-      }],
-      operator: FilterOperator.and,
-    }]
-  })
 
   function update () {
     nextTick(() => {
@@ -86,7 +77,7 @@
   }
 
   function setImageVisibility (request: PaginatedRequest, result: PaginatedResult<ViewTableImages[]>) {
-    imagesVisible.value = result !== undefined && result.count !== undefined && result.count > 0
+    imagesVisible.value = store.storeUserIsDataCurator || (result !== undefined && result.count !== undefined && result.count > 0)
   }
 
   function plot () {

@@ -799,6 +799,12 @@ const datasetColumns: ExtendedDataTableHeader[] = [
     sortable: false,
     title: 'tableColumnDatasetFileresources',
   }, {
+    key: 'createdOn',
+    dataType: 'date',
+    title: 'tableColumnDatasetCreatedOn',
+    // @ts-ignore
+    value: (value: ViewTableDatasets) => value.createdOn ? new Date(value.createdOn).toLocaleDateString() : undefined,
+  }, {
     key: 'datasetDetails',
     dataType: undefined,
     sortable: false,
@@ -809,12 +815,6 @@ const datasetColumns: ExtendedDataTableHeader[] = [
     sortable: false,
     visibleInTable: false,
     title: 'tableColumnDatasetExternal',
-  }, {
-    key: 'createdOn',
-    dataType: 'date',
-    title: 'tableColumnDatasetCreatedOn',
-    // @ts-ignore
-    value: (value: ViewTableDatasets) => value.createdOn ? new Date(value.createdOn).toLocaleDateString() : undefined,
   },
 ]
 
