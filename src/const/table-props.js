@@ -75,6 +75,11 @@ export default {
     storeUrlParameters: {
       type: Boolean,
       default: true
+    },
+    // Own text for the badge of a filter above the table: (filter) => text, or null for the usual one
+    filterLabel: {
+      type: Function,
+      default: null
     }
   }
 }

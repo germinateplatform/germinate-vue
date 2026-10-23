@@ -1,23 +1,34 @@
 <template>
-  <div class="home">
+  <!-- "custom-page" brings the shared colour tokens used by shared components such as RecentlyViewedPanel -->
+  <div class="custom-page home">
     <!-- Hero -->
     <section class="home-hero">
       <div class="home-eyebrow"><span class="home-eyebrow-dot" /> Research data platform</div>
       <h1 class="home-title">Explore Crop Datasets</h1>
       <p class="home-lead">
-        Browse and search experimental data, accessions, traits, and publications across
+        Browse and search experimental data, germplasms, traits, and publications across
         five flagship crops. Built for plant researchers and breeders.
       </p>
     </section>
 
-    <!-- Flagship crops -->
-    <section class="home-section">
+    <!-- Flagship crops: collapsed while the search below is used, the chevron opens or closes them -->
+    <section :class="['home-section', 'home-crops-section', { collapsed: !open.crops }]">
       <div class="home-section-header">
         <h2 class="home-section-title">Flagship crops</h2>
-        <router-link :to="viewAllCropsLink" class="home-link">View all crops <MdiIcon :path="icons.arrow" /></router-link>
+        <button type="button" class="home-panel-toggle" :aria-expanded="open.crops" @click="toggle('crops')" :aria-label="(open.crops ? 'Hide ' : 'Show ') + 'flagship crops'">
+          <span :class="['home-panel-chevron', { closed: !open.crops }]"><MdiIcon :path="icons.chevronUp" :size="26" /></span>
+        </button>
       </div>
 
-      <div class="home-crops">
+      <!-- Slides up and fades out when collapsing, the other way round when opening -->
+      <transition name="home-collapse"
+                  @before-enter="collapseBeforeEnter"
+                  @enter="collapseEnter"
+                  @after-enter="collapseAfter"
+                  @before-leave="collapseBeforeLeave"
+                  @leave="collapseLeave"
+                  @after-leave="collapseAfter">
+      <div class="home-crops" v-show="open.crops">
         <div v-for="crop in crops" :key="crop.key" :class="['home-crop-card', { disabled: isCropDisabled(crop) }]" :aria-disabled="isCropDisabled(crop)">
           <div :class="['home-crop-icon', `home-crop-${crop.key}`]"><MdiIcon :path="crop.icon" :size="26" /></div>
           <div class="home-crop-name">{{ crop.name }}</div>
@@ -26,104 +37,126 @@
           <span v-else :class="['home-crop-link', { disabled: cropGroups !== null }]">Explore <MdiIcon :path="icons.arrow" /></span>
         </div>
       </div>
+      </transition>
     </section>
 
     <!-- Search -->
-    <section class="home-search-section">
-      <form class="home-search" @submit.prevent="onSearch">
-        <span class="home-search-icon"><MdiIcon :path="icons.search" :size="20" /></span>
-        <input type="search" class="home-search-input" v-model="searchTerm" aria-label="Search term" placeholder="Search datasets, accessions, traits, locations, pedigrees..." />
-        <div class="home-search-select">
-          <select v-model="searchScope" aria-label="Search scope">
-            <option v-for="scope in searchScopes" :key="'search-scope-option-' + scope.value" :value="scope.value">{{ scope.text }}</option>
-          </select>
-          <MdiIcon :path="icons.chevronDown" :size="18" />
-        </div>
-        <button type="submit" class="home-search-button" :disabled="!searchTerm || !searchTerm.trim()"><MdiIcon :path="icons.search" :size="18" /> Search</button>
-      </form>
-
-      <div class="home-chips">
-        <span class="home-chips-label">Search within:</span>
-        <button type="button"
-                v-for="scope in searchScopes"
-                :key="'search-scope-chip-' + scope.value"
-                :class="['home-chip', { active: searchScope === scope.value }]"
-                :aria-pressed="searchScope === scope.value"
-                @click="searchScope = scope.value">
-          {{ scope.text }}
-        </button>
-      </div>
-    </section>
+    <!-- Shared with the Search page (src/components/search/SearchModule.vue). A click in the search field collapses the
+         flagship crops: only their chevron opens them again. -->
+    <SearchModule class="home-search-module" @field-click="open.crops = false" />
 
     <!-- Stats -->
-    <section class="home-stats">
-      <div v-for="total in totalTypes" :key="'stat-' + total.key" :class="['home-stat', { disabled: isTotalEmpty(total.key) }]" :aria-disabled="isTotalEmpty(total.key)">
-        <span class="home-stat-icon"><MdiIcon :path="total.icon" :size="20" /></span>
-        <div>
-          <div class="home-stat-value">{{ getTotalText(total.key) }}</div>
-          <div class="home-stat-label">{{ pluralise(totals[total.key], total.label) }}</div>
+    <!-- Statistics carousel: 5 visible on wide screens, the sides fade where more are hidden -->
+    <section :class="['home-stats', { 'has-prev': canScrollStatsBack, 'has-next': canScrollStatsForward, 'has-nav': statsMaxIndex > 0 }]"
+             :style="{ '--home-stats-visible': statsVisible }"
+             aria-roledescription="carousel"
+             aria-label="Statistics">
+      <button type="button" class="home-stats-nav" :class="{ hidden: !canScrollStatsBack }" :disabled="!canScrollStatsBack" @click="scrollStats(-1)" aria-label="Previous statistics">
+        <MdiIcon :path="icons.chevronLeft" :size="24" />
+      </button>
+      <div class="home-stats-viewport">
+        <div class="home-stats-track" :style="{ transform: `translateX(-${statsIndex * (100 / statsVisible)}%)` }">
+          <div v-for="(total, index) in statTypes"
+               :key="'stat-' + total.key"
+               :class="['home-stat', { disabled: isTotalEmpty(total.key) }]"
+               :aria-disabled="isTotalEmpty(total.key)"
+               :aria-hidden="index < statsIndex || index >= statsIndex + statsVisible ? 'true' : null">
+            <span class="home-stat-icon"><MdiIcon :path="total.icon" :size="20" /></span>
+            <div class="home-stat-text">
+              <div class="home-stat-value">{{ getTotalText(total.key) }}</div>
+              <div class="home-stat-label">{{ pluralise(totals[total.key], total.label) }}</div>
+            </div>
+          </div>
         </div>
       </div>
+      <button type="button" class="home-stats-nav" :class="{ hidden: !canScrollStatsForward }" :disabled="!canScrollStatsForward" @click="scrollStats(1)" aria-label="Next statistics">
+        <MdiIcon :path="icons.chevronRight" :size="24" />
+      </button>
     </section>
 
-    <!-- Recent publications and latest news + Quick access -->
+    <!-- Publications and announcements + Quick access -->
     <section :class="['home-panels', { 'home-panels-single': !showMainColumn }]">
       <div class="home-main" v-if="showMainColumn">
         <!-- Hidden when "Publications" is not a visible dashboard section in the Germinate settings, or when there are none -->
-        <div class="home-panel" v-if="showPublicationPanel">
+        <div :class="['home-panel', { collapsed: !open.publications }]" v-if="showPublicationPanel">
           <div class="home-panel-header">
-            <h3 class="home-panel-title">Recent publications</h3>
-            <router-link :to="{ name: Pages.publications }"
-                         :class="['home-link', 'home-link-small', { disabled: isTotalEmpty('publications') }]"
-                         :tabindex="isTotalEmpty('publications') ? -1 : null">View all <MdiIcon :path="icons.arrow" /></router-link>
+            <h3 class="home-panel-title">Publications</h3>
+            <div class="home-panel-tools">
+              <!-- 5 at a time, paging only while the list is open -->
+              <div class="home-pager" v-if="publicationPageCount > 1 && open.publications">
+                <button type="button" class="home-pager-button" :disabled="publicationPage <= 1" @click="loadRecentPublications(publicationPage - 1)" aria-label="Previous publications">
+                  <MdiIcon :path="icons.chevronLeft" :size="22" />
+                </button>
+                <button type="button" class="home-pager-button" :disabled="publicationPage >= publicationPageCount" @click="loadRecentPublications(publicationPage + 1)" aria-label="Next publications">
+                  <MdiIcon :path="icons.chevronRight" :size="22" />
+                </button>
+              </div>
+              <button type="button" class="home-panel-toggle" :aria-expanded="open.publications" @click="toggle('publications')" :aria-label="(open.publications ? 'Hide ' : 'Show ') + 'publications'">
+                <span :class="['home-panel-chevron', { closed: !open.publications }]"><MdiIcon :path="icons.chevronUp" :size="22" /></span>
+              </button>
+            </div>
           </div>
 
-          <div class="home-recent-item" v-for="publication in recentPublications" :key="'recent-publication-' + publication.id">
-            <!-- Opens the DOI in a new window -->
-            <a v-if="publication.url" :href="publication.url" target="_blank" rel="noopener noreferrer" class="home-recent-icon home-recent-link" :title="publication.url">
-              <MdiIcon :path="icons.openInNew" :size="16" />
-            </a>
-            <span v-else class="home-recent-icon home-recent-link disabled"><MdiIcon :path="icons.openInNew" :size="16" /></span>
-            <div class="home-recent-body">
-              <div class="home-recent-title" :title="publication.title">{{ publication.title }}</div>
-              <div class="home-recent-meta" v-if="publication.journal">{{ publication.journal }}</div>
-              <!-- Takes the publication off the home page: removes its links to the database and to accessions -->
-              <b-button v-if="canAddContent" variant="link" class="home-recent-delete text-danger" @click="deleteRecentPublication(publication)">{{ $t('buttonDelete') }}</b-button>
-            </div>
-            <div class="home-recent-side">
-              <span class="home-badge home-badge-source">{{ publication.source }}</span>
-              <span class="home-recent-date">{{ publication.date }}</span>
+          <div v-show="open.publications">
+            <div class="home-recent-item" v-for="publication in recentPublications" :key="'recent-publication-' + publication.id">
+              <!-- Opens the DOI in a new window. A publication with a DOI has the DOI icon on top, like a small notification badge. -->
+              <a v-if="publication.url" :href="publication.url" target="_blank" rel="noopener noreferrer" class="home-recent-icon home-recent-link" :title="publication.url">
+                <MdiIcon :path="icons.openInNew" :size="16" />
+                <span class="home-recent-doi" v-if="publication.hasDoi" aria-hidden="true"><i class="ai ai-doi" /></span>
+              </a>
+              <span v-else class="home-recent-icon home-recent-link disabled"><MdiIcon :path="icons.openInNew" :size="16" /></span>
+              <div class="home-recent-body">
+                <div class="home-recent-title" :title="publication.title">{{ publication.title }}</div>
+                <div class="home-recent-meta" v-if="publication.journal">{{ publication.journal }}</div>
+                <!-- Takes the publication off the home page: removes its links to the database and to accessions -->
+                <b-button v-if="canAddContent" variant="link" class="home-recent-delete text-danger" @click="deleteRecentPublication(publication)">{{ $t('buttonDelete') }}</b-button>
+              </div>
+              <div class="home-recent-side">
+                <!-- Crossref: with its icon, in the size of the text -->
+                <span class="home-badge home-badge-source">
+                  <i class="ai ai-crossref home-badge-icon" v-if="isCrossref(publication.source)" aria-hidden="true" />{{ publication.source }}
+                </span>
+                <span class="home-recent-date">{{ publication.date }}</span>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Hidden when "News" is not a visible dashboard section in the Germinate settings, or when there are none. "Related project" news are not part of it. -->
-        <div class="home-panel" v-if="showNewsPanel">
+        <div :class="['home-panel', { collapsed: !open.news }]" v-if="showNewsPanel">
           <div class="home-panel-header">
             <div class="home-panel-heading">
-              <h3 class="home-panel-title">Latest news</h3>
+              <h3 class="home-panel-title">Announcements</h3>
               <span class="home-count-badge" :title="newsTotal + ' ' + pluralise(newsTotal, ['news item', 'news items'])">{{ newsTotal.toLocaleString() }}</span>
             </div>
-            <div class="home-pager" v-if="newsPageCount > 1">
-              <button type="button" class="home-pager-button" :disabled="newsPage <= 1" @click="loadNews(newsPage - 1)" aria-label="Previous news">
-                <MdiIcon :path="icons.chevronLeft" :size="22" />
-              </button>
-              <button type="button" class="home-pager-button" :disabled="newsPage >= newsPageCount" @click="loadNews(newsPage + 1)" aria-label="Next news">
-                <MdiIcon :path="icons.chevronRight" :size="22" />
+            <div class="home-panel-tools">
+              <!-- Paging only while the list is open -->
+              <div class="home-pager" v-if="newsPageCount > 1 && open.news">
+                <button type="button" class="home-pager-button" :disabled="newsPage <= 1" @click="loadNews(newsPage - 1)" aria-label="Previous news">
+                  <MdiIcon :path="icons.chevronLeft" :size="22" />
+                </button>
+                <button type="button" class="home-pager-button" :disabled="newsPage >= newsPageCount" @click="loadNews(newsPage + 1)" aria-label="Next news">
+                  <MdiIcon :path="icons.chevronRight" :size="22" />
+                </button>
+              </div>
+              <button type="button" class="home-panel-toggle" :aria-expanded="open.news" @click="toggle('news')" :aria-label="(open.news ? 'Hide ' : 'Show ') + 'news'">
+                <span :class="['home-panel-chevron', { closed: !open.news }]"><MdiIcon :path="icons.chevronUp" :size="22" /></span>
               </button>
             </div>
           </div>
 
-          <button type="button" class="home-recent-item home-news-item" v-for="newsItem in news" :key="'news-' + newsItem.newsId" @click="showNewsDetails(newsItem)">
-            <span :class="['home-recent-icon', 'home-recent-link', 'home-news-icon-' + getNewsType(newsItem).key]"><MdiIcon :path="getNewsType(newsItem).icon" :size="16" /></span>
-            <div class="home-recent-body">
-              <div class="home-news-head">
-                <div class="home-recent-title" :title="newsItem.newsTitle">{{ newsItem.newsTitle }}</div>
-                <span class="home-recent-date home-news-date" v-if="newsItem.createdOn" :title="formatDate(newsItem.createdOn)"><MdiIcon :path="icons.calendarClock" :size="13" /> {{ formatTimeAgo(newsItem.createdOn) }}</span>
+          <div v-show="open.news">
+            <button type="button" class="home-recent-item home-news-item" v-for="newsItem in news" :key="'news-' + newsItem.newsId" @click="showNewsDetails(newsItem)">
+              <span :class="['home-recent-icon', 'home-recent-link', 'home-news-icon-' + getNewsType(newsItem).key]"><MdiIcon :path="getNewsType(newsItem).icon" :size="16" /></span>
+              <div class="home-recent-body">
+                <div class="home-news-head">
+                  <div class="home-recent-title" :title="newsItem.newsTitle">{{ newsItem.newsTitle }}</div>
+                  <span class="home-recent-date home-news-date" v-if="newsItem.createdOn" :title="formatDate(newsItem.createdOn)"><MdiIcon :path="icons.calendarClock" :size="13" /> {{ formatTimeAgo(newsItem.createdOn) }}</span>
+                </div>
+                <div class="home-recent-meta"><span :class="['home-badge', 'home-news-badge-' + getNewsType(newsItem).key]">{{ $t(getNewsType(newsItem).i18n) }}</span></div>
               </div>
-              <div class="home-recent-meta"><span :class="['home-badge', 'home-news-badge-' + getNewsType(newsItem).key]">{{ $t(getNewsType(newsItem).i18n) }}</span></div>
-            </div>
-          </button>
+            </button>
+          </div>
 
           <!-- News details, same as on the original home page -->
           <b-modal ref="newsModal" :title="selectedNews ? selectedNews.newsTitle : ''" scrollable size="xl" ok-only :ok-title="$t('buttonClose')">
@@ -139,23 +172,33 @@
       </div>
 
       <div class="home-side">
-        <div class="home-panel">
+        <div :class="['home-panel', { collapsed: !open.quick }]">
           <div class="home-panel-header">
             <h3 class="home-panel-title">Quick access</h3>
+            <div class="home-panel-tools">
+              <button type="button" class="home-panel-toggle" :aria-expanded="open.quick" @click="toggle('quick')" :aria-label="(open.quick ? 'Hide ' : 'Show ') + 'quick access'">
+                <span :class="['home-panel-chevron', { closed: !open.quick }]"><MdiIcon :path="icons.chevronUp" :size="22" /></span>
+              </button>
+            </div>
           </div>
 
-          <router-link v-for="total in totalTypes"
-                       :key="'quick-' + total.key"
-                       :to="{ name: total.quick.page }"
-                       :class="['home-quick-item', { disabled: isTotalEmpty(total.key) }]"
-                       :aria-disabled="isTotalEmpty(total.key)"
-                       :tabindex="isTotalEmpty(total.key) ? -1 : null">
-            <span class="home-stat-icon"><MdiIcon :path="total.quick.icon || total.icon" :size="18" /></span>
-            <span class="home-quick-label">{{ total.quick.label }}</span>
-            <span class="home-quick-count">{{ getTotalText(total.key) }}<template v-if="total.quick.unit && totals[total.key] !== null"> {{ pluralise(totals[total.key], total.quick.unit) }}</template></span>
-            <span class="home-quick-chevron"><MdiIcon :path="icons.chevronRight" :size="20" /></span>
-          </router-link>
+          <div v-show="open.quick">
+            <router-link v-for="total in quickTypes"
+                         :key="'quick-' + total.key"
+                         :to="{ name: total.quick.page }"
+                         :class="['home-quick-item', { disabled: isTotalEmpty(total.key) }]"
+                         :aria-disabled="isTotalEmpty(total.key)"
+                         :tabindex="isTotalEmpty(total.key) ? -1 : null">
+              <span class="home-stat-icon"><MdiIcon :path="total.quick.icon || total.icon" :size="18" /></span>
+              <span class="home-quick-label">{{ total.quick.label }}</span>
+              <span class="home-quick-count">{{ getTotalText(total.key) }}<template v-if="total.quick.unit && totals[total.key] !== null"> {{ pluralise(totals[total.key], total.quick.unit) }}</template></span>
+              <span class="home-quick-chevron"><MdiIcon :path="icons.chevronRight" :size="20" /></span>
+            </router-link>
+          </div>
         </div>
+
+        <!-- Recently viewed germplasm, same as on the passport page. Hidden when there are none. -->
+        <RecentlyViewedPanel />
 
         <!-- Add content. Only for data curators and above, same as the add buttons on the original home page. -->
         <div class="home-panel" v-if="canAddContent">
@@ -194,8 +237,9 @@ import MdiIcon from '@/components/icons/MdiIcon'
 import AddPublicationModal from '@/components/modals/AddPublicationModal'
 import AddStoryModal from '@/components/modals/AddStoryModal'
 import AddNewsModal from '@/components/modals/AddNewsModal'
+import RecentlyViewedPanel from '@/components/germplasm/RecentlyViewedPanel'
 
-import { mdiArrowRight, mdiMagnify, mdiChevronDown, mdiChevronRight, mdiDatabase, mdiSprout, mdiMapMarkerOutline, mdiTagOutline, mdiBookOpenVariant, mdiMapOutline, mdiWeatherSnowyRainy, mdiCommentPlusOutline, mdiNewBox, mdiOpenInNew, mdiChevronLeft, mdiCalendarClock, mdiDelete, mdiRefresh, mdiNewspaper } from '@mdi/js'
+import { mdiArrowRight, mdiMagnify, mdiChevronDown, mdiChevronRight, mdiDatabase, mdiSprout, mdiMapMarkerOutline, mdiTagOutline, mdiBookOpenVariant, mdiMapOutline, mdiWeatherSnowyRainy, mdiCommentPlusOutline, mdiNewBox, mdiOpenInNew, mdiChevronLeft, mdiCalendarClock, mdiDelete, mdiRefresh, mdiNewspaper, mdiChevronUp, mdiDna, mdiCheck } from '@mdi/js'
 import { Pages } from '@/mixins/pages'
 import { FLAGSHIP_CROPS } from '@/mixins/crops'
 import { apiPostGroupTable } from '@/mixins/api/group'
@@ -205,14 +249,17 @@ import { apiPostLocationTable } from '@/mixins/api/location'
 import { apiPostDatasetTable } from '@/mixins/api/dataset'
 import { apiPostTraitTable } from '@/mixins/api/trait'
 import { apiPostClimateTable } from '@/mixins/api/climate'
+import { apiPostMarkerTable, apiPostMapsTable } from '@/mixins/api/genotype'
 import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
 import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
+import SearchModule from '@/components/search/SearchModule'
 
 const emitter = require('tiny-emitter/instance')
 
 const NEWS_PER_PAGE = 5
+const PUBLICATIONS_PER_PAGE = 5
 
-// News types shown in "Latest news". "Projects" (related projects) are handled separately.
+// News types shown in "Announcements". "Projects" (related projects) are handled separately.
 const NEWS_TYPES = {
   Data: { key: 'data', icon: mdiDatabase, i18n: 'widgetNewsTypeDataChanges' },
   Updates: { key: 'updates', icon: mdiRefresh, i18n: 'widgetNewsTypeGeneralUpdates' },
@@ -271,6 +318,7 @@ const toRecentPublication = publication => {
     // Accessions the publication is linked to, removed together with it from the home page
     germplasmIds: publication.germplasmIds || [],
     title: getCslText(cache.title) || doi,
+    hasDoi: !!doi,
     journal: getCslText(cache['container-title']),
     source: cache.source || 'N/A',
     url: url,
@@ -285,6 +333,22 @@ const cropGroupFilter = [{
   comparator: 'equals',
   values: ['germinatebase']
 }]
+
+// Short counts: 999, 1K, 1.1K, 12.4K, 1.2M, 9.9B, then "+9.9B". Values are cut (not rounded) to one decimal,
+// so 1,020 is 1K and 1,999 is 1.9K.
+const COUNT_UNITS = [{ value: 1e9, suffix: 'B' }, { value: 1e6, suffix: 'M' }, { value: 1e3, suffix: 'K' }]
+const formatCompactCount = count => {
+  if (count < 1000) {
+    return `${count}`
+  }
+  if (count >= 1e10) {
+    return '+9.9B'
+  }
+
+  const unit = COUNT_UNITS.find(u => count >= u.value)
+  const tenths = Math.floor(count / (unit.value / 10))
+  return `${tenths % 10 === 0 ? tenths / 10 : (tenths / 10).toFixed(1)}${unit.suffix}`
+}
 
 // Asks a table endpoint for a single row and resolves with the total number of rows, which comes back in "count"
 const fetchTotal = (apiCall, filter = null) => new Promise(resolve => {
@@ -318,6 +382,8 @@ const isExternalFilter = isExternal => [{
 
 // Totals shown in the statistics and in the quick access panel, in display order.
 // "label" and "quick.unit" are [singular, plural]. "quick.icon" overrides the icon in the quick access panel.
+// Without "quick" a total is not in the quick access panel, with "statistic: false" not in the statistics. With
+// "onlyWhenPresent" its statistic and quick access entry only show above zero.
 const TOTALS = [{
   key: 'datasets',
   icon: mdiDatabase,
@@ -329,8 +395,8 @@ const TOTALS = [{
 }, {
   key: 'accessions',
   icon: mdiSprout,
-  label: ['Accession', 'Accessions'],
-  quick: { label: 'Accession library', page: Pages.germplasm },
+  label: ['Germplasm', 'Germplasms'],
+  quick: { label: 'Germplasm library', page: Pages.germplasm },
   load: () => fetchTotal(apiPostGermplasmTable)
 }, {
   key: 'locations',
@@ -351,6 +417,22 @@ const TOTALS = [{
   quick: { label: 'Climate data', page: Pages.climates },
   load: () => fetchTotal(apiPostClimateTable)
 }, {
+  // Quick access only (no statistic), and only shown when there are maps
+  key: 'maps',
+  icon: mdiDna,
+  label: ['Genotypic map', 'Genotypic maps'],
+  statistic: false,
+  onlyWhenPresent: true,
+  quick: { label: 'Genotypic maps', page: Pages.maps },
+  load: () => fetchTotal(apiPostMapsTable)
+}, {
+  // Statistics only (no quick access entry), and only shown when there are markers
+  key: 'markers',
+  icon: mdiDna,
+  label: ['Genotypic marker', 'Genotypic markers'],
+  onlyWhenPresent: true,
+  load: () => fetchTotal(apiPostMarkerTable)
+}, {
   key: 'publications',
   icon: mdiBookOpenVariant,
   label: ['Publication', 'Publications'],
@@ -364,7 +446,9 @@ export default {
     MdiIcon,
     AddPublicationModal,
     AddStoryModal,
-    AddNewsModal
+    AddNewsModal,
+    RecentlyViewedPanel,
+    SearchModule
   },
   data: function () {
     return {
@@ -374,29 +458,34 @@ export default {
       cropGroups: null,
       // Latest publications for the "Recent publications" panel. Null until loaded.
       recentPublications: null,
-      // Current page of "Latest news". Null until loaded.
+      // Current page of "Announcements". Null until loaded.
       news: null,
       newsTotal: 0,
       newsPage: 1,
+      // Publications: the page shown and how many there are
+      publicationPage: 1,
+      publicationTotal: 0,
       selectedNews: null,
       Pages,
       totalTypes: TOTALS,
       // Loaded totals, keyed by TOTALS key. Null until loaded.
       totals: TOTALS.reduce((result, total) => ({ ...result, [total.key]: null }), {}),
-      searchTerm: null,
-      // Where to search. Shared by the dropdown and the "Search within" chips so both always show the same selection.
-      // Values are the "searchType" of the Germinate search page, "all" searches everything.
-      searchScope: 'all',
-      searchScopes: [
-        { value: 'all', text: 'All' },
-        { value: 'datasets', text: 'Datasets' },
-        { value: 'germplasm', text: 'Accessions' },
-        { value: 'trials', text: 'Traits' },
-        { value: 'locations', text: 'Locations' },
-        { value: 'pedigrees', text: 'Pedigrees' }
-      ],
+      // Statistics carousel: first visible statistic and how many fit
+      statsIndex: 0,
+      statsVisible: 5,
+      // Which blocks are expanded
+      open: {
+        // Flagship crops: closed once the search is used
+        crops: true,
+        publications: true,
+        news: true,
+        quick: true
+      },
       // Icon paths used directly in the template
       icons: {
+        chevronUp: mdiChevronUp,
+        reload: mdiRefresh,
+        check: mdiCheck,
         arrow: mdiArrowRight,
         search: mdiMagnify,
         chevronDown: mdiChevronDown,
@@ -412,6 +501,23 @@ export default {
     }
   },
   computed: {
+    // Statistics shown in the carousel
+    statTypes: function () {
+      return this.totalTypes.filter(t => t.statistic !== false && (!t.onlyWhenPresent || this.totals[t.key] > 0))
+    },
+    // Totals with an entry in the quick access panel ("onlyWhenPresent" ones only above zero)
+    quickTypes: function () {
+      return this.totalTypes.filter(t => t.quick && (!t.onlyWhenPresent || this.totals[t.key] > 0))
+    },
+    statsMaxIndex: function () {
+      return Math.max(0, this.statTypes.length - this.statsVisible)
+    },
+    canScrollStatsBack: function () {
+      return this.statsIndex > 0
+    },
+    canScrollStatsForward: function () {
+      return this.statsIndex < this.statsMaxIndex
+    },
     ...mapGetters([
       'storeLocale',
       'storeServerSettings',
@@ -441,6 +547,9 @@ export default {
     showMainColumn: function () {
       return this.showPublicationPanel || this.showNewsPanel || this.mainColumnLoading
     },
+    publicationPageCount: function () {
+      return Math.ceil(this.publicationTotal / PUBLICATIONS_PER_PAGE)
+    },
     newsPageCount: function () {
       return Math.ceil(this.newsTotal / NEWS_PER_PAGE)
     },
@@ -450,15 +559,6 @@ export default {
     // Adding publications, data stories and news requires at least data curator rights
     canAddContent: function () {
       return !!this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)
-    },
-    // Groups page filtered to germplasm groups, i.e. the crops
-    viewAllCropsLink: function () {
-      return {
-        name: Pages.groups,
-        query: {
-          'groups-filter': JSON.stringify(cropGroupFilter)
-        }
-      }
     }
   },
   watch: {
@@ -475,6 +575,36 @@ export default {
     }
   },
   methods: {
+    // 5 statistics on wide screens, fewer on smaller ones
+    updateStatsVisible: function () {
+      const width = window.innerWidth
+      this.statsVisible = width >= 1200 ? 5 : (width >= 768 ? 3 : (width >= 480 ? 2 : 1))
+      this.statsIndex = Math.min(this.statsIndex, this.statsMaxIndex)
+    },
+    scrollStats: function (direction) {
+      this.statsIndex = Math.max(0, Math.min(this.statsMaxIndex, this.statsIndex + direction))
+    },
+    toggle: function (block) {
+      this.open[block] = !this.open[block]
+    },
+    // Collapse transition (see .home-collapse-*): the height goes from the content's to 0 (or back), with a fade
+    collapseBeforeEnter: function (el) {
+      el.style.height = '0px'
+    },
+    collapseEnter: function (el) {
+      el.style.height = `${el.scrollHeight}px`
+    },
+    collapseBeforeLeave: function (el) {
+      el.style.height = `${el.scrollHeight}px`
+    },
+    collapseLeave: function (el) {
+      // Measured first, so the height really goes down from there
+      el.getBoundingClientRect()
+      el.style.height = '0px'
+    },
+    collapseAfter: function (el) {
+      el.style.height = ''
+    },
     // Everything is visible when the server does not restrict the dashboard sections
     isDashboardSectionVisible: function (section) {
       if (this.storeServerSettings && this.storeServerSettings.dashboardSections) {
@@ -489,7 +619,7 @@ export default {
     },
     getTotalText: function (key) {
       const count = this.totals[key]
-      return count === null ? '…' : count.toLocaleString()
+      return count === null ? '…' : formatCompactCount(count)
     },
     // Totals of zero disable their statistic and quick access entry
     isTotalEmpty: function (key) {
@@ -533,7 +663,7 @@ export default {
         return '…'
       }
 
-      return `${count.toLocaleString()} ${this.pluralise(count, ['accession', 'accessions'])}`
+      return `${count.toLocaleString()} ${this.pluralise(count, ['germplasm', 'germplasms'])}`
     },
     // Crops without accessions (or without a matching group) are disabled once the counts are loaded
     isCropDisabled: function (crop) {
@@ -602,24 +732,13 @@ export default {
         })
     },
     // Opens the Germinate search page: /search/{term}, plus ?searchType={scope} unless searching everything
-    onSearch: function () {
-      const term = this.searchTerm ? this.searchTerm.trim() : ''
-
-      if (term === '') {
-        return
-      }
-
-      this.$router.push({
-        name: Pages.searchQuery,
-        params: { searchTerm: term },
-        query: this.searchScope === 'all' ? {} : { searchType: this.searchScope }
-      })
-    },
     // Publications linked to the database, like the publications section of the original home page
-    loadRecentPublications: function () {
+    // Publications of the database, newest first, 5 per page
+    loadRecentPublications: function (page = 1) {
       const query = {
-        page: 1,
-        limit: 5,
+        page: page,
+        limit: PUBLICATIONS_PER_PAGE,
+        prevCount: -1,
         orderBy: 'createdOn',
         ascending: 0,
         filter: databasePublicationFilter
@@ -627,7 +746,18 @@ export default {
 
       apiPostPublicationsTable(query, result => {
         this.recentPublications = (result && result.data) ? result.data.map(toRecentPublication) : []
+        this.publicationTotal = (result && result.count) || 0
+        this.publicationPage = page
+
+        // The last item of the last page was deleted: go back one page
+        if (this.recentPublications.length === 0 && page > 1) {
+          this.loadRecentPublications(page - 1)
+        }
       })
+    },
+    // The source of a publication's details is Crossref
+    isCrossref: function (source) {
+      return `${source || ''}`.trim().toLowerCase() === 'crossref'
     },
     // Germinate cannot delete a publication itself, so this removes its links to the database (which takes it off this
     // list) and to accessions. Links to datasets, groups and experiments are not known here and are kept.
@@ -651,7 +781,7 @@ export default {
             apiDeletePublicationReference(publication.id, type, id, resolve, { codes: [], callback: resolve })
           }))).then(() => {
             this.loadTotal('publications')
-            this.loadRecentPublications()
+            this.loadRecentPublications(this.publicationPage)
             // The sidebar badges count publications too
             emitter.emit('update-sidebar-menu')
           })
@@ -683,7 +813,12 @@ export default {
       })
     }
   },
+  beforeDestroy: function () {
+    window.removeEventListener('resize', this.updateStatsVisible)
+  },
   mounted: function () {
+    this.updateStatsVisible()
+    window.addEventListener('resize', this.updateStatsVisible)
     this.loadCropGroups()
     this.loadTotals()
     if (this.showPublicationSection) {
@@ -695,6 +830,8 @@ export default {
   }
 }
 </script>
+
+<style src="@/assets/custom-page.css"></style>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
@@ -729,7 +866,8 @@ export default {
   --home-news-updates-bg: #e6f0fb; --home-news-updates-fg: #2c6aa8;
   --home-news-data-bg: #fdf3d6; --home-news-data-fg: #946f0c;
 
-  max-width: 1240px;
+  /* 1240px was 10 of 12 grid columns: one more column on each side (12 of 12) */
+  max-width: 1488px;
   margin: 0 auto;
   padding: 0.5rem 0 3rem;
   font-family: 'DM Sans', -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -813,6 +951,24 @@ body.dark-mode .home {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.25rem;
+}
+/* Flagship crops collapsed: only the title and the chevron */
+.home-crops-section .home-section-header {
+  transition: margin-bottom 0.35s ease;
+}
+.home-crops-section.collapsed .home-section-header {
+  margin-bottom: 0;
+}
+/* Collapsing: the crops slide up out of sight and fade, opening does the opposite */
+.home-collapse-enter-active,
+.home-collapse-leave-active {
+  overflow: hidden;
+  transition: height 0.35s ease, opacity 0.3s ease, transform 0.35s ease;
+}
+.home-collapse-enter,
+.home-collapse-leave-to {
+  opacity: 0;
+  transform: translateY(-0.75rem);
 }
 .home-section-title {
   font-size: 1.6rem;
@@ -902,125 +1058,100 @@ body.dark-mode .home {
 .home-crop-lettuce { background: var(--home-lettuce-bg); border-color: var(--home-lettuce-border); color: var(--home-lettuce-fg); }
 .home-crop-brassica { background: var(--home-brassica-bg); border-color: var(--home-brassica-border); color: var(--home-brassica-fg); }
 
-/* Search */
-.home-search-section {
-  margin-top: 2.5rem;
-}
-.home-search {
+/* Stats */
+/* Statistics carousel: arrows in their own columns left and right, so they never cover the statistics */
+.home-stats {
   display: flex;
   align-items: stretch;
-  height: 64px;
-  background: var(--home-surface);
-  border: 1px solid var(--home-border);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.home-search-icon {
-  display: flex;
-  align-items: center;
-  padding: 0 0.5rem 0 1.4rem;
-  color: var(--home-muted);
-}
-.home-search-input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  padding: 0 0.75rem;
-  font-size: 1.1rem;
-  color: var(--home-text);
-  background: transparent;
-}
-.home-search-input::placeholder {
-  color: var(--home-placeholder);
-}
-.home-search-select {
-  position: relative;
-  display: flex;
-  align-items: center;
-  border-left: 1px solid var(--home-border);
-  color: var(--home-text);
-}
-.home-search-select select {
-  appearance: none;
-  border: none;
-  outline: none;
-  background: transparent;
-  height: 100%;
-  padding: 0 3rem 0 1.5rem;
-  font-size: 0.95rem;
-  color: inherit;
-  cursor: pointer;
-}
-.home-search-select >>> .mdi-icon-wrapper {
-  position: absolute;
-  right: 1.25rem;
-  pointer-events: none;
-  color: var(--home-muted);
-}
-.home-search-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0 2rem;
-  border: none;
-  background: var(--home-button);
-  color: var(--home-on-button);
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-.home-search-button:hover {
-  background: var(--home-button-hover);
-}
-.home-search-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.home-search-button:disabled:hover {
-  background: var(--home-button);
-}
-
-.home-chips {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 0.9rem;
-}
-.home-chips-label {
-  font-size: 0.85rem;
-  color: var(--home-muted);
-}
-.home-chip {
-  padding: 0.25rem 0.9rem;
-  border: 1px solid var(--home-border);
-  border-radius: 999px;
-  background: var(--home-surface);
-  font-size: 0.85rem;
-  color: var(--home-text-subtle);
-  cursor: pointer;
-}
-.home-chip.active {
-  background: var(--home-green-soft);
-  border-color: var(--home-green);
-  color: var(--home-green);
-}
-
-/* Stats */
-.home-stats {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
   margin-top: 2.75rem;
   background: var(--home-surface);
   border: 1px solid var(--home-border);
   border-radius: 12px;
 }
+.home-stats-viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.home-stats.has-nav .home-stats-viewport {
+  border-radius: 0;
+}
+.home-stats-track {
+  display: flex;
+  transition: transform 0.4s ease;
+}
 .home-stat {
   display: flex;
   align-items: center;
+  flex: 0 0 calc(100% / var(--home-stats-visible, 5));
+  min-width: 0;
   gap: 0.9rem;
   padding: 1.4rem 1.5rem;
+}
+.home-stat-text {
+  min-width: 0;
+}
+/* Fades at the edges of the statistics that have more to show */
+.home-stats-viewport::before,
+.home-stats-viewport::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 4rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.home-stats-viewport::before {
+  left: 0;
+  background: linear-gradient(to right, var(--home-surface) 15%, transparent);
+}
+.home-stats-viewport::after {
+  right: 0;
+  background: linear-gradient(to left, var(--home-surface) 15%, transparent);
+}
+.home-stats.has-prev .home-stats-viewport::before,
+.home-stats.has-next .home-stats-viewport::after {
+  opacity: 1;
+}
+/* Plain arrows, no circle. An arrow only takes space while it can be used: narrow for a mouse,
+   wider on touch screens so it is easy to hit with a finger. */
+.home-stats-nav {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--home-muted);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.home-stats.has-nav .home-stats-nav {
+  display: inline-flex;
+}
+.home-stats-nav:hover,
+.home-stats-nav:focus-visible {
+  color: var(--home-green);
+}
+.home-stats.has-nav .home-stats-nav.hidden {
+  display: none;
+}
+@media (pointer: coarse), (max-width: 767px) {
+  .home-stats-nav {
+    width: 2.75rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-stats-track {
+    transition: none;
+  }
 }
 .home-stat + .home-stat {
   border-left: 1px solid var(--home-border);
@@ -1043,6 +1174,7 @@ body.dark-mode .home {
 }
 .home-stat-label {
   font-size: 0.85rem;
+  line-height: 1.3;
   color: var(--home-muted);
 }
 
@@ -1109,6 +1241,62 @@ body.dark-mode .home {
   padding: 1.4rem 1.75rem;
   border-bottom: 1px solid var(--home-border);
 }
+/* Small outlined button, used for "View all" in a block header */
+.home-small-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--home-border);
+  border-radius: 8px;
+  background: var(--home-surface);
+  color: var(--home-green);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.home-small-button:hover,
+.home-small-button:focus-visible {
+  border-color: var(--home-green);
+  background: var(--home-green-soft);
+  color: var(--home-green);
+  text-decoration: none;
+}
+.home-small-button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Right side of a block header: its own actions, then the collapse chevron */
+.home-panel-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.home-panel-toggle {
+  display: inline-flex;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--home-muted);
+  cursor: pointer;
+}
+.home-panel-toggle:hover,
+.home-panel-toggle:focus-visible {
+  color: var(--home-text);
+}
+.home-panel-chevron {
+  display: inline-flex;
+  transition: transform 0.2s;
+}
+.home-panel-chevron.closed {
+  transform: rotate(180deg);
+}
+/* A collapsed block keeps only its header, without the line under it */
+.home-panel.collapsed .home-panel-header {
+  border-bottom: none;
+}
 .home-panel-title {
   font-size: 1.1rem;
   font-weight: 500;
@@ -1125,6 +1313,7 @@ body.dark-mode .home {
   border-top: 1px solid var(--home-border);
 }
 .home-recent-icon {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1170,6 +1359,25 @@ body.dark-mode .home {
 }
 .home-recent-link.disabled {
   opacity: 0.5;
+}
+/* DOI mark on the open-in-new icon, at its top left like a small notification badge (the icon alone, in black) */
+.home-recent-doi {
+  position: absolute;
+  top: -8px;
+  left: -9px;
+  display: inline-flex;
+  color: #000000;
+  font-size: 18px;
+  line-height: 1;
+}
+body.dark-mode .home-recent-doi {
+  color: #e8e6e3;
+}
+/* Icon inside a badge (Crossref): a bit bigger than its text, which keeps its size */
+.home-badge-icon {
+  margin-right: 0.3em;
+  font-size: 1.3em;
+  vertical-align: -0.2em;
 }
 /* Left column: publications and news stacked */
 .home-main {
@@ -1335,15 +1543,6 @@ body.dark-mode .home {
   .home-crops {
     grid-template-columns: repeat(3, 1fr);
   }
-  .home-stats {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .home-stat:nth-child(4) {
-    border-left: none;
-  }
-  .home-stat:nth-child(n + 4) {
-    border-top: 1px solid var(--home-border);
-  }
 }
 @media (max-width: 991px) {
   .home-panels {
@@ -1359,13 +1558,6 @@ body.dark-mode .home {
   }
   .home-crops {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .home-stats {
-    grid-template-columns: 1fr;
-  }
-  .home-stat + .home-stat {
-    border-left: none;
-    border-top: 1px solid var(--home-border);
   }
   .home-search {
     flex-wrap: wrap;

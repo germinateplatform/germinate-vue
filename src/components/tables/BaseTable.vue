@@ -6,7 +6,7 @@
         <span v-for="(f, index) in filter" :key="f.column.name">
           <!-- Comparison -->
           <b-badge :variant="isValidFilter(f) ? 'info' : 'danger'" class="mr-2" v-b-tooltip="isValidFilter(f) ? null : $t('tooltipTableFilterInvalid')" >
-            {{ "'" + columns.filter(fs => fs.key === f.column)[0].label + "' " + comparators[f.comparator].text() + " '" + f.values.filter(f => f !== null).join(", ") + "'" }}
+            {{ (filterLabel && filterLabel(f)) || ("'" + columns.filter(fs => fs.key === f.column)[0].label + "' " + comparators[f.comparator].text() + " '" + f.values.filter(f => f !== null).join(", ") + "'") }}
           </b-badge>
           <!-- Operator -->
           <b-badge v-if="index < filter.length - 1" class="mr-2">
@@ -259,6 +259,11 @@ export default {
     tableActions: {
       type: Array,
       default: () => null
+    },
+    // Own text for the badge of a filter above the table: (filter) => text, or null for the usual one
+    filterLabel: {
+      type: Function,
+      default: null
     },
     downloadTable: {
       type: Function,

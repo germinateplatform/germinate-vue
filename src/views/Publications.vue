@@ -1,9 +1,13 @@
 <template>
   <div>
     <h1>{{ $t('pagePublicationsTitle') }}</h1>
+    <!-- Data curators add a publication of the database with the [+] below the table, like on the home page -->
     <PublicationTable :getData="getData"
                       :filterOn="filterOn"
+                      :tableActions="userIsDataCurator ? tableActions : null"
+                      ref="publicationTable"
                       @publication-selected="onPublicationSelected" />
+    <AddPublicationModal ref="addPublicationModal" v-if="userIsDataCurator" @publication-added="onPublicationAdded" />
 
     <div v-if="publicationId" ref="publicationDetails" >
       <h2>{{ $t('pagePublicationDetailsTitle') }}</h2>
@@ -49,6 +53,9 @@ import GroupTable from '@/components/tables/GroupTable'
 import PublicationTable from '@/components/tables/PublicationTable'
 import PublicationCard from '@/components/util/PublicationCard'
 import DataStoryWidget from '@/components/util/DataStoryWidget'
+import AddPublicationModal from '@/components/modals/AddPublicationModal'
+import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
+import { mdiPlusBox } from '@mdi/js'
 
 import { apiPostPublicationDatasetTable } from '@/mixins/api/dataset'
 import { apiPostPublicationGermplasmTable } from '@/mixins/api/germplasm'
@@ -56,6 +63,7 @@ import { apiPostPublicationGroupTable } from '@/mixins/api/group'
 import { apiPostPublicationsTable } from '@/mixins/api/misc'
 import { Pages } from '@/mixins/pages'
 
+const emitter = require('tiny-emitter/instance')
 const { Cite } = require('@citation-js/core')
 require('@citation-js/plugin-doi')
 require('@citation-js/plugin-csl')
@@ -67,7 +75,8 @@ export default {
     GroupTable,
     PublicationTable,
     PublicationCard,
-    DataStoryWidget
+    DataStoryWidget,
+    AddPublicationModal
   },
   data: function () {
     return {
@@ -81,8 +90,23 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'storeSelectedProjects'
+      'storeSelectedProjects',
+      'storeToken'
     ]),
+    userIsDataCurator: function () {
+      return !!this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)
+    },
+    // Same [+] as below the datasets table
+    tableActions: function () {
+      return [{
+        id: 1,
+        text: this.$t('buttonAddPublication'),
+        variant: null,
+        disabled: () => false,
+        path: mdiPlusBox,
+        callback: () => this.$refs.addPublicationModal.show()
+      }]
+    },
     filterOn: function () {
       const filter = []
       if (this.storeSelectedProjects && this.storeSelectedProjects.length > 0) {
@@ -129,6 +153,11 @@ export default {
     }
   },
   methods: {
+    // The new publication is listed, and the publication count of the sidebar updated
+    onPublicationAdded: function () {
+      this.$refs.publicationTable.refresh()
+      emitter.emit('update-sidebar-menu')
+    },
     updateStoryVisibility: function (count) {
       this.showStories = count > 0
     },

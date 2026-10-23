@@ -423,13 +423,27 @@ const routes = [
       {
         path: 'search',
         name: Pages.search,
-        component: () => import(/* webpackChunkName: "search" */ '@/views/Search.vue'),
+        // New search page: the search of the home page, with its results in tabs
+        component: () => import(/* webpackChunkName: "search" */ '@/views/SearchView.vue'),
         beforeEnter: requireAuth
       },
       {
         path: 'search/:searchTerm',
         name: Pages.searchQuery,
-        component: () => import(/* webpackChunkName: "search-term" */ '@/views/Search.vue'),
+        component: () => import(/* webpackChunkName: "search" */ '@/views/SearchView.vue'),
+        beforeEnter: requireAuth
+      },
+      {
+        // Backup of the original search page
+        path: 'search-legacy',
+        name: Pages.searchLegacy,
+        component: () => import(/* webpackChunkName: "search-legacy" */ '@/views/Search.vue'),
+        beforeEnter: requireAuth
+      },
+      {
+        path: 'search-legacy/:searchTerm',
+        name: Pages.searchLegacyQuery,
+        component: () => import(/* webpackChunkName: "search-legacy" */ '@/views/Search.vue'),
         beforeEnter: requireAuth
       },
       {

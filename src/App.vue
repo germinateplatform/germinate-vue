@@ -19,10 +19,11 @@ import Vue from 'vue'
 import { VuePlausible } from 'vue-plausible'
 import { loadLanguageAsync } from '@/plugins/i18n'
 import { mapGetters } from 'vuex'
-import { Detector } from '@/plugins/browser-detect.js'
-import { uuidv4, germinateVersion } from '@/mixins/util'
+// Only used by the usage logger below, which is disabled
+// import { Detector } from '@/plugins/browser-detect.js'
+// import { uuidv4, germinateVersion } from '@/mixins/util'
 import { apiGetSettings } from '@/mixins/api/misc'
-import { authAxios } from '@/mixins/api/base'
+// import { authAxios } from '@/mixins/api/base'
 import { apiGetEntityTypeStats } from '@/mixins/api/stats'
 import { Pages } from '@/mixins/pages'
 
@@ -133,26 +134,26 @@ export default {
     this.attachStyleSheet()
 
     // Log the run
-    if (!this.isLocalhost()) {
-      let id = this.uniqueClientId
-      if (!id) {
-        id = uuidv4()
+    // if (!this.isLocalhost()) {
+    //   let id = this.uniqueClientId
+    //   if (!id) {
+    //     id = uuidv4()
 
-        this.$store.dispatch('setUniqueClientId', id)
-      }
+    //     this.$store.dispatch('setUniqueClientId', id)
+    //   }
 
-      const config = new Detector().detect()
-      if (config.os !== undefined && config.os !== null && config.os !== 'Search Bot') {
-        const data = {
-          application: 'Germinate',
-          id: id,
-          version: germinateVersion,
-          locale: this.storeLocale,
-          os: `${config.os} ${config.osVersion}`
-        }
-        authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
-      }
-    }
+    //   const config = new Detector().detect()
+    //   if (config.os !== undefined && config.os !== null && config.os !== 'Search Bot') {
+    //     const data = {
+    //       application: 'Germinate',
+    //       id: id,
+    //       version: germinateVersion,
+    //       locale: this.storeLocale,
+    //       os: `${config.os} ${config.osVersion}`
+    //     }
+    //     authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
+    //   }
+    // }
   },
   beforeDestroy: function () {
     emitter.off('on-print', this.print)
@@ -210,6 +211,8 @@ $grid-breakpoints: (
 @import '~bootswatch/dist/cosmo/bootswatch';
 @import '@/assets/dark-mode.scss';
 @import '~flag-icons/css/flag-icons.min.css';
+// Academic icons (ORCID, Google Scholar, DOI, ...): <i class="ai ai-orcid" /> or the AcademicIcon component
+@import '~academicons/css/academicons.min.css';
 
 .card-columns {
   @include media-breakpoint-only(sm) {

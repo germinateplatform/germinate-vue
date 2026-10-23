@@ -57,7 +57,7 @@
           <span v-else v-html="location.locationName" />
         </dd>
         <template v-if="location.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8">
-          <span :style="`color: ${locationTypes[location.locationType].color()};`"><MdiIcon :path="locationTypes[location.locationType].path" /></span> {{ this.locationTypes[location.locationType].text() }}</dd></template>
+          <span :style="`color: ${getLocationType(location).color()};`"><MdiIcon :path="getLocationType(location).path" /></span> {{ getLocationType(location).text() }}</dd></template>
         <template v-if="location.countryCode2 || location.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'fi fi-' + getFlag(location)" /> {{ getCountry(location) }}</dd></template>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLatitude') }}</dt><dd class="col-8">{{ location.locationLatitude.toFixed(2) }}</dd>
         <dt class="col-4 text-right">{{ $t('tableColumnLocationLongitude') }}</dt><dd class="col-8">{{ location.locationLongitude.toFixed(2) }}</dd>
@@ -229,6 +229,10 @@ export default {
     LImageOverlay
   },
   methods: {
+    // The type shown in the popup: the location's own one (locationTypeDisplay, same shape as the locationTypes entries) or the standard one
+    getLocationType: function (location) {
+      return location.locationTypeDisplay || this.locationTypes[location.locationType]
+    },
     getLatLngs: function () {
       return this.internalLocations.map(l => {
         return L.latLng(l.locationLatitude, l.locationLongitude)
@@ -236,20 +240,28 @@ export default {
     },
     onClick: function (e) {
       if (this.selectionMode === 'point') {
-        const map = this.$refs.map.mapObject
-        const markerPosition = e.latlng
-
-        this.internalLocations = [{
-          locationId: -1,
-          locationName: 'Query',
-          locationLatitude: markerPosition.lat,
-          locationLongitude: markerPosition.lng
-        }]
-
-        map.panTo(markerPosition)
-
-        this.updateMap()
+        this.placePoint(e.latlng.lat, e.latlng.lng)
+        // The point clicked, e.g. for coordinate fields next to the map
+        this.$emit('point-placed', { latitude: e.latlng.lat, longitude: e.latlng.lng })
       }
+    },
+    // Point selection: puts the pin at these coordinates, as a click there would
+    placePoint: function (latitude, longitude) {
+      if (this.selectionMode !== 'point') {
+        return
+      }
+      const map = this.$refs.map.mapObject
+
+      this.internalLocations = [{
+        locationId: -1,
+        locationName: 'Query',
+        locationLatitude: latitude,
+        locationLongitude: longitude
+      }]
+
+      map.panTo([latitude, longitude])
+
+      this.updateMap()
     },
     setPolygons: function (polygons) {
       if (this.selectionMode === 'polygon' && this.editableLayers) {
@@ -569,7 +581,13 @@ export default {
         const result = new L.Control.Draw(options)
         map.addControl(result)
 
-        map.on(L.Draw.Event.CREATED, e => this.editableLayers.addLayer(e.layer))
+        map.on(L.Draw.Event.CREATED, e => {
+          this.editableLayers.addLayer(e.layer)
+          this.$emit('polygons-changed', this.getPolygons())
+        })
+        // Polygons changed or deleted with the edit tools
+        map.on(L.Draw.Event.EDITED, () => this.$emit('polygons-changed', this.getPolygons()))
+        map.on(L.Draw.Event.DELETED, () => this.$emit('polygons-changed', this.getPolygons()))
 
         this.$nextTick(() => {
           // Enable the polygon draw feature by default

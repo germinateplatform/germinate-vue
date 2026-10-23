@@ -334,7 +334,7 @@ export default {
     search: function () {
       this.searchTerm = this.tempSearchTerm
 
-      this.$router.push({ name: Pages.searchQuery, params: { searchTerm: this.tempSearchTerm }, query: this.$route.query })
+      this.$router.push({ name: Pages.searchLegacyQuery, params: { searchTerm: this.tempSearchTerm }, query: this.$route.query })
     },
     runSearch: function () {
       // Trigger result section to show up

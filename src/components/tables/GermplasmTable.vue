@@ -95,6 +95,10 @@
         <span v-if="data.item.longitude !== undefined">{{ data.item.longitude.toFixed(2) }}</span>
       </template>
       <!-- Country flag -->
+      <!-- Conservation (virtual column, see conservation.js): in-situ when the germplasm has the IN-SITU attribute 1 -->
+      <template v-slot:cell(conservation)="data">
+        <i v-if="inSituIds">{{ inSituIds.includes(data.item.germplasmId) ? 'In-situ' : 'Ex-situ' }}</i>
+      </template>
       <template v-slot:cell(countryName)="data">
           <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName" v-if="data.item.countryCode">
             <i :class="'fi fi-' + data.item.countryCode.toLowerCase()"/> <span> {{ data.item.countryCode }}</span>
@@ -178,8 +182,9 @@
     </BaseTable>
 
     <!-- Modal to show the passport page on data point click -->
-    <b-modal size="xl" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null" scrollable ok-only hide-header :ok-title="$t('buttonClose')">
-      <Passport :germplasmId="germplasmId" :isPopup="true" />
+    <!-- Passport preview: the passport page, in a modal wider than "xl" -->
+    <b-modal size="xl" dialog-class="passport-preview-modal" ref="passportModal" v-if="germplasmId" @hidden="germplasmId = null" scrollable ok-only hide-header :ok-title="$t('buttonClose')">
+      <PassportView :germplasmId="germplasmId" :isPopup="true" />
     </b-modal>
 
     <InstitutionModal @hidden="germplasmId = null" :germplasmId="germplasmId" ref="institutionModal" v-if="germplasmId" />
@@ -192,8 +197,8 @@ import { mapGetters } from 'vuex'
 import BaseTable from '@/components/tables/BaseTable'
 import LocationMap from '@/components/map/LocationMap'
 import InstitutionModal from '@/components/modals/InstitutionModal'
-import Passport from '@/views/data/germplasm/Passport'
 import defaultProps from '@/const/table-props'
+import { CONSERVATION_COLUMN, getConservationIds } from '@/mixins/conservation'
 import { apiPostEntityIds } from '@/mixins/api/germplasm'
 import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
 import { getImageUrl } from '@/mixins/image'
@@ -207,10 +212,22 @@ import { mdiHelpCircle, mdiOpenInApp, mdiMapMarker, mdiCamera, mdiChevronUpBox, 
 
 const emitter = require('tiny-emitter/instance')
 
+// Columns hidden until the user shows them in the column selector (GID, Number, and Conservation where it is offered)
+const DEFAULT_HIDDEN_COLUMNS = ['germplasmGid', 'germplasmNumber', CONSERVATION_COLUMN]
+// Browser storage keys set once a column was hidden by default (conservation keeps the key it had)
+const DEFAULT_HIDDEN_SEEN_KEY_PREFIX = 'germinate-germplasm-default-hidden-'
+const DEFAULT_HIDDEN_SEEN_KEYS = { [CONSERVATION_COLUMN]: 'germinate-germplasm-conservation-column-default-hidden' }
+
 export default {
   name: 'GermplasmTable',
   props: {
     ...defaultProps.FULL,
+    // A hidden "conservation" column, so its filter (in-situ or ex-situ) is kept like any other, also in the URL. Only
+    // for pages that turn that filter into germplasm ids for the server (see conservation.js).
+    conservationColumn: {
+      type: Boolean,
+      default: false
+    },
     orderBy: {
       type: String,
       default: null
@@ -244,6 +261,8 @@ export default {
       mdiChevronDownBoxOutline,
       germplasmId: null,
       selectedGermplasmInstitutionIds: null,
+      // Ids of the in-situ germplasm, for the conservation column. Null until loaded.
+      inSituIds: null,
       options: {
         idColumn: 'germplasmId',
         tableName: 'germplasm',
@@ -455,6 +474,17 @@ export default {
         }
       ]
 
+      if (this.conservationColumn) {
+        // Before the column of the marking checkboxes, the last one
+        const markedIndex = result.findIndex(c => c.key === 'marked')
+        result.splice(markedIndex === -1 ? result.length : markedIndex, 0, {
+          key: CONSERVATION_COLUMN,
+          type: CONSERVATION_COLUMN,
+          sortable: false,
+          label: 'Conservation'
+        })
+      }
+
       if (this.selectable === true) {
         result.unshift({
           key: 'selected',
@@ -476,7 +506,8 @@ export default {
     LocationMap,
     InstitutionModal,
     MdiIcon,
-    Passport
+    // Loaded when a preview is opened (the passport page is large, and uses tables itself)
+    PassportView: () => import(/* webpackChunkName: "passport" */ '@/views/data/germplasm/PassportView.vue')
   },
   methods: {
     isTruncatedAfterWords,
@@ -585,6 +616,28 @@ export default {
     onDownloadTableClicked: function () {
       this.$refs.germplasmTable.onDownloadTableClicked()
     }
+  },
+  created: function () {
+    // Columns that start hidden: hidden once, then it is the user's choice (kept with the other columns)
+    const columns = DEFAULT_HIDDEN_COLUMNS.filter(column => column !== CONSERVATION_COLUMN || this.conservationColumn)
+    const toHide = columns.filter(column => {
+      const key = DEFAULT_HIDDEN_SEEN_KEYS[column] || `${DEFAULT_HIDDEN_SEEN_KEY_PREFIX}${column}`
+      let hiddenBefore = false
+      try {
+        hiddenBefore = localStorage.getItem(key) === 'true'
+        localStorage.setItem(key, 'true')
+      } catch (error) {
+        // Not kept: hidden again next time
+      }
+      return !hiddenBefore
+    })
+    if (toHide.length > 0) {
+      this.$store.dispatch('addHiddenColumns', { type: this.options.tableName, columns: toHide })
+    }
+
+    if (this.conservationColumn) {
+      getConservationIds('In-situ').then(ids => { this.inSituIds = ids })
+    }
   }
 }
 </script>
@@ -621,6 +674,10 @@ export default {
 }
 .germplasm-table .b-table-details td {
   padding: 0;
+}
+/* Passport preview: wider than the "xl" modal, within the window */
+.passport-preview-modal {
+  max-width: min(1320px, 96vw);
 }
 .pdci-circle-background {
   stroke: #ccc;

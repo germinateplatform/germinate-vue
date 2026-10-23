@@ -41,6 +41,9 @@ const Pages = Object.freeze({
   importUploadType: 'import-upload-type',
   search: 'search',
   searchQuery: 'search-query',
+  // The original search page
+  searchLegacy: 'search-legacy',
+  searchLegacyQuery: 'search-legacy-query',
   publications: 'publications',
   publicationDetails: 'publication-details',
   stories: 'stories',

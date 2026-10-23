@@ -242,7 +242,13 @@ export default {
         }))
 
         if (polygons.length > 0) {
-          this.$nextTick(() => this.$refs.polygonMap.setPolygons(polygons))
+          this.$nextTick(() => {
+            this.$refs.polygonMap.setPolygons(polygons)
+            // On the polygon tab: the results right away
+            if (+this.$route.query.tabIndex === 1) {
+              this.$nextTick(() => this.query())
+            }
+          })
         }
       }
 

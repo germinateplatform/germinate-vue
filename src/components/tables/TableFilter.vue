@@ -112,6 +112,11 @@
                     <b-form-select disabled v-else />
                   </template>
                   <!-- Entity type columns -->
+                  <!-- Conservation (virtual column of the germplasm table): ex-situ or in-situ -->
+                  <template v-else-if="isType(f, 'conservation')">
+                    <b-form-select :options="conservationOptions()" v-model="f.values[0]" v-if="comparators[f.comparator].values > 0" />
+                    <b-form-select disabled v-else />
+                  </template>
                   <template v-else-if="isType(f, 'entityType')">
                     <b-form-select :options="getEntityTypeOptions()" v-model="f.values[0]" v-if="comparators[f.comparator].values > 0" />
                     <b-form-select disabled v-else />
@@ -154,6 +159,7 @@
 import { mapGetters } from 'vuex'
 
 import { operators, comparators } from '@/mixins/search'
+import { CONSERVATION_OPTIONS } from '@/mixins/conservation'
 import { dataTypes, entityTypes, groupTypes, locationTypes } from '@/mixins/types'
 import { uuidv4, objectArraysAreSame } from '@/mixins/util'
 
@@ -200,6 +206,7 @@ export default {
       id: uuidv4(),
       validComparatorsForType: {
         Boolean: ['equals', 'isNull', 'isNotNull'],
+        conservation: ['equals'],
         dataType: ['equals', 'isNull', 'isNotNull'],
         locationType: ['equals', 'isNull', 'isNotNull'],
         entityType: ['equals', 'isNull', 'isNotNull'],
@@ -253,7 +260,8 @@ export default {
     // Only get the columns that have a text that isn't empty
     getColumnsToToggle: function () {
       return this.columns.filter(c => {
-        let show = c.label ? (c.label !== '') : false
+        // Hidden columns (isHidden) can't be shown
+        let show = c.label && !c.isHidden ? (c.label !== '') : false
         show = show && !this.tempFilter.some(f => f.column.name === c.key && f.canBeChanged === false)
         return show
       })
@@ -317,6 +325,10 @@ export default {
           text: locationTypes[l].text()
         }
       })
+    },
+    // Options of the conservation filter, in its values (see conservation.js)
+    conservationOptions: function () {
+      return CONSERVATION_OPTIONS.map(option => ({ value: option, text: option }))
     },
     getEntityTypeOptions: function () {
       return Object.keys(entityTypes).map(e => {

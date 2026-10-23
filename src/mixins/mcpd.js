@@ -62,13 +62,60 @@ const MCPD_STORAGE = {
   20: 'Field collection',
   30: 'In vitro collection',
   40: 'Cryopreserved collection',
-  50: 'DNA collection'
+  50: 'DNA collection',
+  60: 'Wild Population',
+  99: 'Other'
+}
+
+// SITEPROT: legal or official protection of the collecting site
+const MCPD_SITEPROT = {
+  0: 'Not protected',
+  1: 'Strict nature reserve',
+  2: 'Wilderness area',
+  3: 'National park',
+  4: 'Natural monument or feature',
+  5: 'Habitat/species management area',
+  6: 'Protected landscape/seascape',
+  7: 'Protected area with sustainable use of natural resources',
+  8: 'Other effective conservation measures (OECM)'
+}
+
+// POPSRC: habitat of the occurrence site of the population(s)
+const MCPD_POPSRC = {
+  10: 'Wild',
+  11: 'Forest or woodland',
+  12: 'Shrubland',
+  13: 'Grassland',
+  14: 'Desert or tundra',
+  15: 'Aquatic habitat',
+  20: 'Farm or cultivated area',
+  21: 'Field',
+  22: 'Orchard',
+  23: 'Backyard, kitchen or home garden',
+  24: 'Fallow land',
+  25: 'Pasture',
+  28: 'Park',
+  60: 'Weedy, disturbed or ruderal habitat',
+  61: 'Roadside',
+  62: 'Field margin',
+  99: 'Other'
+}
+
+// CONSACTION: conservation actions in place for the population (IUCN classification scheme)
+const MCPD_CONSACTION = {
+  0: 'No conservation actions',
+  1: 'Monitoring and Planning',
+  2: 'Land/Water Protection and Management',
+  3: 'Species Management',
+  4: 'Education and Legislation',
+  5: 'Managed as part of a CWR genetic reserve',
+  99: 'Other'
 }
 
 /**
  * Turns a coded MCPD value into "<code> - <name>" using the given code list, e.g. 420 -> "420 - Genetic stock".
  * Fields like STORAGE can hold several codes ("11;13"), these are listed separated by "; ". Codes missing from the
- * list are shown as they are. Returns null when the value holds no code at all.
+ * list are shown as they are, repeated codes once. Returns null when the value holds no code at all.
  */
 const formatMcpdCodes = (value, codes) => {
   const found = value === null || value === undefined ? null : `${value}`.match(/\d+/g)
@@ -77,7 +124,10 @@ const formatMcpdCodes = (value, codes) => {
     return null
   }
 
-  return found.map(code => codes[code] ? `${code} - ${codes[code]}` : code).join('; ')
+  return found
+    .filter((code, index) => found.indexOf(code) === index)
+    .map(code => codes[code] ? `${code} - ${codes[code]}` : code)
+    .join('; ')
 }
 
 // ISO 3166-1 alpha-3 (as stored in ORIGCTY) to the alpha-2 code used by the flag icons
@@ -92,6 +142,9 @@ export {
   MCPD_SAMPSTAT,
   MCPD_COLLSRC,
   MCPD_STORAGE,
+  MCPD_SITEPROT,
+  MCPD_POPSRC,
+  MCPD_CONSACTION,
   formatMcpdCodes,
   getCountryFlagCode,
   getCountryName

@@ -1,6 +1,7 @@
 <template>
   <div>
     <BaseTable v-bind="$props"
+              :getData="getDataWithDetails"
               :columns="columns"
               :options="options"
               :tableActions="userIsDataCurator ? localTableActions : null"
@@ -225,6 +226,11 @@ export default {
   name: 'DatasetTable',
   props: {
     ...defaultProps.FULL,
+    // Details shown on every row when the data arrives: 'collaborators', 'location', 'attributes' or 'institutions'
+    openDetails: {
+      type: String,
+      default: null
+    },
     selectable: {
       type: Boolean,
       default: false
@@ -505,6 +511,21 @@ export default {
     truncateAfterWords,
     getHighContrastTextColor,
     isPageAvailable,
+    // The data of the table; with "openDetails" (or "datasets-details" in the URL, e.g. "collaborators"), every row
+    // comes with those details shown
+    getDataWithDetails: function (data, callback) {
+      const type = this.openDetails || (this.$route && this.$route.query ? this.$route.query['datasets-details'] : null)
+      if (!type) {
+        return this.getData(data, callback)
+      }
+      this.detailType = type
+      return this.getData(data, result => {
+        if (result && result.data) {
+          result.data.forEach(dataset => { dataset._showDetails = true })
+        }
+        callback(result)
+      })
+    },
     showDetails: function (type, data) {
       if (!data.detailsShowing || type === this.detailType) {
         this.$nextTick(() => data.toggleDetails())

@@ -295,7 +295,8 @@ export default {
 
 <style scoped>
 .media-page {
-  max-width: 1240px;
+  /* Same content width as the home page */
+  max-width: 1488px;
   margin: 0 auto;
   padding: 0.5rem 0 3rem;
 }
