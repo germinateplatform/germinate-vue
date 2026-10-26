@@ -1,4 +1,4 @@
-FROM node:22.11-alpine3.20 AS builder
+FROM node:22.19-alpine3.22 AS builder
 
 LABEL org.opencontainers.image.authors="sebastian.raubach@hutton.ac.uk"
 LABEL org.opencontainers.image.url="https://ics.hutton.ac.uk/get-germinate/"
