@@ -11,7 +11,6 @@ name: dataResources
 </route>
 
 <script setup lang="ts">
-  import FileResourceTable from '@/components/tables/FileResourceTable.vue'
   import { apiPostFileResourceTable } from '@/plugins/api/dataset'
   import type { PaginatedRequest } from '@/plugins/types/germinate'
 
