@@ -1,0 +1,62 @@
+<template>
+  <v-container fluid>
+    <p v-html="$t('pageStoriesText')" />
+
+    <StoryTable
+      :get-data="getStories"
+      ref="storyTable"
+    />
+
+    <StoryCard
+      v-if="store.storeUserIsDataCurator"
+      :story="exampleStory"
+      class="my-5"
+      is-placeholder
+      @create="storyTable?.createStory()"
+    />
+  </v-container>
+</template>
+
+<route lang="yaml">
+name: dataStories
+</route>
+
+<script setup lang="ts">
+  import { apiPostStoryTable } from '@/plugins/api/story'
+  import type { PaginatedRequest } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+
+  const store = useCoreStore()
+  const { t } = useI18n()
+
+  const storyTable = useTemplateRef('storyTable')
+
+  const exampleStory = computed(() => {
+    return {
+      storyId: -1,
+      storyName: t('widgetCreateStoryStoryName'),
+      storyDescription: t('widgetCreateStoryStoryDescription'),
+      storyImageName: 'img/misc/story-banner.svg',
+      storySteps: [{
+        id: -1,
+        storyIndex: 0,
+        name: t('widgetCreateStoryStoryStepOneName'),
+        description: t('widgetCreateStoryStoryStepOneDescription'),
+      }, {
+        id: -2,
+        storyIndex: 1,
+        name: t('widgetCreateStoryStoryStepTwoName'),
+        description: t('widgetCreateStoryStoryStepTwoDescription'),
+      }, {
+        id: -3,
+        storyIndex: 2,
+        name: t('widgetCreateStoryStoryStepThreeName'),
+        description: t('widgetCreateStoryStoryStepThreeDescription'),
+      }],
+    }
+  })
+
+  function getStories (data: PaginatedRequest) {
+    return apiPostStoryTable(data)
+  }
+</script>

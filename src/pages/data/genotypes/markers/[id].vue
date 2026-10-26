@@ -1,0 +1,152 @@
+<template>
+  <v-container fluid v-if="marker">
+    <Teleport to="#breadcrumb-last" defer>
+      <div class="d-flex justify-space-between align-center">
+        <v-chip label :prepend-icon="mdiLabelVariant" :text="marker.markerType" />
+
+        <v-chip label v-tooltip:top="$t('tooltipMarkerMarkedItem')" @click="markItem" :color="isMarked ? 'primary' : undefined">
+          <v-icon :icon="isMarked ? mdiBookmarkCheck : mdiBookmarkOutline" />
+        </v-chip>
+      </div>
+    </Teleport>
+    <p>{{ $t('pageMarkerDetailsText') }}</p>
+
+    <template v-if="marker.markerSynonyms && marker.markerSynonyms.length > 0">
+      <h3>{{ $t('pageMarkerDetailsSynonymsTitle') }}</h3>
+      <v-chip
+        label
+        v-for="(synonym, index) in marker.markerSynonyms"
+        :key="`marker-synonym-${index}`"
+        :prepend-icon="mdiLabel"
+        :text="synonym"
+        class="me-2"
+      />
+    </template>
+
+    <!-- Datasets this marker is part of -->
+    <DatasetTable class="mt-5" :get-data="getDatasetData">
+      <template #card-text>
+        <v-card-text>
+          {{ $t('pageMarkerDetailsDatasetsText') }}
+        </v-card-text>
+      </template>
+    </DatasetTable>
+
+    <!-- Maps this marker is on -->
+    <MapDefinitionTable class="mt-5" :get-data="getMapdefinitionData" :filter-on="mapdefinitionFilter" :get-ids="getMapdefinitionIds" :header-title="$t('pageMarkerDetailsMapsTitle')">
+      <template #card-text>
+        <v-card-text>
+          {{ $t('pageMarkerDetailsMapsText') }}
+        </v-card-text>
+      </template>
+    </MapDefinitionTable>
+
+    <!-- Groups this marker is in -->
+    <GroupTable class="mt-5" :get-data="getGroupData">
+      <template #card-text>
+        <v-card-text>
+          {{ $t('pageMarkerDetailsGroupsText') }}
+        </v-card-text>
+      </template>
+    </GroupTable>
+  </v-container>
+</template>
+
+<route lang="yaml">
+name: markerDetails
+</route>
+
+<script setup lang="ts">
+  import DatasetTable from '@/components/tables/DatasetTable.vue'
+  import GroupTable from '@/components/tables/GroupTable.vue'
+  import MapDefinitionTable from '@/components/tables/MapDefinitionTable.vue'
+  import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds, apiPostMarkerDatasetTable, apiPostMarkerGroupTable, apiPostMarkerTable } from '@/plugins/api/genotype'
+  import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type ViewTableMarkers } from '@/plugins/types/germinate'
+  import { isNumeric } from '@/plugins/util/formatting'
+  import { mdiBookmarkCheck, mdiBookmarkOutline, mdiLabel, mdiLabelVariant } from '@mdi/js'
+
+  const route = useRoute('markerDetails')
+  const store = useCoreStore()
+
+  const marker = ref<ViewTableMarkers>()
+  const markerId = ref<number>()
+
+  const isMarked = computed(() => markerId.value ? store.storeMarkedMarkers.includes(markerId.value) : false)
+
+  useBreadcrumbTitle(() => marker.value?.markerName)
+
+  const mapdefinitionFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'markerId',
+        comparator: FilterComparator.equals,
+        values: [`${markerId.value}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.and,
+    }]
+  })
+
+  function markItem () {
+    if (markerId.value) {
+      if (isMarked.value) {
+        store.removeMarkedIds('markers', [markerId.value])
+      } else {
+        store.addMarkedIds('markers', [markerId.value])
+      }
+    }
+  }
+
+  function getDatasetData (data: PaginatedRequest) {
+    return apiPostMarkerDatasetTable(markerId.value || -1, data)
+  }
+  function getMapdefinitionData (data: PaginatedRequest) {
+    return apiPostMapdefinitionTable(data)
+  }
+  function getMapdefinitionIds (data: PaginatedRequest) {
+    return apiPostMapdefinitionTableIds(data)
+  }
+  function getGroupData (data: PaginatedRequest) {
+    return apiPostMarkerGroupTable(markerId.value || -1, data)
+  }
+
+  onMounted(() => {
+    if (route.params && route.params.id) {
+      const requestedIdentifier = route.params.id
+
+      const query: PaginatedRequest = {
+        limit: 1,
+        page: 1,
+        filters: [],
+      }
+
+      if (isNumeric(requestedIdentifier)) {
+        query.filters = [{
+          filters: [{
+            column: 'markerId',
+            comparator: FilterComparator.equals,
+            values: [`${+route.params.id}`],
+          }],
+          operator: FilterOperator.and,
+        }]
+      } else {
+        query.filters = [{
+          filters: [{
+            column: 'markerName',
+            comparator: FilterComparator.contains,
+            values: [route.params.id],
+          }],
+          operator: FilterOperator.and,
+        }]
+      }
+
+      apiPostMarkerTable(query, result => {
+        if (result && result.data && result.data.length > 0) {
+          marker.value = result.data[0]
+          markerId.value = marker.value.markerId
+        }
+      })
+    }
+  })
+</script>

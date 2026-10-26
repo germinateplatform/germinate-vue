@@ -1,0 +1,284 @@
+import type { PublicationDoiLookupDetails, ViewTablePublications } from '@/plugins/types/germinate'
+// @ts-ignore
+import { Cite } from '@citation-js/core'
+import '@citation-js/plugin-doi'
+import '@citation-js/plugin-csl'
+
+const padTo2Digits = (num: number) => num.toString().padStart(2, '0')
+
+function getDateTimeString (date?: Date) {
+  if (!date) {
+    date = new Date()
+  }
+
+  return `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())}-${padTo2Digits(date.getHours())}-${padTo2Digits(date.getMinutes())}-${padTo2Digits(date.getSeconds())}`
+}
+
+function getDateString (date: Date) {
+  if (!date) {
+    date = new Date()
+  }
+
+  return `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())}`
+}
+
+export function getPublicationData (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
+  if (publication) {
+    let result: PublicationDoiLookupDetails | undefined
+
+    if (publication.publicationFallbackCache) {
+      result = getFromCache(publication)
+    } else {
+      try {
+        const citation = Cite.async(publication.publicationDoi.trim())
+        if (citation && citation.data && citation.data.length > 0) {
+          const temp = citation.format('data', { format: 'object' })[0]
+          result = {
+            title: temp.title,
+            fullReference: citation.format('bibliography', { format: 'html', template: 'apa' }),
+            URL: temp.URL,
+            date: (temp.issued && temp.issued['date-parts'] && temp.issued['date-parts'].length > 0 && temp.issued['date-parts'][0].length > 0) ? temp.issued['date-parts'][0][0] : undefined,
+            'container-title': temp['container-title'],
+          }
+        } else {
+          result = getFromCache(publication)
+        }
+      } catch {
+        result = getFromCache(publication)
+      }
+    }
+    return result
+  } else {
+    return undefined
+  }
+}
+
+export function toAgroPortalUrl (input: string | undefined): string | undefined {
+  const trimmed = (input || '').trim()
+  const parts = trimmed.split(':').map(s => s.trim())
+
+  if (parts.length === 2) {
+    return `https://agroportal.eu/search?q=${parts[1]}&lang=all&ontologies=${parts[0]}&also_search_properties=true&also_search_obsolete=true&also_search_views=true`
+  }
+
+  return undefined
+}
+
+export function toCropOntologyUrl (input: string | undefined): string | undefined {
+  const trimmed = (input || '').trim()
+  if (trimmed.startsWith('CO_')) {
+    const parts = trimmed.split(':').map(s => s.trim())
+
+    if (parts.length === 2) {
+      return `https://cropontology.org/term/${trimmed}`
+    }
+  }
+
+  return undefined
+}
+
+export function dmsToDecimal (value: string) {
+  if (value && (value.length === 7 || value.length === 8)) {
+    const l = value.length === 7
+
+    const degree = l ? +value.slice(0, 2) : +value.slice(0, 3)
+    const minute = l ? +value.slice(2, 4) : +value.slice(3, 5)
+    const second = l ? +value.slice(4, 6) : +value.slice(5, 7)
+
+    let decimal = degree + minute / 60 + second / 3600
+
+    if (value.endsWith('S') || value.endsWith('W')) {
+      decimal = -decimal
+    }
+
+    return decimal
+  }
+}
+
+export function getFromCache (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
+  if (!publication) {
+    return undefined
+  }
+
+  try {
+    const citation = new Cite(publication.publicationFallbackCache)
+
+    if (citation && citation.data && citation.data.length > 0) {
+      const result = citation.format('data', { format: 'object' })[0]
+      result.fullReference = citation.format('bibliography', { format: 'html', template: 'apa' })
+      return result
+    } else {
+      return {
+        title: 'N/A',
+        fullReference: 'N/A',
+        URL: publication.publicationDoi,
+      }
+    }
+  } catch {
+    return {
+      title: 'N/A',
+      fullReference: 'N/A',
+      URL: publication.publicationDoi,
+    }
+  }
+}
+
+/**
+ * Formats the given value into a human-readable number (e.g. 1.000 -> 1K, 1.000.000 -> 1G)
+ * @param {Number} value The value to format
+ * @param {Number} decimals The decimal places
+ * @param {Number} k The thousand value (e.g. 1000 or 1024)
+ * @param {String} separator The separator between the number and the letter
+ */
+function getNumberWithSuffix (value: number, decimals = 2, k = 1000, separator = '') {
+  if (value === undefined || value === null || value === 0) {
+    return '0'
+  }
+
+  const store = useCoreStore()
+
+  // Check if advanced number formatting is available
+  if ('Intl' in window && Intl.NumberFormat) {
+    const locale = (store.storeLocale || 'en_GB').replace('_', '-')
+    let formatter
+    if (k === 1024) {
+      // Handle byte values
+      const UNITS = ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte', 'petabyte']
+      let size = Math.abs(Number(value))
+      let u = 0
+      while (size >= 1024 && u < UNITS.length - 1) {
+        size /= 1024
+        ++u
+      }
+      formatter = Intl.NumberFormat(locale, { style: 'unit', unit: UNITS[u], unitDisplay: 'short', maximumFractionDigits: decimals })
+      value = size
+    } else {
+      // Handle regular numeric values
+      formatter = Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: decimals })
+    }
+
+    return formatter.format(value)
+  } else {
+    const dm = Math.max(0, decimals)
+    const sizes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
+    const i = Math.floor(Math.log(value) / Math.log(k))
+
+    return Number.parseFloat((value / Math.pow(k, i)).toFixed(dm)) + separator + sizes[i]
+  }
+}
+
+/**
+ * Converts the given object into a safe URL string
+ * @param {Object} params The object to convert
+ */
+function toUrlString (params: { [key: string]: string | undefined }) {
+  return Object.keys(params)
+    .filter(key => params[key] !== undefined && params[key] !== null && params[key] !== '')
+    .map(key => params[key] ? (key + '=' + encodeURIComponent(params[key])) : '')
+    .join('&')
+}
+
+function isTruncatedAfterWords (str: string, words: number) {
+  if (!str) {
+    return false
+  }
+
+  const parts = str.split(/\s+/g)
+
+  return parts.length > words
+}
+
+function truncateAfterWords (str: string, words: number) {
+  if (!str) {
+    return str
+  }
+
+  const parts = str.split(/\s+/g)
+
+  if (parts.length > words) {
+    return parts.splice(0, words).join(' ') + '...'
+  } else {
+    return str
+  }
+}
+
+function truncateAfterChars (str: string, length: number) {
+  if (!str) {
+    return str
+  }
+
+  if (str.length > length) {
+    return str.slice(0, length) + '...'
+  } else {
+    return str
+  }
+}
+
+function isAnyMissing (...parts: (string | undefined)[]): boolean {
+  return !parts || parts.some(p => !p || p.trim().length === 0)
+}
+
+function concat (separator: string, parts: (string | undefined)[]) {
+  return parts.filter(p => p !== undefined && p.trim().length > 0).join(separator)
+}
+
+function toParagraphs (input: string, separator = '\n') {
+  return (input || '').split(separator).map(p => p.trim()).filter(p => p.length > 0).map(p => `<p>${p}</p>`).join('')
+}
+
+function isNumeric (str: string): boolean {
+  if (typeof str !== 'string') {
+    return false
+  }
+
+  return !Number.isNaN(Number(str)) && str.trim() !== ''
+}
+
+function isEmptyNullOrUndefined (input: string | number | undefined | null) {
+  return input === undefined || input === null || `${input}`.trim().length === 0
+}
+
+function getServerBaseUrl (storeBaseUrl: string) {
+  // Resolve relative paths (prod) or pass through absolute ones (dev)
+  const resolved = new URL(storeBaseUrl, window.location.href)
+
+  let path = resolved.pathname.replace(/\/+$/, '') // strip trailing slash
+  const segments = path.split('/')
+  const lastSegment = segments[segments.length - 1]
+
+  if (lastSegment === 'api') {
+    segments.pop()
+  }
+
+  path = segments.join('/')
+  if (!path.endsWith('/')) {
+    path += '/'
+  }
+
+  return `${resolved.protocol}//${resolved.host}${path}`
+}
+
+/**
+ * Formats the given decimal number with the given number of decimal places
+ * @param {Number} number The number to format
+ * @param {Number} places The number of decimal spaces
+ */
+const toFixed = (number: number, places: number) => Number.parseFloat(Math.round(+(number + 'e+' + places)) + 'e-' + places)
+
+export {
+  padTo2Digits,
+  getDateTimeString,
+  getDateString,
+  getNumberWithSuffix,
+  toUrlString,
+  truncateAfterChars,
+  isTruncatedAfterWords,
+  truncateAfterWords,
+  toFixed,
+  isAnyMissing,
+  concat,
+  toParagraphs,
+  isNumeric,
+  getServerBaseUrl,
+  isEmptyNullOrUndefined,
+}

@@ -1,115 +1,84 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               itemType="markers"
-               ref="mapDefinitionTable"
-               v-on="$listeners">
-      <!-- Synonyms -->
-      <!-- Marker id link -->
-      <template v-slot:cell(markerId)="data">
-        <router-link :to="{name: Pages.markerDetails, params: { markerId: data.item.markerId }}">{{ data.item.markerId }}</router-link>
-      </template>
-      <!-- Marker name link -->
-      <template v-slot:cell(markerName)="data">
-        <router-link :to="{name: Pages.markerDetails, params: { markerId: data.item.markerId }}">{{ data.item.markerName }}</router-link>
-      </template>
-      <template v-slot:cell(synonyms)="data">
-        <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
-      </template>
-    </BaseTable>
-  </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMapdefinitions} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :selection-type="selectionType"
+    :show-details="false"
+    item-key="markerId"
+    table-key="mapDefinitions"
+    marked-item-type="markers"
+    :header-icon="mdiFormatIndentIncrease"
+    :header-title="compProps.headerTitle || $t('pageMarkersTitle')"
+    v-bind="$attrs"
+  >
+    <!-- Marker id link -->
+    <template #item.markerId="{ item }">
+      <router-link :to="Pages.getPath(Pages.markerDetails, item.markerId)">{{ item.markerId }}</router-link>
+    </template>
+    <!-- Marker name link -->
+    <template #item.markerName="{ item }">
+      <router-link :to="Pages.getPath(Pages.markerDetails, item.markerId)">{{ item.markerName }}</router-link>
+    </template>
+    <!-- Synonyms -->
+    <template #item.markerSynonyms="{ item }">
+      <span v-if="item.markerSynonyms">{{ item.markerSynonyms.join(', ') }}</span>
+    </template>
+    <template #item.markerType="{ item }">
+      <v-chip label v-if="item.markerType">{{ item.markerType }}</v-chip>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { getNumberWithSuffix } from '@/mixins/formatting'
-import { Pages } from '@/mixins/pages'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-export default {
-  name: 'MapDefinitionTable',
-  props: {
-    ...defaultProps.FULL
-  },
-  data: function () {
-    return {
-      Pages,
-      options: {
-        idColumn: 'markerId',
-        tableName: 'mapDefinitions'
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, FilterOperator, PaginatedRequest, PaginatedResult, ViewTableMapdefinitions } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { Pages } from '@/plugins/pages'
+  import { mdiFormatIndentIncrease } from '@mdi/js'
+  import { columns } from '@/plugins/util/table-columns'
+
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMapdefinitions[]>>> }
+    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+    headerTitle?: string
+  }>()
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    return columns.mapdefinitions.map(c => {
+      return {
+        ...c,
+        title: t(c.title || ''),
       }
-    }
-  },
-  computed: {
-    columns: function () {
-      return [
-        {
-          key: 'markerId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnMarkerId')
-        }, {
-          key: 'markerName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnMarkerName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'synonyms',
-          type: 'json',
-          sortable: true,
-          label: this.$t('tableColumnMarkerSynonyms')
-        }, {
-          key: 'mapFeatureType',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnMapFeatureType')
-        }, {
-          key: 'mapId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnMarkerMapId')
-        }, {
-          key: 'mapName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnMapName')
-        }, {
-          key: 'chromosome',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnMapChromosome')
-        }, {
-          key: 'position',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnMapPosition'),
-          formatter: value => (value !== undefined && value !== null) ? getNumberWithSuffix(value, 2) : null
-        }, {
-          key: 'marked',
-          type: null,
-          sortable: false,
-          class: 'text-right',
-          label: ''
-        }
-      ]
-    }
-  },
-  components: {
-    BaseTable
-  },
-  methods: {
-    refresh: function () {
-      this.$refs.mapDefinitionTable.refresh()
-    }
-  }
-}
+    })
+  })
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+    setOverallOperator: (operator: FilterOperator) => baseTable.value?.setOverallOperator(operator),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>

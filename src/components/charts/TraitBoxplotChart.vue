@@ -1,405 +1,333 @@
 <template>
   <div>
-    <BaseChart :id="id" :width="() => 1280" :height="() => getHeight()" :sourceFile="baseSourceFile" :filename="baseFilename" :loading="loading" v-on:force-redraw="redraw">
-      <div slot="chart">
-        <b-form @submit.prevent>
-          <b-form-group :label="$t('formLabelTraitChartGrouping')" label-for="grouping">
-            <b-form-select :options="groupingOptions" v-model="groupBy" key="grouping" />
-          </b-form-group>
-        </b-form>
-
-        <div id="boxplot-chart" ref="chart" />
-      </div>
-
-      <!-- Badge that shows how many data points are selected -->
-      <span slot="buttonContent" class="badge badge-pill badge-info selection-count" v-if="selectedIds && selectedIds.length > 0">{{ selectedIds.length }}</span>
-
-      <template slot="additionalMenuItems">
-        <b-dropdown-divider />
-        <b-dropdown-item :disabled="!selectedIds || selectedIds.length < 1"
-                         @click="toggleItems(true)">
-          <MdiIcon :path="mdiCheckboxMarked" /> <span> {{ $t('widgetChartMarkSelectedItems') }}</span>
-        </b-dropdown-item>
-        <b-dropdown-item :disabled="!selectedIds || selectedIds.length < 1"
-                         @click="toggleItems(false)">
-          <MdiIcon :path="mdiCheckboxBlankOutline" /> <span> {{ $t('widgetChartUnmarkSelectedItems') }}</span>
-        </b-dropdown-item>
+    <BaseChart
+      title="pageTrialsExportTraitBoxplotTitle"
+      :chart-id="id"
+      :filename="filename"
+      :source-file="sourceFile"
+      v-model:loading="loading"
+      :badge-count="markedItemCount"
+      :header-icon="mdiChartGantt"
+      @force-redraw="redraw"
+      ref="baseChart"
+    >
+      <template #card-text>
+        <v-card-text>
+          <p>{{ $t(type === 'numeric' ? 'pageTrialsExportTraitBoxplotText' : 'pageTrialsExportTraitBoxplotDateText') }}</p>
+        </v-card-text>
       </template>
-
-      <template slot="additionalButtons">
-        <b-button v-b-tooltip.hover
-                  :title="$t('chartTooltipMatrixTour')"
-                  @click="showTour()">
-          <MdiIcon :path="mdiHelpCircleOutline" />
-        </b-button>
-        <MarkedItems itemType="germplasm" />
+      <template #toolbar-append>
+        <v-btn-group class="mx-2" density="compact" variant="tonal">
+          <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, 'germplasm')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedGermplasm.length, 1) }}</v-chip></v-btn>
+          <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
+        </v-btn-group>
+      </template>
+      <template #list-append>
+        <v-divider />
+        <v-list-item :prepend-icon="mdiCheckboxMarked" :disabled="markedItemCount === 0" @click="toggleItems(true)">{{ $t('widgetChartMarkSelectedItems') }}</v-list-item>
+        <v-list-item :prepend-icon="mdiCheckboxBlankOutline" :disabled="markedItemCount === 0" @click="toggleItems(false)">{{ $t('widgetChartUnmarkSelectedItems') }}</v-list-item>
+      </template>
+      <template #chart-content>
+        <div :id="id" ref="boxplotChart" />
       </template>
     </BaseChart>
-    <!-- Tour to explain the chart -->
-    <Tour :steps="popoverContent" ref="tour" />
-
-    <!-- Modal to show the passport page on data point click -->
-    <b-modal size="xl" ref="passportModal" v-if="selectedGermplasmId" @hidden="selectedGermplasmId = null" scrollable ok-only hide-header :ok-title="$t('buttonClose')">
-      <Passport :germplasmId="selectedGermplasmId" :isPopup="true" />
-    </b-modal>
+    <v-bottom-sheet
+      v-model="bottomSheetVisible"
+      inset
+      max-height="75vh"
+      v-if="selectedGermplasmId"
+    >
+      <v-card
+        :title="$t('pagePassportTitle')"
+        class="pb-10"
+      >
+        <v-card-text>
+          <Passport :top-gap="false" :germplasm-id="selectedGermplasmId" />
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseChart from '@/components/charts/BaseChart'
-import MarkedItems from '@/components/tables/MarkedItems'
-import { getColor } from '@/mixins/colors.js'
-import Tour from '@/components/util/Tour'
-import { getGermplasmDisplayName, uuidv4 } from '@/mixins/util'
-import Passport from '@/views/data/germplasm/Passport'
+<script setup lang="ts">
+  import BaseChart from '@/components/charts/BaseChart.vue'
+  import { DEFAULT_PLOTLY_CONFIG, getGermplasmDisplayName, uuidv4, type DownloadBlob } from '@/plugins/util'
 
-import { mdiHelpCircleOutline, mdiCheckboxMarked, mdiCheckboxBlankOutline } from '@mdi/js'
-import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
-import { apiPostTrialsDataTable } from '@/mixins/api/trait'
+  import box from 'plotly.js/lib/box'
 
-const Plotly = require('plotly.js/lib/core')
-// Only register the chart types we're actually using to reduce the final bundle size
-Plotly.register([
-  require('plotly.js/lib/box')
-])
+  import { ScalesDatatype, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
+  import { getColor } from '@/plugins/util/colors'
+  import { Pages } from '@/plugins/pages'
+  import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
-let plotData = null
-let datasets = []
-let groups = []
-let traits = []
-let treatments = []
+  import emitter from 'tiny-emitter/instance'
+  import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
+  import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
-export default {
-  props: {
-    datasetIds: {
-      type: Array,
-      default: () => null
-    },
-    traitIds: {
-      type: Array,
-      default: () => null
-    },
-    groupIds: {
-      type: Array,
-      default: () => null
-    },
-    markedIds: {
-      type: Array,
-      default: () => null
+  const compProps = defineProps<{
+    traits: ViewTableTraits[]
+    plotData: ViewTableTrialsData[]
+    userSelection?: UserSelection
+    showIndividuals?: boolean
+    type: 'numeric' | 'date'
+  }>()
+
+  const store = useCoreStore()
+  const tdStore = useTraitDataStore()
+
+  const bottomSheetVisible = ref(false)
+
+  const sourceFile = ref<DownloadBlob>()
+  const boxplotChart = useTemplateRef('boxplotChart')
+  const baseChart = useTemplateRef('baseChart')
+  const id = ref('boxplot-' + uuidv4())
+  const loading = ref(false)
+  const selectedIds = ref<number[]>([])
+  const selectedGermplasmId = ref<number>()
+
+  const filename = computed(() => {
+    let name = 'trait-boxplot'
+    if (tdStore.storeDatasetIds) {
+      name += `-${tdStore.storeDatasetIds.join('-')}`
+    } else {
+      name += '-all-datasets'
     }
-  },
-  components: {
-    BaseChart,
-    MarkedItems,
-    MdiIcon,
-    Passport,
-    Tour
-  },
-  data: function () {
-    const id = 'chart-' + uuidv4()
+    if (compProps.traits) {
+      name += `-${compProps.traits.map(t => t.variableId).join('-')}`
+    } else {
+      name += '-all-traits'
+    }
 
-    return {
-      mdiHelpCircleOutline,
-      mdiCheckboxMarked,
-      mdiCheckboxBlankOutline,
-      id: id,
-      loading: false,
-      popoverContent: [{
-        title: () => this.$t('popoverChartTourGenericOptionsTitle'),
-        text: () => this.$t('popoverChartTourGenericOptionsText'),
-        target: () => `#${id} #additional-options`,
-        position: 'bottom'
-      }, {
-        title: () => this.$t('popoverChartTourGenericModebarTitle'),
-        text: () => this.$t('popoverChartTourGenericModebarText'),
-        target: () => `#${id} .modebar`,
-        position: 'bottom'
-      }, {
-        title: () => this.$t('popoverChartTourMarkableSelectionTitle'),
-        text: () => this.$t('popoverChartTourMarkableSelectionText'),
-        target: () => `#${id} #boxplot-chart`,
-        position: 'top'
-      }, {
-        title: () => this.$t('popoverChartTourMarkableCountTitle'),
-        text: () => this.$t('popoverChartTourMarkableCountText'),
-        target: () => `#${id} #marked-items-count`,
-        position: 'bottom'
-      }, {
-        title: () => this.$t('popoverChartTourMarkableClearTitle'),
-        text: () => this.$t('popoverChartTourMarkableClearText'),
-        target: () => `#${id} #marked-items-clear`,
-        position: 'bottom'
-      }, {
-        title: () => this.$t('popoverChartTourMarkableSelectionToggleTitle'),
-        text: () => this.$t('popoverChartTourMarkableSelectionToggleText'),
-        target: () => `#${id} #additional-options`,
-        position: 'bottom'
-      }],
-      groupBy: 'dataset',
-      selectedIds: [],
-      selectedGermplasmId: null,
-      baseSourceFile: null
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeDarkMode'
-    ]),
-    groupingOptions: function () {
-      return [{
-        text: this.$t('widgetChartColoringByDataset'),
-        value: 'dataset'
-      }, {
-        text: this.$t('widgetChartColoringByTreatment'),
-        value: 'treatment'
-      }, {
-        text: this.$t('widgetChartColoringByGroup'),
-        value: 'group'
-      }]
-    },
-    baseFilename: function () {
-      let name = 'trait-boxplot'
-      if (this.datasetIds) {
-        name += `-${this.datasetIds.join('-')}`
-      } else {
-        name += '-all-datasets'
-      }
-      if (this.traitIds) {
-        name += `-${this.traitIds.join('-')}`
-      } else {
-        name += '-all-traits'
-      }
+    return name
+  })
 
-      return name
-    }
-  },
-  watch: {
-    groupBy: function () {
-      this.chart()
-    }
-  },
-  methods: {
-    showTour: function () {
-      this.$refs.tour.start()
-    },
-    getHeight: function () {
-      switch (this.groupBy) {
-        case 'dataset':
-          return (traits.length + datasets.length) * 150
-        case 'group':
-          return (traits.length + groups.length) * 150
-        case 'treatment':
-          return (treatments.length + traits.length) * 150
+  function getHeight () {
+    if (compProps.userSelection) {
+      switch (compProps.userSelection.type) {
+        case 'datasets':
+          return Math.max(300, (compProps.traits.length + tdStore.storeDatasetIds.length + 1) * 130)
         default:
-          return traits.length * 150
+          return Math.max(300, (compProps.traits.length + compProps.userSelection.selectedItems.length + 1) * 130)
       }
-    },
-    redraw: function () {
-      this.loading = true
+    } else {
+      return Math.max(300, compProps.traits.length * 130)
+    }
+  }
 
-      apiPostTrialsDataTable({
-        page: 1,
-        limit: MAX_JAVA_INTEGER,
-        prevCount: -1,
-        datasetIds: this.datasetIds,
-        xIds: this.traitIds,
-        yGroupIds: this.groupIds,
-        yIds: this.markedIds,
-        minimal: true
-      }, result => {
-        plotData = result.data
-        this.chart()
-        this.loading = false
+  const markedItemCount = computed(() => selectedIds.value.length)
 
-        this.baseSourceFile = {
-          blob: new Blob([JSON.stringify(plotData)], { type: 'application/json' }),
-          filename: this.baseFilename,
-          extension: 'json'
-        }
-      })
-    },
-    toggleItems: function (add) {
-      if (add === true) {
-        this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: this.selectedIds })
-      } else {
-        this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: this.selectedIds })
+  async function redraw () {
+    emitter.emit('show-loading', true)
+
+    loading.value = true
+    const variableIdSet = new Set<number>(compProps.traits.map(t => t.variableId))
+    const data = compProps.plotData.filter(pd => variableIdSet.has(pd.variableId)).concat()
+    data.sort((a, b) => b.variableName.localeCompare(a.variableName) || (b.variableId - a.variableId))
+
+    if (data) {
+      sourceFile.value = {
+        blob: new Blob([JSON.stringify(data)], { type: 'application/json' }),
+        filename: filename.value,
+        extension: 'json',
       }
-    },
-    chart: async function () {
-      const urlQuery = Object.assign({}, this.$route.query)
-      urlQuery.traitBoxplotGroupBy = this.groupBy
-      await this.$router.replace({ query: urlQuery })
+    }
 
-      this.selectedIds = []
-      this.selectedGermplasmId = null
+    if (boxplotChart.value) {
+      const x: (number | string)[] = []
+      const y: string[] = []
+      const ids: string[] = []
+      const text: string[] = []
 
-      const div = this.$refs.chart
-
-      Plotly.purge(div)
-
-      if (!plotData) {
-        return
-      }
-
-      let traces
-
-      const dsSet = new Set()
-      const traitSet = new Set()
-      const treatmentSet = new Set()
-      const groupSet = new Set()
-
-      plotData.forEach(pd => {
-        if (pd.datasetId) {
-          dsSet.add(JSON.stringify({ id: pd.datasetId, name: pd.datasetName }))
-        }
-        if (pd.traitId) {
-          traitSet.add(pd.traitId)
-        }
-        if (pd.treatment) {
-          treatmentSet.add(pd.treatment)
-        }
-        if (pd.groups) {
-          pd.groups.forEach(g => groupSet.add(JSON.stringify(g)))
-        }
+      data.forEach(dp => {
+        x.push(dp.scaleDatatype === ScalesDatatype.numeric ? +dp.traitValue : dp.traitValue)
+        y.push(dp.variableName)
+        ids.push(`${dp.germplasmId}-${uuidv4()}`)
+        text.push(getGermplasmDisplayName(dp))
       })
 
-      datasets = [...dsSet].map(ds => JSON.parse(ds))
-      traits = [...traitSet]
-      treatments = [...treatmentSet]
-      groups = [...groupSet].map(g => JSON.parse(g))
+      const traces = [{
+        y,
+        x,
+        ids,
+        text,
+        marker: { color: getColor(0), size: 4 },
+        name: 'All data',
+        type: 'box' as const,
+        boxmean: false,
+        orientation: 'h' as const,
+        jitter: 0.3,
+        boxpoints: (compProps.showIndividuals ? ('all' as const) : false) as false | 'all',
+      }]
 
-      if (this.groupBy === 'dataset') {
-        traces = datasets.map((ds, index) => {
-          const datasetData = plotData.filter(pd => pd.datasetId === ds.id)
+      if (compProps.userSelection) {
+        switch (compProps.userSelection.type) {
+          case 'datasets':
+            traces.push(...tdStore.storeDatasets.map((dataset, index) => {
+              return getData(data, dp => dp.datasetId === dataset.datasetId, index, dataset.datasetName || 'N/A')
+            }))
+            break
+          case 'germplasm':
+            traces.push(...compProps.userSelection.selectedItems.map((germplasm, index) => {
+              return getData(data, dp => dp.germplasmDisplayName === germplasm, index, germplasm)
+            }))
+            break
+          case 'taxonomies':
+            traces.push(...compProps.userSelection.selectedItems.map((taxonomy, index) => {
+              return getData(data, dp => dp.taxonomyFull === taxonomy, index, taxonomy)
+            }))
+            break
+          case 'plot':
+            traces.push(...compProps.userSelection.selectedItems.map((plot, index) => {
+              const [row, column] = plot.split('|').map(Number)
+              return getData(data, dp => dp.trialRow === row && dp.trialColumn === column, index, plot)
+            }))
+            break
+          case 'year':
+            traces.push(...compProps.userSelection.selectedItems.map((year, index) => {
+              return getData(data, dp => {
+                if (!dp.recordingDate) {
+                  return false
+                } else {
+                  const date = new Date(dp.recordingDate)
+                  return date.getFullYear() === +year
+                }
+              }, index, `&nbsp;${year}`)
+            }))
+            break
+          case 'reps':
+            traces.push(...compProps.userSelection.selectedItems.map((rep, index) => {
+              return getData(data, dp => dp.rep === rep, index, `&nbsp;${rep}`)
+            }))
+            break
+          case 'group':
+            const groupNames: { [index: number]: string } = {}
 
-          return {
-            y: datasetData.map(td => td.traitName),
-            x: datasetData.map(td => +td.traitValue),
-            ids: datasetData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: datasetData.map(td => getGermplasmDisplayName(td)),
-            name: ds.name,
-            marker: { color: getColor(index), size: 4 },
-            type: 'box',
-            boxmean: false,
-            orientation: 'h',
-            jitter: 0.3,
-            boxpoints: 'all'
-          }
-        })
-      } else if (this.groupBy === 'treatment') {
-        traces = treatments.map((treatment, index) => {
-          const treatmentData = plotData.filter(pd => pd.treatment === treatment)
+            tdStore.storeGroups.forEach(g => {
+              groupNames[g.groupId || -1] = g.groupName || ''
+            })
 
-          return {
-            y: treatmentData.map(td => td.traitName),
-            x: treatmentData.map(td => +td.traitValue),
-            ids: treatmentData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: treatmentData.map(td => getGermplasmDisplayName(td)),
-            name: treatment,
-            marker: { color: getColor(index), size: 4 },
-            type: 'box',
-            boxmean: false,
-            orientation: 'h',
-            jitter: 0.3,
-            boxpoints: 'all'
-          }
-        })
-      } else if (this.groupBy === 'group' && groups) {
-        traces = groups.map((group, index) => {
-          const groupData = plotData.filter(pd => pd.groups && pd.groups.some(g => g.id === group.id))
-
-          return {
-            y: groupData.map(td => td.traitName),
-            x: groupData.map(td => +td.traitValue),
-            ids: groupData.map(td => `${td.germplasmId}-${uuidv4()}`),
-            text: groupData.map(td => getGermplasmDisplayName(td)),
-            name: group.name,
-            marker: { color: getColor(index), size: 4 },
-            type: 'box',
-            boxmean: false,
-            orientation: 'h',
-            jitter: 0.3,
-            boxpoints: 'all'
-          }
-        })
+            traces.push(...compProps.userSelection.selectedItems.map((groupId, index) => {
+              return getData(data, dp => dp.groups !== undefined && dp.groups.some(g => `${g.id}` === groupId), index, groupNames[+groupId] || `${groupId}`)
+            }))
+            break
+          case 'treatments':
+            traces.push(...compProps.userSelection.selectedItems.map((treatment, index) => {
+              return getData(data, dp => dp.treatment === treatment, index, treatment)
+            }))
+            break
+        }
       }
 
       const layout = {
         xaxis: {
           zeroline: false,
-          side: 'top',
-          title: { font: { color: this.storeDarkMode ? 'white' : 'black' } },
-          tickfont: { color: this.storeDarkMode ? 'white' : 'black' },
+          side: 'top' as const,
+          title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
+          tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
           showgrid: true,
-          gridcolor: this.storeDarkMode ? 'rgba(1.0, 1.0, 1.0, 0.1)' : 'rgba(0.0, 0.0, 0.0, 0.1)',
-          mirror: 'ticks'
+          gridcolor: store.storeIsDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+          mirror: 'ticks' as const,
         },
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
-        height: this.getHeight(),
-        margin: { autoexpand: true },
+        height: getHeight(),
         autosize: true,
-        boxmode: 'group',
-        dragmode: 'select',
+        boxmode: 'group' as const,
+        dragmode: 'select' as const,
         yaxis: {
           automargin: true,
-          title: { font: { color: this.storeDarkMode ? 'white' : 'black' } },
-          tickfont: { color: this.storeDarkMode ? 'white' : 'black' }
+          title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
+          tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
         legend: {
           bgcolor: 'rgba(0,0,0,0)',
-          orientation: 'h',
-          font: { color: this.storeDarkMode ? 'white' : 'black' }
-        }
+          orientation: 'h' as const,
+          x: 0,
+          y: 1.1,
+          font: { color: store.storeIsDarkMode ? 'white' : 'black' },
+        },
       }
 
-      const config = {
-        modeBarButtonsToRemove: ['toImage'],
-        displayModeBar: true,
-        responsive: true,
-        displaylogo: false
+      if (traces) {
+        if (compProps.traits.length < 2) {
+          // @ts-ignore
+          layout.boxgap = 0
+        }
+
+        baseChart.value?.react(boxplotChart.value, traces, layout, DEFAULT_PLOTLY_CONFIG)
+          .then(element => {
+            if (element) {
+              // @ts-ignore
+              boxplotChart.value.on('plotly_selected', eventData => {
+                if (boxplotChart.value && (!eventData || (eventData.points.length === 0))) {
+                  baseChart.value?.restyle(boxplotChart.value, { selectedpoints: null })
+
+                  selectedIds.value = []
+                } else {
+                  selectedIds.value = [...new Set<number>(eventData.points.map((p: any) => Number.parseInt(p.id.split('-')[0])).filter((value: number, index: number, self: number[]) => self.indexOf(value) === index))]
+                }
+              })
+
+              // @ts-ignore
+              boxplotChart.value.on('plotly_click', (data: any) => {
+                if (data.points.length > 0) {
+                  selectedGermplasmId.value = Number.parseInt(data.points[0].id.split('-')[0])
+
+                  nextTick(() => {
+                    bottomSheetVisible.value = true
+                  })
+                } else {
+                  selectedGermplasmId.value = undefined
+                }
+              })
+            }
+          })
+          .finally(() => emitter.emit('show-loading', false))
       }
-
-      Plotly.react(div, traces, layout, config)
-
-      div.on('plotly_selected', eventData => {
-        if (!eventData || (eventData.points.length < 1)) {
-          Plotly.restyle(div, { selectedpoints: null })
-
-          this.selectedIds = []
-        } else {
-          this.selectedIds = [...new Set(eventData.points.map(p => parseInt(p.id.split('-')[0])).filter((value, index, self) => self.indexOf(value) === index))]
-        }
-      })
-
-      div.on('plotly_click', data => {
-        if (data.points.length > 0) {
-          this.selectedGermplasmId = parseInt(data.points[0].id.split('-')[0])
-
-          this.$nextTick(() => this.$refs.passportModal.show())
-        } else {
-          this.selectedGermplasmId = null
-        }
-      })
-    }
-  },
-  mounted: function () {
-    if (this.$route.query && this.$route.query.traitBoxplotGroupBy) {
-      this.groupBy = this.$route.query.traitBoxplotGroupBy
     }
 
-    this.redraw()
+    loading.value = false
   }
-}
-</script>
 
-<style scoped>
-.selection-count {
-  position: absolute;
-  padding: 6px;
-  margin-top: -10px;
-  left: -10px;
-}
-</style>
+  function getData (data: ViewTableTrialsData[], filter: (dp: ViewTableTrialsData) => boolean, index: number, name: string) {
+    const dps = data.filter(filter)
+    return {
+      y: dps.map(dp => dp.variableName),
+      x: dps.map(dp => dp.scaleDatatype === ScalesDatatype.numeric ? +dp.traitValue : dp.traitValue),
+      ids: dps.map(dp => `${dp.germplasmId}-${uuidv4()}`),
+      text: dps.map(dp => getGermplasmDisplayName(dp)),
+      marker: { color: getColor(index + 1), size: 4 },
+      name: name,
+      type: 'box' as const,
+      boxmean: false,
+      orientation: 'h' as const,
+      jitter: 0.3,
+      boxpoints: (compProps.showIndividuals ? ('all' as const) : false) as false | 'all',
+    }
+  }
+
+  function clearMarkedItems () {
+    store.clearMarkedIds('germplasm')
+  }
+
+  function toggleItems (add: boolean) {
+    if (add === true) {
+      store.addMarkedIds('germplasm', selectedIds.value)
+    } else {
+      store.removeMarkedIds('germplasm', selectedIds.value)
+    }
+  }
+
+  watch(() => compProps.plotData, async () => nextTick(() => redraw()), { immediate: true })
+
+  onMounted(() => {
+    // Only register the chart types we're actually using to reduce the final bundle size
+    baseChart.value?.register([
+      box,
+    ])
+  })
+
+  defineExpose({
+    redraw,
+  })
+</script>

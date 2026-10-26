@@ -1,101 +1,92 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               primary-key="mapId"
-               v-bind="$props"
-               v-on="$listeners">
-      <!-- Map id link -->
-      <template v-slot:cell(mapId)="data">
-        <router-link :to="{ name: Pages.mapDetails, params: { mapId: data.item.mapId } }" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapId }}</router-link>
-      </template>
-      <!-- Map name link -->
-      <template v-slot:cell(mapName)="data">
-        <router-link :to="{ name: Pages.mapDetails, params: { mapId: data.item.mapId } }" event="" @click.native.prevent="$emit('map-selected', data.item.mapId)">{{ data.item.mapName }}</router-link>
-      </template>
-      <!-- Map description -->
-      <template v-slot:cell(mapDescription)="data">
-        <!-- If the description is HTML and contains a link, just show it -->
-        <div v-if="isLink(data.item)"> <span v-html="data.item.mapDescription" />&nbsp;<MdiIcon :path="mdiOpenInNew" /></div>
-        <!-- Otherwise display the description as text -->
-        <span v-else>{{ data.item.mapDescription }}</span>
-      </template>
-    </BaseTable>
-  </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMaps} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :selection-type="selectionType"
+    :show-details="false"
+    item-key="mapId"
+    table-key="maps"
+    :header-icon="mdiReorderHorizontal"
+    :header-title="$t('pageMapsTitle')"
+    v-bind="$attrs"
+  >
+    <!-- Map id link -->
+    <template #item.mapId="{ item }">
+      <router-link :to="Pages.getPath(Pages.mapDetails, item.mapId)">{{ item.mapId }}</router-link>
+    </template>
+    <!-- Map name link -->
+    <template #item.mapName="{ item }">
+      <router-link :to="Pages.getPath(Pages.mapDetails, item.mapId)">{{ item.mapName }}</router-link>
+    </template>
+    <!-- Map description -->
+    <template #item.mapDescription="{ item }">
+      <span v-html="item.mapDescription" />
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-import { mdiOpenInNew } from '@mdi/js'
-import { Pages } from '@/mixins/pages'
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableMaps } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { getNumberWithSuffix } from '@/plugins/util/formatting'
+  import { Pages } from '@/plugins/pages'
+  import { mdiReorderHorizontal } from '@mdi/js'
 
-export default {
-  name: 'MapTable',
-  props: {
-    ...defaultProps.FULL
-  },
-  data: function () {
-    return {
-      Pages,
-      mdiOpenInNew,
-      options: {
-        idColumn: 'mapId',
-        tableName: 'maps'
-      }
-    }
-  },
-  computed: {
-    columns: function () {
-      return [
-        {
-          key: 'mapId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnMapId')
-        }, {
-          key: 'mapName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnMapName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'mapDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnMapDescription')
-        }, {
-          key: 'markerCount',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnMapMarkerCount'),
-          formatter: value => (value !== null && value !== undefined) ? value.toLocaleString() : null
-        }
-      ]
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    isLink: function (map) {
-      if (!map.mapDescription || map.mapDescription.length < 1) {
-        return false
-      } else {
-        return map.mapDescription.indexOf('https://') !== -1 ||
-               map.mapDescription.indexOf('http://') !== -1 ||
-               map.mapDescription.indexOf('sftp://') !== -1 ||
-               map.mapDescription.indexOf('ftp://') !== -1
-      }
-    }
-  }
-}
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMaps[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'mapId',
+      title: t('tableColumnMapId'),
+      dataType: 'integer',
+    }, {
+      key: 'mapName',
+      title: t('tableColumnMapName'),
+      dataType: 'string',
+    }, {
+      key: 'mapDescription',
+      dataType: 'string',
+      title: t('tableColumnMapDescription'),
+    }, {
+      key: 'markerCount',
+      dataType: 'integer',
+      title: t('tableColumnMapMarkerCount'),
+      value: (item: ViewTableMaps) => item.markerCount ? getNumberWithSuffix(item.markerCount, 1) : undefined,
+    }]
+
+    return headers
+  })
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>

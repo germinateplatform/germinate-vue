@@ -1,636 +1,748 @@
 <template>
-  <div :class="`${selectionMode === 'point' ? 'point-search' : ''}`">
-    <!-- The map itself -->
-    <l-map
-      :class="`location-map ${border}`"
-      :center="center"
-      ref="map"
-      @click="onClick"
-      :maxZoom="maxZoom"
-      :zoom="zoom">
-
-      <!-- Map loading indicator -->
-      <div class="location-map-loading-indicator d-flex justify-content-center h-100 align-items-center" v-if="loading === true">
-        <b-progress class="mt-2" max="100">
-          <b-progress-bar :value="loadingProgress" animated variant="primary"></b-progress-bar>
-        </b-progress>
+  <div>
+    <div :id="`map-${id}`" ref="mapElement" :class="`${props.selectionMode === 'point' ? 'point-search' : ''} ${props.rounded ? 'rounded-md' : ''} location-map map`">
+      <div ref="popupContent" class="popup-content">
+        <LocationPopup
+          :location="currentLocation"
+          :show-links="showLinks"
+          :show-edit="showEdit"
+          @edit="editLocation(currentLocation)"
+          v-if="currentLocation"
+        />
+        <ShapefilePopup
+          :info="shapefileInfo"
+          v-if="shapefileInfo"
+        />
       </div>
 
-      <l-control position="topright" class="leaflet-control-layers" v-if="climates && climates.length > 0">
-        <b-button @click="$refs.climateOverlayModal.show()" variant="link" class="text-dark">
-          <MdiIcon :path="mdiWeatherSnowyRainy" />
-        </b-button>
-      </l-control>
-
-      <l-control position="bottomleft" class="leaflet-control-layers leaflet-legend" v-if="overlayLegends && overlayLegends.length > 0">
-        <b-button @click.prevent variant="link" class="leaflet-legend-button text-dark">
-          <MdiIcon :path="mdiMapLegend" />
-        </b-button>
-        <!-- Legend -->
-        <div class="leaflet-legend-items">
-          <b-img-lazy fluid :src="legend.url" v-for="legend in overlayLegends" :key="`map-overlay-${legend.id}`" alt="Image overlay legend" />
-        </div>
-      </l-control>
-
-      <!-- Add overlays if available -->
-      <!-- Overlays -->
-      <template v-if="overlayImages && overlayImages.length > 0">
-        <l-image-overlay v-for="image in overlayImages"
-                        :key="`map-overlay-${image.id}`"
-                        :url="image.url"
-                        :opacity="imageOverlayOpacity"
-                        :bounds="image.bounds" />
-      </template>
-    </l-map>
-    <!-- Add color gradient for heatmapping -->
-    <ColorGradient v-if="mapType === 'heatmap'" ref="gradient" />
-    <!-- Popup content -->
-    <div v-if="location" ref="popupContent" class="p-3">
-      <dl class="row">
-        <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
-        <dd class="col-8 location-name">
-          <template v-if="showLinks">
-            <span v-if="location.locationType === 'datasets' || !location.locationId">{{ location.locationName }}</span>
-            <router-link :to="{ name: Pages.germplasm }" v-else-if="location.locationType === 'collectingsites'" @click.native="navigateToGermplasm(location)" event="">{{ location.locationName }}</router-link>
-            <span v-else>{{ location.locationName }}</span>
-          </template>
-          <span v-else v-html="location.locationName" />
-        </dd>
-        <template v-if="location.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8">
-          <span :style="`color: ${locationTypes[location.locationType].color()};`"><MdiIcon :path="locationTypes[location.locationType].path" /></span> {{ this.locationTypes[location.locationType].text() }}</dd></template>
-        <template v-if="location.countryCode2 || location.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'fi fi-' + getFlag(location)" /> {{ getCountry(location) }}</dd></template>
-        <dt class="col-4 text-right">{{ $t('tableColumnLocationLatitude') }}</dt><dd class="col-8">{{ location.locationLatitude.toFixed(2) }}</dd>
-        <dt class="col-4 text-right">{{ $t('tableColumnLocationLongitude') }}</dt><dd class="col-8">{{ location.locationLongitude.toFixed(2) }}</dd>
-        <template v-if="location.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ location.locationElevation.toFixed(2) }}</dd></template>
-
-        <template v-if="location.additionalInfo"><dt class="col-4 text-right">{{ $t('tableColumnLocationAdditionalInformation') }}</dt><dd class="col-8">{{ location.additionalInfo }}</dd></template>
-
-        <div v-if="isEditMode && location.locationId === -1" class="px-3">
-          <b-button-group>
-            <b-button variant="success" @click="$emit('selection-changed', location)">{{ $t('buttonUpdate') }}</b-button>
-            <b-button @click="$emit('cancel-selection')">{{ $t('buttonCancel') }}</b-button>
-          </b-button-group>
-        </div>
-      </dl>
+      <v-overlay
+        v-model="loading"
+        class="align-center justify-center"
+        contained
+      >
+        <v-progress-linear :value="loadingProgress" color="primary" />
+      </v-overlay>
     </div>
-    <ClimateOverlayModal v-if="(climateOverlaysDisabled === false) && climates" :climates="climates" ref="climateOverlayModal" v-on:overlay-changed="updateOverlays" />
+
+    <!-- Add color gradient for heatmapping -->
+    <ColorGradient v-if="props.mapType === 'heatmap'" ref="gradient" />
+
+    <ClimateOverlaySelectModal
+      v-model="selectedClimate"
+      v-model:opacity="climateOverlayOpacity"
+      :climates="climates"
+      v-if="climates && climates.length > 0"
+      @select="updateOverlays"
+      ref="climateOverlaySelectModal"
+    />
+
+    <v-bottom-sheet
+      v-model="editLocationBottomSheet"
+      inset
+      persistent
+      max-height="50vh"
+      width="auto"
+      v-if="selectedLocation"
+    >
+      <v-card class="pb-10">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div>{{ $t('modalTitleFixLocation') }}</div>
+          <v-btn :icon="mdiClose" variant="text" @click="editLocationBottomSheet = false" />
+        </v-card-title>
+        <v-card-text>
+          <p>{{ $t('modalTextFixLocation') }}</p>
+
+          <LocationEditForm
+            v-model="selectedLocation"
+            @updated="saveLocationDetails"
+          />
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
+
+    <v-bottom-sheet
+      v-model="bottomSheetVisible"
+      inset
+      persistent
+      :scrim="false"
+      scroll-strategy="none"
+      :capture-focus="false"
+      :close-on-back="false"
+      :close-on-content-click="false"
+      disabled
+      no-click-animation
+      max-height="50vh"
+      width="auto"
+    >
+      <v-card class="pb-10">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div>{{ $t('modalTitleClimateOverlayLegend') }}</div>
+          <v-btn :icon="mdiClose" variant="text" @click="bottomSheetVisible = false" />
+        </v-card-title>
+        <v-img class="pa-5" :src="legendUrl" contain width="fit-content" />
+      </v-card>
+    </v-bottom-sheet>
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import MdiIcon from '@/components/icons/MdiIcon'
-import ClimateOverlayModal from '@/components/modals/ClimateOverlayModal'
-import ColorGradient from '@/components/util/ColorGradient'
-import L from 'leaflet'
-import { apiPostClimates } from '@/mixins/api/climate'
-import { apiPostMapOverlayTable } from '@/mixins/api/misc'
-import { locationTypes } from '@/mixins/types'
-import { getColor } from '@/mixins/colors'
-import { toUrlString } from '@/mixins/formatting'
-import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
-import { mdiWeatherSnowyRainy, mdiMapLegend } from '@mdi/js'
-import { LMap, LImageOverlay, LControl } from 'vue2-leaflet'
-// LEAFLET
-import 'leaflet/dist/leaflet.css'
-import 'leaflet.markercluster/dist/MarkerCluster.css'
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
-import 'leaflet-draw/dist/leaflet.draw.css'
-import { Pages } from '@/mixins/pages'
+<script lang="ts" setup>
+  import shp from 'shpjs'
+  import L, { type TileLayer, type Map, type Marker, type FeatureGroup, type Layer, type ImageOverlay, type Control } from 'leaflet'
+  import 'leaflet/dist/leaflet.css'
+  import 'leaflet.markercluster/dist/MarkerCluster.css'
+  import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+  import 'leaflet-draw/dist/leaflet.draw.css'
+  import 'leaflet-easybutton/src/easy-button.css'
 
-require('leaflet.heat')
-require('leaflet.sync')
-require('leaflet.markercluster')
-const countries = require('i18n-iso-countries')
-countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
+  import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
+  import iconUrl from 'leaflet/dist/images/marker-icon.png'
+  import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
+  import type { ExtendedViewTableLocations } from '@/plugins/types/client'
+  import { getColor } from '@/plugins/util/colors'
+  import { apiPostMapOverlayTable } from '@/plugins/api/misc'
+  import ColorGradient from '@/components/widgets/ColorGradient.vue'
 
-// Set the leaflet marker icon
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-})
+  import 'leaflet.heat'
+  import 'leaflet.sync'
+  import 'leaflet.markercluster'
+  import 'leaflet-draw'
+  import 'leaflet-easybutton'
 
-export default {
-  data: function () {
-    return {
-      Pages,
-      locationTypes,
-      mdiWeatherSnowyRainy,
-      mdiMapLegend,
-      loading: false,
-      loadingProgress: 0,
-      zoom: 3,
-      maxZoom: 18,
-      center: [22.5937, 2.1094],
-      heat: null,
-      location: null,
-      markerClusterer: null,
-      editableLayers: null,
-      gradientColors: [],
-      markers: [],
-      climates: [],
-      imageOverlayClimateId: null,
-      imageOverlays: [],
-      imageOverlayOpacity: 1,
-      internalLocations: []
-    }
-  },
-  props: {
-    locations: {
-      type: Array,
-      default: () => []
-    },
-    mapType: {
-      type: String,
-      default: 'cluster'
-    },
-    selectionMode: {
-      type: String,
-      default: 'none'
-    },
-    isEditMode: {
-      type: Boolean,
-      default: false
-    },
-    showLinks: {
-      type: Boolean,
-      default: true
-    },
-    climateOverlaysDisabled: {
-      type: Boolean,
-      default: false
-    },
-    border: {
-      type: String,
-      default: 'border'
-    }
-  },
-  watch: {
-    locations: function (newValue) {
-      if (newValue) {
-        this.internalLocations = newValue.concat()
-      } else {
-        this.internalLocations = []
-      }
-      this.updateMap()
-    },
-    selectionMode: function () {
-      this.updateMap(false)
-    },
-    storeDarkMode: function () {
-      this.updateThemeLayer()
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeBaseUrl',
-      'storeMapLayer',
-      'storeToken',
-      'storeServerSettings',
-      'storeDarkMode'
-    ]),
-    overlayLegends: function () {
-      if (this.imageOverlays) {
-        return this.imageOverlays.filter(i => i.isLegend === true)
-      } else {
-        return []
-      }
-    },
-    overlayImages: function () {
-      if (this.imageOverlays) {
-        return this.imageOverlays.filter(i => i.isLegend === false)
-      } else {
-        return []
-      }
-    }
-  },
-  components: {
-    MdiIcon,
-    ClimateOverlayModal,
-    ColorGradient,
-    LControl,
-    LMap,
-    LImageOverlay
-  },
-  methods: {
-    getLatLngs: function () {
-      return this.internalLocations.map(l => {
-        return L.latLng(l.locationLatitude, l.locationLongitude)
+  import { uuidv4 } from '@/plugins/util'
+  import { addShapefileToMap, type ShapefilePopupInfo } from '@/plugins/util/geo'
+  import { apiGetDataResource } from '@/plugins/api/dataset'
+  import { FilterComparator, FilterOperator, type ViewTableClimates, type PaginatedRequest } from '@/plugins/types/germinate'
+  import { apiPostClimateTable } from '@/plugins/api/climate'
+  import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { toUrlString } from '@/plugins/util/formatting'
+  import { mdiClose, mdiMapLegend, mdiWeatherPartlySnowyRainy } from '@mdi/js'
+  import { apiPatchLocation } from '@/plugins/api/location.ts'
+
+  import emitter from 'tiny-emitter/instance'
+  import { locationTypes } from '@/plugins/util/types'
+
+  // Set the leaflet marker icon
+  // @ts-ignore
+  delete L.Icon.Default.prototype._getIconUrl
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: iconRetinaUrl,
+    iconUrl: iconUrl,
+    shadowUrl: shadowUrl,
+  })
+
+  const store = useCoreStore()
+
+  interface MapProps {
+    locations: ExtendedViewTableLocations[]
+    mapType?: 'cluster' | 'heatmap' | undefined
+    selectionMode?: 'point' | 'polygon' | undefined
+    showLinks?: boolean
+    showClimateOverlays?: boolean
+    showEdit?: boolean
+    rounded?: boolean
+    shapefileId?: number
+    climateOverlaysDisabled?: boolean
+  }
+
+  const props = withDefaults(defineProps<MapProps>(), {
+    showLinks: true,
+    showEdit: true,
+    rounded: true,
+    climateOverlaysDisabled: false,
+  })
+
+  const emit = defineEmits(['map-loaded', 'location-updated', 'shapefile-loaded'])
+
+  // Refs
+  const id = ref(uuidv4())
+  const mapElement = useTemplateRef('mapElement')
+  const climateOverlaySelectModal = useTemplateRef('climateOverlaySelectModal')
+  const popupContent = ref('')
+  const internalLocations = ref<ExtendedViewTableLocations[]>([])
+  const currentLocation = ref<ExtendedViewTableLocations>()
+  const loading = ref<boolean>(false)
+  const loadingProgress = ref<number>(0)
+  const bottomSheetVisible = ref(false)
+  const editLocationBottomSheet = ref(false)
+  const selectedLocation = ref<ExtendedViewTableLocations>()
+  const shapefileInfo = ref<ShapefilePopupInfo>()
+  const legendUrl = ref<string>()
+
+  const climates = ref<ViewTableClimates[]>([])
+  const selectedClimate = ref<ViewTableClimates>()
+  const climateOverlayOpacity = ref(1)
+
+  let themeLayer: TileLayer
+  let map: Map
+  let markerClusterer: any
+  let heat: any
+  const markers: Marker[] = []
+  const imageOverlays: ImageOverlay[] = []
+  let legendButton: Control | undefined = undefined
+  let overlayButton: Control | undefined = undefined
+  let gradientColors: string[] = []
+  let editableLayers: FeatureGroup
+  let shapefileLayers: { [key: string]: Layer[] } = {}
+
+  const iconCache: Partial<Record<string, L.DivIcon>> = {}
+
+  function getCustomIcon (type: string | undefined): L.DivIcon {
+    const key = type === undefined ? 'undefined' : type
+    if (!iconCache[key]) {
+      const config = locationTypes[key] || locationTypes.dataset
+      const svgHtml = `<svg viewBox="0 0 24 24" width="18" height="18"><path fill="#ffffff" d="${config.path}"/></svg>`
+
+      iconCache[key] = L.divIcon({
+        className: 'custom-marker-wrapper',
+        html: `<div style="background-color: ${config.color()};" class="marker-pin">${svgHtml}</div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
       })
-    },
-    onClick: function (e) {
-      if (this.selectionMode === 'point') {
-        const map = this.$refs.map.mapObject
-        const markerPosition = e.latlng
+    }
 
-        this.internalLocations = [{
+    return iconCache[key]!
+  }
+
+  function editLocation (location: ExtendedViewTableLocations) {
+    selectedLocation.value = location
+
+    nextTick(() => {
+      editLocationBottomSheet.value = true
+    })
+  }
+
+  function saveLocationDetails (changes: ExtendedViewTableLocations) {
+    apiPatchLocation(changes, () => {
+      editLocationBottomSheet.value = false
+      selectedLocation.value = undefined
+
+      emit('location-updated')
+    })
+  }
+
+  function updateThemeLayer () {
+    if (themeLayer) {
+      themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${store.storeIsDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
+    }
+  }
+
+  function initMap () {
+    if (!mapElement.value) {
+      return
+    }
+
+    map = L.map(mapElement.value)
+    map.setView([22.5937, 2.1094], 3)
+
+    themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${store.storeIsDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
+      id: store.storeIsDarkMode ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
+      attribution: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
+      maxZoom: 21,
+      maxNativeZoom: 15,
+    })
+
+    const openstreetmap = L.tileLayer('//tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      id: 'OpenStreetMap',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 21,
+      maxNativeZoom: 19,
+    })
+
+    // Add an additional satellite layer
+    const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      id: 'Esri WorldImagery',
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+      maxZoom: 21,
+      maxNativeZoom: 19,
+    })
+
+    const topo = L.tileLayer('//{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      id: 'OpenTopoMap',
+      attribution: 'Kartendaten: &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)</code>',
+      maxZoom: 19,
+      maxNativeZoom: 17,
+    })
+
+    switch (store.storeMapLayer) {
+      case 'theme': {
+        map.addLayer(themeLayer)
+        break
+      }
+      case 'satellite': {
+        map.addLayer(satellite)
+        break
+      }
+      case 'topo': {
+        map.addLayer(topo)
+        break
+      }
+      default: {
+        map.addLayer(openstreetmap)
+        break
+      }
+    }
+
+    const baseMaps = {
+      'Theme-based': themeLayer,
+      OpenStreetMap: openstreetmap,
+      'Esri WorldImagery': satellite,
+      OpenTopoMap: topo,
+    }
+
+    map.on('baselayerchange', e => {
+      switch (e.name) {
+        case 'Theme-based': {
+          store.setMapLayer('theme')
+          break
+        }
+        case 'OpenStreetMap': {
+          store.setMapLayer('osm')
+          break
+        }
+        case 'Esri WorldImagery': {
+          store.setMapLayer('satellite')
+          break
+        }
+        case 'OpenTopoMap': {
+          store.setMapLayer('topo')
+          break
+        }
+      }
+    })
+
+    map.on('click', e => {
+      if (props.selectionMode === 'point') {
+        const l: ExtendedViewTableLocations = {
           locationId: -1,
           locationName: 'Query',
-          locationLatitude: markerPosition.lat,
-          locationLongitude: markerPosition.lng
-        }]
-
-        map.panTo(markerPosition)
-
-        this.updateMap()
-      }
-    },
-    setPolygons: function (polygons) {
-      if (this.selectionMode === 'polygon' && this.editableLayers) {
-        polygons.forEach(p => L.polygon(p).addTo(this.editableLayers))
-      }
-    },
-    updateOverlays: function (overlay) {
-      // If a climate was selected
-      if (overlay.climateId !== null) {
-        // If it's a different climate, go get the overlays
-        if (this.imageOverlayClimateId !== overlay.climateId) {
-          const queryData = {
-            filter: [{
-              column: 'referenceTable',
-              comparator: 'equals',
-              operator: 'and',
-              values: ['climates']
-            }, {
-              column: 'foreignId',
-              comparator: 'equals',
-              operator: 'and',
-              values: [overlay.climateId]
-            }],
-            page: 1,
-            limit: MAX_JAVA_INTEGER
-          }
-          apiPostMapOverlayTable(queryData, result => {
-            const array = []
-
-            if (result && result.data) {
-              result.data.forEach(i => {
-                let path = ''
-
-                const params = {
-                  token: this.storeToken ? this.storeToken.imageToken : null
-                }
-                const paramString = toUrlString(params)
-
-                path = this.storeBaseUrl + `mapoverlay/${i.mapoverlayId}/src?` + paramString
-
-                array.push({
-                  id: i.mapoverlayId,
-                  url: path,
-                  isLegend: i.mapoverlaysIsLegend,
-                  bounds: [[i.mapoverlayBottomLeftLat, i.mapoverlayBottomLeftLng], [i.mapoverlayTopRightLat, i.mapoverlayTopRightLng]]
-                })
-              })
-            }
-
-            this.imageOverlayOpacity = overlay.opacity / 100.0
-            this.imageOverlays = array
-          })
-        } else {
-          // Else, just change the opacity
-          this.imageOverlayOpacity = overlay.opacity / 100.0
+          locationLatitude: e.latlng.lat,
+          locationLongitude: e.latlng.lng,
         }
-      } else {
-        // Otherwise, just set everything to their default values
-        this.imageOverlayOpacity = 1
-        this.imageOverlays = []
-      }
-    },
-    invalidateSize: function () {
-      this.$nextTick(() => this.$refs.map.mapObject.invalidateSize())
-    },
-    getPolygons: function () {
-      if (this.selectionMode === 'polygon' && this.editableLayers) {
-        const polygons = []
 
-        this.editableLayers.eachLayer(layer => {
-          const polygon = []
-          const latLngs = layer.getLatLngs()[0]
-          for (let i = 0; i < latLngs.length; i++) {
-            polygon.push(latLngs[i])
+        internalLocations.value = [l]
+
+        map.panTo(e.latlng)
+
+        updateMarkers()
+      }
+    })
+
+    L.control.layers(baseMaps).addTo(map)
+
+    // Disable zoom until focus gained, disable when blur
+    map.scrollWheelZoom.disable()
+    map.on('focus', () => map.scrollWheelZoom.enable())
+    map.on('blur', () => map.scrollWheelZoom.disable())
+
+    if (internalLocations.value) {
+      updateMarkers()
+    }
+
+    if (props.selectionMode === 'polygon') {
+      editableLayers = new L.FeatureGroup()
+      map.addLayer(editableLayers)
+
+      const options = {
+        position: 'topright',
+        draw: {
+          polyline: false,
+          circle: false,
+          rectangle: false,
+          marker: false,
+          circlemarker: false,
+          polygon: {
+            allowIntersection: false,
+            drawError: {
+              color: '#c0392b',
+            },
+          },
+        },
+        edit: {
+          featureGroup: editableLayers,
+          remove: true,
+        },
+      }
+
+      // @ts-ignore
+      const result = new L.Control.Draw(options)
+      map.addControl(result)
+
+      // @ts-ignore
+      map.on(L.Draw.Event.CREATED, e => editableLayers.addLayer(e.layer))
+
+      nextTick(() => {
+        // Enable the polygon draw feature by default
+        // @ts-ignore
+        document.querySelector(`#map-${id.value}`)?.querySelector('.leaflet-draw-draw-polygon')?.click()
+      })
+    }
+
+    if (props.shapefileId) {
+      updateShapefile()
+    }
+
+    emit('map-loaded', map)
+  }
+
+  function updateOverlays () {
+    if (!map) {
+      return
+    }
+
+    legendUrl.value = undefined
+    if (imageOverlays) {
+      imageOverlays.forEach(io => map.removeLayer(io))
+    }
+
+    if (legendButton) {
+      map.removeControl(legendButton)
+    }
+
+    if (selectedClimate.value) {
+      const queryData: PaginatedRequest = {
+        filters: [{
+          filters: [{
+            column: 'referenceTable',
+            comparator: FilterComparator.equals,
+            values: ['climates'],
+          }, {
+            column: 'foreignId',
+            comparator: FilterComparator.equals,
+            values: [`${selectedClimate.value.climateId}`],
+          }],
+          operator: FilterOperator.and,
+        }],
+        page: 1,
+        limit: MAX_JAVA_INTEGER,
+      }
+      apiPostMapOverlayTable(queryData, result => {
+        if (result && result.data && result.data.length > 0) {
+          result.data.forEach(mo => {
+            let path = ''
+
+            const params = {
+              token: store.storeToken ? store.storeToken.imageToken : undefined,
+            }
+            const paramString = toUrlString(params)
+
+            path = store.storeBaseUrl + `mapoverlay/${mo.mapoverlayId}/src?` + paramString
+
+            if (mo.mapoverlaysIsLegend) {
+              legendUrl.value = path
+            } else {
+              const overlay = L.imageOverlay(path, [[mo.mapoverlayBottomLeftLat, mo.mapoverlayBottomLeftLng], [mo.mapoverlayTopRightLat, mo.mapoverlayTopRightLng]], {
+                opacity: climateOverlayOpacity.value || 1,
+              })
+
+              overlay.addTo(map)
+              imageOverlays.push(overlay)
+            }
+          })
+
+          if (legendUrl.value) {
+            legendButton = L.easyButton(`
+              <svg viewBox="0 0 24 24" width="18" height="18" class="legend-control__icon">
+                <path d="${mdiMapLegend}" fill="currentColor" />
+              </svg>
+            `, function () {
+              bottomSheetVisible.value = !bottomSheetVisible.value
+            // @ts-expect-error
+            }, '', { position: 'bottomleft' })
+            legendButton.addTo(map)
           }
-          polygons.push(polygon)
-        })
-
-        return polygons
-      } else {
-        return null
-      }
-    },
-    navigateToGermplasm: function (location) {
-      // Navigate to the germplasm overview page and filter on location
-      const filter = [{
-        column: 'locationId',
-        comparator: 'equals',
-        operator: 'and',
-        values: [location.locationId]
-      }]
-      this.$router.push({
-        name: Pages.germplasm,
-        query: {
-          'germplasm-filter': JSON.stringify(filter)
         }
       })
-    },
-    getFlag: function (country) {
-      if (country.countryCode2) {
-        return country.countryCode2.toLowerCase()
-      } else if (country.countryCode3) {
-        return countries.alpha3ToAlpha2(country.countryCode3).toLowerCase()
-      } else {
-        return ''
-      }
-    },
-    getCountry: function (country) {
-      if (country.countryCode2) {
-        return countries.getName(country.countryCode2.toUpperCase(), 'en')
-      } else if (country.countryCode3) {
-        return countries.getName(country.countryCode3.toUpperCase(), 'en')
-      } else {
-        return ''
-      }
-    },
-    updateMap: function (invalidate = true) {
-      const map = this.$refs.map.mapObject
+    }
+  }
 
-      // Remove existing markers
-      if (this.markers && this.markers.length > 0) {
-        this.markers.forEach(m => map.removeLayer(m))
-      }
+  function updateMarkers () {
+    if (!map) {
+      return
+    }
 
-      if (this.internalLocations && this.internalLocations.length > 0) {
-        if (this.internalLocations.length === 1) {
-          // If there's just one location, center it and open the popup
-          this.location = this.internalLocations[0]
-          this.$nextTick(() => {
-            this.center = [this.location.locationLatitude, this.location.locationLongitude]
-            map.panTo(new L.LatLng(this.location.locationLatitude, this.location.locationLongitude))
-          })
+    // Remove existing markers
+    if (markers) {
+      markers.forEach(m => map.removeLayer(m))
+    }
 
-          const marker = L.marker([this.location.locationLatitude, this.location.locationLongitude]).bindPopup('')
+    if (internalLocations.value && internalLocations.value.length > 0) {
+      if (internalLocations.value.length === 1) {
+        currentLocation.value = internalLocations.value[0]
+
+        const lat = currentLocation.value.locationLatitude
+        const lng = currentLocation.value.locationLongitude
+
+        if (lat && lng) {
+          const marker = L.marker([lat, lng], { icon: getCustomIcon(currentLocation.value.locationType) }).bindPopup('')
           marker.on('click', e => {
             const popup = e.target.getPopup()
             // Set the popup content on click
-            this.$nextTick(() => popup.setContent(this.$refs.popupContent))
+            nextTick(() => popup.setContent(popupContent.value))
           })
           marker.addTo(map)
           marker.fire('click')
 
-          this.markers.push(marker)
-        } else if (this.internalLocations.length > 1) {
-          // If there are multiple locations, fit them into view
-          const latLngBounds = L.latLngBounds()
+          markers.push(marker)
 
-          this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
-            .forEach(l => latLngBounds.extend([l.locationLatitude, l.locationLongitude]))
-
-          this.$refs.map.fitBounds(latLngBounds.pad(0.1))
+          nextTick(() => {
+            map.panTo(new L.LatLng(lat, lng))
+          })
         }
+      } else if (internalLocations.value.length > 1) {
+        // If there are multiple locations, fit them into view
+        // @ts-ignore
+        const latLngBounds = L.latLngBounds(internalLocations.value.filter(l => l.locationLatitude && l.locationLongitude).map(l => new L.LatLng(l.locationLatitude, l.locationLongitude)))
 
-        if (this.mapType === 'cluster') {
-          this.loading = true
-          this.loadingProgress = 0
-          if (this.markerClusterer) {
-            // If it exists, clear all layers
-            this.markerClusterer.clearLayers()
-          } else {
-            // If it doesn't create it
-            this.markerClusterer = L.markerClusterGroup({
-              chunkedLoading: true,
-              chunkProgress: (processed, total) => {
-                this.loading = processed !== total
-                this.loadingProgress = Math.round(processed / total * 100)
-              }
-            })
-            map.addLayer(this.markerClusterer)
-          }
-          const clusterMarker = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
-            .map(l => {
-              const marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
-              marker.on('click', e => {
-                const popup = e.target.getPopup()
-                this.location = l
-                this.$nextTick(() => popup.setContent(this.$refs.popupContent))
-              })
-              return marker
-            })
-          this.markerClusterer.addLayers(clusterMarker)
-        } else if (this.mapType === 'heatmap') {
-          const ls = this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
-            .map(l => [l.locationLatitude, l.locationLongitude, 1])
-          if (this.heat) {
-            // If it exists, just set it
-            this.heat.setLatLngs(ls)
-          } else {
-            // Otherwise, create it
-            const gradient = {}
+        map.fitBounds(latLngBounds.pad(0.1))
+      }
 
-            this.gradientColors.forEach((c, i) => {
-              const position = i * (1 / (this.gradientColors.length - 1))
-              gradient[position] = c
-            })
+      if (props.mapType === 'cluster') {
+        loading.value = true
+        loadingProgress.value = 0
 
-            this.heat = L.heatLayer(ls, {
-              minOpacity: 0.7,
-              max: 1,
-              radius: 10,
-              blur: 7,
-              gradient: gradient
-            }).addTo(this.$refs.map.mapObject)
-
-            // this.$refs.gradient.refresh()
-          }
+        if (markerClusterer) {
+          // If it exists, clear all layers
+          markerClusterer.clearLayers()
         } else {
-          this.internalLocations.filter(l => l.locationLatitude && l.locationLongitude)
-            .forEach(l => {
-              const marker = L.marker([l.locationLatitude, l.locationLongitude]).bindPopup('')
-              marker.on('click', e => {
-                const popup = e.target.getPopup()
-                this.location = l
-                // Set the popup content on click
-                this.$nextTick(() => popup.setContent(this.$refs.popupContent))
-              })
-              marker.addTo(map)
-              this.markers.push(marker)
+          // If it doesn't create it
+          // @ts-ignore
+          markerClusterer = L.markerClusterGroup({
+            chunkedLoading: true,
+            disableClusteringAtZoom: 16,
+            chunkProgress: (processed: number, total: number) => {
+              loading.value = processed !== total
+              loadingProgress.value = Math.round(processed / total * 100)
+            },
+          })
+          map.addLayer(markerClusterer)
+        }
+        const clusterMarker = internalLocations.value.filter(l => l.locationLatitude && l.locationLongitude)
+          .map(l => {
+            // @ts-ignore
+            const marker = L.marker([l.locationLatitude, l.locationLongitude], { icon: getCustomIcon(l.locationType) }).bindPopup('')
+            marker.on('click', e => {
+              const popup = e.target.getPopup()
+              currentLocation.value = l
+              nextTick(() => popup.setContent(popupContent.value))
             })
+            return marker
+          })
+        markerClusterer.addLayers(clusterMarker)
+      } else if (props.mapType === 'heatmap') {
+        const ls = internalLocations.value.filter(l => l.locationLatitude && l.locationLongitude)
+          .map(l => [l.locationLatitude, l.locationLongitude, 1])
+        if (heat) {
+          // If it exists, just set it
+          heat.setLatLngs(ls)
+        } else {
+          // Otherwise, create it
+          const gradient: { [key: number]: string } = {}
+
+          gradientColors.forEach((c, i) => {
+            const position = i * (1 / (gradientColors.length - 1))
+            gradient[position] = c
+          })
+
+          // @ts-ignore
+          heat = L.heatLayer(ls, {
+            minOpacity: 0.7,
+            max: 1,
+            radius: 10,
+            blur: 7,
+            gradient: gradient,
+          }).addTo(map)
+
+          // this.$refs.gradient.refresh()
         }
+      } else {
+        internalLocations.value.filter(l => l.locationLatitude && l.locationLongitude)
+          .forEach(l => {
+            // @ts-ignore
+            const marker = L.marker([l.locationLatitude, l.locationLongitude], { icon: getCustomIcon(l.locationType) }).bindPopup('')
+            marker.on('click', e => {
+              const popup = e.target.getPopup()
+              currentLocation.value = l
+              // Set the popup content on click
+              nextTick(() => popup.setContent(popupContent.value))
+            })
+            marker.addTo(map)
+            markers.push(marker)
+          })
       }
-
-      if (invalidate) {
-        this.$nextTick(() => map.invalidateSize())
-      }
-    },
-    updateThemeLayer: function () {
-      if (this.themeLayer) {
-        this.themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
-      }
-    },
-    initMap: function () {
-      // Add the OSM default layer
-      const openstreetmap = L.tileLayer('//tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        id: 'OpenStreetMap',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      })
-      this.themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
-        id: this.storeDarkMode ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
-        attribution: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
-        maxZoom: 21,
-        maxNativeZoom: 15
-      })
-      // Add an additional satellite layer
-      const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        id: 'Esri WorldImagery',
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-      })
-
-      const map = this.$refs.map.mapObject
-
-      switch (this.storeMapLayer) {
-        case 'theme':
-          map.addLayer(this.themeLayer)
-          break
-        case 'satellite':
-          map.addLayer(satellite)
-          break
-        case 'osm':
-        default:
-          map.addLayer(openstreetmap)
-          break
-      }
-
-      const baseMaps = {
-        'Theme-based': this.themeLayer,
-        OpenStreetMap: openstreetmap,
-        'Esri WorldImagery': satellite
-      }
-
-      L.control.layers(baseMaps).addTo(map)
-
-      // Listen for layer changes and store the user selection in the store
-      map.on('baselayerchange', e => {
-        switch (e.name) {
-          case 'Theme-based':
-            this.$store.dispatch('setMapLayer', 'theme')
-            break
-          case 'OpenStreetMap':
-            this.$store.dispatch('setMapLayer', 'osm')
-            break
-          case 'Esri WorldImagery':
-            this.$store.dispatch('setMapLayer', 'satellite')
-            break
-        }
-      })
-
-      this.updateMap()
-
-      if (this.selectionMode === 'polygon') {
-        this.editableLayers = new L.FeatureGroup()
-        map.addLayer(this.editableLayers)
-
-        const options = {
-          position: 'topright',
-          draw: {
-            polyline: false,
-            circle: false,
-            rectangle: false,
-            marker: false,
-            circlemarker: false,
-            polygon: {
-              allowIntersection: false,
-              drawError: {
-                color: '#c0392b'
-              }
-            }
-          },
-          edit: {
-            featureGroup: this.editableLayers,
-            remove: true
-          }
-        }
-
-        const result = new L.Control.Draw(options)
-        map.addControl(result)
-
-        map.on(L.Draw.Event.CREATED, e => this.editableLayers.addLayer(e.layer))
-
-        this.$nextTick(() => {
-          // Enable the polygon draw feature by default
-          this.$refs.map.$el.querySelector('.leaflet-draw-draw-polygon').click()
-        })
-      }
-
-      // Disable zoom until focus gained, disable when blur
-      map.scrollWheelZoom.disable()
-      map.on('focus', () => map.scrollWheelZoom.enable())
-      map.on('blur', () => map.scrollWheelZoom.disable())
-      this.$emit('map-loaded', map)
-
-      if (this.climateOverlaysDisabled === false) {
-        const queryData = {
-          filter: [{
-            column: 'overlays',
-            comparator: 'greaterThan',
-            operator: 'and',
-            values: [0]
-          }]
-        }
-
-        apiPostClimates(queryData, result => {
-          if (result && result.data) {
-            this.climates = result.data
-          }
-        })
-      }
-    }
-  },
-  mounted: function () {
-    this.internalLocations = this.locations
-
-    if (this.selectionMode === 'polygon') {
-      require('leaflet-draw')
-    }
-
-    if (this.storeServerSettings && this.storeServerSettings.colorsGradient && this.storeServerSettings.colorsGradient.length > 0) {
-      this.gradientColors = this.storeServerSettings.colorsGradient.concat()
     } else {
-      this.gradientColors.push('#ffffff')
-      this.gradientColors.push(getColor(0))
+      if (markerClusterer) {
+        // If it exists, clear all layers
+        markerClusterer.clearLayers()
+      }
+      if (heat) {
+        // If it exists, just set it
+        heat.setLatLngs([])
+      }
+    }
+  }
+
+  function invalidateSize () {
+    nextTick(() => map.invalidateSize())
+  }
+
+  function setPolygons (polygons: any[]) {
+    if (props.selectionMode === 'polygon' && editableLayers) {
+      polygons.forEach(p => L.polygon(p).addTo(editableLayers))
+    }
+  }
+
+  function getPolygons () {
+    if (props.selectionMode === 'polygon' && editableLayers) {
+      const polygons: any[] = []
+
+      editableLayers.eachLayer(layer => {
+        const polygon = []
+        // @ts-ignore
+        const latLngs = layer.getLatLngs()[0]
+        for (let i = 0; i < latLngs.length; i++) {
+          polygon.push(latLngs[i])
+        }
+        polygons.push(polygon)
+      })
+
+      return polygons
+    } else {
+      return null
+    }
+  }
+
+  function getLatLngs () {
+    return internalLocations.value.map(l => {
+      return L.latLng(l.locationLatitude || 0, l.locationLongitude || 0)
+    })
+  }
+
+  function showShapefilePopup (payload: ShapefilePopupInfo) {
+    shapefileInfo.value = payload
+
+    nextTick(() => {
+      L.popup({ maxHeight: 200 })
+        .setLatLng(payload.latLng)
+        .setContent(popupContent.value)
+        .openOn(map)
+    })
+  }
+
+  function updateShapefile () {
+    emitter.off('shapefile-germplasm-selected', showShapefilePopup)
+
+    if (shapefileLayers) {
+      Object.keys(shapefileLayers).forEach(k => shapefileLayers[k].forEach(l => l.remove()))
+      shapefileLayers = {}
     }
 
-    this.$nextTick(() => this.initMap())
+    if (props.shapefileId) {
+      apiGetDataResource(props.shapefileId, async result => {
+        const content = await result.arrayBuffer()
+        const shape = await shp(content)
+
+        // @ts-ignore
+        shapefileLayers = addShapefileToMap(map, shape)
+
+        // If there are multiple locations, fit them into view
+        // @ts-ignore
+        const latLngBounds = L.latLngBounds(internalLocations.value.filter(l => l.locationLatitude && l.locationLongitude).map(l => new L.LatLng(l.locationLatitude, l.locationLongitude)))
+
+        const layers = Object.values(shapefileLayers).flat()
+
+        emit('shapefile-loaded', shapefileLayers)
+
+        if (layers.length > 0) {
+          const featureGroup = L.featureGroup(layers)
+          const groupBounds = featureGroup.getBounds()
+
+          if (groupBounds.isValid()) {
+            latLngBounds.extend(groupBounds)
+          }
+        }
+
+        map.fitBounds(latLngBounds.pad(0.1))
+
+        emitter.on('shapefile-germplasm-selected', showShapefilePopup)
+      })
+    }
   }
-}
+
+  watch(() => store.storeIsDarkMode, async () => updateThemeLayer())
+  watch(() => props.locations, async newValue => {
+    internalLocations.value = newValue.concat()
+    updateMarkers()
+  }, { immediate: true })
+  watch(() => props.shapefileId, async () => updateShapefile())
+
+  onMounted(() => {
+    if (store.storeServerSettings && store.storeServerSettings.colorsGradient && store.storeServerSettings.colorsGradient.length > 0) {
+      gradientColors = store.storeServerSettings.colorsGradient.concat()
+    } else {
+      gradientColors.push('#ffffff', getColor(0))
+    }
+
+    initMap()
+
+    if (props.climateOverlaysDisabled === false) {
+      const queryData: PaginatedRequest = {
+        page: 1,
+        limit: MAX_JAVA_INTEGER,
+        filters: [{
+          filters: [{
+            column: 'overlays',
+            comparator: FilterComparator.greaterThan,
+            values: ['0'],
+          }],
+          operator: FilterOperator.and,
+        }],
+      }
+
+      apiPostClimateTable(queryData, result => {
+        if (result && result.data) {
+          climates.value = result.data
+
+          if (climates.value.length > 1) {
+            overlayButton = L.easyButton(`
+              <svg viewBox="0 0 24 24" width="18" height="18" class="legend-control__icon">
+                <path d="${mdiWeatherPartlySnowyRainy}" fill="currentColor" />
+              </svg>
+            `, function () {
+              climateOverlaySelectModal.value?.show()
+            // @ts-expect-error
+            }, '', { position: 'topright' })
+            overlayButton.addTo(map)
+          }
+        }
+      })
+    }
+  })
+
+  defineExpose({
+    invalidateSize,
+    getPolygons,
+    setPolygons,
+    getLatLngs,
+  })
 </script>
 
+<style scoped>
+.map {
+  height: 50vh;
+}
+</style>
+
 <style>
-.location-map {
-  position: relative;
-  height: 600px !important;
+.popup-with-no-events {
+  pointer-events: none;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
 }
 
-.location-map .leaflet-legend:hover .leaflet-legend-items {
-  height: auto;
-  padding: 0.5rem;
-}
-.location-map .leaflet-legend:hover .leaflet-legend-items img {
-  height: auto;
-}
-.location-map .leaflet-legend:hover .leaflet-legend-button {
-  display: none;
-}
-
-.location-map .leaflet-legend .leaflet-legend-button {
-  display: block;
-}
-.location-map .leaflet-legend-items {
-  height: 0;
-  max-height: 300px;
-  overflow-y: auto;
-}
-.location-map .leaflet-legend-items img {
-  height: 0;
+.marker-cluster, .prunecluster {
+  color: white;
 }
 
 .location-map .leaflet-popup-content-wrapper {
@@ -643,55 +755,114 @@ export default {
   width: 300px!important;
 }
 
-.location-map dl.row {
-  margin-bottom: 0;
-}
-.location-map #settings-button {
-  width: 28px;
-  height: 28px;
-}
-.point-search > .location-map {
-  cursor: crosshair;
-}
-.location-map .location-map-loading-indicator {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,.6);
-  pointer-events: none;
-  z-index: 1000;
-}
-.location-map .location-map-loading-indicator > .progress {
-  width: 50%;
-}
-.location-name * {
-  overflow-wrap: break-word;
+.location-map .leaflet-popup-content .v-list-item-subtitle {
+  text-wrap: wrap;
+  line-clamp: unset;
+  -webkit-line-clamp: unset;
 }
 
-.marker-cluster, .prunecluster {
-  color: white;
+.location-map.point-search {
+  cursor: crosshair;
 }
 
 .marker-cluster-small, .prunecluster-small {
-  background-color: rgba(124, 179, 218, 0.6);
+  background-color: rgba(var(--v-theme-primary), 0.6);
 }
 .marker-cluster-small div, .prunecluster-small div {
-  background-color: rgba(124, 179, 218, 0.8);
+  background-color: rgba(var(--v-theme-primary), 0.8);
 }
 
 .marker-cluster-medium, .prunecluster-medium {
-  background-color: rgba(62, 139, 193, 0.6);
+  background-color: rgba(var(--v-theme-primary), 0.6);
+  filter: saturate(0.8);
 }
 .marker-cluster-medium div, .prunecluster-medium div {
-  background-color: rgba(62, 139, 193, 0.8);
+  background-color: rgba(var(--v-theme-primary), 0.8);
 }
 
 .marker-cluster-large, .prunecluster-large {
-  background-color: rgba(15, 112, 182, 0.6);
+  background-color: rgba(var(--v-theme-primary), 0.6);
+  filter: saturate(0.6)
 }
 .marker-cluster-large div, .prunecluster-large div {
-  background-color: rgba(15, 112, 182, 0.8);
+  background-color: rgba(var(--v-theme-primary), 0.8);
+}
+
+.location-map .legend-control {
+  position: relative;
+  background: white;
+}
+
+.location-map .legend-control__button {
+  display: block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+
+.location-map .legend-control__image {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  max-width: 260px;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  background: white;
+}
+
+.location-map .legend-control:hover .legend-control__image {
+  display: block;
+}
+
+.location-map .legend-control__icon {
+  vertical-align: middle;
+  pointer-events: none;
+}
+
+.location-map .legend-control__image {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  background: white;
+
+  max-width: 50vw;
+  max-height: 50vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.location-map .legend-control:hover .legend-control__image {
+  display: block;
+}
+
+.location-map .custom-marker-wrapper {
+  background: transparent;
+  border: none;
+}
+
+.location-map .marker-pin {
+  width: 32px;
+  height: 32px;
+  border-radius: 50% 50% 50% 0;
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -16px 0 0 -16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  border: 2px solid #ffffff;
+}
+
+.location-map .marker-pin svg {
+  transform: rotate(45deg);
 }
 </style>

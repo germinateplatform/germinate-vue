@@ -1,158 +1,103 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               ref="pedigreeTable"
-               v-on="$listeners">
-      <!-- HEAD: Relationship type -->
-      <template v-slot:head(relationshipType)="data">
-        <span>{{ data.label }} </span> <span v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipPedigreeRelationshipType')" class="text-muted"><MdiIcon :path="mdiHelpCircle" /></span>
-      </template>
-      <!-- Parent id link -->
-      <template v-slot:cell(parentId)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.parentId } }">{{ data.item.parentId }}</router-link>
-      </template>
-      <!-- Parent GID link -->
-      <template v-slot:cell(parentGid)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.parentId } }">{{ data.item.parentGid }}</router-link>
-      </template>
-      <!-- Parent name link -->
-      <template v-slot:cell(parentName)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.parentId } }">{{ data.item.parentName }}</router-link>
-      </template>
-      <!-- Child id link -->
-      <template v-slot:cell(childId)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.childId } }">{{ data.item.childId }}</router-link>
-      </template>
-      <!-- Child GID link -->
-      <template v-slot:cell(childGid)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.childId } }">{{ data.item.childGid }}</router-link>
-      </template>
-      <!-- Child name link -->
-      <template v-slot:cell(childName)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.childId } }">{{ data.item.childName }}</router-link>
-      </template>
-    </BaseTable>
-  </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTablePedigrees} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :show-details="false"
+    item-key="pedigreeId"
+    table-key="pedigrees"
+    :header-icon="mdiFamilyTree"
+    :header-title="$t('pagePedigreeTitle')"
+    :quick-search-comparator="FilterComparator.equals"
+    v-bind="$attrs"
+  >
+    <template #header.relationshipType="{ column }">
+      {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipPedigreeRelationshipType')">
+        <template #activator="{ props }">
+          <v-icon v-bind="props" size="small" color="muted" :icon="mdiHelpCircle" />
+        </template>
+      </v-tooltip>
+    </template>
+
+    <template #item.relationshipType="{ item }">
+      <v-chip label :text="item.relationshipType" />
+    </template>
+
+    <!-- Parent id link -->
+    <template #item.parentId="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.parentId)">{{ item.parentId }}</router-link>
+    </template>
+    <!-- Parent GID link -->
+    <template #item.parentGid="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.parentId)">{{ item.parentGid }}</router-link>
+    </template>
+    <!-- Parent name link -->
+    <template #item.parentName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.parentId)">{{ item.parentName }}</router-link>
+    </template>
+    <!-- Child id link -->
+    <template #item.childId="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.childId)">{{ item.childId }}</router-link>
+    </template>
+    <!-- Child GID link -->
+    <template #item.childGid="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.childId)">{{ item.childGid }}</router-link>
+    </template>
+    <!-- Child name link -->
+    <template #item.childName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.childId)">{{ item.childName }}</router-link>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { mdiHelpCircle } from '@mdi/js'
-import { Pages } from '@/mixins/pages'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-const emitter = require('tiny-emitter/instance')
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import { FilterComparator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePedigrees } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { Pages } from '@/plugins/pages'
+  import { columns } from '@/plugins/util/table-columns'
+  import { mdiFamilyTree, mdiHelpCircle } from '@mdi/js'
 
-export default {
-  name: 'PedigreeTable',
-  props: {
-    ...defaultProps.BASE,
-    ...defaultProps.DOWNLOAD
-  },
-  data: function () {
-    return {
-      Pages,
-      mdiHelpCircle,
-      options: {
-        idColumn: 'parentId',
-        tableName: 'pedigrees'
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePedigrees[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  // @ts-ignore
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    return columns.pedigrees.map(c => {
+      return {
+        ...c,
+        title: t(c.title || ''),
       }
-    }
-  },
-  computed: {
-    columns: function () {
-      return [
-        {
-          key: 'datasetId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnPedigreeDatasetId')
-        },
-        {
-          key: 'datasetName',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnPedigreeDatasetName')
-        },
-        {
-          key: 'parentId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnPedigreeParentId')
-        }, {
-          key: 'parentGid',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnPedigreeParentGid')
-        }, {
-          key: 'parentName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnPedigreeParentName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'childId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnPedigreeChildId')
-        }, {
-          key: 'childGid',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnPedigreeChildGid')
-        }, {
-          key: 'childName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnPedigreeChildName')
-        }, {
-          key: 'relationshipType',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnPedigreeRelationshipType')
-        }, {
-          key: 'relationshipDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnPedigreeRelationshipDescription')
-        }, {
-          key: 'pedigreeDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnPedigreeDescription')
-        }, {
-          key: 'pedigreeAuthor',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnPedigreeAuthor')
-        }
-      ]
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    refresh: function () {
-      this.$refs.pedigreeTable.refresh()
-    }
-  },
-  mounted: function () {
-    emitter.on('license-accepted', this.refresh)
-  },
-  beforeDestroy: function () {
-    emitter.off('license-accepted', this.refresh)
-  }
-}
+    })
+  })
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>

@@ -1,0 +1,71 @@
+<template>
+  <v-row justify="center">
+    <v-dialog
+      v-model="dialog"
+      scrollable
+    >
+      <v-card
+        class="mx-auto"
+        elevation="8"
+        min-width="400"
+        max-width="640"
+        rounded="lg"
+        :loading="loading"
+      >
+        <template #loader="{ isActive }">
+          <v-progress-linear
+            :active="isActive"
+            color="primary"
+            height="4"
+            indeterminate
+          />
+        </template>
+
+        <v-card-text class="pa-5">
+          <LoginSection
+            @close="hide"
+            @loading="setLoading"
+            :target-url="targetUrl"
+          />
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+
+          <v-btn
+            :text="$t('buttonClose')"
+            @click="dialog = false"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-row>
+</template>
+
+<script setup lang="ts">
+  import LoginSection from '@/components/widgets/LoginSection.vue'
+
+  const route = useRoute()
+
+  const dialog = ref(false)
+  const loading = ref(false)
+
+  const targetUrl = ref<string>()
+
+  function show () {
+    dialog.value = true
+
+    targetUrl.value = route.fullPath
+  }
+  function hide () {
+    dialog.value = false
+  }
+  function setLoading (ld: boolean) {
+    loading.value = ld
+  }
+
+  defineExpose({
+    show,
+    hide,
+  })
+</script>

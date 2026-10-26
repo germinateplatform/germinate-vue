@@ -1,0 +1,414 @@
+<template>
+  <v-container fluid>
+    <p v-html="$t('pageDataUploadText')" />
+
+    <v-row class="my-5 card-icon-avatar">
+      <v-col v-for="(tab, index) in tabs" :key="`upload-tab-${tab.id}`">
+        <v-card :color="selectedTab?.id === tab.id ? getTemplateColor(index) : 'muted'" @click="selectedTab = tab">
+          <div class="d-flex flex-no-wrap justify-space-between align-center">
+            <div>
+              <v-card-title class="text-headline-small">
+                {{ $t(tab.text) }}
+              </v-card-title>
+
+              <!-- <v-card-subtitle><a class="help-link" :href="tab.helpUrl" target="_blank"><v-icon :icon="mdiHelpCircle" /></a></v-card-subtitle> -->
+            </div>
+
+            <v-avatar
+              class="ma-3"
+              rounded="0"
+              size="64"
+            >
+              <v-icon size="64">{{ tab.path }}</v-icon>
+            </v-avatar>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <template v-if="selectedTab">
+      <template v-if="(tabGroups.get(selectedTab.group)?.length || 0) > 1">
+        <v-row class="my-5 card-icon-avatar">
+          <v-col v-for="(tab, index) in tabGroups.get(selectedTab.group)" :key="`upload-tab-${tab.id}`">
+            <v-card :color="selectedSubTab?.id === tab.id ? getTemplateColor(index) : 'muted'" @click="selectedSubTab = tab">
+              <div class="d-flex flex-no-wrap justify-space-between align-center">
+                <div>
+                  <v-card-title class="text-headline-small">
+                    {{ $t(tab.text) }}
+                  </v-card-title>
+
+                  <!-- <v-card-subtitle><a class="help-link" :href="tab.helpUrl" target="_blank"><v-icon :icon="mdiHelpCircle" /></a></v-card-subtitle> -->
+                </div>
+
+                <v-avatar
+                  class="ma-3"
+                  rounded="0"
+                  size="64"
+                >
+                  <v-icon size="64">{{ tab.path }}</v-icon>
+                </v-avatar>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+      </template>
+
+      <template v-if="selectedNestedTab">
+        <v-alert
+          color="info"
+          :icon="mdiHelpCircle"
+          density="compact"
+          :text="$t('pageDataUploadHelpLink')"
+          variant="tonal"
+          stacked
+          border="start"
+        >
+          <template #append>
+            <v-btn :text="$t('buttonReadMore')" variant="tonal" :href="selectedNestedTab.helpUrl" target="_blank" />
+          </template>
+        </v-alert>
+
+        <v-divider class="my-5" />
+
+        <div v-if="selectedNestedTab.id === 'mcpd'">
+          <HintContainer :text="mcpdImportUpdate === 'update' ? 'pageDataUploadUpdateExplanationUpdate' : 'pageDataUploadUpdateExplanationInsert'">
+            <v-btn-toggle
+              v-model="mcpdImportUpdate"
+              color="primary"
+              mandatory
+              variant="tonal"
+            >
+              <v-btn value="import" :prepend-icon="mdiUpload" :text="$t('pageDataUploadUpdateOptionInsert')" />
+              <v-btn value="update" :prepend-icon="mdiRefresh" :text="$t('pageDataUploadUpdateOptionUpdate')" />
+            </v-btn-toggle>
+          </HintContainer>
+        </div>
+
+        <div v-if="selectedNestedTab.id === 'genotype'">
+          <h4 class="mt-3 mb-0">{{ $t('formLabelDataUploadDataOrientation') }}</h4>
+
+          <v-btn-toggle
+            v-model="dataOrientation"
+            color="primary"
+            mandatory
+            variant="tonal"
+          >
+            <v-btn :value="DataOrientation.GENOTYPE_GERMPLASM_BY_MARKER" :text="$t('formSelectOptionDataOrientationGermplasmAsRows')" />
+            <v-btn :value="DataOrientation.GENOTYPE_MARKER_BY_GERMPLASM" :text="$t('formSelectOptionDataOrientationMarkersAsRows')" />
+          </v-btn-toggle>
+        </div>
+
+        <template v-if="selectedNestedTab.id === 'shapefile'">
+          <h4 class="mt-3 mb-0">{{ $t('formLabelDataUploadDataset') }}</h4>
+
+          <v-autocomplete
+            v-model="selectedDataset"
+            :label="$t('formLabelDataUploadDataset')"
+            hide-details
+            return-object
+            :items="trialsDatasets"
+            item-value="datasetId"
+            :item-title="(item: ViewTableDatasets) => `${item.datasetId} - ${item.datasetName}`"
+          />
+        </template>
+
+        <div v-if="selectedNestedTab.group === 'genotype' || selectedNestedTab.group === 'trial' || selectedNestedTab.group === 'climate' || selectedNestedTab.group === 'pedigree'">
+          <h4 class="mt-3 mb-0">{{ $t('pageDataUploadDatasetStateTitle') }}</h4>
+
+          <HintContainer :text="$t(datasetState.help)">
+            <v-btn-toggle
+              v-model="datasetState"
+              color="primary"
+              mandatory
+              variant="tonal"
+            >
+              <v-btn
+                v-for="state in datasetStates"
+                :key="`dataset-state-${state.id}`"
+                :value="state"
+                :text="$t(state.text)"
+                :prepend-icon="state.path"
+              />
+            </v-btn-toggle>
+          </HintContainer>
+        </div>
+
+        <v-file-upload
+          class="mt-5"
+          clearable
+          show-size
+          inset-file-list
+          :icon="mdiFileUpload"
+          v-model="selectedFile"
+          :filter-by-type="selectedNestedTab.accepts"
+        >
+          <!-- Override the slot to use appropriate file type icons -->
+          <template #single="{ file, props: itemProps }">
+            <v-file-upload-item
+              v-bind="itemProps"
+              :file="file"
+              :file-icon="getFileIcon(file)"
+              clearable
+              show-size
+            />
+          </template>
+        </v-file-upload>
+
+        <v-card
+          v-if="xlsxLocations && xlsxLocations.length > 0"
+          :title="$t('pageDataUploadLocationTitle')"
+          class="mb-5"
+        >
+          <template #text>
+            <v-alert class="mb-3" :icon="mdiAlert" :text="$t('pageDataUploadLocationText')" color="warning" variant="tonal" />
+
+            <LocationMap
+              :locations="xlsxLocations"
+              :climate-overlays-disabled="true"
+              :show-links="false"
+              :show-edit="false"
+              map-type="cluster"
+            />
+
+            <v-checkbox
+              v-model="locationsConfirmed"
+              :label="$t('pageDataUploadLocationConfirm')"
+              color="primary"
+              :error="!locationsConfirmed"
+            />
+          </template>
+        </v-card>
+
+        <v-btn
+          @click="upload"
+          :disabled="!canContinue"
+          color="primary"
+          :prepend-icon="mdiUpload"
+          :text="$t('pageDataUploadCheckFileButton')"
+        />
+      </template>
+    </template>
+  </v-container>
+</template>
+
+<route lang="yaml">
+name: importUpload
+</route>
+
+<script setup lang="ts">
+  import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { apiPostDataUpload } from '@/plugins/api/dataimport'
+  import { apiPostDatasetTable } from '@/plugins/api/dataset'
+  import { DataOrientation, FilterComparator, FilterOperator, UserType, type ViewTableLocations, type ViewTableDatasets } from '@/plugins/types/germinate'
+  import { getTemplateColor } from '@/plugins/util/colors'
+  import { type DatasetState, datasetStates, templateImportTypes, type TemplateImportType } from '@/plugins/util/types'
+  import { mdiFile, mdiFileDocument, mdiFileExcel, mdiFolderZip, mdiFileUpload, mdiHelpCircle, mdiRefresh, mdiUpload, mdiAlert } from '@mdi/js'
+  import { read, utils } from 'xlsx'
+
+  import emitter from 'tiny-emitter/instance'
+  import { dmsToDecimal } from '@/plugins/util/formatting'
+  import { useI18n } from 'vue-i18n'
+
+  definePage({
+    meta: {
+      requiredUserType: UserType.DATA_CURATOR,
+    },
+  })
+
+  const store = useCoreStore()
+  const { t } = useI18n()
+
+  const selectedTab = ref<TemplateImportType>()
+  const selectedSubTab = ref<TemplateImportType>()
+  const mcpdImportUpdate = ref<'import' | 'update'>('import')
+  const datasetState = ref<DatasetState>(datasetStates.public)
+  const trialsDatasets = ref<ViewTableDatasets[]>([])
+  const selectedDataset = ref<ViewTableDatasets>()
+  const dataOrientation = ref<DataOrientation>(DataOrientation.GENOTYPE_GERMPLASM_BY_MARKER)
+  const selectedFile = ref<File>()
+  const xlsxLocations = ref<ViewTableLocations[]>([])
+  const locationsConfirmed = ref(false)
+
+  const selectedNestedTab = computed(() => selectedSubTab.value || selectedTab.value)
+
+  const locationsValid = computed(() => (xlsxLocations.value || []).length === 0 || locationsConfirmed.value)
+
+  const tabGroups = computed(() => {
+    const groups = new Map<string, TemplateImportType[]>()
+
+    Object.values(templateImportTypes).forEach(type => {
+      const items = groups.get(type.group) || []
+      items.push(type)
+      groups.set(type.group, items)
+    })
+
+    return groups
+  })
+
+  const tabs: ComputedRef<TemplateImportType[]> = computed(() => {
+    return [...tabGroups.value.keys()].map(g => templateImportTypes[g])
+  })
+
+  const canContinue = computed(() => {
+    const tab = selectedSubTab.value || selectedTab.value
+
+    if (!locationsValid.value) {
+      return false
+    }
+
+    if (tab && selectedFile.value) {
+      if (tab.id === 'mcpd') {
+        return mcpdImportUpdate.value !== undefined
+      } else if (tab.id === 'shapefile') {
+        return selectedDataset.value !== undefined
+      }
+
+      return true
+    } else {
+      return false
+    }
+  })
+
+  const iconsByExtension: Record<string, string> = {
+    xlsx: mdiFileExcel,
+    xls: mdiFileExcel,
+    csv: mdiFileExcel,
+    txt: mdiFileDocument,
+    zip: mdiFolderZip,
+  }
+
+  function getFileIcon (file?: File | null): string {
+    const ext = file?.name.split('.').pop()?.toLowerCase() ?? ''
+    return iconsByExtension[ext] ?? mdiFile
+  }
+
+  function upload () {
+    if (selectedFile.value) {
+      const formData = new FormData()
+      formData.append('fileToUpload', selectedFile.value)
+
+      emitter.emit('show-loading', true)
+      const type = selectedSubTab.value || selectedTab.value
+
+      if (type) {
+        apiPostDataUpload(formData, type.id, type.id === 'mcpd' && mcpdImportUpdate.value === 'update', dataOrientation.value, type.id === 'shapefile' ? selectedDataset.value?.datasetId : undefined, datasetState.value.id, result => {
+          if (result) {
+            store.addAsyncJobUuids(result.map(r => r.uuid))
+          }
+
+          emitter.emit('toggle-aside', 'upload')
+          emitter.emit('show-loading', false)
+
+          selectedFile.value = undefined
+        })
+      }
+    }
+  }
+
+  onMounted(() => {
+    apiPostDatasetTable({
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      filters: [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'datasetType',
+          comparator: FilterComparator.equals,
+          values: ['trials'],
+        }],
+      }],
+    }, result => {
+      if (result && result.data) {
+        trialsDatasets.value = result.data || []
+
+        if (result.data.length > 0) {
+          selectedDataset.value = result.data[0]
+        }
+      }
+    })
+  })
+
+  watch(selectedTab, async newValue => {
+    mcpdImportUpdate.value = 'import'
+    selectedSubTab.value = newValue ? tabGroups.value.get(newValue.group)?.[0] : undefined
+    selectedFile.value = undefined
+    locationsConfirmed.value = false
+  })
+
+  watch(selectedFile, async newValue => {
+    if (newValue instanceof File) {
+      if (selectedTab.value?.id === 'mcpd') {
+        const fileBuffer = await newValue.arrayBuffer()
+        const data = read(fileBuffer, { type: 'array', cellDates: false })
+        // Parse Excel file to JSON
+        const parsed = utils.sheet_to_json(data.Sheets.DATA)
+
+        xlsxLocations.value = parsed.map((g: any, i) => {
+          const lat = g.DECLATITUDE || dmsToDecimal(g.LATITUDE)
+          const lng = g.DECLONGITUDE || dmsToDecimal(g.LONGITUDE)
+
+          if (lat && lng) {
+            return {
+              locationId: i,
+              locationLatitude: lat,
+              locationLongitude: lng,
+              locationType: 'collectingsites',
+              additionalInfo: { [t('widgetLocationMapInputRow')]: `${i + 1}` },
+              locationName: g.ACCENUMB,
+            }
+          } else {
+            return undefined
+          }
+        }).filter(g => g !== undefined)
+      } else if (selectedSubTab.value?.id === 'trial') {
+        const fileBuffer = await newValue.arrayBuffer()
+        const data = read(fileBuffer, { type: 'array', cellDates: false })
+
+        // Parse Excel file to JSON
+        let parsed = utils.sheet_to_json(data.Sheets.DATA)
+
+        const plots = parsed.map((g: any, i) => {
+          const lat = g.Latitude
+          const lng = g.Longitude
+
+          if (lat && lng) {
+            return {
+              locationId: i,
+              locationLatitude: lat,
+              locationLongitude: lng,
+              locationType: 'trialsite',
+              additionalInfo: { [t('widgetLocationMapInputRow')]: `${i + 1}` },
+              locationName: g['Line/Phenotype'],
+            }
+          } else {
+            return undefined
+          }
+        }).filter(g => g !== undefined)
+
+        parsed = utils.sheet_to_json(data.Sheets.LOCATION)
+
+        const locations = parsed.map((g: any, i) => {
+          const lat = g.Latitude
+          const lng = g.Longitude
+
+          if (lat && lng) {
+            return {
+              locationId: i,
+              locationLatitude: lat,
+              locationLongitude: lng,
+              locationType: 'datasets',
+              additionalInfo: { [t('widgetLocationMapInputRow')]: `${i + 1}` },
+              locationName: g.Name,
+            }
+          } else {
+            return undefined
+          }
+        }).filter(g => g !== undefined)
+
+        xlsxLocations.value = plots.concat(locations)
+      }
+    } else {
+      xlsxLocations.value = []
+    }
+  })
+</script>

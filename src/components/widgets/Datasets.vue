@@ -1,0 +1,53 @@
+<template>
+  <v-container fluid>
+    <h2>{{ $t('pageDatasetsInternalTitle') }}</h2>
+    <p>{{ $t('pageDatasetsInternalText') }}</p>
+    <DatasetTable :get-data="getData" :filter-on="filterOnInternal" />
+
+    <h2>{{ $t('pageDatasetsExternalTitle') }}</h2>
+    <p>{{ $t('pageDatasetsExternalText') }}</p>
+    <DatasetTable :get-data="getData" :filter-on="filterOnExternal" />
+  </v-container>
+</template>
+
+<script setup lang="ts">
+  import DatasetTable from '@/components/tables/DatasetTable.vue'
+  import { apiPostDatasetTable } from '@/plugins/api/dataset'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
+
+  const props = defineProps<{
+    datasetId?: number
+  }>()
+
+  const filterOnInternal: ComputedRef<FilterGroup[]> = computed(() => getFilter(false))
+  const filterOnExternal: ComputedRef<FilterGroup[]> = computed(() => getFilter(true))
+
+  function getFilter (isExternal: boolean) {
+    const result: FilterGroup[] = [{
+      filters: [{
+        column: 'isExternal',
+        comparator: FilterComparator.equals,
+        values: [isExternal === true ? '1' : '0'],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.and,
+    }]
+
+    if (props.datasetId) {
+      result.push({
+        filters: [{
+          column: 'datasetId',
+          comparator: FilterComparator.equals,
+          values: [`${props.datasetId}`],
+        }],
+        operator: FilterOperator.and,
+      })
+    }
+
+    return result
+  }
+
+  function getData (data: PaginatedRequest) {
+    return apiPostDatasetTable(data)
+  }
+</script>

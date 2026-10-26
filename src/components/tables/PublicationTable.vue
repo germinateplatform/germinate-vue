@@ -1,138 +1,309 @@
 <template>
   <div>
-    <BaseTable v-bind="$props"
-              :columns="columns"
-              :options="options"
-              class="publication-table"
-              ref="publicationTable"
-              v-on="$listeners">
-      <template v-slot:cell(publicationId)="data">
-        <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: Pages.publicationDetails, params: { publicationId: data.item.publicationId } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId })">{{ data.item.publicationId }}</router-link>
-        <span v-else>{{ data.item.publicationId }}</span>
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTablePublications} -->
+    <BaseTable
+      ref="baseTable"
+      :get-data="compProps.getData"
+      :get-ids="compProps.getIds"
+      :download="compProps.download"
+      :headers="headers"
+      :filter-on="filterOn"
+      :forced-filters="forcedFilters"
+      :show-details="false"
+      :display-type="compProps.displayType"
+      item-key="publicationId"
+      table-key="publications"
+      :sort-by="[{ key: 'createdOn', order: 'desc' }]"
+      :header-icon="mdiBookOpenVariant"
+      :header-title="$t('pagePublicationsTitle')"
+      :supports-grid-cards="true"
+      v-bind="$attrs"
+    >
+      <template #header v-if="store.storeUserIsAuthenticated">
+        <v-btn variant="outlined" :text="$t('buttonAddPublication')" :prepend-icon="mdiPlus" @click="addItem" />
       </template>
-      <template v-slot:cell(publicationName)="data">
-        <template v-if="data.item.publicationFallbackCache">
-          <router-link v-if="data.item.referenceType !== 'database'" :to="{ name: Pages.publicationDetails, params: { publicationId: data.item.publicationId } }" event="" @click.native.prevent="$emit('publication-selected', { publicationId: data.item.publicationId })" v-html="data.item.publicationFallbackCache.title" />
-          <span v-else v-html="data.item.publicationFallbackCache.title" />
+
+      <template #item.publicationName="{ item }">
+        <template v-if="item.publicationFallbackCache">
+          <router-link :to="Pages.getPath(Pages.publicationDetails, item.publicationId)"><span v-html="item.publicationFallbackCache.title" /></router-link>
         </template>
       </template>
-      <template v-slot:cell(publicationJournal)="data">
-        <span v-if="data.item.publicationFallbackCache">{{ data.item.publicationFallbackCache['container-title'] }}</span>
+      <template #item.publicationJournal="{ item }">
+        <v-chip label color="muted" variant="tonal" :prepend-icon="mdiNewspaper" v-if="item.publicationFallbackCache">{{ item.publicationFallbackCache['container-title'] }}</v-chip>
       </template>
-      <template v-slot:cell(publicationDoi)="data">
-        <span><a rel="noopener noreferrer" :href="data.item.publicationDoi">{{ data.item.publicationDoi }}</a> <MdiIcon :path="mdiOpenInNew" /></span>
+      <template #item.publicationDoi="{ item }">
+        <span><a rel="noopener noreferrer" target="_blank" :href="item.publicationDoi">{{ item.publicationDoi }}</a> <v-icon :icon="mdiOpenInNew" /></span>
       </template>
-      <template v-slot:cell(publicationDetails)="data">
-        <b-badge class="mr-1" v-if="data.item.isDatabasePub" :style="`color: ${getHighContrastTextColor(publicationTypes.database.color)}; background-color: ${publicationTypes.database.color};`">
-          <MdiIcon :path="publicationTypes.database.path" /> {{ publicationTypes.database.text() }}
-        </b-badge>
-        <b-badge class="mr-1" v-if="data.item.germplasmIds && data.item.germplasmIds.length > 0" :style="`color: ${getHighContrastTextColor(publicationTypes.germplasm.color)}; background-color: ${publicationTypes.germplasm.color};`">
-          <MdiIcon :path="publicationTypes.germplasm.path" /> {{ publicationTypes.germplasm.text() }} ({{ data.item.germplasmIds.length }})
-        </b-badge>
-        <b-badge class="mr-1" v-if="data.item.datasetIds && data.item.datasetIds.length > 0" :style="`color: ${getHighContrastTextColor(publicationTypes.dataset.color)}; background-color: ${publicationTypes.dataset.color};`">
-          <MdiIcon :path="publicationTypes.dataset.path" /> {{ publicationTypes.dataset.text() }} ({{ data.item.datasetIds.length }})
-        </b-badge>
-        <b-badge class="mr-1" v-if="data.item.experimentIds && data.item.experimentIds.length > 0" :style="`color: ${getHighContrastTextColor(publicationTypes.experiment.color)}; background-color: ${publicationTypes.experiment.color};`">
-          <MdiIcon :path="publicationTypes.experiment.path" /> {{ publicationTypes.experiment.text() }} ({{ data.item.experimentIds.length }})
-        </b-badge>
-        <b-badge class="mr-1" v-if="data.item.groupIds && data.item.groupIds.length > 0" :style="`color: ${getHighContrastTextColor(publicationTypes.group.color)}; background-color: ${publicationTypes.group.color};`">
-          <MdiIcon :path="publicationTypes.group.path" /> {{ publicationTypes.group.text() }} ({{ data.item.groupIds.length }})
-        </b-badge>
+      <template #item.publicationDetails="{ item }">
+        <v-chip label class="me-2 mt-1" v-if="item.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path" :text="$t(publicationTypes.database.text)" />
+        <v-chip label class="me-2 mt-1" v-if="item.germplasmIds && item.germplasmIds.length > 0" :color="publicationTypes.germplasm.color()" :prepend-icon="publicationTypes.germplasm.path" :text="$t(publicationTypes.germplasm.text)">
+          <template #append>
+            <v-badge inline :content="item.germplasmIds.length" />
+          </template>
+        </v-chip>
+        <v-chip label class="me-2 mt-1" v-if="item.datasetIds && item.datasetIds.length > 0" :color="publicationTypes.dataset.color()" :prepend-icon="publicationTypes.dataset.path" :text="$t(publicationTypes.dataset.text)">
+          <template #append>
+            <v-badge inline class="ms-1" color="muted" :content="item.datasetIds.length" />
+          </template>
+        </v-chip>
+        <v-chip label class="me-2 mt-1" v-if="item.experimentIds && item.experimentIds.length > 0" :color="publicationTypes.experiment.color()" :prepend-icon="publicationTypes.experiment.path" :text="$t(publicationTypes.experiment.text)">
+          <template #append>
+            <v-badge inline class="ms-1" color="muted" :content="item.experimentIds.length" />
+          </template>
+        </v-chip>
+        <v-chip label class="me-2 mt-1" v-if="item.groupIds && item.groupIds.length > 0" :color="publicationTypes.group.color()" :prepend-icon="publicationTypes.group.path" :text="$t(publicationTypes.group.text)">
+          <template #append>
+            <v-badge inline class="ms-1" color="muted" :content="item.groupIds.length" />
+          </template>
+        </v-chip>
       </template>
-      <!-- Publication type icon -->
-      <!-- <template v-slot:cell(referenceType)="data">
-        <b-badge class="w-100" :style="`color: ${getHighContrastTextColor(publicationTypes[data.item.referenceType].color)}; background-color: ${publicationTypes[data.item.referenceType].color};`"><MdiIcon :path="publicationTypes[data.item.referenceType].path" /> {{ publicationTypes[data.item.referenceType].text }}</b-badge>
-      </template> -->
+
+      <template #item.actions="{ item }">
+        <v-btn-group variant="tonal">
+          <v-btn size="x-small" color="error" :icon="mdiDelete" v-tooltip:top="$t('buttonDelete')" @click="deletePublication(item)" v-if="store.storeUserIsDataCurator" />
+        </v-btn-group>
+      </template>
+
+      <template #card-item="{ item }">
+        <PublicationCard :publication="item" @delete="deletePublication(item)" />
+      </template>
+
+      <!-- Pass on all named slots -->
+      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+        <slot :name="slot" v-bind="slotProps" />
+      </template>
     </BaseTable>
+
+    <!-- @vue-generic {PublicationDoi} -->
+    <GenericAddEditFormModal
+      title="modalTitlePublicationAddNew"
+      v-model="newPublication"
+      :disable-save="!newPublication.previewHtml"
+      :fields="publicationFields"
+      :notify="sendNewPublication"
+      ref="addPublicationModal"
+    >
+      <template #additional-fields="{ item }">
+        <v-btn class="mt-3" @click="checkDoi" :prepend-icon="mdiMagnify" :text="$t('buttonUpdate')" />
+        <div class="mt-5" v-if="item.previewHtml">
+          <div v-html="item.previewHtml" />
+          <v-chip class="mt-2" v-if="item.date" label :prepend-icon="mdiCalendar" :text="item.date.toLocaleDateString()" />
+        </div>
+
+        <v-alert class="mt-5" variant="tonal" :icon="mdiAlarm" color="warning" :text="item.error" v-if="item.error" />
+      </template>
+    </GenericAddEditFormModal>
   </div>
 </template>
 
-<script>
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
+<script setup lang="ts">
+  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
 
-import { publicationTypes } from '@/mixins/types'
-import { getHighContrastTextColor } from '@/mixins/colors'
-import { Pages } from '@/mixins/pages'
+  // @ts-ignore
+  import { Cite } from '@citation-js/core'
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import { FilterComparator, FilterOperator, PublicationdataReferenceType, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { publicationTypes } from '@/plugins/util/types'
+  import { mdiAlarm, mdiBookOpenVariant, mdiCalendar, mdiDelete, mdiMagnify, mdiNewspaper, mdiOpenInNew, mdiPlus } from '@mdi/js'
+  import { Pages } from '@/plugins/pages'
+  import { apiDeletePublicationReference, apiPutPublication, apiPutPublicationReference } from '@/plugins/api/publication'
 
-import { mdiOpenInNew } from '@mdi/js'
+  import emitter from 'tiny-emitter/instance'
 
-export default {
-  name: 'PublicationTable',
-  props: {
-    ...defaultProps.FULL
-  },
-  data: function () {
-    return {
-      Pages,
-      mdiOpenInNew,
-      publicationTypes,
-      options: {
-        idColumn: 'publicationId',
-        tableName: 'publications'
-      }
-    }
-  },
-  computed: {
-    columns: function () {
-      const result = [
-        {
-          key: 'projectIds',
-          type: 'json',
-          sortable: false,
-          class: 'd-none text-right',
-          label: this.$t('tableColumnProjectId')
-        }, {
-          key: 'publicationId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnPublicationId')
-        }, {
-          key: 'publicationName',
-          type: undefined,
-          sortable: false,
-          label: this.$t('tableColumnPublicationName')
-        }, {
-          key: 'publicationDoi',
-          type: Number,
-          sortable: true,
-          label: this.$t('tableColumnPublicationDoi')
-        }, {
-          key: 'publicationJournal',
-          type: undefined,
-          sortable: false,
-          label: this.$t('tableColumnPublicationJournal')
-        }, {
-          key: 'publicationDetails',
-          type: undefined,
-          sortable: false,
-          label: this.$t('tableColumnPublicationDetails')
-        }, {
-          key: 'createdOn',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnPublicationCreatedOn'),
-          formatter: value => value ? new Date(value).toLocaleString() : null
-        }
-      ]
-
-      return result
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    getHighContrastTextColor,
-    refresh: function () {
-      this.$refs.publicationTable.refresh()
-    }
+  export interface PublicationDoi {
+    doi?: string
+    previewHtml?: string
+    json?: string
+    date?: Date
+    error?: string
   }
-}
+
+  const newPublication = ref<PublicationDoi>({})
+
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePublications[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+    displayType?: DisplayType
+    publicationReferenceType?: PublicationdataReferenceType
+    publicationReferenceId?: number
+  }>()
+
+  const forcedFilters = computed(() => {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+      return [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'projectIds',
+          comparator: FilterComparator.arrayContains,
+          values: store.storeSelectedProjects.map(id => `${id}`),
+          canBeChanged: false,
+        }],
+      }]
+    } else {
+      return []
+    }
+  })
+
+  const store = useCoreStore()
+  const addPublicationModal = useTemplateRef('addPublicationModal')
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  const publicationFields = computed(() => {
+    return [{
+      key: 'doi',
+      title: 'formLabelPublicationDOI',
+      type: 'text' as const,
+      required: true,
+      width: 2,
+    }]
+  })
+
+  function checkDoi () {
+    Cite.async((newPublication.value.doi || '').trim())
+      .then((citation: any) => {
+        if (citation && citation.data && citation.data.length > 0) {
+          const html = citation.format('bibliography', { format: 'html', template: 'apa' })
+
+          let date: Date | undefined
+
+          if (citation.data[0].created && citation.data[0].created['date-time']) {
+            date = new Date(citation.data[0].created['date-time'])
+          }
+
+          newPublication.value.date = date
+          newPublication.value.previewHtml = html
+          newPublication.value.json = JSON.stringify(citation.data[0])
+          newPublication.value.error = undefined
+        } else {
+          newPublication.value.error = t('errorMessagePublicationNotFound')
+        }
+      })
+      .catch(() => {
+        newPublication.value.error = t('errorMessagePublicationNotFound')
+      })
+  }
+
+  function deletePublication (publication: ViewTablePublications) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTitleSure'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          apiDeletePublicationReference(publication.publicationId, compProps.publicationReferenceType || PublicationdataReferenceType.database, compProps.publicationReferenceId, result => {
+            baseTable.value?.refresh()
+          })
+        }
+      },
+    })
+  }
+
+  function sendNewPublication () {
+    return new Promise<boolean>(resolve => {
+      apiPutPublication({
+        doi: newPublication.value.doi || '',
+        fallbackCache: newPublication.value.json,
+        createdOn: newPublication.value.date,
+      }, publicationId => {
+        apiPutPublicationReference(publicationId, {
+          publicationId: publicationId,
+          referenceType: compProps.publicationReferenceType || PublicationdataReferenceType.database,
+          foreignId: compProps.publicationReferenceId,
+        }, () => {
+          resolve(true)
+          baseTable.value?.refresh()
+        }).catch(() => resolve(false))
+      }).catch(() => resolve(false))
+    })
+  }
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers: ExtendedDataTableHeader[] = [{
+      key: 'projectIds',
+      dataType: 'json',
+      visibleInTable: false,
+      title: t('tableColumnProjectId'),
+    }, {
+      key: 'germplasmIds',
+      dataType: 'json',
+      visibleInTable: false,
+      visibleInFilter: true,
+      title: t('tableColumnGermplasmId'),
+    }, {
+      key: 'groupIds',
+      dataType: 'json',
+      visibleInTable: false,
+      visibleInFilter: true,
+      title: t('tableColumnGroupId'),
+    }, {
+      key: 'isDatabasePub',
+      dataType: 'boolean',
+      visibleInTable: false,
+      title: t('tableColumnPublicationIsDatabasePub'),
+    }, {
+      key: 'publicationId',
+      dataType: 'integer',
+      title: t('tableColumnPublicationId'),
+    }, {
+      key: 'publicationName',
+      dataType: undefined,
+      sortable: false,
+      title: t('tableColumnPublicationName'),
+    }, {
+      key: 'publicationDoi',
+      dataType: 'string',
+      title: t('tableColumnPublicationDoi'),
+    }, {
+      key: 'publicationJournal',
+      dataType: undefined,
+      sortable: false,
+      title: t('tableColumnPublicationJournal'),
+    }, {
+      key: 'publicationDetails',
+      dataType: undefined,
+      sortable: false,
+      title: t('tableColumnPublicationDetails'),
+    }, {
+      key: 'createdOn',
+      dataType: 'date',
+      title: t('tableColumnPublicationCreatedOn'),
+      // @ts-expect-error
+      value: (value: ViewTablePublications) => value.createdOn ? new Date(value.createdOn).toLocaleDateString() : undefined,
+    }]
+
+    if (store.storeUserIsDataCurator) {
+      headers.push({
+        key: 'actions',
+        dataType: undefined,
+        title: '',
+      })
+    }
+
+    return headers
+  })
+
+  function addItem () {
+    newPublication.value = {}
+    nextTick(() => {
+      addPublicationModal.value?.show()
+    })
+  }
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>

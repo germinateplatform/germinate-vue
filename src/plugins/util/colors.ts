@@ -1,0 +1,216 @@
+const FACTOR = 0.75
+
+export interface RGB {
+  r: number
+  g: number
+  b: number
+}
+
+const GRADIENT_VIRIDIS = ['#440154', '#48186a', '#472d7b', '#424086', '#3b528b', '#33638d', '#2c728e', '#26828e', '#21918c', '#1fa088', '#28ae80', '#3fbc73', '#5ec962', '#84d44b', '#addc30', '#d8e219', '#fde725']
+const DEFAULT_CHART_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+
+/**
+     * Returns the chart colors
+     */
+export function getColors (): string[] | undefined {
+  const store = useCoreStore()
+
+  let colors: string[]
+  if (store.storeCustomChartColors && store.storeCustomChartColors.length > 0) {
+    colors = store.storeCustomChartColors
+  } else {
+    colors = store.storeServerSettings?.colorsCharts || []
+  }
+
+  if (!colors || colors.length === 0) {
+    colors = DEFAULT_CHART_COLORS.concat()
+  }
+
+  return colors
+}
+
+export function getVuetifyColor (name: string): string {
+  const rgb = getComputedStyle(document.documentElement).getPropertyValue(`--v-theme-${name}`).split(',').map(s => +s.trim())
+  if (rgb.length === 3) {
+    return rgbToHex(rgb[0], rgb[1], rgb[2])
+  } else {
+    return '#333333'
+  }
+}
+
+export function getPrimaryColor (): string {
+  const rgb = getComputedStyle(document.documentElement).getPropertyValue('--v-theme-primary').split(',').map(s => +s.trim())
+  return rgbToHex(rgb[0], rgb[1], rgb[2])
+}
+
+export function getTemplateColors () {
+  const store = useCoreStore()
+  if (store.storeServerSettings && store.storeServerSettings.colorsTemplate && store.storeServerSettings.colorsTemplate.length > 0) {
+    return store.storeServerSettings.colorsTemplate
+  } else {
+    return ['#00acef']
+  }
+}
+
+export function getTemplateColor (index: number): string {
+  const colors = getTemplateColors()
+
+  if (colors) {
+    return colors[index % colors.length]
+  } else {
+    return '#00acef'
+  }
+}
+
+/**
+ * Returns the chart color at the given index
+ * @param {Number} index The index
+ */
+export function getColor (index: number): string {
+  const colors = getColors()
+
+  if (colors) {
+    return colors[index % colors.length]
+  } else {
+    return '#00acef'
+  }
+}
+
+/**
+ * Creates a linear gradient between the two given colors with the given number of steps
+ * @param {String} one The first color in HEX
+ * @param {String} two The second color in HEX
+ * @param {Number} steps The number of steps between the two colors
+ */
+export function createColorGradient (one: string, two: string, steps: number) {
+  const oneRgb = hexToRgb(one)
+  const twoRgb = hexToRgb(two)
+
+  const result = []
+
+  if (oneRgb && twoRgb) {
+    for (let i = 0; i < steps; i++) {
+      const iNorm = i / (steps - 1)
+      result.push(rgbToHex(
+        Math.floor(oneRgb.r + iNorm * (twoRgb.r - oneRgb.r)),
+        Math.floor(oneRgb.g + iNorm * (twoRgb.g - oneRgb.g)),
+        Math.floor(oneRgb.b + iNorm * (twoRgb.b - oneRgb.b)),
+      ))
+    }
+  }
+
+  return result
+}
+
+export function getGradientColor (gradient: string[], min: number, max: number, value: number) {
+  return gradient[Math.min(Math.floor((value - min) / (max - min) * gradient.length), gradient.length - 1)]
+}
+
+export function createMultiColorGradient (colors: string[], steps: number): string[] {
+  const sections = colors.length - 1
+
+  let result: string[] = []
+
+  for (let i = 0; i < steps; i++) {
+    result = result.concat(createColorGradient(colors[i], colors[i + 1], Math.floor(steps / sections)))
+  }
+
+  while (result.length < steps) {
+    result.push(colors[colors.length - 1])
+  }
+
+  return result
+}
+
+/**
+ * Converts a HEX value into an RGB object
+ * @param {String} hex The hex color
+ */
+export function hexToRgb (hex: string): RGB | undefined {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? {
+        r: Number.parseInt(result[1], 16),
+        g: Number.parseInt(result[2], 16),
+        b: Number.parseInt(result[3], 16),
+      }
+    : undefined
+}
+
+/**
+ * Converts the given R, G, B values into a HEX color
+ * @param {Number} r The red color component
+ * @param {Number} g The green color component
+ * @param {Number} b The blue color component
+ */
+export function rgbToHex (r: number, g: number, b: number): string {
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
+}
+
+export function rgbColorToHex (c: RGB): string {
+  return rgbToHex(c.r, c.g, c.b)
+}
+
+/**
+ * Determines the best text color (either white or black) given the background color
+ * @param {String} backgroundColor The background color in HEX
+ */
+export function getHighContrastTextColor (backgroundColor: string): string {
+  if (backgroundColor) {
+    const rgb = hexToRgb(backgroundColor)
+    if (!rgb) {
+      return 'black'
+    }
+    const o = Math.round(((rgb.r * 299) + (rgb.g * 587) + (rgb.b * 114)) / 1000)
+    return (o > 125) ? 'black' : 'white'
+  } else {
+    return 'black'
+  }
+}
+
+export function brighten (c: RGB): RGB {
+  let r = c.r
+  let g = c.g
+  let b = c.b
+  const i = Math.round(1 / (1 - FACTOR))
+  if (r === 0 && g === 0 && b === 0) {
+    return {
+      r: i,
+      g: i,
+      b: i,
+    }
+  }
+
+  if (r > 0 && r < i) {
+    r = i
+  }
+  if (g > 0 && g < i) {
+    g = i
+  }
+  if (b > 0 && b < i) {
+    b = i
+  }
+
+  return {
+    r: Math.min(255, Math.round(r / FACTOR)),
+    g: Math.min(255, Math.round(g / FACTOR)),
+    b: Math.min(255, Math.round(b / FACTOR)),
+  }
+}
+
+export function hexToRGBA (hex: string, alpha: number) {
+  const r = Number.parseInt(hex.slice(1, 3), 16)
+  const g = Number.parseInt(hex.slice(3, 5), 16)
+  const b = Number.parseInt(hex.slice(5, 7), 16)
+
+  if (alpha) {
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  } else {
+    return `rgba(${r}, ${g}, ${b})`
+  }
+}
+
+export {
+  GRADIENT_VIRIDIS,
+  DEFAULT_CHART_COLORS,
+}

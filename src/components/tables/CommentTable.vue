@@ -1,211 +1,185 @@
 <template>
   <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               :filterOn="getFilter()"
-               :tableActions="tableActions"
-               primary-key="commentId"
-               v-bind="$props"
-               ref="commentTable"
-               v-on="$listeners">
-      <!-- Comment type -->
-      <template v-slot:cell(commentType)="data">
-        <span class="text-nowrap"><span :style="`color: ${commentTypes[data.item.commentType].color()};`"><MdiIcon :path="commentTypes[data.item.commentType].path" /></span> {{ commentTypes[data.item.commentType].text() }}</span>
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableComments} -->
+    <BaseTable
+      ref="baseTable"
+      :get-data="compProps.getData"
+      :headers="headers"
+      :filter-on="filterOn"
+      :show-details="false"
+      item-key="commentId"
+      table-key="comments"
+      :sort-by="[{ key: 'updatedOn', order: 'desc' }]"
+      :header-icon="mdiCommentAccount"
+      :header-title="$t('pagePassportCommentTitle')"
+      v-bind="$attrs"
+    >
+      <template #header v-if="store.storeToken && store.storeServerSettings?.commentsEnabled === true">
+        <v-btn variant="outlined" :prepend-icon="mdiCommentPlus" @click="addItem">{{ $t('tableButtonAddComment') }}</v-btn>
       </template>
-      <!-- Additional actions column holding the delete button -->
-      <template v-slot:cell(actions)="data">
-        <div v-if="storeToken && storeToken.id === data.item.userId">
-          <b-button size="sm" variant="outline-danger" v-b-tooltip:hover :title="$t('tooltipDelete')" @click="deleteComment(data.item)"><MdiIcon :path="mdiDelete" /></b-button>
-        </div>
+
+      <template #item.commentType="{ item }">
+        <v-chip label :color="commentTypes[item.commentType].color()" :prepend-icon="commentTypes[item.commentType].path">{{ $t(commentTypes[item.commentType].text) }}</v-chip>
+      </template>
+
+      <template #item.actions="{ item }">
+        <v-btn-group variant="tonal" v-if="store.storeToken?.id === item.userId">
+          <v-btn size="x-small" color="error" :icon="mdiDelete" v-tooltip:top="$t('tableTooltipDatasetDelete')" @click="deleteComment(item)" />
+        </v-btn-group>
+      </template>
+
+      <!-- Pass on all named slots -->
+      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+        <slot :name="slot" v-bind="slotProps" />
       </template>
     </BaseTable>
 
-    <!-- Modal containing the input field for new comments -->
-    <b-modal ref="commentModal"
-             v-if="storeToken"
-             :title="$t('modalTitleAddComment')"
-             :ok-title="$t('buttonSubmit')"
-             :cancel-title="$t('buttonCancel')"
-             :ok-disabled="newComment === null"
-             @ok="addNewComment">
-      <b-form @submit.prevent.stop="addNewComment">
-        <b-form-input v-model="newComment" required autofocus />
-      </b-form>
-    </b-modal>
+    <!-- @vue-generic {import('@/plugins/types/germinate').Comments} -->
+    <GenericAddEditFormModal
+      title="modalTitleAddComment"
+      v-model="selectedComment"
+      :fields="commentFields"
+      :notify="sendComment"
+      @items-changed="baseTable?.refresh()"
+      ref="commentEditModal"
+      v-if="selectedComment"
+    />
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props'
-import { apiPutComment, apiDeleteComment } from '@/mixins/api/misc'
-import { commentTypes } from '@/mixins/types'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-import { mdiPlusBox, mdiDelete } from '@mdi/js'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import type { Comments, FilterGroup, PaginatedRequest, PaginatedResult, ViewTableComments } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { mdiCommentAccount, mdiCommentPlus, mdiDelete } from '@mdi/js'
+  import { commentTypes } from '@/plugins/util/types'
 
-export default {
-  name: 'CommentTable',
-  props: {
-    ...defaultProps.BASE,
-    commentTypeId: {
-      type: Number,
-      default: 1
-    },
-    referenceId: {
-      type: Number,
-      default: null
-    }
-  },
-  data: function () {
-    return {
-      commentTypes,
-      mdiDelete,
-      options: {
-        idColumn: 'commentId',
-        tableName: 'comments',
-        orderBy: 'updatedOn',
-        orderByDesc: true
-      },
-      newComment: null,
-      tableActions: [{
-        id: 0,
-        text: this.$t('tooltipAddNewComment'),
-        variant: null,
-        disabled: () => !this.storeToken,
-        path: mdiPlusBox,
-        callback: () => {
-          this.newComment = ''
+  import emitter from 'tiny-emitter/instance'
+  import { apiDeleteComment, apiPutComment } from '@/plugins/api/comment'
 
-          this.$nextTick(() => this.$refs.commentModal.show())
-        }
-      }]
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableComments[]>>> }
+    filterOn?: FilterGroup[]
+    commentTypeId: number
+    referenceId: number
+  }>()
+
+  const store = useCoreStore()
+  const baseTable = useTemplateRef('baseTable')
+  const commentEditModal = useTemplateRef('commentEditModal')
+  const { t } = useI18n()
+
+  const selectedComment = ref<Comments>()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const result = [{
+      key: 'commentId',
+      dataType: 'integer',
+      sortable: true,
+      title: t('tableColumnCommentId'),
+    }, {
+      key: 'commentTypeId',
+      dataType: 'integer',
+      sortable: true,
+      title: t('tableColumnCommentTypeId'),
+    }, {
+      key: 'commentType',
+      dataType: 'string',
+      sortable: true,
+      title: t('tableColumnCommentType'),
+    }, {
+      key: 'commentForeignId',
+      dataType: 'integer',
+      sortable: true,
+      title: t('tableColumnCommentForeignId'),
+    }, {
+      key: 'userName',
+      dataType: 'string',
+      sortable: true,
+      title: t('tableColumnCommentUserName'),
+    }, {
+      key: 'commentContent',
+      dataType: 'json',
+      sortable: true,
+      title: t('tableColumnCommentContent'),
+      preferredSortingColumn: true,
+    }, {
+      key: 'updatedOn',
+      dataType: 'date',
+      sortable: true,
+      title: t('tableColumnCommentUpdatedOn'),
+      // @ts-ignore
+      value: (value: ViewTableComments) => value.updatedOn ? new Date(value.updatedOn).toLocaleDateString() : undefined,
+    }, {
+      key: 'actions',
+      type: undefined,
+      align: 'end',
+      sortable: false,
+      title: '',
+    }]
+
+    return result
+  })
+
+  function addItem () {
+    selectedComment.value = {
+      userId: store.storeToken?.id || -1,
+      commenttypeId: compProps.commentTypeId,
+      referenceId: compProps.referenceId,
+      visibility: true,
+      description: '',
     }
-  },
-  watch: {
-    commentTypeId: function () {
-      this.refresh()
-    },
-    referenceId: function () {
-      this.refresh()
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeToken'
-    ]),
-    columns: function () {
-      return [{
-        key: 'commentId',
-        type: Number,
-        class: 'text-right',
-        sortable: true,
-        label: this.$t('tableColumnCommentId')
-      }, {
-        key: 'commentTypeId',
-        type: Number,
-        sortable: true,
-        label: this.$t('tableColumnCommentTypeId')
-      }, {
-        key: 'commentType',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnCommentType')
-      }, {
-        key: 'commentForeignId',
-        type: Number,
-        sortable: true,
-        label: this.$t('tableColumnCommentForeignId')
-      }, {
-        key: 'userName',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnCommentUserName')
-      }, {
-        key: 'commentContent',
-        type: 'json',
-        sortable: true,
-        label: this.$t('tableColumnCommentContent'),
-        preferredSortingColumn: true
-      }, {
-        key: 'updatedOn',
-        type: Date,
-        sortable: true,
-        label: this.$t('tableColumnCommentUpdatedOn'),
-        formatter: value => value ? new Date(value).toLocaleString() : null
-      }, {
-        key: 'actions',
-        type: undefined,
-        class: 'text-right',
-        sortable: false,
-        label: ''
-      }]
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    getFilter: function () {
-      return [{
-        column: {
-          name: 'commentTypeId',
-          type: Number
-        },
-        comparator: 'equals',
-        operator: 'and',
-        values: [this.commentTypeId],
-        canBeChanged: false
-      }, {
-        column: {
-          name: 'commentForeignId',
-          type: Number
-        },
-        comparator: 'equals',
-        operator: 'and',
-        values: [this.referenceId],
-        canBeChanged: false
-      }]
-    },
-    refresh: function () {
-      this.$refs.commentTable.refresh()
-    },
-    deleteComment: function (comment) {
-      // Ask for confirmation
-      this.$bvModal.msgBoxConfirm(this.$t('modalTitleSure'), {
-        okVariant: 'danger',
-        okTitle: this.$t('genericYes'),
-        cancelTitle: this.$t('genericNo')
-      })
-        .then(value => {
-          if (value) {
-            // Delete the comment
-            apiDeleteComment(comment.commentId, () => {
-              this.refresh()
-            })
-          }
-        })
-    },
-    addNewComment: function () {
-      if (this.newComment && this.newComment.length > 0) {
-        // Submit the new comment
-        const data = {
-          commenttypeId: this.commentTypeId,
-          userId: this.storeToken ? this.storeToken.id : null,
-          description: this.newComment,
-          referenceId: this.referenceId
-        }
-        apiPutComment(data, () => {
-          this.refresh()
-          this.$refs.commentModal.hide()
-        })
-      }
-    }
+
+    nextTick(() => commentEditModal.value?.show())
   }
-}
-</script>
 
-<style>
-</style>
+  function sendComment () {
+    return new Promise<boolean>(resolve => {
+      if (selectedComment.value) {
+        apiPutComment(selectedComment.value, () => resolve(true))
+      } else {
+        resolve(false)
+      }
+    })
+  }
+
+  const commentFields = computed(() => {
+    return [{
+      key: 'description',
+      title: 'tableColumnCommentContent',
+      type: 'textarea' as const,
+      required: true,
+      width: 2,
+    }]
+  })
+
+  function deleteComment (item: ViewTableComments) {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTextCommentDelete'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          apiDeleteComment(item.commentId || -1, () => {
+            baseTable.value?.refresh()
+          }, {
+            codes: [404],
+            callback: () => {
+              // Do nothing here, it just means there is nothing to delete
+            },
+          })
+        }
+      },
+    })
+  }
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+  })
+</script>

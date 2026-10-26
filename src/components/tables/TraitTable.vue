@@ -1,239 +1,134 @@
 <template>
   <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               primary-key="traitId"
-               v-bind="$props"
-               ref="traitTable"
-               v-on="$listeners">
-      <!-- HEADS -->
-      <!-- HEAD: Germplasm PUID -->
-      <template v-slot:head(traitSetSize)="data">
-        <span>{{ data.label }} </span> <span class="text-muted" v-b-tooltip.bottom.hover :title="$t('tableColumnTooltipTraitSet')"><MdiIcon :path="mdiHelpCircle" /></span>
+    <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableTraits} -->
+    <BaseTable
+      ref="baseTable"
+      :get-data="compProps.getData"
+      :get-ids="compProps.getIds"
+      :download="compProps.download"
+      :headers="headers"
+      :filter-on="filterOn"
+      :show-details="false"
+      item-key="variableId"
+      table-key="traits"
+      :header-icon="mdiTagMultiple"
+      :header-title="$t('pageTraitsTitle')"
+      v-bind="$attrs"
+    >
+      <template #header.methodSetSize="{ column }">
+        {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipTraitSet')">
+          <template #activator="{ props }">
+            <v-icon v-bind="props" size="small" color="muted" :icon="mdiHelpCircle" />
+          </template>
+        </v-tooltip>
       </template>
-      <!-- /HEADS -->
-      <!-- Trait id link -->
-      <template v-slot:cell(traitId)="data">
-        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitId }}</router-link>
+
+      <!-- Variable id link -->
+      <template #item.variableId="{ item }">
+        <router-link :to="Pages.getPath(Pages.traitDetails, item.variableId)">{{ item.variableId }}</router-link>
       </template>
-      <!-- Trait name link -->
-      <template v-slot:cell(traitName)="data">
-        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitName }}</router-link>
+      <!-- Variable name link -->
+      <template #item.variableName="{ item }">
+        <router-link :to="Pages.getPath(Pages.traitDetails, item.variableId)">{{ item.variableName }}</router-link>
       </template>
-      <!-- Trait short name link -->
-      <template v-slot:cell(traitNameShort)="data">
-        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitNameShort }}</router-link>
+      <!-- Variable description link -->
+      <template #item.variableDescription="{ item }">
+        <router-link :to="Pages.getPath(Pages.traitDetails, item.variableId)" v-if="item.variableDescription && item.variableDescription.length > 0">
+          <ShowFullCell :content="item.variableDescription" title="tableColumnVariableDescription" />
+        </router-link>
       </template>
-      <!-- Trait description link -->
-      <template v-slot:cell(traitDescription)="data">
-        <router-link :to="{ name: Pages.traitDetails, params: { traitId: data.item.traitId } }">{{ data.item.traitDescription }}</router-link>
+      <template #item.variableSynonyms="{ item }">
+        <span v-if="item.variableSynonyms">{{ item.variableSynonyms.join(', ') }}</span>
       </template>
-      <!-- Dataset type icon -->
-      <template v-slot:cell(dataType)="data">
-        <span class="text-nowrap"><span :style="`color: ${dataTypes[data.item.dataType].color()};`"><MdiIcon :path="dataTypes[data.item.dataType].path" /></span> {{ dataTypes[data.item.dataType].text() }}</span>
+
+      <template #item.traitDescription="{ item }">
+        <ShowFullCell :content="item.traitDescription" title="tableColumnTraitDescription" v-if="item.traitDescription && item.traitDescription.length > 0" />
       </template>
+      <template #item.traitClass="{ item }">
+        <v-chip label :color="traitClasses[item.traitClass].color()" :prepend-icon="traitClasses[item.traitClass].path" v-if="item.traitClass">{{ $t(traitClasses[item.traitClass].text) }}</v-chip>
+      </template>
+      <template #item.methodClass="{ item }">
+        <v-chip label :color="methodClasses[item.methodClass].color()" :prepend-icon="methodClasses[item.methodClass].path" v-if="item.methodClass">{{ $t(methodClasses[item.methodClass].text) }}</v-chip>
+      </template>
+      <template #item.methodDescription="{ item }">
+        <ShowFullCell :content="item.methodDescription" title="tableColumnMethodDescription" v-if="item.methodDescription && item.methodDescription.length > 0" />
+      </template>
+      <template #item.scaleDatatype="{ item }">
+        <v-chip label :color="dataTypes[item.scaleDatatype].color()" :prepend-icon="dataTypes[item.scaleDatatype].path" v-if="item.scaleDatatype">{{ $t(dataTypes[item.scaleDatatype].text) }}</v-chip>
+      </template>
+      <template #item.scaleDescription="{ item }">
+        <ShowFullCell :content="item.scaleDescription" title="tableColumnScaleDescription" v-if="item.scaleDescription && item.scaleDescription.length > 0" />
+      </template>
+      <template #item.traitSynonyms="{ item }">
+        <span v-if="item.traitSynonyms">{{ item.traitSynonyms.join(', ') }}</span>
+      </template>
+
+      <template #item.scaleRestrictions="{ item }">
+        <v-tooltip v-if="item.scaleRestrictions">
+          <template #activator="{ props: activatorProps }">
+            <v-icon color="primary" v-bind="activatorProps" :icon="mdiCodeBrackets" />
+          </template>
+          <div v-if="item.scaleRestrictions.min !== undefined && item.scaleRestrictions.min !== null"><v-icon size="small" :icon="mdiGreaterThanOrEqual" /> {{ item.scaleRestrictions.min }}</div>
+          <div v-if="item.scaleRestrictions.max !== undefined && item.scaleRestrictions.max !== null"><v-icon size="small" :icon="mdiLessThanOrEqual" /> {{ item.scaleRestrictions.max }}</div>
+          <div v-if="item.scaleRestrictions.categories"><v-icon size="small" :icon="mdiCodeBrackets" /> {{ item.scaleRestrictions.categories.map((c: string[]) => c.join(', ')).join(', ') }}</div>
+        </v-tooltip>
+      </template>
+
       <!-- Dataset ids -->
-      <template v-slot:cell(datasetIds)="data">
-        <span v-if="data.item.datasetIds">{{ data.item.datasetIds.length }}</span>
+      <template #item.datasetIds="{ item }">
+        <span v-if="item.datasetIds">{{ item.datasetIds.length }}</span>
       </template>
-      <template v-slot:cell(traitRestrictions)="data">
-        <div v-if="data.item.traitRestrictions">
-          <span :id="`trait-restrictions-${data.item.traitId}`" class="text-primary"><MdiIcon :path="mdiCodeBrackets" /></span>
-          <b-tooltip :target="`trait-restrictions-${data.item.traitId}`">
-            <div class="text-left">
-              <div v-if="data.item.traitRestrictions.min !== undefined && data.item.traitRestrictions.min !== null"><MdiIcon :path="mdiGreaterThanOrEqual" /> {{ data.item.traitRestrictions.min }}</div>
-              <div v-if="data.item.traitRestrictions.max !== undefined && data.item.traitRestrictions.max !== null"><MdiIcon :path="mdiLessThanOrEqual" /> {{ data.item.traitRestrictions.max }}</div>
-              <div v-if="data.item.traitRestrictions.categories"><MdiIcon :path="mdiCodeBrackets" /> {{ data.item.traitRestrictions.categories.map(c => c.join(', ')).join(', ') }}</div>
-            </div>
-          </b-tooltip>
+
+      <!-- Category -->
+      <!-- <template #item.categoryName="{ item }">
+        <div v-if="item.categoryName">
+          <v-chip label variant="flat" size="small" href="#" @click.prevent="emit('category-clicked', { id: item.categoryId, name: item.categoryName })" :color="getTagColor(item.categoryId)" :text="item.categoryName" />
         </div>
-      </template>
-      <!-- Synonyms -->
-      <template v-slot:cell(synonyms)="data">
-        <span v-if="data.item.synonyms">{{ data.item.synonyms.join(', ') }}</span>
-      </template>
-      <!-- Edit trait -->
-      <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onTraitEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)" v-b-tooltip.hover :title="$t('tableTooltipTraitEdit')">
-          <MdiIcon :path="mdiSquareEditOutline" />
-        </a>
+      </template> -->
+
+      <!-- Pass on all named slots -->
+      <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+        <slot :name="slot" v-bind="slotProps" />
       </template>
     </BaseTable>
-
-    <!-- Trait state modal -->
-    <TraitEditModal :trait="trait" v-if="trait && storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_ADMINISTRATOR)" @changed="refresh" ref="traitEditModal" />
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import TraitEditModal from '@/components/modals/TraitEditModal'
-import defaultProps from '@/const/table-props.js'
-import { dataTypes } from '@/mixins/types.js'
-import { userIsAtLeast, USER_TYPE_ADMINISTRATOR, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
-import { getNumberWithSuffix } from '@/mixins/formatting'
-import { Pages } from '@/mixins/pages'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiLessThanOrEqual, mdiSquareEditOutline, mdiHelpCircle } from '@mdi/js'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableTraits } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { dataTypes, methodClasses, traitClasses } from '@/plugins/util/types'
+  import { Pages } from '@/plugins/pages'
+  import { columns } from '@/plugins/util/table-columns'
+  import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiHelpCircle, mdiLessThanOrEqual, mdiTagMultiple } from '@mdi/js'
 
-export default {
-  name: 'TraitTable',
-  props: {
-    ...defaultProps.BASE,
-    ...defaultProps.IDS,
-    selectionMode: {
-      type: String,
-      default: 'multi'
-    }
-  },
-  data: function () {
-    return {
-      Pages,
-      dataTypes,
-      mdiCodeBrackets,
-      mdiGreaterThanOrEqual,
-      mdiLessThanOrEqual,
-      mdiSquareEditOutline,
-      mdiHelpCircle,
-      options: {
-        idColumn: 'traitId',
-        tableName: 'traits'
-      },
-      trait: null,
-      USER_TYPE_ADMINISTRATOR,
-      USER_TYPE_DATA_CURATOR
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeToken'
-    ]),
-    columns: function () {
-      const result = [
-        {
-          key: 'traitId',
-          type: Number,
-          class: 'text-right',
-          sortable: true,
-          label: this.$t('tableColumnTraitId')
-        }, {
-          key: 'traitName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnTraitName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'traitNameShort',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnTraitNameShort')
-        }, {
-          key: 'traitDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnTraitDescription')
-        }, {
-          key: 'dataType',
-          type: 'dataType',
-          sortable: true,
-          label: this.$t('tableColumnTraitDataType')
-        }, {
-          key: 'traitRestrictions',
-          type: undefined,
-          sortable: false,
-          label: this.$t('tableColumnTraitConstraints')
-        }, {
-          key: 'synonyms',
-          type: 'json',
-          sortable: true,
-          label: this.$t('tableColumnTraitSynonyms')
-        }, {
-          key: 'categoryName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnTraitCategoryName')
-        }, {
-          key: 'traitSetSize',
-          type: Number,
-          sortable: true,
-          label: this.$t('tableColumnTraitSetSize')
-        }, {
-          key: 'traitIsTimeseries',
-          type: Boolean,
-          sortable: true,
-          label: this.$t('tableColumnTraitIsTimeseries')
-        }, {
-          key: 'unitName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnTraitUnitName')
-        }, {
-          key: 'unitDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnTraitUnitDescription')
-        }, {
-          key: 'unitAbbreviation',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnTraitUnitAbbreviation')
-        }, {
-          key: 'datasetIds',
-          type: undefined,
-          sortable: false,
-          label: this.$t('tableColumnTraitNrDataset')
-        }, {
-          key: 'count',
-          type: Number,
-          class: 'text-right',
-          sortable: true,
-          label: this.$t('tableColumnTraitDataPoints'),
-          formatter: value => getNumberWithSuffix(value, 2)
-        }
-      ]
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTraits[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+  }>()
 
-      if (this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)) {
-        result.push({
-          key: 'edit',
-          type: undefined,
-          sortable: false,
-          label: ''
-        })
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const result = columns.traits.map(c => {
+      return {
+        ...c,
+        title: t(c.title || ''),
       }
+    })
 
-      if (this.selectionMode === 'multi') {
-        result.unshift({
-          key: 'selected',
-          type: undefined,
-          sortable: false,
-          class: 'table-primary',
-          label: ''
-        })
-      }
+    return result
+  })
 
-      return result
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon,
-    TraitEditModal
-  },
-  methods: {
-    userIsAtLeast,
-    refresh: function () {
-      this.$refs.traitTable.refresh()
-    },
-    onTraitEditClicked: function (trait) {
-      this.trait = trait
-
-      this.$nextTick(() => this.$refs.traitEditModal.show())
-    }
-  }
-}
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+  })
 </script>
-
-<style>
-</style>

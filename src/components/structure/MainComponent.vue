@@ -1,0 +1,447 @@
+<template>
+  <v-app>
+    <v-main>
+      <v-app-bar :extension-height="60" expan class="border-b border-primary border-opacity-100">
+        <template #extension v-if="searchVisible">
+          <v-container>
+            <v-row justify="end">
+              <v-col cols="12">
+                <v-text-field
+                  autofocus
+                  name="name"
+                  v-model="searchTerm"
+                  :label="$t('inputPlaceholderSearch')"
+                  density="compact"
+                  type="search"
+                  hide-details
+                  clearable
+                  single-line
+                  :append-inner-icon="mdiMagnify"
+                  @keyup.exact.enter="runSearch"
+                  @click:append-inner="runSearch"
+                  @keydown.escape.exact="searchVisible = false"
+                  v-click-outside="{
+                    handler: () => { searchVisible = false },
+                  }"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </template>
+
+        <v-img
+          class="ms-4"
+          src="/img/germinate-square.svg"
+          max-height="40"
+          max-width="40"
+          contain
+        />
+
+        <v-app-bar-title style="cursor: pointer" @click="$router.push('/')">
+          <v-img
+            src="/img/germinate-text.svg"
+            max-height="30"
+            max-width="140"
+            contain
+            v-if="smAndUp"
+          />
+        </v-app-bar-title>
+
+        <v-spacer />
+
+        <v-btn :icon="mdiMagnify" @click="searchVisible = !searchVisible" v-if="showElements" />
+
+        <v-badge class="pe-none" location="bottom" color="primary" :content="getNumberWithSuffix(store.storeSelectedProjects.length, 1)" :offset-x="10" :offset-y="10" v-if="showElements && store.storeSelectedProjects && store.storeSelectedProjects.length > 0">
+          <v-btn :to="Pages.projects.path" :icon="mdiClipboardList" color="info" variant="tonal" />
+        </v-badge>
+
+        <v-menu v-if="showElements">
+          <template #activator="{ props }">
+            <v-badge class="pe-none" location="bottom" color="primary" :content="totalMarkedItemCount" :offset-x="10" :offset-y="10" v-if="totalMarkedItemCount">
+              <v-btn v-bind="props" :icon="mdiBookmarkBoxMultiple" />
+            </v-badge>
+            <v-btn v-bind="props" :icon="mdiBookmarkBoxMultiple" v-else />
+          </template>
+          <v-list slim>
+            <v-list-subheader class="list-subheader-w-button">
+              <div class="d-flex align-center justify-space-between">
+                <span class="text-high-emphasis text-uppercase font-weight-black">
+                  {{ $t('pageMarkedItemsTitle') }}
+                </span>
+                <v-btn size="x-small" variant="tonal" color="error" :icon="mdiDelete" @click="clearMarkedItems" v-if="totalMarkedItemCount" />
+              </div>
+            </v-list-subheader>
+            <v-list-item
+              v-for="(details, itemType) in markedItemTypes"
+              :key="`marked-item-${itemType}`"
+              :to="Pages.getPath(Pages.markedItemType, itemType as string)"
+              :title="$t(details.text)"
+            >
+              <template #prepend>
+                <v-icon :color="details.color()" :icon="details.path" />
+              </template>
+              <template #append>
+                <v-chip size="small" class="ms-5 px-2">{{ getNumberWithSuffix(store.storeMarkedIds[itemType].length, 1) }}</v-chip>
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-menu>
+          <template #activator="{ props }">
+            <v-btn v-bind="props" :icon="mdiTranslate" />
+          </template>
+          <v-list slim>
+            <v-list-subheader class="text-high-emphasis text-uppercase font-weight-black">{{ $t('dropdownLocales') }}</v-list-subheader>
+            <v-list-item
+              @click="changeLocale(language.locale)"
+              v-for="language in locales"
+              :key="`locale-${language.flag}`"
+              :value="language.locale"
+              :title="language.name"
+            >
+              <template #prepend>
+                <span class="me-3">{{ language.flag }}</span>
+              </template>
+              <template #append>
+                <v-icon v-if="language.locale === store.storeLocale" :icon="mdiCheck" />
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <v-menu>
+          <template #activator="{ props }">
+            <v-btn v-bind="props" :icon="mdiThemeLightDark" id="theme-button" />
+          </template>
+          <v-list slim>
+            <v-list-subheader class="text-high-emphasis text-uppercase font-weight-black">{{ $t('dropdownTheme') }}</v-list-subheader>
+            <v-list-item :prepend-icon="mdiWhiteBalanceSunny" :active="store.storeTheme === 'light'" @click="store.setTheme('light')" title="Light" />
+            <v-list-item :prepend-icon="mdiWeatherNight" :active="store.storeTheme === 'dark'" @click="store.setTheme('dark')" title="Dark" />
+            <v-list-item :prepend-icon="mdiDesktopTowerMonitor" :active="store.storeTheme === 'system'" @click="store.setTheme('system')" title="System" />
+          </v-list>
+        </v-menu>
+
+        <UserDropdown v-if="showElements && store.storeServerSettings?.authMode !== AuthenticationMode.NONE" />
+
+        <v-badge class="pe-none" location="bottom left" color="primary" :offset-x="10" :offset-y="10" :content="store.storeAsyncJobUuids.length" v-if="store.storeAsyncJobUuids.length > 0">
+          <v-btn @click="emitter.emit('toggle-aside')" :icon="mdiFileArrowUpDown" />
+        </v-badge>
+        <v-btn @click="emitter.emit('toggle-aside')" :icon="mdiFileArrowUpDown" v-else />
+      </v-app-bar>
+
+      <MainNavigation v-if="showElements" />
+      <AsyncSidebar />
+
+      <div class="h-100">
+        <CookieBanner sticky />
+
+        <StoryBanner v-if="store.storeActiveStory" />
+
+        <AppBreadcrumbs v-if="$route.name !== 'login'" />
+
+        <router-view :key="$route.path" class="h-100" />
+      </div>
+
+      <LoginModal ref="loginModal" />
+
+      <ConfirmModal />
+
+      <AppFooter />
+
+      <v-snackbar-queue timeout="6000" location="top" v-model="snackbarQueue" />
+
+      <v-overlay
+        :model-value="loading"
+        class="align-center justify-center"
+        :close-on-content-click="false"
+        persistent
+      >
+        <v-card :title="$t('modalTitleLoading')" width="min(50vw, 400px)" class="d-flex align-center justify-center" :loading="loading">
+          <template #loader="{ isActive }">
+            <v-progress-linear
+              :active="isActive"
+              color="primary"
+              height="4"
+              indeterminate
+            />
+          </template>
+        </v-card>
+      </v-overlay>
+
+      <v-bottom-sheet
+        v-model="bottomSheetVisible"
+        inset
+        max-height="75vh"
+      >
+        <v-card>
+          <template #text>
+            <ChangelogInfo :prev-version="changelogVersionNumber" v-if="bottomSheetType === 'changelog'" />
+          </template>
+        </v-card>
+      </v-bottom-sheet>
+    </v-main>
+  </v-app>
+</template>
+
+<script lang="ts" setup>
+  import MainNavigation from '@/components/structure/MainNavigation.vue'
+  import AsyncSidebar from '@/components/structure/AsyncSidebar.vue'
+  import ConfirmModal from '@/components/modals/ConfirmModal.vue'
+  import AppFooter from '@/components/AppFooter.vue'
+
+  import { useDisplay, useTheme } from 'vuetify'
+  import type { Locale } from '@/plugins/types/Locale'
+  import { loadLanguageAsync } from '@/plugins/vuetify'
+  import { markedItemTypes } from '@/plugins/util/types'
+  import { getNumberWithSuffix } from '@/plugins/util/formatting'
+  import { Pages } from '@/plugins/pages'
+  import LoginModal from '@/components/modals/LoginModal.vue'
+  import UserDropdown from '@/components/structure/UserDropdown.vue'
+
+  import emitter from 'tiny-emitter/instance'
+  import ChangelogInfo from '@/components/widgets/ChangelogInfo.vue'
+  import { germinateVersion, getId } from '@/plugins/util'
+  import { useDark } from '@vueuse/core'
+  import { mdiBookmarkBoxMultiple, mdiCheck, mdiClipboardList, mdiDelete, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiMagnify, mdiThemeLightDark, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
+  import { apiGetLocales } from '@/plugins/api/setting'
+  import { UAParser } from 'ua-parser-js'
+
+  import { init as initPlausible, track } from '@plausible-analytics/tracker'
+  import axios from 'axios'
+  import { AuthenticationMode } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+
+  export interface SnackbarContent {
+    title?: string
+    text?: string
+    color?: string
+    timeout?: number
+  }
+
+  // Composition
+  const router = useRouter()
+  const theme = useTheme()
+  const store = useCoreStore()
+  const isDark = useDark()
+  const { smAndUp } = useDisplay()
+  const { t } = useI18n()
+
+  // Refs
+  const locales = ref<Locale[]>([])
+  const loginModal = useTemplateRef('loginModal')
+  const bottomSheetVisible = ref(false)
+  const bottomSheetType = ref<'changelog'>('changelog')
+  const changelogVersionNumber = ref()
+  const searchVisible = ref(false)
+  const searchTerm = ref<string>()
+  const snackbarQueue = ref<SnackbarContent[]>([])
+  const loading = ref(false)
+
+  // Methods
+  function changeLocale (locale: string) {
+    store.setLocale(locale)
+  }
+
+  // Listen for theme changes in the store
+  watchEffect(() => {
+    const str = isDark.value ? 'dark' : 'light'
+    theme.setTransitionOrigin(document.querySelector('#theme-button'))
+    theme.change(store.storeTheme === 'system' ? str : store.storeTheme, true)
+    store.setSystemTheme(str)
+  })
+
+  // Listen for changes to store locale and update Vuetify current
+  watchEffect(() => {
+    loadLanguageAsync(store.storeLocale)
+  })
+
+  const showElements = computed(() => {
+    return !(store.storeServerSettings && store.storeServerSettings.authMode === 'FULL' && !store.storeToken)
+  })
+
+  const totalMarkedItemCount: ComputedRef<string | undefined> = computed(() => {
+    const value = Object.keys(markedItemTypes).map(it => store.storeMarkedIds[it].length).reduce((a, b) => a + b, 0)
+
+    if (value) {
+      return getNumberWithSuffix(value, 1)
+    } else {
+      return undefined
+    }
+  })
+
+  apiGetLocales((result: Locale[]) => {
+    locales.value = result
+  })
+
+  function runSearch () {
+    router.push(Pages.getPath(Pages.searchQuery, searchTerm.value || ''))
+    searchTerm.value = undefined
+    searchVisible.value = false
+  }
+
+  function showLogin () {
+    loginModal.value?.show()
+  }
+
+  function showChangelog (cv: string | undefined) {
+    changelogVersionNumber.value = cv
+    bottomSheetType.value = 'changelog'
+    bottomSheetVisible.value = true
+  }
+
+  function showSnackbar (message: SnackbarContent) {
+    if (!snackbarQueue.value.some(m => m.title === message.title && m.text === message.text && m.color === message.color && m.timeout === message.timeout)) {
+      snackbarQueue.value.push(message)
+    }
+  }
+
+  function clearMarkedItems () {
+    emitter.emit('show-confirm', {
+      title: t('modalTitleConfirm'),
+      message: t('modalTitleSure'),
+      okTitle: t('genericYes'),
+      cancelTitle: t('genericNo'),
+      okVariant: 'error',
+      callback: (result: boolean) => {
+        if (result === true) {
+          store.clearAllMarkedIds()
+        }
+      },
+    })
+  }
+
+  function showLoading (visible: boolean) {
+    loading.value = visible
+  }
+
+  function enablePlausible () {
+    if (store.storeCookiesAccepted === true && store.serverSettings?.plausibleDomain && store.serverSettings?.plausibleApiHost) {
+      // Remove trailing slashes
+      const host = store.serverSettings.plausibleApiHost.replace(/\/+$/, '')
+
+      initPlausible({
+        domain: store.serverSettings.plausibleDomain,
+        endpoint: `${host}/api/event`,
+        captureOnLocalhost: false,
+        hashBasedRouting: store.serverSettings.plausibleHashMode || true,
+        autoCapturePageviews: true,
+      })
+
+      let pwaMode = null
+      try {
+        if (document.referrer.startsWith('android-app://'))
+          pwaMode = 'twa'
+        if (window.matchMedia('(display-mode: browser)').matches)
+          pwaMode = 'browser'
+        // @ts-ignore
+        if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone)
+          pwaMode = 'standalone'
+        if (window.matchMedia('(display-mode: minimal-ui)').matches)
+          pwaMode = 'minimal-ui'
+        if (window.matchMedia('(display-mode: fullscreen)').matches)
+          pwaMode = 'fullscreen'
+        if (window.matchMedia('(display-mode: window-controls-overlay)').matches)
+          pwaMode = 'window-controls-overlay'
+      } catch (e) {
+        console.error(e)
+      }
+
+      track('app-load', { props: { version: germinateVersion, pwaMode: pwaMode || 'N/A' } })
+    }
+  }
+
+  function isLocalhost () {
+    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
+  }
+
+  function logRun () {
+    const config = new UAParser().getResult()
+    store.setDeviceConfig(config)
+
+    // Log the run
+    if (!isLocalhost()) {
+      let id = store.storeUniqueClientId
+      if (!id) {
+        id = getId()
+
+        store.setUniqueClientId(id)
+      }
+
+      if (config.os !== undefined && config.os !== null && config.os.name !== undefined && config.os.name !== null && config.os.name !== 'Search Bot') {
+        const data = {
+          application: 'Germinate',
+          runCount: store.storeRunCount + 1,
+          id,
+          version: `${germinateVersion}`,
+          locale: store.storeLocale,
+          os: `${config.os.name} ${config.os.version}`,
+        }
+        axios({
+          url: 'https://ics.hutton.ac.uk/app-logger/log',
+          method: 'get',
+          params: data,
+        }).then(() => {
+          // If the call succeeds, reset the run count
+          store.setRunCount(0)
+        }).catch(() => {
+          // If this call fails (e.g. no internet), remember the run
+          store.setRunCount(store.storeRunCount + 1)
+        })
+      }
+    }
+  }
+
+  onBeforeMount(() => {
+    loadLanguageAsync(store.storeLocale)
+
+    emitter.on('show-login', showLogin)
+    emitter.on('show-changelog', showChangelog)
+    emitter.on('show-snackbar', showSnackbar)
+    emitter.on('show-loading', showLoading)
+    emitter.on('init-plausible', enablePlausible)
+  })
+  onBeforeUnmount(() => {
+    emitter.off('show-login', showLogin)
+    emitter.off('show-changelog', showChangelog)
+    emitter.off('show-snackbar', showSnackbar)
+    emitter.off('show-loading', showLoading)
+    emitter.off('init-plausible', enablePlausible)
+  })
+  onMounted(() => {
+    changelogVersionNumber.value = store.storeChangelogVersionNumber
+    if (store.storeChangelogVersionNumber !== undefined && store.storeChangelogVersionNumber !== germinateVersion) {
+      bottomSheetType.value = 'changelog'
+      bottomSheetVisible.value = true
+      store.setChangelogVersionNumber(germinateVersion)
+    }
+
+    enablePlausible()
+    logRun()
+
+    emitter.emit('update-async-jobs')
+  })
+</script>
+
+<style>
+body.print .v-overlay-container {
+  display: none;
+}
+
+.v-navigation-drawer--rail:not(.v-navigation-drawer--is-hovering) .v-list-group__items * {
+  display: none;
+}
+.v-navigation-drawer--top.v-navigation-drawer--active  {
+  height: auto !important;
+}
+.cookie-banner {
+  top: 64px;
+  z-index: 1002;
+}
+</style>
+
+<style scoped>
+.list-subheader-w-button :deep(.v-list-subheader__text) {
+  width: 100%;
+}
+</style>

@@ -1,0 +1,443 @@
+<template>
+  <div>
+    <DataWarnings :germplasm-id="germplasmId" v-if="germplasmId" />
+
+    <ScrollSpy :items="scrollSpyItems" :top-gap="topGap" ref="scrollSpy" />
+
+    <template v-if="germplasm">
+      <h1 class="text-headline-large my-3 d-flex justify-space-between align-center">{{ title }}<v-chip label :prepend-icon="entityTypes[germplasm.entityTypeName].path" :text="$t(entityTypes[germplasm.entityTypeName].text)" :color="entityTypes[germplasm.entityTypeName].color()" /></h1>
+      <v-divider class="mb-5" />
+      <p>{{ $t('pagePassportText') }}</p>
+
+      <v-row>
+        <v-col cols="12" md="6">
+          <!-- MCPD -->
+          <McpdInfo class="mb-5" :germplasm="germplasm" id="mcpd" v-intersect="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <!-- PDCI -->
+          <v-card class="mb-5" :title="$t('pagePassportPdciTitle')" id="pdci" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+            <template #prepend><v-icon :icon="mdiChartDonut" color="primary" /></template>
+            <template #append><v-icon :icon="mdiHelpCircle" @click="showPdciInfo" /></template>
+            <template #text>
+              <p><strong>{{ $t('pagePassportPdciText', { pdci: germplasm.pdci?.toFixed(2) }) }}</strong></p>
+            </template>
+          </v-card>
+          <!-- Synonyms -->
+          <v-card class="mb-5" :title="$t('pagePassportSynonymsTitle')" v-if="germplasm.synonyms" id="synonyms" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+            <template #prepend><v-icon :icon="mdiTagTextOutline" color="primary" /></template>
+            <template #text>
+              <ul>
+                <li v-for="(synonym, index) in germplasm.synonyms" :key="`germplasm-synonym-${index}`">
+                  {{ synonym }}
+                </li>
+              </ul>
+            </template>
+          </v-card>
+          <!-- Links -->
+          <v-card class="mb-5" :title="$t('pagePassportLinksTitle')" id="links" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+            <template #prepend><v-icon :icon="mdiLinkVariant" color="primary" /></template>
+            <template #text>
+              <ExternalLinks :foreign-id="germplasm.germplasmId" target-table="germinatebase" />
+            </template>
+          </v-card>
+
+          <v-card class="mb-5" title="Humbug" id="humbug">
+            <template #prepend><v-icon :icon="mdiBarcode" color="primary" /></template>
+            <template #text>
+              <v-btn :text="$t('pagePassportGenerateBarcode')" target="_blank" :href="`https://cropgeeks.github.io/humbug/#/import?barcodes=${germplasm.germplasmName}`" />
+            </template>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <InstitutionTable class="mb-5" header-icon-color="primary" :get-data="getInstitutionData" id="institutions" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+      <PublicationTable class="mb-5" header-icon-color="primary" :publication-reference-type="PublicationdataReferenceType.germplasm" :publication-reference-id="germplasmId" :get-data="getPublicationData" :filter-on="publicationFilter" id="publications" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <template #card-text>
+          <v-card-text>
+            <p v-html="$t('pagePassportPublicationsText')" />
+          </v-card-text>
+        </template>
+      </PublicationTable>
+
+      <v-card v-show="performanceDataCount > 0" class="mb-5" id="performance" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <v-toolbar
+          flat
+          density="compact"
+        >
+          <v-toolbar-title class="ms-4"><v-icon size="x-small" start color="primary" :icon="mdiSpeedometer" /> {{ $t('pagePassportTraitStatsTitle') }}</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <p>{{ $t('pagePassportTraitStatsText') }}</p>
+
+          <v-expansion-panels eager>
+            <v-expansion-panel
+              eager
+              :value="performanceDataCount <= 48"
+              :title="$t('buttonToggle')"
+            >
+              <template #text>
+                <GermplasmTraitStats :germplasm="germplasm" @has-data="(count) => { performanceDataCount = count }" />
+              </template>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card-text>
+      </v-card>
+
+      <DatasetTable class="mb-5" header-icon-color="primary" :get-data="getDatasetData" id="datasets" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <template #card-text>
+          <v-card-text>
+            <p v-html="$t('pagePassportDatasetText')" />
+          </v-card-text>
+        </template>
+      </DatasetTable>
+      <PedigreeDefinitionTable class="mb-5" header-icon-color="primary" :get-data="getPedigreedefinitionData" :filter-on="pedigreeDefinitionFilter" id="pedigree" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <template #card-text>
+          <v-card-text>
+            <p v-html="$t('pagePassportPedigreeText')" />
+          </v-card-text>
+        </template>
+      </PedigreeDefinitionTable>
+      <PedigreeTable class="mb-5" header-icon-color="primary" :get-data="getPedigreeData" :filter-on="pedigreeFilter" />
+
+      <PedigreeChart class="mb-5" header-icon-color="primary" :germplasm="germplasm" />
+
+      <v-card v-if="location" class="mb-5" id="location" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <v-toolbar
+          flat
+          density="compact"
+        >
+          <v-toolbar-title class="ms-4"><v-icon size="x-small" start color="primary" :icon="mdiSpeedometer" /> {{ $t('pagePassportLocationTitle') }}</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <p>{{ $t('pagePassportLocationText') }}</p>
+        </v-card-text>
+        <LocationMap :locations="[location]" @location-updated="update" :rounded="false" />
+      </v-card>
+
+      <Images
+        class="mb-5"
+        reference-table="germinatebase"
+        :foreign-id="germplasm.germplasmId"
+        header-icon-color="primary"
+        id="images"
+        v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)"
+      />
+
+      <GroupTable class="mb-5" header-icon-color="primary" :get-data="getGroupData" id="groups" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <template #card-text>
+          <v-card-text>
+            <p v-html="$t('pagePassportGroupText')" />
+          </v-card-text>
+        </template>
+      </GroupTable>
+
+      <EntityTable class="mb-5" header-icon-color="primary" :get-data="getEntityData" :filter-on="entityFilter" id="entity" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
+        <template #card-text>
+          <v-card-text>
+            <p v-html="$t('pagePassportEntityText')" />
+
+            <v-list v-model:opened="entityListOpen">
+              <v-list-group value="accession">
+                <template #activator="{ props }">
+                  <v-list-item v-bind="props" :prepend-icon="mdiCircleMedium" :title="$t(entityTypes['Accession'].text)" />
+                </template>
+
+                <v-list-group value="plantplot">
+                  <template #activator="{ props }">
+                    <v-list-item v-bind="props" :prepend-icon="mdiSubdirectoryArrowRight" :title="$t(entityTypes['Plant/Plot'].text)" />
+                  </template>
+
+                  <v-list-group value="sample">
+                    <template #activator="{ props }">
+                      <v-list-item v-bind="props" :prepend-icon="mdiSubdirectoryArrowRight" :title="$t(entityTypes['Sample'].text)" />
+                    </template>
+                  </v-list-group>
+                </v-list-group>
+              </v-list-group>
+            </v-list>
+          </v-card-text>
+        </template>
+      </EntityTable>
+
+      <GermplasmAttributeTable class="mb-5" header-icon-color="primary" :get-data="getGermplasmAttributeData" :filter-on="germplasmAttributeFilter" id="attributes" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+
+      <CommentTable class="mb-5" :reference-id="germplasmId" :comment-type-id="1" header-icon-color="primary" :get-data="getCommentData" :filter-on="commentFilter" id="comments" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)" />
+    </template>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import ScrollSpy from '@/components/widgets/ScrollSpy.vue'
+  import { apiPostEntityTable, apiPostGermplasmAttributeTable, apiPostGermplasmDatasetTable, apiPostGermplasmGroupTable, apiPostGermplasmTable, apiPostPedigreedefinitionTable, apiPostPedigreeTable } from '@/plugins/api/germplasm'
+  import { FilterComparator, type FilterGroup, FilterOperator, type PaginatedRequest, PublicationdataReferenceType, type ViewTableGermplasm, type ViewTableGroups, type ViewTableLocations } from '@/plugins/types/germinate'
+  import McpdInfo from '@/components/germplasm/McpdInfo.vue'
+  import ExternalLinks from '@/components/widgets/ExternalLinks.vue'
+  import InstitutionTable from '@/components/tables/InstitutionTable.vue'
+  import { entityTypes } from '@/plugins/util/types'
+  import PublicationTable from '@/components/tables/PublicationTable.vue'
+  import { lookupDoiInformation } from '@/plugins/util'
+  import PedigreeDefinitionTable from '@/components/tables/PedigreeDefinitionTable.vue'
+  import PedigreeTable from '@/components/tables/PedigreeTable.vue'
+  import PedigreeChart from '@/components/charts/PedigreeChart.vue'
+  import Images from '@/components/widgets/Images.vue'
+
+  import emitter from 'tiny-emitter/instance'
+  import { useI18n } from 'vue-i18n'
+  import { mdiBarcode, mdiBookmarkCheck, mdiBookmarkOutline, mdiBookOpenVariant, mdiChartDonut, mdiCircleMedium, mdiCommentMultiple, mdiDatabase, mdiFamilyTree, mdiFileTree, mdiGroup, mdiHelpCircle, mdiImageMultiple, mdiLinkVariant, mdiMapMarker, mdiOfficeBuildingCog, mdiOpenInNew, mdiPassport, mdiPlaylistPlus, mdiSpeedometer, mdiSubdirectoryArrowRight, mdiTagTextOutline } from '@mdi/js'
+  import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
+  import { apiPostPublicationsTable } from '@/plugins/api/publication'
+  import { apiPostCommentsTable } from '@/plugins/api/comment'
+
+  const compProps = defineProps<{
+    germplasmId: number
+    topGap: boolean
+  }>()
+
+  const { t } = useI18n()
+
+  const store = useCoreStore()
+  const scrollSpy = useTemplateRef('scrollSpy')
+  const performanceDataCount = ref(1)
+  const germplasm = ref<ViewTableGermplasm>()
+  const groups = ref<ViewTableGroups[]>()
+  const entityListOpen = ref(['accession', 'plantplot', 'sample'])
+
+  const activeStack: string[] = []
+  let activeItem: string | undefined = undefined
+
+  const title = computed(() => {
+    if (germplasm.value) {
+      return [germplasm.value.germplasmName, germplasm.value.germplasmDisplayName, germplasm.value.germplasmNumber].filter(p => p !== null).join(' / ')
+    } else {
+      return ''
+    }
+  })
+  const isMarked = computed(() => store.storeMarkedGermplasm.includes(compProps.germplasmId))
+  const location: ComputedRef<ViewTableLocations | undefined> = computed(() => {
+    if (germplasm.value && germplasm.value.latitude && germplasm.value.longitude) {
+      return {
+        locationId: germplasm.value.locationId,
+        locationLatitude: germplasm.value.latitude,
+        locationLongitude: germplasm.value.longitude,
+        locationName: germplasm.value.location,
+        locationType: 'collectingsites',
+        countryName: germplasm.value.countryName,
+        countryCode2: germplasm.value.countryCode,
+      }
+    } else {
+      return undefined
+    }
+  })
+  const scrollSpyItems = computed(() => {
+    return [
+      { href: '#', tooltip: 'tooltipGermplasmMarkedItem', icon: isMarked.value ? mdiBookmarkCheck : mdiBookmarkOutline, click: () => markItem() },
+      { href: '#mcpd', icon: mdiPassport, title: 'pagePassportMcpdTitle' },
+      { href: '#links', icon: mdiOpenInNew, title: 'pagePassportLinksTitle' },
+      { href: '#institutions', icon: mdiOfficeBuildingCog, title: 'pagePassportInstitutionTitle' },
+      { href: '#publications', icon: mdiBookOpenVariant, title: 'pagePassportPublicationsTitle' },
+      { href: '#performance', icon: mdiSpeedometer, title: 'pagePassportTraitStatsTitle' },
+      { href: '#datasets', icon: mdiDatabase, title: 'pagePassportDatasetTitle' },
+      { href: '#pedigree', icon: mdiFamilyTree, title: 'pagePassportPedigreeTitle' },
+      ...(location.value ? [{ href: '#location', icon: mdiMapMarker, title: 'pagePassportLocationTitle' }] : []),
+      { href: '#images', icon: mdiImageMultiple, title: 'pagePassportImageTitle' },
+      { href: '#groups', icon: mdiGroup, title: 'pagePassportGroupTitle' },
+      { href: '#entity', icon: mdiFileTree, title: 'pagePassportEntityTitle' },
+      { href: '#attributes', icon: mdiPlaylistPlus, title: 'pagePassportAttributeTitle' },
+      { href: '#comments', icon: mdiCommentMultiple, title: 'pagePassportCommentTitle' },
+    ]
+  })
+  const pedigreeDefinitionFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'germplasmId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.and,
+    }]
+  })
+  const germplasmAttributeFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'germplasmId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.or,
+    }]
+  })
+  const pedigreeFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'parentId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }, {
+        column: 'childId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.or,
+    }]
+  })
+  const commentFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'commentTypeId',
+        comparator: FilterComparator.equals,
+        values: ['1'],
+        canBeChanged: false,
+      }, {
+        column: 'commentForeignId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.and,
+    }]
+  })
+  const entityFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      filters: [{
+        column: 'entityParentId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }, {
+        column: 'entityChildId',
+        comparator: FilterComparator.equals,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.or,
+    }]
+  })
+  const publicationFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    const result = [{
+      filters: [{
+        column: 'germplasmIds',
+        comparator: FilterComparator.contains,
+        values: [`${compProps.germplasmId}`],
+        canBeChanged: false,
+      }],
+      operator: FilterOperator.or,
+    }]
+
+    if (groups.value && groups.value.length > 0) {
+      groups.value.forEach(g => {
+        result[0].filters.push({
+          column: 'groupIds',
+          comparator: FilterComparator.contains,
+          values: [`${g.groupId}`],
+          canBeChanged: false,
+        })
+      })
+    }
+
+    return result
+  })
+
+  function markItem () {
+    if (isMarked.value) {
+      store.removeMarkedIds('germplasm', [compProps.germplasmId])
+    } else {
+      store.addMarkedIds('germplasm', [compProps.germplasmId])
+    }
+  }
+
+  function onIntersect (entries: IntersectionObserverEntry[]) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        activeStack.push(entry.target.id)
+      } else if (activeStack.includes(entry.target.id)) {
+        activeStack.splice(activeStack.indexOf(entry.target.id), 1)
+      }
+    })
+    activeItem = activeStack.at(-1) || activeItem || scrollSpyItems.value[0].href || ''
+
+    scrollSpy.value?.setActive(`#${activeItem}`)
+  }
+
+  function getPedigreeData (data: PaginatedRequest) {
+    return apiPostPedigreeTable(data)
+  }
+  function getPedigreedefinitionData (data: PaginatedRequest) {
+    return apiPostPedigreedefinitionTable(data)
+  }
+  function getDatasetData (data: PaginatedRequest) {
+    return apiPostGermplasmDatasetTable(germplasm.value?.germplasmId || -1, data)
+  }
+  function getInstitutionData (data: PaginatedRequest) {
+    return apiPostGermplasmInstitutionTable(germplasm.value?.germplasmId || -1, data)
+  }
+  function getGermplasmAttributeData (data: PaginatedRequest) {
+    return apiPostGermplasmAttributeTable(data)
+  }
+  function getEntityData (data: PaginatedRequest) {
+    return apiPostEntityTable(data)
+  }
+  function getCommentData (data: PaginatedRequest) {
+    return apiPostCommentsTable(data)
+  }
+  function getPublicationData (data: PaginatedRequest) {
+    return apiPostPublicationsTable(data, result => {
+      if (result && result.data && result.data.length > 0) {
+        result.data.forEach(p => {
+          p.lookupDetails = lookupDoiInformation(p)
+          try {
+            p.publicationFallbackCache = JSON.parse(p.publicationFallbackCache || '')
+          } catch {
+            //
+          }
+        })
+      }
+    })
+  }
+  function getGroupData (data: PaginatedRequest) {
+    return apiPostGermplasmGroupTable(germplasm.value?.germplasmId || -1, data, result => {
+      if (result && result.data) {
+        groups.value = result.data
+      } else {
+        groups.value = []
+      }
+    })
+  }
+  function showPdciInfo () {
+    emitter.emit('show-confirm', {
+      title: t('pagePassportPdciTitle'),
+      message: t('pagePassportPdciModal'),
+      okTitle: t('genericOk'),
+      cancelTitle: undefined,
+      okOnly: true,
+      okVariant: 'primary',
+    })
+  }
+
+  function update () {
+    const query: PaginatedRequest = {
+      filters: [{
+        filters: [{
+          column: 'germplasmId',
+          comparator: FilterComparator.equals,
+          values: [`${compProps.germplasmId}`],
+        }],
+        operator: FilterOperator.and,
+      }],
+      page: 1,
+      limit: 1,
+    }
+
+    apiPostGermplasmTable(query, result => {
+      if (result && result.data && result.data.length > 0) {
+        germplasm.value = result.data[0]
+      }
+    })
+  }
+
+  onMounted(() => update())
+</script>

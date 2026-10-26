@@ -1,262 +1,181 @@
 <template>
-  <div>
-    <BaseTable v-bind="$props"
-              :columns="columns"
-              :options="options"
-              primary-key="experimentId"
-              class="experiment-table"
-              ref="experimentTable"
-              v-on="$listeners">
-      <!-- Experiment id link -->
-      <template v-slot:cell(experimentId)="data">
-        <router-link :to="{ name: Pages.datasets }" event="" @click.native.prevent="redirectToDatasets(data.item)">{{ data.item.experimentId }}</router-link>
-      </template>
-      <!-- Experiment name link -->
-      <template v-slot:cell(experimentName)="data">
-        <router-link :to="{ name: Pages.datasets }" event="" @click.native.prevent="redirectToDatasets(data.item)" :title="data.item.experimentName">{{ truncateAfterWords(data.item.experimentName, 10) }}</router-link>
-      </template>
-      <!-- Experiment description link -->
-      <template v-slot:cell(experimentDescription)="data">
-        <span :title="data.item.experimentDescription" v-if="data.item.experimentDescription">{{ truncateAfterWords(data.item.experimentDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullExperimentDescription(data.item.experimentDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.experimentDescription, 10)" >&nbsp;
-          <MdiIcon :path="mdiPageNext" />
-        </a>
-      </template>
-      <!-- Experiment dataset types -->
-      <template v-slot:cell(dataTypes)="data">
-        <!-- Trials datasets -->
-        <b-badge :to="{ name: Pages.datasets }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.trials.color())}; background-color: ${datasetTypes.trials.color()};`" @click.native.prevent="redirectToExport(data.item, 'trials')" v-if="data.item.trialsCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.trials.text()">
-          <MdiIcon :path="datasetTypes.trials.path" /> {{ data.item.trialsCount }}
-        </b-badge>
-        <!-- Genotype datasets -->
-        <b-badge :to="{ name: Pages.datasets }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.genotype.color())}; background-color: ${datasetTypes.genotype.color()};`" @click.native.prevent="redirectToExport(data.item, 'genotype')" v-if="data.item.genotypeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.genotype.text()">
-          <MdiIcon :path="datasetTypes.genotype.path" /> {{ data.item.genotypeCount }}
-        </b-badge>
-        <!-- Allelefreq datasets -->
-        <b-badge :to="{ name: Pages.datasets }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.allelefreq.color())}; background-color: ${datasetTypes.allelefreq.color()};`" @click.native.prevent="redirectToExport(data.item, 'allelefreq')" v-if="data.item.alleleFreqCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.allelefreq.text()">
-          <MdiIcon :path="datasetTypes.allelefreq.path" /> {{ data.item.alleleFreqCount }}
-        </b-badge>
-        <!-- Climate datasets -->
-        <b-badge :to="{ name: Pages.datasets }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.climate.color())}; background-color: ${datasetTypes.climate.color()};`" @click.native.prevent="redirectToExport(data.item, 'climate')" v-if="data.item.climateCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.climate.text()">
-          <MdiIcon :path="datasetTypes.climate.path" /> {{ data.item.climateCount }}
-        </b-badge>
-        <!-- Climate datasets -->
-        <!-- <b-badge :to="{ name: Pages.datasets }" event="" :style="`color: ${getHighContrastTextColor(datasetTypes.pedigree.color())}; background-color: ${datasetTypes.pedigree.color()};`" @click.native.prevent="redirectToExport(data.item, 'pedigree')" v-if="data.item.pedigreeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.pedigree.text()"> -->
-        <b-badge :style="`color: ${getHighContrastTextColor(datasetTypes.pedigree.color())}; background-color: ${datasetTypes.pedigree.color()};`" v-if="data.item.pedigreeCount" class="table-icon-link text-nowrap mr-1" v-b-tooltip.bottom.hover :title="datasetTypes.pedigree.text()">
-          <MdiIcon :path="datasetTypes.pedigree.path" /> {{ data.item.pedigreeCount }}
-        </b-badge>
-      </template>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableExperiments} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :forced-filters="forcedFilters"
+    :selection-type="selectionType"
+    :disabled="compProps.disabled"
+    :show-details="false"
+    item-key="experimentId"
+    table-key="experiments"
+    :header-icon="mdiFolderTable"
+    :header-title="$t('pageExperimentsTitle')"
+    v-bind="$attrs"
+  >
+    <template #item.experimentId="{ item }">
+      <router-link :to="Pages.datasets.path" @click.prevent="redirectToDatasets(item)">{{ item.experimentId }}</router-link>
+    </template>
+    <template #item.experimentName="{ item }">
+      <router-link :to="Pages.datasets.path" @click.prevent="redirectToDatasets(item)">{{ item.experimentName }}</router-link>
+    </template>
 
-      <!-- Edit dataset -->
-      <template v-slot:cell(edit)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onExperimentEditClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
-          <span v-b-tooltip.hover :title="$t('tableTooltipExperimentEdit')"><MdiIcon :path="mdiSquareEditOutline"/></span>
-        </a>
-      </template>
+    <template #item.experimentDescription="{ item }">
+      <ShowFullCell :content="item.experimentDescription" title="tableColumnExperimentDescription" v-if="item.experimentDescription && item.experimentDescription.length > 0" />
+    </template>
 
-      <!-- Delete experiment -->
-      <template v-slot:cell(delete)="data">
-        <a href="#" class="text-decoration-none" @click.prevent="onExperimentDeleteClicked(data.item)" v-if="storeToken && userIsAtLeast(storeToken.userType, USER_TYPE_DATA_CURATOR)">
-          <span v-b-tooltip.hover :title="$t('tableTooltipExperimentDelete')"><MdiIcon className="text-danger" :path="mdiDelete"/></span>
-        </a>
-      </template>
-    </BaseTable>
-
-    <ExperimentCreationModal :experiment="selectedExperiment" ref="experimentCreationModal" @experiment-updated="refresh()" @experiment-added="refresh()" />
-  </div>
+    <!-- Experiment dataset types -->
+    <template #item.dataTypes="{ item }">
+      <!-- Trials datasets -->
+      <v-chip :prepend-icon="datasetTypes.trials.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.trials.color()" @click.prevent="redirectToExport(item, 'trials')" v-if="item.trialsCount" v-tooltip:top="$t(datasetTypes.trials.text)" :text="item.trialsCount" />
+      <v-chip :prepend-icon="datasetTypes.genotype.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.genotype.color()" @click.prevent="redirectToExport(item, 'genotype')" v-if="item.genotypeCount" v-tooltip:top="$t(datasetTypes.genotype.text)" :text="item.genotypeCount" />
+      <v-chip :prepend-icon="datasetTypes.allelefreq.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.allelefreq.color()" @click.prevent="redirectToExport(item, 'allelefreq')" v-if="item.alleleFreqCount" v-tooltip:top="$t(datasetTypes.allelefreq.text)" :text="item.alleleFreqCount" />
+      <v-chip :prepend-icon="datasetTypes.climate.path" label :to="Pages.datasets.path" class="me-2" :color="datasetTypes.climate.color()" @click.prevent="redirectToExport(item, 'climate')" v-if="item.climateCount" v-tooltip:top="$t(datasetTypes.climate.text)" :text="item.climateCount" />
+      <v-chip :prepend-icon="datasetTypes.pedigree.path" label class="me-2" :color="datasetTypes.pedigree.color()" v-if="item.pedigreeCount" v-tooltip:top="$t(datasetTypes.pedigree.text)" :text="item.pedigreeCount" />
+    </template>
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import ExperimentCreationModal from '@/components/modals/ExperimentCreationModal'
-import { datasetTypes } from '@/mixins/types'
-import { getHighContrastTextColor } from '@/mixins/colors'
-import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
-import { userIsAtLeast, USER_TYPE_DATA_CURATOR } from '@/mixins/api/auth'
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableExperiments } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { Pages } from '@/plugins/pages'
+  import { datasetTypes } from '@/plugins/util/types'
 
-import { mdiPageNext, mdiSquareEditOutline, mdiDelete } from '@mdi/js'
-import { Pages } from '@/mixins/pages'
-import { apiDeleteExperiment } from '@/mixins/api/dataset'
+  import ShowFullCell from '@/components/tables/ShowFullCell.vue'
+  import { mdiFolderTable } from '@mdi/js'
 
-export default {
-  components: {
-    ExperimentCreationModal,
-    BaseTable,
-    MdiIcon
-  },
-  name: 'ExperimentTable',
-  props: {
-    ...defaultProps.FULL
-  },
-  data: function () {
-    return {
-      Pages,
-      datasetTypes,
-      mdiPageNext,
-      mdiSquareEditOutline,
-      mdiDelete,
-      options: {
-        idColumn: 'experimentId',
-        tableName: 'experiments'
+  const compProps = withDefaults(defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableExperiments[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    disabled?: boolean
+    selectionType?: TableSelectionType
+    disableForcedProjectFilter?: boolean
+  }>(), {
+    disabled: false,
+  })
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+  const router = useRouter()
+  const store = useCoreStore()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'projectId',
+      dataType: 'integer',
+      sortable: false,
+      visibleInTable: false,
+      title: t('tableColumnProjectId'),
+    }, {
+      key: 'experimentId',
+      title: t('tableColumnExperimentId'),
+      dataType: 'integer',
+    }, {
+      key: 'experimentName',
+      title: t('tableColumnExperimentName'),
+      dataType: 'string',
+    }, {
+      key: 'experimentDescription',
+      title: t('tableColumnExperimentDescription'),
+      dataType: 'string',
+    }, {
+      key: 'experimentDate',
+      dataType: 'date',
+      title: t('tableColumnExperimentDate'),
+      value: (value: ViewTableExperiments) => value.experimentDate ? new Date(value.experimentDate).toLocaleDateString() : undefined,
+    }, {
+      key: 'dataTypes',
+      type: undefined,
+      sortable: false,
+      title: t('tableColumnExperimentDataTypes'),
+    }, {
+      key: 'actions',
+      type: undefined,
+      align: 'end' as 'start' | 'end' | 'center',
+      sortable: false,
+      visibleInFilter: false,
+      title: '',
+    }]
+
+    return headers
+  })
+
+  const forcedFilters = computed(() => {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0 && compProps.disableForcedProjectFilter !== true) {
+      return [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'projectId',
+          comparator: FilterComparator.inSet,
+          values: store.storeSelectedProjects.map(id => `${id}`),
+          canBeChanged: false,
+        }],
+      }]
+    } else {
+      return []
+    }
+  })
+
+  function redirectToExport (experiment: ViewTableExperiments, datasetType: string) {
+    // Set up the filter
+    const filter: FilterGroup[] = [{
+      filters: [{
+        column: 'experimentId',
+        comparator: FilterComparator.equals,
+        values: [`${experiment.experimentId}`],
+      }],
+      operator: FilterOperator.and,
+    }]
+    // Then redirect to the export page
+    router.push({
+      path: Pages.getPath(Pages.exportType, datasetType),
+      query: {
+        'datasets-filter': JSON.stringify(filter),
       },
-      selectedExperiment: null,
-      USER_TYPE_DATA_CURATOR
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeToken',
-      'storeSelectedProjects'
-    ]),
-    columns: function () {
-      const result = [
-        {
-          key: 'projectId',
-          type: Number,
-          sortable: false,
-          class: 'd-none text-right',
-          label: this.$t('tableColumnProjectId')
-        }, {
-          key: 'experimentId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnExperimentId')
-        }, {
-          key: 'experimentName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnExperimentName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'experimentDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnExperimentDescription')
-        }, {
-          key: 'experimentDate',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnExperimentDate'),
-          formatter: value => value ? new Date(value).toLocaleDateString() : null
-        }, {
-          key: 'dataTypes',
-          type: undefined,
-          sortable: false,
-          label: this.$t('tableColumnExperimentDataTypes')
-        }
-      ]
-
-      if (this.storeToken && userIsAtLeast(this.storeToken.userType, USER_TYPE_DATA_CURATOR)) {
-        result.push({
-          key: 'edit',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        })
-
-        result.push({
-          key: 'delete',
-          type: undefined,
-          sortable: false,
-          class: 'px-1',
-          label: ''
-        })
-      }
-
-      return result
-    }
-  },
-  watch: {
-    storeSelectedProjects: function () {
-      this.$refs.experimentTable.refresh()
-    }
-  },
-  methods: {
-    isTruncatedAfterWords,
-    truncateAfterWords,
-    getHighContrastTextColor,
-    userIsAtLeast,
-    onExperimentEditClicked: function (experiment) {
-      this.selectedExperiment = experiment
-
-      this.$nextTick(() => this.$refs.experimentCreationModal.show())
-    },
-    onExperimentDeleteClicked: function (experiment) {
-      this.$bvModal.msgBoxConfirm(this.$t('modalTextExperimentDelete'), {
-        title: this.$t('modalTitleSure'),
-        okVariant: 'danger',
-        okTitle: this.$t('genericYes'),
-        cancelTitle: this.$t('genericNo')
-      })
-        .then(value => {
-          if (value) {
-            // Delete the image
-            apiDeleteExperiment(experiment.experimentId, result => {
-              if (result) {
-                this.refresh()
-              }
-            })
-          }
-        })
-    },
-    showFullExperimentDescription: function (description) {
-      this.$bvModal.msgBoxOk(description, {
-        title: this.$t('tableColumnExperimentDescription'),
-        okTitle: this.$t('genericOk')
-      })
-    },
-    redirectToExport: function (experiment, datasetType) {
-      // Set up the filter
-      const filter = [{
-        column: 'experimentId',
-        comparator: 'equals',
-        operator: 'and',
-        values: [experiment.experimentId]
-      }]
-      // Then redirect to the export page
-      this.$router.push({
-        name: Pages.export,
-        params: {
-          datasetType: datasetType
-        },
-        query: {
-          'datasets-filter': JSON.stringify(filter)
-        }
-      })
-    },
-    redirectToDatasets: function (experiment) {
-      // Set up the filter
-      const filter = [{
-        column: 'experimentId',
-        comparator: 'equals',
-        operator: 'and',
-        values: [experiment.experimentId]
-      }]
-      // Then redirect to the datasets page
-      this.$router.push({
-        name: Pages.datasets,
-        query: {
-          'datasets-filter': JSON.stringify(filter)
-        }
-      })
-    },
-    refresh: function () {
-      this.selectedExperiment = null
-      this.$refs.experimentTable.refresh()
-    }
+    })
   }
-}
+
+  function redirectToDatasets (experiment: ViewTableExperiments) {
+    // Set up the filter
+    const filter: FilterGroup[] = [{
+      filters: [{
+        column: 'experimentId',
+        comparator: FilterComparator.equals,
+        values: [`${experiment.experimentId}`],
+      }],
+      operator: FilterOperator.and,
+    }]
+    // Then redirect to the datasets page
+    router.push({
+      path: Pages.datasets.path,
+      query: {
+        'datasets-filter': JSON.stringify(filter),
+      },
+    })
+  }
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+  })
 </script>
 
-<style>
-.table-icon-link:hover,
-.table-icon-link a:hover {
-  text-decoration: none;
-}
+<style scoped>
 </style>

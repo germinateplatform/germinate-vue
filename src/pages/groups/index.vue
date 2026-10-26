@@ -1,0 +1,62 @@
+<template>
+  <v-container fluid>
+    <p v-html="$t('pageGroupsText')" />
+
+    <v-btn-toggle
+      v-model="selectedGroupType"
+      class="mb-3"
+      variant="tonal"
+    >
+      <v-btn value="germinatebase" :color="groupTypes.germinatebase.color()" :text="$t(groupTypes.germinatebase.text)">
+        <template #prepend>
+          <v-icon :icon="groupTypes.germinatebase.path" :color="groupTypes.germinatebase.color()" />
+        </template>
+      </v-btn>
+      <v-btn value="markers" :color="groupTypes.markers.color()" :text="$t(groupTypes.markers.text)">
+        <template #prepend>
+          <v-icon :icon="groupTypes.markers.path" :color="groupTypes.markers.color()" />
+        </template>
+      </v-btn>
+      <v-btn value="locations" :color="groupTypes.locations.color()" :text="$t(groupTypes.locations.text)">
+        <template #prepend>
+          <v-icon :icon="groupTypes.locations.path" :color="groupTypes.locations.color()" />
+        </template>
+      </v-btn>
+    </v-btn-toggle>
+
+    <GroupTable :get-data="getData" :filter-on="filterOn" />
+  </v-container>
+</template>
+
+<route lang="yaml">
+name: groups
+</route>
+
+<script setup lang="ts">
+  import { apiPostGroupTable } from '@/plugins/api/group'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
+  import { groupTypes } from '@/plugins/util/types'
+
+  const selectedGroupType = ref<string>()
+
+  const filterOn: ComputedRef<FilterGroup[]> = computed(() => {
+    const filter = []
+    if (selectedGroupType.value) {
+      filter.push({
+        column: 'groupType',
+        comparator: FilterComparator.equals,
+        values: [selectedGroupType.value],
+      })
+    }
+    return filter.length > 0
+      ? [{
+        filters: filter,
+        operator: FilterOperator.and,
+      }]
+      : []
+  })
+
+  function getData (data: PaginatedRequest) {
+    return apiPostGroupTable(data)
+  }
+</script>

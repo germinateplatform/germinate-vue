@@ -1,406 +1,516 @@
 <template>
-  <div>
-    <b-modal size="lg"
-            :title="$t('modalTitleRegistration')"
-            :cancel-title="$t('buttonBack')"
-            :ok-title="currentStep === registrationSteps.length - 1 ? $t('buttonRegister') : $t('buttonNext')"
-            :ok-disabled="!canGoNext"
-            :ok-only="currentStep === 0"
-            @ok.prevent="next"
-            @cancel.prevent="prev"
-            ref="registrationModal">
-      <!-- Registration step indicator -->
-      <b-button-group
-        class="registration-steps mb-4">
-        <b-button v-for="step in registrationSteps" :key="`registration-step-${step.value}`" :variant="step.value === currentStep ? 'primary' : 'secondary'">
-          {{ step.text() }}
-        </b-button>
-      </b-button-group>
-      <div v-if="currentStep === 0">
-        <!-- Registration disclaimer -->
-        <blockquote class="blockquote p-2">
-          <div v-html="$t('widgetRegisterDisclaimer')" v-if="$t('widgetRegisterDisclaimer')" />
-        </blockquote>
+  <v-dialog v-model="dialog" fullscreen>
+    <v-card>
+      <v-toolbar>
+        <v-toolbar-title>{{ $t('modalTitleRegistration') }}</v-toolbar-title>
+        <v-btn
+          :icon="mdiClose"
+          @click="dialog = false"
+        />
+      </v-toolbar>
+      <v-card-text>
+        <v-banner
+          style="z-index: 2;"
+          color="surface"
+          bg-color="error"
+          :icon="mdiAlert"
+          sticky
+          v-if="errorMessage"
+        >
+          <template #text>
+            <span v-html="errorMessage" />
+          </template>
+        </v-banner>
 
-        <b-form-checkbox v-model="disclaimerAccepted" switch>
-          {{ $t('widgetRegisterDisclaimerAccept') }}
-        </b-form-checkbox>
-      </div>
-      <div v-else-if="currentStep === 1">
-        <!-- GDPR information -->
-        <div v-html="$t('widgetRegisterGdpr')" v-if="$t('widgetRegisterGdpr')"/>
-        <hr />
-        <b-form-checkbox v-model="hasGatekeeper" switch>
-          {{ $t('widgetRegisterGatekeeperAccount') }} <span v-b-tooltip.hover :title="$t('tooltipRegisterGatekeeper')"><MdiIcon :path="mdiHelpCircle" /></span>
-        </b-form-checkbox>
+        <v-stepper class="fullscreen-stepper" :items="steps" v-model="step">
+          <template #item.1>
+            <v-card :title="$t('widgetRegisterStepDetails')" flat>
+              <template #text>
+                <!-- GDPR information -->
+                <div v-html="$t('widgetRegisterGdpr')" v-if="$t('widgetRegisterGdpr')" />
 
-        <!-- Registration form -->
-        <b-form @submit.prevent.stop="register" class="mt-3" :validated="formValidated">
-          <template v-if="hasGatekeeper">
-            <div class="mb-3">{{ $t('widgetRegisterExistingAccountText') }}</div>
-            <b-form-group
-              :label="$t('formLabelUsername')"
-              label-for="username">
-              <b-form-input id="username" name="username" autocomplete="username" @blur="validateForm" :state="formState.userEmailAddress" v-model="user.userUsername" type="text" trim required />
-            </b-form-group>
-            <PasswordInput v-model="user.userPassword" @blur="validateForm" :state="formState.userPassword" :label="$t('formLabelPassword')" ref="passwordInput" />
+                <v-switch :label="$t('widgetRegisterGatekeeperAccount')" color="primary" v-model="hasGatekeeperAccount" :hint="$t('tooltipRegisterGatekeeper')" persistent-hint />
+
+                <template v-if="hasGatekeeperAccount">
+                  <v-row class="mt-5">
+                    <v-col>
+                      <v-text-field
+                        v-model="existingUser.username"
+                        :label="$t('formLabelUsername')"
+                        hide-details
+                        :prepend-inner-icon="mdiEmailOutline"
+                      />
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="existingUser.password"
+                        :type="passwordVisible ? 'text' : 'password'"
+                        :label="$t('formLabelPassword')"
+                        hide-details
+                        :prepend-inner-icon="mdiLockOutline"
+                        :append-inner-icon="passwordVisible ? mdiEyeOff : mdiEye"
+                        @click:append-inner="passwordVisible = !passwordVisible"
+                      />
+                    </v-col>
+                  </v-row>
+                </template>
+                <template v-else>
+                  <v-row class="mt-5">
+                    <v-col>
+                      <v-text-field
+                        v-model="newUser.user.userFullName"
+                        :error-messages="(showFormFeedback && formState.newUser.fullName === false) ? ['f'] : []"
+                        :label="$t('formLabelFullName')"
+                        hide-details
+                        :prepend-inner-icon="mdiFormTextbox"
+                      />
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="newUser.user.userEmailAddress"
+                        :error-messages="(showFormFeedback && formState.newUser.email === false) ? ['f'] : []"
+                        :label="$t('formLabelEmail')"
+                        hide-details
+                        :prepend-inner-icon="mdiEmailOutline"
+                      />
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="newUser.user.userPassword"
+                        :error-messages="(showFormFeedback && formState.newUser.password === false) ? ['f'] : []"
+                        :type="passwordVisible ? 'text' : 'password'"
+                        :label="$t('formLabelPassword')"
+                        :prepend-inner-icon="mdiLockOutline"
+                        :messages="['f']"
+                        @click:append-inner="passwordVisible = !passwordVisible"
+                      >
+                        <template #append-inner>
+                          <v-icon tabindex="-1" :icon="passwordVisible ? mdiEyeOff : mdiEye" />
+                        </template>
+                        <template #message>
+                          <v-progress-linear
+                            :chunk-count="5"
+                            :model-value="passwordStrength.score + 1"
+                            :max="5"
+                            :color="passwordStrengthColor[passwordStrength.score]"
+                          />
+                        </template>
+                      </v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        v-model="passwordConfirm"
+                        :type="passwordVisible ? 'text' : 'password'"
+                        :label="$t('formLabelPasswordConfirm')"
+                        hide-details
+                        :error-messages="(showFormFeedback && formState.newUser.passwordConfirm === false) ? ['f'] : []"
+                        :prepend-inner-icon="mdiLockOutline"
+                        @click:append-inner="passwordVisible = !passwordVisible"
+                      >
+                        <template #append-inner>
+                          <v-icon tabindex="-1" :icon="passwordVisible ? mdiEyeOff : mdiEye" />
+                        </template>
+                      </v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        v-model="newUser.user.institutionId"
+                        :label="$t('formLabelInstitution')"
+                        :items="institutions"
+                        :error-messages="(showFormFeedback && formState.newUser.institution === false) ? ['f'] : []"
+                        item-value="id"
+                        autocomplete="off"
+                        :messages="['f']"
+                        clearable
+                        :item-title="item => `${item.acronym} | ${item.name}`"
+                        :prepend-inner-icon="mdiHomeCity"
+                      >
+                        <template #message>
+                          <a href="#" @click.prevent="institutionModal?.show()">{{ $t('widgetRegisterInstitutionText') }}</a>
+                        </template>
+                      </v-autocomplete>
+                    </v-col>
+                  </v-row>
+                </template>
+              </template>
+
+              <div v-if="showFormFeedback">
+                <template v-if="hasGatekeeperAccount">
+                  <v-list slim density="compact">
+                    <v-list-item :title="$t('formLabelUsername')" :prepend-icon="formState.existingUser.username ? mdiCheck : mdiClose" :base-color="formState.existingUser.username ? 'success' : 'error'" />
+                    <v-list-item :title="$t('formLabelPassword')" :prepend-icon="formState.existingUser.password ? mdiCheck : mdiClose" :base-color="formState.existingUser.password ? 'success' : 'error'" />
+                  </v-list>
+                </template>
+                <template v-else>
+                  <v-list slim density="compact">
+                    <v-list-item :title="$t('formLabelFullName')" :prepend-icon="formState.newUser.fullName ? mdiCheck : mdiClose" :base-color="formState.newUser.fullName ? 'success' : 'error'" />
+                    <v-list-item :title="$t('formLabelEmail')" :prepend-icon="formState.newUser.email ? mdiCheck : mdiClose" :base-color="formState.newUser.email ? 'success' : 'error'" />
+                    <v-list-item :title="$t('formLabelPasswordStrength')" :prepend-icon="formState.newUser.password ? mdiCheck : mdiClose" :base-color="formState.newUser.password ? 'success' : 'error'" />
+                    <v-list-item :title="$t('formLabelPasswordConfirm')" :prepend-icon="formState.newUser.passwordConfirm ? mdiCheck : mdiClose" :base-color="formState.newUser.passwordConfirm ? 'success' : 'error'" />
+                    <v-list-item :title="$t('formLabelInstitution')" :prepend-icon="formState.newUser.institution ? mdiCheck : mdiClose" :base-color="formState.newUser.institution ? 'success' : 'error'" />
+                  </v-list>
+                </template>
+              </div>
+            </v-card>
           </template>
 
-          <template v-else>
-            <div class="mb-3">{{ $t('widgetRegisterNewAccountText') }}</div>
-            <b-form-group
-              :label="$t('formLabelEmail')"
-              label-for="email">
-              <b-form-input id="email" name="email" autocomplete="email" @blur="validateForm" :state="formState.userEmailAddress" v-model="user.userEmailAddress" type="email" trim required />
-            </b-form-group>
-            <PasswordInput v-model="user.userPassword" @blur="validateForm" :state="formState.userPassword" :label="$t('formLabelPassword')" ref="passwordInput" />
-            <b-form-group
-              :label="$t('formLabelPasswordConfirm')"
-              label-for="passwordConfirm">
-              <b-form-input id="passwordConfirm" name="password-confirm" @blur="validateForm" :state="formState.userPasswordConfirm" autocomplete="password-confirm" v-model="user.userPasswordConfirm" type="password" trim required />
-            </b-form-group>
-            <b-form-group
-              :label="$t('formLabelFullName')"
-              label-for="name">
-              <b-form-input id="name" name="name" autocomplete="name" @blur="validateForm" :state="formState.userFullName" v-model="user.userFullName" type="text" trim required />
-            </b-form-group>
+          <template #item.2>
+            <v-card class="h-100" :title="t('widgetRegisterStepTerms')" flat>
+              <template #text><span v-html="$t('widgetRegisterDisclaimer')" /></template>
 
-            <h3>{{ $t('formLabelInstitution') }}</h3>
-            <b-form-group :label="$t('formLabelInstitutionSearch')" :description="$t('formDescriptionInstitutionSearch')" label-for="search-term">
-              <b-form-input v-model="searchTerm" id="search-term" type="search" />
-            </b-form-group>
-            <b-form-group
-              :label="$t('formLabelInstitution')"
-              label-for="institution">
-              <b-form-select id="institution" v-model="selectedInstitution" @blur="validateForm" :state="formState.userInstitution" :options="filteredInstitutions" trim required />
-              <a href="#" @click.prevent.stop slot="description" v-b-modal.institutionModal>{{ $t('widgetRegisterInstitutionText') }}</a>
-            </b-form-group>
+              <template #actions>
+                <v-spacer />
+                <v-btn
+                  :text="$t('buttonAccept')"
+                  :variant="disclaimerAccepted ? 'flat' : 'tonal'"
+                  :color="disclaimerAccepted ? 'success' : 'default'"
+                  @click="disclaimerAccepted = !disclaimerAccepted"
+                  :prepend-icon="disclaimerAccepted ? mdiCheckboxMarked : mdiCheckboxBlankOutline"
+                />
+              </template>
+            </v-card>
           </template>
-        </b-form>
-      </div>
 
-      <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
-    </b-modal>
+          <template #actions="{ next, prev }">
+            <v-card-actions>
+              <v-btn @click="prev" :disabled="step === 1" :text="$t('buttonBack')" />
+              <v-spacer />
 
-    <!-- Institution modal -->
-    <b-modal id="institutionModal"
-             ok-only
-             @ok="addInstitution"
-             :ok-title="$t('buttonCreate')"
-             :ok-disabled="!canAddInstitution()"
-             :title="$t('modalTitleInstitution')">
-      <b-form @submit.prevent.stop>
-        <b-form-group
-          :label="$t('formLabelInstitutionName')"
-          label-for="institutionName">
-          <b-form-input id="institutionName" v-model="tempInstitution.name" type="text" trim required />
-        </b-form-group>
-        <b-form-group
-          :label="$t('formLabelInstitutionAcronym')"
-          label-for="institutionAcronym">
-          <b-form-input id="institutionAcronym" v-model="tempInstitution.acronym" type="text" trim required />
-        </b-form-group>
-        <b-form-group
-          :label="$t('formLabelInstitutionAddress')"
-          label-for="institutionAddress">
-          <b-form-input id="institutionAddress" v-model="tempInstitution.address" type="text" trim />
-        </b-form-group>
-      </b-form>
-    </b-modal>
-  </div>
+              <v-btn
+                :text="step === steps.length ? $t('buttonRegister') : $t('buttonNext')"
+                color="primary"
+                variant="flat"
+                @click="checkForm(next)"
+                :disabled="!canContinue && step !== 1"
+              />
+            </v-card-actions>
+          </template>
+        </v-stepper>
+      </v-card-text>
+    </v-card>
+
+    <!-- @vue-generic {import('@/plugins/types/germinate').NewUnapprovedUser} -->
+    <GenericAddEditFormModal
+      title="modalTitleInstitution"
+      v-model="newUser.user"
+      :fields="institutionFields"
+      :notify="setInstitution"
+      ref="institutionModal"
+    />
+  </v-dialog>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import MdiIcon from '@/components/icons/MdiIcon'
-import PasswordInput from '@/components/util/PasswordInput'
-import { apiPostGatekeeperExisting, apiPostGatekeeperNew, apiGetGatekeeperInstitutions } from '@/mixins/api/misc.js'
-import { gatekeeperErrors, MAX_JAVA_INTEGER } from '@/mixins/api/base'
+<script setup lang="ts">
+  import type { GatekeeperInstitution, NewUnapprovedUser, NewUnapprovedUserRequest, NewUserAccessRequest } from '@/plugins/types/germinate'
+  import { mdiAlert, mdiCheck, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiClose, mdiEmailOutline, mdiEye, mdiEyeOff, mdiFormTextbox, mdiHomeCity, mdiLockOutline } from '@mdi/js'
+  import { useI18n } from 'vue-i18n'
+  import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
+  import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
+  import { gatekeeperErrors, handleError, MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { isSet } from '@/plugins/util'
 
-import { mdiHelpCircle } from '@mdi/js'
+  import emitter from 'tiny-emitter/instance'
+  import type { AxiosError } from 'axios'
+  import { apiGetGatekeeperInstitutions, apiPostGatekeeperExisting, apiPostGatekeeperNew } from '@/plugins/api/gatekeeper'
 
-const emitter = require('tiny-emitter/instance')
-
-export default {
-  data: function () {
-    return {
-      mdiHelpCircle,
-      searchTerm: null,
-      currentStep: 0,
-      errorMessage: null,
-      registrationSteps: [{
-        text: () => this.$t('widgetRegisterStepTerms'),
-        value: 0
-      }, {
-        text: () => this.$t('widgetRegisterStepDetails'),
-        value: 1
-      }],
-      selectedInstitution: null,
-      institutions: [],
-      disclaimerAccepted: false,
-      hasGatekeeper: false,
-      formValidated: false,
-      formState: {
-        userEmailAddress: null,
-        userPassword: null,
-        userPasswordConfirm: null,
-        userFullName: null,
-        userInstitution: null
-      },
-      user: {
-        userUsername: null,
-        userPassword: null,
-        userPasswordConfirm: null,
-        userFullName: null,
-        userEmailAddress: null
-      },
-      tempInstitution: {
-        name: null,
-        acronym: null,
-        address: null
-      }
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeLocale'
-    ]),
-    filteredInstitutions: function () {
-      if (this.institutions) {
-        return this.institutions.filter(i => {
-          if (this.searchTerm && (this.searchTerm !== '')) {
-            const trimmed = this.searchTerm.trim()
-            const lower = trimmed.toLowerCase()
-            // Check if the name matches
-            if (i.value.name.toLowerCase().includes(lower)) {
-              return true
-            }
-
-            if (i.value.acronym && i.value.acronym.toLowerCase().includes(lower)) {
-              return true
-            }
-
-            return false
-          } else {
-            return true
-          }
-        })
-      } else {
-        return []
-      }
+  zxcvbnOptions.setOptions({
+    graphs: zxcvbnCommonPackage.adjacencyGraphs,
+    dictionary: {
+      ...zxcvbnCommonPackage.dictionary,
     },
-    canGoNext: function () {
-      switch (this.currentStep) {
-        case 0:
-          return this.disclaimerAccepted
-        case 1:
-          if (this.hasGatekeeper) {
-            return this.user.userUsername && this.user.userPassword
-          } else {
-            return this.user.userPassword &&
-              this.user.userPasswordConfirm &&
-              this.user.userPassword === this.user.userPasswordConfirm &&
-              this.user.userFullName &&
-              this.user.userEmailAddress &&
-              this.selectedInstitution !== null &&
-              this.$refs.passwordInput.getScore() >= 2
-          }
-      }
+  })
 
-      return false
-    }
-  },
-  watch: {
-    filteredInstitutions: function (newValue) {
-      if (!this.selectedInstitution) {
-        if (newValue && newValue.length === 1) {
-          this.$nextTick(() => {
-            this.selectedInstitution = newValue[0].value
-          })
-        }
-      }
-    }
-  },
-  components: {
-    MdiIcon,
-    PasswordInput
-  },
-  methods: {
-    validateForm: function () {
-      this.formValidated = true
+  const store = useCoreStore()
 
-      if (this.hasGatekeeper) {
-        this.formState.userEmailAddress = this.user.userUsername !== null
-        this.formState.userPassword = this.user.userPassword !== null
-      } else {
-        this.formState.userEmailAddress = this.user.userEmailAddress !== null
-        this.formState.userPassword = this.user.userPassword !== null
-        this.formState.userPasswordConfirm = this.user.userPasswordConfirm !== null && (this.user.userPassword === this.user.userPasswordConfirm)
-        this.formState.userFullName = this.user.userFullName !== null
-        this.formState.userInstitution = this.selectedInstitution !== null
-      }
+  const passwordStrengthColor = shallowRef<{ [index: number]: string }>({
+    0: 'error',
+    1: '#e74c3c',
+    2: 'warning',
+    3: 'success',
+    4: 'success',
+  })
+
+  const institutionModal = useTemplateRef('institutionModal')
+  const showFormFeedback = ref(false)
+  const dialog = ref(false)
+  const step = ref(1)
+  const disclaimerAccepted = ref(false)
+  const hasGatekeeperAccount = ref(false)
+  const passwordVisible = ref(false)
+  const passwordConfirm = ref<string>()
+  const errorMessage = ref<string>()
+  const institutions = ref<GatekeeperInstitution[]>([])
+  const newUser = ref<NewUnapprovedUserRequest>({
+    locale: store.storeLocale,
+    user: {
+      locale: store.storeLocale,
+      userFullName: undefined,
+      userEmailAddress: undefined,
+      userPassword: undefined,
+      institutionId: undefined,
+      institutionName: undefined,
+      institutionAcronym: undefined,
+      institutionAddress: undefined,
     },
-    register: function () {
-      if (!this.hasGatekeeper) {
-        this.errorMessage = null
-        this.user.userUsername = this.user.userEmailAddress
+  })
+  const existingUser = ref<NewUserAccessRequest>({
+    locale: store.storeLocale,
+    username: undefined,
+    password: undefined,
+  })
 
-        // If the institution doesn't exist (no id), set information
-        if (!this.selectedInstitution.id) {
-          delete this.user.institutionId
-          this.user.institutionName = this.selectedInstitution.name
-          this.user.institutionAcronym = this.selectedInstitution.acronym
-          this.user.institutionAddress = this.selectedInstitution.address
-        } else {
-          this.user.institutionId = this.selectedInstitution.id
-          delete this.user.institutionName
-          delete this.user.institutionAcronym
-          delete this.user.institutionAddress
-        }
+  const passwordStrength = computed(() => zxcvbn(newUser.value.user.userPassword || ''))
 
-        const newRequest = {
-          locale: this.storeLocale,
-          user: this.user
-        }
+  const { t, te } = useI18n()
 
-        delete newRequest.user.userPasswordConfirm
+  const institutionFields = computed(() => {
+    return [{
+      key: 'institutionName',
+      title: 'formLabelInstitutionName',
+      type: 'text' as const,
+      required: true,
+      width: 1,
+      valid: (value: string) => value !== undefined && value !== null && value.trim().length > 0,
+    }, {
+      key: 'institutionAcronym',
+      title: 'formLabelInstitutionAcronym',
+      type: 'text' as const,
+      required: true,
+      width: 1,
+      valid: (value: string) => value !== undefined && value !== null && value.trim().length > 0,
+    }, {
+      key: 'institutionAddress',
+      title: 'formLabelInstitutionAddress',
+      type: 'text' as const,
+      required: false,
+      width: 1,
+    }]
+  })
 
-        emitter.emit('show-loading', true)
-        // Register the new user
-        apiPostGatekeeperNew(newRequest, result => {
-          emitter.emit('show-loading', false)
+  const steps = computed(() => {
+    const result = [t('widgetRegisterStepDetails')]
 
-          if (result === true) {
-            // Show toast
-            this.$bvToast.toast(this.$t('widgetRegisterToastSuccessfulNewText'), {
-              title: this.$t('widgetRegisterToastSuccessfulNewTitle'),
-              variant: 'success',
-              autoHideDelay: 10000,
-              appendToast: true
-            })
-            this.hide()
-          } else {
-            // Show error message
-            this.errorMessage = this.$t('widgetRegisterUnsuccessful')
-          }
-        }).catch(error => {
-          // Show error message
-          if (error && error.response && error.response.data && error.response.data.reasonPhrase && gatekeeperErrors[error.response.data.reasonPhrase]) {
-            this.errorMessage = this.$t(gatekeeperErrors[error.response.data.reasonPhrase])
-            emitter.emit('show-loading', false)
-          }
-        })
-      } else {
-        // Existing user, new request
-        const existingRequest = {
-          locale: this.storeLocale,
-          username: this.user.userUsername,
-          password: this.user.userPassword
-        }
+    if (te('widgetRegisterDisclaimer') && t('widgetRegisterDisclaimer').length > 0) {
+      result.push(t('widgetRegisterStepTerms'))
+    }
 
-        emitter.emit('show-loading', true)
-        apiPostGatekeeperExisting(existingRequest, result => {
-          emitter.emit('show-loading', false)
+    return result
+  })
 
-          if (result === true) {
-            // Show toast
-            this.$bvToast.toast(this.$t('widgetRegisterToastSuccessfulExistingText'), {
-              title: this.$t('widgetRegisterToastSuccessfulExistingTitle'),
-              variant: 'success',
-              autoHideDelay: 10000,
-              appendToast: true
-            })
-            this.hide()
-          } else {
-            // Show error
-            this.errorMessage = this.$t('widgetRegisterUnsuccessful')
-          }
-        }).catch(error => {
-          // Show error
-          if (error && error.response && error.response.data && error.response.data.reasonPhrase && gatekeeperErrors[error.response.data.reasonPhrase]) {
-            this.errorMessage = this.$t(gatekeeperErrors[error.response.data.reasonPhrase])
-            emitter.emit('show-loading', false)
-          }
-        })
-      }
-    },
-    addInstitution: function () {
-      this.selectedInstitution = this.tempInstitution
-      delete this.selectedInstitution.id
-      this.tempInstitution = {
-        name: null,
-        acronym: null,
-        address: null
-      }
-      this.institutions.push({
-        text: this.selectedInstitution.acronym + ' - ' + this.selectedInstitution.name,
-        value: this.selectedInstitution
+  function setInstitution (data: NewUnapprovedUser) {
+    return new Promise<boolean>(resolve => {
+      newUser.value.user.institutionId = -institutions.value.length
+      newUser.value.user.institutionName = data.institutionName
+      newUser.value.user.institutionAcronym = data.institutionAcronym
+      newUser.value.user.institutionAddress = data.institutionAddress
+
+      institutions.value.push({
+        id: -institutions.value.length,
+        name: data.institutionName || '',
+        acronym: data.institutionAcronym || '',
+        address: data.institutionAddress || '',
       })
-    },
-    canAddInstitution: function () {
-      return this.tempInstitution.name && this.tempInstitution.acronym
-    },
-    prev: function () {
-      this.currentStep = Math.max(0, this.currentStep - 1)
-    },
-    next: function () {
-      if (this.currentStep === this.registrationSteps.length - 1) {
-        this.register()
+
+      institutions.value.sort((a, b) => a.name.localeCompare(b.name))
+
+      resolve(true)
+    })
+  }
+
+  function checkForm (nextCallback: () => void) {
+    showFormFeedback.value = true
+
+    if (canContinue.value) {
+      if (step.value === steps.value.length) {
+        onSubmit()
       } else {
-        this.currentStep = Math.min(this.registrationSteps.length - 1, this.currentStep + 1)
+        nextCallback()
       }
-    },
-    show: function () {
-      this.$refs.registrationModal.show()
-    },
-    hide: function () {
-      this.$refs.registrationModal.hide()
     }
-  },
-  mounted: function () {
-    const query = {
-      page: 1,
-      limit: MAX_JAVA_INTEGER
-    }
-    // Get all existing institutions
-    apiGetGatekeeperInstitutions(query, result => {
+  }
+
+  function show () {
+    reset()
+
+    apiGetGatekeeperInstitutions({ page: 1, limit: MAX_JAVA_INTEGER }, result => {
       if (result && result.data) {
         result.data.sort((a, b) => a.name.localeCompare(b.name))
 
-        const tempInst = []
-
-        result.data.forEach(i => tempInst.push({
-          value: i,
-          text: i.acronym + ' - ' + i.name
-        }))
-
-        this.institutions = tempInst
-
-        // if (this.institutions.length > 0) {
-        //   this.selectedInstitution = this.institutions[0].value
-        // }
-      }
-    }, {
-      codes: [503],
-      callback: function () {
-        // Ignore this, it means registration isn't available.
+        institutions.value = result.data
       }
     })
+
+    dialog.value = true
   }
-}
+  function hide () {
+    dialog.value = false
+
+    reset()
+  }
+
+  function reset () {
+    showFormFeedback.value = false
+    dialog.value = false
+    step.value = 1
+    disclaimerAccepted.value = false
+    hasGatekeeperAccount.value = false
+    passwordVisible.value = false
+    passwordConfirm.value = undefined
+    errorMessage.value = undefined
+    newUser.value = {
+      locale: store.storeLocale,
+      user: {
+        locale: store.storeLocale,
+        userFullName: undefined,
+        userEmailAddress: undefined,
+        userPassword: undefined,
+        institutionId: undefined,
+        institutionName: undefined,
+        institutionAcronym: undefined,
+        institutionAddress: undefined,
+      },
+    }
+    existingUser.value = {
+      locale: store.storeLocale,
+      username: undefined,
+      password: undefined,
+    }
+  }
+
+  watch(step, async () => {
+    passwordVisible.value = false
+  })
+  watch(hasGatekeeperAccount, async () => {
+    showFormFeedback.value = false
+  })
+
+  const formState = computed(() => {
+    const nu = newUser.value.user
+    return {
+      existingUser: {
+        username: isSet(existingUser.value.username),
+        password: isSet(existingUser.value.password),
+      },
+      newUser: {
+        email: isSet(nu.userEmailAddress),
+        fullName: isSet(nu.userFullName),
+        password: isSet(nu.userPassword) && passwordStrength.value.score >= 3,
+        passwordConfirm: isSet(passwordConfirm.value) && nu.userPassword === passwordConfirm.value,
+        institution: nu.institutionId !== undefined && nu.institutionId !== null,
+      },
+    }
+  })
+
+  const canContinue = computed(() => {
+    switch (step.value) {
+      case 1:
+        if (hasGatekeeperAccount.value) {
+          return Object.values(formState.value.existingUser).every(fs => fs === true)
+        } else {
+          return Object.values(formState.value.newUser).every(fs => fs === true)
+        }
+      case 2:
+        return disclaimerAccepted.value === true
+    }
+  })
+
+  function onSubmit () {
+    if (hasGatekeeperAccount.value) {
+      // Existing user, new request
+      emitter.emit('show-loading', true)
+      apiPostGatekeeperExisting(existingUser.value, result => {
+        if (result === true) {
+          // Show toast
+          emitter.emit('show-snackbar', {
+            title: t('widgetRegisterToastSuccessfulExistingTitle'),
+            text: t('widgetRegisterToastSuccessfulExistingText'),
+            color: 'success',
+            timeout: 10_000,
+          })
+
+          hide()
+        } else {
+          // Show error
+          errorMessage.value = t('widgetRegisterUnsuccessful')
+        }
+      }, {
+        codes: [],
+        callback: (error: AxiosError) => {
+          // Show error
+          if (error && error.response && error.response.data && error.response.data && gatekeeperErrors[error.response.data as string]) {
+            errorMessage.value = t(gatekeeperErrors[error.response.data as string])
+          } else {
+            errorMessage.value = (error.response?.data as string) || handleError(error)
+          }
+        },
+      }).finally(() => emitter.emit('show-loading', false))
+    } else {
+      if (newUser.value.user.institutionId !== undefined && newUser.value.user.institutionId < 0) {
+        newUser.value.user.institutionId = undefined
+      }
+
+      emitter.emit('show-loading', true)
+      // Register the new user
+      apiPostGatekeeperNew(newUser.value, result => {
+        if (result === true) {
+          // Show toast
+          emitter.emit('show-snackbar', {
+            text: t('widgetRegisterToastSuccessfulNewText'),
+            title: t('widgetRegisterToastSuccessfulNewTitle'),
+            color: 'success',
+            timeout: 10_000,
+          })
+          hide()
+        } else {
+          // Show error message
+          errorMessage.value = t('widgetRegisterUnsuccessful')
+        }
+      }, {
+        codes: [],
+        callback: (error: AxiosError) => {
+          // Show error
+          if (error && error.response && error.response.data && error.response.data && gatekeeperErrors[error.response.data as string]) {
+            errorMessage.value = t(gatekeeperErrors[error.response.data as string])
+          } else {
+            errorMessage.value = (error.response?.data as string) || handleError(error)
+          }
+        },
+      }).finally(() => emitter.emit('show-loading', false))
+    }
+  }
+
+  onMounted(() => {
+    apiGetGatekeeperInstitutions({ page: 1, limit: MAX_JAVA_INTEGER }, result => {
+      if (result && result.data) {
+        result.data.sort((a, b) => a.name.localeCompare(b.name))
+
+        institutions.value = result.data
+      }
+    })
+  })
+
+  defineExpose({
+    show,
+    hide,
+  })
 </script>
 
 <style scoped>
-.registration-steps {
-  width: 100%;
+.fullscreen-stepper {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
 }
-.registration-steps .btn {
-  pointer-events: none;
+/* Deep selector to target Vuetify's internal window/content wrapper */
+.fullscreen-stepper :deep(.v-stepper-window) {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
-.blockquote {
-  max-height: 50vh;
-  overflow-y: auto;
-  border: 1px solid var(--gray);
-  border-radius: 5px;
+
+.fullscreen-stepper :deep(.v-stepper-window-item) {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 </style>

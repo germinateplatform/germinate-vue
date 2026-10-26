@@ -1,176 +1,114 @@
 <template>
-  <BaseTable v-bind="$props"
-            :columns="columns"
-            :options="options"
-            itemType="locations"
-            ref="climateDataTable"
-            v-on="$listeners">
-    <!-- Country name represented by a flag icon -->
-    <template v-slot:cell(countryName)="data">
-      <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName"><i :class="'fi fi-' + data.item.countryCode2.toLowerCase()" v-if="data.item.countryCode2"/> <span> {{ data.item.countryCode2 }}</span></span>
-    </template>
-    <!-- Location type with icon -->
-    <template v-slot:cell(locationType)="data">
-      <span><span :style="`color: ${locationTypes[data.item.locationType].color()};`"><MdiIcon :path="locationTypes[data.item.locationType].path"/></span> {{ locationTypes[data.item.locationType].text() }}</span>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableClimateData} -->
+  <BaseTable
+    ref="baseTable"
+    v-model:bottom-sheet-visible="bottomVisible"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :sort-by="compProps.sortBy"
+    :selection-type="selectionType"
+    item-key="locationId"
+    :item-id="(item: ViewTableClimateData) => `${item.locationId}-${item.climateId}`"
+    table-key="trialsData"
+    marked-item-type="germplasm"
+    :header-icon="mdiWeatherPartlySnowyRainy"
+    :show-details="false"
+    :header-title="$t('pageDataExportTabDataTable')"
+  >
+    <template #item.locationType="{ item }">
+      <v-chip label :color="locationTypes[item.locationType].color()" :prepend-icon="locationTypes[item.locationType].path">{{ $t(locationTypes[item.locationType].text) }}</v-chip>
     </template>
 
-    <template v-slot:cell(climateValue)="data">
-      <span v-if="data.item.climateValue !== undefined && data.item.climateValue !== null">
-        <template v-if="data.item.climateDataType === 'numeric'">{{ (+data.item.climateValue).toFixed(2) }}</template>
-        <template v-else-if="data.item.climateDataType === 'date'">{{ new Date(data.item.climateValue).toLocaleDateString() }}</template>
-        <template v-else>{{ isNaN(data.item.climateValue) ? data.item.climateValue : parseFloat(data.item.climateValue).toFixed(2) }}</template>
+    <!-- Country flag -->
+    <template #item.countryName="{ item }">
+      <v-chip :text="item.countryCode2" label v-tooltip:top="item.countryName" v-if="item.countryCode2">
+        <template #prepend>
+          <v-icon start><i :class="'fi fi-' + item.countryCode2.toLowerCase()" /></v-icon>
+        </template>
+      </v-chip>
+      <span v-else>
+        {{ item.countryName }}
       </span>
     </template>
 
-    <!-- Trait data type icon -->
-    <template v-slot:cell(climateDataType)="data">
-      <span class="text-nowrap"><span :style="`color: ${dataTypes[data.item.climateDataType].color()};`"><MdiIcon :path="dataTypes[data.item.climateDataType].path" /></span> {{ dataTypes[data.item.climateDataType].text() }}</span>
+    <template #item.climateDataType="{ item }">
+      <v-chip label :color="dataTypes[item.climateDataType].color()" :prepend-icon="dataTypes[item.climateDataType].path">{{ $t(dataTypes[item.climateDataType].text) }}</v-chip>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+
+    <template #bottom-sheet-content>
+      <ClimateDetails :climate-id="selectedClimateId" v-if="selectedClimateId" />
     </template>
   </BaseTable>
 </template>
 
-<script>
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { locationTypes, dataTypes } from '@/mixins/types.js'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-export default {
-  name: 'LocationTable',
-  props: {
-    ...defaultProps.FULL
-  },
-  data: function () {
-    return {
-      locationTypes,
-      dataTypes,
-      options: {
-        idColumn: 'locationId',
-        tableName: 'climateData'
-      }
-    }
-  },
-  computed: {
-    columns: function () {
-      const result = [
-        {
-          key: 'locationId',
-          type: Number,
-          sortable: true,
-          label: this.$t('tableColumnLocationId')
-        }, {
-          key: 'locationName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnLocationName')
-        }, {
-          key: 'locationRegion',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnLocationRegion')
-        }, {
-          key: 'locationState',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnLocationState')
-        }, {
-          key: 'locationType',
-          type: 'locationType',
-          sortable: true,
-          label: this.$t('tableColumnLocationType')
-        }, {
-          key: 'locationLatitude',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnLocationLatitude'),
-          formatter: value => value !== null ? value.toFixed(2) : null
-        }, {
-          key: 'locationLongitude',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnLocationLongitude'),
-          formatter: value => value !== null ? value.toFixed(2) : null
-        }, {
-          key: 'locationElevation',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnLocationElevation'),
-          formatter: value => value !== null ? value.toFixed(2) : null
-        }, {
-          key: 'countryName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnLocationCountryName')
-        }, {
-          key: 'climateId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnClimateId')
-        }, {
-          key: 'climateName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnClimateName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'climateDataType',
-          type: 'dataType',
-          sortable: true,
-          label: this.$t('tableColumnTraitDataType')
-        }, {
-          key: 'unitName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnClimateUnitName')
-        }, {
-          key: 'recordingDate',
-          type: Date,
-          sortable: true,
-          label: this.$t('tableColumnClimateDataRecordingDate'),
-          formatter: value => value ? new Date(value).toLocaleDateString() : null
-        }, {
-          key: 'climateValue',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnClimateDataClimateValue')
-        }, {
-          key: 'marked',
-          type: null,
-          sortable: false,
-          class: 'text-right',
-          label: ''
-        }
-      ]
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableClimateData } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { columns } from '@/plugins/util/table-columns'
+  import type { DataTableSortItem } from 'vuetify'
+  import { mdiWeatherPartlySnowyRainy } from '@mdi/js'
+  import { dataTypes, locationTypes } from '@/plugins/util/types'
 
-      if (this.selectable === true) {
-        result.unshift({
-          key: 'selected',
-          type: undefined,
-          sortable: false,
-          class: 'table-primary',
-          label: ''
-        })
-      }
-
-      return result
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    refresh: function () {
-      this.$refs.climateDataTable.refresh()
-    }
+  interface ClimateDataTableProps {
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableClimateData[]>>> }
+    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    sortBy?: DataTableSortItem[]
+    selectionType?: TableSelectionType
   }
-}
+
+  const compProps = defineProps<ClimateDataTableProps>()
+  const selectedClimateId = ref<number>()
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+  const bottomVisible = ref(false)
+
+  function showVariableInfo (climateId: number) {
+    selectedClimateId.value = climateId
+
+    nextTick(() => {
+      bottomVisible.value = true
+    })
+  }
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const result = columns.climateData.map(c => {
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
+    })
+
+    return result
+  })
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+  })
+
+  watch(bottomVisible, async newValue => {
+    if (!newValue) {
+      selectedClimateId.value = undefined
+    }
+  })
 </script>
 
-<style>
-
+<style scoped>
 </style>

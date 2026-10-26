@@ -60,6 +60,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: cropgeeks/gridscore-next
+          repository: cropgeeks/germinate
           short-description: ${{ github.event.repository.description }}
           enable-url-completion: true

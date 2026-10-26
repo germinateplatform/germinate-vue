@@ -1,255 +1,279 @@
 <template>
-  <div id="app">
-    <router-view v-if="i18nLoaded" :class="printContent ? 'd-print-none' : ''" />
+  <MainComponent v-if="loaded === true" />
+  <v-responsive v-else>
+    <v-app>
+      <v-main class="mx-auto mt-10 d-flex justify-center align-center">
+        <v-card max-width="800px" min-width="50vw" v-if="configIssue">
+          <v-img
+            height="200px"
+            class="ma-4 mt-8"
+            src="/img/germinate-square-name.svg"
+            contain
+          />
 
-    <!-- Print view for printable content -->
-    <div ref="printer-view" class="d-none d-print-block" v-html="printContent" v-if="printContent"></div>
+          <v-card-title>{{ $t('pageLoadingConfigErrorTitle') }}</v-card-title>
+          <v-card-subtitle>{{ $t('pageLoadingConfigErrorSubtitle') }}</v-card-subtitle>
+          <v-card-text>
+            <div v-html="$t('pageLoadingConfigErrorText')" />
 
-    <b-modal ref="loadingModal" :title="$t('modalTitleLoading')" hide-footer no-close-on-backdrop no-close-on-esc hide-header-close>
-      <div class="text-center">
-        <b-spinner style="width: 3rem; height: 3rem;" variant="primary" type="grow" />
-        <p class="text-muted mt-3" v-if="$t('modalTextLoading')">{{ $t('modalTextLoading') }}</p>
-      </div>
-    </b-modal>
-  </div>
+            <v-list variant="tonal">
+              <v-list-item
+                :base-color="configIssue.dbConfigValid === true ? 'success' : 'error'"
+                :title="$t('pageLoadingConfigStatusDatabaseTitle')"
+                :subtitle="$t('pageLoadingConfigStatusDatabaseSubtitle')"
+                :prepend-icon="configIssue.dbConfigValid === true ? mdiDatabaseCheck : mdiDatabaseAlert"
+                :append-icon="configIssue.dbConfigValid === true ? mdiCheck : mdiClose"
+              />
+              <v-list-item
+                :base-color="configIssue.gkConfigValid === true ? 'success' : 'error'"
+                :title="$t('pageLoadingConfigStatusGatekeeperTitle')"
+                :subtitle="$t('pageLoadingConfigStatusGatekeeperSubtitle')"
+                :prepend-icon="configIssue.gkConfigValid === true ? mdiShieldCheck : mdiShieldAlert"
+                :append-icon="configIssue.gkConfigValid === true ? mdiCheck : mdiClose"
+              />
+            </v-list>
+          </v-card-text>
+        </v-card>
+        <v-card max-width="800px" min-width="50vw" :loading="loaded === undefined" v-else>
+          <template #loader="{ isActive }">
+            <v-progress-linear
+              :active="isActive"
+              color="primary"
+              height="4"
+              indeterminate
+            />
+          </template>
+          <v-img
+            height="200px"
+            class="ma-4 mt-8"
+            src="/img/germinate-square-name.svg"
+            contain
+          />
+          <v-skeleton-loader type="article">
+            <v-list-item :title="$t('pageLoadingErrorTitle')" class="my-5" v-if="error">
+              <template #subtitle>
+                <p>{{ $t('pageLoadingErrorText') }}</p>
+                <p class="text-error">{{ error }}</p>
+              </template>
+            </v-list-item>
+            <v-list-item :title="$t('pageLoadingTitle')" class="my-5" v-else>
+              <template #subtitle>
+                <p>{{ $t('pageLoadingText') }}</p>
+              </template>
+            </v-list-item>
+          </v-skeleton-loader>
+        </v-card>
+      </v-main>
+    </v-app>
+  </v-responsive>
 </template>
 
-<script>
-import Vue from 'vue'
-import { VuePlausible } from 'vue-plausible'
-import { loadLanguageAsync } from '@/plugins/i18n'
-import { mapGetters } from 'vuex'
-import { Detector } from '@/plugins/browser-detect.js'
-import { uuidv4, germinateVersion } from '@/mixins/util'
-import { apiGetSettings } from '@/mixins/api/misc'
-import { authAxios } from '@/mixins/api/base'
-import { apiGetEntityTypeStats } from '@/mixins/api/stats'
-import { Pages } from '@/mixins/pages'
+<script lang="ts">
+  import { useTheme } from 'vuetify'
+  import { apiGetSettings } from '@/plugins/api/setting'
+  import type { AxiosError } from 'axios'
+  import type { GerminateConfigStatus } from '@/plugins/types/germinate'
+  import { mdiDatabaseAlert, mdiShieldAlert, mdiShieldCheck, mdiDatabaseCheck, mdiCheck, mdiClose } from '@mdi/js'
 
-const emitter = require('tiny-emitter/instance')
+  export default {
+    setup () {
+      // Composition
+      const store = useCoreStore()
+      const loaded = ref<boolean | undefined>()
+      const error = ref<string | undefined>()
+      const configIssue = ref<GerminateConfigStatus>()
+      const theme = useTheme()
 
-export default {
-  data: function () {
-    return {
-      i18nLoaded: false,
-      printContent: null
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'storeLocale',
-      'storeBaseUrl',
-      'storeAppState'
-    ])
-  },
-  methods: {
-    isLocalhost: function () {
-      return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
+      // Set base URL based on environment
+      let baseUrl = './api/'
+      if (import.meta.env.VITE_BASE_URL) {
+        baseUrl = import.meta.env.VITE_BASE_URL
+      }
+
+      store.setBaseUrl(baseUrl)
+
+      return {
+        mdiDatabaseAlert,
+        mdiDatabaseCheck,
+        mdiShieldAlert,
+        mdiShieldCheck,
+        mdiCheck,
+        mdiClose,
+        configIssue,
+        store,
+        loaded,
+        error,
+        theme,
+      }
     },
-    attachStyleSheet: function () {
-      this.$nextTick(() => {
-        if (this.customStyleSheet) {
-          document.head.removeChild(this.customStyleSheet)
+    beforeCreate () {
+      apiGetSettings(result => {
+        this.store.setServerSettings(result)
+        this.loaded = true
+        this.configIssue = undefined
+
+        if (result.colorPrimary) {
+          this.theme.themes.value.light.colors.primary = result.colorPrimary
+          this.theme.themes.value.dark.colors.primary = result.colorPrimary
         }
-
-        // Load the custom .css file provided specifically for this project
-        this.customStyleSheet = document.createElement('link')
-        this.customStyleSheet.rel = 'stylesheet'
-        this.customStyleSheet.href = this.storeBaseUrl + 'settings/css'
-        document.head.appendChild(this.customStyleSheet)
+      }, {
+        codes: [503],
+        callback: (err: AxiosError) => {
+          this.loaded = false
+          if (err && err.status === 503) {
+            this.configIssue = err.response?.data as GerminateConfigStatus
+          } else {
+            console.log(err)
+            this.error = err.message
+          }
+        },
       })
     },
-    print: function (newContent) {
-      document.body.classList.add('print')
-      // Set the print content
-      this.printContent = newContent
-
-      // Wait a bit
-      this.$nextTick(() => {
-        // Ask the browser to print
-        window.print()
-        this.$nextTick(() => {
-          // Hide the print content
-          this.printContent = null
-          document.body.classList.remove('print')
-        })
-      })
-    },
-    toggleLoading: function (show) {
-      if (show) {
-        this.$refs.loadingModal.show()
-      } else {
-        this.$refs.loadingModal.hide()
-      }
-    },
-    updateI18nAppState: function () {
-      this.$i18n.silentTranslationWarn = this.storeAppState !== 'development'
-    },
-    toast: function (config) {
-      this.$bvToast.toast(config.message, config)
-    }
-  },
-  created: async function () {
-    loadLanguageAsync(this.storeLocale).then(() => {
-      this.i18nLoaded = true
-    })
-
-    await apiGetSettings(result => {
-      this.$store.dispatch('setServerSettings', result)
-
-      if (result.plausibleDomain) {
-        Vue.use(VuePlausible, {
-          domain: result.plausibleDomain,
-          hashMode: result.plausibleHashMode || true,
-          apiHost: result.plausibleApiHost || 'https://plausible.io',
-          trackLocalhost: false
-        })
-
-        this.$nextTick(() => {
-          this.$plausible.enableAutoPageviews()
-        })
-      }
-
-      apiGetEntityTypeStats(result => {
-        this.$store.dispatch('setEntityTypeStats', result)
-      })
-    }, {
-      codes: [503],
-      callback: () => this.$router.push({ name: Pages.setup })
-    })
-  },
-  watch: {
-    storeAppState: function () {
-      this.updateI18nAppState()
-    }
-  },
-  mounted: function () {
-    this.updateI18nAppState()
-
-    emitter.on('on-print', this.print)
-    emitter.on('on-stylesheet-changed', this.attachStyleSheet)
-    emitter.on('show-loading', this.toggleLoading)
-    emitter.on('toast', this.toast)
-    this.attachStyleSheet()
-
-    // Log the run
-    if (!this.isLocalhost()) {
-      let id = this.uniqueClientId
-      if (!id) {
-        id = uuidv4()
-
-        this.$store.dispatch('setUniqueClientId', id)
-      }
-
-      const config = new Detector().detect()
-      if (config.os !== undefined && config.os !== null && config.os !== 'Search Bot') {
-        const data = {
-          application: 'Germinate',
-          id: id,
-          version: germinateVersion,
-          locale: this.storeLocale,
-          os: `${config.os} ${config.osVersion}`
-        }
-        authAxios({ url: 'https://ics.hutton.ac.uk/app-logger/log', method: 'GET', data: data })
-      }
-    }
-  },
-  beforeDestroy: function () {
-    emitter.off('on-print', this.print)
-    emitter.off('on-stylesheet-changed', this.attachStyleSheet)
-    emitter.off('show-loading', this.toggleLoading)
-    emitter.off('toast', this.toast)
   }
-}
 </script>
 
 <style lang="scss">
-$font-size-base: 1rem;
-$primary: #23a1d7;
-$dark:    #36363b;
-$secondary: #bdc3c7;
-$success: #27ae60;
-$info:    #3498db;
-$warning: #f39c12;
-$danger:  #e74c3c;
-$indigo:  #6610f2;
-$purple:  #6f42c1;
-$pink:    #e83e8c;
-$red:     #dc3545;
-$orange:  #fd7e14;
-$yellow:  #ffc107;
-$green:   #28a745;
-$teal:    #20c997;
-$cyan:    #17a2b8;
-$headings-font-weight: 400;
-$badge-font-size: 85%;
-$small-font-size: 70%;
+@import "/node_modules/flag-icons/css/flag-icons.min.css";
 
-$container-max-widths: (
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1400px,
-  xxxl: 1600px
-);
-
-$grid-breakpoints: (
-  xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1140px,
-  xxl: 1320px,
-  xxxl: 1500px
-);
-
-@import '~bootswatch/dist/cosmo/variables';
-@import '~bootstrap/scss/bootstrap';
-@import '~bootstrap-vue/src/index.scss';
-@import '~bootswatch/dist/cosmo/bootswatch';
-@import '@/assets/dark-mode.scss';
-@import '~flag-icons/css/flag-icons.min.css';
-
-.card-columns {
-  @include media-breakpoint-only(sm) {
-    column-count: 1;
-  }
-  @include media-breakpoint-only(md) {
-    column-count: 1;
-  }
-  @include media-breakpoint-only(lg) {
-    column-count: 1;
-  }
-  @include media-breakpoint-only(xl) {
-    column-count: 2;
-  }
-  @include media-breakpoint-only(xxl) {
-    column-count: 2;
-  }
-  @include media-breakpoint-only(xxxl) {
-    column-count: 2;
-  }
+ul:not([class]),
+ul:not([class]) li:not([class]),
+ol:not([class]),
+ol:not([class]) li:not([class])
+ {
+  padding: revert;
 }
 
-.list-group-item.info {
-  border-left: 4px solid $info !important;
+p a, p a:visited,
+table a:not(.v-btn, .v-chip), table a:not(.v-btn, .v-chip):visited,
+footer a, footer a:visited,
+#about-page a, #about-page a:visited,
+/* .v-card-title a, .v-card-title a:visited, */
+.v-card-text a:not(.v-chip), .v-card-text a:not(.v-chip):visited,
+.scale-heading a, .scale-heading a:visited,
+.v-messages a, .v-messages a:visited,
+.v-list-item a, .v-list-item a:visited,
+a.table-icon-link, a.table-icon-link:visited,
+.v-card-text ul a, .v-card-text ul a:visited,
+form a, form a:visited {
+  color: rgb(var(--v-theme-primary));
 }
-.list-group-item.warning {
-  border-left: 4px solid $warning !important;
+// #async-status-bar a, #async-status-bar a:visited {
+//   color: inherit;
+// }
+.text-inherit {
+  color: inherit !important;
 }
-.list-group-item.danger {
-  border-left: 4px solid $danger !important;
+.text-unset {
+  color: unset !important;
 }
-.list-group-item.success {
-  border-left: 4px solid $success !important;
-}
-button .mdi-icon-wrapper + * {
-  vertical-align: middle;
+a:not(:hover) {
+  text-decoration: none;
 }
 
-// Hide modal backdrop when printing
-body.print .modal-backdrop {
-  display: none;
+.table-icon-link:hover {
+  text-decoration: none;
+}
+
+p {
+  margin-bottom: 0.5rem;
+}
+
+.pe-none .v-badge__badge {
+  pointer-events: none;
+}
+
+.flex-unset {
+  flex: unset;
+}
+
+.text-white-important {
+  color: white !important;
+}
+
+.card-icon-avatar .v-avatar--variant-elevated, .card-icon-avatar .v-avatar--variant-flat {
+  background: unset;
+}
+
+.mdi-rotate-90 {
+  transform: rotate(90deg);
+}
+
+.v-window {
+  overflow: unset !important;
+}
+
+.v-checkbox-btn .v-icon {
+  pointer-events: none;
+}
+
+.g-no-gutters {
+  margin-left: -16px;
+  margin-right: -16px;
+}
+
+.g-trim-rows-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.g-trim-rows-3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.g-trim-rows-4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 4;
+  -webkit-line-clamp: 4; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.g-trim-rows-5 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 5;
+  -webkit-line-clamp: 5; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+svg.g-svg {
+  color: rgb(var(--v-theme-primary));
+}
+
+.plotly > .svg-container {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.text-wrap .v-card-subtitle,
+.text-wrap .v-list-item-subtitle {
+  text-wrap: wrap;
+  line-clamp: unset;
+  -webkit-line-clamp: unset;
+}
+
+.v-theme--dark .leaflet-control-layers {
+  box-shadow: 0 1px 5px #00000066;
+  background-image: none;
+  background-color: #181a1b;
+  color: white;
+}
+
+.v-theme--dark .leaflet-draw,
+.v-theme--dark .leaflet-control-zoom-in,
+.v-theme--dark .leaflet-control-zoom-out,
+.v-theme--dark .leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
 </style>

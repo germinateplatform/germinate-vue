@@ -1,149 +1,184 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               ref="entityTable"
-               v-on="$listeners">
-      <template v-slot:thead-top>
-        <b-tr>
-          <b-th :colspan="parentSpan" class="text-center border-right" v-if="parentSpan > 0">{{ $t('tableColumnEntityParentHeader') }}</b-th>
-          <b-th :colspan="childSpan" class="text-center" v-if="childSpan > 0">{{ $t('tableColumnEntityChildHeader') }}</b-th>
-        </b-tr>
-      </template>
-      <!-- Entity parent id link -->
-      <template v-slot:cell(entityParentId)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentId }}</router-link>
-      </template>
-      <!-- Entity parent GID link -->
-      <template v-slot:cell(entityParentGid)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentGid }}</router-link>
-      </template>
-      <!-- Entity parent name link -->
-      <template v-slot:cell(entityParentName)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityParentId } }">{{ data.item.entityParentName }}</router-link>
-      </template>
-      <!-- Entity child id link -->
-      <template v-slot:cell(entityChildId)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildId }}</router-link>
-      </template>
-      <!-- Entity child GID link -->
-      <template v-slot:cell(entityChildGid)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildGid }}</router-link>
-      </template>
-      <!-- Entity child name link -->
-      <template v-slot:cell(entityChildName)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.entityChildId } }">{{ data.item.entityChildName }}</router-link>
-      </template>
-      <!-- Entity parent type -->
-      <template v-slot:cell(entityParentType)="data">
-        <span class="text-nowrap" v-if="data.item.entityParentType"><span :style="`color: ${entityTypes[data.item.entityParentType].color()};`"><MdiIcon :path="entityTypes[data.item.entityParentType].path" /></span> {{ entityTypes[data.item.entityParentType].text() }}</span>
-      </template>
-      <!-- Entity child type -->
-      <template v-slot:cell(entityChildType)="data">
-        <span class="text-nowrap" v-if="data.item.entityChildType"><span :style="`color: ${entityTypes[data.item.entityChildType].color()};`"><MdiIcon :path="entityTypes[data.item.entityChildType].path" /></span> {{ entityTypes[data.item.entityChildType].text() }}</span>
-      </template>
-    </BaseTable>
-  </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableEntities} -->
+  <BaseTable
+    ref="baseTable"
+    v-model:bottom-sheet-visible="bottomVisible"
+    :get-data="compProps.getData"
+    :disabled="compProps.disabled"
+    :headers="headers"
+    :filter-on="filterOn"
+    :sort-by="compProps.sortBy"
+    :item-id="(item: ViewTableEntities) => `${item.entityParentId}|${item.entityChildId}`"
+    item-key="entityParentId"
+    table-key="entities"
+    :header-icon="mdiFileTree"
+    :header-title="$t('pagePassportEntityTitle')"
+    @filter-cleared="emit('filter-cleared')"
+  >
+    <!-- Override the default header rendering -->
+    <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">
+      <tr>
+        <!-- Top Group Header 1 -->
+        <th colspan="5" class="text-center">
+          {{ $t('tableColumnEntityParentHeader') }}
+        </th>
+
+        <!-- Top Group Header 2 -->
+        <th colspan="5" class="text-center">
+          {{ $t('tableColumnEntityChildHeader') }}
+        </th>
+      </tr>
+      <tr>
+        <!-- Individual Column Headers -->
+        <th
+          v-for="column in columns"
+          :key="column.key"
+          @click="toggleSort(column)"
+        >
+          <span>{{ column.title }}</span>
+          <v-icon v-if="isSorted(column)">
+            {{ getSortIcon(column) }}
+          </v-icon>
+        </th>
+      </tr>
+    </template>
+
+    <template #item.entityParentType="{ item }">
+      <v-chip label :color="entityTypes[item.entityParentType].color()" :prepend-icon="entityTypes[item.entityParentType].path">{{ $t(entityTypes[item.entityParentType].text) }}</v-chip>
+    </template>
+
+    <template #item.entityChildType="{ item }">
+      <v-chip label :color="entityTypes[item.entityChildType].color()" :prepend-icon="entityTypes[item.entityChildType].path">{{ $t(entityTypes[item.entityChildType].text) }}</v-chip>
+    </template>
+
+    <template #item.entityParentId="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityParentId)">{{ item.entityParentId }}</router-link>
+    </template>
+    <template #item.entityParentGid="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityParentId)">{{ item.entityParentGid }}</router-link>
+    </template>
+    <template #item.entityParentName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityParentId)">{{ item.entityParentName }}</router-link>
+    </template>
+    <template #item.entityParentDisplayName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityParentId)">{{ item.entityParentDisplayName }}</router-link>
+    </template>
+    <template #item.entityChildId="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityChildId)">{{ item.entityChildId }}</router-link>
+    </template>
+    <template #item.entityChildGid="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityChildId)">{{ item.entityChildGid }}</router-link>
+    </template>
+    <template #item.entityChildName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityChildId)">{{ item.entityChildName }}</router-link>
+    </template>
+    <template #item.entityChildDisplayName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.entityChildId)">{{ item.entityChildDisplayName }}</router-link>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { entityTypes } from '@/mixins/types.js'
-import { getTableColumnStyle } from '@/mixins/util'
-import { Pages } from '@/mixins/pages'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-export default {
-  name: 'EntityTable',
-  props: {
-    ...defaultProps.BASE
-  },
-  data: function () {
-    return {
-      Pages,
-      entityTypes,
-      options: {
-        idColumn: 'entityParentId',
-        tableName: 'entities'
-      },
-      parentColumns: ['entityParentId', 'entityParentGid', 'entityParentName', 'entityParentType'],
-      childColumns: ['entityChildId', 'entityChildGid', 'entityChildName', 'entityChildType']
-    }
-  },
-  computed: {
-    columns: function () {
-      return [
-        {
-          key: 'entityParentId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnEntityParentId')
-        }, {
-          key: 'entityParentGid',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnEntityParentGid')
-        }, {
-          key: 'entityParentName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnEntityParentName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'entityParentType',
-          type: 'entityType',
-          sortable: true,
-          class: 'border-right',
-          label: this.$t('tableColumnEntityParentType')
-        }, {
-          key: 'entityChildId',
-          type: Number,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnEntityChildId')
-        }, {
-          key: 'entityChildGid',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnEntityChildGid')
-        }, {
-          key: 'entityChildName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnEntityChildName')
-        }, {
-          key: 'entityChildType',
-          type: 'entityType',
-          sortable: true,
-          label: this.$t('tableColumnEntityChildType')
-        }
-      ]
-    },
-    parentSpan: function () {
-      return this.parentColumns.map(c => {
-        return getTableColumnStyle(this.options.tableName, c) === 'd-none' ? 0 : 1
-      }).reduce((a, b) => a + b, 0)
-    },
-    childSpan: function () {
-      return this.childColumns.map(c => {
-        return getTableColumnStyle(this.options.tableName, c) === 'd-none' ? 0 : 1
-      }).reduce((a, b) => a + b, 0)
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    refresh: function () {
-      this.$refs.entityTable.refresh()
-    }
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableEntities } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import type { DataTableSortItem } from 'vuetify'
+  import { mdiFileTree } from '@mdi/js'
+  import { entityTypes } from '@/plugins/util/types'
+  import { Pages } from '@/plugins/pages'
+
+  interface EntityTableProps {
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableEntities[]>>> }
+    filterOn?: FilterGroup[]
+    sortBy?: DataTableSortItem[]
+    disabled?: boolean
   }
-}
-</script>
 
-<style>
-</style>
+  const compProps = defineProps<EntityTableProps>()
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+  const bottomVisible = ref(false)
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'entityParentId',
+      title: t('tableColumnEntityParentId'),
+      dataType: 'integer',
+      searchable: true,
+    }, {
+      key: 'entityParentGid',
+      dataType: 'string',
+      title: t('tableColumnEntityParentGid'),
+      searchable: true,
+      quickSearchable: true,
+    }, {
+      key: 'entityParentName',
+      title: t('tableColumnEntityParentName'),
+      dataType: 'string',
+      preferredSearchColumn: true,
+      searchable: true,
+      quickSearchable: true,
+    }, {
+      key: 'entityParentDisplayName',
+      title: t('tableColumnEntityParentDisplayName'),
+      dataType: 'string',
+      searchable: true,
+      quickSearchable: true,
+    }, {
+      key: 'entityParentType',
+      dataType: 'entityType',
+      sortable: true,
+      title: t('tableColumnEntityParentType'),
+      cellProps: { class: 'border-e' },
+    }, {
+      key: 'entityChildId',
+      title: t('tableColumnEntityChildId'),
+      dataType: 'integer',
+      searchable: true,
+    }, {
+      key: 'entityChildGid',
+      dataType: 'string',
+      title: t('tableColumnEntityChildGid'),
+      searchable: true,
+      quickSearchable: true,
+    }, {
+      key: 'entityChildName',
+      title: t('tableColumnEntityChildName'),
+      dataType: 'string',
+      preferredSearchColumn: true,
+      searchable: true,
+      quickSearchable: true,
+    }, {
+      key: 'entityChildDisplayName',
+      title: t('tableColumnEntityChildDisplayName'),
+      dataType: 'string',
+      searchable: true,
+      quickSearchable: true,
+    }, {
+      key: 'entityChildType',
+      dataType: 'entityType',
+      sortable: true,
+      title: t('tableColumnEntityChildType'),
+    }]
+
+    return headers
+  })
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+    forceFilter: (filters: FilterGroup[]) => baseTable.value?.forceFilters(filters),
+  })
+
+  const emit = defineEmits(['filter-cleared'])
+</script>

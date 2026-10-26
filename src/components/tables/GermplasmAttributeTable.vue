@@ -1,128 +1,82 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               v-bind="$props"
-               ref="germplasmAttributeTable"
-               v-on="$listeners">
-      <!-- Germplasm id link -->
-      <template v-slot:cell(germplasmId)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmId }}</router-link>
-      </template>
-      <!-- Germplasm name link -->
-      <template v-slot:cell(germplasmName)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmName }}</router-link>
-      </template>
-      <!-- Germplasm GID link -->
-      <template v-slot:cell(germplasmGid)="data">
-        <router-link :to="{ name: Pages.passport, params: { germplasmId: data.item.germplasmId } }">{{ data.item.germplasmGid }}</router-link>
-      </template>
-      <template v-slot:cell(attributeDescription)="data">
-        <span :title="data.item.attributeDescription" v-if="data.item.attributeDescription">{{ truncateAfterWords(data.item.attributeDescription, 10) }}</span>
-        <a href="#" class="table-icon-link" @click.prevent="showFullAttributeDescription(data.item.attributeDescription)" v-b-tooltip="$t('buttonReadMore')" v-if="isTruncatedAfterWords(data.item.attributeDescription, 10)" >&nbsp;
-          <MdiIcon :path="mdiPageNext" />
-        </a>
-      </template>
-      <!-- Attribute type -->
-      <template v-slot:cell(attributeType)="data">
-        <span v-if="data.item.attributeType">
-          <span :style="`color: ${dataTypes[data.item.attributeType].color()};`"><MdiIcon :path="dataTypes[data.item.attributeType].path" /></span>
-          <span> {{ dataTypes[data.item.attributeType].text() }}</span>
-        </span>
-      </template>
-    </BaseTable>
-  </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGermplasmAttributes} -->
+  <BaseTable
+    ref="baseTable"
+    v-model:bottom-sheet-visible="bottomVisible"
+    :get-data="compProps.getData"
+    :headers="headers"
+    :filter-on="filterOn"
+    :sort-by="compProps.sortBy"
+    :selection-type="selectionType"
+    item-key="attributeValueId"
+    table-key="germplasmAttributes"
+    :header-icon="mdiPlaylistPlus"
+    :header-title="$t('pageSearchResultSectionGermplasmAttributes')"
+  >
+    <template #item.germplasmId="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmId }}</router-link>
+    </template>
+    <template #item.germplasmName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmName }}</router-link>
+    </template>
+    <template #item.germplasmDisplayName="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmDisplayName }}</router-link>
+    </template>
+    <template #item.germplasmGid="{ item }">
+      <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmGid }}</router-link>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { dataTypes } from '@/mixins/types'
-import { Pages } from '@/mixins/pages'
-import { isTruncatedAfterWords, truncateAfterWords } from '@/mixins/formatting'
-import { mdiPageNext } from '@mdi/js'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-export default {
-  name: 'GermplasmAttributeTable',
-  props: {
-    ...defaultProps.BASE,
-    ...defaultProps.DOWNLOAD
-  },
-  data: function () {
-    return {
-      Pages,
-      dataTypes,
-      mdiPageNext,
-      options: {
-        idColumn: 'germplasmId',
-        tableName: 'germplasmAttributes'
-      }
-    }
-  },
-  computed: {
-    columns: function () {
-      return [
-        {
-          key: 'germplasmId',
-          type: String,
-          sortable: true,
-          class: 'text-right',
-          label: this.$t('tableColumnAttributeGermplasmId')
-        }, {
-          key: 'germplasmGid',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnAttributeGermplasmGid')
-        }, {
-          key: 'germplasmName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnAttributeGermplasmName'),
-          preferredSortingColumn: true
-        }, {
-          key: 'attributeName',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnAttributeName')
-        }, {
-          key: 'attributeDescription',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnAttributeDescription')
-        }, {
-          key: 'attributeType',
-          type: 'dataType',
-          sortable: true,
-          label: this.$t('tableColumnAttributeDataType')
-        }, {
-          key: 'attributeValue',
-          type: String,
-          sortable: true,
-          label: this.$t('tableColumnAttributeValue')
-        }
-      ]
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    isTruncatedAfterWords,
-    truncateAfterWords,
-    showFullAttributeDescription: function (description) {
-      this.$bvModal.msgBoxOk(description, {
-        title: this.$t('tableColumnAttributeDescription'),
-        okTitle: this.$t('genericOk')
-      })
-    },
-    refresh: function () {
-      this.$refs.germplasmAttributeTable.refresh()
-    }
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import { Pages } from '@/plugins/pages'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGermplasmAttributes } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { columns } from '@/plugins/util/table-columns'
+  import type { DataTableSortItem } from 'vuetify'
+  import { mdiPlaylistPlus } from '@mdi/js'
+
+  interface GermplasmTableProps {
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasmAttributes[]>>> }
+    filterOn?: FilterGroup[]
+    sortBy?: DataTableSortItem[]
+    selectionType?: TableSelectionType
+    tableMode?: 'base' | 'distance'
   }
-}
+
+  const compProps = withDefaults(defineProps<GermplasmTableProps>(), {
+    tableMode: 'base',
+  })
+
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+  const bottomVisible = ref(false)
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    return columns.germplasmAttributes.map(c => {
+      return {
+        ...c,
+        title: t(c.title || ''),
+      }
+    })
+  })
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>

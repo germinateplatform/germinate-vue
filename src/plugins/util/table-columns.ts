@@ -1,0 +1,895 @@
+import { FilterComparator, type ViewTableClimateData, type ViewTableDatasets, type ViewTableGermplasm, type ViewTableLocations, type ViewTableMapdefinitions } from '@/plugins/types/germinate'
+import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+import { getNumberWithSuffix } from '@/plugins/util/formatting'
+
+const germplasmColumns: ExtendedDataTableHeader[] = [{
+  key: 'germplasmId',
+  title: 'tableColumnGermplasmId',
+  dataType: 'integer',
+  searchable: true,
+}, {
+  key: 'germplasmName',
+  title: 'tableColumnGermplasmName',
+  dataType: 'string',
+  preferredSearchColumn: true,
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmDisplayName',
+  title: 'tableColumnGermplasmDisplayName',
+  dataType: 'string',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmGid',
+  dataType: 'string',
+  title: 'tableColumnGermplasmGeneralIdentifier',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmNumber',
+  dataType: 'string',
+  title: 'tableColumnGermplasmNumber',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmPuid',
+  dataType: 'string',
+  title: 'tableColumnGermplasmPuid',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'entityTypeName',
+  dataType: 'entityType',
+  title: 'tableColumnEntityType',
+}, {
+  key: 'entityParentName',
+  dataType: 'string',
+  title: 'tableColumnGermplasmEntityParentName',
+}, {
+  key: 'entityParentGeneralIdentifier',
+  dataType: 'string',
+  title: 'tableColumnGermplasmEntityParentGeneralIdentifier',
+}, {
+  key: 'biologicalStatusName',
+  dataType: 'string',
+  title: 'tableColumnBiologicalStatus',
+  searchable: true,
+}, {
+  key: 'taxonomyId',
+  dataType: 'integer',
+  title: 'tableColumnTaxonomyId',
+  searchable: true,
+}, {
+  key: 'genus',
+  dataType: 'string',
+  title: 'tableColumnGenus',
+  cellProps: { class: 'font-italic' },
+  searchable: true,
+}, {
+  key: 'species',
+  dataType: 'string',
+  title: 'tableColumnSpecies',
+  cellProps: { class: 'font-italic' },
+  searchable: true,
+}, {
+  key: 'subtaxa',
+  dataType: 'string',
+  title: 'tableColumnSubtaxa',
+  cellProps: { class: 'font-italic' },
+  searchable: true,
+}, {
+  key: 'synonyms',
+  dataType: 'json',
+  title: 'tableColumnSynonyms',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'collectorNumber',
+  dataType: 'string',
+  title: 'tableColumnCollectorNumber',
+}, {
+  key: 'institutions',
+  dataType: 'jsonObject',
+  title: 'tableColumnGermplasmInstitutions',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.institutions ? value.institutions.map(i => `Code: ${i.code || 'N/A'}, name: ${i.name}, type: ${i.type}`).join('; ') : undefined,
+}, {
+  key: 'locationId',
+  dataType: 'integer',
+  title: 'tableColumnGermplasmLocationId',
+  visibleInTable: false,
+  visibleInFilter: true,
+}, {
+  key: 'location',
+  visibleInTable: false,
+  visibleInFilter: true,
+  title: 'tableColumnGermplasmLocation',
+  dataType: 'string',
+  searchable: true,
+}, {
+  key: 'data-table-expand',
+  visibleInFilter: false,
+  title: 'tableColumnGermplasmLocation',
+  dataType: 'string',
+}, {
+  key: 'elevation',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnElevation',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.elevation ? value.elevation.toFixed(2) : undefined,
+}, {
+  key: 'latitude',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLatitude',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.latitude ? value.latitude.toFixed(2) : undefined,
+}, {
+  key: 'longitude',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLongitude',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.longitude ? value.longitude.toFixed(2) : undefined,
+}, {
+  key: 'countryName',
+  dataType: 'string',
+  title: 'tableColumnCountryName',
+  searchable: true,
+}, {
+  key: 'hasTrialsData',
+  dataType: 'boolean',
+  title: 'tableColumnHasTrialsData',
+  cellProps: { class: 'px-1 mx-0' },
+  headerProps: { class: 'px-1 mx-0' },
+}, {
+  key: 'hasGenotypicData',
+  dataType: 'boolean',
+  title: 'tableColumnHasGenotypicData',
+  cellProps: { class: 'px-1 mx-0' },
+  headerProps: { class: 'px-1 mx-0' },
+}, {
+  key: 'hasPedigreeData',
+  dataType: 'boolean',
+  title: 'tableColumnHasPedigreeData',
+  cellProps: { class: 'px-1 mx-0' },
+  headerProps: { class: 'px-1 mx-0' },
+}, {
+  key: 'imageCount',
+  dataType: 'integer',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnGermplasmImageCount',
+}, {
+  key: 'pdci',
+  dataType: 'float',
+  align: 'center' as 'start' | 'end' | 'center',
+  title: 'tableColumnPdci',
+}]
+
+const germplasmAttributeColumns: ExtendedDataTableHeader[] = [{
+  key: 'germplasmId',
+  title: 'tableColumnGermplasmId',
+  dataType: 'integer',
+  searchable: true,
+}, {
+  key: 'germplasmName',
+  title: 'tableColumnGermplasmName',
+  dataType: 'string',
+  preferredSearchColumn: true,
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmDisplayName',
+  title: 'tableColumnGermplasmDisplayName',
+  dataType: 'string',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmGid',
+  dataType: 'string',
+  title: 'tableColumnGermplasmGeneralIdentifier',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'attributeName',
+  dataType: 'string',
+  title: 'tableColumnAttributeName',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'attributeDescription',
+  dataType: 'string',
+  title: 'tableColumnAttributeDescription',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'attributeType',
+  dataType: 'dataType',
+  title: 'tableColumnAttributeDataType',
+}, {
+  key: 'attributeValue',
+  dataType: 'string',
+  title: 'tableColumnAttributeValue',
+}]
+
+const datasetAttributeColumns: ExtendedDataTableHeader[] = [{
+  key: 'datasetId',
+  dataType: undefined,
+  title: 'tableColumnAttributeDatasetId',
+}, {
+  key: 'datasetName',
+  dataType: 'string',
+  title: 'tableColumnAttributeDatasetName',
+  searchable: true,
+}, {
+  key: 'datasetDescription',
+  dataType: 'string',
+  title: 'tableColumnAttributeDatasetDescription',
+  searchable: true,
+}, {
+  key: 'attributeName',
+  dataType: 'string',
+  title: 'tableColumnAttributeName',
+  searchable: true,
+}, {
+  key: 'attributeDescription',
+  dataType: 'string',
+  title: 'tableColumnAttributeDescription',
+  searchable: true,
+}, {
+  key: 'attributeType',
+  dataType: 'dataType',
+  title: 'tableColumnAttributeDataType',
+}, {
+  key: 'attributeValue',
+  dataType: 'string',
+  title: 'tableColumnAttributeValue',
+  searchable: true,
+}]
+
+const climateDataColumns: ExtendedDataTableHeader[] = [{
+  key: 'locationId',
+  dataType: 'integer',
+  title: 'tableColumnLocationId',
+}, {
+  key: 'locationName',
+  dataType: 'string',
+  title: 'tableColumnLocationName',
+  searchable: true,
+}, {
+  key: 'locationRegion',
+  dataType: 'string',
+  title: 'tableColumnLocationRegion',
+}, {
+  key: 'locationState',
+  dataType: 'string',
+  title: 'tableColumnLocationState',
+}, {
+  key: 'locationType',
+  dataType: 'locationType',
+  title: 'tableColumnLocationType',
+}, {
+  key: 'locationLatitude',
+  dataType: 'float',
+  cellProps: { class: 'text-end' },
+  headerProps: { class: 'text-end' },
+  title: 'tableColumnLocationLatitude',
+  // @ts-ignore
+  value: (value: ViewTableClimateData) => value.locationLatitude ? value.locationLatitude.toFixed(2) : undefined,
+}, {
+  key: 'locationLongitude',
+  dataType: 'float',
+  cellProps: { class: 'text-end' },
+  headerProps: { class: 'text-end' },
+  title: 'tableColumnLocationLongitude',
+  // @ts-ignore
+  value: (value: ViewTableClimateData) => value.locationLongitude ? value.locationLongitude.toFixed(2) : undefined,
+}, {
+  key: 'locationElevation',
+  dataType: 'float',
+  cellProps: { class: 'text-end' },
+  headerProps: { class: 'text-end' },
+  title: 'tableColumnLocationElevation',
+  // @ts-ignore
+  value: (value: ViewTableClimateData) => value.locationElevation ? value.locationElevation.toFixed(2) : undefined,
+}, {
+  key: 'countryName',
+  dataType: 'string',
+  title: 'tableColumnLocationCountryName',
+  searchable: true,
+}, {
+  key: 'climateId',
+  dataType: 'integer',
+  cellProps: { class: 'text-end' },
+  headerProps: { class: 'text-end' },
+  title: 'tableColumnClimateId',
+}, {
+  key: 'climateName',
+  dataType: 'string',
+  title: 'tableColumnClimateName',
+  preferredSearchColumn: true,
+  searchable: true,
+}, {
+  key: 'climateDataType',
+  dataType: 'dataType',
+  title: 'tableColumnTraitDataType',
+}, {
+  key: 'unitName',
+  dataType: 'string',
+  title: 'tableColumnClimateUnitName',
+  searchable: true,
+}, {
+  key: 'recordingDate',
+  dataType: 'date',
+  title: 'tableColumnClimateDataRecordingDate',
+  // @ts-ignore
+  value: (value: ViewTableClimateData) => value.recordingDate ? new Date(value.recordingDate).toLocaleDateString() : undefined,
+}, {
+  key: 'climateValue',
+  dataType: 'string',
+  title: 'tableColumnClimateDataClimateValue',
+  searchable: true,
+}]
+
+const traitDataColumns: ExtendedDataTableHeader[] = [{
+  key: 'germplasmId',
+  title: 'tableColumnGermplasmId',
+  dataType: 'integer',
+  searchable: true,
+}, {
+  key: 'germplasmName',
+  title: 'tableColumnGermplasmName',
+  dataType: 'string',
+  preferredSearchColumn: true,
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmDisplayName',
+  title: 'tableColumnGermplasmDisplayName',
+  dataType: 'string',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'germplasmGid',
+  dataType: 'string',
+  title: 'tableColumnGermplasmGeneralIdentifier',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'entityType',
+  dataType: 'entityType',
+  title: 'tableColumnEntityType',
+}, {
+  key: 'entityParentName',
+  dataType: 'string',
+  title: 'tableColumnGermplasmEntityParentName',
+}, {
+  key: 'entityParentGeneralIdentifier',
+  dataType: 'string',
+  title: 'tableColumnGermplasmEntityParentGeneralIdentifier',
+}, {
+  key: 'germplasmSynonyms',
+  dataType: 'json',
+  title: 'tableColumnSynonyms',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'locationName',
+  title: 'tableColumnGermplasmLocation',
+  dataType: 'string',
+  searchable: true,
+}, {
+  key: 'countryName',
+  dataType: 'string',
+  title: 'tableColumnCountryName',
+  searchable: true,
+}, {
+  key: 'variableId',
+  dataType: 'integer',
+  title: 'tableColumnVariableId',
+}, {
+  key: 'variableName',
+  dataType: 'string',
+  title: 'tableColumnVariableName',
+}, {
+  key: 'traitId',
+  dataType: 'integer',
+  title: 'tableColumnTraitId',
+}, {
+  key: 'traitName',
+  dataType: 'string',
+  title: 'tableColumnTraitName',
+}, {
+  key: 'scaleDatatype',
+  dataType: 'dataType',
+  title: 'tableColumnTraitDataType',
+}, {
+  key: 'treatment',
+  dataType: 'string',
+  title: 'tableColumnTraitTreatment',
+}, {
+  key: 'rep',
+  dataType: 'string',
+  title: 'tableColumnTraitRep',
+}, {
+  key: 'block',
+  dataType: 'string',
+  title: 'tableColumnTraitBlock',
+}, {
+  key: 'trialRow',
+  dataType: 'integer',
+  title: 'tableColumnTraitRow',
+}, {
+  key: 'trialColumn',
+  dataType: 'integer',
+  title: 'tableColumnTraitColumn',
+}, {
+  key: 'elevation',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnElevation',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.elevation ? value.elevation.toFixed(2) : undefined,
+}, {
+  key: 'latitude',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLatitude',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.latitude ? value.latitude.toFixed(2) : undefined,
+}, {
+  key: 'longitude',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLongitude',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.longitude ? value.longitude.toFixed(2) : undefined,
+}, {
+  key: 'scaleUnit',
+  dataType: 'string',
+  title: 'tableColumnTraitUnitName',
+}, {
+  key: 'recordingDate',
+  dataType: 'date',
+  title: 'tableColumnTraitDataRecordingDate',
+  // @ts-ignore
+  value: (value: ViewTableGermplasm) => value.recordingDate ? new Date(value.recordingDate).toLocaleDateString() : undefined,
+}, {
+  key: 'traitValue',
+  dataType: 'string',
+  title: 'tableColumnTrialsDataTraitValue',
+}]
+
+const locationColumns: ExtendedDataTableHeader[] = [{
+  key: 'locationId',
+  title: 'tableColumnLocationId',
+  dataType: 'integer',
+  searchable: true,
+}, {
+  key: 'locationName',
+  title: 'tableColumnLocationName',
+  dataType: 'string',
+  searchable: true,
+  quickSearchable: true,
+}, {
+  key: 'locationRegion',
+  title: 'tableColumnLocationRegion',
+  dataType: 'string',
+  searchable: true,
+}, {
+  key: 'locationState',
+  title: 'tableColumnLocationState',
+  dataType: 'string',
+  searchable: true,
+}, {
+  key: 'locationType',
+  title: 'tableColumnLocationType',
+  dataType: 'locationType',
+  searchable: true,
+}, {
+  key: 'locationElevation',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLocationElevation',
+  // @ts-ignore
+  value: (value: ViewTableLocations) => value.locationElevation ? value.locationElevation.toFixed(2) : undefined,
+}, {
+  key: 'locationLatitude',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLocationLatitude',
+  // @ts-ignore
+  value: (value: ViewTableLocations) => value.locationLatitude ? value.locationLatitude.toFixed(2) : undefined,
+}, {
+  key: 'locationLongitude',
+  dataType: 'float',
+  align: 'end' as 'start' | 'end' | 'center',
+  title: 'tableColumnLocationLongitude',
+  // @ts-ignore
+  value: (value: ViewTableLocations) => value.locationLongitude ? value.locationLongitude.toFixed(2) : undefined,
+}, {
+  key: 'countryName',
+  dataType: 'string',
+  title: 'tableColumnLocationCountryName',
+  searchable: true,
+  quickSearchable: true,
+}]
+
+const pedigreeColumns: ExtendedDataTableHeader[] = [
+  {
+    key: 'datasetId',
+    dataType: 'integer',
+    title: 'tableColumnPedigreeDatasetId',
+  },
+  {
+    key: 'datasetName',
+    dataType: 'string',
+    title: 'tableColumnPedigreeDatasetName',
+    quickSearchable: true,
+  },
+  {
+    key: 'parentId',
+    dataType: 'integer',
+    title: 'tableColumnPedigreeParentId',
+  }, {
+    key: 'parentGid',
+    dataType: 'string',
+    title: 'tableColumnPedigreeParentGid',
+    searchable: true,
+  }, {
+    key: 'parentName',
+    dataType: 'string',
+    title: 'tableColumnPedigreeParentName',
+    quickSearchable: true,
+    searchable: true,
+  }, {
+    key: 'childId',
+    dataType: 'integer',
+    title: 'tableColumnPedigreeChildId',
+  }, {
+    key: 'childGid',
+    dataType: 'string',
+    title: 'tableColumnPedigreeChildGid',
+    searchable: true,
+  }, {
+    key: 'childName',
+    dataType: 'string',
+    title: 'tableColumnPedigreeChildName',
+    quickSearchable: true,
+    searchable: true,
+  }, {
+    key: 'relationshipType',
+    dataType: 'string',
+    title: 'tableColumnPedigreeRelationshipType',
+    searchable: true,
+  }, {
+    key: 'relationshipDescription',
+    dataType: 'string',
+    title: 'tableColumnPedigreeRelationshipDescription',
+    searchable: true,
+  }, {
+    key: 'pedigreeDescription',
+    dataType: 'string',
+    title: 'tableColumnPedigreeDescription',
+    searchable: true,
+  }, {
+    key: 'pedigreeAuthor',
+    dataType: 'string',
+    title: 'tableColumnPedigreeAuthor',
+    searchable: true,
+  },
+]
+
+const traitColumns: ExtendedDataTableHeader[] = [{
+  key: 'variableId',
+  dataType: 'integer',
+  title: 'tableColumnVariableId',
+}, {
+  key: 'variableName',
+  dataType: 'string',
+  title: 'tableColumnVariableName',
+  quickSearchable: true,
+}, {
+  key: 'variableDescription',
+  dataType: 'string',
+  title: 'tableColumnVariableDescription',
+  quickSearchable: true,
+}, {
+  key: 'variableSynonyms',
+  dataType: 'json',
+  title: 'tableColumnVariableSynonyms',
+  quickSearchable: true,
+}, {
+  key: 'traitId',
+  dataType: 'integer',
+  title: 'tableColumnTraitId',
+}, {
+  key: 'traitName',
+  dataType: 'string',
+  title: 'tableColumnTraitName',
+  quickSearchable: true,
+}, {
+  key: 'traitDescription',
+  dataType: 'string',
+  title: 'tableColumnTraitDescription',
+  quickSearchable: true,
+}, {
+  key: 'traitAbbreviation',
+  dataType: 'string',
+  title: 'tableColumnTraitAbbreviation',
+  quickSearchable: true,
+}, {
+  key: 'traitClass',
+  dataType: 'traitClass',
+  title: 'tableColumnTraitClass',
+}, {
+  key: 'traitSynonyms',
+  dataType: 'json',
+  title: 'tableColumnTraitSynonyms',
+  quickSearchable: true,
+}, {
+  key: 'scaleId',
+  dataType: 'integer',
+  title: 'tableColumnScaleId',
+}, {
+  key: 'scaleName',
+  dataType: 'string',
+  title: 'tableColumnScaleName',
+  quickSearchable: true,
+}, {
+  key: 'scaleDescription',
+  dataType: 'string',
+  title: 'tableColumnScaleDescription',
+  quickSearchable: true,
+}, {
+  key: 'scaleDatatype',
+  dataType: 'dataType',
+  title: 'tableColumnScaleDataType',
+}, {
+  key: 'scaleRestrictions',
+  dataType: undefined,
+  sortable: false,
+  title: 'tableColumnScaleRestrictions',
+}, {
+  key: 'scaleUnit',
+  dataType: 'string',
+  title: 'tableColumnScaleUnit',
+  quickSearchable: true,
+}, {
+  key: 'methodId',
+  dataType: 'integer',
+  title: 'tableColumnMethodId',
+}, {
+  key: 'methodName',
+  dataType: 'string',
+  title: 'tableColumnMethodName',
+  quickSearchable: true,
+}, {
+  key: 'methodDescription',
+  dataType: 'string',
+  title: 'tableColumnMethodDescription',
+  quickSearchable: true,
+}, {
+  key: 'methodClass',
+  dataType: 'methodClass',
+  title: 'tableColumnMethodClass',
+  quickSearchable: true,
+}, {
+  key: 'methodSetSize',
+  dataType: 'integer',
+  title: 'tableColumnMethodSetSize',
+}, {
+  key: 'methodIsTimeseries',
+  dataType: 'boolean',
+  title: 'tableColumnMethodIsTimeseries',
+}, {
+  key: 'datasetIds',
+  dataType: undefined,
+  sortable: false,
+  title: 'tableColumnTraitNrDataset',
+}, {
+  key: 'count',
+  dataType: 'integer',
+  cellProps: { class: 'text-end' },
+  title: 'tableColumnTraitDataPoints',
+  // @ts-ignore
+  value: (item: ViewTableTraits) => item.count !== undefined ? getNumberWithSuffix(item.count, 2) : undefined,
+}]
+
+const datasetColumns: ExtendedDataTableHeader[] = [
+  {
+    key: 'projectId',
+    dataType: 'integer',
+    sortable: false,
+    visibleInTable: false,
+    title: 'tableColumnProjectId',
+  }, {
+    key: 'datasetId',
+    title: 'tableColumnDatasetId',
+    dataType: 'integer',
+  }, {
+    key: 'datasetName',
+    title: 'tableColumnDatasetName',
+    dataType: 'string',
+    searchable: true,
+    quickSearchable: true,
+  }, {
+    key: 'datasetDescription',
+    title: 'tableColumnDatasetDescription',
+    dataType: 'string',
+    searchable: true,
+    quickSearchable: true,
+  }, {
+    key: 'experimentId',
+    dataType: 'integer',
+    title: 'tableColumnExperimentId',
+  }, {
+    key: 'experimentName',
+    dataType: 'string',
+    title: 'tableColumnExperimentName',
+    searchable: true,
+    quickSearchable: true,
+  }, {
+    key: 'datasetType',
+    dataType: 'string',
+    title: 'tableColumnDatasetDatasetType',
+    searchable: true,
+  }, {
+    key: 'datatype',
+    dataType: 'string',
+    title: 'tableColumnDatasetDataType',
+    searchable: true,
+  }, {
+    key: 'licenseName',
+    dataType: 'string',
+    title: 'tableColumnDatasetLicenseName',
+    searchable: true,
+  }, {
+    key: 'contact',
+    dataType: 'string',
+    title: 'tableColumnDatasetContact',
+    searchable: true,
+  }, {
+    key: 'countries',
+    dataType: undefined,
+    sortable: false,
+    title: 'tableColumnDatasetCountryName',
+  }, {
+    key: 'data-table-expand',
+    visibleInFilter: false,
+    title: 'tableColumnDatasetLocations',
+    dataType: 'string',
+  }, {
+    key: 'locations',
+    dataType: 'json',
+    visibleInTable: false,
+    title: 'tableColumnDatasetLocations',
+    searchable: true,
+  }, {
+    key: 'startDate',
+    dataType: 'date',
+    title: 'tableColumnDatasetStartDate',
+    // @ts-ignore
+    value: (value: ViewTableDatasets) => value.startDate ? new Date(value.startDate).toLocaleDateString() : undefined,
+  }, {
+    key: 'endDate',
+    dataType: 'date',
+    title: 'tableColumnDatasetEndDate',
+    // @ts-ignore
+    value: (value: ViewTableDatasets) => value.endDate ? new Date(value.endDate).toLocaleDateString() : undefined,
+  }, {
+    key: 'dataObjectCount',
+    dataType: 'integer',
+    align: 'end' as 'end' | 'start' | 'center',
+    title: 'tableColumnDatasetObjectCount',
+    // @ts-ignore
+    value: (value: ViewTableDatasets) => value.dataObjectCount ? getNumberWithSuffix(value.dataObjectCount.value, 2) : undefined,
+  }, {
+    key: 'dataPointCount',
+    dataType: 'integer',
+    align: 'end' as 'end' | 'start' | 'center',
+    title: 'tableColumnDatasetPointCount',
+    // @ts-ignore
+    value: (value: ViewTableDatasets) => value.dataPointCount ? `${(value.datasetType === 'genotype' || value.datasetType === 'allelefreq') ? '≤' : ''}${getNumberWithSuffix(value.dataPointCount.value, 2)}` : undefined,
+  }, {
+    key: 'fileresourceIds',
+    dataType: 'json',
+    sortable: false,
+    title: 'tableColumnDatasetFileresources',
+  }, {
+    key: 'createdOn',
+    dataType: 'date',
+    title: 'tableColumnDatasetCreatedOn',
+    // @ts-ignore
+    value: (value: ViewTableDatasets) => value.createdOn ? new Date(value.createdOn).toLocaleDateString() : undefined,
+  }, {
+    key: 'datasetDetails',
+    dataType: undefined,
+    sortable: false,
+    title: '',
+  }, {
+    key: 'isExternal',
+    dataType: 'boolean',
+    sortable: false,
+    visibleInTable: false,
+    title: 'tableColumnDatasetExternal',
+  },
+]
+
+const mapdefinitionColumns: ExtendedDataTableHeader[] = [{
+  key: 'markerId',
+  title: 'tableColumnMarkerId',
+  dataType: 'integer',
+}, {
+  key: 'markerName',
+  title: 'tableColumnMarkerName',
+  dataType: 'string',
+  searchable: true,
+}, {
+  key: 'markerSynonyms',
+  dataType: 'json',
+  title: 'tableColumnMarkerSynonyms',
+  searchable: true,
+}, {
+  key: 'mapFeatureType',
+  dataType: 'string',
+  title: 'tableColumnMapFeatureType',
+  searchable: true,
+}, {
+  key: 'mapId',
+  dataType: 'integer',
+  title: 'tableColumnMarkerMapId',
+}, {
+  key: 'mapName',
+  dataType: 'string',
+  title: 'tableColumnMapName',
+  searchable: true,
+}, {
+  key: 'chromosome',
+  dataType: 'string',
+  title: 'tableColumnMapChromosome',
+}, {
+  key: 'position',
+  dataType: 'integer',
+  title: 'tableColumnMapPosition',
+  // @ts-ignore
+  value: (item: ViewTableMapdefinitions) => (item.position !== undefined && item.position !== null) ? getNumberWithSuffix(item.position, 2) : null,
+}]
+
+const columns: { [key: string]: ExtendedDataTableHeader[] } = {
+  germplasm: germplasmColumns,
+  germplasmAttributes: germplasmAttributeColumns,
+  locations: locationColumns,
+  pedigrees: pedigreeColumns,
+  datasets: datasetColumns,
+  datasetAttributes: datasetAttributeColumns,
+  traitData: traitDataColumns,
+  climateData: climateDataColumns,
+  traits: traitColumns,
+  mapdefinitions: mapdefinitionColumns,
+}
+
+const validCompsForType: { [key: string]: FilterComparator[] } = {
+  string: [FilterComparator.equals, FilterComparator.contains, FilterComparator.startsWith, FilterComparator.endsWith, FilterComparator.inSet, FilterComparator.isNotNull, FilterComparator.isNull],
+  boolean: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  dataType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  locationType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  entityType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  newsType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  groupType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
+  importStatus: [FilterComparator.equals],
+  methodClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
+  traitClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
+  json: [FilterComparator.jsonSearch, FilterComparator.isNull, FilterComparator.isNotNull],
+  jsonObject: [FilterComparator.jsonSearch],
+  integer: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],
+  float: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],
+  date: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.isNull, FilterComparator.isNotNull],
+}
+
+export {
+  columns,
+  validCompsForType,
+}

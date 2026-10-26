@@ -1,324 +1,572 @@
 <template>
   <div>
-    <b-form-group label-for="color-by" :label="$t('pageTrialsExportColorByTitle')">
-      <b-form-select id="color-by" :options="colorOptions" v-model="colorBy" />
-    </b-form-group>
-    <l-map
-      class="location-map border"
-      :center="center"
-      ref="map"
-      :options="mapOptions"
-      :maxZoom="maxZoom"
-      :zoom="zoom">
+    <GermplasmMapHighlightSelection v-model="userSelection" />
 
-      <l-control position="bottomleft" class="leaflet-control-layers">
-        <div class="p-2 legend" v-if="colorBy && colorBy.type === 'text'">
-          <div v-for="legendItem in colorLegend" :key="`color-mapping-${legendItem.name}`" :style="{ color: legendItem.color }" :class="colorBy.legendClass || ''">
-            <MdiIcon :path="mdiCircle"/> {{ legendItem.name }}
-          </div>
+    <v-toolbar density="comfortable" color="surface" v-if="polygonSelectedGermplasm.length > 0">
+      <v-spacer />
+      <v-menu>
+        <template #activator="{ props }">
+          <v-badge location="bottom left" color="info" :content="getNumberWithSuffix(polygonSelectedGermplasm.length, 1)" :offset-x="10" :offset-y="10">
+            <v-btn v-bind="props" :icon="mdiDotsVertical" />
+          </v-badge>
+        </template>
+
+        <v-list>
+          <v-list-item :prepend-icon="mdiCheckboxMarked" @click="toggleItems(true)">{{ $t('widgetChartMarkSelectedItems') }}</v-list-item>
+          <v-list-item :prepend-icon="mdiCheckboxBlankOutline" @click="toggleItems(false)">{{ $t('widgetChartUnmarkSelectedItems') }}</v-list-item>
+        </v-list>
+      </v-menu>
+      <slot name="toolbar-append" />
+    </v-toolbar>
+
+    <div :id="`map-${id}`" ref="mapElement" class="location-map map">
+      <div ref="legend" :class="`legend leaflet-control-layers leaflet-control pa-2 d-flex flex-column ga-2 ${hasLegendItems ? '' : 'd-none'}`">
+        <div
+          v-for="legendItem in legendItems"
+          :key="`legend-item-${legendItem.text}`"
+        >
+          <v-icon :icon="mdiCircle" :color="legendItem.color" /> <span :class="legendItem.clazz">{{ legendItem.text }}</span>
         </div>
-      </l-control>
-
-      <!-- Map loading indicator -->
-      <div class="location-map-loading-indicator d-flex justify-content-center h-100 align-items-center" v-if="loading === true">
-        <b-spinner type="grow" variant="primary" />
       </div>
-    </l-map>
 
-    <!-- Add color gradient for number coloring -->
-    <ColorGradient :min="gradientMinMax.min" :max="gradientMinMax.max" :formatMinMax="gradientMinMax.format" :colors="gradientColors" v-if="colorBy && colorBy.type !== 'text'" ref="gradient" />
-
-    <!-- Popup content -->
-    <div v-if="selectedLocation" ref="popupContent" class="p-3">
-      <dl class="row">
-        <template v-if="selectedGermplasm">
-          <dt class="col-4 text-right">{{ $t('tableColumnGermplasmName') }}</dt><dd class="col-8">{{ selectedGermplasm.germplasm.germplasmName }}</dd>
-        </template>
-        <dt class="col-4 text-right">{{ $t('tableColumnLocationName') }}</dt>
-        <dd class="col-8 location-name">
-          <span v-if="selectedLocation.locationType === 'datasets'">{{ selectedLocation.locationName }}</span>
-          <span>{{ selectedLocation.locationName }}</span>
-        </dd>
-        <template v-if="selectedLocation.locationType"><dt class="col-4 text-right">{{ $t('tableColumnLocationType') }}</dt><dd class="col-8"><span :style="`color: ${locationTypes[selectedLocation.locationType].color()};`"><MdiIcon :path="locationTypes[selectedLocation.locationType].path" /></span> {{ this.locationTypes[selectedLocation.locationType].text() }}</dd></template>
-        <template v-if="selectedLocation.countryCode2 || selectedLocation.countryCode3"><dt class="col-4 text-right">{{ $t('tableColumnCountryName') }}</dt><dd class="col-8"><i :class="'fi fi-' + getFlag(selectedLocation)" /> {{ getCountry(selectedLocation) }}</dd></template>
-        <dt class="col-4 text-right">{{ $t('tableColumnLocationLatitude') }}</dt><dd class="col-8">{{ selectedLocation.locationLatitude.toFixed(2) }}</dd>
-        <dt class="col-4 text-right">{{ $t('tableColumnLocationLongitude') }}</dt><dd class="col-8">{{ selectedLocation.locationLongitude.toFixed(2) }}</dd>
-        <template v-if="selectedLocation.locationElevation"><dt class="col-4 text-right">{{ $t('tableColumnLocationElevation') }}</dt><dd class="col-8">{{ selectedLocation.locationElevation.toFixed(2) }}</dd></template>
-
-        <template v-if="selectedGermplasm && colorBy">
-          <dt class="col-4 text-right">{{ $t('widgetGermplasmMapSelectedOption') }}</dt><dd class="col-8">{{ colorBy.format(colorBy.fields.map(part => selectedGermplasm.germplasm[part]).join(' ')) }}</dd>
-        </template>
-      </dl>
-
-      <div class="mt-2" v-if="selectedGermplasm">
-        <!-- Marked item checkbox -->
-        <b-checkbox v-model="selectedGermplasm.marked"> {{ $t('tooltipGermplasmMarkedItem') }}</b-checkbox>
+      <div ref="popupContent" class="popup-content">
+        <LocationPopup
+          :location="selectedLocation"
+          show-links
+          :show-edit="false"
+          @edit="editLocation"
+          v-if="selectedLocation"
+        >
+          <template #prepend v-if="selectedGermplasm">
+            <v-list-item
+              class="text-wrap"
+              base-color="primary"
+              :title="$t('tableColumnGermplasmName')"
+              :subtitle="selectedGermplasm.germplasm.germplasmDisplayName"
+            >
+              <template #append>
+                <v-checkbox-btn v-model="selectedGermplasm.marked" v-tooltip:top="$t('tooltipGermplasmMarkedItem')" />
+              </template>
+            </v-list-item>
+          </template>
+        </LocationPopup>
       </div>
+
+      <v-overlay
+        v-model="loading"
+        class="align-center justify-center"
+        contained
+      >
+        <v-progress-linear :value="loadingProgress" color="primary" />
+      </v-overlay>
     </div>
+
+    <ColorGradient v-bind="gradientProps" v-if="gradientProps" />
+
+    <v-bottom-sheet
+      v-model="editLocationBottomSheet"
+      inset
+      persistent
+      max-height="50vh"
+      width="auto"
+      v-if="selectedLocation"
+    >
+      <v-card class="pb-10">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div>{{ $t('modalTitleFixLocation') }}</div>
+          <v-btn :icon="mdiClose" variant="text" @click="editLocationBottomSheet = false" />
+        </v-card-title>
+        <v-card-text>
+          <p>{{ $t('modalTextFixLocation') }}</p>
+
+          <LocationEditForm
+            v-model="selectedLocation"
+            @updated="saveLocationDetails"
+          />
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
+<script lang="ts" setup>
+  import L, { type TileLayer, type Map, type CircleMarker, type FeatureGroup, type Polygon, type LatLng } from 'leaflet'
+  import 'leaflet/dist/leaflet.css'
+  import 'leaflet-draw'
+  import 'leaflet-draw/dist/leaflet.draw.css'
 
-import MdiIcon from '@/components/icons/MdiIcon'
-import ColorGradient from '@/components/util/ColorGradient'
+  import { booleanPointInPolygon } from '@turf/boolean-point-in-polygon'
+  import { polygon } from '@turf/helpers'
 
-import L from 'leaflet'
-import { LMap, LControl } from 'vue2-leaflet'
+  import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png'
+  import iconUrl from 'leaflet/dist/images/marker-icon.png'
+  import shadowUrl from 'leaflet/dist/images/marker-shadow.png'
 
-import { apiPostGermplasmTable } from '@/mixins/api/germplasm'
-import { apiPostLocationTable } from '@/mixins/api/location'
-import { getColor, rgbToHex } from '@/mixins/colors'
-import { locationTypes } from '@/mixins/types'
-import { MAX_JAVA_INTEGER } from '@/mixins/api/base'
-import { mcpdDateToJsDate } from '@/mixins/util'
+  import { mcpdDateToJsDate, uuidv4 } from '@/plugins/util'
+  import { apiPatchLocation, apiPostLocationTable } from '@/plugins/api/location'
+  import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
+  import { FilterComparator, FilterOperator, type ViewTableLocations, type ViewTableGermplasm } from '@/plugins/types/germinate'
+  import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
+  import { createMultiColorGradient, getColor, getGradientColor, getPrimaryColor, GRADIENT_VIRIDIS } from '@/plugins/util/colors'
+  import { jitter } from '@/plugins/util/geo'
+  import { useI18n } from 'vue-i18n'
+  import type { UserSelection } from '@/components/widgets/selections/GermplasmMapHighlightSelection.vue'
+  import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
+  import ColorGradient, { type ColorGradientProps } from '@/components/widgets/ColorGradient.vue'
+  import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiCircle, mdiClose, mdiDotsVertical } from '@mdi/js'
 
-import { mdiCircle } from '@mdi/js'
+  interface HighlightConfig {
+    format: (g: number | string | undefined) => string
+    value: (g: ViewTableGermplasm) => string | number | undefined
+    type: 'text' | 'number' | 'date'
+    title: string
+    clazz?: string
+  }
 
-const countries = require('i18n-iso-countries')
-countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
+  interface SelectedGermplasm {
+    germplasm: ViewTableGermplasm
+    marked: boolean
+  }
 
-const radEarth = 6378.16
-const oneDegree = (2 * Math.PI * radEarth) / 360
-const oneKm = 1 / oneDegree
+  interface LegendItem {
+    color: string
+    text: string
+    clazz?: string
+  }
+  type ColorMap = { [index: string]: LegendItem }
 
-// Define these here instead of `data` to improve performance
-let locationMap = new Map()
-let germplasmData = null
-let germplasmLocations = null
-let markers
+  const hasLegendItems = computed(() => legendItems.value && legendItems.value.length > 0)
 
-export default {
-  components: {
-    ColorGradient,
-    LControl,
-    LMap,
-    MdiIcon
-  },
-  data: function () {
+  const highlightConfigMap: ComputedRef<{ [index: string]: HighlightConfig }> = computed(() => {
     return {
-      locationTypes,
-      mdiCircle,
-      mapOptions: {
-        preferCanvas: true
+      colldate: {
+        format: (g: number | string | undefined) => g !== undefined ? new Date(g).toLocaleDateString() : '',
+        value: (g: ViewTableGermplasm) => (g.collDate !== undefined && g.collDate !== null) ? (mcpdDateToJsDate(g.collDate)?.getTime() || undefined) : undefined,
+        type: 'date',
+        title: t('tableColumnColldate'),
       },
-      loading: false,
-      zoom: 3,
-      maxZoom: 18,
-      center: [22.5937, 2.1094],
-      selectedLocation: null,
-      selectedGermplasm: null,
-      colorBy: null,
-      colorLegend: [],
-      gradientColors: [],
-      gradientMinMax: { min: 0, max: 100, format: (x) => x },
-      bounds: null
+      elevation: {
+        format: (g: number | string | undefined) => g !== undefined ? getNumberWithSuffix(+g, 1) : '',
+        value: (g: ViewTableGermplasm) => (g.elevation !== undefined && g.elevation !== null) ? g.elevation : undefined,
+        type: 'number',
+        title: t('tableColumnElevation'),
+      },
+      pdci: {
+        format: (g: number | string | undefined) => g !== undefined ? getNumberWithSuffix(+g, 1) : '',
+        value: (g: ViewTableGermplasm) => (g.pdci !== undefined && g.pdci !== null) ? g.pdci : undefined,
+        type: 'number',
+        title: t('tableColumnPdci'),
+      },
+      taxonomy: {
+        format: (g: number | string | undefined) => g !== undefined ? `${g}` : '',
+        value: (g: ViewTableGermplasm) => concat(' ', [g.genus, g.species, g.subtaxa]),
+        type: 'text',
+        title: t('tableColumnTaxonomy'),
+        clazz: 'font-italic',
+      },
+      biologicalstatus: {
+        format: (g: number | string | undefined) => g !== undefined ? `${g}` : '',
+        value: (g: ViewTableGermplasm) => g.biologicalStatusName,
+        type: 'text',
+        title: t('tableColumnBiologicalStatus'),
+      },
+      country: {
+        format: (g: number | string | undefined) => g !== undefined ? `${g}` : '',
+        value: (g: ViewTableGermplasm) => g.countryName,
+        type: 'text',
+        title: t('tableColumnCountryName'),
+      },
     }
-  },
-  watch: {
-    colorBy: function (newValue) {
-      this.updateQuery(newValue)
-    },
-    storeDarkMode: function () {
-      this.updateThemeLayer()
-    },
-    'selectedGermplasm.marked': function (newValue) {
-      if (newValue !== undefined && newValue !== null) {
-        if (newValue) {
-          this.$store.dispatch('addMarkedIds', { type: 'germplasm', ids: [this.selectedGermplasm.germplasm.germplasmId] })
-        } else {
-          this.$store.dispatch('removeMarkedIds', { type: 'germplasm', ids: [this.selectedGermplasm.germplasm.germplasmId] })
-        }
+  })
+
+  // Set the leaflet marker icon
+  // @ts-ignore
+  delete L.Icon.Default.prototype._getIconUrl
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: iconRetinaUrl,
+    iconUrl: iconUrl,
+    shadowUrl: shadowUrl,
+  })
+
+  const store = useCoreStore()
+  const { t } = useI18n()
+
+  // Refs
+  const id = ref(uuidv4())
+  const mapElement = useTemplateRef('mapElement')
+  const popupContent = useTemplateRef('popupContent')
+  const legend = useTemplateRef('legend')
+  const editLocationBottomSheet = ref(false)
+  const loading = ref<boolean>(false)
+  const loadingProgress = ref<number>(0)
+  const germplasmData = ref<ViewTableGermplasm[]>()
+  const locationData = ref<ViewTableLocations[]>()
+
+  const selectedLocation = ref<ViewTableLocations>()
+  const selectedGermplasm = ref<SelectedGermplasm>()
+  const userSelection = ref<UserSelection>()
+
+  const gradientProps = ref<ColorGradientProps>()
+  const legendItems = ref<LegendItem[]>([])
+
+  const editableLayers = ref<FeatureGroup>()
+
+  let themeLayer: TileLayer
+  let map: Map
+  const markers: CircleMarker[] = []
+  let locationMap: { [index: number]: ViewTableLocations } = {}
+
+  const polygonSelectedGermplasm = computed(() => {
+    const layers = editableLayers.value?.getLayers()
+
+    if (layers) {
+      const ids = new Set<number>()
+      layers.forEach(layer => {
+        const layerAsPoly = layer as Polygon
+        const individualPoly: LatLng[] = layerAsPoly.getLatLngs()[0] as LatLng[]
+        const points: number[][] = individualPoly.map(ll => [ll.lat, ll.lng])
+        points.push(points[0])
+        const poly = polygon([points], { name: 'test' })
+
+        germplasmData.value?.filter(g => booleanPointInPolygon([g.latitude, g.longitude], poly)).forEach(g => ids.add(g.germplasmId))
+      })
+
+      return [...ids]
+    } else {
+      return []
+    }
+  })
+
+  function updateThemeLayer () {
+    if (themeLayer) {
+      themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${store.storeIsDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
+    }
+  }
+
+  function editLocation () {
+    nextTick(() => {
+      editLocationBottomSheet.value = true
+    })
+  }
+
+  function saveLocationDetails (changes: ViewTableLocations) {
+    apiPatchLocation(changes, () => {
+      editLocationBottomSheet.value = false
+
+      getData()
+    })
+  }
+
+  function toggleItems (add: boolean) {
+    if (add === true) {
+      store.addMarkedIds('germplasm', polygonSelectedGermplasm.value)
+    } else {
+      store.removeMarkedIds('germplasm', polygonSelectedGermplasm.value)
+    }
+
+    // Delete polygons once items have been marked or unmarked
+    editableLayers.value?.clearLayers()
+  }
+
+  function initMap () {
+    if (!mapElement.value) {
+      return
+    }
+
+    map = L.map(mapElement.value)
+    map.setView([22.5937, 2.1094], 3)
+
+    themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${store.storeIsDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
+      id: store.storeIsDarkMode ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
+      attribution: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
+      maxZoom: 21,
+      maxNativeZoom: 15,
+    })
+
+    const openstreetmap = L.tileLayer('//tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      id: 'OpenStreetMap',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 21,
+      maxNativeZoom: 19,
+    })
+
+    // Add an additional satellite layer
+    const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      id: 'Esri WorldImagery',
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+      maxZoom: 21,
+      maxNativeZoom: 19,
+    })
+
+    switch (store.storeMapLayer) {
+      case 'theme': {
+        map.addLayer(themeLayer)
+        break
+      }
+      case 'satellite': {
+        map.addLayer(satellite)
+        break
+      }
+      default: {
+        map.addLayer(openstreetmap)
+        break
       }
     }
-  },
-  computed: {
-    ...mapGetters([
-      'storeServerSettings',
-      'storeMapLayer',
-      'storeMarkedGermplasm',
-      'storeDarkMode'
-    ]),
-    colorOptions: function () {
-      return [{
-        text: this.$t('widgetGermplasmMapSelectOption'),
-        value: null
-      }, {
-        text: this.$t('tableColumnColldate'),
-        value: {
-          id: 0,
-          fields: ['collDate'],
-          type: 'date',
-          extractValue: (germplasm) => {
-            if (germplasm.collDate) {
-              const date = mcpdDateToJsDate(germplasm.collDate)
 
-              if (date) {
-                return date.getTime()
-              } else {
-                return null
-              }
-            } else {
-              return null
-            }
+    const baseMaps = {
+      'Theme-based': themeLayer,
+      OpenStreetMap: openstreetmap,
+      'Esri WorldImagery': satellite,
+    }
+
+    map.on('baselayerchange', e => {
+      switch (e.name) {
+        case 'Theme-based': {
+          store.setMapLayer('theme')
+          break
+        }
+        case 'OpenStreetMap': {
+          store.setMapLayer('osm')
+          break
+        }
+        case 'Esri WorldImagery': {
+          store.setMapLayer('satellite')
+          break
+        }
+      }
+    })
+
+    editableLayers.value = new L.FeatureGroup()
+    map.addLayer(editableLayers.value)
+
+    const options = {
+      position: 'topright',
+      draw: {
+        polyline: false,
+        circle: false,
+        rectangle: false,
+        marker: false,
+        circlemarker: false,
+        polygon: {
+          allowIntersection: false,
+          drawError: {
+            color: '#c0392b',
           },
-          format: (value) => (value !== null) ? new Date(value).toLocaleDateString() : ''
-        }
-      }, {
-        text: this.$t('tableColumnElevation'),
-        value: { id: 1, fields: ['elevation'], type: 'number', extractValue: (germplasm) => germplasm.elevation, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
-      }, {
-        text: this.$t('widgetGermplasmMapOptionTaxonomy'),
-        value: { id: 2, fields: ['genus', 'species', 'subtaxa'], type: 'text', format: (value) => value, legendClass: 'italic' }
-      }, {
-        text: this.$t('tableColumnPdci'),
-        value: { id: 3, fields: ['pdci'], type: 'number', extractValue: (germplasm) => germplasm.pdci, format: (value) => (value !== null) ? Number(value).toFixed(2) : '' }
-      }, {
-        text: this.$t('tableColumnBiologicalStatus'),
-        value: { id: 4, fields: ['biologicalStatusName'], type: 'text', format: (value) => value }
-      }, {
-        text: this.$t('tableColumnCountryName'),
-        value: { id: 5, fields: ['countryName'], type: 'text', format: (value) => value }
-      }]
+        },
+      },
+      edit: {
+        featureGroup: editableLayers.value,
+        remove: true,
+      },
     }
-  },
-  methods: {
-    updateQuery: async function (newValue) {
-      const query = Object.assign({}, this.$route.query)
-      query.germplasmMapColorBy = newValue ? newValue.id : null
 
-      await this.$router.replace({ query })
+    // @ts-ignore
+    const result = new L.Control.Draw(options)
+    map.addControl(result)
 
-      this.update()
-    },
-    invalidateSize: function () {
-      if (this.$refs.map && this.$refs.map.mapObject) {
-        this.$nextTick(() => {
-          this.$refs.map.mapObject.invalidateSize()
+    // @ts-ignore
+    map.on(L.Draw.Event.CREATED, e => editableLayers.value.addLayer(e.layer))
 
-          if (this.bounds && this.bounds.isValid()) {
-            this.$nextTick(() => this.$refs.map.mapObject.fitBounds(this.bounds))
-          }
-        })
-      }
-    },
-    getFlag: function (location) {
-      if (location.countryCode2) {
-        return location.countryCode2.toLowerCase()
-      } else if (location.countryCode3) {
-        return countries.alpha3ToAlpha2(location.countryCode3).toLowerCase()
+    map.on('click', e => {
+      // TODO?
+    })
+
+    const LegendElement = L.Control.extend({
+      options: { position: 'bottomleft' },
+      onAdd: () => {
+        if (legend.value) {
+          L.DomEvent.disableClickPropagation(legend.value)
+          L.DomEvent.disableScrollPropagation(legend.value)
+
+          return legend.value
+        }
+      },
+    })
+    map.addControl(new LegendElement())
+
+    L.control.layers(baseMaps).addTo(map)
+
+    // Disable zoom until focus gained, disable when blur
+    map.scrollWheelZoom.disable()
+    map.on('focus', () => map.scrollWheelZoom.enable())
+    map.on('blur', () => map.scrollWheelZoom.disable())
+  }
+
+  function getData () {
+    loading.value = true
+    apiPostLocationTable({
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      filters: [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'locationType',
+          comparator: FilterComparator.equals,
+          values: ['collectingsites'],
+        }, {
+          column: 'locationLatitude',
+          comparator: FilterComparator.isNotNull,
+          values: [],
+        }, {
+          column: 'locationLongitude',
+          comparator: FilterComparator.isNotNull,
+          values: [],
+        }],
+      }],
+    }, result => {
+      if (result && result.data && result.data.length > 0) {
+        locationData.value = result.data
       } else {
-        return ''
+        locationData.value = []
       }
-    },
-    getCountry: function (location) {
-      if (location.countryCode2) {
-        return countries.getName(location.countryCode2.toUpperCase(), 'en')
-      } else if (location.countryCode3) {
-        return countries.getName(location.countryCode3.toUpperCase(), 'en')
+
+      update()
+    }).finally(() => {
+      loading.value = false
+    })
+
+    apiPostGermplasmTable({
+      page: 1,
+      limit: MAX_JAVA_INTEGER,
+      filters: [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'locationId',
+          comparator: FilterComparator.isNotNull,
+          values: [],
+        }],
+      }],
+    }, result => {
+      if (result && result.data && result.data.length > 0) {
+        germplasmData.value = result.data
       } else {
-        return ''
-      }
-    },
-    randomInRange: function (from, to, fixed) {
-      fixed = fixed || 10
-      return (Math.random() * (to - from) + from).toFixed(fixed) * 1
-    },
-    jitter: function (lat, lng, kms, fixed) {
-      return {
-        lat: this.randomInRange(
-          lat - (kms * oneKm),
-          lat + (kms * oneKm),
-          fixed
-        ),
-        lng: this.randomInRange(
-          lng - (kms * oneKm),
-          lng + (kms * oneKm),
-          fixed
-        )
-      }
-    },
-    update: function () {
-      if (!germplasmData || !locationMap || locationMap.size < 1) {
-        return
+        germplasmData.value = []
       }
 
-      this.loading = true
+      update()
+    }).finally(() => {
+      loading.value = false
+    })
+  }
 
-      setTimeout(() => this.updateAsync(), 10)
-    },
-    updateAsync: function () {
-      const map = this.$refs.map.mapObject
+  function invalidateSize () {
+    nextTick(() => map.invalidateSize())
+  }
 
+  function update () {
+    const gd = germplasmData.value
+    const ld = locationData.value
+    if (!gd || !ld) {
+      return
+    }
+
+    locationMap = {}
+
+    ld.forEach(l => {
+      locationMap[l.locationId] = l
+    })
+
+    loading.value = true
+
+    legendItems.value = []
+
+    nextTick(() => {
       // Remove existing markers
       if (markers && markers.length > 0) {
         markers.forEach(m => map.removeLayer(m))
       }
 
-      const tempMarkers = []
-      const categoricalColorMapping = {}
-      this.gradientMinMax = {
-        min: Number.MAX_VALUE,
-        max: -Number.MAX_VALUE
-      }
+      // const tempMarkers = []
+      // const categoricalColorMapping = {}
+      let min = Number.MAX_VALUE
+      let max = -Number.MAX_VALUE
 
-      if (this.colorBy && this.colorBy.type !== 'text') {
-        this.gradientMinMax.format = this.colorBy.format
-        germplasmData.forEach(g => {
-          const value = this.colorBy.extractValue(g)
+      const hm = userSelection.value && userSelection.value.type ? highlightConfigMap.value[userSelection.value.type] : undefined
+      const gradient = hm ? createMultiColorGradient(store.storeServerSettings?.colorsGradient || GRADIENT_VIRIDIS, 100) : undefined
 
-          if (value < this.gradientMinMax.min) {
-            this.gradientMinMax.min = value
-          }
-          if (value > this.gradientMinMax.max) {
-            this.gradientMinMax.max = value
+      if (userSelection.value?.type === 'pdci') {
+        min = 0
+        max = 10
+      } else if (hm && hm.type !== 'text') {
+        gd.forEach(g => {
+          const value = hm.value(g) as number | undefined
+
+          if (value !== undefined) {
+            min = Math.min(min, value)
+            max = Math.max(max, value)
           }
         })
       }
 
-      this.bounds = L.latLngBounds()
+      gradientProps.value = hm && hm.type !== 'text'
+        ? {
+          min,
+          max,
+          formatMinMax: hm?.format,
+        }
+        : undefined
 
-      germplasmData.forEach(g => {
-        const l = locationMap.get(g.locationId)
+      const bounds = L.latLngBounds([])
+
+      const tempMap: ColorMap = {}
+
+      userSelection.value?.selectedItems.forEach((si, i) => {
+        tempMap[si] = {
+          color: getColor(i),
+          text: si,
+          clazz: hm?.clazz,
+        }
+      })
+
+      gd.forEach(g => {
+        const l = locationMap[g.locationId]
 
         if (l) {
-          let colorByValue = null
-          let color = this.storeServerSettings.colorPrimary || '#20a8d8'
+          let color = (hm && gradient) ? 'grey' : getPrimaryColor()
+          let formattedValue = undefined
 
-          if (this.colorBy) {
-            let potentialColor
-            let rgb
-
-            switch (this.colorBy.type) {
+          if (hm) {
+            switch (hm.type) {
               case 'text':
-                colorByValue = this.colorBy.fields.map(part => g[part]).join(' ') || 'N/A'
-                potentialColor = categoricalColorMapping[colorByValue]
-                if (potentialColor) {
-                  color = potentialColor
-                } else {
-                  color = getColor(Object.keys(categoricalColorMapping).length)
-                  categoricalColorMapping[colorByValue] = color
+                const value = hm.value(g) as string | undefined
+                if (value !== undefined) {
+                  formattedValue = hm.format(value)
+
+                  const selected = userSelection.value?.selectedItems.includes(formattedValue)
+
+                  if (selected && tempMap) {
+                    const legendItem = tempMap[formattedValue]
+
+                    if (!legendItem) {
+                      color = getColor(Object.keys(tempMap).length)
+                      tempMap[formattedValue] = {
+                        color: color,
+                        text: formattedValue,
+                        clazz: hm.clazz,
+                      }
+                    } else {
+                      color = legendItem.color
+                    }
+                  }
                 }
-                // TODO: Generate legend
 
                 break
-              case 'date':
               case 'number':
-                colorByValue = this.colorBy.extractValue(g)
-                rgb = this.$refs.gradient ? this.$refs.gradient.getColor(this.gradientMinMax.min, this.gradientMinMax.max, colorByValue) : { r: 128, g: 128, b: 128 }
-                if (rgb) {
-                  color = rgbToHex(rgb.r, rgb.g, rgb.b)
-                } else {
-                  color = '#20a8d8'
+              case 'date':
+                if (gradient) {
+                  const value = hm.value(g) as number | undefined
+                  if (value !== undefined) {
+                    formattedValue = hm.format(value)
+                    color = getGradientColor(gradient, min, max, value)
+                  }
                 }
                 break
             }
           }
 
-          const latLng = this.jitter(l.locationLatitude, l.locationLongitude, 1, 6)
+          const latLng = jitter(l.locationLatitude || 0, l.locationLongitude || 0, 1, 6)
 
-          this.bounds.extend([latLng.lat, latLng.lng])
+          bounds.extend([latLng.lat, latLng.lng])
 
           const marker = L.circleMarker([latLng.lat, latLng.lng], {
             fillColor: color,
@@ -326,218 +574,101 @@ export default {
             stroke: false,
             weight: 1,
             color: 'white',
-            fillOpacity: 0.66
+            fillOpacity: 0.66,
           })
+          let tooltip = g.germplasmDisplayName
+          if (hm && formattedValue !== undefined) {
+            tooltip += `<br />${hm.title}: ${formattedValue}`
+          }
+          tooltip += `<br /><span class="text-medium-emphasis">${t('widgetMapClickForDetails')}</span>`
+          marker.bindTooltip(tooltip)
           marker.bindPopup('')
           marker.on('click', e => {
             const popup = e.target.getPopup()
-            this.selectedLocation = l
-            this.selectedGermplasm = {
+            selectedLocation.value = l
+            selectedGermplasm.value = {
               germplasm: g,
-              marked: this.storeMarkedGermplasm.indexOf(g.germplasmId) !== -1
+              marked: store.storeMarkedGermplasm.includes(g.germplasmId),
             }
             // Set the popup content on click
-            this.$nextTick(() => popup.setContent(this.$refs.popupContent))
+            nextTick(() => popup.setContent(popupContent.value))
           })
-          tempMarkers.push(marker)
+          // tempMarkers.push(marker)
+          markers.push(marker)
           marker.addTo(map)
         }
       })
 
-      this.colorLegend = Object.keys(categoricalColorMapping).map(k => {
-        return {
-          name: k,
-          color: categoricalColorMapping[k]
+      userSelection.value?.selectedItems.forEach(si => {
+        if (tempMap[si]) {
+          legendItems.value.push(tempMap[si])
         }
       })
-
-      if (this.bounds.isValid()) {
-        this.$nextTick(() => map.fitBounds(this.bounds))
-      }
-
-      markers = tempMarkers
-      this.loading = false
-    },
-    updateLocationMap: function () {
-      locationMap = new Map()
-      germplasmLocations.forEach(l => {
-        locationMap.set(l.locationId, l)
-      })
-    },
-    getGermplasmMapData: function () {
-      this.loading = true
-      apiPostLocationTable({
-        page: 1,
-        limit: MAX_JAVA_INTEGER,
-        filter: [{
-          column: 'locationType',
-          comparator: 'equals',
-          operator: 'and',
-          values: ['collectingsites']
-        }, {
-          column: 'locationLatitude',
-          comparator: 'isNotNull',
-          operator: 'and',
-          values: null
-        }, {
-          column: 'locationLongitude',
-          comparator: 'isNotNull',
-          operator: 'and',
-          values: null
-        }]
-      }, result => {
-        if (result && result.data && result.data.length > 0) {
-          const locations = result.data
-          Object.freeze(locations)
-          germplasmLocations = locations
-        } else {
-          germplasmLocations = []
-        }
-
-        this.updateLocationMap()
-
-        this.update()
-      })
-
-      apiPostGermplasmTable({
-        page: 1,
-        limit: MAX_JAVA_INTEGER,
-        filter: [{
-          column: 'locationId',
-          comparator: 'isNotNull',
-          operator: 'and',
-          values: null
-        }]
-      }, result => {
-        if (result && result.data && result.data.length > 0) {
-          const data = result.data
-          Object.freeze(data)
-          germplasmData = data
-        } else {
-          germplasmData = []
-        }
-
-        this.update()
-      })
-    },
-    updateThemeLayer: function () {
-      if (this.themeLayer) {
-        this.themeLayer.setUrl(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`)
-      }
-    }
-  },
-  mounted: function () {
-    if (this.storeServerSettings && this.storeServerSettings.colorsGradient && this.storeServerSettings.colorsGradient.length > 0) {
-      this.gradientColors = this.storeServerSettings.colorsGradient.concat()
-    } else {
-      this.gradientColors.push('#ffffff')
-      this.gradientColors.push(getColor(0))
-    }
-
-    if (this.$route.query && this.$route.query.germplasmMapColorBy) {
-      const int = parseInt(this.$route.query.germplasmMapColorBy)
-
-      const match = this.colorOptions.find(c => c.value ? c.value.id === int : false)
-      if (match) {
-        this.colorBy = match.value
-      }
-    }
-
-    this.$nextTick(() => {
-      // Add the OSM default layer
-      const openstreetmap = L.tileLayer('//tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        id: 'OpenStreetMap',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      })
-      this.themeLayer = L.tileLayer(`//services.arcgisonline.com/arcgis/rest/services/Canvas/${this.storeDarkMode ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`, {
-        id: this.storeDarkMode ? 'Esri Dark Gray Base' : 'Esri Light Gray Base',
-        attribution: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
-        maxZoom: 21,
-        maxNativeZoom: 15
-      })
-      // Add an additional satellite layer
-      const satellite = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        id: 'Esri WorldImagery',
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-      })
-
-      const map = this.$refs.map.mapObject
-
-      switch (this.storeMapLayer) {
-        case 'theme':
-          map.addLayer(this.themeLayer)
-          break
-        case 'satellite':
-          map.addLayer(satellite)
-          break
-        case 'osm':
-        default:
-          map.addLayer(openstreetmap)
-          break
-      }
-
-      const baseMaps = {
-        'Theme-based': this.themeLayer,
-        OpenStreetMap: openstreetmap,
-        'Esri WorldImagery': satellite
-      }
-
-      L.control.layers(baseMaps).addTo(map)
-
-      // Listen for layer changes and store the user selection in the store
-      map.on('baselayerchange', e => {
-        switch (e.name) {
-          case 'Theme-based':
-            this.$store.dispatch('setMapLayer', 'theme')
-            break
-          case 'OpenStreetMap':
-            this.$store.dispatch('setMapLayer', 'osm')
-            break
-          case 'Esri WorldImagery':
-            this.$store.dispatch('setMapLayer', 'satellite')
-            break
-        }
-      })
-
-      // Disable zoom until focus gained, disable when blur
-      map.scrollWheelZoom.disable()
-      map.on('focus', function () {
-        map.scrollWheelZoom.enable()
-      })
-      map.on('blur', function () {
-        map.scrollWheelZoom.disable()
-      })
-
-      this.getGermplasmMapData()
     })
+
+    loading.value = false
   }
-}
+
+  watch(() => selectedGermplasm.value?.marked, async newValue => {
+    if (selectedGermplasm.value) {
+      if (newValue) {
+        store.addMarkedIds('germplasm', [selectedGermplasm.value.germplasm.germplasmId])
+      } else {
+        store.removeMarkedIds('germplasm', [selectedGermplasm.value.germplasm.germplasmId])
+      }
+    }
+  })
+
+  watch(() => store.storeIsDarkMode, async () => updateThemeLayer())
+  watch(userSelection, async () => update(), { deep: true })
+
+  onMounted(() => {
+    initMap()
+
+    getData()
+  })
+
+  defineExpose({
+    invalidateSize,
+  })
 </script>
 
-<style>
-.location-map {
-  position: relative;
-  height: 600px !important;
+<style scoped>
+.map {
+  height: 50vh;
 }
-.location-map .location-map-loading-indicator {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,.6);
-  pointer-events: none;
-  z-index: 1000;
-}
-.location-map .location-map-loading-indicator > .spinner-grow {
-  width: 3rem;
-  height: 3rem;
-}
-.location-map .legend {
-  max-height: 300px;
+
+.map .legend {
+  max-height: 25vh;
   overflow-y: auto;
 }
-.location-map .legend .italic {
-  font-style: italic;
+</style>
+
+<style>
+.popup-with-no-events {
+  pointer-events: none;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+
+.location-map .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 3px;
+}
+
+.location-map .leaflet-popup-content {
+  margin: 0;
+  width: 300px!important;
+}
+
+.location-map .leaflet-popup-content .v-list-item-subtitle {
+  text-wrap: wrap;
+  line-clamp: unset;
+  -webkit-line-clamp: unset;
+}
+
+.location-map .legend.d-none {
+  display: none !important;
 }
 </style>

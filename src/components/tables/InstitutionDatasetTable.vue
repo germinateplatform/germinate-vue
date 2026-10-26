@@ -1,239 +1,206 @@
 <template>
-  <div>
-    <BaseTable :options="options"
-               :columns="columns"
-               primary-key="institutionId"
-               v-bind="$props"
-               ref="institutionDatasetTable"
-               v-on="$listeners">
-      <template v-slot:cell(institutionName)="data">
-        <div v-if="data.item.institutionName">
-          <a v-if="showLinks" href="#" @click.prevent="redirectToGermplasmPage(data.item)">{{ data.item.institutionName }}</a>
-          <span v-else>{{ data.item.institutionName }}</span>
-        </div>
-      </template>
-      <template v-slot:cell(institutionCode)="data">
-        <div v-if="data.item.institutionCode">
-          <a :href="`https://www.fao.org/wiews/data/organizations/en/?instcode=${data.item.institutionCode}`">{{ data.item.institutionCode }}</a>
-        </div>
-      </template>
-      <template v-slot:cell(institutionAddress)="data">
-        <div v-if="data.item.institutionAddress">
-          <a :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.item.institutionAddress)}`">{{ data.item.institutionAddress }}</a>
-        </div>
-      </template>
-      <template v-slot:cell(institutionType)="data">
-        <b-badge v-if="data.item.institutionType" class="w-100" :style="`color: ${getHighContrastTextColor(germplasmInstitutionTypes[data.item.institutionType].color())}; background-color: ${germplasmInstitutionTypes[data.item.institutionType].color()};`"><MdiIcon :path="germplasmInstitutionTypes[data.item.institutionType].path" /> {{ germplasmInstitutionTypes[data.item.institutionType].text() }}</b-badge>
-      </template>
-      <!-- Country flag -->
-      <template v-slot:cell(countryCode2)="data">
-        <span class="table-country text-nowrap" v-b-tooltip.hover :title="data.item.countryName" v-if="data.item.countryCode2">
-          <i :class="'fi fi-' + data.item.countryCode2.toLowerCase()"/> <span> {{ data.item.countryCode2 }}</span>
-        </span>
-        <span v-else>
-          {{ data.item.countryName }}
-        </span>
-      </template>
-      <template v-slot:cell(allDatasetIds)="data">
-        <a href="#" class="text-decoration-none text-nowrap" @click="redirectToDatasets(data.item.allDatasetIds)" :style="`color: ${data.item.trialsDatasetIds ? getPrimaryColor() : 'grey'};`" v-b-tooltip.hover :title="$t('tableTooltipInstitutionDatasetsAll')"><MdiIcon :path="mdiDatabase" /> <span> {{ (data.item.allDatasetIds || []).length }}</span></a>
-      </template>
-      <template v-slot:cell(trialsDatasetIds)="data">
-        <a href="#" class="text-decoration-none text-nowrap" @click="redirectToDatasets(data.item.trialsDatasetIds)" :style="`color: ${data.item.trialsDatasetIds ? datasetTypes.trials.color() : 'grey'};`" v-b-tooltip.hover :title="datasetTypes.trials.text()"><MdiIcon :path="datasetTypes.trials.path" /> <span> {{ (data.item.trialsDatasetIds || []).length }}</span></a>
-      </template>
-      <template v-slot:cell(genotypeDatasetIds)="data">
-        <a href="#" class="text-decoration-none text-nowrap" @click="redirectToDatasets(data.item.genotypeDatasetIds)" :style="`color: ${data.item.genotypeDatasetIds ? datasetTypes.genotype.color() : 'grey'};`" v-b-tooltip.hover :title="datasetTypes.genotype.text()"><MdiIcon :path="datasetTypes.genotype.path" /> <span> {{ (data.item.genotypeDatasetIds || []).length }}</span></a>
-      </template>
-      <template v-slot:cell(pedigreeDatasetIds)="data">
-        <a href="#" class="text-decoration-none text-nowrap" @click="redirectToDatasets(data.item.pedigreeDatasetIds)" :style="`color: ${data.item.pedigreeDatasetIds ? datasetTypes.pedigree.color() : 'grey'};`" v-b-tooltip.hover :title="datasetTypes.pedigree.text()"><MdiIcon :path="datasetTypes.pedigree.path" /> <span> {{ (data.item.pedigreeDatasetIds || []).length }}</span></a>
-      </template>
-      <template v-slot:cell(climateDatasetIds)="data">
-        <a href="#" class="text-decoration-none text-nowrap" @click="redirectToDatasets(data.item.climateDatasetIds)" :style="`color: ${data.item.climateDatasetIds ? datasetTypes.climate.color() : 'grey'};`" v-b-tooltip.hover :title="datasetTypes.climate.text()"><MdiIcon :path="datasetTypes.climate.path" /> <span> {{ (data.item.climateDatasetIds || []).length }}</span></a>
-      </template>
-    </BaseTable>
-  </div>
+  <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableInstitutionDatasets} -->
+  <BaseTable
+    ref="baseTable"
+    :get-data="compProps.getData"
+    :get-ids="compProps.getIds"
+    :download="compProps.download"
+    :headers="headers"
+    :filter-on="filterOn"
+    :selection-type="selectionType"
+    :show-details="false"
+    item-key="institutionId"
+    table-key="institutiondatasets"
+    :header-icon="mdiOfficeBuildingCog"
+    :header-title="$t('pageStatisticsInstitutionDatasetTitle')"
+    v-bind="$attrs"
+  >
+    <template #card-text>
+      <v-card-text>{{ $t('pageStatisticsInstitutionDatasetText') }}</v-card-text>
+    </template>
+
+    <template #item.institutionName="{ item }">
+      <div v-if="item.institutionName">
+        <a href="#" @click.prevent="redirectToGermplasmPage(item)">{{ item.institutionName }}</a>
+      </div>
+    </template>
+    <template #item.institutionCode="{ item }">
+      <div v-if="item.institutionCode">
+        <a target="_blank" rel="noopener noreferrer" :href="`https://www.fao.org/wiews/data/organizations/en/?instcode=${item.institutionCode}`">{{ item.institutionCode }}</a>
+      </div>
+    </template>
+    <template #item.institutionAddress="{ item }">
+      <div v-if="item.institutionAddress">
+        <a target="_blank" rel="noopener noreferrer" :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.institutionAddress)}`">{{ item.institutionAddress }}</a>
+      </div>
+    </template>
+    <template #item.institutionType="{ item }">
+      <v-chip label :color="germplasmInstitutionTypes[item.institutionType].color()" :prepend-icon="germplasmInstitutionTypes[item.institutionType].path" :text="$t(germplasmInstitutionTypes[item.institutionType].text)" v-if="item.institutionType" />
+    </template>
+    <!-- Country flag -->
+    <template #item.countryCode="{ item }">
+      <v-chip :text="item.countryCode" label v-tooltip:top="item.countryName" v-if="item.countryCode">
+        <template #prepend>
+          <v-icon start><i :class="'fi fi-' + item.countryCode.toLowerCase()" /></v-icon>
+        </template>
+      </v-chip>
+    </template>
+
+    <template #item.datasetIds="{ item }">
+      <div class="d-flex flex-wrap ga-1 my-1" style="min-width: 200px;">
+        <v-chip label @click="redirectToDatasets(item.allDatasetIds)" :color="item.allDatasetIds ? getPrimaryColor() : 'grey'" v-tooltip:top="$t('tableTooltipInstitutionDatasetsAll')" :prepend-icon="mdiDatabase" :text="(item.allDatasetIds || []).length" />
+        <v-chip label @click="redirectToDatasets(item.trialsDatasetIds)" :color="item.trialsDatasetIds ? datasetTypes.trials.color() : 'grey'" v-tooltip:top="$t(datasetTypes.trials.text)" :prepend-icon="datasetTypes.trials.path" :text="(item.trialsDatasetIds || []).length" />
+        <v-chip label @click="redirectToDatasets(item.genotypeDatasetIds)" :color="item.genotypeDatasetIds ? datasetTypes.genotype.color() : 'grey'" v-tooltip:top="$t(datasetTypes.genotype.text)" :prepend-icon="datasetTypes.genotype.path" :text="(item.genotypeDatasetIds || []).length" />
+        <v-chip label @click="redirectToDatasets(item.pedigreeDatasetIds)" :color="item.pedigreeDatasetIds ? datasetTypes.pedigree.color() : 'grey'" v-tooltip:top="$t(datasetTypes.pedigree.text)" :prepend-icon="datasetTypes.pedigree.path" :text="(item.pedigreeDatasetIds || []).length" />
+        <v-chip label @click="redirectToDatasets(item.climateDatasetIds)" :color="item.climateDatasetIds ? datasetTypes.climate.color() : 'grey'" v-tooltip:top="$t(datasetTypes.climate.text)" :prepend-icon="datasetTypes.climate.path" :text="(item.climateDatasetIds || []).length" />
+      </div>
+    </template>
+
+    <!-- Pass on all named slots -->
+    <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
+      <slot :name="slot" v-bind="slotProps" />
+    </template>
+  </BaseTable>
 </template>
 
-<script>
-import MdiIcon from '@/components/icons/MdiIcon'
-import BaseTable from '@/components/tables/BaseTable'
-import defaultProps from '@/const/table-props.js'
-import { datasetTypes, germplasmInstitutionTypes } from '@/mixins/types'
-import { getHighContrastTextColor, getPrimaryColor } from '@/mixins/colors'
-import { mdiDatabase } from '@mdi/js'
-import { Pages } from '@/mixins/pages'
+<script setup lang="ts">
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-export default {
-  name: 'InstitutionDatasetTable',
-  props: {
-    ...defaultProps.BASE,
-    showLinks: {
-      type: Boolean,
-      default: true
-    }
-  },
-  data: function () {
-    return {
-      datasetTypes,
-      mdiDatabase,
-      germplasmInstitutionTypes,
-      options: {
-        idColumn: 'institutionId',
-        tableName: 'institutiondatasets'
-      }
-    }
-  },
-  computed: {
-    columns: function () {
-      return [{
-        key: 'institutionId',
-        type: Number,
-        class: 'text-right',
-        sortable: true,
-        label: this.$t('tableColumnInstitutionId')
-      }, {
-        key: 'institutionName',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionName'),
-        preferredSortingColumn: true
-      }, {
-        key: 'institutionAcronym',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionAcronym')
-      }, {
-        key: 'institutionCode',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionCode')
-      }, {
-        key: 'institutionType',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionType')
-      }, {
-        key: 'institutionAddress',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionAddress')
-      }, {
-        key: 'institutionEmail',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionEmail')
-      }, {
-        key: 'institutionPhone',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionPhone')
-      }, {
-        key: 'institutionContact',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionContact')
-      }, {
-        key: 'countryCode2',
-        type: String,
-        sortable: true,
-        label: this.$t('tableColumnInstitutionCountry')
-      }, {
-        key: 'allDatasetIds',
-        type: undefined,
-        sortable: false,
-        class: 'px-1',
-        label: ''
-      }, {
-        key: 'trialsDatasetIds',
-        type: undefined,
-        sortable: false,
-        class: 'px-1',
-        label: ''
-      }, {
-        key: 'genotypeDatasetIds',
-        type: undefined,
-        sortable: false,
-        class: 'px-1',
-        label: ''
-      }, {
-        key: 'pedigreeDatasetIds',
-        type: undefined,
-        sortable: false,
-        class: 'px-1',
-        label: ''
-      }, {
-        key: 'climateDatasetIds',
-        type: undefined,
-        sortable: false,
-        class: 'px-1',
-        label: ''
-      }]
-    }
-  },
-  components: {
-    BaseTable,
-    MdiIcon
-  },
-  methods: {
-    getPrimaryColor,
-    getHighContrastTextColor,
-    refresh: function () {
-      this.$refs.institutionDatasetTable.refresh()
-    },
-    redirectToDatasets: function (datasetIds) {
-      const filter = [{
+  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import type { ExtendedDataTableHeader } from '@/plugins/types/client'
+  import type { AxiosResponse } from 'axios'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableInstitutionDatasets } from '@/plugins/types/germinate'
+  import { useI18n } from 'vue-i18n'
+  import { datasetTypes, germplasmInstitutionTypes } from '@/plugins/util/types'
+  import { Pages } from '@/plugins/pages'
+  import { mdiDatabase, mdiOfficeBuildingCog } from '@mdi/js'
+  import { getPrimaryColor } from '@/plugins/util/colors'
+
+  const compProps = defineProps<{
+    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableInstitutionDatasets[]>>> }
+    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
+    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
+    filterOn?: FilterGroup[]
+    selectionType?: TableSelectionType
+  }>()
+
+  const router = useRouter()
+  const baseTable = useTemplateRef('baseTable')
+  const { t } = useI18n()
+
+  // @ts-ignore
+  const headers: ComputedRef<ExtendedDataTableHeader[]> = computed(() => {
+    const headers = [{
+      key: 'institutionId',
+      title: t('tableColumnInstitutionId'),
+      dataType: 'integer',
+    }, {
+      key: 'institutionName',
+      title: t('tableColumnInstitutionName'),
+      dataType: 'string',
+    }, {
+      key: 'institutionAcronym',
+      dataType: 'string',
+      title: t('tableColumnInstitutionAcronym'),
+    }, {
+      key: 'institutionCode',
+      dataType: 'string',
+      title: t('tableColumnInstitutionCode'),
+    }, {
+      key: 'institutionType',
+      dataType: 'string',
+      title: t('tableColumnInstitutionType'),
+    }, {
+      key: 'institutionAddress',
+      dataType: 'string',
+      title: t('tableColumnInstitutionAddress'),
+    }, {
+      key: 'institutionEmail',
+      dataType: 'string',
+      title: t('tableColumnInstitutionEmail'),
+    }, {
+      key: 'institutionPhone',
+      dataType: 'string',
+      title: t('tableColumnInstitutionPhone'),
+    }, {
+      key: 'institutionContact',
+      dataType: 'string',
+      title: t('tableColumnInstitutionContact'),
+    }, {
+      key: 'countryCode',
+      dataType: 'string',
+      title: t('tableColumnInstitutionCountry'),
+    }, {
+      key: 'datasetIds',
+      dataType: undefined,
+      sortable: false,
+      title: '',
+    }]
+
+    return headers
+  })
+
+  function redirectToDatasets (datasetIds: number[]) {
+    const filter: FilterGroup[] = [{
+      filters: [{
         column: 'datasetId',
-        comparator: 'inSet',
-        operator: 'and',
-        values: datasetIds
-      }]
+        comparator: FilterComparator.inSet,
+        values: datasetIds.map(String),
+      }],
+      operator: FilterOperator.and,
+    }]
 
-      this.$router.push({
-        name: Pages.datasets,
-        query: {
-          'datasets-filter': JSON.stringify(filter)
-        }
+    router.push({
+      path: Pages.datasets.path,
+      query: {
+        'datasets-filter': JSON.stringify(filter),
+      },
+    })
+  }
+
+  function redirectToGermplasmPage (institution: ViewTableInstitutionDatasets) {
+    const filter: FilterGroup[] = [{
+      filters: [],
+      operator: FilterOperator.or,
+    }]
+
+    if (institution.institutionName) {
+      filter[0].filters?.push({
+        column: 'institutions',
+        comparator: FilterComparator.jsonSearch,
+        values: [institution.institutionName],
       })
-    },
-    redirectToGermplasmPage: function (institution) {
-      const filter = []
+    }
+    if (institution.institutionCode) {
+      filter[0].filters?.push({
+        column: 'institutions',
+        comparator: FilterComparator.jsonSearch,
+        values: [institution.institutionCode],
+      })
+    }
+    if (institution.institutionAddress) {
+      filter[0].filters?.push({
+        column: 'institutions',
+        comparator: FilterComparator.jsonSearch,
+        values: [institution.institutionAddress],
+      })
+    }
 
-      if (institution.institutionName) {
-        filter.push({
-          column: 'institutions',
-          comparator: 'jsonSearch',
-          operator: 'or',
-          values: [institution.institutionName]
-        })
-      }
-      if (institution.institutionCode) {
-        filter.push({
-          column: 'institutions',
-          comparator: 'jsonSearch',
-          operator: 'or',
-          values: [institution.institutionCode]
-        })
-      }
-      if (institution.institutionAddress) {
-        filter.push({
-          column: 'institutions',
-          comparator: 'jsonSearch',
-          operator: 'or',
-          values: [institution.institutionAddress]
-        })
-      }
-
-      if (filter.length > 0) {
-        this.$router.push({
-          name: 'germplasm',
-          query: {
-            'germplasm-filter': JSON.stringify(filter)
-          }
-        })
-      }
+    if (filter.length > 0) {
+      router.push({
+        path: Pages.germplasm.path,
+        query: {
+          'germplasm-filter': JSON.stringify(filter),
+        },
+      })
     }
   }
-}
+
+  defineExpose({
+    refresh: (readFilter?: boolean) => baseTable.value?.refresh({ readFilter }),
+    getSelection: () => baseTable.value?.getSelection(),
+  })
 </script>
 
-<style>
+<style scoped>
 </style>
