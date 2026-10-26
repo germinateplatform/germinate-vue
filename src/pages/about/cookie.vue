@@ -12,28 +12,31 @@
       :append-icon="store.storeCookiesAccepted ? mdiCheck : mdiClose"
     />
 
-    <v-data-table
-      class="mt-5"
-      :items="cookies"
-      :items-per-page="cookies.length"
-      hide-default-footer
-    >
-      <template #item.name="{ item }">
-        <pre><code>{{ item.name }}</code></pre>
-      </template>
-      <template #item.essential="{ item }">
-        <v-chip :prepend-icon="mdiTimelineCheck" label color="success" :text="$t('widgetCookieEssential')" v-if="item.essential" />
-        <v-chip :prepend-icon="mdiTimelineOutline" label color="info" :text="$t('widgetCookieOptional')" v-else />
-      </template>
-      <template #item.storageType="{ item }">
-        <v-chip :prepend-icon="mdiCookie" label color="success" :text="$t('widgetCookieCookie')" v-if="item.storageType === 'cookie'" />
-        <v-chip :prepend-icon="mdiMonitorArrowDown" label color="info" :text="$t('widgetCookieLocalStorage')" v-else />
-      </template>
-      <template #item.duration="{ item }">
-        <v-chip :prepend-icon="mdiLockClock" label color="success" :text="$t('widgetCookiePersistent')" v-if="item.duration === 'persistent'" />
-        <v-chip :prepend-icon="mdiProgressClock" label color="info" :text="$t('widgetCookieSession')" v-else />
-      </template>
-    </v-data-table>
+    <v-card class="mt-5">
+      <v-data-table
+        :items="cookies"
+        :items-per-page="cookies.length"
+        :header-props="{ class: 'bg-surface-light'}"
+        striped="even"
+        hide-default-footer
+      >
+        <template #item.name="{ item }">
+          <pre><code>{{ item.name }}</code></pre>
+        </template>
+        <template #item.essential="{ item }">
+          <v-chip :prepend-icon="mdiTimelineCheck" label color="success" :text="$t('widgetCookieEssential')" v-if="item.essential" />
+          <v-chip :prepend-icon="mdiTimelineOutline" label color="info" :text="$t('widgetCookieOptional')" v-else />
+        </template>
+        <template #item.storageType="{ item }">
+          <v-chip :prepend-icon="mdiCookie" label color="success" :text="$t('widgetCookieCookie')" v-if="item.storageType === 'cookie'" />
+          <v-chip :prepend-icon="mdiMonitorArrowDown" label color="info" :text="$t('widgetCookieLocalStorage')" v-else />
+        </template>
+        <template #item.duration="{ item }">
+          <v-chip :prepend-icon="mdiLockClock" label color="success" :text="$t('widgetCookiePersistent')" v-if="item.duration === 'persistent'" />
+          <v-chip :prepend-icon="mdiProgressClock" label color="info" :text="$t('widgetCookieSession')" v-else />
+        </template>
+      </v-data-table>
+    </v-card>
   </v-container>
 </template>
 

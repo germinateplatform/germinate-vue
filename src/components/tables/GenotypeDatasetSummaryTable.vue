@@ -3,6 +3,8 @@
     :items="datasets"
     :headers="headers"
     show-select
+    :header-props="{ class: 'bg-surface-light'}"
+    striped="even"
     v-model="selection"
     item-value="datasetId"
     return-object

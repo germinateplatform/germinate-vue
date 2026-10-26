@@ -1,6 +1,8 @@
 FROM node:22.11-alpine3.20 AS builder
 
-LABEL maintainer="sebastian.raubach@hutton.ac.uk"
+LABEL org.opencontainers.image.authors="sebastian.raubach@hutton.ac.uk"
+LABEL org.opencontainers.image.url="https://ics.hutton.ac.uk/get-germinate/"
+LABEL org.opencontainers.image.documentation="https://germinateplatform.github.io/germinate-server"
 
 ARG BRANCH=master
 
@@ -31,9 +33,11 @@ RUN apk add --no-cache openjdk21 && \
     /opt/gradle-8.8/bin/gradle -p /opt/germinate-server war
 
 
-FROM tomcat:10.1-jdk21
+FROM tomcat:11-jdk21
 
-LABEL maintainer="sebastian.raubach@hutton.ac.uk"
+LABEL org.opencontainers.image.authors="sebastian.raubach@hutton.ac.uk"
+LABEL org.opencontainers.image.url="https://ics.hutton.ac.uk/get-germinate/"
+LABEL org.opencontainers.image.documentation="https://germinateplatform.github.io/germinate-server"
 
 RUN apt-get update && \
     apt-get --yes --force-yes install imagemagick unzip zip mysql-client && \

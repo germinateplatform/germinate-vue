@@ -87,6 +87,7 @@
       v-model:page="currentPage"
       class="base-table"
       fixed-header
+      :header-props="{ class: 'bg-surface-light'}"
       :row-props="componentProps.getRowProps"
       :headers="allHeaders"
       :items="serverItems"
@@ -97,7 +98,7 @@
       :item-value="componentProps.itemId || componentProps.itemKey"
       :show-expand="showDetails"
       :disable-sort="componentProps.disabled"
-      striped="odd"
+      striped="even"
       hover
       :show-select="componentProps.selectionType !== undefined"
       :select-strategy="componentProps.selectionType"
@@ -837,6 +838,13 @@
   position: sticky;
   left: 0;
   width: 100cqw; /* width of the .v-table__wrapper scroll container */
+}
+
+.base-table:deep(.v-data-table__thead) {
+  /* This is a copy of the content of .bg-surface-light */
+  --v-theme-overlay-multiplier: var(--v-theme-surface-light-overlay-multiplier);
+  background-color: rgb(var(--v-theme-surface-light));
+  color: rgb(var(--v-theme-on-surface-light));
 }
 </style>
 

@@ -86,6 +86,12 @@
           <v-card-text v-if="item.tags">
             <v-chip label variant="flat" size="small" v-for="(tag, index) in item.tags" :key="`image-tag-${item.imageId}-${index}`" class="me-2 mb-1" href="#" @click.prevent="emit('tag-clicked', tag)" :color="getTagColor(tag)" :text="tag.tagName" />
           </v-card-text>
+
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="primary" :prepend-icon="mdiSquareEditOutline" :text="$t('tableTooltipImageEdit')" @click="editImage(item)" />
+            <v-btn color="error" :prepend-icon="mdiDelete" :text="$t('tableTooltipImageDelete')" @click="deleteImage(item)" />
+          </v-card-actions>
         </v-card>
       </template>
 

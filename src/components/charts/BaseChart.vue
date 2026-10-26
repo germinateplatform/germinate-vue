@@ -145,7 +145,7 @@
     supportsFileDownload: true,
     chartType: 'plotly' as const,
     canChangeColors: true,
-    toolbarColor: 'surface',
+    toolbarColor: 'bg-surface-light',
     headerIconColor: 'medium-emphasis',
     headerIcon: mdiChartAreaspline,
   })

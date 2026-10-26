@@ -5,7 +5,7 @@
     </Teleport>
 
     <div v-if="cdStore.storeDatasets && cdStore.storeDatasets.length > 0">
-      <v-expansion-panels>
+      <v-expansion-panels multiple class="g-expansion-panels">
         <v-expansion-panel eager>
           <template #title>
             <v-icon :icon="mdiDatabase" class="me-2" /> {{ $t('widgetSelectedDatasetsTitle') }}
@@ -332,8 +332,6 @@ name: exportClimates
 
 <style scoped>
 .g-expansion-panels :deep(.v-expansion-panel-text__wrapper) {
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 0;
+  padding: 0;
 }
 </style>

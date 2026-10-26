@@ -5,13 +5,21 @@
     </Teleport>
 
     <div v-if="datasets && datasets.length > 0">
-      <v-expansion-panels>
+      <v-expansion-panels multiple class="g-expansion-panels">
         <v-expansion-panel eager>
           <template #title>
             <v-icon :icon="mdiDatabase" class="me-2" /> {{ $t('widgetSelectedDatasetsTitle') }}
           </template>
           <template #text>
             <DatasetTable :get-data="getDatasetTableData" disabled />
+          </template>
+        </v-expansion-panel>
+        <v-expansion-panel eager v-if="hasFileResources">
+          <template #title>
+            <v-icon :icon="mdiFileDownload" class="me-2" /> {{ $t('widgetAvailableFileresourcesTitle') }}
+          </template>
+          <template #text>
+            <FileResourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled />
           </template>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -51,7 +59,7 @@ name: exportPedigrees
 <script setup lang="ts">
   import type { GroupSelectionType } from '@/components/widgets/selections/GroupSelection.vue'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { apiPostDatasetTable } from '@/plugins/api/dataset'
+  import { apiPostDatasetTable, apiPostFileResourceTable } from '@/plugins/api/dataset'
   import { apiPostPedigreeDatasetExport } from '@/plugins/api/germplasm'
   import { apiPostDatasetGroups } from '@/plugins/api/group'
   import { useBreadcrumbIcon } from '@/plugins/composables/breadcrumbs'
@@ -59,7 +67,7 @@ name: exportPedigrees
   import { FilterComparator, FilterOperator, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableGroups, type PedigreeRequest, type AsyncExportResult } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
   import { datasetTypes } from '@/plugins/util/types'
-  import { mdiArrowRightBox, mdiDatabase } from '@mdi/js'
+  import { mdiArrowRightBox, mdiDatabase, mdiFileDownload } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
@@ -81,6 +89,21 @@ name: exportPedigrees
   useBreadcrumbIcon(() => datasetTypes.pedigree.path)
 
   const datasetsSelected = computed(() => selectedDatasets.value.length > 0)
+
+  const hasFileResources = computed(() => datasets.value?.some(ds => ds.fileresourceIds && ds.fileresourceIds.length > 0))
+
+  const fileresourceFilter = computed(() => {
+    return datasets.value
+      ? [{
+        filters: [{
+          column: 'datasetIds',
+          comparator: FilterComparator.arrayContains,
+          values: datasets.value.map(ds => `${ds.datasetId}`),
+        }],
+        operator: FilterOperator.and,
+      }]
+      : []
+  })
 
   const canContinue = computed(() => {
     if (!datasetsSelected.value) {
@@ -174,6 +197,10 @@ name: exportPedigrees
     })
   }
 
+  function getFileresourceTableData (query: PaginatedRequest) {
+    return apiPostFileResourceTable(query)
+  }
+
   function getGermplasmGroups () {
     const request = {
       datasetIds: datasetIds.value || [],
@@ -242,5 +269,9 @@ name: exportPedigrees
 
 .clickable-alert:hover {
   cursor: pointer;
+}
+
+.g-expansion-panels :deep(.v-expansion-panel-text__wrapper) {
+  padding: 0;
 }
 </style>
