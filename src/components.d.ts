@@ -57,7 +57,7 @@ declare module 'vue' {
     ExifInfo: typeof import('./components/widgets/ExifInfo.vue')['default']
     ExperimentTable: typeof import('./components/tables/ExperimentTable.vue')['default']
     ExternalLinks: typeof import('./components/widgets/ExternalLinks.vue')['default']
-    FileResourceTable: typeof import('./components/tables/FileResourceTable.vue')['default']
+    FileresourceTable: typeof import('./components/tables/FileresourceTable.vue')['default']
     FileTextareaInput: typeof import('./components/input/FileTextareaInput.vue')['default']
     GenericAddEditFormModal: typeof import('./components/modals/GenericAddEditFormModal.vue')['default']
     GenotypeDatasetSummaryTable: typeof import('./components/tables/GenotypeDatasetSummaryTable.vue')['default']
