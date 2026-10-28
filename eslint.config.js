@@ -31,6 +31,7 @@ export default [
       'unicorn/prefer-dom-node-remove': 'off',
       'unicorn/prefer-query-selector': 'off',
       'unicorn/no-this-outside-of-class': 'off',
+      'unicorn/no-array-reverse': 'off',
       'vue/attributes-order': 'off',
       'vue/max-attributes-per-line': 'off',
       'vue/order-in-components': 'off',

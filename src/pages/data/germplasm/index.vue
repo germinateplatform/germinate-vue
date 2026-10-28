@@ -2,9 +2,9 @@
   <v-container fluid>
     <p v-html="$t('pageGermplasmText')" />
 
-    <v-expansion-panels class="my-5" :rounded="5">
+    <v-expansion-panels class="my-5" :rounded="5" v-model="expanded">
       <v-expansion-panel>
-        <v-expansion-panel-title class="px-4">
+        <v-expansion-panel-title class="px-4" :color="expanded !== undefined ? 'bg-surface-light' : undefined">
           <v-icon size="small" :icon="mdiFilter" color="medium-emphasis" class="me-2" /> {{ $t('widgetGermplasmTableFilterToggle') }}
         </v-expansion-panel-title>
 
@@ -15,6 +15,8 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
+
+    <RecentItems item-type="germplasm" />
 
     <GermplasmTable
       :get-data="getData"
@@ -195,6 +197,8 @@ name: germplasm
   const pedigreeSelection = ref('all')
   const selectedPassportGroup = ref<ViewTableGroups>()
   const selectedPedigreeGroup = ref<ViewTableGroups>()
+
+  const expanded = ref<number>()
 
   function getData (data: PaginatedRequest) {
     return apiPostGermplasmTable(data)

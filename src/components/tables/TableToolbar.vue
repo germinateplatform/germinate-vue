@@ -46,8 +46,8 @@
         <v-btn :disabled="compProps.disabled" v-if="filtered" color="error" v-tooltip:top="$t('tooltipTableClearFilter')" @click="emit('clear-filter')"><v-icon :icon="mdiDelete" /></v-btn>
       </v-btn-group>
       <v-btn-group class="ms-2" density="compact" v-if="markedItemConfig" :disabled="compProps.disabled">
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, compProps.markedItemType || '')"><v-chip size="small" label>{{ getNumberWithSuffix(markedItemConfig.count, 1) }}</v-chip></v-btn>
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
+        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :disabled="markedItemsDisabled" :to="Pages.getPath(Pages.markedItemType, compProps.markedItemType || '')"><v-chip size="small" label>{{ getNumberWithSuffix(markedItemConfig.count, 1) }}</v-chip></v-btn>
+        <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" :disabled="markedItemsDisabled" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
       </v-btn-group>
     </div>
   </v-toolbar>
@@ -87,6 +87,8 @@
   ])
 
   const displayType = ref<DisplayType>('table')
+
+  const markedItemsDisabled = computed(() => compProps?.markedItemConfig?.count === 0)
 
   watch(() => compProps.modelValue, async (newValue: DisplayType) => {
     displayType.value = newValue

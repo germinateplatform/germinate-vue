@@ -2267,3 +2267,5 @@ export const enum DatawarningsCategory {
     missing = 'missing',
     inaccuracy = 'inaccuracy',
 }
+
+export type MarkedItemType = 'germplasm' | 'markers' | 'locations'

@@ -200,7 +200,7 @@
       operator: FilterOperator.and,
       filters: [{
         column,
-        comparator: type === 'image' ? FilterComparator.greaterOrEquals : FilterComparator.equals,
+        comparator: FilterComparator.greaterOrEquals,
         values: ['1'],
       }],
     }]

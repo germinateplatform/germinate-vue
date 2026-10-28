@@ -33,6 +33,8 @@ name: mapDetails
   const selections = ref<MapSelection[]>([])
   const filter = ref<FilterGroup[]>([])
 
+  const maxTableItems = ref(0)
+
   const mapDefinitionTable = useTemplateRef('mapDefinitionTable')
 
   useBreadcrumbTitle(() => map.value?.mapName)
@@ -58,7 +60,10 @@ name: mapDetails
 
     const copy = JSON.parse(JSON.stringify(data))
     copy.filters = fs
-    return apiPostMapdefinitionTable(copy)
+    return apiPostMapdefinitionTable(copy, result => {
+      // Store the maximum number of table items so we can disable automatic map selection filtering for huge maps
+      maxTableItems.value = Math.max(maxTableItems.value, result?.count ?? 0)
+    })
   }
 
   function getIds (data: PaginatedRequest) {
@@ -93,6 +98,10 @@ name: mapDetails
   }
 
   function onPointsSelected (chromosome: string, start: number, end: number) {
+    if (maxTableItems.value > 100_000) {
+      return
+    }
+
     selections.value.push({
       chromosome,
       start,

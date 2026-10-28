@@ -44,6 +44,7 @@ name: passport
   import { mdiArrowDownBox, mdiArrowUpBox } from '@mdi/js'
 
   const route = useRoute('passport')
+  const store = useCoreStore()
 
   const tab = ref<number>(1)
   const noGermplasmFound = ref(false)
@@ -93,6 +94,8 @@ name: passport
       apiPostGermplasmTable(query, result => {
         if (result && result.data && result.data.length > 0) {
           germplasm.value = result.data[0]
+
+          store.addRecentId('germplasm', result.data[0].germplasmId)
         } else {
           noGermplasmFound.value = true
         }

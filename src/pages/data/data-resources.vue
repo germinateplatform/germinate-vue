@@ -2,7 +2,7 @@
   <v-container fluid>
     <p v-html="$t('pageDataResourcesText')" />
 
-    <FileResourceTable :get-data="getData" />
+    <FileresourceTable :get-data="getData" />
   </v-container>
 </template>
 

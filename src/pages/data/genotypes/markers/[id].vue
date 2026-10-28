@@ -145,6 +145,8 @@ name: markerDetails
         if (result && result.data && result.data.length > 0) {
           marker.value = result.data[0]
           markerId.value = marker.value.markerId
+
+          store.addRecentId('markers', result.data[0].markerId)
         }
       })
     }

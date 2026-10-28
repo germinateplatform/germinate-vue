@@ -7,8 +7,10 @@
       v-model="selectionMode"
       color="primary"
       variant="tonal"
+      mandatory
       class="d-flex mb-5"
     >
+      <v-btn class="flex-grow-1" value="database" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDatabase')" />
       <v-btn class="flex-grow-1" value="germplasm" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionGermplasm')" />
       <v-btn class="flex-grow-1" value="group" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
         <template #append><v-badge inline :content="getNumberWithSuffix((allGroups|| []).length, 0)" /></template>
@@ -47,14 +49,14 @@
   import { apiPostGroupTable } from '@/plugins/api/group'
   import { FilterComparator, FilterOperator, type ViewTableGermplasm, type ViewTableGroups } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { mdiGroup, mdiSprout } from '@mdi/js'
+  import { mdiDatabase, mdiGroup, mdiSprout } from '@mdi/js'
 
   export interface UserSelection {
     type: 'group' | 'germplasm'
     selectedItems: string[]
   }
 
-  const selectionMode = ref<'group' | 'germplasm'>()
+  const selectionMode = ref<'database' | 'group' | 'germplasm'>('database')
 
   const selectedGermplasm = ref<ViewTableGermplasm[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])

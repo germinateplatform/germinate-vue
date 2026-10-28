@@ -112,6 +112,7 @@ declare module 'vue' {
     PublicationCard: typeof import('./components/cards/PublicationCard.vue')['default']
     Publications: typeof import('./components/widgets/Publications.vue')['default']
     PublicationTable: typeof import('./components/tables/PublicationTable.vue')['default']
+    RecentItems: typeof import('./components/widgets/RecentItems.vue')['default']
     RegistrationModal: typeof import('./components/modals/RegistrationModal.vue')['default']
     RevealOnShowPanel: typeof import('./components/widgets/RevealOnShowPanel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

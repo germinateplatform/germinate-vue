@@ -31,6 +31,9 @@
     <template #item.markerType="{ item }">
       <v-chip label v-if="item.markerType">{{ item.markerType }}</v-chip>
     </template>
+    <template #item.mapFeatureType="{ item }">
+      <v-chip label :prepend-icon="mdiLabelVariant" v-if="item.mapFeatureType">{{ item.mapFeatureType }}</v-chip>
+    </template>
 
     <!-- Pass on all named slots -->
     <template v-for="slot in Object.keys($slots)" #[slot]="slotProps">
@@ -48,7 +51,7 @@
   import type { FilterGroup, FilterOperator, PaginatedRequest, PaginatedResult, ViewTableMapdefinitions } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
-  import { mdiFormatIndentIncrease } from '@mdi/js'
+  import { mdiFormatIndentIncrease, mdiLabelVariant } from '@mdi/js'
   import { columns } from '@/plugins/util/table-columns'
 
   const compProps = defineProps<{

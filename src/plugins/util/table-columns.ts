@@ -827,11 +827,13 @@ const mapdefinitionColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnMarkerName',
   dataType: 'string',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'markerSynonyms',
   dataType: 'json',
   title: 'tableColumnMarkerSynonyms',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'mapFeatureType',
   dataType: 'string',
@@ -850,6 +852,7 @@ const mapdefinitionColumns: ExtendedDataTableHeader[] = [{
   key: 'chromosome',
   dataType: 'string',
   title: 'tableColumnMapChromosome',
+  quickSearchable: true,
 }, {
   key: 'position',
   dataType: 'integer',

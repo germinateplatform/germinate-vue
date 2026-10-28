@@ -1,10 +1,12 @@
 <template>
   <BaseChart
+    v-model:loading="loading"
     title="pageMapsHeatmapTitle"
     :chart-id="id"
     :filename="filename"
     :source-file="sourceFile"
     :header-icon="mdiBlurLinear"
+    :can-change-colors="false"
     @force-redraw="redraw"
     ref="baseChart"
   >
@@ -15,9 +17,9 @@
       </v-card-text>
     </template>
     <template #toolbar-append>
-      <v-btn-group class="mx-2" density="compact" variant="tonal">
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, 'markers')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedMarkers.length, 1) }}</v-chip></v-btn>
-        <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
+      <v-btn-group class="mx-2" density="compact">
+        <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :disabled="markingDisabled" :to="Pages.getPath(Pages.markedItemType, 'markers')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedMarkers.length, 1) }}</v-chip></v-btn>
+        <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" :disabled="markingDisabled" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
       </v-btn-group>
     </template>
     <template #list-append>
@@ -66,6 +68,9 @@
 
   const store = useCoreStore()
 
+  const markingDisabled = computed(() => (store.storeMarkedMarkers ?? []).length === 0)
+
+  const loading = ref(false)
   const sourceFile = ref<DownloadBlob>()
   const mapChart = useTemplateRef('mapChart')
   const baseChart = useTemplateRef('baseChart')
@@ -81,6 +86,7 @@
 
   async function redraw () {
     if (!sourceFile.value) {
+      loading.value = true
       apiPostMapExport(compProps.mapId, { format: 'flapjack' })
         .then(result => {
           sourceFile.value = {
@@ -96,6 +102,9 @@
           const tsv = 'markerName\tchromosome\tposition\r\n' + dirtyTsv.slice(firstEOL + 2)
           tsvData = tsvParse(tsv)
           plot()
+        })
+        .finally(() => {
+          loading.value = false
         })
     } else {
       plot()

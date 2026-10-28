@@ -16,7 +16,7 @@
       </v-card-text>
     </template>
     <template #toolbar-append>
-      <v-btn-group class="mx-2" density="compact" variant="tonal">
+      <v-btn-group class="mx-2" density="compact">
         <v-btn v-tooltip:top="$t('tooltipTableMarkedItems')" :to="Pages.getPath(Pages.markedItemType, 'locations')"><v-chip size="small" label>{{ getNumberWithSuffix(store.storeMarkedLocations.length, 1) }}</v-chip></v-btn>
         <v-btn v-tooltip:top="$t('tooltipTableMarkedItemsClear')" @click="clearMarkedItems"><v-icon :icon="mdiDelete" /></v-btn>
       </v-btn-group>

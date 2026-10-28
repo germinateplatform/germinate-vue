@@ -1,4 +1,4 @@
-import type { FilterComparator, FilterGroup, PaginatedRequest, PaginatedResult } from '@/plugins/types/germinate'
+import type { FilterComparator, FilterGroup, MarkedItemType, PaginatedRequest, PaginatedResult } from '@/plugins/types/germinate'
 import type { AxiosResponse } from 'axios'
 import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
 import type { DataTableSortItem } from 'vuetify'
@@ -22,7 +22,7 @@ export interface BaseTableProps<T> {
   headerTitle: string
   filterOn?: FilterGroup[]
   forcedFilters?: FilterGroup[]
-  markedItemType?: string
+  markedItemType?: MarkedItemType
   showDetails?: boolean
   storeUrlParameters?: boolean
   bottomSheetVisible?: boolean

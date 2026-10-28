@@ -6,6 +6,7 @@
 
 ![GitHub](https://img.shields.io/github/license/germinateplatform/germinate-vue?style=for-the-badge&logo=apache)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/germinateplatform/germinate-vue?style=for-the-badge)
+![GitHub development](https://img.shields.io/github/package-json/v/germinateplatform/germinate-vue?style=for-the-badge&label=dev)
 ![GitHub last commit](https://img.shields.io/github/last-commit/germinateplatform/germinate-vue?style=for-the-badge&logo=git)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=for-the-badge)](CODE_OF_CONDUCT.md)
 

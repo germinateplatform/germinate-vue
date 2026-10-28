@@ -541,7 +541,7 @@
     componentProps.download({
       page: 1,
       limit: MAX_JAVA_INTEGER,
-      prevCount: isResetCall ? -1 : totalItems.value,
+      prevCount: isResetCall.value ? -1 : totalItems.value,
       filters: filters.value || [],
     }).then((result: AxiosResponse<Blob>) => {
       downloadBlob({
@@ -638,9 +638,9 @@
       componentProps.getIds(currentRequest.value)
         .then((result: AxiosResponse<PaginatedResult<number[]>>) => {
           if (mark) {
-            store.addMarkedIds(componentProps.markedItemType || '', result.data.data)
+            store.addMarkedIds(componentProps.markedItemType, result.data.data)
           } else {
-            store.removeMarkedIds(componentProps.markedItemType || '', result.data.data)
+            store.removeMarkedIds(componentProps.markedItemType, result.data.data)
           }
           emitter.emit('show-loading', false)
         })
@@ -651,7 +651,7 @@
     currentRequest.value = {
       page: page,
       limit: itemsPerPage,
-      prevCount: isResetCall ? -1 : totalItems.value,
+      prevCount: isResetCall.value ? -1 : totalItems.value,
       orderBy: (sortBy && sortBy.length > 0) ? sortBy[0].key : undefined,
       ascending: +((sortBy && sortBy.length > 0) ? sortBy[0].order === 'asc' : false),
       filters: filters.value || [],

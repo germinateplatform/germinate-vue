@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import emitter from 'tiny-emitter/instance'
 import { USER_TYPE_ADMINISTRATOR, USER_TYPE_DATA_CURATOR, USER_TYPE_REGULAR_USER, userIsAtLeast } from '@/plugins/api/auth'
 import type { IndexedViewTableStoriesEnriched } from '@/plugins/types/client'
-import type { ClientConfiguration, Token } from '@/plugins/types/germinate'
+import type { ClientConfiguration, MarkedItemType, Token } from '@/plugins/types/germinate'
 import type { StorageLike } from 'pinia-plugin-persistedstate'
 
 let name = import.meta.env.VUE_APP_INSTANCE_NAME
@@ -34,6 +34,7 @@ export interface UserStateContent {
   hiddenColumns: HiddenColumns
   tableDisplayType: TableDisplayType
   markedIds: MarkedItems
+  recentIds: MarkedItems
   customChartColors?: string[] | undefined
   asyncJobUuids: string[]
   tablePerPage: number
@@ -44,10 +45,10 @@ export interface UserStateContent {
   mainNavHidden: boolean
 }
 
-type MarkedItems = { [key: string]: number[] }
-export type HiddenColumns = { [key: string]: string[] }
-export type TableDisplayType = { [key: string]: 'grid' | 'table' }
-type UserState = { [key: number]: UserStateContent }
+type MarkedItems = Record<MarkedItemType, number[]>
+export type HiddenColumns = Record<string, string[]>
+export type TableDisplayType = Record<string, 'grid' | 'table'>
+type UserState = Record<number, UserStateContent>
 
 const defaultUserState: UserStateContent = {
   theme: 'light',
@@ -100,6 +101,11 @@ const defaultUserState: UserStateContent = {
     projects: [],
   },
   markedIds: {
+    germplasm: [],
+    markers: [],
+    locations: [],
+  },
+  recentIds: {
     germplasm: [],
     markers: [],
     locations: [],
@@ -314,16 +320,28 @@ export const useCoreStore = defineStore('germinate', {
       return this.userStates[this.storeUserId].markedIds
     },
     storeMarkedGermplasm (): number[] {
-      return this.userStates[this.storeUserId].markedIds.germplasm || []
+      return this.userStates[this.storeUserId].markedIds.germplasm ?? []
     },
     storeMarkedMarkers (): number[] {
-      return this.userStates[this.storeUserId].markedIds.markers || []
+      return this.userStates[this.storeUserId].markedIds.markers ?? []
     },
     storeMarkedLocations (): number[] {
-      return this.userStates[this.storeUserId].markedIds.locations || []
+      return this.userStates[this.storeUserId].markedIds.locations ?? []
+    },
+    storeRecentIds (): MarkedItems {
+      return this.userStates[this.storeUserId].recentIds
+    },
+    storeRecentGermplasm (): number[] {
+      return this.userStates[this.storeUserId].recentIds?.germplasm ?? []
+    },
+    storeRecentMarkers (): number[] {
+      return this.userStates[this.storeUserId].recentIds?.markers ?? []
+    },
+    storeRecentLocations (): number[] {
+      return this.userStates[this.storeUserId].recentIds?.locations ?? []
     },
     storeAsyncJobUuids (): string[] {
-      return this.userStates[this.storeUserId].asyncJobUuids || []
+      return this.userStates[this.storeUserId].asyncJobUuids ?? []
     },
     storeTablePerPage (): number {
       return this.userStates[this.storeUserId].tablePerPage
@@ -408,24 +426,69 @@ export const useCoreStore = defineStore('germinate', {
     setCustomChartColors (newColors: string[]) {
       this.userStates[this.storeUserId].customChartColors = newColors
     },
-    addMarkedIds (type: string, ids: number[]) {
-      const set: Set<number> = new Set(this.userStates[this.storeUserId].markedIds[type])
-      ids.forEach(id => set.add(id))
-      this.userStates[this.storeUserId].markedIds[type] = [...set]
-    },
     setDeviceConfig (newDeviceConfig: any | undefined) {
       this.deviceConfig = newDeviceConfig
     },
-    removeMarkedIds (type: string, ids: number[]) {
-      const set: Set<number> = new Set(this.userStates[this.storeUserId].markedIds[type])
-      ids.forEach(id => set.delete(id))
-      this.userStates[this.storeUserId].markedIds[type] = [...set]
+    addMarkedIds (type: MarkedItemType | undefined, ids: number[]) {
+      if (type) {
+        const set: Set<number> = new Set(this.userStates[this.storeUserId].markedIds[type])
+        ids.forEach(id => set.add(id))
+        this.userStates[this.storeUserId].markedIds[type] = [...set]
+      }
     },
-    clearMarkedIds (type: string) {
-      this.userStates[this.storeUserId].markedIds[type] = []
+    removeMarkedIds (type: MarkedItemType | undefined, ids: number[]) {
+      if (type) {
+        const set: Set<number> = new Set(this.userStates[this.storeUserId].markedIds[type])
+        ids.forEach(id => set.delete(id))
+        this.userStates[this.storeUserId].markedIds[type] = [...set]
+      }
+    },
+    clearMarkedIds (type: MarkedItemType | undefined) {
+      if (type) {
+        this.userStates[this.storeUserId].markedIds[type] = []
+      }
     },
     clearAllMarkedIds () {
       this.userStates[this.storeUserId].markedIds = {
+        germplasm: [],
+        markers: [],
+        locations: [],
+      }
+    },
+    addRecentId (type: MarkedItemType | undefined, id: number) {
+      if (type) {
+        const arr = this.userStates[this.storeUserId].recentIds?.[type] ?? []
+
+        // Get index
+        const existingIndex = arr.indexOf(id)
+        if (existingIndex !== -1) {
+          // If it exists, remove it temporarily. It'll be added again below as the "newest" item.
+          arr.splice(existingIndex, 1)
+        }
+        // Add it no matter what
+        arr.push(id)
+        // Then restrict to 10
+        if (arr.length > 10) {
+          arr.shift()
+        }
+
+        this.userStates[this.storeUserId].recentIds[type] = arr
+      }
+    },
+    removeRecentId (type: MarkedItemType | undefined, id: number) {
+      if (type) {
+        const arr = this.userStates[this.storeUserId].recentIds?.[type] ?? []
+
+        this.userStates[this.storeUserId].recentIds[type] = arr.filter(iidd => iidd !== id)
+      }
+    },
+    clearRecentIds (type: MarkedItemType | undefined) {
+      if (type) {
+        this.userStates[this.storeUserId].recentIds[type] = []
+      }
+    },
+    clearAllRecentIds () {
+      this.userStates[this.storeUserId].recentIds = {
         germplasm: [],
         markers: [],
         locations: [],
