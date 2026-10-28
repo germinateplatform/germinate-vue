@@ -8,7 +8,7 @@ name: markedItemType
 
 <script setup lang="ts">
   import MarkedItems from '@/components/widgets/MarkedItems.vue'
-  import type { MarkedItemType } from '@/plugins/types/MarkedItemType'
+  import type { MarkedItemType } from '@/plugins/types/germinate'
 
   const route = useRoute('markedItemType')
 

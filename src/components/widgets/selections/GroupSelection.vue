@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { ViewTableGroups } from '@/plugins/types/germinate'
+  import type { MarkedItemType, ViewTableGroups } from '@/plugins/types/germinate'
   import { handleRouterQuery } from '@/plugins/util'
 
   import { mdiFormatListChecks, mdiSelectAll } from '@mdi/js'
@@ -37,7 +37,7 @@
   }
 
   interface GroupSelectionProps {
-    markedItemType: string
+    markedItemType: MarkedItemType
     groups: ViewTableGroups[]
     multiple?: boolean
     type?: 'groups' | 'export'

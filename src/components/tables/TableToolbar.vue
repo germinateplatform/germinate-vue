@@ -60,13 +60,14 @@
   import type { DataTableHeader } from 'vuetify'
   import { Pages } from '@/plugins/pages'
   import { mdiDelete, mdiFilter, mdiMenuDown, mdiMenuUp, mdiTable, mdiViewColumn, mdiViewGrid } from '@mdi/js'
+  import type { MarkedItemType } from '@/plugins/types/germinate'
 
   const store = useCoreStore()
 
   const compProps = defineProps<{
     modelValue: DisplayType
     filtered: boolean
-    markedItemType?: string
+    markedItemType?: MarkedItemType
     markedItemConfig?: MarkedItemConfig
     tableKey: string
     headerIcon: string

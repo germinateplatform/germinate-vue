@@ -209,7 +209,7 @@
 
   import { init as initPlausible, track } from '@plausible-analytics/tracker'
   import axios from 'axios'
-  import { AuthenticationMode } from '@/plugins/types/germinate'
+  import { AuthenticationMode, type MarkedItemType } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
 
   export interface SnackbarContent {
@@ -261,7 +261,7 @@
   })
 
   const totalMarkedItemCount: ComputedRef<string | undefined> = computed(() => {
-    const value = Object.keys(markedItemTypes).map(it => store.storeMarkedIds[it].length).reduce((a, b) => a + b, 0)
+    const value = Object.keys(markedItemTypes).map(it => store.storeMarkedIds[it as MarkedItemType].length).reduce((a, b) => a + b, 0)
 
     if (value) {
       return getNumberWithSuffix(value, 1)

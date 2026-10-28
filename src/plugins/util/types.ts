@@ -2,7 +2,7 @@ import { i18n } from '@/plugins/vuetify.ts'
 import { Pages } from '@/plugins/pages'
 import { getTemplateColor } from '@/plugins/util/colors'
 import type { Page } from '@/plugins/types/Page'
-import { MethodsMethodClass, TraitsTraitClass, UserType, type OverviewStatsField } from '@/plugins/types/germinate'
+import { MethodsMethodClass, TraitsTraitClass, UserType, type MarkedItemType, type OverviewStatsField } from '@/plugins/types/germinate'
 import { mdiAccount, mdiAccountCancel, mdiAccountQuestion, mdiAccountSearch, mdiAlert, mdiAlertCircleOutline, mdiAllergy, mdiAlphabetical, mdiBasketFill, mdiBookOpenPageVariant, mdiBug, mdiBugOutline, mdiCalculator, mdiCalendar, mdiCancel, mdiCardBulletedSettings, mdiChartSankey, mdiCheckCircle, mdiClipboardList, mdiContentDuplicate, mdiCounter, mdiCrystalBall, mdiDatabase, mdiDatabaseImport, mdiDesktopClassic, mdiDna, mdiEyedropper, mdiEyeOff, mdiFamilyTree, mdiFileDownload, mdiFileTree, mdiFlask, mdiFolderTable, mdiGift, mdiGrid, mdiGroup, mdiHammerWrench, mdiHelpBox, mdiHelpCircle, mdiHelpCircleOutline, mdiImageMarker, mdiImageMultiple, mdiLandFields, mdiLeaf, mdiLock, mdiLockOpenVariantOutline, mdiMagnifyExpand, mdiMapMarker, mdiMarker, mdiMessageTextFastOutline, mdiNewspaper, mdiNewspaperVariant, mdiNewspaperVariantOutline, mdiNumeric, mdiPassport, mdiPauseCircle, mdiProgressWrench, mdiPulse, mdiRefresh, mdiReorderVertical, mdiScale, mdiSeed, mdiShapeRectanglePlus, mdiShieldAccount, mdiShovel, mdiSpeedometer, mdiSpeedometerMedium, mdiSpeedometerSlow, mdiSprout, mdiTagText, mdiTagTextOutline, mdiTapeMeasure, mdiText, mdiWeatherPartlySnowyRainy, mdiWeatherSnowyRainy, mdiWrenchClock } from '@mdi/js'
 
 export interface BaseType {
@@ -15,7 +15,7 @@ export interface BaseType {
 export interface GroupType extends BaseType {
   id: string
   apiName: string
-  itemType: string
+  itemType: MarkedItemType
   idColumn: string
   nameColumns: string[]
 }
@@ -428,7 +428,7 @@ const groupTypes: { [key: string]: GroupType } = {
   },
 }
 
-const markedItemTypes: { [key: string]: PathState & ColorState & TextState } = {
+const markedItemTypes: Record<MarkedItemType, PathState & ColorState & TextState> = {
   germplasm: {
     path: mdiSprout,
     color: () => getTemplateColor(0),
