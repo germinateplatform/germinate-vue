@@ -198,7 +198,7 @@
     type: 'file' as const,
     required: false,
     width: 1,
-    accepts: '.jpeg, .png, .jpg',
+    accepts: '.jpeg, .png, .jpg, .svg',
   }]
 
   // @ts-ignore

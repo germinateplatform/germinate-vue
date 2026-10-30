@@ -10,7 +10,10 @@
       :filter-on="filterOn"
       :forced-filters="forcedFilters"
       :show-details="false"
+      :selection-type="selectionType"
+      :disabled="compProps.disabled"
       :display-type="compProps.displayType"
+      :ignore-url-filter="ignoreUrlFilter"
       item-key="publicationId"
       table-key="publications"
       :sort-by="[{ key: 'createdOn', order: 'desc' }]"
@@ -19,7 +22,7 @@
       :supports-grid-cards="true"
       v-bind="$attrs"
     >
-      <template #header v-if="store.storeUserIsAuthenticated">
+      <template #header v-if="store.storeUserIsAuthenticated && disabled !== true">
         <v-btn variant="outlined" :text="$t('buttonAddPublication')" :prepend-icon="mdiPlus" @click="addItem" />
       </template>
 
@@ -64,8 +67,8 @@
         </v-btn-group>
       </template>
 
-      <template #card-item="{ item }">
-        <PublicationCard :publication="item" @delete="deletePublication(item)" />
+      <template #card-item="{ item, isSelected, toggleItem }">
+        <PublicationCard :publication="item" @delete="deletePublication(item)" :is-selected="isSelected" :toggle-selection="toggleItem" />
       </template>
 
       <!-- Pass on all named slots -->
@@ -123,19 +126,25 @@
 
   const newPublication = ref<PublicationDoi>({})
 
-  const compProps = defineProps<{
+  const compProps = withDefaults(defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePublications[]>>> }
     getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
     download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
     filterOn?: FilterGroup[]
     selectionType?: TableSelectionType
     displayType?: DisplayType
+    disabled?: boolean
+    disableForcedProjectFilter?: boolean
+    deleteHandler?: (item: ViewTablePublications) => void
+    ignoreUrlFilter?: boolean
     publicationReferenceType?: PublicationdataReferenceType
     publicationReferenceId?: number
-  }>()
+  }>(), {
+    disabled: false,
+  })
 
   const forcedFilters = computed(() => {
-    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0) {
+    if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0 && compProps.disableForcedProjectFilter !== true) {
       return [{
         operator: FilterOperator.and,
         filters: [{
@@ -191,20 +200,24 @@
   }
 
   function deletePublication (publication: ViewTablePublications) {
-    emitter.emit('show-confirm', {
-      title: t('modalTitleConfirm'),
-      message: t('modalTitleSure'),
-      okTitle: t('genericYes'),
-      cancelTitle: t('genericNo'),
-      okVariant: 'error',
-      callback: (result: boolean) => {
-        if (result === true) {
-          apiDeletePublicationReference(publication.publicationId, compProps.publicationReferenceType || PublicationdataReferenceType.database, compProps.publicationReferenceId, result => {
-            baseTable.value?.refresh()
-          })
-        }
-      },
-    })
+    if (compProps.deleteHandler) {
+      compProps.deleteHandler(publication)
+    } else {
+      emitter.emit('show-confirm', {
+        title: t('modalTitleConfirm'),
+        message: t('modalTitleSure'),
+        okTitle: t('genericYes'),
+        cancelTitle: t('genericNo'),
+        okVariant: 'error',
+        callback: (result: boolean) => {
+          if (result === true) {
+            apiDeletePublicationReference(publication.publicationId, compProps.publicationReferenceType || PublicationdataReferenceType.database, compProps.publicationReferenceId, result => {
+              baseTable.value?.refresh()
+            })
+          }
+        },
+      })
+    }
   }
 
   function sendNewPublication () {

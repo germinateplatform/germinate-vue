@@ -19,8 +19,27 @@
         </template>
       </v-list-item>
       <v-list-item to="/" link :prepend-icon="mdiHome" :title="$t('menuHome')" />
-      <v-list-item :to="Pages.search.path" link :prepend-icon="mdiMagnify" :title="$t('menuSearch')" />
-      <v-list-item link :active="isActive(Pages.projects.path)" :to="Pages.projects.path" :prepend-icon="mdiClipboardList" v-if="Pages.isAvailable(Pages.projects) && (badgeCounts?.projects || 0) > 0" :title="$t('menuProjects')"><template #append><v-chip :disabled="badgeCounts?.projects === 0" size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge(badgeCounts?.projects)}` }}</v-chip></template></v-list-item>
+      <div class="px-1 py-05 search-input-wrapper" v-if="searchVisible">
+        <v-text-field
+          v-model="searchTerm"
+          ref="searchBox"
+          density="compact"
+          variant="outlined"
+          :placeholder="$t('menuSearch')"
+          :prepend-inner-icon="mdiMagnify"
+          hide-details="auto"
+          :append-inner-icon="mdiArrowRight"
+          autofocus
+          autocomplete="off"
+          @blur="toggleSearch(false)"
+          @click:clear="toggleSearch(false)"
+          @click:append-inner="triggerSearch()"
+          @keydown.escape="toggleSearch(false)"
+          @keydown.enter="triggerSearch()"
+        />
+      </div>
+      <v-list-item link :to="Pages.search.path" :prepend-icon="mdiMagnify" :title="$t('menuSearch')" @click="e => toggleSearch(true, e)" v-else />
+      <v-list-item link :active="isActive(Pages.projects.path)" :to="Pages.projects.path" :prepend-icon="mdiClipboardList" v-if="Pages.isAvailable(Pages.projects) && ((badgeCounts?.projects || 0) > 0 || store.storeUserIsDataCurator)" :title="$t('menuProjects')"><template #append><v-chip :disabled="badgeCounts?.projects === 0" size="small">{{ `${(store.storeSelectedProjects && store.storeSelectedProjects.length > 0) ? (store.storeSelectedProjects.length + '/') : ''}${formatBadge(badgeCounts?.projects)}` }}</v-chip></template></v-list-item>
 
       <v-list-group value="data">
         <template #activator="{ props }">
@@ -134,16 +153,36 @@
   import type { OverviewStats } from '@/plugins/types/germinate'
 
   import emitter from 'tiny-emitter/instance'
-  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderVertical, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy, mdiCookie } from '@mdi/js'
+  import { mdiApplicationBrackets, mdiArrowCollapseLeft, mdiArrowCollapseRight, mdiBookOpenPageVariant, mdiChartAreaspline, mdiChartSankey, mdiClipboardList, mdiDatabase, mdiDna, mdiEarth, mdiFamilyTree, mdiFileDownload, mdiFolderTable, mdiFormatIndentIncrease, mdiGraph, mdiGroup, mdiDatabaseSearch, mdiHome, mdiImageMultiple, mdiInformation, mdiInformationOutline, mdiLan, mdiLandFields, mdiMap, mdiMapSearch, mdiNewspaperVariant, mdiPeriodicTable, mdiReorderVertical, mdiMagnify, mdiShovel, mdiSprout, mdiTagMultiple, mdiTagTextOutline, mdiViewDashboard, mdiWeatherSnowyRainy, mdiCookie, mdiArrowRight } from '@mdi/js'
 
   const { name, lgAndUp, mdAndDown } = useDisplay()
   const store = useCoreStore()
   const railVisible = ref(true)
   const forcedRail = ref(false)
-
+  const searchVisible = ref(false)
+  const searchTerm = ref()
   const badgeCounts = ref<OverviewStats>()
 
   const route = useRoute()
+  const router = useRouter()
+
+  const searchBox = useTemplateRef('searchBox')
+
+  watch(searchVisible, async newValue => {
+    if (!newValue) {
+      searchTerm.value = undefined
+    }
+  })
+
+  function triggerSearch () {
+    const search = (searchTerm.value ?? '').trim()
+    console.log('search', search)
+    if (search.length > 0) {
+      router.push(Pages.getPath(Pages.searchQuery, search))
+
+      searchBox.value?.blur()
+    }
+  }
 
   function isActive (item: string) {
     return route.path === item || route.path.startsWith(item + '/')
@@ -183,6 +222,13 @@
 
   onBeforeMount(() => updateStats())
 
+  function toggleSearch (value: boolean, e?: Event) {
+    // Prevent default behavior of the event
+    e?.preventDefault()
+    e?.stopPropagation()
+    searchVisible.value = value
+  }
+
   function updateStats () {
     apiGetOverviewStats(store.storeSelectedProjects, (result: OverviewStats) => {
       badgeCounts.value = result
@@ -219,5 +265,27 @@
 
 .crop-image .v-avatar {
   border-radius: 0;
+}
+</style>
+
+<style scoped>
+/* Target the internal input and placeholder elements */
+.search-input-wrapper :deep(.v-field__input),
+.search-input-wrapper :deep(.v-field__input::placeholder) {
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.03125em;
+  line-height: 1.5;
+  opacity: 1; /* Ensures placeholder matches text color opacity */
+}
+
+/* Deep selector to match Vuetify's compact list item inner text padding */
+.search-input-wrapper :deep(.v-field__field) {
+  padding-inline-start: 26px;
+}
+
+.py-05 {
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 </style>

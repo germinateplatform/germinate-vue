@@ -100,6 +100,15 @@
                             :disabled="filter.filter.canBeChanged === false"
                             v-model="filter.filter.values"
                           />
+                          <v-select
+                            v-else-if="filter.column?.dataType === 'imageType'"
+                            :items="imageTypeOptions"
+                            multiple
+                            density="compact"
+                            hide-details
+                            :disabled="filter.filter.canBeChanged === false"
+                            v-model="filter.filter.values"
+                          />
                           <v-text-field
                             v-else
                             :model-value="filter.filter.values.join(', ')"
@@ -193,6 +202,14 @@
                             v-model="filter.filter.values[vIndex]"
                           />
                           <v-select
+                            v-else-if="filter.column?.dataType === 'imageType'"
+                            :items="imageTypeOptions"
+                            density="compact"
+                            hide-details
+                            :disabled="filter.filter.canBeChanged === false"
+                            v-model="filter.filter.values[vIndex]"
+                          />
+                          <v-select
                             v-else-if="filter.column?.dataType === 'dataType'"
                             :items="dataTypeOptions"
                             density="compact"
@@ -266,8 +283,8 @@
   import { type Filter, type FilterGroup, FilterComparator, FilterOperator, StatusType } from '@/plugins/types/germinate'
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
   import { validCompsForType } from '@/plugins/util/table-columns'
-  import { entityTypes, locationTypes, groupTypes, methodClasses, dataTypes, newsTypes, traitClasses } from '@/plugins/util/types'
-  import { mdiCalendar, mdiClose, mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
+  import { entityTypes, locationTypes, groupTypes, methodClasses, dataTypes, newsTypes, traitClasses, imageTypes } from '@/plugins/util/types'
+  import { mdiCalendar, mdiClose, mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiImageAlbum, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
   import { useI18n } from 'vue-i18n'
   import { useDate } from 'vuetify'
 
@@ -282,6 +299,7 @@
     columns: ExtendedDataTableHeader[]
     filterOn?: FilterGroup[]
     forcedFilters?: FilterGroup[]
+    ignoreUrlFilter?: boolean
   }>()
 
   const emit = defineEmits(['filter-changed', 'filter-cleared'])
@@ -311,8 +329,7 @@
     return Object.keys(comparators).map(c => {
       return {
         id: c,
-        // @ts-ignore
-        title: comparators[c].text(),
+        title: t(comparators[c as FilterComparator].text),
       }
     })
   })
@@ -359,6 +376,15 @@
       return {
         value: e,
         title: t(methodClasses[e].text),
+      }
+    })
+  })
+
+  const imageTypeOptions = computed(() => {
+    return Object.keys(imageTypes).map(e => {
+      return {
+        value: e,
+        title: t(imageTypes[e].text),
       }
     })
   })
@@ -483,6 +509,8 @@
         return mdiGroup
       case 'methodClass':
         return mdiTapeMeasure
+      case 'imageType':
+        return mdiImageAlbum
       case 'traitClass':
         return mdiTagText
       case 'boolean':
@@ -615,6 +643,10 @@
   }
 
   async function updateUrl () {
+    if (compProps.ignoreUrlFilter === true) {
+      return
+    }
+
     const query = Object.assign({}, route.query)
     if (filterGroups.value && filterGroups.value.length > 0) {
       const copy = JSON.parse(JSON.stringify(filterGroups.value)) as UrlFilterGroup[]
@@ -638,8 +670,8 @@
   function loadFilters (readUrl = true) {
     let presetFilters = loadPresetFilters()
 
-    // Read URL parameters
-    if (readUrl && route.query && route.query[`${compProps.tableKey}-filter`]) {
+    if (compProps.ignoreUrlFilter !== true && readUrl && route.query && route.query[`${compProps.tableKey}-filter`]) {
+      // Read URL parameters
       try {
         // @ts-ignore
         let urlFilter: InternalFilterGroup[] = JSON.parse(route.query[`${compProps.tableKey}-filter`])

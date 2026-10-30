@@ -1,137 +1,141 @@
-import { i18n } from '@/plugins/vuetify.ts'
-import { FilterComparator } from '@/plugins/types/germinate'
+import { FilterComparator, type FilterOperator } from '@/plugins/types/germinate'
+import type { TextState, ValueState } from './types'
 
-const operators = {
+export interface ValuesState {
+  values: number
+}
+
+const operators: Record<FilterOperator, TextState & ValueState> = {
   and: {
-    text: () => i18n.global.t('operatorsAnd'),
+    text: 'operatorsAnd',
     value: 'and',
   },
   or: {
-    text: () => i18n.global.t('operatorsOr'),
+    text: 'operatorsOr',
     value: 'or',
   },
 }
 
-function getComparatorConfig (comparator: FilterComparator) {
+function getComparatorConfig (comparator: FilterComparator): (TextState & ValuesState) | undefined {
   switch (comparator) {
     case FilterComparator.contains:
       return {
-        text: () => i18n.global.t('comparatorsContains'),
+        text: 'comparatorsContains',
         values: 1,
       }
     case FilterComparator.equals:
       return {
-        text: () => i18n.global.t('comparatorsEqual'),
+        text: 'comparatorsEqual',
         values: 1,
       }
     case FilterComparator.isNull:
       return {
-        text: () => i18n.global.t('comparatorsIsNull'),
-        value: 0,
+        text: 'comparatorsIsNull',
+        values: 0,
       }
     case FilterComparator.isNotNull:
       return {
-        text: () => i18n.global.t('comparatorsIsNotNull'),
-        value: 0,
+        text: 'comparatorsIsNotNull',
+        values: 0,
       }
     case FilterComparator.between:
       return {
-        text: () => i18n.global.t('comparatorsBetween'),
+        text: 'comparatorsBetween',
         values: 2,
       }
     case FilterComparator.greaterThan:
       return {
-        text: () => i18n.global.t('comparatorsGreaterThan'),
+        text: 'comparatorsGreaterThan',
         values: 1,
       }
     case FilterComparator.greaterOrEquals:
       return {
-        text: () => i18n.global.t('comparatorsGreaterThanOrEquals'),
+        text: 'comparatorsGreaterThanOrEquals',
         values: 1,
       }
     case FilterComparator.lessThan:
       return {
-        text: () => i18n.global.t('comparatorsLessThan'),
+        text: 'comparatorsLessThan',
         values: 1,
       }
     case FilterComparator.lessOrEquals:
       return {
-        text: () => i18n.global.t('comparatorsLessThanOrEquals'),
+        text: 'comparatorsLessThanOrEquals',
         values: 1,
       }
     case FilterComparator.inSet:
       return {
-        text: () => i18n.global.t('comparatorsInSet'),
+        text: 'comparatorsInSet',
         values: 1,
       }
     case FilterComparator.jsonSearch:
       return {
-        text: () => i18n.global.t('comparatorsJsonSearch'),
+        text: 'comparatorsJsonSearch',
         values: 1,
       }
     case FilterComparator.arrayContains:
       return {
-        text: () => i18n.global.t('comparatorsArrayContains'),
+        text: 'comparatorsArrayContains',
         values: 1,
       }
   }
 }
 
-const comparators = {
+const comparators: Record<FilterComparator, TextState & ValuesState> = {
   contains: {
-    text: () => i18n.global.t('comparatorsContains'),
+    text: 'comparatorsContains',
     values: 1,
   },
   equals: {
-    text: () => i18n.global.t('comparatorsEqual'),
+    text: 'comparatorsEqual',
     values: 1,
   },
   isNull: {
-    text: () => i18n.global.t('comparatorsIsNull'),
+    text: 'comparatorsIsNull',
     values: 0,
   },
   isNotNull: {
-    text: () => i18n.global.t('comparatorsIsNotNull'),
+    text: 'comparatorsIsNotNull',
     values: 0,
   },
   between: {
-    text: () => i18n.global.t('comparatorsBetween'),
+    text: 'comparatorsBetween',
     values: 2,
   },
   greaterThan: {
-    text: () => i18n.global.t('comparatorsGreaterThan'),
+    text: 'comparatorsGreaterThan',
     values: 1,
   },
   greaterOrEquals: {
-    text: () => i18n.global.t('comparatorsGreaterThanOrEquals'),
+    text: 'comparatorsGreaterThanOrEquals',
     values: 1,
   },
   startsWith: {
-    text: () => i18n.global.t('comparatorsStartsWith'),
+    text: 'comparatorsStartsWith',
     values: 1,
   },
   endsWith: {
-    text: () => i18n.global.t('comparatorsEndsWith'),
+    text: 'comparatorsEndsWith',
     values: 1,
   },
   lessThan: {
-    text: () => i18n.global.t('comparatorsLessThan'),
+    text: 'comparatorsLessThan',
     values: 1,
   },
   lessOrEquals: {
-    text: () => i18n.global.t('comparatorsLessThanOrEquals'),
+    text: 'comparatorsLessThanOrEquals',
     values: 1,
   },
   inSet: {
-    text: () => i18n.global.t('comparatorsInSet'),
+    text: 'comparatorsInSet',
     values: 1,
   },
   jsonSearch: {
-    text: () => i18n.global.t('comparatorsJsonSearch'),
+    text: 'comparatorsJsonSearch',
     values: 1,
   },
   arrayContains: {
-    text: () => i18n.global.t('comparatorsArrayContains'),
+    text: 'comparatorsArrayContains',
     values: 1,
   },
 }

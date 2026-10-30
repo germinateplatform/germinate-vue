@@ -11,6 +11,12 @@ export function apiPostPublicationsTable (queryData: PaginatedRequest, onSuccess
   return authAxios({ url: 'publication/table', method: 'POST', data: queryData, success: onSuccess, error: onError })
 }
 
+export function apiPostPublicationTableIds (queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<number[]>>, onError?: ErrorHandler) {
+  delete queryData.orderBy
+  delete queryData.ascending
+  return authAxios({ url: 'publication/table/ids', method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
 export function apiGetPublications (type: string, id?: number, onSuccess?: GerminateResponseHandler<ViewTablePublications[]>, onError?: ErrorHandler) {
   return authAxios({ url: `publicationtype/${type}/${id || ''}`, method: 'GET', success: onSuccess, error: onError })
 }

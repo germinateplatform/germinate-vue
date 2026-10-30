@@ -50,6 +50,19 @@
         </template>
       </v-card>
 
+      <v-card class="mb-5" :title="$t('pageProjectsPublicationsTitle')" :subtitle="$t('pageProjectsPublicationsSubtitle')">
+        <template #append v-if="store.storeUserIsDataCurator">
+          <v-btn @click="addNew('publication')" variant="tonal" :text="$t('buttonAddNewToProject')" :prepend-icon="mdiPlusBox" />
+        </template>
+        <PublicationTable disabled :filter-on="publicationsFilter" :get-data="getPublicationData" ref="publicationTable" :delete-handler="deletePublication">
+          <template #item.actions="{ item }" v-if="store.storeUserIsDataCurator">
+            <v-btn-group variant="tonal">
+              <v-btn size="x-small" color="error" :icon="mdiDelete" @click="removeItem(item.projectId, 'publication')" />
+            </v-btn-group>
+          </template>
+        </PublicationTable>
+      </v-card>
+
       <v-card class="mb-5" :title="$t('pageProjectsExperimentsTitle')" :subtitle="$t('pageProjectsExperimentsSubtitle')">
         <template #append v-if="store.storeUserIsDataCurator">
           <v-btn @click="addNew('experiment')" variant="tonal" :text="$t('buttonAddNewToProject')" :prepend-icon="mdiPlusBox" />
@@ -98,8 +111,9 @@
           <v-btn :text="$t('buttonSave')" color="primary" variant="tonal" :disabled="!selectedIds || selectedIds.length === 0" @click="addToProject" />
         </v-card-title>
         <v-card-text>
-          <ExperimentTable disable-forced-project-filter disabled :get-data="getExperimentData" :get-ids="getExperimentIds" :selection-type="TableSelectionType.all" v-if="addType === 'experiment'" @selection-changed="(ids: number[]) => { selectedIds = ids }" />
-          <GroupTable disable-forced-project-filter disabled :get-data="getGroupData" :get-ids="getGroupIds" :selection-type="TableSelectionType.all" v-else-if="addType === 'group'" @selection-changed="(ids: number[]) => { selectedIds = ids }" />
+          <ExperimentTable disable-forced-project-filter ignore-url-filter disabled :get-data="getExperimentData" :get-ids="getExperimentIds" :selection-type="TableSelectionType.all" v-if="addType === 'experiment'" @selection-changed="(ids: number[]) => { selectedIds = ids }" />
+          <GroupTable disable-forced-project-filter ignore-url-filter disabled :get-data="getGroupData" :get-ids="getGroupIds" :selection-type="TableSelectionType.all" v-else-if="addType === 'group'" @selection-changed="(ids: number[]) => { selectedIds = ids }" />
+          <PublicationTable disable-forced-project-filter ignore-url-filter disabled display-type="table" :get-data="getPublicationData" :get-ids="getPublicationIds" :selection-type="TableSelectionType.all" v-else-if="addType === 'publication'" @selection-changed="(ids: number[]) => { selectedIds = ids }" />
         </v-card-text>
       </v-card>
     </v-bottom-sheet>
@@ -115,9 +129,9 @@ name: projectDetails
   import GroupTable from '@/components/tables/GroupTable.vue'
   import { apiPostDatasetTable, apiPostExperimentTable, apiPostExperimentTableIds } from '@/plugins/api/dataset'
   import { apiPostGroupTable, apiPostGroupTableIds } from '@/plugins/api/group'
-  import { apiDeleteProjectExperiment, apiDeleteProjectGroup, apiGetProjectStats, apiPostProjectExperiments, apiPostProjectGroups, apiPostProjectTable } from '@/plugins/api/project'
+  import { apiDeleteProjectExperiment, apiDeleteProjectGroup, apiDeleteProjectPublication, apiGetProjectStats, apiPostProjectExperiments, apiPostProjectGroups, apiPostProjectPublications, apiPostProjectTable } from '@/plugins/api/project'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type ProjectStats, type ViewTableProjects } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type ProjectStats, type ViewTableProjects, type ViewTablePublications } from '@/plugins/types/germinate'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
@@ -128,6 +142,8 @@ name: projectDetails
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
   import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
+  import { apiPostPublicationsTable, apiPostPublicationTableIds } from '@/plugins/api/publication'
+  import { lookupDoiInformation } from '@/plugins/util'
 
   const route = useRoute('projectDetails')
   const router = useRouter()
@@ -137,13 +153,14 @@ name: projectDetails
   const experimentTable = useTemplateRef('experimentTable')
   const datasetTable = useTemplateRef('datasetTable')
   const groupTable = useTemplateRef('groupTable')
+  const publicationTable = useTemplateRef('publicationTable')
 
   const projectId = ref<number>()
   const project = ref<ViewTableProjects>()
   const projectStats = ref<ProjectStats>()
 
   const bottomSheetVisible = ref(false)
-  const addType = ref<'group' | 'experiment'>()
+  const addType = ref<'group' | 'experiment' | 'publication'>()
   const selectedIds = ref<number[]>([])
 
   useBreadcrumbTitle(() => project.value?.projectName)
@@ -198,6 +215,17 @@ name: projectDetails
     }
   })
 
+  const publicationsFilter: ComputedRef<FilterGroup[]> = computed(() => {
+    return [{
+      operator: FilterOperator.and,
+      filters: [{
+        column: 'projectIds',
+        comparator: FilterComparator.arrayContains,
+        values: [`${projectId.value}`],
+      }],
+    }]
+  })
+
   const experimentFilter: ComputedRef<FilterGroup[]> = computed(() => {
     if (projectId.value) {
       return [{
@@ -248,11 +276,20 @@ name: projectDetails
           groupTable.value?.refresh()
           bottomSheetVisible.value = false
         })
+      case 'publication':
+        apiPostProjectPublications(project.value.projectId || -1, selectedIds.value, () => {
+          publicationTable.value?.refresh()
+          bottomSheetVisible.value = false
+        })
         break
     }
   }
 
-  function removeItem (item: number, type: 'experiment' | 'group') {
+  function deletePublication (item: ViewTablePublications) {
+    removeItem(item.publicationId, 'publication')
+  }
+
+  function removeItem (item: number, type: 'experiment' | 'group' | 'publication') {
     const p = project.value
 
     if (!p) {
@@ -279,9 +316,29 @@ name: projectDetails
                 groupTable.value?.refresh()
               })
               break
+            case 'publication':
+              apiDeleteProjectPublication(p.projectId || -1, item, () => {
+                publicationTable.value?.refresh()
+              })
+              break
           }
         }
       },
+    })
+  }
+
+  function getPublicationData (data: PaginatedRequest) {
+    return apiPostPublicationsTable(data, result => {
+      if (result && result.data && result.data.length > 0) {
+        result.data.forEach(p => {
+          p.lookupDetails = lookupDoiInformation(p)
+          try {
+            p.publicationFallbackCache = JSON.parse(p.publicationFallbackCache || '')
+          } catch {
+            //
+          }
+        })
+      }
     })
   }
 
@@ -305,7 +362,11 @@ name: projectDetails
     return apiPostExperimentTableIds(data)
   }
 
-  function addNew (type: 'experiment' | 'group') {
+  function getPublicationIds (data: PaginatedRequest) {
+    return apiPostPublicationTableIds(data)
+  }
+
+  function addNew (type: 'experiment' | 'group' | 'publication') {
     addType.value = type
 
     nextTick(() => {

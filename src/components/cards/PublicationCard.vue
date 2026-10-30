@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="displayData && publication" class="d-flex flex-column">
+  <v-card v-if="displayData && publication" :class="`d-flex flex-column ${isSelected ? 'border-t-lg border-primary border-opacity-100' : ''}`">
     <v-card-text class="flex-grow-1">
       <v-chip label color="muted" variant="tonal" :prepend-icon="mdiNewspaper">{{ displayData['container-title'] }}</v-chip>
 
@@ -19,6 +19,18 @@
 
       <div class="text-medium-emphasis g-trim-rows-2">
         <span v-html="displayData.fullReference" />
+      </div>
+
+      <div class="mt-3" v-if="toggleSelection">
+        <v-chip
+          label
+          size="small"
+          :variant="isSelected ? 'flat' : 'tonal'"
+          :color="isSelected ? 'primary' : 'muted'"
+          :text="$t(isSelected ? 'buttonSelectedItem' : 'buttonSelectItem')"
+          :prepend-icon="isSelected ? mdiCheckboxMarked : mdiCheckboxBlankOutline"
+          @click="toggleSelection(publication)"
+        />
       </div>
 
       <v-chip label class="me-2 mt-1" v-if="publication.isDatabasePub" :color="publicationTypes.database.color()" :prepend-icon="publicationTypes.database.path" :text="$t(publicationTypes.database.text)" />
@@ -68,26 +80,27 @@
 <script setup lang="ts">
   import type { ViewTablePublications } from '@/plugins/types/germinate'
   import { publicationTypes } from '@/plugins/util/types'
-  import { mdiNewspaper } from '@mdi/js'
+  import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiNewspaper } from '@mdi/js'
   import { Pages } from '@/plugins/pages'
   import { getPublicationData } from '@/plugins/util/formatting'
 
   const store = useCoreStore()
   const route = useRoute()
 
-  const {
-    canDelete = true,
-    publication = undefined,
-  } = defineProps<{
+  const compProps = withDefaults(defineProps<{
     canDelete?: boolean
     publication?: ViewTablePublications
-  }>()
+    isSelected?: boolean
+    toggleSelection?: (item: ViewTablePublications) => void
+  }>(), {
+    canDelete: true,
+  })
 
   const emit = defineEmits(['delete'])
 
   const displayData = computed(() => {
-    if (publication) {
-      return getPublicationData(publication)
+    if (compProps.publication) {
+      return getPublicationData(compProps.publication)
     } else {
       return undefined
     }

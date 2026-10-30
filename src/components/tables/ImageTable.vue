@@ -195,7 +195,7 @@
       visibleInFilter: true,
     }, {
       key: 'imageRefTable',
-      dataType: 'string',
+      dataType: 'imageType',
       title: t('tableColumnImageReferenceTable'),
       quickSearchable: true,
     }, {

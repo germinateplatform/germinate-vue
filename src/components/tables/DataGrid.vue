@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row>
+    <v-row v-if="items.length > 0">
       <!-- @vue-ignore -->
       <v-col
         v-for="item in items"
@@ -15,6 +15,8 @@
         <slot name="card-item" v-bind="{ item, isSelected: selectedIds.has(itemId ? itemId(item) : item[itemKey]), toggleItem }" />
       </v-col>
     </v-row>
+
+    <div class="text-center" v-else>{{ $t('headingNoData') }}</div>
 
     <div class="v-data-table-footer d-flex justify-end flex-wrap" v-if="!compProps.hideFooter">
       <slot name="footer.prepend" />

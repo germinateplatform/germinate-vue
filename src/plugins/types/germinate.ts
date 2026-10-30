@@ -593,6 +593,7 @@ export const enum PublicationdataReferenceType {
     germplasm = 'germplasm',
     group = 'group',
     experiment = 'experiment',
+    project = 'project',
 }
 
 export interface ViewTablePublications {

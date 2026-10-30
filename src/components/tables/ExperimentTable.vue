@@ -11,6 +11,7 @@
     :selection-type="selectionType"
     :disabled="compProps.disabled"
     :show-details="false"
+    :ignore-url-filter="ignoreUrlFilter"
     item-key="experimentId"
     table-key="experiments"
     :header-icon="mdiFolderTable"
@@ -66,6 +67,7 @@
     disabled?: boolean
     selectionType?: TableSelectionType
     disableForcedProjectFilter?: boolean
+    ignoreUrlFilter?: boolean
   }>(), {
     disabled: false,
   })

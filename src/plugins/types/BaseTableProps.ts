@@ -22,6 +22,7 @@ export interface BaseTableProps<T> {
   headerTitle: string
   filterOn?: FilterGroup[]
   forcedFilters?: FilterGroup[]
+  ignoreUrlFilter?: boolean
   markedItemType?: MarkedItemType
   showDetails?: boolean
   storeUrlParameters?: boolean

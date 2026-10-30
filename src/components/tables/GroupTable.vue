@@ -12,6 +12,7 @@
       :forced-filters="forcedFilters"
       :selection-type="selectionType"
       :show-details="false"
+      :ignore-url-filter="ignoreUrlFilter"
       item-key="groupId"
       table-key="groups"
       :header-icon="mdiGroup"
@@ -84,6 +85,7 @@
     selectionType?: TableSelectionType
     canCreateNew?: boolean
     disableForcedProjectFilter?: boolean
+    ignoreUrlFilter?: boolean
   }>(), {
     canCreateNew: true,
     disableForcedProjectFilter: false,

@@ -91,6 +91,7 @@
       :row-props="componentProps.getRowProps"
       :headers="allHeaders"
       :items="serverItems"
+      :no-data-text="$t('headingNoData')"
       :items-length="totalItems"
       :loading="loading"
       :search="search"
@@ -246,7 +247,7 @@
       </template>
     </v-data-table-server>
 
-    <TableFilterModal :columns="filterColumns" :filter-on="componentProps.filterOn" :forced-filters="componentProps.forcedFilters" :table-key="componentProps.tableKey" ref="tableFilterModal" @filter-changed="updateFilters" />
+    <TableFilterModal :columns="filterColumns" :filter-on="componentProps.filterOn" :forced-filters="componentProps.forcedFilters" :ignore-url-filter="ignoreUrlFilter" :table-key="componentProps.tableKey" ref="tableFilterModal" @filter-changed="updateFilters" />
 
     <v-bottom-sheet
       v-model="bottomSheetVisible"
@@ -318,6 +319,7 @@
     storeUrlParameters: true,
     displayType: 'table',
     hideFooter: false,
+    ignoreUrlFilter: false,
   })
 
   const slots = useSlots()

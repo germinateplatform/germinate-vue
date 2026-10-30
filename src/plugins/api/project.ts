@@ -25,12 +25,20 @@ export function apiPostProjectGroups (projectId: number, groupIds: number[], onS
   return authAxios({ url: `project/${projectId}/group`, data: groupIds, method: 'POST', success: onSuccess, error: onError })
 }
 
+export function apiPostProjectPublications (projectId: number, publicationIds: number[], onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: `project/${projectId}/publication`, data: publicationIds, method: 'POST', success: onSuccess, error: onError })
+}
+
 export function apiDeleteProjectExperiment (projectId: number, experimentId: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
   return authAxios({ url: `project/${projectId}/experiment/${experimentId}`, method: 'DELETE', success: onSuccess, error: onError })
 }
 
 export function apiDeleteProjectGroup (projectId: number, groupId: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
   return authAxios({ url: `project/${projectId}/group/${groupId}`, method: 'DELETE', success: onSuccess, error: onError })
+}
+
+export function apiDeleteProjectPublication (projectId: number, publicationId: number, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {
+  return authAxios({ url: `project/${projectId}/publication/${publicationId}`, method: 'DELETE', success: onSuccess, error: onError })
 }
 
 export function apiPatchProject (projectId: number, formData: FormData, onSuccess?: GerminateResponseHandler<boolean>, onError?: ErrorHandler) {

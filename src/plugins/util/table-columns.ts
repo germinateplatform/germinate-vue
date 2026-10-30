@@ -12,12 +12,14 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnGermplasmName',
   dataType: 'string',
   preferredSearchColumn: true,
+  cellProps: { class: 'font-weight-bold' },
   searchable: true,
   quickSearchable: true,
 }, {
   key: 'germplasmDisplayName',
   title: 'tableColumnGermplasmDisplayName',
   dataType: 'string',
+  cellProps: { class: 'font-weight-bold' },
   searchable: true,
   quickSearchable: true,
 }, {
@@ -884,6 +886,7 @@ const validCompsForType: { [key: string]: FilterComparator[] } = {
   groupType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull],
   importStatus: [FilterComparator.equals],
   methodClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
+  imageType: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
   traitClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
   json: [FilterComparator.jsonSearch, FilterComparator.isNull, FilterComparator.isNotNull],
   jsonObject: [FilterComparator.jsonSearch],
