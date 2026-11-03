@@ -39,7 +39,6 @@ declare module 'vue' {
     CommentTable: typeof import('./components/tables/CommentTable.vue')['default']
     ConfirmModal: typeof import('./components/modals/ConfirmModal.vue')['default']
     CookieBanner: typeof import('./components/structure/CookieBanner.vue')['default']
-    copy: typeof import('./components/climate/ClimateMatrix copy.vue')['default']
     DataExportComponent: typeof import('./components/widgets/DataExportComponent.vue')['default']
     DataGrid: typeof import('./components/tables/DataGrid.vue')['default']
     DatasetAcceptLicenseModal: typeof import('./components/modals/DatasetAcceptLicenseModal.vue')['default']
