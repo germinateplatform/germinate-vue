@@ -19,7 +19,7 @@
             <v-icon :icon="mdiFileDownload" class="me-2" /> {{ $t('widgetAvailableFileresourcesTitle') }}
           </template>
           <template #text>
-            <FileResourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled />
+            <FileresourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled />
           </template>
         </v-expansion-panel>
       </v-expansion-panels>

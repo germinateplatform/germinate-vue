@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ImageTable ref="imageTable" :get-data="getData" :header-icon-color="headerIconColor" :download="downloadImages" :filter-on="localFilterOn" @tag-clicked="tag => { selectedTag = tag }" @filter-changed="updateLocalSelection" @data-changed="(req: PaginatedRequest, res: PaginatedResult<ViewTableImages[]>) => emit('data-changed', req, res)">
+    <ImageTable ref="imageTable" :get-data="getData" :header-icon-color="headerIconColor" :download="downloadImages" :filter-on="localFilterOn" @tag-clicked="(tag: ImageTag | undefined) => { selectedTag = tag }" @filter-changed="updateLocalSelection" @data-changed="(req: PaginatedRequest, res: PaginatedResult<ViewTableImages[]>) => emit('data-changed', req, res)">
       <template #header v-if="canCreateNew">
         <v-btn variant="outlined" :prepend-icon="mdiFilePlus" @click="bottomSheetVisible = true">{{ $t('tableButtonAddImages') }}</v-btn>
       </template>

@@ -110,7 +110,7 @@
       case 'location':
         return {
           type: selectionMode.value,
-          selectedItems: (selectedLocations.value || []).map(g => `${g.locationName}`),
+          selectedItems: (selectedLocations.value || []).map(g => `${g.countryName} | ${g.locationName}`),
         }
       case 'year':
         return {

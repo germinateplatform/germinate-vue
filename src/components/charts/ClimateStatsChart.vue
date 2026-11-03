@@ -12,22 +12,33 @@
   <template v-if="cdStore.storeDatasets">
     <ClimateBoxplotChart
       :plot-data="climateData"
+      type="numeric"
       :user-selection="userSelection"
       :climates="numericClimates"
       :show-individuals="showIndividuals"
-      ref="climateBoxPlot"
+      ref="numericClimateBoxPlot"
       v-if="climateData && numericClimates && numericClimates.length > 0"
     />
 
-    <!-- <TraitBarChart
-      :traits="categoricalClimates"
-      :trait-data="traitData"
-      :groups="groups || []"
-      :datasets="datasets || []"
+    <ClimateBoxplotChart
+      class="mt-5"
+      type="date"
+      :plot-data="climateData"
       :user-selection="userSelection"
-      ref="traitBarChart"
-      v-if="traitData && categoricalClimates && categoricalClimates.length > 0"
-    /> -->
+      :climates="dateClimates"
+      :show-individuals="showIndividuals"
+      ref="dateClimateBoxPlot"
+      v-if="climateData && dateClimates && dateClimates.length > 0"
+    />
+
+    <ClimateBarChart
+      class="mt-5"
+      :climates="categoricalClimates"
+      :climate-data="climateData"
+      :user-selection="userSelection"
+      ref="climateBarChart"
+      v-if="climateData && categoricalClimates && categoricalClimates.length > 0"
+    />
   </template>
 </template>
 
@@ -43,11 +54,13 @@
 
   const cdStore = useClimateDataStore()
 
-  const climateBoxPlot = useTemplateRef('climateBoxPlot')
-  // const climateBarChart = useTemplateRef('climateBarChart')
+  const numericClimateBoxPlot = useTemplateRef('numericClimateBoxPlot')
+  const dateClimateBoxPlot = useTemplateRef('dateClimateBoxPlot')
+  const climateBarChart = useTemplateRef('climateBarChart')
 
-  const numericClimates = computed(() => cdStore.storeClimates.filter(t => t.dataType === ViewTableClimatesDataType.numeric))
-  const categoricalClimates = computed(() => cdStore.storeClimates.filter(t => t.dataType !== ViewTableClimatesDataType.numeric))
+  const numericClimates = computed(() => (compProps.climates || []).filter(t => t.dataType === ViewTableClimatesDataType.numeric))
+  const dateClimates = computed(() => (compProps.climates || []).filter(t => t.dataType === ViewTableClimatesDataType.date))
+  const categoricalClimates = computed(() => (compProps.climates || []).filter(t => t.dataType !== ViewTableClimatesDataType.numeric && t.dataType !== ViewTableClimatesDataType.date))
 
   const showIndividuals = ref(false)
   const highlightSelection = ref<InstanceType<typeof HighlightSelection>>()
@@ -55,13 +68,14 @@
   const userSelectionValid = computed(() => highlightSelection.value?.valid || false)
 
   function forceRedraw () {
-    climateBoxPlot.value?.redraw()
-    // climateBarChart.value?.redrawAll()
-    highlightSelection.value?.update()
+    numericClimateBoxPlot.value?.redraw()
+    dateClimateBoxPlot.value?.redraw()
+    climateBarChart.value?.redrawAll()
+    // highlightSelection.value?.update()
   }
 
   function update () {
-    highlightSelection.value?.update()
+    // highlightSelection.value?.update()
   }
 
   defineExpose({

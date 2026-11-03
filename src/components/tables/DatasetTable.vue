@@ -68,6 +68,7 @@
           :color="datasetTypes[item.datasetType].color()"
           :prepend-icon="datasetTypes[item.datasetType].path"
           :text="$t(datasetTypes[item.datasetType].text)"
+          v-tooltip:top="(item.datasetType === 'trials' && item.studyDetailsCore !== undefined) ? $t('widgetStudyDetailsTitle') : undefined"
           :link="(item.datasetType === 'trials' && item.studyDetailsCore !== undefined)"
           @click="(item.datasetType === 'trials' && item.studyDetailsCore !== undefined) ? showStudyDetails(item) : undefined"
         >

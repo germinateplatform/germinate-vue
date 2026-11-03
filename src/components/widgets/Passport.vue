@@ -77,7 +77,7 @@
               :title="$t('buttonToggle')"
             >
               <template #text>
-                <GermplasmTraitStats :germplasm="germplasm" @has-data="(count) => { performanceDataCount = count }" />
+                <GermplasmTraitStats :germplasm="germplasm" @has-data="(count) => { performanceDataCount = count }" v-if="germplasm" />
               </template>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -100,7 +100,7 @@
       </PedigreeDefinitionTable>
       <PedigreeTable class="mb-5" header-icon-color="primary" :get-data="getPedigreeData" :filter-on="pedigreeFilter" />
 
-      <PedigreeChart class="mb-5" header-icon-color="primary" :germplasm="germplasm" />
+      <PedigreeChart class="mb-5" header-icon-color="primary" :germplasm="germplasm" v-if="germplasm" />
 
       <v-card v-if="location" class="mb-5" id="location" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
         <v-toolbar
@@ -122,6 +122,7 @@
         header-icon-color="primary"
         id="images"
         v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)"
+        v-if="germplasm"
       />
 
       <GroupTable class="mb-5" header-icon-color="primary" :get-data="getGroupData" id="groups" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">

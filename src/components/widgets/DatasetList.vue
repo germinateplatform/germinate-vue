@@ -26,21 +26,60 @@
           </v-list-item>
         </v-list>
         <v-card-text>
-          <v-chip label :color="datasetTypes[dataset.datasetType || ''].color()" :prepend-icon="datasetTypes[dataset.datasetType || ''].path" :text="$t(datasetTypes[dataset.datasetType || ''].text)" />
+          <v-chip
+            label
+            :color="datasetTypes[dataset.datasetType || ''].color()"
+            :prepend-icon="datasetTypes[dataset.datasetType || ''].path"
+            :text="$t(datasetTypes[dataset.datasetType || ''].text)"
+            variant="tonal"
+            v-tooltip:top="(dataset.datasetType === 'trials' && dataset.studyDetailsCore !== undefined) ? $t('widgetStudyDetailsTitle') : undefined"
+            :link="(dataset.datasetType === 'trials' && dataset.studyDetailsCore !== undefined)"
+            @click="(dataset.datasetType === 'trials' && dataset.studyDetailsCore !== undefined) ? showStudyDetails(dataset) : undefined"
+          >
+            <template #append v-if="dataset.datasetType === 'trials' && dataset.studyDetailsCore">
+              <v-icon end :icon="mdiInformation" />
+            </template>
+          </v-chip>
         </v-card-text>
       </v-card>
     </v-menu>
+
+    <v-bottom-sheet
+      v-model="bottomSheetVisible"
+      inset
+      max-height="75vh"
+    >
+      <v-card
+        class="pb-10"
+      >
+        <v-card-text v-if="selectedDataset && selectedDataset.studyDetailsCore">
+          <h3 class="text-headline-medium">{{ $t('widgetStudyDetailsTitle') }}</h3>
+          <StudyDetailsComponent :study-details="selectedDataset.studyDetailsCore" />
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
   </v-chip-group>
 </template>
 
 <script setup lang="ts">
   import type { ViewTableDatasets } from '@/plugins/types/germinate'
   import { datasetTypes } from '@/plugins/util/types'
-  import { mdiCloseCircle, mdiDatabase } from '@mdi/js'
+  import { mdiCloseCircle, mdiDatabase, mdiInformation } from '@mdi/js'
 
   const menus = ref<{ [index: number]: boolean }>({})
 
-  const compProps = defineProps<{
+  const bottomSheetVisible = ref(false)
+  const selectedDataset = ref<ViewTableDatasets>()
+
+  defineProps<{
     datasets: ViewTableDatasets[]
   }>()
+
+  function showStudyDetails (item: ViewTableDatasets) {
+    selectedDataset.value = item
+
+    nextTick(() => {
+      bottomSheetVisible.value = true
+    })
+  }
 </script>

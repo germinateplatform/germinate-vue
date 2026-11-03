@@ -19,7 +19,7 @@
             <v-icon :icon="mdiFileDownload" class="me-2" /> {{ $t('widgetAvailableFileresourcesTitle') }}
           </template>
           <template #text>
-            <FileResourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled />
+            <FileresourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled />
           </template>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -56,6 +56,13 @@
         :showing="selectedTab === 'matrix'"
       >
         <ClimateMatrix />
+      </RevealOnShowPanel>
+
+      <RevealOnShowPanel
+        v-show="selectedTab === 'trend'"
+        :showing="selectedTab === 'trend'"
+      >
+        <ClimateTrend />
       </RevealOnShowPanel>
 
       <RevealOnShowPanel
@@ -106,7 +113,7 @@ name: exportClimates
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
 
-  import { mdiDatabase, mdiEye, mdiFileDownload, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
+  import { mdiChartMultiline, mdiDatabase, mdiEye, mdiFileDownload, mdiFileDownloadOutline, mdiGrid, mdiHelpCircle, mdiMapMarkerPath, mdiTableSearch } from '@mdi/js'
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
@@ -161,6 +168,11 @@ name: exportClimates
       text: t('pageDataExportTabDataMatrix'),
       path: mdiGrid,
       help: t('pageDataExportTabHelpDataMatrix'),
+    }, {
+      key: 'trend',
+      text: t('pageDataExportTabDataTrend'),
+      path: mdiChartMultiline,
+      help: t('pageDataExportTabHelpDataTrend'),
     }, {
       key: 'table',
       text: t('pageDataExportTabDataTable'),
