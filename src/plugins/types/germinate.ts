@@ -207,6 +207,13 @@ export interface ViewStatsDatasets {
     dataPointCount: number;
 }
 
+export interface ViewStatsCountry {
+    country: string;
+    code_2: string;
+    code_3: string;
+    count: number;
+}
+
 export const enum BackupType {
     UPDATE = 'UPDATE',
     PERIODICAL = 'PERIODICAL',

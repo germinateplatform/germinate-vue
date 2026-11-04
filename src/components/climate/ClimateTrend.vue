@@ -252,9 +252,9 @@
       boxmode: 'group' as const,
       dragmode: 'select' as const,
       yaxis: {
-        automargin: true,
         title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
         tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
+        fixedrange: false,
       },
       legend: {
         bgcolor: 'rgba(0,0,0,0)',

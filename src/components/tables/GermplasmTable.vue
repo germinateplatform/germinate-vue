@@ -49,13 +49,12 @@
     </template>
 
     <template #item.marked-items="{ item }">
-      <VSplitBtn
+      <v-split-btn
         :color="baseTable?.isMarked(item.germplasmId) ? 'primary' : undefined"
         v-tooltip:top="baseTable?.isMarked(item.germplasmId) ? $t('widgetTableMarkingRemoveItemFromList') : $t('widgetTableMarkingAddItemToList')"
         @click="baseTable?.toggleMarkedItem(item.germplasmId)"
         :icon="baseTable?.isMarked(item.germplasmId) ? mdiBookmarkCheck : mdiBookmarkOutline"
         variant="tonal"
-        size="default"
         rounded="xl"
       >
         <template #menu>
@@ -66,7 +65,7 @@
             <v-list-item :title="$t('tableContextUnmarkEntityChildren')" :prepend-icon="mdiChevronDownBoxOutline" @click="markEntityChildren(false, item)" />
           </v-list>
         </template>
-      </VSplitBtn>
+      </v-split-btn>
     </template>
 
     <template #item.germplasmId="{ item }">
@@ -206,7 +205,7 @@
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import { datasetTypes, entityTypes } from '@/plugins/util/types'
   import type { AxiosResponse } from 'axios'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableGermplasm } from '@/plugins/types/germinate'
+  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGermplasm } from '@/plugins/types/germinate'
   import { useI18n } from 'vue-i18n'
   import { getNumberWithSuffix, isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'

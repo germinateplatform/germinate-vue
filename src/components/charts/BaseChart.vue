@@ -136,7 +136,7 @@
     supportsFileDownload?: boolean
     filename: string
     sourceFile?: DownloadBlob
-    chartType?: 'plotly' | 'd3.js'
+    chartType?: 'plotly' | 'd3.js' | 'svg'
     canChangeColors?: boolean
     chartId: string
     toolbarColor?: string

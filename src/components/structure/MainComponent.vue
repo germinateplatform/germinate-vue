@@ -157,14 +157,11 @@
         :close-on-content-click="false"
         persistent
       >
-        <v-card :title="$t('modalTitleLoading')" width="min(50vw, 400px)" class="d-flex align-center justify-center" :loading="loading">
-          <template #loader="{ isActive }">
-            <v-progress-linear
-              :active="isActive"
-              color="primary"
-              height="4"
-              indeterminate
-            />
+        <v-card :title="$t('modalTitleLoading')" width="min(50vw, 400px)">
+          <template #text>
+            <div class="text-center">
+              <v-loading-indicator color="primary" />
+            </div>
           </template>
         </v-card>
       </v-overlay>
@@ -185,10 +182,7 @@
 </template>
 
 <script lang="ts" setup>
-  import MainNavigation from '@/components/structure/MainNavigation.vue'
-  import AsyncSidebar from '@/components/structure/AsyncSidebar.vue'
-  import ConfirmModal from '@/components/modals/ConfirmModal.vue'
-  import AppFooter from '@/components/AppFooter.vue'
+  import { VLoadingIndicator } from 'vuetify/labs/VLoadingIndicator'
 
   import { useDisplay, useTheme } from 'vuetify'
   import type { Locale } from '@/plugins/types/Locale'

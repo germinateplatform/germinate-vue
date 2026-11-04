@@ -119,7 +119,7 @@
       </template>
 
       <template #item.datasetDetails="{ item }">
-        <v-btn-group variant="tonal" v-if="disabled !== true">
+        <v-btn-group variant="tonal">
           <v-btn size="x-small" color="primary" target="_blank" :href="item.hyperlink" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
           <v-btn size="x-small" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="$t(datasetStates[item.datasetState].text)" />
           <v-btn size="x-small" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
@@ -127,8 +127,10 @@
           <v-btn size="x-small" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
           <v-btn size="x-small" :icon="mdiFilePlus" color="muted" disabled v-else />
 
-          <v-btn size="x-small" color="primary" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />
-          <v-btn size="x-small" color="error" :icon="mdiDelete" v-tooltip:top="$t('tableTooltipDatasetDelete')" @click="deleteDataset(item)" v-if="store.storeUserIsDataCurator" />
+          <template v-if="disabled !== true">
+            <v-btn size="x-small" color="primary" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />
+            <v-btn size="x-small" color="error" :icon="mdiDelete" v-tooltip:top="$t('tableTooltipDatasetDelete')" @click="deleteDataset(item)" v-if="store.storeUserIsDataCurator" />
+          </template>
         </v-btn-group>
       </template>
 
