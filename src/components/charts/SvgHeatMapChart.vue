@@ -19,7 +19,12 @@
     >
       <template #tooltip="{ region }">
         <strong>{{ region.title }}</strong>
-        <v-chip class="ms-3" label :color="region.color" size="small" variant="flat">{{ getNumberWithSuffix(region.count ?? 0, 1) }}</v-chip>
+        <v-chip class="ms-3" label :color="region.color" size="small" variant="flat">
+          {{
+            // @ts-expect-error
+            getNumberWithSuffix(region.count ?? 0, 1)
+          }}
+        </v-chip>
       </template>
     </v-map>
 
