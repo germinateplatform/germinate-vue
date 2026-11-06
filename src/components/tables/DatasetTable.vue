@@ -61,6 +61,16 @@
         </div>
       </template>
 
+      <template #item.datasetTags="{ item }">
+        <v-chip
+          v-if="item.datasetTags && item.datasetTags.length > 0"
+          :prepend-icon="mdiTagMultiple"
+          label
+          :text="getNumberWithSuffix(item.datasetTags.length, 0)"
+          @click="showDetails('tags', item)"
+        />
+      </template>
+
       <!-- Dataset type icon -->
       <template #item.datasetType="{ item }">
         <v-chip
@@ -122,8 +132,8 @@
         <v-btn-group variant="tonal">
           <v-btn size="x-small" color="primary" target="_blank" :href="item.hyperlink" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
           <v-btn size="x-small" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="$t(datasetStates[item.datasetState].text)" />
-          <v-btn size="x-small" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" v-if="item.collaborators !== 0" />
-          <v-btn size="x-small" :icon="mdiAccountMultiple" color="muted" disabled v-else />
+          <v-btn size="x-small" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" :disabled="item.collaborators === 0" />
+          <v-btn size="x-small" color="primary" :icon="mdiOfficeBuildingCog" v-tooltip:top="$t('tableTooltipDatasetInstitutions')" @click="showDetails('institutions', item)" :disabled="(item.institutions ?? []).length === 0" />
           <v-btn size="x-small" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="item.attributes !== 0" />
           <v-btn size="x-small" :icon="mdiFilePlus" color="muted" disabled v-else />
 
@@ -155,11 +165,21 @@
 
       <template #bottom-sheet-content>
         <CollaboratorTable :get-data="getCollaboratorData" v-if="selectedDataset && visibleDetails === 'collaborators'" />
+        <InstitutionDatasetTable :get-data="getInstitutionData" :filter-on="institutionFilter" v-if="selectedDataset && visibleDetails === 'institutions'" />
         <AttributeDetails v-if="selectedDataset && visibleDetails === 'attributes'" :dataset="selectedDataset" />
         <template v-if="selectedDataset && selectedDataset.studyDetailsCore && visibleDetails === 'studyDetails'">
           <h3 class="text-headline-medium">{{ $t('widgetStudyDetailsTitle') }}</h3>
           <StudyDetailsComponent :study-details="selectedDataset.studyDetailsCore" />
         </template>
+        <div v-if="selectedDataset && visibleDetails === 'tags'" class="d-flex flex-wrap ga-2">
+          <v-chip
+            v-for="tag in selectedDataset.datasetTags"
+            :key="`tag-${tag}`"
+            label
+            :text="tag"
+            :prepend-icon="mdiTag"
+          />
+        </div>
       </template>
     </BaseTable>
 
@@ -185,6 +205,10 @@
       v-if="selectedDataset"
     >
       <template #additional-fields="{ item }">
+        <TextTagInput
+          v-model="item.datasetTags"
+        />
+
         <v-autocomplete
           class="mt-5"
           autocomplete="off"
@@ -223,7 +247,7 @@
   import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
-  import { truncateAfterWords } from '@/plugins/util/formatting'
+  import { getNumberWithSuffix, truncateAfterWords } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
   import { datasetStates, datasetTypes } from '@/plugins/util/types'
 
@@ -232,7 +256,8 @@
   import { isPageAvailable } from '@/plugins/util'
   import { columns } from '@/plugins/util/table-columns'
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
-  import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiDelete, mdiFilePlus, mdiHelpCircle, mdiInformation, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiOpenInNew, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
+  import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiDelete, mdiFilePlus, mdiHelpCircle, mdiInformation, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiOfficeBuildingCog, mdiOpenInNew, mdiPlusBox, mdiSquareEditOutline, mdiTag, mdiTagMultiple } from '@mdi/js'
+  import { apiPostInstitutionDatasetTable } from '@/plugins/api/institution'
 
   const compProps = withDefaults(defineProps<{
     getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>> }
@@ -251,7 +276,7 @@
   const router = useRouter()
   const emit = defineEmits(['license-accepted'])
 
-  type DetailsType = 'collaborators' | 'publications' | 'attributes' | 'studyDetails' | undefined
+  type DetailsType = 'collaborators' | 'publications' | 'attributes' | 'studyDetails' | 'tags' | 'institutions' | undefined
 
   const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')
@@ -275,6 +300,22 @@
         title: t(c.title || ''),
       }
     })
+  })
+
+  const institutionFilter = computed(() => {
+    if (selectedDataset.value) {
+      return [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: 'allDatasetIds',
+          comparator: FilterComparator.arrayContains,
+          values: [`${selectedDataset.value.datasetId}`],
+          canBeChanged: false,
+        }],
+      }]
+    } else {
+      return []
+    }
   })
 
   const forcedFilters = computed(() => {
@@ -400,6 +441,10 @@
   }
 
   function editDataset (dataset: ViewTableDatasets) {
+    if (!dataset.datasetTags) {
+      dataset.datasetTags = []
+    }
+
     selectedDataset.value = dataset
 
     nextTick(() => datasetEditModal.value?.show())
@@ -429,6 +474,10 @@
 
   function getCollaboratorData (data: PaginatedRequest) {
     return apiPostDatasetCollaboratorsTable(selectedDataset.value?.datasetId || -1, data)
+  }
+
+  function getInstitutionData (data: PaginatedRequest) {
+    return apiPostInstitutionDatasetTable(data)
   }
 
   function editExperiment (id?: number) {
@@ -462,6 +511,7 @@
           id: selectedDataset.value.datasetId || -1,
           name: selectedDataset.value.datasetName || '',
           description: selectedDataset.value.datasetDescription || '',
+          tags: selectedDataset.value.datasetTags ?? [],
           licenseId: selectedDataset.value.licenseId,
           experimentId: selectedDataset.value.experimentId,
           dateStart: selectedDataset.value.startDate,

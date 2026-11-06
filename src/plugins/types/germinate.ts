@@ -1278,6 +1278,7 @@ export interface ViewTableDatasets {
     hyperlink?: string;
     sourceFile?: string;
     version?: string;
+    datasetTags?: string[];
     datasetType?: string;
     experimentId?: number;
     experimentName?: string;
@@ -1453,6 +1454,7 @@ export interface Datasets {
     dateStart?: Date;
     dateEnd?: Date;
     sourceFile?: string;
+    tags?: string[];
     datatype?: string;
     dublinCore?: DublinCore;
     version?: string;

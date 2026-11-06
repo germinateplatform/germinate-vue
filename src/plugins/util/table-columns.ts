@@ -724,6 +724,12 @@ const datasetColumns: ExtendedDataTableHeader[] = [
     searchable: true,
     quickSearchable: true,
   }, {
+    key: 'datasetTags',
+    dataType: 'json',
+    title: 'tableColumnDatasetTags',
+    searchable: true,
+    quickSearchable: true,
+  }, {
     key: 'experimentId',
     dataType: 'integer',
     title: 'tableColumnExperimentId',

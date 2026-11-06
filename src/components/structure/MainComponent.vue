@@ -87,7 +87,7 @@
           </v-list>
         </v-menu>
 
-        <v-menu>
+        <v-menu v-if="locales.length > 1">
           <template #activator="{ props }">
             <v-btn v-bind="props" :icon="mdiTranslate" />
           </template>

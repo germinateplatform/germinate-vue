@@ -135,6 +135,12 @@
       dataType: undefined,
       sortable: false,
       title: '',
+    }, {
+      key: 'allDatasetIds',
+      dataType: 'json',
+      visibleInTable: false,
+      visibleInFilter: true,
+      title: 'allDatasetIds',
     }]
 
     return headers
