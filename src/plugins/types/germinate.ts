@@ -1271,6 +1271,17 @@ export interface GermplasmStats {
     isSelected: boolean;
 }
 
+export interface SimilarityResult {
+    datasetId: number;
+    similarityScore: number;
+}
+
+export interface DatasetSimilarityRequest {
+    datasetIds: number[];
+    datasetType?: string;
+    threshold?: number;
+}
+
 export interface ViewTableDatasets {
     datasetId?: number;
     datasetName?: string;
@@ -1305,8 +1316,14 @@ export interface ViewTableDatasets {
     publications?: number;
     fileresourceIds?: number[];
     collaborators?: number;
-    attributes?: number;
+    attributeData?: DatasetAttribute[];
     acceptedBy?: number[];
+}
+
+export interface DatasetAttribute {
+    attributeId: number;
+    attributeName: string;
+    attributeValue: string;
 }
 
 export interface StudyDetailsCore {

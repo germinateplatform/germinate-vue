@@ -2,7 +2,7 @@
   <v-container fluid>
     <div v-if="datasetType">
       <!-- Table showing all datasets of the type -->
-      <DatasetTable :get-data="getData" :get-ids="getIds" :filter-on="filterOn" :selection-type="selectionMode" class="mb-3" ref="datasetTable" @selection-changed="setSelection" />
+      <DatasetTable :get-data="getData" :get-ids="getIds" :download="downloadTable" :filter-on="filterOn" :selection-type="selectionMode" class="mb-3" ref="datasetTable" @selection-changed="setSelection" />
       <!-- Continue button -->
       <v-btn color="primary" @click="checkLicenses" :disabled="!canContinue" :prepend-icon="mdiArrowRightBox" :text="$t('buttonNext')" />
     </div>
@@ -33,6 +33,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
+  import { apiPostTableExport } from '@/plugins/api/misc'
 
   const { t } = useI18n()
 
@@ -95,6 +96,10 @@
   }
   function getIds (data: PaginatedRequest) {
     return apiPostDatasetTableIds(data)
+  }
+  function downloadTable (data: PaginatedRequest) {
+    const filter = { filters: data.filters } as PaginatedRequest
+    return apiPostTableExport(filter, 'dataset')
   }
   function setSelection (selectedIds: number[]) {
     selectedDatasets.value = selectedIds

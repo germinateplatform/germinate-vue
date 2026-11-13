@@ -142,19 +142,19 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   searchable: true,
 }, {
   key: 'hasTrialsData',
-  dataType: 'boolean',
+  dataType: 'integer',
   title: 'tableColumnHasTrialsData',
   cellProps: { class: 'px-1 mx-0' },
   headerProps: { class: 'px-1 mx-0' },
 }, {
   key: 'hasGenotypicData',
-  dataType: 'boolean',
+  dataType: 'integer',
   title: 'tableColumnHasGenotypicData',
   cellProps: { class: 'px-1 mx-0' },
   headerProps: { class: 'px-1 mx-0' },
 }, {
   key: 'hasPedigreeData',
-  dataType: 'boolean',
+  dataType: 'integer',
   title: 'tableColumnHasPedigreeData',
   cellProps: { class: 'px-1 mx-0' },
   headerProps: { class: 'px-1 mx-0' },
@@ -812,6 +812,14 @@ const datasetColumns: ExtendedDataTableHeader[] = [
     title: 'tableColumnDatasetCreatedOn',
     // @ts-ignore
     value: (value: ViewTableDatasets) => value.createdOn ? new Date(value.createdOn).toLocaleDateString() : undefined,
+  }, {
+    key: 'attributeData',
+    dataType: 'json',
+    sortable: false,
+    visibleInTable: false,
+    visibleInFilter: true,
+    quickSearchable: true,
+    title: 'tableColumnDatasetAttributes',
   }, {
     key: 'datasetDetails',
     dataType: undefined,

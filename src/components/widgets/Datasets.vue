@@ -2,17 +2,18 @@
   <v-container fluid>
     <h2>{{ $t('pageDatasetsInternalTitle') }}</h2>
     <p>{{ $t('pageDatasetsInternalText') }}</p>
-    <DatasetTable :get-data="getData" :filter-on="filterOnInternal" />
+    <DatasetTable :get-data="getData" :download="downloadTable" :filter-on="filterOnInternal" />
 
     <h2>{{ $t('pageDatasetsExternalTitle') }}</h2>
     <p>{{ $t('pageDatasetsExternalText') }}</p>
-    <DatasetTable :get-data="getData" :filter-on="filterOnExternal" />
+    <DatasetTable :get-data="getData" :download="downloadTable" :filter-on="filterOnExternal" />
   </v-container>
 </template>
 
 <script setup lang="ts">
   import DatasetTable from '@/components/tables/DatasetTable.vue'
   import { apiPostDatasetTable } from '@/plugins/api/dataset'
+  import { apiPostTableExport } from '@/plugins/api/misc'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
 
   const props = defineProps<{
@@ -49,5 +50,9 @@
 
   function getData (data: PaginatedRequest) {
     return apiPostDatasetTable(data)
+  }
+  function downloadTable (data: PaginatedRequest) {
+    const filter = { filters: data.filters } as PaginatedRequest
+    return apiPostTableExport(filter, 'dataset')
   }
 </script>

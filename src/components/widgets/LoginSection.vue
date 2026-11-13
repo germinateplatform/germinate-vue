@@ -4,15 +4,29 @@
     <div class="text-heading-1 text-medium-emphasis">{{ $t('widgetSignInTitle') }}</div>
 
     <v-text-field
-      density="compact"
       :label="$t('formLabelUsername')"
       :prepend-inner-icon="mdiEmailOutline"
+      class="mb-3"
       autofocus
+      hide-details
       :readonly="loading"
       v-model="username"
+      tabindex="1"
     />
 
-    <div class="text-body-large text-medium-emphasis d-flex justify-end">
+    <v-text-field
+      :append-inner-icon="visible ? mdiEyeOff : mdiEye"
+      :type="visible ? 'text' : 'password'"
+      :label="$t('formLabelPassword')"
+      v-model="password"
+      hide-details
+      :prepend-inner-icon="mdiLockOutline"
+      :readonly="loading"
+      @click:append-inner="visible = !visible"
+      tabindex="2"
+    />
+
+    <div class="text-body-large text-medium-emphasis d-flex justify-end mb-5 mt-1">
       <a
         v-if="store.storeServerSettings && store.storeServerSettings.gatekeeperUrl"
         class="text-body-small text-decoration-none"
@@ -22,17 +36,6 @@
       >
         {{ $t('widgetSignInForgotPassword') }}</a>
     </div>
-
-    <v-text-field
-      :append-inner-icon="visible ? mdiEyeOff : mdiEye"
-      :type="visible ? 'text' : 'password'"
-      density="compact"
-      :label="$t('formLabelPassword')"
-      v-model="password"
-      :prepend-inner-icon="mdiLockOutline"
-      :readonly="loading"
-      @click:append-inner="visible = !visible"
-    />
 
     <v-card
       v-if="error"
@@ -48,7 +51,7 @@
       block
       type="submit"
       :disabled="!valid || loading"
-      class="mb-8"
+      class="mb-5"
       :prepend-icon="mdiLoginVariant"
       color="primary"
       size="large"
@@ -68,7 +71,7 @@
       >
         {{ $t('buttonRegister') }}
       </v-btn>
-      <p class="text-muted text-label-medium">{{ $t('widgetRegisterText') }}</p>
+      <p class="text-muted text-label-medium mt-1">{{ $t('widgetRegisterText') }}</p>
     </template>
 
     <RegistrationModal ref="registrationModal" v-if="store.storeServerSettings?.registrationEnabled" />

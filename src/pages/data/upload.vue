@@ -337,6 +337,7 @@ name: importUpload
 
   watch(selectedFile, async newValue => {
     if (newValue instanceof File) {
+      locationsConfirmed.value = false
       if (selectedTab.value?.id === 'mcpd') {
         const fileBuffer = await newValue.arrayBuffer()
         const data = read(fileBuffer, { type: 'array', cellDates: false })

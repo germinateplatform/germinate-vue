@@ -288,6 +288,9 @@
   import { useI18n } from 'vue-i18n'
   import { useDate } from 'vuetify'
 
+  import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
+  const { updateRouter } = useRouteUpdate()
+
   const router = useRouter()
   const route = useRoute()
   const date = useDate()
@@ -647,7 +650,7 @@
       return
     }
 
-    const query = Object.assign({}, route.query)
+    const query = Object.assign({}, router.currentRoute.value.query)
     if (filterGroups.value && filterGroups.value.length > 0) {
       const copy = JSON.parse(JSON.stringify(filterGroups.value)) as UrlFilterGroup[]
 
@@ -664,7 +667,7 @@
     } else {
       delete query[`${compProps.tableKey}-filter`]
     }
-    await router.replace({ query }).catch(() => true)
+    updateRouter({ query })
   }
 
   function loadFilters (readUrl = true) {

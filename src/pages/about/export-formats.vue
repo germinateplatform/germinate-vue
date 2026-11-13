@@ -74,6 +74,7 @@ name: aboutExportFormats
 </route>
 
 <script setup lang="ts">
+  import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
   import { getTemplateColor } from '@/plugins/util/colors'
   import { exportFormats, type FormatState } from '@/plugins/util/types'
   import { mdiCloud, mdiCloudDownload, mdiCloudUpload, mdiDownload, mdiOpenInNew, mdiTag } from '@mdi/js'
@@ -82,7 +83,7 @@ name: aboutExportFormats
   const { t } = useI18n()
 
   const route = useRoute('aboutExportFormats')
-  const router = useRouter()
+  const { updateRouter } = useRouteUpdate()
 
   type TagType = 'all' | 'genotype' | 'phenotype' | 'pedigree' | 'pca'
   type Type = 'all' | 'provider' | 'receiver'
@@ -162,7 +163,7 @@ name: aboutExportFormats
     query.tag = selectedTag.value
     query.type = selectedType.value
 
-    await router.replace({ query })
+    updateRouter({ query })
   })
 
   onMounted(() => {

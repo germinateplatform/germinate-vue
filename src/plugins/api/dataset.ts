@@ -1,7 +1,7 @@
 import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
-import type { PaginatedResult, DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions, ClimateExportDatasetRequest, ViewTableDatasetAttributes, DataExportJobs, ViewTableLicenses, ViewTableFileresourcetypes, ViewTableCollaborators } from '@/plugins/types/germinate'
+import type { PaginatedResult, DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions, ClimateExportDatasetRequest, ViewTableDatasetAttributes, DataExportJobs, ViewTableLicenses, ViewTableFileresourcetypes, ViewTableCollaborators, SimilarityResult, DatasetSimilarityRequest } from '@/plugins/types/germinate'
 
 export function apiPostPublicationDatasetTable (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -21,6 +21,10 @@ export function apiPostCollaboratorsTable<T> (queryData: PaginatedRequest, onSuc
 export function apiPostDatasetCollaboratorsTable (datasetId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableCollaborators[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
   return authAxios({ url: `dataset/${datasetId}/collaborator`, method: 'POST', data: queryData, success: onSuccess, error: onError })
+}
+
+export function apiPostSimilarDatasets (similarityRequest: DatasetSimilarityRequest, onSuccess?: GerminateResponseHandler<SimilarityResult[]>, onError?: ErrorHandler) {
+  return authAxios({ url: 'dataset/similar', method: 'POST', data: similarityRequest, success: onSuccess, error: onError })
 }
 
 export function apiPostTrialDatasetExport (queryData: TrialsExportDatasetRequest, onSuccess?: GerminateResponseHandler<Blob>, onError?: ErrorHandler) {

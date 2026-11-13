@@ -4,6 +4,13 @@
       <DatasetList :datasets="cdStore.storeDatasets" v-if="cdStore.storeDatasets" />
     </Teleport>
 
+    <SimilarDatasetWidget
+      class="mb-5"
+      :dataset-ids="cdStore.storeDatasetIds"
+      dataset-type="climate"
+      @datasets-added="addDatasets"
+    />
+
     <div v-if="cdStore.storeDatasets && cdStore.storeDatasets.length > 0">
       <v-expansion-panels multiple class="g-expansion-panels">
         <v-expansion-panel eager>
@@ -11,7 +18,7 @@
             <v-icon :icon="mdiDatabase" class="me-2" /> {{ $t('widgetSelectedDatasetsTitle') }}
           </template>
           <template #text>
-            <DatasetTable :get-data="getDatasetTableData" disabled />
+            <DatasetTable :get-data="getDatasetTableData" disabled ref="datasetTable" />
           </template>
         </v-expansion-panel>
         <v-expansion-panel eager v-if="hasFileResources">
@@ -19,7 +26,7 @@
             <v-icon :icon="mdiFileDownload" class="me-2" /> {{ $t('widgetAvailableFileresourcesTitle') }}
           </template>
           <template #text>
-            <FileresourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled />
+            <FileresourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled ref="fileresourceTable" />
           </template>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -109,7 +116,7 @@ name: exportClimates
   import { apiPostDatasetGroups } from '@/plugins/api/group'
   import { apiPostTableExport } from '@/plugins/api/misc'
   import { Pages } from '@/plugins/pages'
-  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type PaginatedRequest, type ViewTableGroups, type TrialsExportDatasetRequest, type ViewTableClimates } from '@/plugins/types/germinate'
+  import { FilterComparator, FilterOperator, type PaginatedResult, type ViewTableDatasets, type PaginatedRequest, type TrialsExportDatasetRequest } from '@/plugins/types/germinate'
   import { isAccepted } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
 
@@ -121,6 +128,7 @@ name: exportClimates
   import { apiPostClimateDataTable, apiPostDatasetClimates, apiPostClimateDataTableIds } from '@/plugins/api/climate'
   import { datasetTypes } from '@/plugins/util/types'
   import { useBreadcrumbIcon } from '@/plugins/composables/breadcrumbs'
+  import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
 
   interface Tab {
     key: string
@@ -131,11 +139,15 @@ name: exportClimates
 
   const { t } = useI18n()
 
+  const { updateRouter } = useRouteUpdate()
+
   const cdStore = useClimateDataStore()
   const router = useRouter()
   const route = useRoute('exportClimates')
 
   const climateLocationMap = useTemplateRef('climateLocationMap')
+  const datasetTable = useTemplateRef('datasetTable')
+  const fileresourceTable = useTemplateRef('fileresourceTable')
 
   const selectedTab = ref<string>('overview')
   const datasetIds = ref<number[]>([])
@@ -312,11 +324,24 @@ name: exportClimates
     })
   }
 
+  function addDatasets (ids: number[]) {
+    datasetIds.value = datasetIds.value.concat(ids)
+  }
+
+  watch(() => cdStore.storeDatasets, async newValue => {
+    datasetTable.value?.refresh()
+    fileresourceTable.value?.refresh()
+
+    const ids = (newValue ?? []).map(d => d.datasetId).join(',')
+
+    updateRouter({ params: { datasetIds: ids } })
+  })
+
   watch(selectedTab, async newValue => {
     const query = Object.assign({}, route.query)
     query.tab = newValue
 
-    await router.replace({ query })
+    updateRouter({ query })
 
     if (newValue === 'locations') {
       nextTick(() => {

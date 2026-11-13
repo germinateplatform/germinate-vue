@@ -4,6 +4,13 @@
       <DatasetList :datasets="tdStore.storeDatasets" v-if="tdStore.storeDatasets" />
     </Teleport>
 
+    <SimilarDatasetWidget
+      class="mb-5"
+      :dataset-ids="tdStore.storeDatasetIds"
+      dataset-type="trials"
+      @datasets-added="addDatasets"
+    />
+
     <div v-if="tdStore.storeDatasets && tdStore.storeDatasets.length > 0">
       <v-expansion-panels multiple class="g-expansion-panels">
         <v-expansion-panel eager>
@@ -11,7 +18,7 @@
             <v-icon :icon="mdiDatabase" class="me-2" /> {{ $t('widgetSelectedDatasetsTitle') }}
           </template>
           <template #text>
-            <DatasetTable :get-data="getDatasetTableData" disabled />
+            <DatasetTable :get-data="getDatasetTableData" disabled ref="datasetTable" />
           </template>
         </v-expansion-panel>
         <v-expansion-panel eager v-if="hasFileResources">
@@ -19,7 +26,7 @@
             <v-icon :icon="mdiFileDownload" class="me-2" /> {{ $t('widgetAvailableFileresourcesTitle') }}
           </template>
           <template #text>
-            <FileresourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled />
+            <FileresourceTable :get-data="getFileresourceTableData" :filter-on="fileresourceFilter" disabled ref="fileresourceTable" />
           </template>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -133,6 +140,9 @@ name: exporTrials
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
 
+  import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
+  const { updateRouter } = useRouteUpdate()
+
   type TabType = 'overview' | 'matrix' | 'comparison' | 'table' | 'locations' | 'timeseries' | 'export'
 
   interface Tab {
@@ -150,6 +160,8 @@ name: exporTrials
   const route = useRoute('exporTrials')
 
   const trialLocationMap = useTemplateRef('trialLocationMap')
+  const datasetTable = useTemplateRef('datasetTable')
+  const fileresourceTable = useTemplateRef('fileresourceTable')
 
   const selectedTab = ref<TabType>('overview')
   const datasetIds = ref<number[]>([])
@@ -351,17 +363,56 @@ name: exporTrials
     })
   }
 
+  function addDatasets (ids: number[]) {
+    datasetIds.value = datasetIds.value.concat(ids)
+  }
+
+  watch(() => tdStore.storeDatasets, async newValue => {
+    datasetTable.value?.refresh()
+    fileresourceTable.value?.refresh()
+
+    const ids = (newValue ?? []).map(d => d.datasetId).join(',')
+
+    updateRouter({ params: { datasetIds: ids } })
+  })
+
   watch(selectedTab, async newValue => {
     const query = Object.assign({}, route.query)
     query.tab = newValue
 
-    await router.replace({ query })
+    updateRouter({ query })
 
     if (newValue === 'locations') {
       nextTick(() => {
         trialLocationMap.value?.invalidateSize()
       })
     }
+  })
+
+  watch(datasetIds, async newValue => {
+    apiPostTrialLocationCount({
+      datasetIds: newValue,
+    }, result => {
+      if (result) {
+        trialLocationsAvailable.value = result > 0
+      }
+    })
+
+    apiPostTrialLayoutCount({
+      datasetIds: newValue,
+    }, result => {
+      if (result) {
+        trialLayoutAvailable.value = newValue.map(ds => result[ds] !== undefined && result[ds] > 0)
+      }
+    })
+
+    apiPostTrialsDataTimepoints({
+      datasetIds: newValue,
+    }, result => {
+      if (result && result.length > 1) {
+        trialTimepointsAvailable.value = true
+      }
+    })
   })
 
   onBeforeMount(() => {
@@ -374,30 +425,6 @@ name: exporTrials
     if (route && route.params && route.params.datasetIds) {
       try {
         datasetIds.value = (route.params.datasetIds as string).split(',').map(Number)
-
-        apiPostTrialLocationCount({
-          datasetIds: datasetIds.value,
-        }, result => {
-          if (result) {
-            trialLocationsAvailable.value = result > 0
-          }
-        })
-
-        apiPostTrialLayoutCount({
-          datasetIds: datasetIds.value,
-        }, result => {
-          if (result) {
-            trialLayoutAvailable.value = datasetIds.value.map(ds => result[ds] !== undefined && result[ds] > 0)
-          }
-        })
-
-        apiPostTrialsDataTimepoints({
-          datasetIds: datasetIds.value,
-        }, result => {
-          if (result && result.length > 1) {
-            trialTimepointsAvailable.value = true
-          }
-        })
       } catch {
         datasetIds.value = []
       }

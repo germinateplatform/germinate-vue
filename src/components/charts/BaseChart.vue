@@ -50,7 +50,7 @@
           v-else
         />
       </template>
-      <div v-show="hasData">
+      <div v-show="hasData" class="chart-wrapper">
         <slot name="chart-content" ref="chart" />
       </div>
     </v-card-text>
@@ -112,7 +112,7 @@
   import { getDateTimeString, getNumberWithSuffix } from '@/plugins/util/formatting'
 
   import { mdiChartAreaspline, mdiDotsVertical, mdiFileCode, mdiFileDocument, mdiFileDocumentRemove, mdiFileImage, mdiLoading, mdiPalette, mdiPlus, mdiUndoVariant } from '@mdi/js'
-  import Plotly from 'plotly.js/lib/core'
+  import Plotly, { type Layout } from 'plotly.js/lib/core'
   import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits(['update:loading', 'force-redraw', 'download-png-manually'])
@@ -310,7 +310,13 @@
     purge: (el: string | HTMLElement): void => {
       Plotly.purge(el)
     },
-    react: (el: string | HTMLElement, data: any, layout?: any, config?: any): Promise<Plotly.PlotlyHTMLElement | undefined> => {
+    react: (el: string | HTMLElement, data: any, layout?: Partial<Layout>, config?: any): Promise<Plotly.PlotlyHTMLElement | undefined> => {
+      if (layout !== undefined && layout.modebar === undefined) {
+        layout.modebar = {
+          orientation: 'v' as const,
+        }
+      }
+
       return handlePlot(el, data, layout, config)
     },
     restyle: (el: string | HTMLElement, update: any, indices?: number[]): Promise<Plotly.PlotlyHTMLElement | undefined> => {

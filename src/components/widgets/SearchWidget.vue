@@ -90,12 +90,14 @@
   import { apiPostTrialsDataTable, apiPostTrialsDataTableIds } from '@/plugins/api/trait'
   import { apiPostClimateDataTable, apiPostClimateDataTableIds } from '@/plugins/api/climate'
   import { apiPostMapdefinitionTable, apiPostMapdefinitionTableIds } from '@/plugins/api/genotype'
+  import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
 
   const compProps = defineProps<{
     searchTerm?: string
   }>()
 
   const { t } = useI18n()
+  const { updateRouter } = useRouteUpdate()
 
   const allCategories = computed(() => {
     let i = 0
@@ -147,7 +149,6 @@
     }]
   })
 
-  const router = useRouter()
   const stats = ref<SearchStats>({
     germplasm: { value: 0, loading: false },
     germplasmAttributes: { value: 0, loading: false },
@@ -307,7 +308,7 @@
   function initiateSearch () {
     localSearchTerm.value = tempLocalSearchTerm.value
 
-    router.replace({ params: { id: tempLocalSearchTerm.value } })
+    updateRouter({ params: { id: tempLocalSearchTerm.value } })
   }
 
   watch(() => compProps.searchTerm, async (newValue: string | undefined) => {

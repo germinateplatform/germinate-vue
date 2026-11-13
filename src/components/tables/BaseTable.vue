@@ -300,6 +300,7 @@
   import { mdiArrowRight, mdiArrowUpLeftBold, mdiBookmarkCheck, mdiBookmarkOutline, mdiCheckboxMultipleBlankOutline, mdiCheckboxMultipleMarked, mdiCheckboxMultipleOutline, mdiDownload, mdiGroup, mdiMagnify, mdiMenuLeft } from '@mdi/js'
   import { validCompsForType } from '@/plugins/util/table-columns'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
 
   export type DisplayType = 'table' | 'grid'
 
@@ -334,6 +335,7 @@
   const emit = defineEmits(['data-changed', 'selection-changed', 'update:bottom-sheet-visible', 'filter-changed', 'filter-cleared'])
 
   const router = useRouter()
+  const { updateRouter } = useRouteUpdate()
   const route = useRoute()
   const store = useCoreStore()
   const { t } = useI18n()
@@ -695,7 +697,7 @@
 
       // TODO: ADD FILTERING!!!!
 
-      await router.replace({ query })
+      updateRouter({ query })
     }
   }
 

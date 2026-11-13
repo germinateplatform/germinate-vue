@@ -70,18 +70,20 @@
         <v-card-text>
           <p>{{ $t('pagePassportTraitStatsText') }}</p>
 
-          <v-expansion-panels eager>
-            <v-expansion-panel
-              eager
-              :value="performanceDataCount <= 48"
-              :title="$t('buttonToggle')"
-            >
-              <template #text>
-                <GermplasmTraitStats :germplasm="germplasm" @has-data="(count) => { performanceDataCount = count }" v-if="germplasm" />
-              </template>
-            </v-expansion-panel>
-          </v-expansion-panels>
+          <v-expand-transition>
+            <GermplasmTraitStats :germplasm="germplasm" @has-data="(count) => { performanceDataCount = count }" v-if="germplasm" v-show="showPerformance" />
+          </v-expand-transition>
         </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            color="primary"
+            :append-icon="showPerformance ? mdiChevronUp : mdiChevronDown"
+            @click="showPerformance = !showPerformance"
+            variant="tonal"
+            :text="$t('buttonToggle')"
+          />
+        </v-card-actions>
       </v-card>
 
       <DatasetTable class="mb-5" header-icon-color="primary" :get-data="getDatasetData" id="datasets" v-intersect.quiet="(isIntersecting: boolean, entries: IntersectionObserverEntry[]) => onIntersect(entries)">
@@ -185,7 +187,7 @@
 
   import emitter from 'tiny-emitter/instance'
   import { useI18n } from 'vue-i18n'
-  import { mdiBarcode, mdiBookmarkCheck, mdiBookmarkOutline, mdiBookOpenVariant, mdiChartDonut, mdiCircleMedium, mdiCommentMultiple, mdiDatabase, mdiFamilyTree, mdiFileTree, mdiGroup, mdiHelpCircle, mdiImageMultiple, mdiLinkVariant, mdiMapMarker, mdiOfficeBuildingCog, mdiOpenInNew, mdiPassport, mdiPlaylistPlus, mdiSpeedometer, mdiSubdirectoryArrowRight, mdiTagTextOutline } from '@mdi/js'
+  import { mdiBarcode, mdiBookmarkCheck, mdiBookmarkOutline, mdiBookOpenVariant, mdiChartDonut, mdiChevronDown, mdiChevronUp, mdiCircleMedium, mdiCommentMultiple, mdiDatabase, mdiFamilyTree, mdiFileTree, mdiGroup, mdiHelpCircle, mdiImageMultiple, mdiLinkVariant, mdiMapMarker, mdiOfficeBuildingCog, mdiOpenInNew, mdiPassport, mdiPlaylistPlus, mdiSpeedometer, mdiSubdirectoryArrowRight, mdiTagTextOutline } from '@mdi/js'
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
   import { apiPostPublicationsTable } from '@/plugins/api/publication'
   import { apiPostCommentsTable } from '@/plugins/api/comment'
@@ -203,6 +205,7 @@
   const germplasm = ref<ViewTableGermplasm>()
   const groups = ref<ViewTableGroups[]>()
   const entityListOpen = ref(['accession', 'plantplot', 'sample'])
+  const showPerformance = ref(false)
 
   const activeStack: string[] = []
   let activeItem: string | undefined = undefined
