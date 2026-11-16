@@ -100,13 +100,11 @@
 
     apiPostClimateDatasetExport(query, result => {
       chartData.value = result
-      emitter.emit('show-loading', false)
     }, {
       codes: [404],
       callback: () => {
         // Do nothing here, it just means there is no data.
-        emitter.emit('show-loading', false)
       },
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 </script>

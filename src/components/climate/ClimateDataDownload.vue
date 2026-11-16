@@ -112,8 +112,7 @@
         filename: 'climate-long-dataset-' + cdStore.storeDatasetIds.join('-'),
         extension: 'zip',
       })
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function downloadWideFormat () {
@@ -138,7 +137,6 @@
       }
 
       downloadBlob(downloadRequest)
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 </script>

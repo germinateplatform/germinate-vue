@@ -283,7 +283,11 @@
             }
           })
           .finally(() => emitter.emit('show-loading', false))
+      } else {
+        emitter.emit('show-loading', false)
       }
+    } else {
+      emitter.emit('show-loading', false)
     }
 
     loading.value = false

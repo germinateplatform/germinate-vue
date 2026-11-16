@@ -82,7 +82,6 @@
 
     apiPostClimateDataTable(query, result => {
       climateData.value = result.data
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 </script>

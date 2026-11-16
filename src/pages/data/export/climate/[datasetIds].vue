@@ -213,8 +213,7 @@ name: exportClimates
 
       getDatasets()
       updateGroups()
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   })
 
   function getTableData (data: PaginatedRequest) {

@@ -134,8 +134,7 @@
           <v-btn size="x-small" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="$t(datasetStates[item.datasetState].text)" />
           <v-btn size="x-small" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" :disabled="item.collaborators === 0" />
           <v-btn size="x-small" color="primary" :icon="mdiOfficeBuildingCog" v-tooltip:top="$t('tableTooltipDatasetInstitutions')" @click="showDetails('institutions', item)" :disabled="(item.institutions ?? []).length === 0" />
-          <v-btn size="x-small" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" v-if="(item.attributeData ?? []).length > 0" />
-          <v-btn size="x-small" :icon="mdiFilePlus" color="muted" disabled v-else />
+          <v-btn size="x-small" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" :disabled="((item.attributeData ?? []).length === 0 && item.dublinCore === undefined) || (item.licenseId && !isAccepted(item))" />
 
           <template v-if="disabled !== true">
             <v-btn size="x-small" color="primary" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />

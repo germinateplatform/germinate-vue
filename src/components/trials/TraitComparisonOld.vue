@@ -172,9 +172,7 @@
         rawData = result.data
         redraw()
       }
-
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function plot () {

@@ -298,8 +298,7 @@ name: exportGenotypes
 
       // Show the sidebar
       emitter.emit('toggle-aside', 'download')
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function getFileresourceTableData (query: PaginatedRequest) {
@@ -345,7 +344,7 @@ name: exportGenotypes
       callback: () => {
         redirectBack()
       },
-    }).then(() => {
+    }).finally(() => {
       emitter.emit('show-loading', false)
     })
   }

@@ -69,12 +69,11 @@
       name: name.value,
       description: description.value,
     }, result => {
-      emitter.emit('show-loading', false)
       if (result) {
         emit('type-added', result)
         hide()
       }
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   defineExpose({

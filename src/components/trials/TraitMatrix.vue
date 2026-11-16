@@ -107,13 +107,11 @@
       //   ids: this.colorBySelection === 'marked_items' ? this.storeMarkedGermplasm : null,
       //   names: this.colorBySelection === 'specified_names' ? this.germplasmNamesSplit : null
       // }))
-      emitter.emit('show-loading', false)
     }, {
       codes: [404],
       callback: () => {
         // Do nothing here, it just means there is no data.
-        emitter.emit('show-loading', false)
       },
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 </script>

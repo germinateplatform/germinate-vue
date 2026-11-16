@@ -99,12 +99,10 @@ name: genesysRequest
       germplasmIds: store.storeMarkedGermplasm,
     }, (result: string) => {
       genesysUuid.value = result
-      emitter.emit('show-loading', false)
     }, {
       codes: [400, 404, 503],
       callback: (e: AxiosError) => {
         // Do nothing here, it just means there is no data.
-        emitter.emit('show-loading', false)
 
         switch (e.status) {
           case 404:
@@ -135,7 +133,7 @@ name: genesysRequest
             break
         }
       },
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
   function getGermplasmData (data: PaginatedRequest) {
     return apiPostGermplasmTable(data)

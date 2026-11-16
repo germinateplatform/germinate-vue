@@ -53,14 +53,13 @@ name: backup
 
           apiPutBackup(() => {
             backupTable.value?.refresh()
-            emitter.emit('show-loading', false)
 
             // Show toast
             emitter.emit('show-snackbar', {
               text: t('pageBackupToastNewBackupSuccessText'),
               color: 'success',
             })
-          })
+          }).finally(() => emitter.emit('show-loading', false))
         }
       },
     })

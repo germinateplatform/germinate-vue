@@ -102,10 +102,9 @@
 
     apiPostClimateDataTable(query, result => {
       climateData.value = result.data
-      emitter.emit('show-loading', false)
 
       nextTick(() => traitStatsChart.value?.update())
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function getDatasetData (data: PaginatedRequest) {

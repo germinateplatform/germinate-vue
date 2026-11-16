@@ -317,7 +317,7 @@
               }).finally(() => emitter.emit('show-loading', false))
             }
           })
-          .catch(() => emitter.emit('show-loading', false))
+          .finally(() => emitter.emit('show-loading', false))
       }
     }
   }
@@ -357,7 +357,7 @@
               }).finally(() => emitter.emit('show-loading', false))
             }
           })
-          .catch(() => emitter.emit('show-loading', false))
+          .finally(() => emitter.emit('show-loading', false))
       }
     }
   }

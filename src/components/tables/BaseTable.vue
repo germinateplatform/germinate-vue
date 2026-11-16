@@ -646,8 +646,8 @@
           } else {
             store.removeMarkedIds(componentProps.markedItemType, result.data.data)
           }
-          emitter.emit('show-loading', false)
         })
+        .finally(() => emitter.emit('show-loading', false))
     }
   }
 

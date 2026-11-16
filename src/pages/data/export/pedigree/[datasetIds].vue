@@ -139,8 +139,6 @@ name: exportPedigrees
   function exportData () {
     emitter.emit('show-loading', true)
 
-    emitter.emit('show-loading', true)
-
     const params = JSON.parse(JSON.stringify(queryParams.value))
     params.datasetIds = selectedDatasets.value.map(ds => ds.datasetId)
 
@@ -149,8 +147,7 @@ name: exportPedigrees
 
       // Show the sidebar
       emitter.emit('toggle-aside', 'download')
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function getDatasets () {
@@ -192,7 +189,7 @@ name: exportPedigrees
       callback: () => {
         redirectBack()
       },
-    }).then(() => {
+    }).finally(() => {
       emitter.emit('show-loading', false)
     })
   }
@@ -209,7 +206,7 @@ name: exportPedigrees
     }
     apiPostDatasetGroups(request, result => {
       germplasmGroups.value = result
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function getDatasetTableData () {

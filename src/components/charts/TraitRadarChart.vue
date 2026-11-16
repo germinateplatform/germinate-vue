@@ -111,7 +111,7 @@
     }
 
     baseChart.value?.react(radarChart.value, data, layout, DEFAULT_PLOTLY_CONFIG)
-      .then(() => {
+      .finally(() => {
         emitter.emit('show-loading', false)
       })
 

@@ -229,8 +229,9 @@ name: groupDetails
           emitter.emit('show-loading', true)
           apiPatchGroupMembers(group.value?.groupId || -1, type, data, () => {
             groupmembersTable.value?.refresh()
-            emitter.emit('show-loading', false)
-          })
+          }).finally(() => emitter.emit('show-loading', false))
+        } else {
+          emitter.emit('show-loading', false)
         }
       },
     })
@@ -245,8 +246,7 @@ name: groupDetails
     emitter.emit('show-loading', true)
     apiPatchGroupMembers(group.value?.groupId || -1, type, data, () => {
       groupmembersTable.value?.refresh()
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function upload () {
@@ -281,8 +281,7 @@ name: groupDetails
         // Add the ids to the group
         apiPatchGroupMembers(group.value?.groupId || -1, type.apiName, data, () => {
           groupmembersTable.value?.refresh()
-          emitter.emit('show-loading', false)
-        })
+        }).finally(() => emitter.emit('show-loading', false))
       }
 
       // Get the ids for the correct group type

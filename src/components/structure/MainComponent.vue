@@ -156,6 +156,7 @@
         class="align-center justify-center"
         :close-on-content-click="false"
         persistent
+        :transition="false"
       >
         <v-card :title="$t('modalTitleLoading')" width="min(50vw, 400px)">
           <template #text>

@@ -219,7 +219,6 @@ name: germplasm
   }
 
   function downloadPedigree () {
-    emitter.emit('show-loading', true)
     const request: PedigreeRequest = {
       filters: [],
       page: 1,
@@ -237,8 +236,7 @@ name: germplasm
 
       // Show the sidebar
       emitter.emit('toggle-aside', 'download')
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   function downloadGermplasm () {
@@ -255,8 +253,7 @@ name: germplasm
         filename: `germplasm-${getDateTimeString()}`,
         extension: 'zip',
       })
-      emitter.emit('show-loading', false)
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   const { ignoreUpdates: ignoreCustomFilter } = watchIgnorable(customFilter, async newValue => {

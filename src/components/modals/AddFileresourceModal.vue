@@ -128,12 +128,11 @@
           datasetIds: selectedDatasetIds.value,
         }, () => {
           emit('fileresource-added')
-          emitter.emit('show-loading', false)
           emitter.emit('update-sidebar-menu')
           hide()
-        })
+        }).finally(() => emitter.emit('show-loading', false))
       }
-    })
+    }).finally(() => emitter.emit('show-loading', false))
   }
 
   defineExpose({

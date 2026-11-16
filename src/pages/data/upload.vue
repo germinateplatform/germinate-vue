@@ -297,10 +297,11 @@ name: importUpload
           }
 
           emitter.emit('toggle-aside', 'upload')
-          emitter.emit('show-loading', false)
 
           selectedFile.value = undefined
-        })
+        }).finally(() => emitter.emit('show-loading', false))
+      } else {
+        emitter.emit('show-loading', false)
       }
     }
   }

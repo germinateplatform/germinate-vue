@@ -127,8 +127,10 @@
 
         // Show the sidebar
         emitter.emit('toggle-aside', 'download')
+      }).finally(() => {
         emitter.emit('show-loading', false)
-      }).finally(() => reject())
+        reject()
+      })
     })
   }
 
