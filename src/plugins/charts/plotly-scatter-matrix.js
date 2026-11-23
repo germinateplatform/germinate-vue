@@ -7,7 +7,7 @@ export function plotlyScatterMatrix (Plotly) {
     names: null
   }
   let colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
-  const colorByOptions = ['dataset_name', 'entity_parent_name', 'taxonomy', 'Date', 'year', 'treatments_description', 'rep', 'block', 'trial_row', 'trial_column', 'trial_site', 'location', 'group_ids']
+  const colorByOptions = ['dataset_ids', 'entity_parent_name', 'taxonomy', 'Date', 'year', 'treatment', 'rep', 'block', 'trial_row', 'trial_column', 'trial_site', 'location', 'group_ids']
   let height = null
   let width = null
   let darkMode = false
@@ -62,7 +62,7 @@ export function plotlyScatterMatrix (Plotly) {
                 values: values
               }
             }),
-            name: '' + cats[i],
+            name: ('' + cats[i]) ?? '',
             text: names,
             ids: ids,
             customdata: names,
@@ -92,7 +92,7 @@ export function plotlyScatterMatrix (Plotly) {
                 values: unpackConditionalMarked(rows, k, colorBy.ids, cats[i] === 'Marked')
               }
             }),
-            name: cats[i],
+            name: cats[i] ?? '',
             text: names,
             ids: ids,
             customdata: names,
@@ -122,7 +122,7 @@ export function plotlyScatterMatrix (Plotly) {
                 values: unpackConditionalByName(rows, k, colorBy.names, cats[i] === 'Marked')
               }
             }),
-            name: cats[i],
+            name: cats[i] ?? '',
             text: names,
             ids: ids,
             customdata: names,

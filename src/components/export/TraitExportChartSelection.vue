@@ -114,9 +114,9 @@ export default {
         text: this.$t('widgetChartColoringNoColoring'),
         value: null
       }, {
-        text: `${this.$t('widgetChartColoringByDataset')}${this.getStatsText('dataset_name')}`,
-        value: 'dataset_name',
-        disabled: this.getStatsCount('dataset_name') < 2
+        text: `${this.$t('widgetChartColoringByDataset')}${this.getStatsText('dataset_ids')}`,
+        value: 'dataset_ids',
+        disabled: this.getStatsCount('dataset_ids') < 2
       }, {
         text: `${this.$t('widgetChartColoringByEntityParent')}${this.getStatsText('entity_parent_name')}`,
         value: 'entity_parent_name',
@@ -134,9 +134,9 @@ export default {
         value: 'taxonomy',
         disabled: this.getStatsCount('taxonomy') < 2
       }, {
-        text: `${this.$t('widgetChartColoringByTreatment')}${this.getStatsText('treatments_description')}`,
-        value: 'treatments_description',
-        disabled: this.getStatsCount('treatments_description') < 2
+        text: `${this.$t('widgetChartColoringByTreatment')}${this.getStatsText('treatment')}`,
+        value: 'treatment',
+        disabled: this.getStatsCount('treatment') < 2
       }, {
         text: `${this.$t('widgetChartColoringByRep')}${this.getStatsText('rep')}`,
         value: 'rep',

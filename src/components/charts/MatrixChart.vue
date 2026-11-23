@@ -192,7 +192,7 @@ export default {
           .call(plotlyScatterMatrix(Plotly)
             .darkMode(this.storeDarkMode)
             .colorBy(colorBy)
-            .columnsToIgnore(['name', 'puid', 'taxonomy', 'latitude', 'longitude', 'elevation', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'block', 'trial_row', 'trial_column', 'dbId', 'general_identifier', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'location', 'trial_site', 'Site', 'treatments_description', 'year', 'groups'])
+            .columnsToIgnore(['name', 'puid', 'taxonomy', 'latitude', 'longitude', 'elevation', 'germplasm_synonyms', 'entity_parent_name', 'entity_parent_general_identifier', 'rep', 'block', 'trial_row', 'trial_column', 'dbId', 'general_identifier', 'dataset_ids', 'location_name', 'location', 'trial_site', 'Site', 'treatment', 'year', 'groups'])
             .onPointClicked(p => {
               // For trials we show the passport page on click
               if (this.datasetType === 'trials') {
