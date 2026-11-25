@@ -60,7 +60,6 @@
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
-  import emitter from 'tiny-emitter/instance'
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
@@ -138,7 +137,7 @@
 
       data.forEach(dp => {
         x.push(dp.scaleDatatype === ScalesDatatype.numeric ? +dp.traitValue : dp.traitValue)
-        y.push(dp.variableName)
+        y.push(dp.scaleUnit ? `${dp.traitName} [${dp.scaleUnit}]` : dp.traitName)
         ids.push(`${dp.germplasmId}-${uuidv4()}`)
         text.push(getGermplasmDisplayName(dp))
       })
@@ -289,7 +288,7 @@
   function getData (data: ViewTableTrialsData[], filter: (dp: ViewTableTrialsData) => boolean, index: number, name: string) {
     const dps = data.filter(filter)
     return {
-      y: dps.map(dp => dp.variableName),
+      y: dps.map(dp => dp.scaleUnit ? `${dp.traitName} [${dp.scaleUnit}]` : dp.traitName),
       x: dps.map(dp => dp.scaleDatatype === ScalesDatatype.numeric ? +dp.traitValue : dp.traitValue),
       ids: dps.map(dp => `${dp.germplasmId}-${uuidv4()}`),
       text: dps.map(dp => getGermplasmDisplayName(dp)),

@@ -94,7 +94,7 @@
         xaxis: {
           zeroline: false,
           side: 'top' as const,
-          title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
+          title: { text: t('chartAxisTitleTime'), font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
           tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
           showgrid: true,
           gridcolor: store.storeIsDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
@@ -109,7 +109,7 @@
         dragmode: 'select' as const,
         yaxis: {
           automargin: true,
-          title: { font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
+          title: { text: compProps.trait.scaleUnit ? `${compProps.trait.traitName} [${compProps.trait.scaleUnit}]` : compProps.trait.traitName, font: { color: store.storeIsDarkMode ? 'white' : 'black' } },
           tickfont: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
         legend: {

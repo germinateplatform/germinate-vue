@@ -86,7 +86,7 @@ name: home
 
   useHelpRegistration({
     label: 'User interface',
-    url: '/docs/user/ui/',
+    url: '/user/ui/',
   })
 
   const allDashboardSections = computed(() => store.storeServerSettings?.dashboardSections || Object.keys(dashboardSections))

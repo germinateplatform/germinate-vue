@@ -23,6 +23,7 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   cellProps: { class: 'font-weight-bold' },
   searchable: true,
   quickSearchable: true,
+  markedItemSearchColumn: true,
 }, {
   key: 'germplasmGid',
   dataType: 'string',

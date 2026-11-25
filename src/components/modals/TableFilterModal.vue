@@ -89,6 +89,7 @@
                             density="compact"
                             hide-details
                             :disabled="filter.filter.canBeChanged === false"
+                            :label="$t('formLabelTableFilterValue')"
                             v-model="filter.filter.values"
                           />
                           <v-select
@@ -98,6 +99,7 @@
                             density="compact"
                             hide-details
                             :disabled="filter.filter.canBeChanged === false"
+                            :label="$t('formLabelTableFilterValue')"
                             v-model="filter.filter.values"
                           />
                           <v-select
@@ -107,6 +109,7 @@
                             density="compact"
                             hide-details
                             :disabled="filter.filter.canBeChanged === false"
+                            :label="$t('formLabelTableFilterValue')"
                             v-model="filter.filter.values"
                           />
                           <v-text-field
@@ -115,6 +118,7 @@
                             @update:model-value="v => { filter.filter.values = v.split(',').map(t => t.trim()) }"
                             hide-details
                             :disabled="filter.filter.canBeChanged === false"
+                            :label="$t('formLabelTableFilterValue')"
                             density="compact"
                           />
                         </template>
@@ -147,6 +151,7 @@
                             v-else-if="filter.column?.dataType === 'date'"
                             hide-details
                             :disabled="filter.filter.canBeChanged === false"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             density="compact"
                             prepend-icon=""
                             prepend-inner-icon="$calendar"
@@ -155,6 +160,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'entityType'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="entityTypeOptions"
                             density="compact"
                             hide-details
@@ -163,6 +169,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'importStatus'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="dataImportStatus"
                             density="compact"
                             hide-details
@@ -171,6 +178,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'locationType'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="locationTypeOptions"
                             density="compact"
                             hide-details
@@ -179,6 +187,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'groupType'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="groupTypeOptions"
                             density="compact"
                             hide-details
@@ -187,6 +196,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'traitClass'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="traitClassOptions"
                             density="compact"
                             hide-details
@@ -195,6 +205,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'methodClass'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="methodClassOptions"
                             density="compact"
                             hide-details
@@ -203,6 +214,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'imageType'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="imageTypeOptions"
                             density="compact"
                             hide-details
@@ -211,6 +223,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'dataType'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="dataTypeOptions"
                             density="compact"
                             hide-details
@@ -219,6 +232,7 @@
                           />
                           <v-select
                             v-else-if="filter.column?.dataType === 'newsType'"
+                            :label="$t('formLabelTableFilterValueX', { index: vIndex + 1 })"
                             :items="newsTypeOptions"
                             density="compact"
                             hide-details
@@ -447,9 +461,13 @@
 
   function setFilterValues (filter: InternalFilter) {
     if (filter.column) {
-      // @ts-ignore
       const comp = getComparatorConfig(filter.filter.comparator)
-      filter.filter.values = new Array(comp?.values).fill(filter.column.dataType === 'boolean' ? '0' : '')
+
+      const currentValues = (filter.filter.values ?? []).filter(v => v.trim().length > 0)
+
+      if (currentValues.length === 0 || currentValues.length !== comp?.values) {
+        filter.filter.values = new Array(comp?.values).fill(filter.column.dataType === 'boolean' ? '0' : '')
+      }
     }
   }
 

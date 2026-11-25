@@ -35,7 +35,7 @@
             @touchmove.prevent="onTouchMove"
             @touchend="onTouchEnd"
           />
-          <div class="field-plan-controls">
+          <v-btn-group size="small" direction="vertical" class="field-plan-controls">
             <v-btn
               @click="reverseRows = !reverseRows; draw()"
               :color="reverseRows ? 'primary' : undefined"
@@ -49,7 +49,7 @@
             <v-btn @click="zoomIn" :icon="mdiPlus" />
             <v-btn @click="resetView" title="Reset view" :icon="mdiRecordCircleOutline" />
             <v-btn @click="zoomOut" :icon="mdiMinus" />
-          </div>
+          </v-btn-group>
           <div class="field-plan-legend" v-if="legend && legend.length > 0">
             <template
               v-for="item in legend"
@@ -146,6 +146,7 @@
     },
   )
 
+  const store = useCoreStore()
   const tdStore = useTraitDataStore()
   const rows = shallowRef(1)
   const columns = shallowRef(1)
@@ -640,7 +641,7 @@
     ctx.clearRect(0, 0, cw, ch)
 
     // Background
-    ctx.fillStyle = '#f8fafc'
+    ctx.fillStyle = store.storeIsDarkMode ? '#070503' : '#f8fafc'
     ctx.fillRect(0, 0, cw, ch)
 
     // Apply viewport transform
@@ -794,6 +795,8 @@
     })
   })
 
+  watch(() => store.storeIsDarkMode, async () => onResize())
+
   onBeforeUnmount(() => {
     resizeObserver?.disconnect()
   })
@@ -827,23 +830,6 @@
   flex-direction: column;
   gap: 4px;
 }
-.field-plan-controls button {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #334155;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: background 0.15s;
-}
-.field-plan-controls button:hover { background: #f1f5f9; }
 
 /* Legend */
 .field-plan-legend {

@@ -52,7 +52,7 @@ name: passport
   })
   useHelpRegistration({
     label: 'Germplasm & Passport Data',
-    url: '/docs/user/germplasm/',
+    url: '/user/germplasm/',
   })
 
   const route = useRoute('passport')

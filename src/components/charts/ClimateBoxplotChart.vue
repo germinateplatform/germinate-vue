@@ -43,7 +43,6 @@
   import { Pages } from '@/plugins/pages'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
-  import emitter from 'tiny-emitter/instance'
   import type { UserSelection } from '@/components/widgets/selections/ClimateHighlightSelection.vue'
   import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 

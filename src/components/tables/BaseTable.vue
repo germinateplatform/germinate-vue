@@ -320,7 +320,7 @@
   useHelpRegistration({
     key: 'data-table',
     label: 'Germinate Tables',
-    url: '/docs/user/ui/#tables',
+    url: '/user/ui/#tables',
   })
 
   const componentProps = withDefaults(defineProps<BaseTableProps<T>>(), {
@@ -609,16 +609,18 @@
   }
 
   function forceMarkedItemFilter (items: string[]) {
-    const column = filterColumns.value.find(c => c.markedItemSearchColumn === true)
+    const columns = filterColumns.value.filter(c => c.markedItemSearchColumn === true)
 
-    if (column !== undefined && componentProps.markedItemType !== undefined && (items ?? []).length > 0) {
+    if (columns !== undefined && columns.length > 0 && componentProps.markedItemType !== undefined && (items ?? []).length > 0) {
       const filter: FilterGroup[] = [{
-        operator: FilterOperator.and,
-        filters: [{
-          column: column.key || '',
-          comparator: FilterComparator.inSet,
-          values: items,
-        }],
+        operator: FilterOperator.or,
+        filters: columns.map(c => {
+          return {
+            column: c.key || '',
+            comparator: FilterComparator.inSet,
+            values: items,
+          }
+        }),
       }]
 
       tableFilterModal.value?.forceFilters(filter)
@@ -837,6 +839,13 @@
     localDisplayType.value = store.storeTableDisplayType[componentProps.tableKey] || componentProps.displayType
     if (!localSortByColumns.value || localSortByColumns.value.length === 0) {
       localSortByColumns.value = componentProps.sortBy || []
+    }
+
+    if (componentProps.markedItemType) {
+      useHelpRegistration({
+        label: 'Item marking',
+        url: '/user/lists-groups/#table-marking',
+      })
     }
   })
 

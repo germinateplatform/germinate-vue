@@ -149,7 +149,9 @@
   }
 
   function uploadMarkedItems () {
-    markedItemsUploadModal.value?.show()
+    userMarkedItemsText.value = ''
+
+    nextTick(() => markedItemsUploadModal.value?.show())
   }
 
   function clearMarkedItems () {

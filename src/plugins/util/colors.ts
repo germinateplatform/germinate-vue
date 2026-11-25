@@ -90,7 +90,7 @@ export function createColorGradient (one: string, two: string, steps: number) {
 
   if (oneRgb && twoRgb) {
     for (let i = 0; i < steps; i++) {
-      const iNorm = i / (steps - 1)
+      const iNorm = i / Math.max(1, (steps - 1))
       result.push(rgbToHex(
         Math.floor(oneRgb.r + iNorm * (twoRgb.r - oneRgb.r)),
         Math.floor(oneRgb.g + iNorm * (twoRgb.g - oneRgb.g)),
@@ -112,7 +112,7 @@ export function createMultiColorGradient (colors: string[], steps: number): stri
   let result: string[] = []
 
   for (let i = 0; i < steps; i++) {
-    result = result.concat(createColorGradient(colors[i], colors[i + 1], Math.floor(steps / sections)))
+    result = result.concat(createColorGradient(colors[i], colors[i + 1], Math.max(1, Math.floor(steps / sections))))
   }
 
   while (result.length < steps) {

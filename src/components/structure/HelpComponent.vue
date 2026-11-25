@@ -37,9 +37,7 @@
   import { useHelpRegistryProvider, type HelpEntry } from '@/plugins/composables/useHelp'
   import { mdiHelpCircleOutline, mdiOpenInNew } from '@mdi/js'
 
-  // TODO: Update
-  // const GERMINATE_DOCS = 'https://germinateplatform.github.io/germinate-server'
-  const GERMINATE_DOCS = 'https://sebastian-raubach.github.io/germinate-docs'
+  const GERMINATE_DOCS = 'https://germinateplatform.github.io/germinate-server'
 
   const {
     entries,

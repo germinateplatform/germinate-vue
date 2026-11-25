@@ -70,6 +70,7 @@
   import Passport from '@/components/widgets/Passport.vue'
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete, mdiGrid } from '@mdi/js'
+  import { useHelpRegistration } from '@/plugins/composables/useHelp'
 
   const compProps = defineProps<{
     traits: ViewTableTraits[]
@@ -80,6 +81,11 @@
 
   const store = useCoreStore()
   const tdStore = useTraitDataStore()
+
+  useHelpRegistration({
+    label: 'Item marking',
+    url: '/user/lists-groups/#chart-marking',
+  })
 
   const sourceFile = ref<DownloadBlob>()
   const matrixChart = useTemplateRef('matrixChart')

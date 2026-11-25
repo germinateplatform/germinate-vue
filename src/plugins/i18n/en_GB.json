@@ -944,6 +944,7 @@
   "formLabelAdminSettingsHiddenPagesAutodiscover": "Auto-discover hidden pages",
   "formLabelTableFilterColumn": "Column",
   "formLabelTableFilterComparison": "Comparison",
+  "formLabelTableFilterValue": "Value",
   "formLabelTableFilterValueX": "Value {index}",
   "pageGerminateSettingsCardImportModeNoneExplanation": "No data import is allowed.",
   "pageGerminateSettingsCardImportModeVerifyExplanation": "Data can be verified but not imported.",
