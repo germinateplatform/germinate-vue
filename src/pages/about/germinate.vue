@@ -133,7 +133,6 @@ name: aboutGerminate
   import type { ViewTableLocations } from '@/plugins/types/germinate'
   import { bskyIcon, germinateVersion } from '@/plugins/util'
   import { getTemplateColor } from '@/plugins/util/colors'
-  import { useI18n } from 'vue-i18n'
   import emitter from 'tiny-emitter/instance'
   import { useDisplay } from 'vuetify'
   import { mdiBriefcaseVariant, mdiCalendar, mdiEarth, mdiFileDocument, mdiGithub, mdiGlasses, mdiInformation, mdiInformationOutline, mdiTag, mdiTwitter, mdiWeb } from '@mdi/js'

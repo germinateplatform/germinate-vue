@@ -2,19 +2,14 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMapdefinitions} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :selection-type="selectionType"
     :show-details="false"
     item-key="markerId"
     table-key="mapDefinitions"
     marked-item-type="markers"
     :header-icon="mdiFormatIndentIncrease"
+    v-bind="{ ...$attrs, ...compProps }"
     :header-title="compProps.headerTitle || $t('pageMarkersTitle')"
-    v-bind="$attrs"
   >
     <!-- Marker id link -->
     <template #item.markerId="{ item }">
@@ -45,23 +40,14 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, FilterOperator, PaginatedRequest, PaginatedResult, ViewTableMapdefinitions } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { FilterOperator, ViewTableMapdefinitions } from '@/plugins/types/germinate'
   import { Pages } from '@/plugins/pages'
   import { mdiFormatIndentIncrease, mdiLabelVariant } from '@mdi/js'
   import { columns } from '@/plugins/util/table-columns'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMapdefinitions[]>>> }
-    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    headerTitle?: string
-  }>()
+  const compProps = defineProps<Partial<Pick<BaseTableProps<ViewTableMapdefinitions>, 'headerTitle'>> & Pick<BaseTableProps<ViewTableMapdefinitions>, 'getData' | 'getIds' | 'download' | 'filterOn' | 'headerIconColor'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

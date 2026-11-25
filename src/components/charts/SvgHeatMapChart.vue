@@ -68,11 +68,6 @@
     return result
   })
 
-  // async function onLoad () {
-  //   await nextTick()
-  //   map.value?.reveal('gr', { zoom: true })
-  // }
-
   onMounted(async () => {
     try {
       const response = await fetch('https://cdn.jsdelivr.net/npm/@svg-maps/world@2.0.0/world.svg')

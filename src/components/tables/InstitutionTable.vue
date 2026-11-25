@@ -2,18 +2,13 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableInstitutions} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :selection-type="selectionType"
     :show-details="false"
     item-key="institutionId"
     table-key="institutions"
     :header-icon="mdiOfficeBuildingCog"
     :header-title="$t('modalTitleInstitutions')"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #item.institutionName="{ item }">
       <div v-if="item.institutionName">
@@ -52,22 +47,14 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableInstitutions } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { FilterComparator, FilterOperator, type FilterGroup, type ViewTableInstitutions } from '@/plugins/types/germinate'
   import { germplasmInstitutionTypes } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
   import { mdiOfficeBuildingCog } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableInstitutions[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableInstitutions>, 'getData' | 'headerIconColor'>>()
 
   const router = useRouter()
   const baseTable = useTemplateRef('baseTable')

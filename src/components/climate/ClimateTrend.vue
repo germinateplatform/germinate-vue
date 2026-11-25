@@ -7,6 +7,7 @@
         <ClimateSelection
           v-model="selectedClimates"
           :climates="numericClimates"
+          url-query-key="trend"
           can-select-all
         >
           <template #text>

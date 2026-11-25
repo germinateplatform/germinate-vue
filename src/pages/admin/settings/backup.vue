@@ -26,7 +26,6 @@ name: backup
   import { mdiCalendarClock, mdiDatabaseArrowRight, mdiFileCabinet } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
 
   definePage({
     meta: {

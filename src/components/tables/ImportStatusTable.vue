@@ -2,17 +2,13 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ImportResult} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
     :show-details="false"
     item-key="id"
     table-key="importFeedback"
     :header-icon="mdiListStatus"
     :header-title="$t('widgetImportStatusTitle')"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #item.type="{ item }">
       <v-chip
@@ -34,20 +30,14 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, ImportResult, PaginatedRequest, PaginatedResult } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ImportResult } from '@/plugins/types/germinate'
   import { mdiAlert, mdiInformation, mdiListStatus } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ImportResult[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ImportResult>, 'hideFooter' | 'getData'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

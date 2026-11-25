@@ -3,17 +3,13 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableTraits} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :show-details="false"
       item-key="variableId"
       table-key="traits"
       :header-icon="mdiTagMultiple"
       :header-title="$t('pageTraitsTitle')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header.methodSetSize="{ column }">
         {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipTraitSet')">
@@ -98,20 +94,14 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableTraits } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
   import { dataTypes, methodClasses, traitClasses } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
   import { columns } from '@/plugins/util/table-columns'
   import { mdiCodeBrackets, mdiGreaterThanOrEqual, mdiHelpCircle, mdiLessThanOrEqual, mdiTagMultiple } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
+  import type { ViewTableTraits } from '@/plugins/types/germinate'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTraits[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableTraits>, 'getData' | 'getIds' | 'download' | 'filterOn' | 'selectionType'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

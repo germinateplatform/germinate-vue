@@ -9,7 +9,7 @@
       v-model="menus[dataset.datasetId || -1]"
     >
       <template #activator="{ props }">
-        <v-chip v-bind="props" link label size="small" :prepend-icon="mdiDatabase" :text="dataset.datasetName" />
+        <v-chip v-bind="props" link label size="small" :prepend-icon="mdiDatabase" :text="truncateAfterWords(dataset.datasetName, 10)" />
       </template>
 
       <v-card max-width="300px">
@@ -63,6 +63,7 @@
 
 <script setup lang="ts">
   import type { ViewTableDatasets } from '@/plugins/types/germinate'
+  import { truncateAfterWords } from '@/plugins/util/formatting'
   import { datasetTypes } from '@/plugins/util/types'
   import { mdiCloseCircle, mdiDatabase, mdiInformation } from '@mdi/js'
 

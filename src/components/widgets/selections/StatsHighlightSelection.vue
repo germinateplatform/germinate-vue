@@ -8,10 +8,13 @@
       class="d-flex mb-5"
     >
       <v-btn class="flex-grow-1" value="taxonomies" :prepend-icon="mdiSitemap" :text="$t('widgetHighlightSelectionTaxonomy')" v-if="selectionModes.includes('taxonomies')">
-        <template #append><v-badge inline :content="getNumberWithSuffix((taxonomies|| []).length, 0)" /></template>
+        <template #append><v-badge inline :content="getNumberWithSuffix((taxonomies ?? []).length, 0)" /></template>
+      </v-btn>
+      <v-btn class="flex-grow-1" value="genus" :prepend-icon="mdiShape" :text="$t('widgetHighlightSelectionGenus')" v-if="selectionModes.includes('genus')">
+        <template #append><v-badge inline :content="getNumberWithSuffix((genus ?? []).length, 0)" /></template>
       </v-btn>
       <v-btn class="flex-grow-1" value="sampstat" :prepend-icon="mdiFormatListChecks" :text="$t('widgetHighlightSelectionBiologicalStatus')" v-if="selectionModes.includes('sampstat')">
-        <template #append><v-badge inline :content="getNumberWithSuffix((biologicalStatus|| []).length, 0)" /></template>
+        <template #append><v-badge inline :content="getNumberWithSuffix((biologicalStatus ?? []).length, 0)" /></template>
       </v-btn>
     </v-btn-toggle>
 
@@ -32,6 +35,23 @@
         <v-chip size="small" v-if="index < 4" :text="item.title" />
 
         <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedTaxonomies || []).length - 4 }} others)</span>
+      </template>
+    </SelectAllBox>
+
+    <SelectAllBox
+      v-if="selectionMode === 'genus'"
+      :label="$t('formLabelHighlightGenus')"
+      :hint="$t('formDescriptionHighlightGenus')"
+      persistent-hint
+      multiple
+      clearable
+      v-model="selectedGenus"
+      :items="genus"
+    >
+      <template #selection="{ internalItem: item, index }">
+        <v-chip size="small" v-if="index < 4" :text="item.title" />
+
+        <span v-if="index === 4" class="text-grey text-body-small align-self-center">(+{{ (selectedGenus || []).length - 4 }} others)</span>
       </template>
     </SelectAllBox>
 
@@ -72,29 +92,31 @@
   import { apiGetBiologicalStatusCount, apiGetTaxonomies } from '@/plugins/api/stats'
   import type { BiologicalStatusCount, Taxonomies } from '@/plugins/types/germinate'
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { mdiFormatListChecks, mdiSitemap } from '@mdi/js'
+  import { mdiFormatListChecks, mdiShape, mdiSitemap } from '@mdi/js'
 
   export interface UserSelection {
     type: StatsUserSelectionMode
     selectedItems: string[]
   }
 
-  export type StatsUserSelectionMode = 'taxonomies' | 'sampstat'
+  export type StatsUserSelectionMode = 'taxonomies' | 'genus' | 'sampstat'
 
   export interface StatsHighlightSelectionProps {
     selectionModes?: StatsUserSelectionMode[]
   }
 
   const compProps = withDefaults(defineProps<StatsHighlightSelectionProps>(), {
-    selectionModes: () => ['taxonomies', 'sampstat'],
+    selectionModes: () => ['taxonomies', 'sampstat', 'genus'],
   })
 
   const selectionMode = ref<StatsUserSelectionMode>()
 
   const selectedTaxonomies = ref<Taxonomies[]>([])
+  const selectedGenus = ref<string[]>([])
   const selectedBiologicalStatus = ref<BiologicalStatusCount[]>([])
 
   const taxonomies = ref<Taxonomies[]>([])
+  const genus = ref<string[]>([])
   const biologicalStatus = ref<BiologicalStatusCount[]>([])
 
   const valid = computed(() => {
@@ -113,6 +135,11 @@
         return {
           type: selectionMode.value,
           selectedItems: (selectedTaxonomies.value || []).map(g => concat(' ', [g.genus, g.species])),
+        }
+      case 'genus':
+        return {
+          type: selectionMode.value,
+          selectedItems: (selectedGenus.value || []),
         }
       case 'sampstat':
         return {
@@ -135,6 +162,13 @@
     })
 
     apiGetTaxonomies(true, result => {
+      const g = new Set<string>()
+
+      result.forEach(t => {
+        g.add(t.genus)
+      })
+
+      genus.value = [...g].sort((a, b) => a.localeCompare(b))
       taxonomies.value = result
     })
   }

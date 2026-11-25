@@ -2,19 +2,14 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMarkers} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :selection-type="selectionType"
     :show-details="false"
     item-key="markerId"
     table-key="markers"
     marked-item-type="markers"
     :header-icon="mdiFormatIndentIncrease"
     :header-title="$t('pageMarkersTitle')"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <!-- Marker id link -->
     <template #item.markerId="{ item }">
@@ -42,21 +37,13 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableMarkers } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableMarkers } from '@/plugins/types/germinate'
   import { Pages } from '@/plugins/pages'
   import { mdiFormatIndentIncrease, mdiLabelVariant } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMarkers[]>>> }
-    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableMarkers>, 'getData' | 'getIds' | 'download' | 'filterOn' | 'selectionType'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()
@@ -70,6 +57,7 @@
     }, {
       key: 'markerName',
       title: t('tableColumnMarkerName'),
+      markedItemSearchColumn: true,
       dataType: 'string',
       quickSearchable: true,
     }, {

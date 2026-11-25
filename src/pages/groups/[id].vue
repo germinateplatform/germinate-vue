@@ -130,7 +130,6 @@ name: groupDetails
   import { mdiCollapseAllOutline, mdiDelete, mdiExpandAllOutline, mdiUpload } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
 
   export interface GroupUploadContent {
     value: string

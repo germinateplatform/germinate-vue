@@ -81,7 +81,6 @@
 <script setup lang="ts">
   import { apiPostToken } from '@/plugins/api/auth'
   import type { AxiosError } from 'axios'
-  import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
   import { mdiEmailOutline, mdiEye, mdiEyeOff, mdiLockOutline, mdiLoginVariant, mdiNewBox } from '@mdi/js'

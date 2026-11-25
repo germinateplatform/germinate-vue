@@ -4,21 +4,15 @@
     <BaseTable
       ref="baseTable"
       v-model:bottom-sheet-visible="bottomVisible"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :forced-filters="forcedFilters"
       :show-details="true"
-      :selection-type="selectionType"
-      :disabled="compProps.disabled"
       item-key="datasetId"
       table-key="datasets"
       :header-icon="mdiDatabase"
       :get-row-props="getRowProps"
       :header-title="$t('pageDatasetsTitle')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header v-if="canCreateNew && store.storeUserIsDataCurator && disabled !== true">
         <v-btn v-if="store.storeUserIsDataCurator" variant="outlined" :prepend-icon="mdiFilePlus" @click="addItem">{{ $t('tableButtonAddDataset') }}</v-btn>
@@ -123,15 +117,25 @@
         </span>
       </template>
 
-      <!-- Show file resources -->
-      <template #item.fileresourceIds="{ item }">
-        <v-btn @click="redirectToFileresources(item)" v-if="item.fileresourceIds && (item.fileresourceIds.length > 0) && isPageAvailable(Pages.dataResources.name) && (!item.licenseName || isAccepted(item))" :prepend-icon="mdiAttachment">{{ $t('buttonShow') }}</v-btn>
-      </template>
-
       <template #item.datasetDetails="{ item }">
-        <v-btn-group variant="tonal">
+        <div class="btn-set-container d-inline-flex flex-wrap ga-1 ma-1 rounded-md">
+          <v-btn size="x-small" rounded="md" variant="tonal" color="info" target="_blank" :href="item.hyperlink" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
+          <v-btn size="x-small" rounded="md" variant="tonal" color="info" :icon="datasetStates[item.datasetState].path" v-tooltip:top="$t(datasetStates[item.datasetState].text)" />
+          <v-btn size="x-small" rounded="md" variant="tonal" color="info" :icon="mdiAttachment" v-tooltip:top="$t('tableColumnDatasetFileresources')" @click="redirectToFileresources(item)" :disabled="(item.fileresourceIds ?? []).length === 0 || !isPageAvailable(Pages.dataResources.name)" />
+          <v-btn size="x-small" rounded="md" variant="tonal" color="info" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" :disabled="item.collaborators === 0" />
+          <v-btn size="x-small" rounded="md" variant="tonal" color="info" :icon="mdiOfficeBuildingCog" v-tooltip:top="$t('tableTooltipDatasetInstitutions')" @click="showDetails('institutions', item)" :disabled="(item.institutions ?? []).length === 0" />
+          <v-btn size="x-small" rounded="md" variant="tonal" color="info" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" :disabled="((item.attributeData ?? []).length === 0 && item.dublinCore === undefined) || (item.licenseId && !isAccepted(item))" />
+
+          <template v-if="disabled !== true">
+            <v-btn size="x-small" rounded="md" variant="tonal" color="info" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />
+            <v-btn size="x-small" rounded="md" variant="tonal" color="error" :icon="mdiDelete" v-tooltip:top="$t('tableTooltipDatasetDelete')" @click="deleteDataset(item)" v-if="store.storeUserIsDataCurator" />
+          </template>
+        </div>
+
+        <!-- <v-btn-group variant="tonal">
           <v-btn size="x-small" color="primary" target="_blank" :href="item.hyperlink" :icon="item.isExternal ? mdiLinkVariant : mdiDatabaseArrowRight" v-tooltip:top="item.isExternal ? $t('datasetExternal') : $t('datasetInternal')" />
           <v-btn size="x-small" color="primary" :icon="datasetStates[item.datasetState].path" v-tooltip:top="$t(datasetStates[item.datasetState].text)" />
+          <v-btn size="x-small" color="primary" :icon="mdiAttachment" v-tooltip:top="$t('tableColumnDatasetFileresources')" @click="redirectToFileresources(item)" :disabled="(item.fileresourceIds ?? []).length === 0 || !isPageAvailable(Pages.dataResources.name)" />
           <v-btn size="x-small" color="primary" :icon="mdiAccountMultiple" v-tooltip:top="$t('tableTooltipDatasetCollaborators')" @click="showDetails('collaborators', item)" :disabled="item.collaborators === 0" />
           <v-btn size="x-small" color="primary" :icon="mdiOfficeBuildingCog" v-tooltip:top="$t('tableTooltipDatasetInstitutions')" @click="showDetails('institutions', item)" :disabled="(item.institutions ?? []).length === 0" />
           <v-btn size="x-small" color="primary" :icon="mdiFilePlus" v-tooltip:top="$t('tableTooltipDatasetAttributes')" @click="showDetails('attributes', item)" :disabled="((item.attributeData ?? []).length === 0 && item.dublinCore === undefined) || (item.licenseId && !isAccepted(item))" />
@@ -140,7 +144,7 @@
             <v-btn size="x-small" color="primary" :icon="mdiSquareEditOutline" v-tooltip:top="$t('tableTooltipDatasetEdit')" @click="editDataset(item)" v-if="store.storeUserIsDataCurator" />
             <v-btn size="x-small" color="error" :icon="mdiDelete" v-tooltip:top="$t('tableTooltipDatasetDelete')" @click="deleteDataset(item)" v-if="store.storeUserIsDataCurator" />
           </template>
-        </v-btn-group>
+        </v-btn-group> -->
       </template>
 
       <template #expanded-row="{ columns, item }">
@@ -177,6 +181,7 @@
             label
             :text="tag"
             :prepend-icon="mdiTag"
+            @click="toggleSearch(tag)"
           />
         </div>
       </template>
@@ -206,6 +211,7 @@
       <template #additional-fields="{ item }">
         <TextTagInput
           v-model="item.datasetTags"
+          :label="$t('formLabelDatasetTag')"
         />
 
         <v-autocomplete
@@ -239,11 +245,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
   import { FilterComparator, FilterOperator, type ViewTableLicenses, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableDatasets, type ViewTableExperiments } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
   import { getNumberWithSuffix, truncateAfterWords } from '@/plugins/util/formatting'
@@ -257,17 +260,15 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { mdiAccountMultiple, mdiAttachment, mdiCheck, mdiDatabase, mdiDatabaseArrowRight, mdiDelete, mdiFilePlus, mdiHelpCircle, mdiInformation, mdiInformationOutline, mdiLinkVariant, mdiMapMarker, mdiNewBox, mdiOfficeBuildingCog, mdiOpenInNew, mdiPlusBox, mdiSquareEditOutline, mdiTag, mdiTagMultiple } from '@mdi/js'
   import { apiPostInstitutionDatasetTable } from '@/plugins/api/institution'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = withDefaults(defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableDatasets[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    disabled?: boolean
+  type SharedProps = Pick<BaseTableProps<ViewTableDatasets>, 'getData' | 'getIds' | 'download' | 'filterOn' | 'selectionType' | 'disabled' | 'headerIconColor'>
+
+  interface Props extends SharedProps {
     canCreateNew?: boolean
     disableForcedProjectFilter?: boolean
-  }>(), {
+  }
+  const compProps = withDefaults(defineProps<Props>(), {
     canCreateNew: true,
     disableForcedProjectFilter: false,
   })
@@ -418,6 +419,18 @@
       width: 1,
     }]
   })
+
+  function toggleSearch (tag: string) {
+    baseTable.value?.forceFilters([{
+      operator: FilterOperator.and,
+      filters: [{
+        column: 'datasetTags',
+        comparator: FilterComparator.jsonSearch,
+        values: [tag],
+      }],
+    }])
+    bottomVisible.value = false
+  }
 
   function showStudyDetails (item: ViewTableDatasets) {
     visibleDetails.value = 'studyDetails'
@@ -681,4 +694,7 @@
 </script>
 
 <style scoped>
+.btn-set-container {
+  min-width: 144px;
+}
 </style>

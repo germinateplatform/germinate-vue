@@ -29,7 +29,6 @@
   import type { ViewTableGermplasm, ViewTableTraits, ViewTableTrialsData } from '@/plugins/types/germinate'
 
   import { mdiChartTimelineVariant } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
   import { getDateString } from '@/plugins/util/formatting'
   import { getColor } from '@/plugins/util/colors'
 
@@ -221,8 +220,6 @@
   }
 
   function updateTimepoint () {
-    console.log(compProps.currentTimepoint, timeseriesChart.value)
-
     if (!timeseriesChart.value) {
       return
     }

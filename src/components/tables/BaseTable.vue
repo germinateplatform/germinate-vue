@@ -10,6 +10,7 @@
         :marked-item-type="componentProps.markedItemType"
         @clear-filter="clearFilter"
         @show-filter="tableFilterModal?.show()"
+        @force-marked-item-filter="forceMarkedItemFilter"
         @toggle-header="toggleHeader"
         :can-filter="canFilter"
         :total-count="totalItems"
@@ -114,6 +115,7 @@
           @clear-filter="clearFilter"
           @show-filter="tableFilterModal?.show()"
           @toggle-header="toggleHeader"
+          @force-marked-item-filter="forceMarkedItemFilter"
           :filtered="filters !== undefined && filters.length > 0"
           :total-count="totalItems"
           :can-filter="canFilter"
@@ -284,7 +286,6 @@
   import { type ViewTableGroups, type FilterGroup, type PaginatedResult, type Grouptypes, FilterOperator, FilterComparator, type PaginatedRequest } from '@/plugins/types/germinate'
   import type { AxiosResponse } from 'axios'
   import type { DataTableHeader, DataTableSortItem } from 'vuetify'
-  import { useI18n } from 'vue-i18n'
   import { getDateTimeString } from '@/plugins/util/formatting'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import TableFilterModal from '@/components/modals/TableFilterModal.vue'
@@ -301,6 +302,7 @@
   import { validCompsForType } from '@/plugins/util/table-columns'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
+  import { useHelpRegistration } from '@/plugins/composables/useHelp'
 
   export type DisplayType = 'table' | 'grid'
 
@@ -315,12 +317,19 @@
     markedIds: Set<number>
   }
 
+  useHelpRegistration({
+    key: 'data-table',
+    label: 'Germinate Tables',
+    url: '/docs/user/ui/#tables',
+  })
+
   const componentProps = withDefaults(defineProps<BaseTableProps<T>>(), {
     showDetails: false,
     storeUrlParameters: true,
     displayType: 'table',
     hideFooter: false,
     ignoreUrlFilter: false,
+    disabled: false,
   })
 
   const slots = useSlots()
@@ -597,6 +606,23 @@
     refresh()
 
     emit('filter-changed', JSON.parse(JSON.stringify(newFilters)))
+  }
+
+  function forceMarkedItemFilter (items: string[]) {
+    const column = filterColumns.value.find(c => c.markedItemSearchColumn === true)
+
+    if (column !== undefined && componentProps.markedItemType !== undefined && (items ?? []).length > 0) {
+      const filter: FilterGroup[] = [{
+        operator: FilterOperator.and,
+        filters: [{
+          column: column.key || '',
+          comparator: FilterComparator.inSet,
+          values: items,
+        }],
+      }]
+
+      tableFilterModal.value?.forceFilters(filter)
+    }
   }
 
   function refresh (params?: RefreshParams) {

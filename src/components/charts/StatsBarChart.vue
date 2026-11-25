@@ -25,7 +25,6 @@
 
   import bar from 'plotly.js/lib/bar'
   import { getColor } from '@/plugins/util/colors'
-  import { useI18n } from 'vue-i18n'
   import type { GermplasmMetaStats } from '@/plugins/types/germinate'
   import type { UserSelection } from '@/components/widgets/selections/StatsHighlightSelection.vue'
   import { mdiChartBar } from '@mdi/js'
@@ -86,6 +85,11 @@
           case 'taxonomies':
             compProps.userSelection.selectedItems.forEach((taxonomy, index) => {
               data.push(returnData(compProps.data, td => [td.genus, td.species].join(' ') === taxonomy, x, taxonomy, index))
+            })
+            break
+          case 'genus':
+            compProps.userSelection.selectedItems.forEach((genus, index) => {
+              data.push(returnData(compProps.data, td => td.genus === genus, x, genus, index))
             })
             break
           case 'sampstat':

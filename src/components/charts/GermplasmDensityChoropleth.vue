@@ -46,7 +46,6 @@
 
   async function redraw (source: CountryData[]) {
     emitter.emit('show-loading', true)
-
     loading.value = true
 
     if (source) {
@@ -55,22 +54,22 @@
         filename: 'choropleth',
         extension: 'json',
       }
+
+      let max = 0
+      const cd = source.map(r => {
+        r.color = 'muted'
+        max = Math.max(max, +r.count)
+        return r
+      })
+
+      const mapGradient = createMultiColorGradient(GRADIENT_VIRIDIS, max + 1)
+
+      cd.forEach(c => {
+        c.color = mapGradient[c.count]
+      })
+
+      chartData.value = cd
     }
-
-    let max = 0
-    const cd = source.map(r => {
-      r.color = 'muted'
-      max = Math.max(max, +r.count)
-      return r
-    })
-
-    const mapGradient = createMultiColorGradient(GRADIENT_VIRIDIS, max + 1)
-
-    cd.forEach(c => {
-      c.color = mapGradient[c.count]
-    })
-
-    chartData.value = cd
 
     loading.value = false
     emitter.emit('show-loading', false)

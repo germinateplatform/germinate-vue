@@ -56,9 +56,9 @@
                 <p class="text-error">{{ error }}</p>
               </template>
             </v-list-item>
-            <v-list-item :title="$t('pageLoadingTitle')" class="my-5" v-else>
+            <v-list-item title="Loading Germinate" class="my-5" v-else>
               <template #subtitle>
-                <p>{{ $t('pageLoadingText') }}</p>
+                <p>Please wait while we get things ready.</p>
               </template>
             </v-list-item>
           </v-skeleton-loader>

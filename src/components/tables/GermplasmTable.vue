@@ -3,14 +3,7 @@
   <BaseTable
     ref="baseTable"
     v-model:bottom-sheet-visible="bottomVisible"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
-    :disabled="compProps.disabled"
     :headers="headers"
-    :filter-on="filterOn"
-    :sort-by="compProps.sortBy"
-    :selection-type="selectionType"
     item-key="germplasmId"
     table-key="germplasm"
     marked-item-type="germplasm"
@@ -18,6 +11,7 @@
     :show-details="true"
     :header-title="$t('pageGermplasmTitle')"
     @filter-cleared="emit('filter-cleared')"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #header.pdci="{ column }">
       {{ column.title }} <v-tooltip location="bottom" :text="$t('tableColumnTooltipGermplasmPdci')">
@@ -200,18 +194,14 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import LocationMap from '@/components/map/LocationMap.vue'
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { Pages } from '@/plugins/pages'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import { datasetTypes, entityTypes } from '@/plugins/util/types'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGermplasm } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { FilterGroup, PaginatedRequest, ViewTableGermplasm } from '@/plugins/types/germinate'
   import { getNumberWithSuffix, isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import InstitutionTable from '@/components/tables/InstitutionTable.vue'
   import { columns } from '@/plugins/util/table-columns'
-  import type { DataTableSortItem } from 'vuetify'
-  import { mdiCamera, mdiHelpCircle, mdiMapMarker, mdiPageNext, mdiSprout, mdiChevronDownBox, mdiChevronDownBoxOutline, mdiChevronUpBox, mdiChevronUpBoxOutline, mdiChevronDown, mdiBookmarkCheck, mdiBookmarkOutline } from '@mdi/js'
+  import { mdiCamera, mdiHelpCircle, mdiMapMarker, mdiPageNext, mdiSprout, mdiChevronDownBox, mdiChevronDownBoxOutline, mdiChevronUpBox, mdiChevronUpBoxOutline, mdiBookmarkCheck, mdiBookmarkOutline } from '@mdi/js'
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
   import { apiPostEntityIds } from '@/plugins/api/germplasm'
 
@@ -219,19 +209,15 @@
 
   import emitter from 'tiny-emitter/instance'
   import { createColorGradient, getPrimaryColor, getVuetifyColor } from '@/plugins/util/colors'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  interface GermplasmTableProps {
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasm[]>>> }
-    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    sortBy?: DataTableSortItem[]
-    selectionType?: TableSelectionType
+  type SharedProps = Pick<BaseTableProps<ViewTableGermplasm>, 'getData' | 'getIds' | 'download' | 'filterOn' | 'selectionType' | 'headerIconColor' | 'disabled' | 'showCustomActions'>
+
+  interface Props extends SharedProps {
     tableMode?: 'base' | 'distance'
-    disabled?: boolean
   }
 
-  const compProps = withDefaults(defineProps<GermplasmTableProps>(), {
+  const compProps = withDefaults(defineProps<Props>(), {
     tableMode: 'base',
   })
 
@@ -302,7 +288,7 @@
         emitter.emit('show-loading', true)
 
         // Get all the ids of items currently in the table
-        compProps.getIds(baseTable.value.currentRequest as PaginatedRequest)
+        compProps.getIds?.(baseTable.value.currentRequest as PaginatedRequest)
           .then(axiosResponse => {
             if (axiosResponse?.data?.data) {
               // Then exchange them for their entity parents
@@ -342,7 +328,7 @@
         emitter.emit('show-loading', true)
 
         // Get all the ids of items currently in the table
-        compProps.getIds(baseTable.value.currentRequest as PaginatedRequest)
+        compProps.getIds?.(baseTable.value.currentRequest as PaginatedRequest)
           .then(axiosResponse => {
             if (axiosResponse?.data?.data) {
               // Then exchange them for their entity children

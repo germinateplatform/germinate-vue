@@ -29,7 +29,6 @@
 
   import bar from 'plotly.js/lib/bar'
   import { getColor, hexToRGBA } from '@/plugins/util/colors'
-  import { useI18n } from 'vue-i18n'
   import { ViewTableTraitsScaleDatatype, type ViewTableTraits, type ViewTableTrialsData } from '@/plugins/types/germinate'
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
   import { mdiChartBar } from '@mdi/js'

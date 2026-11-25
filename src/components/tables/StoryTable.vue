@@ -2,20 +2,15 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableStoriesEnriched} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
     :show-details="false"
-    :display-type="compProps.displayType"
     item-key="storyId"
     table-key="stories"
     :sort-by="[{ key: 'storyCreatedOn', order: 'desc' }]"
     :header-icon="mdiBookOpenPageVariant"
     :header-title="$t('pageStoriesTitle')"
     :supports-grid-cards="true"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
     @data-changed="checkIfStoryNeedsToBeShown"
   >
     <template #header v-if="store.storeUserIsAuthenticated">
@@ -115,14 +110,11 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
   // @ts-ignore
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader, ExtendedViewTableStoriesEnriched } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { ViewTablePublications, FilterGroup, PaginatedRequest, PaginatedResult, ViewTableStoriesEnriched } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTablePublications, PaginatedResult, ViewTableStoriesEnriched } from '@/plugins/types/germinate'
   import { mdiBookOpenPageVariant, mdiDelete, mdiFormatListNumbered, mdiSquareEditOutline, mdiFileEye, mdiPlus } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
@@ -131,6 +123,7 @@
   import type { FieldConfig } from '@/components/modals/GenericAddEditFormModal.vue'
   import { apiDeleteStoryById, apiPatchStory, apiPostStoryUpload } from '@/plugins/api/story'
   import { apiPostPublicationsTable } from '@/plugins/api/publication'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
   const newStory = ref<ExtendedViewTableStoriesEnriched>({
     storyId: -1,
@@ -142,14 +135,7 @@
   const selectedStory = ref<ViewTableStoriesEnriched>()
   const selectedStoryIsEdit = ref(false)
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableStoriesEnriched[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    displayType?: DisplayType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableStoriesEnriched>, 'getData' | 'filterOn'>>()
 
   const store = useCoreStore()
   const storyPreviewModal = useTemplateRef('storyPreviewModal')

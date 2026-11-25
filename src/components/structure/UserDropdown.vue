@@ -92,11 +92,13 @@
       </v-list>
     </v-menu>
 
-    <TextfieldModal
+    <InputModal
       :title="$t('modalTitleGetToken')"
-      :text="store.storeToken?.token || ''"
+      v-model="token"
+      readonly
       :label="$t('formLabelToken')"
       :hint="$t('formDescriptionToken')"
+      persistent-hint
       copy
       ref="tokenModal"
     />
@@ -108,7 +110,6 @@
   import { Pages } from '@/plugins/pages'
 
   import emitter from 'tiny-emitter/instance'
-  import TextfieldModal from '@/components/modals/TextfieldModal.vue'
   import { mdiAccount, mdiAccountKey, mdiBackupRestore, mdiCircleMultiple, mdiCog, mdiLoginVariant, mdiLogoutVariant, mdiMenuRight, mdiMonitorShimmer, mdiSetMerge, mdiTextSearch, mdiUpload } from '@mdi/js'
 
   const store = useCoreStore()
@@ -117,6 +118,7 @@
   const tokenModal = useTemplateRef('tokenModal')
 
   const visible = ref(false)
+  const token = computed(() => store.storeToken?.token || '')
 
   function showLogin () {
     emitter.emit('show-login')

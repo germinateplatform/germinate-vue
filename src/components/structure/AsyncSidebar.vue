@@ -187,7 +187,6 @@
   import type { AxiosError, AxiosResponse } from 'axios'
   import emitter from 'tiny-emitter/instance'
   import { useDisplay } from 'vuetify'
-  import { useI18n } from 'vue-i18n'
   import { asyncJobStatus, templateImportTypes } from '@/plugins/util/types'
   import { mdiAlertCircle, mdiChartSankey, mdiCheckCircle, mdiClose, mdiDna, mdiDownload, mdiFamilyTree, mdiFileDocumentAlert, mdiHelpCircle, mdiImageMultiple, mdiPaperclip, mdiPulse, mdiReload, mdiShovel, mdiUpload } from '@mdi/js'
   import { downloadBlob } from '@/plugins/util'

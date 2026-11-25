@@ -1,5 +1,5 @@
 <template>
-  <div class="login-bg d-flex align-center justify-center">
+  <div class="login-bg d-flex align-center justify-center h-100">
     <v-fab
       class="bg-attribution"
       :icon="mdiInformation"
@@ -10,33 +10,46 @@
       v-tooltip.top="'\'Large Triangles\' by SVGBackgrounds.com'"
     />
 
-    <v-container max-width="640">
+    <v-container>
       <v-img
         max-height="300"
-        max-width="640"
         :cover="false"
         src="/img/germinate-square-name-white.svg"
       />
 
-      <v-card
-        class="mt-5"
-        :loading="loading"
-      >
-        <template #loader="{ isActive }">
-          <v-progress-linear
-            :active="isActive"
-            color="primary"
-            height="4"
-            indeterminate
-          />
-        </template>
-        <v-card-text class="pa-5">
-          <LoginSection
-            @loading="setLoading"
-            :target-url="targetUrl"
-          />
-        </v-card-text>
-      </v-card>
+      <v-card class="mt-10" :prepend-avatar="`${store.storeBaseUrl}image/src-svg/crop.svg`" :title="$t('germinateTitle')" />
+
+      <v-row class="mt-5">
+        <v-col cols="12" lg="8">
+          <v-card
+            :loading="loading"
+          >
+            <template #loader="{ isActive }">
+              <v-progress-linear
+                :active="isActive"
+                color="primary"
+                height="4"
+                indeterminate
+              />
+            </template>
+            <v-card-text class="pa-5">
+              <LoginSection
+                @loading="setLoading"
+                :target-url="targetUrl"
+              />
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" lg="4">
+          <v-theme-provider theme="dark">
+            <v-card>
+              <v-card-text class="d-flex justify-center">
+                <v-img max-width="400" :src="store.storeBaseUrl + 'image/src-svg/logo.svg'" alt="Project logo" />
+              </v-card-text>
+            </v-card>
+          </v-theme-provider>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -50,6 +63,7 @@ name: login
   import { mdiInformation } from '@mdi/js'
 
   const route = useRoute()
+  const store = useCoreStore()
 
   const loading = ref(false)
   const targetUrl = ref<string>()

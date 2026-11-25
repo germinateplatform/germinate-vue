@@ -75,7 +75,6 @@ name: geographicSearch
   import { mdiArrowRightBox, mdiCrosshairsGps, mdiVectorPolygon } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
 
   const { t } = useI18n()
 

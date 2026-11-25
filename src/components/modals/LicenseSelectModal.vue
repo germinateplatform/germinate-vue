@@ -11,6 +11,7 @@
                   v-model="selectedLicense"
                   return-object
                   :append-icon="mdiSquareEditOutline"
+                  :label="$t('buttonAssignLicense')"
                   item-title="licenseName"
                   @click:append="toggleDetails"
                 >
@@ -107,7 +108,6 @@
   import type { LocaleConfig, ViewTableLicenseDefinitions } from '@/plugins/types/germinate'
   import { isAnyMissing } from '@/plugins/util/formatting'
   import { mdiContentSave, mdiPlusBox, mdiSquareEditOutline } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
 
   const compProps = defineProps<{
     licenseId?: number

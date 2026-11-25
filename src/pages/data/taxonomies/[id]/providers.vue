@@ -197,7 +197,6 @@ name: taxonomyProviderDetails
   import { FilterComparator, FilterOperator, type ViewTableTaxonomies, type PaginatedRequest, type TaxonomyProviderInfo } from '@/plugins/types/germinate'
   import type { EbiStudy, EbiRecord, EbiGenomyAssembly } from '@/plugins/types/ebi'
   import { getNumberWithSuffix, isEmptyNullOrUndefined } from '@/plugins/util/formatting'
-  import { useI18n } from 'vue-i18n'
   import { mdiApi, mdiIdentifier, mdiMagnify, mdiOpenInNew } from '@mdi/js'
   import type { AxiosError } from 'axios'
 

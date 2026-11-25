@@ -3,16 +3,14 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableComments} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
       :headers="headers"
-      :filter-on="filterOn"
       :show-details="false"
       item-key="commentId"
       table-key="comments"
       :sort-by="[{ key: 'updatedOn', order: 'desc' }]"
       :header-icon="mdiCommentAccount"
       :header-title="$t('pagePassportCommentTitle')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header v-if="store.storeToken && store.storeServerSettings?.commentsEnabled === true">
         <v-btn variant="outlined" :prepend-icon="mdiCommentPlus" @click="addItem">{{ $t('tableButtonAddComment') }}</v-btn>
@@ -51,21 +49,22 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { Comments, FilterGroup, PaginatedRequest, PaginatedResult, ViewTableComments } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { Comments, ViewTableComments } from '@/plugins/types/germinate'
   import { mdiCommentAccount, mdiCommentPlus, mdiDelete } from '@mdi/js'
   import { commentTypes } from '@/plugins/util/types'
 
   import emitter from 'tiny-emitter/instance'
   import { apiDeleteComment, apiPutComment } from '@/plugins/api/comment'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableComments[]>>> }
-    filterOn?: FilterGroup[]
+  type SharedProps = Pick<BaseTableProps<ViewTableComments>, 'getData' | 'filterOn' | 'headerIconColor'>
+
+  interface Props extends SharedProps {
     commentTypeId: number
     referenceId: number
-  }>()
+  }
+
+  const compProps = defineProps<Props>()
 
   const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')

@@ -3,21 +3,14 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableGroups} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :disabled="disabled"
-      :filter-on="filterOn"
       :forced-filters="forcedFilters"
-      :selection-type="selectionType"
       :show-details="false"
-      :ignore-url-filter="ignoreUrlFilter"
       item-key="groupId"
       table-key="groups"
       :header-icon="mdiGroup"
       :header-title="$t('pageGroupsTitle')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header v-if="canCreateNew && store.storeUserIsAuthenticated && disabled !== true">
         <v-btn variant="outlined" :text="$t('buttonAddGroup')" :prepend-icon="mdiPlus" @click="addItem" />
@@ -63,11 +56,8 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import { type Grouptypes, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableGroups, FilterComparator, FilterOperator } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { type Grouptypes, type ViewTableGroups, FilterComparator, FilterOperator } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { groupTypes } from '@/plugins/util/types'
 
@@ -75,18 +65,16 @@
   import { apiDeleteGroup, apiGetGroupTypes, apiPatchGroup, apiPutGroup } from '@/plugins/api/group'
   import { Pages } from '@/plugins/pages'
   import { mdiDelete, mdiGroup, mdiPencil, mdiPlus } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = withDefaults(defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGroups[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    disabled?: boolean
-    selectionType?: TableSelectionType
+  type SharedProps = Pick<BaseTableProps<ViewTableGroups>, 'disabled' | 'ignoreUrlFilter' | 'getData' | 'download' | 'filterOn' | 'selectionType' | 'headerIconColor'>
+
+  interface Props extends SharedProps {
     canCreateNew?: boolean
     disableForcedProjectFilter?: boolean
-    ignoreUrlFilter?: boolean
-  }>(), {
+  }
+
+  const compProps = withDefaults(defineProps<Props>(), {
     canCreateNew: true,
     disableForcedProjectFilter: false,
   })

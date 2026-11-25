@@ -3,20 +3,15 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').BackupResult} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :show-details="false"
       :sort-by="[{ key: 'timestamp', order: 'desc' }]"
-      :display-type="compProps.displayType"
       supports-grid-cards
       item-key="id"
       table-key="backups"
       :header-icon="mdiDatabaseImport"
       :header-title="$t('pageBackupTitle')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #item.filesize="{ item }">
         <v-chip label :prepend-icon="mdiFileCabinet" :text="getNumberWithSuffix(item.filesize, 2, 1024)" />
@@ -76,28 +71,19 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, BackupResult } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { BackupResult } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { getTemplateColor } from '@/plugins/util/colors'
 
   import emitter from 'tiny-emitter/instance'
   import { mdiCalendar, mdiDatabaseClock, mdiDatabaseEdit, mdiDatabaseImport, mdiDatabaseSync, mdiDelete, mdiDownload, mdiFileCabinet, mdiTag } from '@mdi/js'
   import { apiDeleteBackup } from '@/plugins/api/backup'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<BackupResult[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    displayType?: DisplayType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<BackupResult>, 'getData' | 'getIds' | 'download' | 'filterOn' | 'selectionType' | 'displayType' | 'headerIconColor'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

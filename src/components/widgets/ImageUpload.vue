@@ -41,7 +41,7 @@
     </template>
   </v-file-upload>
 
-  <TagInput
+  <ImageTagInput
     v-model="imageTags"
   />
 

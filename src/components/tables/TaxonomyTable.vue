@@ -2,18 +2,13 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableTaxonomies} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :selection-type="selectionType"
     :show-details="false"
     item-key="taxonomyId"
     table-key="taxonomies"
     :header-icon="mdiLan"
     :header-title="$t('pageTaxonomiesTitle')"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #item.taxonomyId="{ item }">
       <router-link to="/data/germplasm" @click.prevent="redirectToGermplasm(item)" v-if="!store.serverSettings?.hiddenPages?.includes(Pages.germplasm.name)">{{ item.taxonomyId }}</router-link>
@@ -49,22 +44,14 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableTaxonomies } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { FilterComparator, FilterOperator, type FilterGroup, type ViewTableTaxonomies } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
   import { mdiLan, mdiIdentifier } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTaxonomies[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableTaxonomies>, 'getData'>>()
 
   const store = useCoreStore()
   const router = useRouter()

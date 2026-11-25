@@ -203,7 +203,6 @@
 <script setup lang="ts">
   import type { GatekeeperInstitution, NewUnapprovedUser, NewUnapprovedUserRequest, NewUserAccessRequest } from '@/plugins/types/germinate'
   import { mdiAlert, mdiCheck, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiClose, mdiEmailOutline, mdiEye, mdiEyeOff, mdiFormTextbox, mdiHomeCity, mdiLockOutline } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
   import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
   import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
   import { gatekeeperErrors, handleError, MAX_JAVA_INTEGER } from '@/plugins/api/base'

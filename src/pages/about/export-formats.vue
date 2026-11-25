@@ -78,7 +78,6 @@ name: aboutExportFormats
   import { getTemplateColor } from '@/plugins/util/colors'
   import { exportFormats, type FormatState } from '@/plugins/util/types'
   import { mdiCloud, mdiCloudDownload, mdiCloudUpload, mdiDownload, mdiOpenInNew, mdiTag } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
 
   const { t } = useI18n()
 

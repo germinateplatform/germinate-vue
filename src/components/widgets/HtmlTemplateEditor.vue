@@ -16,7 +16,6 @@
   import { QuillEditor } from '@vueup/vue-quill'
   import '@vueup/vue-quill/dist/vue-quill.snow.css'
   import ImageUploader from 'quill-image-uploader'
-  import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
   import { mdiContentSave } from '@mdi/js'

@@ -7,7 +7,7 @@
       :source-file="sourceFile"
       v-model:loading="loading"
       :badge-count="markedItemCount"
-      :header-icon="mdiChartGantt"
+      :header-icon="mdiGrid"
       @force-redraw="redraw"
       ref="baseChart"
     >
@@ -69,7 +69,7 @@
   import type { ViewTableClimates } from '@/plugins/types/germinate'
   import Passport from '@/components/widgets/Passport.vue'
   import type { UserSelection } from '@/components/widgets/selections/ClimateHighlightSelection.vue'
-  import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
+  import { mdiGrid, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
 
   const compProps = defineProps<{
     climates: ViewTableClimates[]
@@ -119,6 +119,16 @@
     return result
   })
 
+  const datasetsMapped = computed(() => {
+    const result: { [index: string]: string } = {}
+
+    cdStore.storeDatasets.forEach(d => {
+      result[`${d.datasetId}`] = d.datasetName || 'N/A'
+    })
+
+    return result
+  })
+
   const markedItemCount = computed(() => selectedIds.value.length)
 
   async function redraw () {
@@ -153,6 +163,7 @@
           darkMode: store.storeIsDarkMode,
           colors: getColors(),
           groups: groupsMapped.value,
+          datasets: datasetsMapped.value,
           selectionHandler: (dbIds: number[]) => {
             selectedIds.value = dbIds
           },
@@ -164,7 +175,8 @@
           darkMode: store.storeIsDarkMode,
           colors: getColors(),
           groups: groupsMapped.value,
-          columnsToIgnore: ['name', 'dbId', 'dataset_name', 'dataset_version', 'latitude', 'longitude', 'elevation', 'license_name', 'year', 'groups'],
+          datasets: datasetsMapped.value,
+          columnsToIgnore: ['name', 'latitude', 'longitude', 'elevation', 'dbId', 'dataset_ids', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'location', 'year', 'groups'],
           selectionHandler: (dbIds: number[]) => {
             selectedIds.value = dbIds
           },

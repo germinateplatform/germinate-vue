@@ -117,8 +117,6 @@
   const markedItemCount = computed(() => selectedIds.value.length)
 
   async function redraw () {
-    emitter.emit('show-loading', true)
-
     loading.value = true
     const variableIdSet = new Set<number>(compProps.traits.map(t => t.variableId))
     const data = compProps.plotData.filter(pd => variableIdSet.has(pd.variableId)).concat()
@@ -282,12 +280,7 @@
               })
             }
           })
-          .finally(() => emitter.emit('show-loading', false))
-      } else {
-        emitter.emit('show-loading', false)
       }
-    } else {
-      emitter.emit('show-loading', false)
     }
 
     loading.value = false

@@ -6,19 +6,14 @@
       class="image-table"
       v-model:bottom-sheet-visible="bottomVisible"
       v-model:bottom-sheet-persistent="bottomPersistent"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :show-details="false"
       item-key="imageId"
       table-key="images"
-      :display-type="compProps.displayType"
       :header-icon="mdiImageMultiple"
       :header-title="$t('pageImagesTitle')"
       :supports-grid-cards="true"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <!-- Reference table -->
       <template #item.imageRefTable="{ item }">
@@ -51,7 +46,7 @@
       <!-- EXIF -->
       <template #item.imageExif="{ item }">
         <template v-if="item.imageExif && Object.keys(item.imageExif).length > 0">
-          <v-btn @click="showExif(item)" :prepend-icon="mdiImageText" :text="$t('buttonShow')" />
+          <v-btn @click="showExif(item)" variant="tonal" :prepend-icon="mdiImageText" :text="$t('buttonShow')" />
         </template>
       </template>
 
@@ -69,13 +64,19 @@
       <template #card-item="{ item }">
         <v-card class="flex-grow-1">
           <v-img height="200" cover :src="getSrc(item, 'small')" @click="showImage(item)" />
-          <v-card-title>
-            <!-- Germplasm -->
-            <router-link :to="Pages.getPath(Pages.passport, item.imageForeignId)" v-if="item.imageRefTable === 'germinatebase'">{{ item.referenceName }}</router-link>
-            <!-- Trait -->
-            <router-link :to="Pages.getPath(Pages.traitDetails, item.imageForeignId)" v-else-if="item.imageRefTable === 'phenotypes'">{{ item.referenceName }}</router-link>
-            <!-- Anything else -->
-            <span v-else>{{ item.referenceName }}</span>
+          <v-card-title class="d-flex justify-space-between align-center">
+            <div>
+              <!-- Germplasm -->
+              <router-link :to="Pages.getPath(Pages.passport, item.imageForeignId)" v-if="item.imageRefTable === 'germinatebase'">{{ item.referenceName }}</router-link>
+              <!-- Trait -->
+              <router-link :to="Pages.getPath(Pages.traitDetails, item.imageForeignId)" v-else-if="item.imageRefTable === 'phenotypes'">{{ item.referenceName }}</router-link>
+              <!-- Anything else -->
+              <span v-else>{{ item.referenceName }}</span>
+            </div>
+            <div>
+              <v-icon :icon="mdiBookInformationVariant" size="small" color="primary" v-tooltip:top="$t('tableTooltipImagesIsReference')" v-if="item.imageIsReference === true" />
+              <v-icon :icon="mdiBookInformationVariant" size="small" color="muted" v-else />
+            </div>
           </v-card-title>
           <v-card-subtitle class="text-wrap" v-if="item.createdOn">{{ new Date(item.createdOn).toLocaleDateString() }}</v-card-subtitle>
           <v-card-text>
@@ -88,9 +89,12 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-spacer />
-            <v-btn color="primary" :prepend-icon="mdiSquareEditOutline" :text="$t('tableTooltipImageEdit')" @click="editImage(item)" />
-            <v-btn color="error" :prepend-icon="mdiDelete" :text="$t('tableTooltipImageDelete')" @click="deleteImage(item)" />
+            <v-btn @click="showExif(item)" :prepend-icon="mdiImageText" variant="tonal" :text="$t('tableColumnImageExif')" />
+            <template v-if="store.storeUserIsDataCurator">
+              <v-spacer />
+              <v-btn color="primary" :prepend-icon="mdiSquareEditOutline" :text="$t('tableTooltipImageEdit')" @click="editImage(item)" />
+              <v-btn color="error" :prepend-icon="mdiDelete" :text="$t('tableTooltipImageDelete')" @click="deleteImage(item)" />
+            </template>
           </v-card-actions>
         </v-card>
       </template>
@@ -123,7 +127,7 @@
             color="primary"
           />
 
-          <TagInput
+          <ImageTagInput
             :label="$t('tableColumnImageTags')"
             hide-details
             v-model="selectedImage.tags"
@@ -139,13 +143,10 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, ImageTag, PaginatedRequest, PaginatedResult, ViewTableImages } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ImageTag, ViewTableImages } from '@/plugins/types/germinate'
   import { imageTypes } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
   import { getTemplateColor } from '@/plugins/util/colors'
@@ -154,15 +155,9 @@
   import { mdiBookInformationVariant, mdiClose, mdiContentSave, mdiDelete, mdiImageMultiple, mdiImageText, mdiSquareEditOutline } from '@mdi/js'
   import { apiDeleteImage, apiPatchImage, apiPatchImageTags } from '@/plugins/api/image'
   import emitter from 'tiny-emitter/instance'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableImages[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    displayType?: DisplayType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableImages>, 'getData' | 'getIds' | 'download' | 'filterOn' | 'selectionType' | 'displayType'>>()
 
   const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')

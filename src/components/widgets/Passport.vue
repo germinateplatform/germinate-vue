@@ -186,7 +186,6 @@
   import Images from '@/components/widgets/Images.vue'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
   import { mdiBarcode, mdiBookmarkCheck, mdiBookmarkOutline, mdiBookOpenVariant, mdiChartDonut, mdiChevronDown, mdiChevronUp, mdiCircleMedium, mdiCommentMultiple, mdiDatabase, mdiFamilyTree, mdiFileTree, mdiGroup, mdiHelpCircle, mdiImageMultiple, mdiLinkVariant, mdiMapMarker, mdiOfficeBuildingCog, mdiOpenInNew, mdiPassport, mdiPlaylistPlus, mdiSpeedometer, mdiSubdirectoryArrowRight, mdiTagTextOutline } from '@mdi/js'
   import { apiPostGermplasmInstitutionTable } from '@/plugins/api/institution'
   import { apiPostPublicationsTable } from '@/plugins/api/publication'

@@ -3,19 +3,14 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableNews} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :show-details="false"
-      :display-type="compProps.displayType"
       supports-grid-cards
       item-key="newsId"
       table-key="news"
       :header-icon="mdiNewspaper"
       :header-title="$t('pageNewsLatestNewsTitle')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header v-if="store.storeUserIsAuthenticated">
         <v-btn variant="outlined" :text="$t('buttonAddNews')" :prepend-icon="mdiPlus" @click="addItem" />
@@ -108,13 +103,10 @@
 <script setup lang="ts">
   import TableCardNews from '@/assets/img/table-card-news.svg'
 
-  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, News, PaginatedRequest, PaginatedResult, ViewTableNews } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { News, ViewTableNews } from '@/plugins/types/germinate'
   import { newsTypeImageFit, newsTypes } from '@/plugins/util/types'
   import { getImageUrl } from '@/plugins/util/image'
 
@@ -122,15 +114,9 @@
   import { isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
   import { mdiNewspaper, mdiOpenInNew, mdiPageNext, mdiPlus } from '@mdi/js'
   import { apiDeleteNews, apiPostNews } from '@/plugins/api/news'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableNews[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    displayType?: DisplayType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableNews>, 'getData'>>()
 
   const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')

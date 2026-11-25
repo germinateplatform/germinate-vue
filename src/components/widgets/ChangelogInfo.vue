@@ -55,6 +55,8 @@
         </v-list-item>
       </template>
     </v-list>
+
+    <v-pagination v-model="page" :length="length" />
   </div>
 </template>
 
@@ -65,7 +67,6 @@
   import { mdiCalendar, mdiInformation, mdiTag } from '@mdi/js'
 
   import semver from 'semver'
-  import { useI18n } from 'vue-i18n'
 
   interface Item {
     color: string

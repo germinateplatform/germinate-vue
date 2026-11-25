@@ -3,21 +3,16 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableProjects} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :show-details="false"
       :selection-type="TableSelectionType.all"
       item-key="projectId"
       table-key="projects"
       :header-icon="mdiClipboardList"
       :header-title="$t('pageProjectsTitle')"
-      :display-type="compProps.displayType"
       @selection-changed="selectionChanged"
       :supports-grid-cards="true"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header v-if="store.storeUserIsDataCurator">
         <v-btn variant="outlined" :text="$t('buttonAddProject')" :prepend-icon="mdiPlus" @click="addItem" />
@@ -122,13 +117,11 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader, ExtendedViewTableProjects } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableProjects } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableProjects } from '@/plugins/types/germinate'
   // import AddEditProjectModal from '@/components/modals/AddEditProjectModal.vue'
   import GenericAddEditFormModal from '@/components/modals/GenericAddEditFormModal.vue'
   import { apiPatchProject, apiPostProject, apiDeleteProject } from '@/plugins/api/project'
@@ -138,15 +131,9 @@
 
   import emitter from 'tiny-emitter/instance'
   import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiClipboardList, mdiCog, mdiDelete, mdiMenuDown, mdiOpenInNew, mdiPencil, mdiPlus } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableProjects[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    displayType?: DisplayType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableProjects>, 'getData' | 'getIds'>>()
 
   const store = useCoreStore()
   const baseTable = useTemplateRef('baseTable')

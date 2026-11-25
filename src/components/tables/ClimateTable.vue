@@ -2,17 +2,13 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableClimates} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
     :show-details="false"
     item-key="climateId"
     table-key="climates"
     :header-icon="mdiWeatherSnowyRainy"
     :header-title="$t('pageClimatesTitle')"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <!-- climate id link -->
     <template #item.climateId="{ item }">
@@ -46,20 +42,14 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableClimates } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableClimates } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { dataTypes } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
   import { mdiWeatherSnowyRainy } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableClimates[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableClimates>, 'getData' | 'filterOn'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

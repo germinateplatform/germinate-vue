@@ -10,6 +10,8 @@
       border="start"
       :text="$t('widgetSimilarDatasetBannerText')"
       @click="showDatasetTable()"
+      closable
+      @click:close="e => { e.preventDefault(); e.stopPropagation(); }"
       v-if="similarDatasetIds.length > 0"
     >
       <template #title>
@@ -33,7 +35,7 @@
         <v-card-text>{{ $t('widgetSimilarDatasetBannerTableText') }}</v-card-text>
         <DatasetTable :get-data="getDatasets" :get-ids="getDatasetIds" :filter-on="tableFilter" disabled :selection-type="TableSelectionType.all" @selection-changed="selectionChanged">
           <template #item.datasetName="{ item }">
-            <div>{{ item.datasetName }}</div>
+            <div>{{ truncateAfterWords(item.datasetName, 10) }}</div>
             <v-chip
               class="my-1"
               label
@@ -52,6 +54,7 @@
   import { apiPostDatasetTable, apiPostDatasetTableIds, apiPostSimilarDatasets } from '@/plugins/api/dataset'
   import { type ViewTableDatasets, type SimilarityResult, type FilterGroup, FilterComparator, FilterOperator, type PaginatedRequest } from '@/plugins/types/germinate'
   import { TableSelectionType } from '@/plugins/types/TableSelectionType'
+  import { truncateAfterWords } from '@/plugins/util/formatting'
   import { mdiChevronDoubleUp, mdiChevronTripleUp, mdiDatabasePlus } from '@mdi/js'
 
   const compProps = defineProps<{

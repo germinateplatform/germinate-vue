@@ -284,8 +284,7 @@
   import { comparators, getComparatorConfig } from '@/plugins/util/search'
   import { validCompsForType } from '@/plugins/util/table-columns'
   import { entityTypes, locationTypes, groupTypes, methodClasses, dataTypes, newsTypes, traitClasses, imageTypes } from '@/plugins/util/types'
-  import { mdiCalendar, mdiClose, mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiImageAlbum, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
+  import { mdiAsterisk, mdiCalendar, mdiClose, mdiCodeJson, mdiDelete, mdiFileCompare, mdiFileTree, mdiFormTextbox, mdiGroup, mdiHelpBox, mdiImageAlbum, mdiLandPlotsMarker, mdiNewspaper, mdiNumeric, mdiPlaylistPlus, mdiTagText, mdiTapeMeasure, mdiToggleSwitchOffOutline, mdiVectorIntersection, mdiVectorUnion, mdiViewGridPlus } from '@mdi/js'
   import { useDate } from 'vuetify'
 
   import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
@@ -529,6 +528,8 @@
         return mdiNumeric
       case 'date':
         return mdiCalendar
+      case 'any':
+        return mdiAsterisk
       default:
         return mdiHelpBox
     }

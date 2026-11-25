@@ -51,6 +51,8 @@
 
         <v-btn :icon="mdiMagnify" @click="searchVisible = !searchVisible" v-if="showElements" />
 
+        <HelpComponent />
+
         <v-badge class="pe-none" location="bottom" color="primary" :content="getNumberWithSuffix(store.storeSelectedProjects.length, 1)" :offset-x="10" :offset-y="10" v-if="showElements && store.storeSelectedProjects && store.storeSelectedProjects.length > 0">
           <v-btn :to="Pages.projects.path" :icon="mdiClipboardList" color="info" variant="tonal" />
         </v-badge>
@@ -140,7 +142,7 @@
 
         <AppBreadcrumbs v-if="$route.name !== 'login'" />
 
-        <router-view :key="$route.path" class="h-100" />
+        <router-view :key="$route.path" />
       </div>
 
       <LoginModal ref="loginModal" />
@@ -198,14 +200,13 @@
   import ChangelogInfo from '@/components/widgets/ChangelogInfo.vue'
   import { germinateVersion, getId } from '@/plugins/util'
   import { useDark } from '@vueuse/core'
-  import { mdiBookmarkBoxMultiple, mdiCheck, mdiClipboardList, mdiDelete, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiMagnify, mdiThemeLightDark, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
+  import { mdiBookmarkBoxMultiple, mdiCheck, mdiClipboardList, mdiDelete, mdiDesktopTowerMonitor, mdiFileArrowUpDown, mdiHelpCircle, mdiMagnify, mdiThemeLightDark, mdiTranslate, mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js'
   import { apiGetLocales } from '@/plugins/api/setting'
   import { UAParser } from 'ua-parser-js'
 
   import { init as initPlausible, track } from '@plausible-analytics/tracker'
   import axios from 'axios'
   import { AuthenticationMode, type MarkedItemType } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
 
   export interface SnackbarContent {
     title?: string

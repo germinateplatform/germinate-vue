@@ -3,20 +3,15 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableImportJobs} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :show-details="false"
       :sort-by="[{ key: 'createdOn', order: 'desc' }]"
-      :display-type="compProps.displayType"
       supports-grid-cards
       item-key="id"
       table-key="dataUpdates"
       :header-icon="mdiDatabaseImport"
       :header-title="$t('pageNewsLatestDataUploadsTitle')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #item.datatype="{ item }">
         <v-chip label :color="templateImportTypes[item.datatype].color()" :prepend-icon="templateImportTypes[item.datatype].path">{{ $t(templateImportTypes[item.datatype].text) }}</v-chip>
@@ -94,27 +89,18 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableImportJobs } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { FilterComparator, FilterOperator, type FilterGroup, type ViewTableImportJobs } from '@/plugins/types/germinate'
   import { templateImportTypes, asyncJobStatus, statCategories } from '@/plugins/util/types'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { isPageAvailable } from '@/plugins/util'
   import { Pages } from '@/plugins/pages'
   import { mdiDatabaseImport, mdiRefresh } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableImportJobs[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    displayType?: DisplayType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableImportJobs>, 'getData' | 'filterOn'>>()
 
   const router = useRouter()
   const baseTable = useTemplateRef('baseTable')

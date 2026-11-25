@@ -138,7 +138,6 @@ name: exporTrials
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
 
   import { useRouteUpdate } from '@/plugins/composables/useRouteUpdate'
   const { updateRouter } = useRouteUpdate()

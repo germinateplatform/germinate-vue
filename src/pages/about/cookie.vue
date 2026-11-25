@@ -5,12 +5,14 @@
 
     <CookieBanner :sticky="false" :force="store.storeCookiesAccepted !== undefined" />
 
-    <v-chip
-      :color="store.storeCookiesAccepted ? 'success' : 'error'"
-      class="mt-5"
-      :text="$t('pageCookiesCurrentStatus', { status: store.storeCookiesAccepted ? $t('genericAccepted') : $t('genericDeclined') })"
-      :append-icon="store.storeCookiesAccepted ? mdiCheck : mdiClose"
-    />
+    <div class="text-end">
+      <v-chip
+        :color="store.storeCookiesAccepted ? 'success' : 'error'"
+        class="mt-5"
+        :text="$t('pageCookiesCurrentStatus', { status: store.storeCookiesAccepted ? $t('genericAccepted') : $t('genericDeclined') })"
+        :append-icon="store.storeCookiesAccepted ? mdiCheck : mdiClose"
+      />
+    </div>
 
     <v-card class="mt-5">
       <v-data-table
@@ -42,7 +44,6 @@
 
 <script setup lang="ts">
   import { mdiCheck, mdiClose, mdiCookie, mdiLockClock, mdiMonitorArrowDown, mdiProgressClock, mdiTimelineCheck, mdiTimelineOutline } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
 
   export interface Cookie {
     name: string

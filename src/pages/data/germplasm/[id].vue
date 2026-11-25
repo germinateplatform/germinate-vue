@@ -43,6 +43,18 @@ name: passport
   import { isNumeric } from '@/plugins/util/formatting'
   import { mdiArrowDownBox, mdiArrowUpBox } from '@mdi/js'
 
+  import { useHelpRegistration } from '@/plugins/composables/useHelp'
+
+  const { t } = useI18n()
+
+  useHelpRegistration({
+    content: t('helpPassport'),
+  })
+  useHelpRegistration({
+    label: 'Germplasm & Passport Data',
+    url: '/docs/user/germplasm/',
+  })
+
   const route = useRoute('passport')
   const store = useCoreStore()
 

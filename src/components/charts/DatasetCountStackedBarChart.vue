@@ -45,7 +45,6 @@
   import { FilterComparator, FilterOperator, type FilterGroup, type ViewStatsDatasets } from '@/plugins/types/germinate'
   import { getColor } from '@/plugins/util/colors'
   import { datasetTypes } from '@/plugins/util/types'
-  import { useI18n } from 'vue-i18n'
   import { Pages } from '@/plugins/pages'
 
   const baseChart = useTemplateRef('baseChart')
@@ -124,10 +123,13 @@
       const typeTraces = getTypeViewTraces()
 
       const layout = {
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: store.storeIsDarkMode ? 'rgba(45, 45, 45, 0.3)' : 'rgba(240, 240, 240, 0.3)',
         barmode: 'stack',
         legend: {
           orientation: 'h',
           y: 1.1,
+          font: { color: store.storeIsDarkMode ? 'white' : 'black' },
         },
         hovermode: 'closest' as const,
         xaxis: {

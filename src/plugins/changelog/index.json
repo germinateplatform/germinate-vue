@@ -15,6 +15,15 @@
       },
       {
         "type": "new",
+        "title": "Similar dataset highlight",
+        "text": "On export pages for trials and environmental data, Germinate will highlight any other datasets that are similar to the currently selected ones. Similarity is determined based on an overlap of germplasm, traits, locations and climate variables. This feature can be disabled with the <code>dataset.similarity.calculation.enabled</code> setting.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "new",
         "title": "Trial information in data templates",
         "text": "Trials data templates now include a new tab called 'TRIAL_INFORMATION' which includes fields that are needed to align Germinate with MIAPPE.",
         "categories": [
@@ -58,6 +67,15 @@
         "type": "update",
         "title": "Data stories",
         "text": "Data stories have also been re-worked to be both easier to create and to use.",
+        "categories": [
+          "admin",
+          "user"
+        ]
+      },
+      {
+        "type": "new",
+        "title": "Dataset tag support",
+        "text": "Datasets can now be tagged with keywords. These are fully searchable and allow for non-hierarchical grouping of datasets. Examples would be tagging by work package or deliverable in a project context or things like <code>drought</code>, <code>low-nitrogen</code> or similar for trials.",
         "categories": [
           "admin",
           "user"

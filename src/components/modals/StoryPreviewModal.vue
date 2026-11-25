@@ -95,7 +95,6 @@
   import { useDisplay } from 'vuetify'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
   import { apiPatchStorySteps } from '@/plugins/api/story'
 
   const compProps = defineProps<{

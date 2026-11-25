@@ -78,7 +78,6 @@
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { apiPostTrialsDataTable } from '@/plugins/api/trait'
   import { getGermplasmDisplayName } from '@/plugins/util'
-  import { useI18n } from 'vue-i18n'
   import { getColor } from '@/plugins/util/colors'
   import GroupSelection from '@/components/widgets/selections/GroupSelection.vue'
   import GermplasmSelection from '@/components/widgets/selections/GermplasmSelection.vue'

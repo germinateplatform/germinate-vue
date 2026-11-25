@@ -2,18 +2,14 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTablePedigreedefinitions} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
     :show-details="false"
     item-key="pedigreedefinitionId"
     table-key="pedigreedefinitions"
     :header-icon="mdiFamilyTree"
     :header-title="$t('pagePedigreeDefinitionsTitle')"
     :quick-search-comparator="FilterComparator.equals"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #item.pedigreeNotationUrl="{ item }">
       <a target="_blank" :href="toUrl(item)" rel="noopener noreferrer" v-if="toUrl(item)">{{ item.pedigreeNotationUrl }}</a>
@@ -30,20 +26,12 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import { FilterComparator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePedigreedefinitions } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { FilterComparator, type ViewTablePedigreedefinitions } from '@/plugins/types/germinate'
   import { mdiFamilyTree } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePedigreedefinitions[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTablePedigreedefinitions>, 'getData' | 'filterOn' | 'headerIconColor'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

@@ -78,7 +78,6 @@
 <script setup lang="ts">
   import { getTemplateColor } from '@/plugins/util/colors'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
-  import { useI18n } from 'vue-i18n'
   import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest } from '@/plugins/types/germinate'
   import { columns, validCompsForType } from '@/plugins/util/table-columns'
   import { apiPostGermplasmAttributeTable, apiPostGermplasmTable, apiPostGermplasmTableIds, apiPostPedigreeTable } from '@/plugins/api/germplasm'

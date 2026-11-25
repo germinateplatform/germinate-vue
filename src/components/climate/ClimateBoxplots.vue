@@ -7,6 +7,7 @@
         <ClimateSelection
           v-model="selectedClimates"
           :climates="cdStore.storeClimates"
+          url-query-key="boxplot"
           can-select-all
         >
           <template #text>

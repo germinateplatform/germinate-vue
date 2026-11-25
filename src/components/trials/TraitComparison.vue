@@ -78,7 +78,6 @@
   import { apiPostTraitDatasetStats, apiPostTrialsDataTable } from '@/plugins/api/trait'
   import { getColor } from '@/plugins/util/colors'
   import TraitRadarChart from '@/components/charts/TraitRadarChart.vue'
-  import { useI18n } from 'vue-i18n'
   import TraitBubbleChart from '@/components/charts/TraitBubbleChart.vue'
   import TraitHeatmap from '@/components/charts/TraitHeatmap.vue'
   import { mdiArrowRightBox } from '@mdi/js'

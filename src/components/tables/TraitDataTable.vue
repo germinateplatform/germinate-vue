@@ -3,20 +3,15 @@
   <BaseTable
     ref="baseTable"
     v-model:bottom-sheet-visible="bottomVisible"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :sort-by="compProps.sortBy"
-    :selection-type="selectionType"
     item-key="germplasmId"
-    :item-id="(item: ViewTableTrialsData) => `${item.germplasmId}-${item.variableId}`"
+    :item-id="(item: ViewTableTrialsData) => `${item.datasetId}-${item.germplasmId}-${item.variableId}-${item.rep}-${item.treatment}-${item.locationName}`"
     table-key="trialsData"
     marked-item-type="germplasm"
     :header-icon="mdiShovel"
     :show-details="false"
     :header-title="$t('pageDataExportTabDataTable')"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #item.germplasmId="{ item }">
       <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmId }}</router-link>
@@ -76,27 +71,16 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { Pages } from '@/plugins/pages'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
   import { dataTypes, entityTypes } from '@/plugins/util/types'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableTrialsData } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableTrialsData } from '@/plugins/types/germinate'
   import { columns } from '@/plugins/util/table-columns'
-  import type { DataTableSortItem } from 'vuetify'
   import { mdiInformationOutline, mdiShovel } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  interface GermplasmTableProps {
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableTrialsData[]>>> }
-    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    sortBy?: DataTableSortItem[]
-    selectionType?: TableSelectionType
-  }
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableTrialsData>, 'getData' | 'getIds' | 'download' | 'filterOn'>>()
 
-  const compProps = defineProps<GermplasmTableProps>()
   const selectedVariableId = ref<number>()
 
   const baseTable = useTemplateRef('baseTable')

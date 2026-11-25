@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
   import type { ViewTableClimates } from '@/plugins/types/germinate'
+  import { handleRouterQuery } from '@/plugins/util'
   import { dataTypes } from '@/plugins/util/types'
 
   interface TrialSelectionProps {
@@ -63,12 +64,16 @@
     canSelectMultiple?: boolean
     hint?: string
     label?: string
+    urlQueryKey: string
   }
 
   const compProps = withDefaults(defineProps<TrialSelectionProps>(), {
     canSelectAll: false,
     canSelectMultiple: true,
   })
+
+  const router = useRouter()
+  const route = useRoute()
 
   const searchTerm = ref<string>()
 
@@ -79,6 +84,9 @@
 
   const allSelected = computed(() => (modelValue.value || []).length === compProps.climates.length)
   const someSelected = computed(() => (modelValue.value || []).length > 0)
+  const urlQueryKey = computed(() => `${compProps.urlQueryKey}Climates`)
+
+  watch(modelValue, async newValue => handleRouterQuery(router, route, urlQueryKey.value, (newValue || []).map(t => t.climateId).map(String).join(',')))
 
   function toggle () {
     if (allSelected.value) {
@@ -108,4 +116,11 @@
       selectedClimate.value = JSON.parse(JSON.stringify(newValue || []))
     }
   }, { immediate: true })
+
+  onMounted(() => {
+    if (compProps.climates && route.query && route.query[urlQueryKey.value]) {
+      const ids = new Set((route.query[urlQueryKey.value] as string).split(',').map(Number))
+      selectedClimate.value = compProps.climates.filter(t => ids.has(t.climateId))
+    }
+  })
 </script>

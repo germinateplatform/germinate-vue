@@ -109,7 +109,6 @@
   import { apiPostGermplasmTable } from '@/plugins/api/germplasm'
   import { createMultiColorGradient, getColor, getGradientColor, getPrimaryColor, GRADIENT_VIRIDIS } from '@/plugins/util/colors'
   import { jitter } from '@/plugins/util/geo'
-  import { useI18n } from 'vue-i18n'
   import type { UserSelection } from '@/components/widgets/selections/GermplasmMapHighlightSelection.vue'
   import { concat, getNumberWithSuffix } from '@/plugins/util/formatting'
   import ColorGradient, { type ColorGradientProps } from '@/components/widgets/ColorGradient.vue'

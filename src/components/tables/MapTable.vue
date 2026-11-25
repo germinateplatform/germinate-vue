@@ -2,18 +2,13 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableMaps} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :selection-type="selectionType"
     :show-details="false"
     item-key="mapId"
     table-key="maps"
     :header-icon="mdiReorderHorizontal"
     :header-title="$t('pageMapsTitle')"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <!-- Map id link -->
     <template #item.mapId="{ item }">
@@ -38,22 +33,14 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableMaps } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableMaps } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
   import { Pages } from '@/plugins/pages'
   import { mdiReorderHorizontal } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableMaps[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableMaps>, 'getData'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

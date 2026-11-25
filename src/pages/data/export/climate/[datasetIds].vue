@@ -124,7 +124,6 @@ name: exportClimates
   import type { AxiosResponse } from 'axios'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
   import { apiPostClimateDataTable, apiPostDatasetClimates, apiPostClimateDataTableIds } from '@/plugins/api/climate'
   import { datasetTypes } from '@/plugins/util/types'
   import { useBreadcrumbIcon } from '@/plugins/composables/breadcrumbs'

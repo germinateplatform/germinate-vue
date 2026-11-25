@@ -3,20 +3,15 @@
   <BaseTable
     ref="baseTable"
     v-model:bottom-sheet-visible="bottomVisible"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :sort-by="compProps.sortBy"
-    :selection-type="selectionType"
     item-key="locationId"
-    :item-id="(item: ViewTableClimateData) => `${item.locationId}-${item.climateId}`"
+    :item-id="(item: ViewTableClimateData) => `${item.locationId}-${item.climateId}-${item.datasetId}-${item.recordingDate}`"
     table-key="trialsData"
     marked-item-type="germplasm"
     :header-icon="mdiWeatherPartlySnowyRainy"
     :show-details="false"
     :header-title="$t('pageDataExportTabDataTable')"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #item.locationType="{ item }">
       <v-chip label :color="locationTypes[item.locationType].color()" :prepend-icon="locationTypes[item.locationType].path">{{ $t(locationTypes[item.locationType].text) }}</v-chip>
@@ -52,26 +47,15 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableClimateData } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableClimateData } from '@/plugins/types/germinate'
   import { columns } from '@/plugins/util/table-columns'
-  import type { DataTableSortItem } from 'vuetify'
   import { mdiWeatherPartlySnowyRainy } from '@mdi/js'
   import { dataTypes, locationTypes } from '@/plugins/util/types'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  interface ClimateDataTableProps {
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableClimateData[]>>> }
-    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    sortBy?: DataTableSortItem[]
-    selectionType?: TableSelectionType
-  }
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableClimateData>, 'sortBy' | 'getData' | 'getIds' | 'download' | 'filterOn' | 'selectionType' | 'displayType' | 'headerIconColor'>>()
 
-  const compProps = defineProps<ClimateDataTableProps>()
   const selectedClimateId = ref<number>()
 
   const baseTable = useTemplateRef('baseTable')

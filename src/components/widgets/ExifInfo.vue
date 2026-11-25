@@ -30,11 +30,20 @@
   import NoFlashIcon from '@/assets/img/image-icon-flash-no.svg'
   import GpsIcon from '@/assets/img/image-icon-gps.svg'
   import DateIcon from '@/assets/img/image-icon-date.svg'
-  import { useI18n } from 'vue-i18n'
+  import { isSet } from '@/plugins/util'
 
   const compProps = defineProps<{
     image?: ViewTableImages
   }>()
+
+  interface Prop {
+    key: string
+    img: string
+    text: string
+    description?: string
+    value: string
+    link?: string
+  }
 
   const { t } = useI18n()
 
@@ -57,58 +66,71 @@
   const properties = computed(() => {
     if (compProps.image) {
       let f = undefined
-      if (compProps.image.imageExif.flash) {
-        f = compProps.image.imageExif.flash.toLowerCase().startsWith('flash fired')
+
+      const exif = compProps.image.imageExif
+
+      if (exif.flash) {
+        f = exif.flash.toLowerCase().startsWith('flash fired')
       }
 
-      return [{
+      const result: Prop[] = [{
         key: 'cameraMake',
         img: CameraIcon,
         text: t('widgetExifCameraMake'),
-        value: `${compProps.image.imageExif.cameraMake} ${compProps.image.imageExif.cameraModel || ''}`,
+        value: `${exif.cameraMake} ${exif.cameraModel || ''}`,
       }, {
         key: 'lensMake',
         img: LensIcon,
         text: t('widgetExifLensMake'),
-        value: `${compProps.image.imageExif.lensMake} ${compProps.image.imageExif.lensModel || ''}`,
+        value: `${exif.lensMake} ${exif.lensModel || ''}`,
       }, {
         key: 'focalLength',
         img: FLengthIcon,
         text: t('widgetExifFocalLength'),
-        value: compProps.image.imageExif.focalLength,
+        value: exif.focalLength,
       }, {
         key: 'fNumber',
         img: ApertureIcon,
         text: t('widgetExifAperture'),
-        value: compProps.image.imageExif.fNumber,
+        value: exif.fNumber,
       }, {
         key: 'exposureTime',
         img: ExposureIcon,
         text: t('widgetExifExposure'),
-        value: compProps.image.imageExif.exposureTime,
+        value: exif.exposureTime,
       }, {
         key: 'isoSpeedRatings',
         img: IsoIcon,
         text: t('widgetExifIso'),
-        value: compProps.image.imageExif.isoSpeedRatings,
+        value: exif.isoSpeedRatings,
       }, {
         key: 'flash',
         img: f ? FlashIcon : NoFlashIcon,
         text: t('widgetExifFlash'),
-        value: compProps.image.imageExif.flash,
-      }, {
-        key: 'gpsLatitude',
-        img: GpsIcon,
-        text: t('widgetExifLocation'),
-        description: t('widgetExifLocationClickToSee'),
-        value: `${compProps.image.imageExif.gpsLatitude ? compProps.image.imageExif.gpsLatitude.toFixed(4) : ''}, ${compProps.image.imageExif.gpsLongitude ? compProps.image.imageExif.gpsLongitude.toFixed(4) : ''}`,
-        link: (compProps.image.imageExif.gpsLatitude && compProps.image.imageExif.gpsLongitude) ? `https://geohack.toolforge.org/geohack.php?params=${compProps.image.imageExif.gpsLatitude};${compProps.image.imageExif.gpsLongitude}` : undefined,
-      }, {
+        value: exif.flash,
+      }]
+
+      if (isSet(exif.gpsLatitude) && isSet(exif.gpsLongitude)) {
+        result.push({
+          key: 'gpsLatitude',
+          img: GpsIcon,
+          text: t('widgetExifLocation'),
+          description: t('widgetExifLocationClickToSee'),
+          value: `${exif.gpsLatitude ? exif.gpsLatitude.toFixed(4) : ''}, ${exif.gpsLongitude ? exif.gpsLongitude.toFixed(4) : ''}`,
+          link: (exif.gpsLatitude && exif.gpsLongitude) ? `https://geohack.toolforge.org/geohack.php?params=${exif.gpsLatitude};${exif.gpsLongitude}` : undefined,
+        })
+      }
+
+      result.push({
         key: 'dateTime',
         img: DateIcon,
         text: t('widgetExifDateTime'),
         value: `${dateTime.value ? new Date(dateTime.value).toLocaleString() : ''}`,
-      }]
+      })
+
+      console.log(result)
+
+      return result.filter(p => p.value !== undefined && p.value.trim() !== 'undefined')
     } else {
       return []
     }

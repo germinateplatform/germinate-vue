@@ -2,6 +2,7 @@ import { authForm, authAxios, type ErrorHandler } from '@/plugins/api/base'
 import { uuidv4 } from '@/plugins/util'
 import type { GerminateResponseHandler } from '@/plugins/types/GerminateResponseHandler'
 import type { PaginatedResult, DatasetCrossDataTypeRequest, Datasets, ExperimentRequest, ExportRequest, Fileresourcetypes, PaginatedDatasetRequest, PaginatedRequest, TrialsExportDatasetRequest, ViewTableDatasets, ViewTableExperiments, ViewTableFileresources, ViewTableLicenseDefinitions, ClimateExportDatasetRequest, ViewTableDatasetAttributes, DataExportJobs, ViewTableLicenses, ViewTableFileresourcetypes, ViewTableCollaborators, SimilarityResult, DatasetSimilarityRequest } from '@/plugins/types/germinate'
+import type { WordItem } from '@/components/charts/Wordcloud.vue'
 
 export function apiPostPublicationDatasetTable (publicationId: number, queryData: PaginatedRequest, onSuccess?: GerminateResponseHandler<PaginatedResult<ViewTableDatasets[]>>, onError?: ErrorHandler) {
   queryData.page -= 1
@@ -148,6 +149,10 @@ export function apiPostDatasetfileresource (queryData: PaginatedDatasetRequest, 
 
 export function apiGetFileResourceTypes (onSuccess?: GerminateResponseHandler<ViewTableFileresourcetypes[]>, onError?: ErrorHandler) {
   return authAxios({ url: 'fileresourcetype', success: onSuccess, error: onError })
+}
+
+export function apiGetDatasetWordcloud (onSuccess?: GerminateResponseHandler<WordItem[]>, onError?: ErrorHandler) {
+  return authAxios({ url: 'dataset/wordcloud', success: onSuccess, error: onError })
 }
 
 export function apiPostFileresourceType (data: Fileresourcetypes, onSuccess?: GerminateResponseHandler<number>, onError?: ErrorHandler) {

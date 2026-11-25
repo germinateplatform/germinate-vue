@@ -140,7 +140,6 @@ name: projectDetails
   import Markdown from 'vue3-markdown-it'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
   import { useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
   import { apiPostPublicationsTable, apiPostPublicationTableIds } from '@/plugins/api/publication'
   import { lookupDoiInformation } from '@/plugins/util'

@@ -2,19 +2,14 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableLocations} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :selection-type="selectionType"
     :show-details="false"
     item-key="locationId"
     table-key="locations"
     marked-item-type="locations"
     :header-icon="mdiMapMarker"
     :header-title="$t('pageLocationsTitle')"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #item.locationType="{ item }">
       <v-chip label :color="locationTypes[item.locationType].color()" :prepend-icon="locationTypes[item.locationType].path">{{ $t(locationTypes[item.locationType].text) }}</v-chip>
@@ -42,25 +37,20 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableLocations } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableLocations } from '@/plugins/types/germinate'
   import { locationTypes } from '@/plugins/util/types'
   import { columns } from '@/plugins/util/table-columns'
   import { mdiMapMarker } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  interface LocationTableProps {
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableLocations[]>>> }
-    getIds: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
+  type SharedProps = Pick<BaseTableProps<ViewTableLocations>, 'getData' | 'getIds' | 'download' | 'filterOn' | 'selectionType' | 'headerIconColor' | 'sortBy'>
+
+  interface Props extends SharedProps {
     tableMode?: 'base' | 'distance'
   }
 
-  const compProps = withDefaults(defineProps<LocationTableProps>(), {
+  const compProps = withDefaults(defineProps<Props>(), {
     tableMode: 'base',
   })
 

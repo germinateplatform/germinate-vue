@@ -3,15 +3,12 @@
   <BaseTable
     ref="baseTable"
     v-model:bottom-sheet-visible="bottomVisible"
-    :get-data="compProps.getData"
     :headers="headers"
-    :filter-on="filterOn"
-    :sort-by="compProps.sortBy"
-    :selection-type="selectionType"
     item-key="attributeValueId"
     table-key="germplasmAttributes"
     :header-icon="mdiPlaylistPlus"
     :header-title="$t('pageSearchResultSectionGermplasmAttributes')"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #item.germplasmId="{ item }">
       <router-link :to="Pages.getPath(Pages.passport, item.germplasmId)">{{ item.germplasmId }}</router-link>
@@ -36,27 +33,14 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import { Pages } from '@/plugins/pages'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableGermplasmAttributes } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableGermplasmAttributes } from '@/plugins/types/germinate'
   import { columns } from '@/plugins/util/table-columns'
-  import type { DataTableSortItem } from 'vuetify'
   import { mdiPlaylistPlus } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  interface GermplasmTableProps {
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableGermplasmAttributes[]>>> }
-    filterOn?: FilterGroup[]
-    sortBy?: DataTableSortItem[]
-    selectionType?: TableSelectionType
-    tableMode?: 'base' | 'distance'
-  }
-
-  const compProps = withDefaults(defineProps<GermplasmTableProps>(), {
-    tableMode: 'base',
-  })
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableGermplasmAttributes>, 'getData' | 'filterOn' | 'headerIconColor'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

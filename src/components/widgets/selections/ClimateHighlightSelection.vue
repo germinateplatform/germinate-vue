@@ -1,21 +1,25 @@
 <template>
   <div>
     <div class="text-title-small mt-3">{{ $t('widgetHighlightSelectionTitle') }}</div>
-    <v-btn-toggle
+    <v-tabs
       v-model="selectionMode"
       color="primary"
+      bg-color="surface"
+      grow
       variant="tonal"
+      center-active
+      :mandatory="false"
       class="d-flex mb-5"
     >
-      <v-btn class="flex-grow-1" value="dataset" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
-      <v-btn class="flex-grow-1" value="location" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionLocation')" />
-      <v-btn class="flex-grow-1" value="group" :disabled="plottedGroups?.length === 0" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
+      <v-tab value="datasets" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
+      <v-tab value="location" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionLocation')" />
+      <v-tab value="group" :disabled="plottedGroups?.length === 0" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
         <template #append><v-badge inline :content="getNumberWithSuffix(cdStore.storeGroups.length, 0)" /></template>
-      </v-btn>
-      <v-btn class="flex-grow-1" value="year" :prepend-icon="mdiCalendarWeek" :disabled="!climateYears || climateYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
+      </v-tab>
+      <v-tab value="year" :prepend-icon="mdiCalendarWeek" :disabled="!climateYears || climateYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
         <template #append><v-badge inline :content="getNumberWithSuffix((climateYears|| []).length, 0)" /></template>
-      </v-btn>
-    </v-btn-toggle>
+      </v-tab>
+    </v-tabs>
 
     <LocationSelection
       v-if="selectionMode === 'location'"
@@ -61,7 +65,7 @@
   import { apiPostClimateYears } from '@/plugins/api/climate'
 
   export interface UserSelection {
-    type: 'group' | 'dataset' | 'location' | 'year'
+    type: 'group' | 'datasets' | 'location' | 'year'
     selectedItems: string[]
   }
 
@@ -74,7 +78,7 @@
   })
 
   const cdStore = useClimateDataStore()
-  const selectionMode = ref<'group' | 'dataset' | 'location' | 'year'>()
+  const selectionMode = ref<'group' | 'datasets' | 'location' | 'year'>()
 
   const selectedLocations = ref<ViewTableLocations[]>([])
   const selectedGroups = ref<ViewTableGroups[]>([])
@@ -87,7 +91,7 @@
     if (!userSelection.value) {
       return false
     } else {
-      if (userSelection.value.type === 'dataset') {
+      if (userSelection.value.type === 'datasets') {
         return true
       } else {
         return userSelection.value.selectedItems.length > 0
@@ -97,10 +101,10 @@
 
   const userSelection: ComputedRef<UserSelection | undefined> = computed(() => {
     switch (selectionMode.value) {
-      case 'dataset':
+      case 'datasets':
         return {
           type: selectionMode.value,
-          selectedItems: [],
+          selectedItems: cdStore.storeDatasetIds.map(ds => `${ds}`),
         }
       case 'group':
         return {

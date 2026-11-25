@@ -374,7 +374,6 @@ name: germinateSettings
   import { mdiCookieLock, mdiCalculatorVariant, mdiCommentTextMultiple, mdiTune, mdiViewDashboardVariant, mdiBackupRestore, mdiLockOpenVariant, mdiLockOpen, mdiLock, mdiCancel, mdiFormatListChecks, mdiDatabaseImport, mdiAccountLockOpen, mdiShieldAlert, mdiChevronDoubleLeft, mdiChevronDoubleRight, mdiEyedropperPlus, mdiContentSaveAlert, mdiCog } from '@mdi/js'
   import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
   import { useDisplay, useTheme } from 'vuetify'
-  import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
   import { Pages } from '@/plugins/pages'

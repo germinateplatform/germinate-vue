@@ -21,7 +21,7 @@
         <span v-html="displayData.fullReference" />
       </div>
 
-      <div class="mt-3" v-if="toggleSelection">
+      <div class="mt-3" v-if="canSelect && toggleSelection">
         <v-chip
           label
           size="small"
@@ -89,10 +89,12 @@
 
   const compProps = withDefaults(defineProps<{
     canDelete?: boolean
+    canSelect?: boolean
     publication?: ViewTablePublications
     isSelected?: boolean
     toggleSelection?: (item: ViewTablePublications) => void
   }>(), {
+    canSelect: false,
     canDelete: true,
   })
 

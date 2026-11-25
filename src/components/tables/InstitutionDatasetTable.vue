@@ -2,18 +2,13 @@
   <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableInstitutionDatasets} -->
   <BaseTable
     ref="baseTable"
-    :get-data="compProps.getData"
-    :get-ids="compProps.getIds"
-    :download="compProps.download"
     :headers="headers"
-    :filter-on="filterOn"
-    :selection-type="selectionType"
     :show-details="false"
     item-key="institutionId"
     table-key="institutiondatasets"
     :header-icon="mdiOfficeBuildingCog"
     :header-title="$t('pageStatisticsInstitutionDatasetTitle')"
-    v-bind="$attrs"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <template #card-text>
       <v-card-text>{{ $t('pageStatisticsInstitutionDatasetText') }}</v-card-text>
@@ -66,23 +61,15 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableInstitutionDatasets } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { FilterComparator, FilterOperator, type FilterGroup, type ViewTableInstitutionDatasets } from '@/plugins/types/germinate'
   import { datasetTypes, germplasmInstitutionTypes } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
   import { mdiDatabase, mdiOfficeBuildingCog } from '@mdi/js'
   import { getPrimaryColor } from '@/plugins/util/colors'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableInstitutionDatasets[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableInstitutionDatasets>, 'getData' | 'filterOn'>>()
 
   const router = useRouter()
   const baseTable = useTemplateRef('baseTable')

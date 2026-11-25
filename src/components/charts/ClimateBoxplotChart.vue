@@ -84,7 +84,7 @@
   function getHeight () {
     if (compProps.userSelection) {
       switch (compProps.userSelection.type) {
-        case 'dataset':
+        case 'datasets':
           return Math.max(300, (compProps.climates.length + cdStore.storeDatasetIds.length + 1) * 150)
         default:
           return Math.max(300, (compProps.climates.length + compProps.userSelection.selectedItems.length + 1) * 150)
@@ -97,8 +97,6 @@
   const markedItemCount = computed(() => selectedIds.value.length)
 
   async function redraw () {
-    emitter.emit('show-loading', true)
-
     loading.value = true
     const climateIdSet = new Set<number>(compProps.climates.map(t => t.climateId))
     const data = compProps.plotData.filter(pd => climateIdSet.has(pd.climateId)).concat()
@@ -141,7 +139,7 @@
 
       if (compProps.userSelection) {
         switch (compProps.userSelection.type) {
-          case 'dataset':
+          case 'datasets':
             traces.push(...cdStore.storeDatasets.map((dataset, index) => {
               return getData(data, dp => dp.datasetId === dataset.datasetId, index, dataset.datasetName || 'N/A')
             }))
@@ -231,16 +229,12 @@
               boxplotChart.value.on('plotly_click', (data: any) => {
                 if (data.points.length > 0) {
                   selectedLocationId.value = Number.parseInt(data.points[0].id.split('-')[0])
-
-                  // nextTick(() => this.$refs.passportModal.show())
-                  // TODO: Show passport popup?
                 } else {
                   selectedLocationId.value = undefined
                 }
               })
             }
           })
-          .finally(() => emitter.emit('show-loading', false))
       }
     }
 

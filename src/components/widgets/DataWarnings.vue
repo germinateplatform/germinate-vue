@@ -89,7 +89,6 @@
   import { apiDeleteGermplasmDataWarning, apiGetDataWarnings, apiGetGermplasmDataWarnings, apiPutGermplasmDataWarning } from '@/plugins/api/germplasm'
   import { DatawarningsCategory, type Datawarnings } from '@/plugins/types/germinate'
   import { mdiAlert, mdiCalendar, mdiCancel, mdiContentSave, mdiDelete, mdiFileCertificate, mdiFileDocumentAlert, mdiHelpRhombus, mdiHistory, mdiInvoiceTextArrowRight, mdiPlusBox } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
 
   import emitter from 'tiny-emitter/instance'
 

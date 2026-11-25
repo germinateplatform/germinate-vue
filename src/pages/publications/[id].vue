@@ -98,7 +98,6 @@ name: publicationDetails
   import { mdiClose, mdiDelete, mdiPlusBox } from '@mdi/js'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
 
   const route = useRoute('publicationDetails')
   const router = useRouter()

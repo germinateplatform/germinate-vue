@@ -32,7 +32,6 @@
   import { useBreadcrumbIcon, useBreadcrumbTitle } from '@/plugins/composables/breadcrumbs'
 
   import emitter from 'tiny-emitter/instance'
-  import { useI18n } from 'vue-i18n'
   import { apiPostTableExport } from '@/plugins/api/misc'
 
   const { t } = useI18n()

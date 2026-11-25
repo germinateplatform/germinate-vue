@@ -113,7 +113,6 @@
 
   import { mdiChartAreaspline, mdiDotsVertical, mdiFileCode, mdiFileDocument, mdiFileDocumentRemove, mdiFileImage, mdiLoading, mdiPalette, mdiPlus, mdiUndoVariant } from '@mdi/js'
   import Plotly, { type Layout } from 'plotly.js/lib/core'
-  import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits(['update:loading', 'force-redraw', 'download-png-manually'])
 

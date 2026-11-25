@@ -75,7 +75,7 @@ name: home
   import { apiPostPublicationsTable } from '@/plugins/api/publication'
   import { apiPostNewsTable } from '@/plugins/api/news'
   import { apiPostDataImportStats } from '@/plugins/api/dataimport'
-  import { mdiHome } from '@mdi/js'
+  import { useHelpRegistration } from '@/plugins/composables/useHelp'
 
   const store = useCoreStore()
   const stats = ref<OverviewStats>()
@@ -83,6 +83,11 @@ name: home
   const showNews = ref<boolean>(true)
   const showDataUpdates = ref<boolean>(true)
   const hasStoriesData = ref<boolean>(true)
+
+  useHelpRegistration({
+    label: 'User interface',
+    url: '/docs/user/ui/',
+  })
 
   const allDashboardSections = computed(() => store.storeServerSettings?.dashboardSections || Object.keys(dashboardSections))
 

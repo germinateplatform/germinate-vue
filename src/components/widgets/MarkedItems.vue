@@ -38,7 +38,6 @@
   import { Pages } from '@/plugins/pages'
   import { FilterComparator, FilterOperator, type FilterGroup, type MarkedItemType, type PaginatedRequest } from '@/plugins/types/germinate'
   import { markedItemTypes } from '@/plugins/util/types'
-  import { useI18n } from 'vue-i18n'
 
   const compProps = defineProps<{
     type?: MarkedItemType

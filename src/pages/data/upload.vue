@@ -207,7 +207,6 @@ name: importUpload
 
   import emitter from 'tiny-emitter/instance'
   import { dmsToDecimal } from '@/plugins/util/formatting'
-  import { useI18n } from 'vue-i18n'
 
   definePage({
     meta: {

@@ -3,24 +3,16 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTablePublications} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :forced-filters="forcedFilters"
       :show-details="false"
-      :selection-type="selectionType"
-      :disabled="compProps.disabled"
-      :display-type="compProps.displayType"
-      :ignore-url-filter="ignoreUrlFilter"
       item-key="publicationId"
       table-key="publications"
       :sort-by="[{ key: 'createdOn', order: 'desc' }]"
       :header-icon="mdiBookOpenVariant"
       :header-title="$t('pagePublicationsTitle')"
       :supports-grid-cards="true"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header v-if="store.storeUserIsAuthenticated && disabled !== true">
         <v-btn variant="outlined" :text="$t('buttonAddPublication')" :prepend-icon="mdiPlus" @click="addItem" />
@@ -68,7 +60,7 @@
       </template>
 
       <template #card-item="{ item, isSelected, toggleItem }">
-        <PublicationCard :publication="item" @delete="deletePublication(item)" :is-selected="isSelected" :toggle-selection="toggleItem" />
+        <PublicationCard :publication="item" @delete="deletePublication(item)" :is-selected="isSelected" :toggle-selection="toggleItem" :can-select="selectionType !== undefined" />
       </template>
 
       <!-- Pass on all named slots -->
@@ -100,21 +92,19 @@
 </template>
 
 <script setup lang="ts">
-  import BaseTable, { type DisplayType } from '@/components/tables/BaseTable.vue'
+  import BaseTable from '@/components/tables/BaseTable.vue'
 
   // @ts-ignore
   import { Cite } from '@citation-js/core'
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import { FilterComparator, FilterOperator, PublicationdataReferenceType, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTablePublications } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { FilterComparator, FilterOperator, PublicationdataReferenceType, type ViewTablePublications } from '@/plugins/types/germinate'
   import { publicationTypes } from '@/plugins/util/types'
   import { mdiAlarm, mdiBookOpenVariant, mdiCalendar, mdiDelete, mdiMagnify, mdiNewspaper, mdiOpenInNew, mdiPlus } from '@mdi/js'
   import { Pages } from '@/plugins/pages'
   import { apiDeletePublicationReference, apiPutPublication, apiPutPublicationReference } from '@/plugins/api/publication'
 
   import emitter from 'tiny-emitter/instance'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
   export interface PublicationDoi {
     doi?: string
@@ -126,20 +116,16 @@
 
   const newPublication = ref<PublicationDoi>({})
 
-  const compProps = withDefaults(defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTablePublications[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
-    displayType?: DisplayType
-    disabled?: boolean
-    disableForcedProjectFilter?: boolean
+  type SharedProps = Pick<BaseTableProps<ViewTablePublications>, 'getData' | 'filterOn' | 'headerIconColor' | 'selectionType' | 'ignoreUrlFilter' | 'disabled' | 'displayType'>
+
+  interface Props extends SharedProps {
     deleteHandler?: (item: ViewTablePublications) => void
-    ignoreUrlFilter?: boolean
+    disableForcedProjectFilter?: boolean
     publicationReferenceType?: PublicationdataReferenceType
     publicationReferenceId?: number
-  }>(), {
+  }
+
+  const compProps = withDefaults(defineProps<Props>(), {
     disabled: false,
   })
 

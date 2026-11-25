@@ -3,16 +3,13 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewUserDetails} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
       :headers="headers"
       :show-details="false"
       item-key="id"
       table-key="users"
       :header-icon="mdiAccountMultiple"
-      :selection-type="selectionType"
       :header-title="$t('pageUsersTitle')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #item.userType="{ item }">
         <v-chip label variant="flat" :prepend-icon="userTypes[item.userType].path" :color="userTypes[item.userType].color()" :text="userTypes[item.userType].text" />
@@ -29,20 +26,14 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { PaginatedRequest, PaginatedResult, ViewUserDetails } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewUserDetails } from '@/plugins/types/germinate'
 
   import { mdiAccountMultiple } from '@mdi/js'
   import { userTypes } from '@/plugins/util/types'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewUserDetails[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    selectionType?: TableSelectionType
-  }>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewUserDetails>, 'getData' | 'getIds' | 'selectionType'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

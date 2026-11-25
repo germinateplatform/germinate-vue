@@ -1,7 +1,6 @@
 import { Pages } from '@/plugins/pages' // adjust to wherever your Pages class lives
 import type { Page } from '@/plugins/types/Page'
 import type { MaybeRefOrGetter } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 // Shared across all components, replaces Nuxt's useState
 const dynamicTitle = ref<string | undefined>()

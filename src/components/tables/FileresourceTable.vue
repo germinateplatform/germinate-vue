@@ -3,20 +3,15 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableFileresources} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
-      :download="compProps.download"
       :headers="headers"
-      :filter-on="filterOn"
       :forced-filters="forcedFilters"
-      :disabled="disabled"
       :show-details="false"
       item-key="fileresourceId"
       table-key="fileresources"
       :header-icon="mdiFileDownload"
       :header-title="$t('pageDataResourcesTitle')"
       supports-grid-cards
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header>
         <v-btn v-if="store.storeUserIsDataCurator" variant="outlined" :prepend-icon="mdiFilePlus" @click="addFileresourceModal?.show()">{{ $t('tableButtonAddFileresource') }}</v-btn>
@@ -101,11 +96,9 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import { FilterComparator, FilterOperator, type FilterGroup, type PaginatedRequest, type PaginatedResult, type ViewTableFileresources } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import { FilterComparator, FilterOperator, type FilterGroup, type ViewTableFileresources } from '@/plugins/types/germinate'
+
   import { getNumberWithSuffix, isTruncatedAfterWords, truncateAfterWords } from '@/plugins/util/formatting'
 
   import emitter from 'tiny-emitter/instance'
@@ -113,16 +106,17 @@
   import { apiDeleteFileresource } from '@/plugins/api/dataset'
   import AddFileresourceModal from '@/components/modals/AddFileresourceModal.vue'
   import { mdiDatabase, mdiDelete, mdiDownload, mdiFile, mdiFileDownload, mdiFilePlus, mdiPageNext } from '@mdi/js'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableFileresources[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    download?: { (options: PaginatedRequest): Promise<AxiosResponse<Blob>> }
-    filterOn?: FilterGroup[]
-    disabled?: boolean
-    selectionType?: TableSelectionType
+  type SharedProps = Pick<BaseTableProps<ViewTableFileresources>, 'getData' | 'filterOn' | 'disabled'>
+
+  interface Props extends SharedProps {
     disableForcedProjectFilter?: boolean
-  }>()
+  }
+
+  const compProps = withDefaults(defineProps<Props>(), {
+    disableForcedProjectFilter: false,
+  })
 
   const forcedFilters = computed(() => {
     if (store.storeSelectedProjects && store.storeSelectedProjects.length > 0 && compProps.disableForcedProjectFilter !== true) {

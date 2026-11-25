@@ -3,17 +3,14 @@
   <BaseTable
     ref="baseTable"
     v-model:bottom-sheet-visible="bottomVisible"
-    :get-data="compProps.getData"
-    :disabled="compProps.disabled"
     :headers="headers"
-    :filter-on="filterOn"
-    :sort-by="compProps.sortBy"
     :item-id="(item: ViewTableEntities) => `${item.entityParentId}|${item.entityChildId}`"
     item-key="entityParentId"
     table-key="entities"
     :header-icon="mdiFileTree"
     :header-title="$t('pagePassportEntityTitle')"
     @filter-cleared="emit('filter-cleared')"
+    v-bind="{ ...$attrs, ...compProps }"
   >
     <!-- Override the default header rendering -->
     <template #headers="{ columns, isSorted, getSortIcon, toggleSort }">
@@ -87,22 +84,13 @@
   import BaseTable from '@/components/tables/BaseTable.vue'
 
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableEntities } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
-  import type { DataTableSortItem } from 'vuetify'
+  import type { FilterGroup, ViewTableEntities } from '@/plugins/types/germinate'
   import { mdiFileTree } from '@mdi/js'
   import { entityTypes } from '@/plugins/util/types'
   import { Pages } from '@/plugins/pages'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  interface EntityTableProps {
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableEntities[]>>> }
-    filterOn?: FilterGroup[]
-    sortBy?: DataTableSortItem[]
-    disabled?: boolean
-  }
-
-  const compProps = defineProps<EntityTableProps>()
+  const compProps = defineProps<Pick<BaseTableProps<ViewTableEntities>, 'getData' | 'filterOn' | 'headerIconColor'>>()
 
   const baseTable = useTemplateRef('baseTable')
   const { t } = useI18n()

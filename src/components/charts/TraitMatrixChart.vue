@@ -7,7 +7,7 @@
       :source-file="sourceFile"
       v-model:loading="loading"
       :badge-count="markedItemCount"
-      :header-icon="mdiChartGantt"
+      :header-icon="mdiGrid"
       @force-redraw="redraw"
       ref="baseChart"
     >
@@ -69,7 +69,7 @@
   import type { ViewTableTraits } from '@/plugins/types/germinate'
   import Passport from '@/components/widgets/Passport.vue'
   import type { UserSelection } from '@/components/widgets/selections/TraitHighlightSelection.vue'
-  import { mdiChartGantt, mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete } from '@mdi/js'
+  import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiDelete, mdiGrid } from '@mdi/js'
 
   const compProps = defineProps<{
     traits: ViewTableTraits[]

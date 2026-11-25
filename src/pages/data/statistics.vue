@@ -22,7 +22,7 @@
       :title="$t('pageStatisticsBiologicalStatusTitle')"
       x-value="sampstat"
       filename="biological-status"
-      :selection-modes="['taxonomies']"
+      :selection-modes="['taxonomies', 'genus']"
       sort-by-x
       @bar-clicked="biologicalStatusClicked"
       v-if="germplasmMetadata"
@@ -62,6 +62,13 @@
       class="mt-5"
       :get-data="getInstitutionDatasets"
     />
+
+    <Wordcloud
+      class="mt-5"
+      :words="wordcloudData"
+      color-mode="gradient"
+      v-if="wordcloudData && wordcloudData.length > 0"
+    />
   </v-container>
 </template>
 
@@ -74,6 +81,8 @@ name: statistics
   import StatsChart from '@/components/charts/StatsChart.vue'
   import TaxonomySunburst from '@/components/charts/TaxonomySunburst.vue'
   import TaxonomyTreemap from '@/components/charts/TaxonomyTreemap.vue'
+  import type { WordItem } from '@/components/charts/Wordcloud.vue'
+  import { apiGetDatasetWordcloud } from '@/plugins/api/dataset'
   import { apiPostInstitutionDatasetTable } from '@/plugins/api/institution'
   import { apiGetMetaStats, apiGetDatasetStats } from '@/plugins/api/stats'
   import { Pages } from '@/plugins/pages'
@@ -81,6 +90,8 @@ name: statistics
 
   const germplasmMetadata = ref<GermplasmMetaStats[]>()
   const datasetStats = ref<ViewStatsDatasets[]>([])
+
+  const wordcloudData = ref<WordItem[]>([])
 
   const router = useRouter()
 
@@ -166,6 +177,12 @@ name: statistics
     })
     apiGetDatasetStats(result => {
       datasetStats.value = result
+    })
+    apiGetDatasetWordcloud(result => {
+      wordcloudData.value = result
+    }, {
+      codes: [404],
+      callback: () => {},
     })
   })
 </script>

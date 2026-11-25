@@ -81,6 +81,7 @@
     "useCoreStore": true,
     "useCssModule": true,
     "useCssVars": true,
+    "useI18n": true,
     "useId": true,
     "useModel": true,
     "useRoute": true,

@@ -178,8 +178,10 @@ name: germplasm
   import { MAX_JAVA_INTEGER } from '@/plugins/api/base'
   import { mdiDownload, mdiFamilyTree, mdiFilter, mdiGroup, mdiListStatus, mdiMapMarkerMultiple, mdiPassport, mdiPlaylistCheck } from '@mdi/js'
   import { watchIgnorable } from '@vueuse/core'
+  import { useHelpRegistration } from '@/plugins/composables/useHelp'
 
   const store = useCoreStore()
+  const { t } = useI18n()
 
   const germplasmLocationMap = useTemplateRef('germplasmLocationMap')
   const germplasmTable = useTemplateRef('germplasmTable')
@@ -199,6 +201,10 @@ name: germplasm
   const selectedPedigreeGroup = ref<ViewTableGroups>()
 
   const expanded = ref<number>()
+
+  useHelpRegistration({
+    content: t('helpGermplasm'),
+  })
 
   function getData (data: PaginatedRequest) {
     return apiPostGermplasmTable(data)

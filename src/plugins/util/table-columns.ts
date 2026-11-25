@@ -12,6 +12,7 @@ const germplasmColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnGermplasmName',
   dataType: 'string',
   preferredSearchColumn: true,
+  markedItemSearchColumn: true,
   cellProps: { class: 'font-weight-bold' },
   searchable: true,
   quickSearchable: true,
@@ -339,7 +340,6 @@ const traitDataColumns: ExtendedDataTableHeader[] = [{
   key: 'germplasmId',
   title: 'tableColumnGermplasmId',
   dataType: 'integer',
-  searchable: true,
 }, {
   key: 'germplasmName',
   title: 'tableColumnGermplasmName',
@@ -382,27 +382,35 @@ const traitDataColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnGermplasmLocation',
   dataType: 'string',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'countryName',
   dataType: 'string',
   title: 'tableColumnCountryName',
   searchable: true,
+  quickSearchable: true,
 }, {
   key: 'variableId',
   dataType: 'integer',
   title: 'tableColumnVariableId',
+  visibleInFilter: false,
 }, {
   key: 'variableName',
   dataType: 'string',
   title: 'tableColumnVariableName',
+  quickSearchable: true,
+  searchable: true,
 }, {
   key: 'traitId',
   dataType: 'integer',
   title: 'tableColumnTraitId',
+  visibleInFilter: false,
 }, {
   key: 'traitName',
   dataType: 'string',
   title: 'tableColumnTraitName',
+  quickSearchable: true,
+  searchable: true,
 }, {
   key: 'scaleDatatype',
   dataType: 'dataType',
@@ -411,6 +419,8 @@ const traitDataColumns: ExtendedDataTableHeader[] = [{
   key: 'treatment',
   dataType: 'string',
   title: 'tableColumnTraitTreatment',
+  quickSearchable: true,
+  searchable: true,
 }, {
   key: 'rep',
   dataType: 'string',
@@ -460,8 +470,10 @@ const traitDataColumns: ExtendedDataTableHeader[] = [{
   value: (value: ViewTableGermplasm) => value.recordingDate ? new Date(value.recordingDate).toLocaleDateString() : undefined,
 }, {
   key: 'traitValue',
-  dataType: 'string',
+  dataType: 'any',
   title: 'tableColumnTrialsDataTraitValue',
+  quickSearchable: true,
+  searchable: true,
 }]
 
 const locationColumns: ExtendedDataTableHeader[] = [{
@@ -473,6 +485,7 @@ const locationColumns: ExtendedDataTableHeader[] = [{
   key: 'locationName',
   title: 'tableColumnLocationName',
   dataType: 'string',
+  markedItemSearchColumn: true,
   searchable: true,
   quickSearchable: true,
 }, {
@@ -805,6 +818,7 @@ const datasetColumns: ExtendedDataTableHeader[] = [
     key: 'fileresourceIds',
     dataType: 'json',
     sortable: false,
+    visibleInTable: false,
     title: 'tableColumnDatasetFileresources',
   }, {
     key: 'createdOn',
@@ -843,6 +857,7 @@ const mapdefinitionColumns: ExtendedDataTableHeader[] = [{
   title: 'tableColumnMarkerName',
   dataType: 'string',
   searchable: true,
+  markedItemSearchColumn: true,
   quickSearchable: true,
 }, {
   key: 'markerSynonyms',
@@ -904,6 +919,7 @@ const validCompsForType: { [key: string]: FilterComparator[] } = {
   traitClass: [FilterComparator.equals, FilterComparator.isNull, FilterComparator.isNotNull, FilterComparator.inSet],
   json: [FilterComparator.jsonSearch, FilterComparator.isNull, FilterComparator.isNotNull],
   jsonObject: [FilterComparator.jsonSearch],
+  any: [FilterComparator.equals, FilterComparator.contains, FilterComparator.startsWith, FilterComparator.endsWith, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],
   integer: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],
   float: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.inSet, FilterComparator.isNull, FilterComparator.isNotNull],
   date: [FilterComparator.equals, FilterComparator.between, FilterComparator.lessThan, FilterComparator.greaterThan, FilterComparator.lessOrEquals, FilterComparator.greaterOrEquals, FilterComparator.isNull, FilterComparator.isNotNull],

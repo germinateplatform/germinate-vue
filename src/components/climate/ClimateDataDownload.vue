@@ -7,6 +7,7 @@
         <ClimateSelection
           v-model="selectedClimates"
           can-select-all
+          url-query-key="download"
           :climates="cdStore.storeClimates"
         >
           <template #text>

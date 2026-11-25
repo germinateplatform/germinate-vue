@@ -73,6 +73,7 @@ declare module 'vue' {
     GermplasmTraitStats: typeof import('./components/widgets/GermplasmTraitStats.vue')['default']
     GroupSelection: typeof import('./components/widgets/selections/GroupSelection.vue')['default']
     GroupTable: typeof import('./components/tables/GroupTable.vue')['default']
+    HelpComponent: typeof import('./components/structure/HelpComponent.vue')['default']
     HintContainer: typeof import('./components/widgets/HintContainer.vue')['default']
     HtmlTemplateEditor: typeof import('./components/widgets/HtmlTemplateEditor.vue')['default']
     ImageCarousel: typeof import('./components/structure/ImageCarousel.vue')['default']
@@ -82,6 +83,7 @@ declare module 'vue' {
     ImageTags: typeof import('./components/widgets/ImageTags.vue')['default']
     ImageUpload: typeof import('./components/widgets/ImageUpload.vue')['default']
     ImportStatusTable: typeof import('./components/tables/ImportStatusTable.vue')['default']
+    InputModal: typeof import('./components/modals/InputModal.vue')['default']
     InstitutionDatasetTable: typeof import('./components/tables/InstitutionDatasetTable.vue')['default']
     InstitutionTable: typeof import('./components/tables/InstitutionTable.vue')['default']
     LayoutHighlightSelection: typeof import('./components/widgets/selections/LayoutHighlightSelection.vue')['default']
@@ -142,7 +144,6 @@ declare module 'vue' {
     TaxonomySunburst: typeof import('./components/charts/TaxonomySunburst.vue')['default']
     TaxonomyTable: typeof import('./components/tables/TaxonomyTable.vue')['default']
     TaxonomyTreemap: typeof import('./components/charts/TaxonomyTreemap.vue')['default']
-    TextfieldModal: typeof import('./components/modals/TextfieldModal.vue')['default']
     TextTagInput: typeof import('./components/input/TextTagInput.vue')['default']
     TraitBarChart: typeof import('./components/charts/TraitBarChart.vue')['default']
     TraitBoxplotChart: typeof import('./components/charts/TraitBoxplotChart.vue')['default']
@@ -173,5 +174,6 @@ declare module 'vue' {
     UserPermissions: typeof import('./components/user/UserPermissions.vue')['default']
     UserTable: typeof import('./components/tables/UserTable.vue')['default']
     VariableDetails: typeof import('./components/variable/VariableDetails.vue')['default']
+    Wordcloud: typeof import('./components/charts/Wordcloud.vue')['default']
   }
 }

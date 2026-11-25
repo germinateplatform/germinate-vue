@@ -3,17 +3,13 @@
     <!-- @vue-generic {import('@/plugins/types/germinate').ViewTableUsergroups} -->
     <BaseTable
       ref="baseTable"
-      :get-data="compProps.getData"
-      :get-ids="compProps.getIds"
       :headers="headers"
-      :filter-on="filterOn"
       :show-details="false"
       item-key="userGroupId"
       table-key="userGroups"
       :header-icon="mdiAccountGroup"
-      :selection-type="selectionType"
       :header-title="$t('pageUserPermissionsTabUserGroups')"
-      v-bind="$attrs"
+      v-bind="{ ...$attrs, ...compProps }"
     >
       <template #header v-if="canCreateNew && store.storeUserIsAuthenticated">
         <v-btn variant="outlined" :text="$t('buttonAddGroup')" :prepend-icon="mdiPlus" @click="addItem" />
@@ -48,25 +44,23 @@
 <script setup lang="ts">
   import BaseTable from '@/components/tables/BaseTable.vue'
 
-  import type { TableSelectionType } from '@/plugins/types/TableSelectionType'
   import type { ExtendedDataTableHeader } from '@/plugins/types/client'
-  import type { AxiosResponse } from 'axios'
-  import type { FilterGroup, PaginatedRequest, PaginatedResult, ViewTableUsergroups } from '@/plugins/types/germinate'
-  import { useI18n } from 'vue-i18n'
+  import type { ViewTableUsergroups } from '@/plugins/types/germinate'
   import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
   import emitter from 'tiny-emitter/instance'
   import { mdiAccountGroup, mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
   import { apiDeleteUsergroup, apiPatchUsergroup, apiPutUsergroup } from '@/plugins/api/usergroup'
+  import type { BaseTableProps } from '@/plugins/types/BaseTableProps'
 
-  const compProps = withDefaults(defineProps<{
-    getData: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<ViewTableUsergroups[]>>> }
-    getIds?: { (options: PaginatedRequest): Promise<AxiosResponse<PaginatedResult<number[]>>> }
-    filterOn?: FilterGroup[]
-    selectionType?: TableSelectionType
+  type SharedProps = Pick<BaseTableProps<ViewTableUsergroups>, 'getData' | 'getIds' | 'filterOn' | 'selectionType'>
+
+  interface Props extends SharedProps {
     canCreateNew?: boolean
     canEdit?: boolean
-  }>(), {
+  }
+
+  const compProps = withDefaults(defineProps<Props>(), {
     canCreateNew: true,
     canEdit: true,
   })

@@ -27,7 +27,6 @@
   import { handleRouterQuery } from '@/plugins/util'
 
   import { mdiFormatListChecks, mdiSelectAll } from '@mdi/js'
-  import { useI18n } from 'vue-i18n'
 
   interface GroupSelectItem {
     value: ViewTableGroups

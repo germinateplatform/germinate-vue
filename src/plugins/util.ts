@@ -244,8 +244,8 @@ function downloadSvgsFromContainer (container: Element, isPlotly: boolean, filen
   document.body.removeChild(downloadLink)
 }
 
-function isSet (input: string | undefined | null): boolean {
-  return input !== undefined && input !== null && input.trim().length > 0
+function isSet (input: string | number | undefined | null): boolean {
+  return input !== undefined && input !== null && (typeof input === 'string' ? input.trim().length > 0 : true)
 }
 
 function getFromCache (publication: ViewTablePublications): PublicationDoiLookupDetails | undefined {
