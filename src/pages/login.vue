@@ -10,7 +10,7 @@
       v-tooltip.top="'\'Large Triangles\' by SVGBackgrounds.com'"
     />
 
-    <v-container>
+    <v-container max-width="1280">
       <v-img
         max-height="300"
         :cover="false"
@@ -43,7 +43,7 @@
         <v-col cols="12" lg="4">
           <v-theme-provider theme="dark">
             <v-card>
-              <v-card-text class="d-flex justify-center">
+              <v-card-text class="logo-container">
                 <v-img max-width="400" :src="store.storeBaseUrl + 'image/src-svg/logo.svg'" alt="Project logo" />
               </v-card-text>
             </v-card>
@@ -98,5 +98,13 @@ name: login
   bottom: 1.5em;
   right: 1.5em;
   height: unset !important;
+}
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  max-height: 75vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

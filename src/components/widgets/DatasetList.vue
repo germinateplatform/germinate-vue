@@ -9,7 +9,7 @@
       v-model="menus[dataset.datasetId || -1]"
     >
       <template #activator="{ props }">
-        <v-chip v-bind="props" link label size="small" :prepend-icon="mdiDatabase" :text="truncateAfterWords(dataset.datasetName, 10)" />
+        <v-chip v-bind="props" link label size="small" :prepend-icon="mdiDatabase" :text="truncateAfterWords(dataset.datasetName ?? '', 10)" />
       </template>
 
       <v-card max-width="300px">
