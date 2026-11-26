@@ -176,7 +176,7 @@
           colors: getColors(),
           groups: groupsMapped.value,
           datasets: datasetsMapped.value,
-          columnsToIgnore: ['name', 'latitude', 'longitude', 'elevation', 'dbId', 'dataset_ids', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'location', 'year', 'groups'],
+          columnsToIgnore: ['name', 'latitude', 'longitude', 'country', 'elevation', 'dbId', 'dataset_ids', 'dataset_name', 'dataset_description', 'dataset_version', 'license_name', 'location_name', 'location', 'year', 'groups'],
           selectionHandler: (dbIds: number[]) => {
             selectedIds.value = dbIds
           },

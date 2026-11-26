@@ -41,7 +41,7 @@
       const file = e.dataTransfer.files[0]
 
       // Only plain text files are supported
-      if (file.type === 'text/plain' && file.name.endsWith('.txt')) {
+      if ((file.type === 'text/plain' && file.name.endsWith('.txt')) || (file.type.length === 0 && file.name.endsWith('.tsv'))) {
         // Restrict to 1MB
         if (file.size < 1_000_000) {
           fileContent.value = await file.text()

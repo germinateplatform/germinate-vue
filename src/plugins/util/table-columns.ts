@@ -332,7 +332,7 @@ const climateDataColumns: ExtendedDataTableHeader[] = [{
   value: (value: ViewTableClimateData) => value.recordingDate ? new Date(value.recordingDate).toLocaleDateString() : undefined,
 }, {
   key: 'climateValue',
-  dataType: 'string',
+  dataType: 'any',
   title: 'tableColumnClimateDataClimateValue',
   searchable: true,
 }]

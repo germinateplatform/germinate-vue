@@ -50,7 +50,7 @@ const highlightFilter: { [index: string]: (dp: any, value: string) => boolean } 
   'reps': (dp: any, value: string) => dp.rep === value,
   'treatments': (dp: any, value: string) => dp.treatment === value,
   'year': (dp: any, value: string) => dp.year === value,
-  'location': (dp: any, value: string) => dp.name === value,
+  'location': (dp: any, value: string) => `${dp.country} | ${dp.name}` === value,
 }
 
 const highlightOppositeFilter: { [index: string]: (dp: any, nonMatchValues: string[]) => boolean } = {
@@ -62,7 +62,7 @@ const highlightOppositeFilter: { [index: string]: (dp: any, nonMatchValues: stri
   'reps': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.rep),
   'treatments': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.treatment),
   'year': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.year),
-  'location': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(dp.name),
+  'location': (dp: any, nonMatchValues: string[]) => !nonMatchValues.includes(`${dp.country} | ${dp.name}`),
 }
 
 export class ScatterMatrix {

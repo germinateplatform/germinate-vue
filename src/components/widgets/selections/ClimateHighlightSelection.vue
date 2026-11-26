@@ -11,12 +11,12 @@
       :mandatory="false"
       class="d-flex mb-5"
     >
-      <v-tab value="datasets" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
-      <v-tab value="location" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionLocation')" />
-      <v-tab value="group" :disabled="plottedGroups?.length === 0" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
+      <v-tab variant="tonal" value="datasets" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
+      <v-tab variant="tonal" value="location" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionLocation')" />
+      <v-tab variant="tonal" value="group" :disabled="plottedGroups?.length === 0" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
         <template #append><v-badge inline :content="getNumberWithSuffix(cdStore.storeGroups.length, 0)" /></template>
       </v-tab>
-      <v-tab value="year" :prepend-icon="mdiCalendarWeek" :disabled="!climateYears || climateYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
+      <v-tab variant="tonal" value="year" :prepend-icon="mdiCalendarWeek" :disabled="!climateYears || climateYears.length === 0" :text="$t('widgetHighlightSelectionYear')">
         <template #append><v-badge inline :content="getNumberWithSuffix((climateYears|| []).length, 0)" /></template>
       </v-tab>
     </v-tabs>

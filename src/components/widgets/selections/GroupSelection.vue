@@ -14,7 +14,18 @@
       chips
       clearable
       :items="allGroups"
-    />
+    >
+      <template #item="{ props, internalItem: item }">
+        <v-list-item v-bind="props">
+          <template #prepend="{ isSelected }">
+            <v-checkbox-btn :model-value="isSelected" />
+          </template>
+          <template #append>
+            <v-badge inline :content="getNumberWithSuffix(item.value.count, 1)" />
+          </template>
+        </v-list-item>
+      </template>
+    </v-autocomplete>
     <v-btn-toggle class="mt-2" color="primary" variant="outlined" v-model="groupSelection" v-if="multiple && type === 'export'">
       <v-btn value="groups" :text="$t('pageExportGroupSelectModeSelect')" :prepend-icon="mdiFormatListChecks" />
       <v-btn value="all" :text="$t('pageExportGroupSelectModeAll')" :prepend-icon="mdiSelectAll" />
@@ -25,6 +36,7 @@
 <script setup lang="ts">
   import type { MarkedItemType, ViewTableGroups } from '@/plugins/types/germinate'
   import { handleRouterQuery } from '@/plugins/util'
+import { getNumberWithSuffix } from '@/plugins/util/formatting';
 
   import { mdiFormatListChecks, mdiSelectAll } from '@mdi/js'
 
@@ -96,7 +108,7 @@
     const localGroups: any[] = compProps.groups.concat().map(g => {
       return {
         value: g,
-        title: `${g.groupName} (${g.count || 0})`,
+        title: g.groupName,
         props: { disabled: false },
       }
     })

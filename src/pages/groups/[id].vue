@@ -7,6 +7,7 @@
     <v-divider class="mb-3" />
     <!-- Description -->
     <v-list>
+      <v-list-item v-if="group.userName" :title="$t('tableColumnGroupUserName')" :subtitle="group.userName" />
       <v-list-item v-if="group.groupDescription" :title="$t('pageGroupsDescriptionTitle')" :subtitle="group.groupDescription" />
       <v-list-item :title="$t('pageGroupsVisibilityTitle')">
         <template #subtitle>

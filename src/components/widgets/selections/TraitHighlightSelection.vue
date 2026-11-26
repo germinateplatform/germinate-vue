@@ -6,29 +6,28 @@
       color="primary"
       bg-color="surface"
       grow
-      variant="tonal"
       center-active
       :mandatory="false"
       class="d-flex mb-5"
     >
-      <v-tab value="datasets" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
-      <v-tab value="germplasm" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionGermplasm')" />
-      <v-tab value="plot" :prepend-icon="mdiViewGridPlus" :disabled="(trialPlots ?? []).length < 2" :text="$t('widgetHighlightSelectionPlot')" v-if="allowCellSelect">
+      <v-tab variant="tonal" value="datasets" :prepend-icon="mdiDatabase" :text="$t('widgetHighlightSelectionDataset')" />
+      <v-tab variant="tonal" value="germplasm" :prepend-icon="mdiSprout" :text="$t('widgetHighlightSelectionGermplasm')" />
+      <v-tab variant="tonal" value="plot" :prepend-icon="mdiViewGridPlus" :disabled="(trialPlots ?? []).length < 2" :text="$t('widgetHighlightSelectionPlot')" v-if="allowCellSelect">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialPlots || []).length, 0)" /></template>
       </v-tab>
-      <v-tab value="group" :disabled="plottedGroups?.length < 2" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
+      <v-tab variant="tonal" value="group" :disabled="plottedGroups?.length < 2" :prepend-icon="mdiGroup" :text="$t('widgetHighlightSelectionGroup')">
         <template #append><v-badge inline :content="getNumberWithSuffix(tdStore.storeGroups.length, 0)" /></template>
       </v-tab>
-      <v-tab value="year" :prepend-icon="mdiCalendarWeek" :disabled="(trialYears ?? []).length < 2" :text="$t('widgetHighlightSelectionYear')">
+      <v-tab variant="tonal" value="year" :prepend-icon="mdiCalendarWeek" :disabled="(trialYears ?? []).length < 2" :text="$t('widgetHighlightSelectionYear')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialYears || []).length, 0)" /></template>
       </v-tab>
-      <v-tab value="taxonomies" :disabled="(trialTaxonomies ?? []).length < 2" :prepend-icon="mdiSitemap" :text="$t('widgetHighlightSelectionTaxonomy')">
+      <v-tab variant="tonal" value="taxonomies" :disabled="(trialTaxonomies ?? []).length < 2" :prepend-icon="mdiSitemap" :text="$t('widgetHighlightSelectionTaxonomy')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialTaxonomies|| []).length, 0)" /></template>
       </v-tab>
-      <v-tab value="reps" :disabled="(trialReps ?? []).length < 2" :prepend-icon="mdiFormatListNumbered" :text="$t('widgetHighlightSelectionRep')">
+      <v-tab variant="tonal" value="reps" :disabled="(trialReps ?? []).length < 2" :prepend-icon="mdiFormatListNumbered" :text="$t('widgetHighlightSelectionRep')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialReps|| []).length, 0)" /></template>
       </v-tab>
-      <v-tab value="treatments" :disabled="(trialTreatments ?? []).length < 2" :prepend-icon="mdiSprinklerFire" :text="$t('widgetHighlightSelectionTreatment')">
+      <v-tab variant="tonal" value="treatments" :disabled="(trialTreatments ?? []).length < 2" :prepend-icon="mdiSprinklerFire" :text="$t('widgetHighlightSelectionTreatment')">
         <template #append><v-badge inline :content="getNumberWithSuffix((trialTreatments|| []).length, 0)" /></template>
       </v-tab>
     </v-tabs>

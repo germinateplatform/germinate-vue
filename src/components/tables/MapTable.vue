@@ -55,10 +55,12 @@
       key: 'mapName',
       title: t('tableColumnMapName'),
       dataType: 'string',
+      quickSearchable: true,
     }, {
       key: 'mapDescription',
       dataType: 'string',
       title: t('tableColumnMapDescription'),
+      quickSearchable: true,
     }, {
       key: 'markerCount',
       dataType: 'integer',
