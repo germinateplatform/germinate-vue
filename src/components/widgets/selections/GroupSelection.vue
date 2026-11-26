@@ -36,7 +36,7 @@
 <script setup lang="ts">
   import type { MarkedItemType, ViewTableGroups } from '@/plugins/types/germinate'
   import { handleRouterQuery } from '@/plugins/util'
-import { getNumberWithSuffix } from '@/plugins/util/formatting';
+  import { getNumberWithSuffix } from '@/plugins/util/formatting'
 
   import { mdiFormatListChecks, mdiSelectAll } from '@mdi/js'
 
